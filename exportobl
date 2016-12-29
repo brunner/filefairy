@@ -21,7 +21,7 @@ def main():
   recipient = "commissioner@orangeandblueleaguebaseball.com"
   subject = "{0} Export".format(teamname)
   exportpath = ("{0}/.Out of the Park Developments/OOTP Baseball 16/custdata/saved_games/" +
-                "{1}/import_export/{2}".format(os.path.expanduser("~"), leaguefile, teamfile))
+                "{1}/import_export/{2}").format(os.path.expanduser("~"), leaguefile, teamfile)
 
   session = smtplib.SMTP("smtp.gmail.com", 587)
   session.ehlo()
