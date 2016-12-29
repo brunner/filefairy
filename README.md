@@ -11,15 +11,6 @@ This is most easily accomplished by simply cloning the repository:
 git clone https://github.com/brunner/orangeandblueleague
 ```
 
-However, you can accomplish the same by manually downloading and unpacking the archive:
-
-```bash
-mkdir orangeandblueleague \
-  && wget https://github.com/brunner/orangeandblueleague/archive/master.zip \
-  && unzip master.zip -d orangeandblueleague \
-  && rm master.zip
-```
-
 Edit the export script to include your own information:
 
 ```bash
@@ -30,12 +21,6 @@ Do the same with the import script:
 
 ```bash
 gedit orangeandblueleague/importobl
-```
-
-Next, make the scripts executable:
-
-```bash
-chmod +x orangeandblueleague/exportobl orangeandblueleague/importobl
 ```
 
 Move the scripts to /usr/local/bin/, per convention:
