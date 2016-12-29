@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+
+# Replace these values with your own information.
+leaguefile = "orangeandblue.lg"
+
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--recover', dest='recover', action='store_true')
+  parser.set_defaults(recover=False)
+  args = parser.parse_args()
+
+  host = "http://www.orangeandblueleaguebaseball.com/league/OBL/files/"
+  importfile = "orange_and_blue_league_baseball.tar.gz"
+  leaguepath = ("{0}/.Out of the Park Developments/OOTP Baseball 16/custdata/saved_games/" +
+                "{1}".format(os.path.expanduser("~"), leaguefile))
+  backuppath = "{0}.bk".format(leaguepath)
+
+  if args.recover:
+    if os.path.isdir(backuppath):
+      os.system("rm -rf {0} && mv {1} {0}".format(leaguepath, backuppath))
+  else:
+    if os.path.isdir(leaguepath):
+      os.system("rm -rf {0} && mv {1} {0}".format(backuppath, leaguepath))
+
+    os.system("rm -rf {0} && mkdir {0}".format(leaguepath))
+    os.chdir(leaguepath)
+
+    os.system("wget {0}{1}".format(host, importfile))
+    os.system("tar -xzf {0}".format(importfile))
+    os.system("rm {0}".format(importfile))
+ 
+if __name__ == "__main__":
+  main()
