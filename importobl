@@ -20,12 +20,12 @@ def main():
 
   if args.recover:
     if os.path.isdir(backuppath):
-      os.system("rm -rf {0} && mv {1} {0}".format(leaguepath, backuppath))
+      os.system("rm -rf '{0}' && mv '{1}' '{0}'".format(leaguepath, backuppath))
   else:
     if os.path.isdir(leaguepath):
-      os.system("rm -rf {0} && mv {1} {0}".format(backuppath, leaguepath))
+      os.system("rm -rf '{0}' && mv '{1}' '{0}'".format(backuppath, leaguepath))
 
-    os.system("rm -rf {0} && mkdir {0}".format(leaguepath))
+    os.system("rm -rf '{0}' && mkdir '{0}'".format(leaguepath))
     os.chdir(leaguepath)
 
     os.system("wget {0}{1}".format(host, importfile))
