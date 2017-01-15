@@ -10,28 +10,6 @@ from PyQt4.QtWebKit import *
 
 HOST = "http://orangeandblueleaguebaseball.com"
 
-class TwinsExportChecker():
-  def __init__(self):
-    self._url = HOST + "/StatsLab/exports.php"
-    self._date = self._getTwinsExportDate()
-
-  def _getTwinsExportDate(self):
-    content = urllib2.urlopen(self._url).read()
-    date = re.findall(r"Minnesota Twins</a><br /><([^<]+)<", content)
-    date = date[0].split(">") if len(date) else ""
-    return date[1] if len(date) > 1 else ""
-
-  def _monitor(self):
-    elapsed, sleep, timeout = 0, 120, 36000
-    while elapsed < timeout:
-      date = self._getTwinsExportDate()
-      if date != self._date:
-        self._date = date
-        return True
-      time.sleep(sleep)
-      elapsed = elapsed + sleep
-    return False
-
 class LiveSimScreenshotter(QWebView):
   def __init__(self):
     self.app = QApplication(sys.argv)
@@ -102,30 +80,30 @@ class LeagueFileChecker():
       elapsed = elapsed + sleep
     return False
 
-class Scheduler():
-  def __init__(self):
-    self._tec = TwinsExportChecker()
-    self._lss = LiveSimScreenshotter()
-    self._lfc = LeagueFileChecker()
+# class Scheduler():
+#   def __init__(self):
+#     self._tec = TwinsExportChecker()
+#     self._lss = LiveSimScreenshotter()
+#     self._lfc = LeagueFileChecker()
 
-  def _start(self):
-    if self._tec._monitor():
-      print "{0}: Twins export updated.".format(self._getCurrentTime())
-      if self._lss._monitor():
-        print "{0}: Live sim screenshots captured.".format(self._getCurrentTime())
-        if self._lfc._monitor():
-          print "{0}: File uploaded.".format(self._getCurrentTime())
-        else:
-          print "{0}: TIMEOUT. File not uploaded.".format(self._getCurrentTime())
-      else:
-        print "{0}: TIMEOUT. Live sim screenshots not captured.".format(self._getCurrentTime())
-    else:
-      print "{0}: TIMEOUT. Twins export not updated.".format(self._getCurrentTime())
+#   def _start(self):
+#     if self._tec._monitor():
+#       print "{0}: Twins export updated.".format(self._getCurrentTime())
+#       if self._lss._monitor():
+#         print "{0}: Live sim screenshots captured.".format(self._getCurrentTime())
+#         if self._lfc._monitor():
+#           print "{0}: File uploaded.".format(self._getCurrentTime())
+#         else:
+#           print "{0}: TIMEOUT. File not uploaded.".format(self._getCurrentTime())
+#       else:
+#         print "{0}: TIMEOUT. Live sim screenshots not captured.".format(self._getCurrentTime())
+#     else:
+#       print "{0}: TIMEOUT. Twins export not updated.".format(self._getCurrentTime())
 
 
-  def _getCurrentTime(self):
-    return datetime.datetime.now().strftime("%I:%M %p")
+#   def _getCurrentTime(self):
+#     return datetime.datetime.now().strftime("%I:%M %p")
 
-if __name__ == "__main__":
-  s = Scheduler()
-  s._start()
+# if __name__ == "__main__":
+#   s = Scheduler()
+#   s._start()
