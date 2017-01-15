@@ -59,27 +59,6 @@ class LiveSimScreenshotter(QWebView):
       time.sleep(sleep)
     return started
 
-class LeagueFileChecker():
-  def __init__(self):
-    self._url = HOST + "/StatsLab/exports.php"
-    self._date = self._getLeagueFileDate()
-
-  def _getLeagueFileDate(self):
-    content = urllib2.urlopen(self._url).read()
-    date = re.findall(r"League File Updated: ([^<]+)<", content)
-    return date[0] if len(date) else ""
-
-  def _monitor(self):
-    elapsed, sleep, timeout = 0, 120, 18000
-    while elapsed < timeout:
-      date = self._getLeagueFileDate()
-      if date != self._date:
-        self._date = date
-        return True
-      time.sleep(sleep)
-      elapsed = elapsed + sleep
-    return False
-
 # class Scheduler():
 #   def __init__(self):
 #     self._tec = TwinsExportChecker()
