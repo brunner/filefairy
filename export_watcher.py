@@ -58,7 +58,7 @@ class ExportWatcher(object):
   def updateTeamExports(self, url=""):
     """Opens the exports page and checks the export date for a list of teams.
 
-    Returns true if any dates have changed since the previous check.
+    Returns a true alert if any dates have changed since the previous check.
     """
     page = urllib2.urlopen(url or self.getUrl()).read()
     changed = False
@@ -73,7 +73,7 @@ class ExportWatcher(object):
   def updateLeagueFile(self, url=""):
     """Opens the exports page and checks the date of the league file.
 
-    Returns true if the date has changed since the previous check.
+    Returns a true alert if the date has changed since the previous check.
     """
     page = urllib2.urlopen(url or self.getUrl()).read()
     changed = False
