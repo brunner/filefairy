@@ -141,11 +141,11 @@ class SimWatcher(QWebView):
   def _postScreenshot(self):
     """Posts the captured photo to the Slack team before deleting the file."""
     screenshot = "sim_{0}.png".format(self._date)
-    file = "file=@{0}".format(screenshot)
+    fi = "file=@{0}".format(screenshot)
     token = "token={0}".format(tokens.filefairy)
     url = "https://slack.com/api/files.upload"
     with open(os.devnull, "wb") as f:
-      subprocess.call(["curl", "-F", file, "-F", "channels=#general",
+      subprocess.call(["curl", "-F", fi, "-F", "channels=#general",
                        "-F", token, url], stderr=f, stdout=f)
     subprocess.call(["rm", screenshot])
 
