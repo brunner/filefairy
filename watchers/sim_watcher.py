@@ -3,8 +3,10 @@
 import argparse
 import os
 import re
+import subprocess
 import sys
 import time
+import tokens
 import urllib2
 
 from PyQt4.QtCore import *
@@ -137,7 +139,15 @@ class SimWatcher(QWebView):
     return alert
 
   def _postScreenshot(self):
-    pass
+    """Posts the captured photo to the Slack team before deleting the file."""
+    screenshot = "sim_{0}.png".format(self._date)
+    file = "file=@{0}".format(screenshot)
+    token = "token={0}".format(tokens.filefairy)
+    url = "https://slack.com/api/files.upload"
+    with open(os.devnull, "wb") as f:
+      subprocess.call(["curl", "-F", file, "-F", "channels=#general",
+                       "-F", token, url], stderr=f, stdout=f)
+    subprocess.call(["rm", screenshot])
 
 
 class TestSimWatcher(SimWatcher):
@@ -187,7 +197,9 @@ class TestSimWatcher(SimWatcher):
     return alert["value"]
 
   def _postScreenshot(self):
-    self._posted.append("sim_{0}.png".format(self._date))
+    """Stores the captured photo for asserting."""
+    screenshot = "sim_{0}.png".format(self._date)
+    self._posted.append(screenshot)
 
 
 if __name__ == "__main__":
@@ -243,7 +255,8 @@ if __name__ == "__main__":
             files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
     assert simWatcherTest._updateLiveSim() == \
         {"value": False, "current": pages[3], "date": dates["new"], "captured": {
-            files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
+            files["old"]: pages[2], files["new"]: pages[3]}, "posted":
+         [files["old"]]}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
