@@ -14,19 +14,19 @@ git clone https://github.com/brunner/orangeandblueleague
 Edit the export script to include your own information:
 
 ```bash
-gedit orangeandblueleague/exportobl
+gedit orangeandblueleague/utils/exportobl
 ```
 
 Do the same with the import script:
 
 ```bash
-gedit orangeandblueleague/importobl
+gedit orangeandblueleague/utils/importobl
 ```
 
 Move the scripts to /usr/local/bin/, per convention:
 
 ```bash
-sudo mv orangeandblueleague/exportobl orangeandblueleague/importobl -t /usr/local/bin
+sudo mv orangeandblueleague/utils/exportobl orangeandblueleague/utils/importobl -t /usr/local/bin
 ```
 
 Finally, clean up:
