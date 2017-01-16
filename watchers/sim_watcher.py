@@ -59,22 +59,24 @@ class SimWatcher(QWebView):
     additional changes. If not, abandon watching after a timeout.
     Returns a true alert if any changes were found.
     """
-    sleep, wait, timeout = self._getWatchLiveSimValues()
+    sleep, waitpost, waitdone, timeout = self._getWatchLiveSimValues()
     elapsed = 0
     previous = 1
     found = False
 
-    while (found and elapsed < wait) or (not found and elapsed < timeout):
+    while (found and elapsed < waitdone) or (not found and elapsed < timeout):
       alert = self._updateLiveSim()
       queued = self._checkSecondaryAlert(alert)
 
-      if queued:
-        self._postScreenshot(queued)
-
       if self._checkAlert(alert):
+        if queued:
+          self._postScreenshot(queued)
         elapsed = 0
         found = True
       elif found:
+        print elapsed, waitpost
+        if elapsed > waitpost:
+          self._postScreenshot(self._getFile(self._date))
         time.sleep(previous)
         temp = elapsed
         elapsed = elapsed + previous
@@ -84,7 +86,6 @@ class SimWatcher(QWebView):
         elapsed = elapsed + sleep
 
     if found:
-      self._postScreenshot(self._getFile(self._date))
       return self._sendAlert("Live sim change detected.", True)
     else:
       return self._sendAlert("Timeout. Live sim change not detected.", False)
@@ -121,18 +122,17 @@ class SimWatcher(QWebView):
     return "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
 
   def _getWatchLiveSimValues(self):
-    """Returns a tuple of values, in seconds, for the watchLiveSim timer.
-
-    The first value is the amount of time to sleep between consecutive page
-    checks, before any page changes have been detected. The second value is the
-    amount of time to wait before the watcher can stop checking the page for
-    changes, once the first change has been detected. The third value is the
-    amount of time after which the watcher times out, if a first change was
-    never found."""
+    """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
-        8,      # 8 seconds
-        3600,   # 1 hour
-        7200,   # 2 hours
+        8,      # 8 seconds, to sleep between consecutive page checks.
+        120,    # 2 minutes, to wait before posting a screenshot (during which
+                #     the page has stopped changing and the sim is presumed
+                #     to be over).
+        3600,   # 1 hour, to wait before officially timing out (during which
+                #     the page has stopped changing and the sim is presumed
+                #     to be over).
+        7200,   # 2 hours, to wait before officially timing out (in the case
+                #     that the page never changed to begin with).
     ]
 
   def _getFile(self, date):
@@ -196,8 +196,8 @@ class TestSimWatcher(SimWatcher):
     return self._current
 
   def _getWatchLiveSimValues(self):
-    """Returns a tuple of test values, in seconds."""
-    return [1, 3, 5]
+    """Returns a tuple of test values, in seconds, for the watchLiveSim timer."""
+    return [1, 2, 4, 5]
 
   def _sendAlert(self, message, value, secondary_value=""):
     """Returns an easily assertable value."""
