@@ -76,6 +76,7 @@ class SimWatcher(QWebView):
         elapsed = elapsed + sleep
 
     if found:
+      self._postScreenshot()
       return self._sendAlert("Live sim change detected.", True)
     else:
       return self._sendAlert("Timeout. Live sim change not detected.", False)
@@ -87,9 +88,12 @@ class SimWatcher(QWebView):
     """
     url = url or self._getUrl()
     page = self._getPage(url)
+    date = self._findSimDate(page)
+    if date != self._date:
+      self._postScreenshot()
+
     changed = False
-    if self._page != page:
-      date = self._findSimDate(page)
+    if page != self._page:
       self.capture(url, "sim_{0}.png".format(date))
       self._page, self._date = page, date
       changed = True
@@ -132,6 +136,9 @@ class SimWatcher(QWebView):
     """Returns the value of the alert."""
     return alert
 
+  def _postScreenshot(self):
+    pass
+
 
 class TestSimWatcher(SimWatcher):
   """Tests for SimWatcher."""
@@ -141,6 +148,7 @@ class TestSimWatcher(SimWatcher):
     self._pages = pages
     self._current = self._pages[0]
     self._captured = {}
+    self._posted = []
 
     self._page = self._getPage(self._current)
     self._date = self._findSimDate(self._page)
@@ -171,11 +179,15 @@ class TestSimWatcher(SimWatcher):
         "current": self._current,
         "date": self._date,
         "captured": self._captured,
+        "posted": self._posted,
     }
 
   def _checkAlert(self, alert):
     """Returns the value of the alert."""
     return alert["value"]
+
+  def _postScreenshot(self):
+    self._posted.append("sim_{0}.png".format(self._date))
 
 
 if __name__ == "__main__":
@@ -218,40 +230,40 @@ if __name__ == "__main__":
     # Test _updateLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[0],
-         "date": dates["old"], "captured": {}}
+        {"value": False, "current": pages[0], "date": dates[
+            "old"], "captured": {}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "current": pages[1], "date": dates[
-            "old"], "captured": {files["old"]: pages[1]}}
+            "old"], "captured": {files["old"]: pages[1]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "current": pages[2], "date": dates[
-            "old"], "captured": {files["old"]: pages[2]}}
+            "old"], "captured": {files["old"]: pages[2]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": True, "current": pages[3], "date": dates[
-            "new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}}
+        {"value": True, "current": pages[3], "date": dates["new"], "captured": {
+            files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[3], "date": dates[
-            "new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}}
+        {"value": False, "current": pages[3], "date": dates["new"], "captured": {
+            files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[0],
-         "date": dates["old"], "captured": {}}
+        {"value": False, "current": pages[0], "date": dates[
+            "old"], "captured": {}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[0],
-         "date": dates["old"], "captured": {}}
+        {"value": False, "current": pages[0], "date": dates[
+            "old"], "captured": {}, "posted": []}
 
     # Test _watchLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
     assert simWatcherTest._watchLiveSim() == \
-        {"value": True, "current": pages[3], "date": dates[
-            "new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}}
+        {"value": True, "current": pages[3], "date": dates["new"], "captured": {files[
+            "old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"], files["new"]]}
 
     # Test _watchLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._watchLiveSim() == \
-        {"value": False, "current": pages[0],
-         "date": dates["old"], "captured": {}}
+        {"value": False, "current": pages[0], "date": dates[
+            "old"], "captured": {}, "posted": []}
 
     print "Passed."
