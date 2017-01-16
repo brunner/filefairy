@@ -16,9 +16,8 @@ class ExportWatcher(object):
                   "Reds", "Cardinals", "Red Sox", "Mariners"]
     self.exports, self.file = {}, ""
 
-    url = self.getUrl()
-    self.updateTeamExports(url)
-    self.updateLeagueFile(url)
+    self.updateTeamExports()
+    self.updateLeagueFile()
 
   def watchTeamExports(self):
     """Itermittently checks the exports page url for export date changes.
@@ -30,8 +29,7 @@ class ExportWatcher(object):
     elapsed = 0
 
     while elapsed < timeout:
-      url = self.getUrl()
-      if self.checkAlert(self.updateTeamExports(url)):
+      if self.checkAlert(self.updateTeamExports()):
         return self.sendAlert("Team export date change detected.", True)
 
       time.sleep(sleep)
@@ -49,8 +47,7 @@ class ExportWatcher(object):
     elapsed = 0
 
     while elapsed < timeout:
-      url = self.getUrl()
-      if self.checkAlert(self.updateLeagueFile(url)):
+      if self.checkAlert(self.updateLeagueFile()):
         return self.sendAlert("League file date change detected.", True)
 
       time.sleep(sleep)
