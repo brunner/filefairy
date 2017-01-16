@@ -255,8 +255,7 @@ if __name__ == "__main__":
             files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
     assert simWatcherTest._updateLiveSim() == \
         {"value": False, "current": pages[3], "date": dates["new"], "captured": {
-            files["old"]: pages[2], files["new"]: pages[3]}, "posted":
-         [files["old"]]}
+            files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
