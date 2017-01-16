@@ -65,7 +65,13 @@ class SimWatcher(QWebView):
     found = False
 
     while (found and elapsed < wait) or (not found and elapsed < timeout):
-      if self._checkAlert(self._updateLiveSim()):
+      alert = self._updateLiveSim()
+      queued = self._checkSecondaryAlert(alert)
+
+      if queued:
+        self._postScreenshot(queued)
+
+      if self._checkAlert(alert):
         elapsed = 0
         found = True
       elif found:
@@ -78,7 +84,7 @@ class SimWatcher(QWebView):
         elapsed = elapsed + sleep
 
     if found:
-      self._postScreenshot()
+      self._postScreenshot(self._getFile(self._date))
       return self._sendAlert("Live sim change detected.", True)
     else:
       return self._sendAlert("Timeout. Live sim change not detected.", False)
@@ -91,16 +97,17 @@ class SimWatcher(QWebView):
     url = url or self._getUrl()
     page = self._getPage(url)
     date = self._findSimDate(page)
+    changed = page != self._page
+    queued = ""
+
     if date != self._date:
-      self._postScreenshot()
+      queued = self._getFile(self._date)
 
-    changed = False
-    if page != self._page:
-      self.capture(url, "sim_{0}.png".format(date))
+    if changed:
+      self.capture(url, self._getFile(date))
       self._page, self._date = page, date
-      changed = True
 
-    return self._sendAlert("Updated live sim page.", changed)
+    return self._sendAlert("Updated live sim page.", changed, queued)
 
   def _findSimDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br>([^<]+)<", page)
@@ -128,26 +135,35 @@ class SimWatcher(QWebView):
         7200,   # 2 hours
     ]
 
-  def _sendAlert(self, message, value):
+  def _getFile(self, date):
+    return "sim_{0}.png".format(date)
+
+  def _sendAlert(self, message, value, secondary_value=""):
     """Returns the specified value.
 
     TODO: Either surface the message or remove it."""
-    return value
+    return {
+      "value": value,
+      "secondary_value": secondary_value,
+    }
 
   def _checkAlert(self, alert):
     """Returns the value of the alert."""
-    return alert
+    return alert["value"]
 
-  def _postScreenshot(self):
-    """Posts the captured photo to the Slack team before deleting the file."""
-    screenshot = "sim_{0}.png".format(self._date)
-    fi = "file=@{0}".format(screenshot)
+  def _checkSecondaryAlert(self, alert):
+    """Returns the secondary value of the alert."""
+    return alert["secondary_value"]
+
+  def _postScreenshot(self, queued):
+    """Posts the queued photo to the Slack team before deleting the file."""
+    fi = "file=@{0}".format(queued)
     token = "token={0}".format(tokens.filefairy)
     url = "https://slack.com/api/files.upload"
     with open(os.devnull, "wb") as f:
       subprocess.call(["curl", "-F", fi, "-F", "channels=#general",
                        "-F", token, url], stderr=f, stdout=f)
-    subprocess.call(["rm", screenshot])
+    subprocess.call(["rm", queued])
 
 
 class TestSimWatcher(SimWatcher):
@@ -168,6 +184,7 @@ class TestSimWatcher(SimWatcher):
 
   def capture(self, url, output_file):
     self._captured[output_file] = url
+    super(TestSimWatcher, self).capture(url, output_file)
 
   def _getUrl(self):
     """Returns the next test sim page."""
@@ -182,24 +199,21 @@ class TestSimWatcher(SimWatcher):
     """Returns a tuple of test values, in seconds."""
     return [1, 3, 5]
 
-  def _sendAlert(self, message, value):
+  def _sendAlert(self, message, value, secondary_value=""):
     """Returns an easily assertable value."""
     return {
         "value": value,
+        "secondary_value": secondary_value,
         "current": self._current,
         "date": self._date,
         "captured": self._captured,
         "posted": self._posted,
     }
 
-  def _checkAlert(self, alert):
-    """Returns the value of the alert."""
-    return alert["value"]
-
-  def _postScreenshot(self):
-    """Stores the captured photo for asserting."""
-    screenshot = "sim_{0}.png".format(self._date)
-    self._posted.append(screenshot)
+  def _postScreenshot(self, queued):
+    """Stores the queued photo for asserting."""
+    self._posted.append(queued)
+    super(TestSimWatcher, self)._postScreenshot(queued)
 
 
 if __name__ == "__main__":
@@ -242,40 +256,31 @@ if __name__ == "__main__":
     # Test _updateLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[0], "date": dates[
-            "old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "captured": {}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": True, "current": pages[1], "date": dates[
-            "old"], "captured": {files["old"]: pages[1]}, "posted": []}
+        {"value": True, "secondary_value": "", "current": pages[1], "date": dates["old"], "captured": {files["old"]: pages[1]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": True, "current": pages[2], "date": dates[
-            "old"], "captured": {files["old"]: pages[2]}, "posted": []}
+        {"value": True, "secondary_value": "", "current": pages[2], "date": dates["old"], "captured": {files["old"]: pages[2]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": True, "current": pages[3], "date": dates["new"], "captured": {
-            files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
+        {"value": True, "secondary_value": files["old"], "current": pages[3], "date": dates["new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[3], "date": dates["new"], "captured": {
-            files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"]]}
+        {"value": False, "secondary_value": "", "current": pages[3], "date": dates["new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": []}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[0], "date": dates[
-            "old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "captured": {}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "current": pages[0], "date": dates[
-            "old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "captured": {}, "posted": []}
 
     # Test _watchLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
     assert simWatcherTest._watchLiveSim() == \
-        {"value": True, "current": pages[3], "date": dates["new"], "captured": {files[
-            "old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"], files["new"]]}
+        {"value": True, "secondary_value": "", "current": pages[3], "date": dates["new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"], files["new"]]}
 
     # Test _watchLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._watchLiveSim() == \
-        {"value": False, "current": pages[0], "date": dates[
-            "old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "captured": {}, "posted": []}
 
     print "Passed."
