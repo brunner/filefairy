@@ -17,7 +17,7 @@ sender = "brunnerj16@gmail.com"
 teamname = "Twins"
  
 def main():
-  password = getpass.getpass()
+  password = getpass.getpass("Password for {0}: ".format(sender))
   recipient = "commissioner@orangeandblueleaguebaseball.com"
   subject = "{0} Export".format(teamname)
   exportpath = ("{0}/.Out of the Park Developments/OOTP Baseball 16/custdata/saved_games/" +
