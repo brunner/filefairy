@@ -186,10 +186,10 @@ if __name__ == "__main__":
   if args.test:
     path = "http://brunnerj.com/orangeandblueleague/"
     files = [
-        "export_01142017_1.html",  # 0. Initial exports page.
-        "export_01142017_2.html",  # 1. No watched teams have changed.
-        "export_01142017_3.html",  # 2. Twins export date has changed.
-        "export_01172017_1.html",  # 3. League file date has changed.
+        "export_01142017_1.html",         # 0. Initial exports page.
+        "export_01142017_2.html",         # 1. No watched teams have changed.
+        "export_01142017_3.html",         # 2. Twins export date has changed.
+        "export_01172017_1.html",         # 3. League file date has changed.
     ]
     pages = [os.path.join(path, fi) for fi in files]
     twins = {
