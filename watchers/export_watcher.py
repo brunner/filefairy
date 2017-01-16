@@ -25,6 +25,22 @@ class ExportWatcher(object):
     Returns true once a change has been found, or false after a timeout limit
     has been exceeded.
     """
+    return self.checkAlert(self.watchTeamExportsInternal())
+
+  def watchLeagueFile(self):
+    """Itermittently checks the exports page url for league file date changes.
+
+    Returns true once a change has been found, or false after a timeout limit
+    has been exceeded.
+    """
+    return self.checkAlert(self.watchLeagueFileInternal())
+
+  def watchTeamExportsInternal(self):
+    """Itermittently checks the exports page url for export date changes.
+
+    Returns a true alert once a change has been found, or a false alert after a
+    timeout limit has been exceeded.
+    """
     sleep, timeout = self.getWatchTeamExportsValues()
     elapsed = 0
 
@@ -37,12 +53,13 @@ class ExportWatcher(object):
 
     return self.sendAlert("Timeout. Team export date change not detected.", False)
 
-  def watchLeagueFile(self):
+  def watchLeagueFileInternal(self):
     """Itermittently checks the exports page url for league file date changes.
 
-    Returns true once a change has been found, or false after a timeout limit
-    has been exceeded.
+    Returns a true alert once a change has been found, or a false alert after a
+    timeout limit has been exceeded.
     """
+    sleep, timeout = self.getWatchTeamExportsValues()
     sleep, timeout = self.getWatchLeagueFileValues()
     elapsed = 0
 
@@ -286,28 +303,44 @@ if __name__ == "__main__":
         {"value": False, "current": pages[2], "exports": {
             "Twins": twins["old"]}, "file": league["old"]}
 
-    # Test watchTeamExports method for changed case.
+    # Test watchTeamExportsInternal method for changed case.
     exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
-    assert exportWatcherTest.watchTeamExports() == \
+    assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": True, "current": pages[2], "exports": {
             "Twins": twins["new"]}, "file": league["old"]}
 
-    # Test watchTeamExports method for unchanged case.
+    # Test watchTeamExportsInternal method for unchanged case.
     exportWatcherTest = ExportWatcherTest(pages[:2], ["Twins"])
-    assert exportWatcherTest.watchTeamExports() == \
+    assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": False, "current": pages[1], "exports": {
             "Twins": twins["old"]}, "file": league["old"]}
 
-    # Test watchLeagueFile method for changed case.
+    # Test watchLeagueFileInternal method for changed case.
     exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
-    assert exportWatcherTest.watchLeagueFile() == \
+    assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": True, "current": pages[3], "exports": {
             "Twins": twins["old"]}, "file": league["new"]}
 
-    # Test watchLeagueFile method for unchanged case.
+    # Test watchLeagueFileInternal method for unchanged case.
     exportWatcherTest = ExportWatcherTest(pages[:3], ["Twins"])
-    assert exportWatcherTest.watchLeagueFile() == \
+    assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": False, "current": pages[2], "exports": {
             "Twins": twins["old"]}, "file": league["old"]}
+
+    # Test watchTeamExports method for changed case.
+    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    assert exportWatcherTest.watchTeamExports() == True
+
+    # Test watchTeamExports method for unchanged case.
+    exportWatcherTest = ExportWatcherTest(pages[:2], ["Twins"])
+    assert exportWatcherTest.watchTeamExports() == False
+
+    # Test watchLeagueFile method for changed case.
+    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    assert exportWatcherTest.watchLeagueFile() == True
+
+    # Test watchLeagueFile method for unchanged case.
+    exportWatcherTest = ExportWatcherTest(pages[:3], ["Twins"])
+    assert exportWatcherTest.watchLeagueFile() == False
 
     print "Passed."

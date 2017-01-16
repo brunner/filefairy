@@ -59,6 +59,15 @@ class SimWatcher(QWebView):
 
     If any changes are found, wait for a certain amount of time to capture any
     additional changes. If not, abandon watching after a timeout.
+    Returns true if any changes were found.
+    """
+    return self._checkAlert(self._watchLiveSimInternal())
+
+  def _watchLiveSimInternal(self):
+    """Itermittently checks the sim page url for any changes.
+
+    If any changes are found, wait for a certain amount of time to capture any
+    additional changes. If not, abandon watching after a timeout.
     Returns a true alert if any changes were found.
     """
     sleep, waitpost, waitdone, timeout = self._getWatchLiveSimValues()
@@ -208,7 +217,6 @@ class TestSimWatcher(SimWatcher):
   def capture(self, url, output_file):
     """Stores the captured file and url for asserting."""
     self._captured[output_file] = url
-    super(TestSimWatcher, self).capture(url, output_file)
 
   def _getUrl(self):
     """Returns the next test sim page."""
@@ -237,7 +245,6 @@ class TestSimWatcher(SimWatcher):
   def _postScreenshot(self, queued):
     """Stores the queued photo for asserting."""
     self._posted.append(queued)
-    super(TestSimWatcher, self)._postScreenshot(queued)
 
 
 if __name__ == "__main__":
@@ -304,16 +311,24 @@ if __name__ == "__main__":
         {"value": False, "secondary_value": "", "current": pages[
             0], "date": dates["old"], "captured": {}, "posted": []}
 
-    # Test _watchLiveSim method for changed case.
+    # Test _watchLiveSimInternal method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
-    assert simWatcherTest._watchLiveSim() == \
+    assert simWatcherTest._watchLiveSimInternal() == \
         {"value": True, "secondary_value": "", "current": pages[3], "date": dates["new"], "captured": {
             files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"], files["new"]]}
 
-    # Test _watchLiveSim method for unchanged case.
+    # Test _watchLiveSimInternal method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
-    assert simWatcherTest._watchLiveSim() == \
+    assert simWatcherTest._watchLiveSimInternal() == \
         {"value": False, "secondary_value": "", "current": pages[
             0], "date": dates["old"], "captured": {}, "posted": []}
+
+    # Test _watchLiveSim method for changed case.
+    simWatcherTest = TestSimWatcher(app, pages[:])
+    assert simWatcherTest._watchLiveSim() == True
+
+    # Test _watchLiveSim method for unchanged case.
+    simWatcherTest = TestSimWatcher(app, pages[:1])
+    assert simWatcherTest._watchLiveSim() == False
 
     print "Passed."
