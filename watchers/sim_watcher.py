@@ -5,6 +5,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 import time
 import tokens
 import urllib2
@@ -21,6 +22,7 @@ class SimWatcher(QWebView):
     """Does an initial parse of the live sim page."""
     self._page = self._getPage(self._getUrl())
     self._date = self._findSimDate(self._page)
+    self._threads = []
 
     self._setUp(app or QApplication(sys.argv))
     self._updateLiveSim()
@@ -74,7 +76,6 @@ class SimWatcher(QWebView):
         elapsed = 0
         found = True
       elif found:
-        print elapsed, waitpost
         if elapsed > waitpost:
           self._postScreenshot(self._getFile(self._date))
         time.sleep(previous)
@@ -86,9 +87,14 @@ class SimWatcher(QWebView):
         elapsed = elapsed + sleep
 
     if found:
-      return self._sendAlert("Live sim change detected.", True)
+      alert = self._sendAlert("Live sim change detected.", True)
     else:
-      return self._sendAlert("Timeout. Live sim change not detected.", False)
+      alert = self._sendAlert("Timeout. Live sim change not detected.", False)
+
+    for t in self._threads:
+      t.join()
+
+    return alert
 
   def _updateLiveSim(self, url=""):
     """Opens the live sim page and checks the page content.
@@ -136,6 +142,7 @@ class SimWatcher(QWebView):
     ]
 
   def _getFile(self, date):
+    """Gets the file name to use for a given live sim date."""
     return "sim_{0}.png".format(date)
 
   def _sendAlert(self, message, value, secondary_value=""):
@@ -156,14 +163,29 @@ class SimWatcher(QWebView):
     return alert["secondary_value"]
 
   def _postScreenshot(self, queued):
-    """Posts the queued photo to the Slack team before deleting the file."""
-    fi = "file=@{0}".format(queued)
+    """Posts the queued photo to the Slack team, from a background thread."""
+    t = ThreadedPostScreenshot(queued)
+    self._threads.append(t)
+    t.start()
+
+
+class ThreadedPostScreenshot(threading.Thread):
+  """Posts a queued photo to the Slack team from a background thread."""
+
+  def __init__(self, queued):
+    """Stores a reference to the queued photo file."""
+    self.queued = queued
+
+    threading.Thread.__init__(self)
+
+  def run(self):
+    fi = "file=@{0}".format(self.queued)
     token = "token={0}".format(tokens.filefairy)
     url = "https://slack.com/api/files.upload"
     with open(os.devnull, "wb") as f:
       subprocess.call(["curl", "-F", fi, "-F", "channels=#general",
                        "-F", token, url], stderr=f, stdout=f)
-    subprocess.call(["rm", queued])
+    subprocess.call(["rm", self.queued])
 
 
 class TestSimWatcher(SimWatcher):
@@ -178,6 +200,7 @@ class TestSimWatcher(SimWatcher):
 
     self._page = self._getPage(self._current)
     self._date = self._findSimDate(self._page)
+    self._threads = []
 
     self._setUp(app)
     self._updateLiveSim(self._current)
@@ -185,6 +208,7 @@ class TestSimWatcher(SimWatcher):
   def capture(self, url, output_file):
     """Stores the captured file and url for asserting."""
     self._captured[output_file] = url
+    super(TestSimWatcher, self).capture(url, output_file)
 
   def _getUrl(self):
     """Returns the next test sim page."""
@@ -213,6 +237,7 @@ class TestSimWatcher(SimWatcher):
   def _postScreenshot(self, queued):
     """Stores the queued photo for asserting."""
     self._posted.append(queued)
+    super(TestSimWatcher, self)._postScreenshot(queued)
 
 
 if __name__ == "__main__":
