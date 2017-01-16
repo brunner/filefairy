@@ -143,9 +143,8 @@ class ExportWatcherTest(ExportWatcher):
     self.teams = teams
     self.exports, self.file = {}, ""
 
-    url = self.pages[0]
-    self.updateTeamExports(url)
-    self.updateLeagueFile(url)
+    self.updateTeamExports(self.current)
+    self.updateLeagueFile(self.current)
 
   def getUrl(self):
     """Returns the next test export page."""
