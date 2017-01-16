@@ -121,11 +121,11 @@ class ExportWatcher(object):
         18000,  # 5 hours
     ]
 
-  def sendAlert(self, message, ret):
+  def sendAlert(self, message, value):
     """Returns the specified value.
 
     TODO: Either surface the message or remove it."""
-    return ret
+    return value
 
   def checkAlert(self, alert):
     """Returns the value of the alert."""
@@ -164,10 +164,10 @@ class ExportWatcherTest(ExportWatcher):
     """Returns a pair of test values, in seconds."""
     return [1, 4]
 
-  def sendAlert(self, message, ret):
+  def sendAlert(self, message, value):
     """Returns an easily assertable value."""
     return {
-        "value": ret,
+        "value": value,
         "current": self.current,
         "exports": self.exports,
         "file": self.file,
