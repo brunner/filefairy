@@ -144,8 +144,8 @@ class ExportWatcher(object):
     checks. The second value is the amount of time after which the watcher can
     stop checking the page for changes."""
     return [
-        1,    # 10 minutes
-        1,  # 10 hours
+        600,    # 10 minutes
+        36000,  # 10 hours
     ]
 
   def getWatchLeagueFileValues(self):
