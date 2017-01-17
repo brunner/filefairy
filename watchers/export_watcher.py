@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-# -- coding: utf-8 --
 
 import argparse
 import datetime
 import os
 import re
-import subprocess
 import time
 import tokens
 import urllib
@@ -146,8 +144,8 @@ class ExportWatcher(object):
     checks. The second value is the amount of time after which the watcher can
     stop checking the page for changes."""
     return [
-        600,    # 10 minutes
-        36000,  # 10 hours
+        1,    # 10 minutes
+        1,  # 10 hours
     ]
 
   def getWatchLeagueFileValues(self):
