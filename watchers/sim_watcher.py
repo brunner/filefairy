@@ -87,17 +87,12 @@ class SimWatcher(QWebView):
         elapsed = 0
         found = True
         posted = False
-      elif found:
-        if not posted and elapsed > waitpost:
-          self._postScreenshot(self._getFile(self._date))
-          posted = True
-        time.sleep(previous)
-        temp = elapsed
-        elapsed = elapsed + previous
-        previous = temp
-      else:
-        time.sleep(sleep)
-        elapsed = elapsed + sleep
+      elif found and not posted and elapsed > waitpost:
+        self._postScreenshot(self._getFile(self._date))
+        posted = True
+
+      time.sleep(sleep)
+      elapsed = elapsed + sleep
 
     if found:
       alert = self._sendAlert("Live sim change detected.", True)
