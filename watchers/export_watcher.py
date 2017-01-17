@@ -116,7 +116,7 @@ class ExportWatcher(object):
 
   def findTeamExport(self, page, team):
     """Parses the exports page and returns the export date for a given team."""
-    match = re.findall(re.escape(team) + r"</a><br><([^<]+)<", page)
+    match = re.findall(re.escape(team) + r"</a><br(?: /)?><([^<]+)<", page)
     chunks = (match[0].split(">") if len(match) else "")
     return (chunks[1] if len(chunks) > 1 else "")
 
