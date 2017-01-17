@@ -71,13 +71,13 @@ class SimWatcher(QWebView):
     additional changes. If not, abandon watching after a timeout.
     Returns a true alert if any changes were found.
     """
-    sleep, waitpost, waitdone, timeout = self._getWatchLiveSimValues()
+    sleep, post, timeout = self._getWatchLiveSimValues()
     elapsed = 0
     previous = 1
     found = False
     posted = False
 
-    while (found and elapsed < waitdone) or (not found and elapsed < timeout):
+    while elapsed < timeout:
       alert = self._updateLiveSim()
       queued = self._checkSecondaryAlert(alert)
 
@@ -87,7 +87,7 @@ class SimWatcher(QWebView):
         elapsed = 0
         found = True
         posted = False
-      elif found and not posted and elapsed > waitpost:
+      elif found and not posted and elapsed > post:
         self._postScreenshot(self._getFile(self._date))
         posted = True
 
@@ -138,15 +138,13 @@ class SimWatcher(QWebView):
   def _getWatchLiveSimValues(self):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
-        8,      # 8 seconds, to sleep between consecutive page checks.
+        6,      # 6 seconds, to sleep between consecutive page checks.
         120,    # 2 minutes, to wait before posting a screenshot (during which
                 #     the page has stopped changing and the sim is presumed
                 #     to be over).
         3600,   # 1 hour, to wait before officially timing out (during which
-                #     the page has stopped changing and the sim is presumed
+                #     the page has not changed and the sim is presumed
                 #     to be over).
-        7200,   # 2 hours, to wait before officially timing out (in the case
-                #     that the page never changed to begin with).
     ]
 
   def _getFile(self, date):
@@ -227,7 +225,7 @@ class TestSimWatcher(SimWatcher):
 
   def _getWatchLiveSimValues(self):
     """Returns a tuple of test values, in seconds, for the watchLiveSim timer."""
-    return [1, 2, 8, 12]
+    return [1, 2, 8]
 
   def _sendAlert(self, message, value, secondary_value=""):
     """Returns an easily assertable value."""
