@@ -153,7 +153,7 @@ class SimWatcher(QWebView):
 
   def _getFile(self, date):
     """Gets the file name to use for a given live sim date."""
-    return "sim_{0}.png".format(date)
+    return "simwatcher_{0}.png".format(date)
 
   def _sendAlert(self, message, value, secondary_value=""):
     """Returns the specified value."""
@@ -267,8 +267,8 @@ if __name__ == "__main__":
         "new": "09092018",
     }
     files = {
-        "old": "sim_09052018.png",
-        "new": "sim_09092018.png",
+        "old": "simwatcher_09052018.png",
+        "new": "simwatcher_09092018.png",
     }
 
     app = QApplication(sys.argv)
