@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import os
 import re
 import subprocess
@@ -18,7 +19,7 @@ from PyQt4.QtWebKit import *
 class SimWatcher(QWebView):
   """Watches the live sim page for any changes."""
 
-  def __init__(self, app):
+  def __init__(self, app=None):
     """Does an initial parse of the live sim page."""
     self._page = self._getPage(self._getUrl())
     self._date = self._findSimDate(self._page)
@@ -155,9 +156,9 @@ class SimWatcher(QWebView):
     return "sim_{0}.png".format(date)
 
   def _sendAlert(self, message, value, secondary_value=""):
-    """Returns the specified value.
+    """Returns the specified value."""
 
-    TODO: Either surface the message or remove it."""
+    print "{0}: {1}".format(str(datetime.datetime.now()), message)
     return {
         "value": value,
         "secondary_value": secondary_value,

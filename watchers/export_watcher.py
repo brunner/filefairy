@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import os
 import re
 import time
@@ -139,9 +140,9 @@ class ExportWatcher(object):
     ]
 
   def sendAlert(self, message, value):
-    """Returns the specified value.
+    """Returns the specified value."""
 
-    TODO: Either surface the message or remove it."""
+    print "{0}: {1}".format(str(datetime.datetime.now()), message)
     return value
 
   def checkAlert(self, alert):
