@@ -129,7 +129,7 @@ class ExportWatcher(object):
     """Posts a message to the Slack team."""
     url = "https://slack.com/api/chat.postMessage"
     fields = {"text": message, "token": tokens.filefairy, "channel": "general",
-              "link_names": "brunnerj,everyone", "username": "filefairy"}
+              "link_names": "brunnerj,everyone", "as_user": "true"}
     full = "{0}?{1}".format(url, urllib.urlencode(fields))
     urllib2.urlopen(full)
 
