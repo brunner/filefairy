@@ -157,7 +157,6 @@ class SimWatcher(QWebView):
 
   def _sendAlert(self, message, value, secondary_value=""):
     """Returns the specified value."""
-
     print "{0}: {1}".format(str(datetime.datetime.now()), message)
     return {
         "value": value,
