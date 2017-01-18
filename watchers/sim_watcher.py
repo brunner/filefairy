@@ -22,7 +22,8 @@ class SimWatcher(QWebView):
   def __init__(self, app=None):
     """Does an initial parse of the live sim page."""
     self._page = self._getPage(self._getUrl())
-    self._date = self._findSimDate(self._page)
+    self._date = self._findDate(self._page)
+    self._finals = self._findFinals(self._page)
     self._threads = []
 
     self._setUp(app or QApplication(sys.argv))
@@ -111,7 +112,8 @@ class SimWatcher(QWebView):
     """
     url = url or self._getUrl()
     page = self._getPage(url)
-    date = self._findSimDate(page)
+    date = self._findDate(page)
+    finals = self._findFinals(page)
     changed = page != self._page
     queued = ""
 
@@ -119,20 +121,25 @@ class SimWatcher(QWebView):
       queued = self._getFile(self._date)
 
     if changed:
-      self.capture(url, self._getFile(date))
+      if finals != self._finals:
+        self.capture(url, self._getFile(date))
+        self._finals = finals
+
       self._page, self._date = page, date
 
     return self._sendAlert("Updated live sim page.", changed, queued)
 
-  def _findSimDate(self, page):
+  def _findDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
     return match[0].replace("/", "").strip() if len(match) else ""
 
-  def _findFinalGames(self, page):
-    boxes = re.findall(r"<td class=\"(?:[^\"]+)\">FINAL(.*?)</tbody>", page, re.DOTALL)
+  def _findFinals(self, page):
+    boxes = re.findall(
+        r"<td class=\"(?:[^\"]+)\">FINAL(.*?)</tbody>", page, re.DOTALL)
     games = set()
     for box in boxes:
-      games.add("".join(re.findall(r"league/OBL/reports/news/html/teams/([^\.]+)\.", box)))
+      games.add(
+          "".join(re.findall(r"league/OBL/reports/news/html/teams/([^\.]+)\.", box)))
 
     return games
 
@@ -212,7 +219,8 @@ class TestSimWatcher(SimWatcher):
     self._posted = []
 
     self._page = self._getPage(self._current)
-    self._date = self._findSimDate(self._page)
+    self._date = self._findDate(self._page)
+    self._finals = self._findFinals(self._page)
     self._threads = []
 
     self._setUp(app)
@@ -242,6 +250,7 @@ class TestSimWatcher(SimWatcher):
         "secondary_value": secondary_value,
         "current": self._current,
         "date": self._date,
+        "finals": self._finals,
         "captured": self._captured,
         "posted": self._posted,
     }
@@ -261,8 +270,8 @@ if __name__ == "__main__":
     path = "http://brunnerj.com/orangeandblueleague/"
     files = [
         "sim_09052018_1.html",            # 0. Initial sim page.
-        "sim_09052018_2.html",            # 1. Same date, but data changed.
-        "sim_09052018_3.html",            # 2. Same date, but data changed.
+        "sim_09052018_2.html",            # 1. Same date. No new final games.
+        "sim_09052018_3.html",            # 2. Same date. One new final game.
         "sim_09092018_1.html",            # 3. Different date.
     ]
     pages = [os.path.join(path, fi) for fi in files]
@@ -274,63 +283,72 @@ if __name__ == "__main__":
         "old": "simwatcher_09052018.png",
         "new": "simwatcher_09092018.png",
     }
+    finals = {
+        "old1": set(["team_59team_33"]),
+        "old2": set(["team_59team_33", "team_53team_45"]),
+        "new": set(["team_50team_35", "team_49team_52", "team_43team_57",
+                    "team_36team_37", "team_33team_48", "team_39team_55",
+                    "team_46team_45", "team_42team_54", "team_58team_47",
+                    "team_44team_59", "team_60team_32", "team_34team_56",
+                    "team_53team_31", "team_40team_38", "team_41team_51"]),
+    }
 
     app = QApplication(sys.argv)
 
-    # Test _findSimDate method.
+    # Test _findDate method.
     simWatcherTest = TestSimWatcher(app, pages[:])
     page = urllib2.urlopen(pages[0]).read()
-    assert simWatcherTest._findSimDate(page) == dates["old"]
+    assert simWatcherTest._findDate(page) == dates["old"]
     page = urllib2.urlopen(pages[1]).read()
-    assert simWatcherTest._findSimDate(page) == dates["old"]
+    assert simWatcherTest._findDate(page) == dates["old"]
     page = urllib2.urlopen(pages[2]).read()
-    assert simWatcherTest._findSimDate(page) == dates["old"]
+    assert simWatcherTest._findDate(page) == dates["old"]
     page = urllib2.urlopen(pages[3]).read()
-    assert simWatcherTest._findSimDate(page) == dates["new"]
+    assert simWatcherTest._findDate(page) == dates["new"]
 
     # Test _findFinalGames method.
     simWatcherTest = TestSimWatcher(app, pages[:])
     page = urllib2.urlopen(pages[0]).read()
-    assert simWatcherTest._findFinalGames(page) == set(["team_59team_33"])
+    assert simWatcherTest._findFinals(page) == finals["old1"]
+    simWatcherTest = TestSimWatcher(app, pages[:])
+    page = urllib2.urlopen(pages[1]).read()
+    assert simWatcherTest._findFinals(page) == finals["old1"]
+    simWatcherTest = TestSimWatcher(app, pages[:])
+    page = urllib2.urlopen(pages[2]).read()
+    assert simWatcherTest._findFinals(page) == finals["old2"]
+    simWatcherTest = TestSimWatcher(app, pages[:])
+    page = urllib2.urlopen(pages[3]).read()
+    assert simWatcherTest._findFinals(page) == finals["new"]
 
     # Test _updateLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "secondary_value": "", "current": pages[
-            0], "date": dates["old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "finals": finals["old1"], "captured": {}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": True, "secondary_value": "", "current": pages[1], "date": dates[
-            "old"], "captured": {files["old"]: pages[1]}, "posted": []}
+        {"value": True, "secondary_value": "", "current": pages[1], "date": dates["old"], "finals": finals["old1"], "captured": {}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": True, "secondary_value": "", "current": pages[2], "date": dates[
-            "old"], "captured": {files["old"]: pages[2]}, "posted": []}
+        {"value": True, "secondary_value": "", "current": pages[2], "date": dates["old"], "finals": finals["old2"], "captured": {files["old"]: pages[2]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": True, "secondary_value": files["old"], "current": pages[3], "date": dates[
-            "new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": []}
+        {"value": True, "secondary_value": files["old"], "current": pages[3], "date": dates["new"], "finals": finals["new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "secondary_value": "", "current": pages[3], "date": dates[
-            "new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[3], "date": dates["new"], "finals": finals["new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": []}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "secondary_value": "", "current": pages[
-            0], "date": dates["old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "finals": finals["old1"], "captured": {}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "secondary_value": "", "current": pages[
-            0], "date": dates["old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "finals": finals["old1"], "captured": {}, "posted": []}
 
     # Test _watchLiveSimInternal method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
     assert simWatcherTest._watchLiveSimInternal() == \
-        {"value": True, "secondary_value": "", "current": pages[3], "date": dates["new"], "captured": {
-            files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"], files["new"]]}
+        {"value": True, "secondary_value": "", "current": pages[3], "date": dates["new"], "finals": finals["new"], "captured": {files["old"]: pages[2], files["new"]: pages[3]}, "posted": [files["old"], files["new"]]}
 
     # Test _watchLiveSimInternal method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._watchLiveSimInternal() == \
-        {"value": False, "secondary_value": "", "current": pages[
-            0], "date": dates["old"], "captured": {}, "posted": []}
+        {"value": False, "secondary_value": "", "current": pages[0], "date": dates["old"], "finals": finals["old1"], "captured": {}, "posted": []}
 
     # Test _watchLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
