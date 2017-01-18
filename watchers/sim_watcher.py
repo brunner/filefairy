@@ -128,6 +128,14 @@ class SimWatcher(QWebView):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
     return match[0].replace("/", "").strip() if len(match) else ""
 
+  def _findFinalGames(self, page):
+    boxes = re.findall(r"<td class=\"(?:[^\"]+)\">FINAL(.*?)</tbody>", page, re.DOTALL)
+    games = set()
+    for box in boxes:
+      games.add("".join(re.findall(r"league/OBL/reports/news/html/teams/([^\.]+)\.", box)))
+
+    return games
+
   def _getPage(self, url):
     return urllib2.urlopen(url).read()
 
@@ -279,6 +287,11 @@ if __name__ == "__main__":
     assert simWatcherTest._findSimDate(page) == dates["old"]
     page = urllib2.urlopen(pages[3]).read()
     assert simWatcherTest._findSimDate(page) == dates["new"]
+
+    # Test _findFinalGames method.
+    simWatcherTest = TestSimWatcher(app, pages[:])
+    page = urllib2.urlopen(pages[0]).read()
+    assert simWatcherTest._findFinalGames(page) == set(["team_59team_33"])
 
     # Test _updateLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
