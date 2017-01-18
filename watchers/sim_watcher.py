@@ -138,14 +138,8 @@ class SimWatcher(QWebView):
         r"<td class=\"(?:[^\"]+)\">FINAL(.*?)</tbody>", page, re.DOTALL)
     games = set()
     for box in boxes:
-      games.add(value=self.exportWatcher.watchTeamExports()
-                if not value:
-                return
-
-                value=self.simWatcher._watchLiveSim()
-                if not value:
-                return
-                "".join(re.findall(r"league/OBL/reports/news/html/teams/([^\.]+)\.", box)))
+      games.add(
+          "".join(re.findall(r"league/OBL/reports/news/html/teams/([^\.]+)\.", box)))
 
     return games
 
@@ -209,7 +203,7 @@ class ThreadedPostScreenshot(threading.Thread):
     token = "token={0}".format(tokens.filefairy)
     url = "https://slack.com/api/files.upload"
     with open(os.devnull, "wb") as f:
-      subprocess.call(["curl", "-F", fi, "-F", "channels=#general",
+      subprocess.call(["curl", "-F", fi, "-F", "channels=#random",
                        "-F", token, url], stderr=f, stdout=f)
     subprocess.call(["rm", self.queued])
 
@@ -338,44 +332,44 @@ if __name__ == "__main__":
          "posted": []}
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "secondary_value": "", "current": pages[2],
-        "date": dates["old"], "finals": finals["old2"],
-        "captured": {files["old"]: pages[2]}, "posted": []}
+         "date": dates["old"], "finals": finals["old2"],
+         "captured": {files["old"]: pages[2]}, "posted": []}
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "secondary_value": files["old"], "current": pages[3],
-        "date": dates["new"], "finals": finals["new"],
-        "captured": {files["old"]: pages[2], files["new"]: pages[3]},
-        "posted": []}
+         "date": dates["new"], "finals": finals["new"],
+         "captured": {files["old"]: pages[2], files["new"]: pages[3]},
+         "posted": []}
     assert simWatcherTest._updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": pages[3],
-        "date": dates["new"], "finals": finals["new"],
-        "captured": {files["old"]: pages[2], files["new"]: pages[3]},
-        "posted": []}
+         "date": dates["new"], "finals": finals["new"],
+         "captured": {files["old"]: pages[2], files["new"]: pages[3]},
+         "posted": []}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": pages[0],
-        "date": dates["old"], "finals": finals["old1"], "captured": {},
-        "posted": []}
+         "date": dates["old"], "finals": finals["old1"], "captured": {},
+         "posted": []}
     assert simWatcherTest._updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": pages[0],
-        "date": dates["old"], "finals": finals["old1"], "captured": {},
-        "posted": []}
+         "date": dates["old"], "finals": finals["old1"], "captured": {},
+         "posted": []}
 
     # Test _watchLiveSimInternal method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
     assert simWatcherTest._watchLiveSimInternal() == \
         {"value": True, "secondary_value": "", "current": pages[3],
-        "date": dates["new"], "finals": finals["new"],
-        "captured": {files["old"]: pages[2], files["new"]: pages[3]},
-        "posted": [files["old"], files["new"]]}
+         "date": dates["new"], "finals": finals["new"],
+         "captured": {files["old"]: pages[2], files["new"]: pages[3]},
+         "posted": [files["old"], files["new"]]}
 
     # Test _watchLiveSimInternal method for unchanged case.
     simWatcherTest = TestSimWatcher(app, pages[:1])
     assert simWatcherTest._watchLiveSimInternal() == \
         {"value": False, "secondary_value": "", "current": pages[0],
-        "date": dates["old"], "finals": finals["old1"], "captured": {},
-        "posted": []}
+         "date": dates["old"], "finals": finals["old1"], "captured": {},
+         "posted": []}
 
     # Test _watchLiveSim method for changed case.
     simWatcherTest = TestSimWatcher(app, pages[:])
