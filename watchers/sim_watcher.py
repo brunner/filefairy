@@ -134,12 +134,10 @@ class SimWatcher(QWebView):
     return match[0].replace("/", "").strip() if len(match) else ""
 
   def _findFinals(self, page):
-    boxes = re.findall(
-        r"<td class=\"(?:[^\"]+)\">FINAL(.*?)</tbody>", page, re.DOTALL)
+    boxes = re.findall(r"FINAL</td>(.*?)</table>", page, re.DOTALL)
     games = set()
     for box in boxes:
-      games.add(
-          "".join(re.findall(r"league/OBL/reports/news/html/teams/([^\.]+)\.", box)))
+      games.add("".join(re.findall(r"teams/team_([^\.]+)\.html", box)))
 
     return games
 
@@ -279,13 +277,11 @@ if __name__ == "__main__":
         "new": "simwatcher_09092018.png",
     }
     finals = {
-        "old1": set(["team_59team_33"]),
-        "old2": set(["team_59team_33", "team_53team_45"]),
-        "new": set(["team_50team_35", "team_49team_52", "team_43team_57",
-                    "team_36team_37", "team_33team_48", "team_39team_55",
-                    "team_46team_45", "team_42team_54", "team_58team_47",
-                    "team_44team_59", "team_60team_32", "team_34team_56",
-                    "team_53team_31", "team_40team_38", "team_41team_51"]),
+        "old1": set(["5933"]),
+        "old2": set(["5933", "5345"]),
+        "new": set(["3348", "4151", "3456", "3637", "5035",
+                    "4254", "3955", "4645", "5847", "4038",
+                    "4952", "6032", "4459", "4357"]),
     }
 
     app = QApplication(sys.argv)
