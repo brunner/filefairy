@@ -131,7 +131,6 @@ class ExportWatcher(object):
     fields = {"text": message, "token": tokens.filefairy, "channel": "general",
               "link_names": "brunnerj,everyone", "as_user": "true"}
     full = "{0}?{1}".format(url, urllib.urlencode(fields))
-    print full
     urllib2.urlopen(full)
 
   def getUrl(self):
