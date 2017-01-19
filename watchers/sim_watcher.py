@@ -203,7 +203,7 @@ class ThreadedPostScreenshot(threading.Thread):
     token = "token={0}".format(tokens.filefairy)
     url = "https://slack.com/api/files.upload"
     with open(os.devnull, "wb") as f:
-      subprocess.call(["curl", "-F", fi, "-F", "channels=#random",
+      subprocess.call(["curl", "-F", fi, "-F", "channels=#general",
                        "-F", token, url], stderr=f, stdout=f)
     subprocess.call(["rm", self.queued])
 
