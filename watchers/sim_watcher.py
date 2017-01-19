@@ -5,10 +5,10 @@ import datetime
 import os
 import re
 import subprocess
+import slack
 import sys
 import threading
 import time
-import tokens
 import urllib2
 
 from PyQt4.QtCore import *
@@ -84,12 +84,12 @@ class SimWatcher(QWebView):
 
       if self._checkAlert(alert):
         if queued:
-          self._postScreenshot(queued)
+          self._uploadToSlack(queued)
         elapsed = 0
         found = True
         posted = False
       elif found and not posted and elapsed > post:
-        self._postScreenshot(self._getFile(self._date))
+        self._uploadToSlack(self._getFile(self._date))
         posted = True
 
       time.sleep(sleep)
@@ -182,30 +182,25 @@ class SimWatcher(QWebView):
     """Returns the secondary value of the alert."""
     return alert["secondary_value"]
 
-  def _postScreenshot(self, queued):
+  def _uploadToSlack(self, queued):
     """Posts the queued photo to the Slack team, from a background thread."""
-    t = ThreadedPostScreenshot(queued)
+    t = ThreadedUpload(queued)
     self._threads.append(t)
     t.start()
 
 
-class ThreadedPostScreenshot(threading.Thread):
+class ThreadedUpload(threading.Thread):
   """Posts a queued photo to the Slack team from a background thread."""
 
-  def __init__(self, queued):
-    """Stores a reference to the queued photo file."""
-    self.queued = queued
+  def __init__(self, filename):
+    """Stores a filename to be uploaded."""
+    self.filename = filename
 
     threading.Thread.__init__(self)
 
   def run(self):
-    fi = "file=@{0}".format(self.queued)
-    token = "token={0}".format(tokens.filefairy)
-    url = "https://slack.com/api/files.upload"
-    with open(os.devnull, "wb") as f:
-      subprocess.call(["curl", "-F", fi, "-F", "channels=#general",
-                       "-F", token, url], stderr=f, stdout=f)
-    subprocess.call(["rm", self.queued])
+    slack.upload(self.filename)
+    subprocess.call(["rm", self.filename])
 
 
 class TestSimWatcher(SimWatcher):
@@ -229,6 +224,7 @@ class TestSimWatcher(SimWatcher):
   def capture(self, url, output_file):
     """Stores the captured file and url for asserting."""
     self._captured[output_file] = url
+    super(TestSimWatcher, self).capture(url, output_file)
 
   def _getUrl(self):
     """Returns the next test sim page."""
@@ -255,9 +251,10 @@ class TestSimWatcher(SimWatcher):
         "posted": self._posted,
     }
 
-  def _postScreenshot(self, queued):
+  def _uploadToSlack(self, queued):
     """Stores the queued photo for asserting."""
     self._posted.append(queued)
+    super(TestSimWatcher, self)._uploadToSlack(queued)
 
 
 if __name__ == "__main__":

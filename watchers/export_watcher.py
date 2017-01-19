@@ -2,11 +2,10 @@
 
 import argparse
 import datetime
+import slack
 import os
 import re
 import time
-import tokens
-import urllib
 import urllib2
 
 
@@ -55,13 +54,13 @@ class ExportWatcher(object):
 
     while elapsed < timeout:
       if self.checkAlert(self.updateTeamExports()):
-        self.postMessage(teamexportdetected)
+        self.postToSlack(teamexportdetected)
         return self.sendAlert(teamexportdetected, True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    self.postMessage(teamexporttimeout)
+    self.postToSlack(teamexporttimeout)
     return self.sendAlert(teamexporttimeout, False)
 
   def watchLeagueFileInternal(self):
@@ -76,13 +75,13 @@ class ExportWatcher(object):
 
     while elapsed < timeout:
       if self.checkAlert(self.updateLeagueFile()):
-        self.postMessage(leaguefiledetected)
+        self.postToSlack(leaguefiledetected)
         return self.sendAlert(leaguefiledetected, True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    self.postMessage(leaguefiletimeout)
+    self.postToSlack(leaguefiletimeout)
     return self.sendAlert(leaguefiletimeout, False)
 
   def updateTeamExports(self, url=""):
@@ -125,13 +124,9 @@ class ExportWatcher(object):
     match = re.findall(r"League File Updated: ([^<]+)<", page)
     return match[0] if len(match) else ""
 
-  def postMessage(self, message):
-    """Posts a message to the Slack team."""
-    url = "https://slack.com/api/chat.postMessage"
-    fields = {"text": message, "token": tokens.filefairy, "channel": "general",
-              "link_names": "brunnerj,everyone", "as_user": "true"}
-    full = "{0}?{1}".format(url, urllib.urlencode(fields))
-    urllib2.urlopen(full)
+  def postToSlack(self, message):
+    """Posts the message to the Slack team."""
+    slack.postMessage(message)
 
   def getUrl(self):
     """Returns the exports page url that should be checked for date changes."""
@@ -184,7 +179,7 @@ class ExportWatcherTest(ExportWatcher):
     self.updateTeamExports(self.current)
     self.updateLeagueFile(self.current)
 
-  def postMessage(self, message):
+  def postToSlack(self, message):
     self.posted.append(message)
 
   def getUrl(self):
