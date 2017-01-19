@@ -200,7 +200,7 @@ class ThreadedUpload(threading.Thread):
 
   def run(self):
     slack.upload(self.filename)
-    subprocess.call(["rm", self.filename])
+    # subprocess.call(["rm", self.filename])
 
 
 class TestSimWatcher(SimWatcher):
