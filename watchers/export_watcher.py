@@ -9,10 +9,10 @@ import time
 import urllib2
 
 
-teamexportdetected = "Team export date change detected! The sim is starting."
-teamexporttimeout = "Timeout. Team export date change not detected. cc: @brunnerj"
-leaguefiledetected = "League file date change detected! cc: @everyone"
-leaguefiletimeout = "Timeout. League file date change not detected. cc: @brunnerj"
+teamexportdetected = "Team export date change detected!"
+teamexporttimeout = "Timeout. Team export date change not detected."
+leaguefiledetected = "League file date change detected!"
+leaguefiletimeout = "Timeout. League file date change not detected."
 
 
 class ExportWatcher(object):
@@ -150,7 +150,7 @@ class ExportWatcher(object):
     checks. The second value is the amount of time after which the watcher can
     stop checking the page for changes."""
     return [
-        300,    # 5 minutes
+        120,    # 2 minutes
         18000,  # 5 hours
     ]
 
