@@ -25,6 +25,7 @@ def upload(filename):
   with open(os.devnull, "wb") as f:
     subprocess.call(["curl", "-F", fi, "-F", "channels=#testing",
                      "-F", token, url], stderr=f, stdout=f)
+  # subprocess.call(["rm", self.filename])
 
 icons = {
   "ATL": ":braves:",
