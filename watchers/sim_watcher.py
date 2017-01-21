@@ -215,42 +215,27 @@ class SimWatcher(QWebView):
 
   def _uploadToSlack(self, queued):
     """Posts the queued photo to the Slack team, from a background thread."""
-    t = ThreadedUpload(queued)
+    t = SimWatcherThread(slack.upload, queued)
     self._threads.append(t)
     t.start()
 
   def _postMessageToSlack(self, message):
     """Posts the message to the Slack team, from a background thread."""
-    t = ThreadedPostMessage(message)
+    t = SimWatcherThread(slack.postMessage, message)
     self._threads.append(t)
     t.start()
 
 
-class ThreadedUpload(threading.Thread):
-  """Posts a queued photo to the Slack team from a background thread."""
+class SimWatcherThread(threading.Thread):
+  """Calls a method from a background thread."""
 
-  def __init__(self, filename):
-    """Stores a filename to be uploaded."""
-    self.filename = filename
-
+  def __init__(self, method, *args):
+    self.method = method
+    self.args = args
     threading.Thread.__init__(self)
 
   def run(self):
-    slack.upload(self.filename)
-    # subprocess.call(["rm", self.filename])
-
-
-class ThreadedPostMessage(threading.Thread):
-  """Posts a text message to the Slack team from a background thread."""
-
-  def __init__(self, message):
-    """Stores a message to be posted."""
-    self.message = message
-
-    threading.Thread.__init__(self)
-
-  def run(self):
-    slack.postMessage(self.message)
+    self.method.__call__(*self.args)
 
 
 class SimWatcherTest(SimWatcher):
