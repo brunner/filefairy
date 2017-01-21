@@ -167,10 +167,10 @@ class ExportWatcher(object):
 class ExportWatcherTest(ExportWatcher):
   """Tests for ExportWatcher."""
 
-  def __init__(self, pages, teams):
-    """Stores a few test export pages and teams."""
-    self.pages = pages
-    self.current = self.pages[0]
+  def __init__(self, urls, teams):
+    """Stores a few test export urls and teams."""
+    self.urls = urls
+    self.current = self.urls[0]
     self.posted = []
 
     self.teams = teams
@@ -184,10 +184,10 @@ class ExportWatcherTest(ExportWatcher):
 
   def getUrl(self):
     """Returns the next test export page."""
-    if len(self.pages) > 1:
-      self.current = self.pages.pop(0)
+    if len(self.urls) > 1:
+      self.current = self.urls.pop(0)
     else:
-      self.current = self.pages[0]
+      self.current = self.urls[0]
 
     return self.current
 
@@ -221,6 +221,14 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   if args.test:
+    # Real data.
+    url = "http://orangeandblueleaguebaseball.com/StatsLab/exports.php"
+    page = urllib2.urlopen(url).read()
+    exportWatcherTest = ExportWatcherTest([url], ["Twins"])
+    assert exportWatcherTest.findTeamExport(page, "Twins") != ""
+    assert exportWatcherTest.findLeagueFile(page) != ""
+
+    # Test data.
     path = "http://brunnerj.com/orangeandblueleague/"
     files = [
         "export_01142017_1.html",         # 0. Initial exports page.
@@ -228,7 +236,7 @@ if __name__ == "__main__":
         "export_01142017_3.html",         # 2. Twins export date has changed.
         "export_01172017_1.html",         # 3. League file date has changed.
     ]
-    pages = [os.path.join(path, fi) for fi in files]
+    urls = [os.path.join(path, fi) for fi in files]
     twins = {
         "old": "Saturday January 14, 2017 08:35:12 EST",
         "new": "Saturday January 14, 2017 22:15:32 EST",
@@ -239,128 +247,128 @@ if __name__ == "__main__":
     }
 
     # Test findTeamExport method.
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
-    page = urllib2.urlopen(pages[0]).read()
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
+    page = urllib2.urlopen(urls[0]).read()
     assert exportWatcherTest.findTeamExport(page, "Twins") == twins["old"]
-    page = urllib2.urlopen(pages[1]).read()
+    page = urllib2.urlopen(urls[1]).read()
     assert exportWatcherTest.findTeamExport(page, "Twins") == twins["old"]
-    page = urllib2.urlopen(pages[2]).read()
+    page = urllib2.urlopen(urls[2]).read()
     assert exportWatcherTest.findTeamExport(page, "Twins") == twins["new"]
-    page = urllib2.urlopen(pages[3]).read()
+    page = urllib2.urlopen(urls[3]).read()
     assert exportWatcherTest.findTeamExport(page, "Twins") == twins["new"]
 
     # Test findLeagueFile method
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
-    page = urllib2.urlopen(pages[0]).read()
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
+    page = urllib2.urlopen(urls[0]).read()
     assert exportWatcherTest.findLeagueFile(page) == league["old"]
-    page = urllib2.urlopen(pages[1]).read()
+    page = urllib2.urlopen(urls[1]).read()
     assert exportWatcherTest.findLeagueFile(page) == league["old"]
-    page = urllib2.urlopen(pages[2]).read()
+    page = urllib2.urlopen(urls[2]).read()
     assert exportWatcherTest.findLeagueFile(page) == league["old"]
-    page = urllib2.urlopen(pages[3]).read()
+    page = urllib2.urlopen(urls[3]).read()
     assert exportWatcherTest.findLeagueFile(page) == league["new"]
 
     # Test updateTeamExports method for changed case.
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": False, "current": pages[0], "exports": {
+        {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": False, "current": pages[1], "exports": {
+        {"value": False, "current": urls[1], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": True, "current": pages[2], "exports": {
+        {"value": True, "current": urls[2], "exports": {
             "Twins": twins["new"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": False, "current": pages[3], "exports": {
+        {"value": False, "current": urls[3], "exports": {
             "Twins": twins["new"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": False, "current": pages[3], "exports": {
+        {"value": False, "current": urls[3], "exports": {
             "Twins": twins["new"]}, "file": league["old"], "posted": []}
 
     # Test updateTeamExports method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(pages[:2], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"])
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": False, "current": pages[0], "exports": {
+        {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": False, "current": pages[1], "exports": {
+        {"value": False, "current": urls[1], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateTeamExports() == \
-        {"value": False, "current": pages[1], "exports": {
+        {"value": False, "current": urls[1], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
 
     # Test updateLeagueFile method for changed case.
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[0], "exports": {
+        {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[1], "exports": {
+        {"value": False, "current": urls[1], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[2], "exports": {
+        {"value": False, "current": urls[2], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": True, "current": pages[3], "exports": {
+        {"value": True, "current": urls[3], "exports": {
             "Twins": twins["old"]}, "file": league["new"], "posted": []}
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[3], "exports": {
+        {"value": False, "current": urls[3], "exports": {
             "Twins": twins["old"]}, "file": league["new"], "posted": []}
 
     # Test updateLeagueFile method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(pages[:3], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"])
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[0], "exports": {
+        {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[1], "exports": {
+        {"value": False, "current": urls[1], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[2], "exports": {
+        {"value": False, "current": urls[2], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
     assert exportWatcherTest.updateLeagueFile() == \
-        {"value": False, "current": pages[2], "exports": {
+        {"value": False, "current": urls[2], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
 
     # Test watchTeamExportsInternal method for changed case.
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchTeamExportsInternal() == \
-        {"value": True, "current": pages[2], "exports": {"Twins": twins[
+        {"value": True, "current": urls[2], "exports": {"Twins": twins[
             "new"]}, "file": league["old"], "posted": [teamexportdetected]}
 
     # Test watchTeamExportsInternal method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(pages[:2], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"])
     assert exportWatcherTest.watchTeamExportsInternal() == \
-        {"value": False, "current": pages[1], "exports": {"Twins": twins[
+        {"value": False, "current": urls[1], "exports": {"Twins": twins[
             "old"]}, "file": league["old"], "posted": [teamexporttimeout]}
 
     # Test watchLeagueFileInternal method for changed case.
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchLeagueFileInternal() == \
-        {"value": True, "current": pages[3], "exports": {"Twins": twins[
+        {"value": True, "current": urls[3], "exports": {"Twins": twins[
             "old"]}, "file": league["new"], "posted": [leaguefiledetected]}
 
     # Test watchLeagueFileInternal method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(pages[:3], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"])
     assert exportWatcherTest.watchLeagueFileInternal() == \
-        {"value": False, "current": pages[2], "exports": {"Twins": twins[
+        {"value": False, "current": urls[2], "exports": {"Twins": twins[
             "old"]}, "file": league["old"], "posted": [leaguefiletimeout]}
 
     # Test watchTeamExports method for changed case.
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchTeamExports() == True
 
     # Test watchTeamExports method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(pages[:2], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"])
     assert exportWatcherTest.watchTeamExports() == False
 
     # Test watchLeagueFile method for changed case.
-    exportWatcherTest = ExportWatcherTest(pages[:], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchLeagueFile() == True
 
     # Test watchLeagueFile method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(pages[:3], ["Twins"])
+    exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"])
     assert exportWatcherTest.watchLeagueFile() == False
 
     print "Passed."
