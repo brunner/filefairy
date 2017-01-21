@@ -54,13 +54,11 @@ class ExportWatcher(object):
 
     while elapsed < timeout:
       if self.checkAlert(self.updateTeamExports()):
-        self.postToSlack(teamexportdetected)
         return self.sendAlert(teamexportdetected, True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    self.postToSlack(teamexporttimeout)
     return self.sendAlert(teamexporttimeout, False)
 
   def watchLeagueFileInternal(self):
@@ -75,13 +73,12 @@ class ExportWatcher(object):
 
     while elapsed < timeout:
       if self.checkAlert(self.updateLeagueFile()):
-        self.postToSlack(leaguefiledetected)
+        self.postToSlack(self.getLeagueFileMessage())
         return self.sendAlert(leaguefiledetected, True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    self.postToSlack(leaguefiletimeout)
     return self.sendAlert(leaguefiletimeout, False)
 
   def updateTeamExports(self, url=""):
@@ -126,7 +123,7 @@ class ExportWatcher(object):
 
   def postToSlack(self, message):
     """Posts the message to the Slack team."""
-    slack.postMessage(message)
+    slack.postMessage(message, "general")
 
   def getUrl(self):
     """Returns the exports page url that should be checked for date changes."""
@@ -150,9 +147,13 @@ class ExportWatcher(object):
     checks. The second value is the amount of time after which the watcher can
     stop checking the page for changes."""
     return [
-        120,    # 2 minutes
+        60,     # 1 minute
         28800,  # 8 hours
     ]
+
+  def getLeagueFileMessage(self):
+    """Returns the text to be posted when the file date is updated."""
+    return "@everyone: File's up!"
 
   def sendAlert(self, message, value):
     """Returns the specified value."""
@@ -167,11 +168,14 @@ class ExportWatcher(object):
 class ExportWatcherTest(ExportWatcher):
   """Tests for ExportWatcher."""
 
-  def __init__(self, urls, teams):
-    """Stores a few test export urls and teams."""
+  def __init__(self, urls, teams, testing=False):
+    """Stores a few test export urls and teams.
+
+    Pass testing=True to interface with the testing Slack channel."""
     self.urls = urls
     self.current = self.urls[0]
     self.posted = []
+    self.testing = testing
 
     self.teams = teams
     self.exports, self.file = {}, ""
@@ -181,6 +185,8 @@ class ExportWatcherTest(ExportWatcher):
 
   def postToSlack(self, message):
     self.posted.append(message)
+    if self.testing:
+      slack.postMessage(message, "testing")
 
   def getUrl(self):
     """Returns the next test export page."""
@@ -198,6 +204,10 @@ class ExportWatcherTest(ExportWatcher):
   def getWatchLeagueFileValues(self):
     """Returns a pair of test values, in seconds."""
     return [1, 4]
+
+  def getLeagueFileMessage(self):
+    """Returns the text to be posted when the file date is updated."""
+    return "File's up!"
 
   def sendAlert(self, message, value):
     """Returns an easily assertable value."""
@@ -335,25 +345,25 @@ if __name__ == "__main__":
     exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": True, "current": urls[2], "exports": {"Twins": twins[
-            "new"]}, "file": league["old"], "posted": [teamexportdetected]}
+            "new"]}, "file": league["old"], "posted": []}
 
     # Test watchTeamExportsInternal method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"])
     assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": False, "current": urls[1], "exports": {"Twins": twins[
-            "old"]}, "file": league["old"], "posted": [teamexporttimeout]}
+            "old"]}, "file": league["old"], "posted": []}
 
     # Test watchLeagueFileInternal method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": True, "current": urls[3], "exports": {"Twins": twins[
-            "old"]}, "file": league["new"], "posted": [leaguefiledetected]}
+            "old"]}, "file": league["new"], "posted": ["File's up!"]}
 
     # Test watchLeagueFileInternal method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"])
     assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": False, "current": urls[2], "exports": {"Twins": twins[
-            "old"]}, "file": league["old"], "posted": [leaguefiletimeout]}
+            "old"]}, "file": league["old"], "posted": []}
 
     # Test watchTeamExports method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])

@@ -234,13 +234,13 @@ class SimWatcher(QWebView):
 
   def _uploadToSlack(self, queued):
     """Posts the queued photo to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.upload, queued)
+    t = SimWatcherThread(slack.upload, queued, "testing")
     self._threads.append(t)
     t.start()
 
   def _postMessageToSlack(self, message):
     """Posts the message to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.postMessage, message)
+    t = SimWatcherThread(slack.postMessage, message, "live-sim-discussion")
     self._threads.append(t)
     t.start()
 
@@ -260,12 +260,15 @@ class SimWatcherThread(threading.Thread):
 class SimWatcherTest(SimWatcher):
   """Tests for SimWatcher."""
 
-  def __init__(self, app, urls):
-    """Stores a few test sim urls."""
+  def __init__(self, app, urls, testing=False):
+    """Stores a few test sim urls.
+
+    Pass testing=True to interface with the testing Slack channel."""
     self._urls = urls
     self._current = self._urls[0]
     self._captured = {}
     self._posted = []
+    self._testing = testing
 
     self._page = self._getPage(self._current)
     self._date = self._findDate(self._page)
@@ -280,6 +283,8 @@ class SimWatcherTest(SimWatcher):
   def capture(self, url, output_file):
     """Stores the captured file and url for asserting."""
     self._captured[output_file] = url
+    if self._testing:
+      super(SimWatcherTest, self).capture(url, output_file)
 
   def _getUrl(self):
     """Returns the next test sim page."""
@@ -309,10 +314,14 @@ class SimWatcherTest(SimWatcher):
   def _uploadToSlack(self, queued):
     """Stores the queued photo for asserting."""
     self._posted.append(queued)
+    if self._testing:
+      slack.upload(queued, "testing")
 
   def _postMessageToSlack(self, message):
     """Stores the message for asserting."""
     self._posted.append(message)
+    if self._testing:
+      slack.postMessage(message, "testing")
 
 
 if __name__ == "__main__":
