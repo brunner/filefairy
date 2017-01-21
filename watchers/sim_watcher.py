@@ -170,7 +170,10 @@ class SimWatcher(QWebView):
       time = "Bot {0}".format(filter(str.isdigit, inning[1]))
 
     score = " ".join([j for i in zip(teams, runs) for j in i])
-    return "{0}: {1}. {2}".format(time, score, summary)
+    formatted = "{0}: {1}. {2}".format(time, score, summary)
+
+    pattern = re.compile("|".join(slack.icons.keys()))
+    return pattern.sub(lambda x: slack.icons[x.group()], formatted)
 
   def _getPage(self, url):
     return urllib2.urlopen(url).read()
@@ -347,8 +350,8 @@ if __name__ == "__main__":
                     "4952", "6032", "4459", "4357"]),
     }
     updates = {
-        "old1": "Top 4: PIT 10 SF 0. PIT: C.J. Hinojosa hits a 3-run HR.",
-        "old2": "Bot 5: PIT 10 SF 2. SF: David Olmedo-Barrera hits a 2-run HR.",
+        "old1": "Top 4: :pirates: 10 :giants: 0. :pirates:: C.J. Hinojosa hits a 3-run HR.",
+        "old2": "Bot 5: :pirates: 10 :giants: 2. :giants:: David Olmedo-Barrera hits a 2-run HR.",
     }
 
     # Test _findDate method.
