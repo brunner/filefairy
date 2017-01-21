@@ -116,6 +116,7 @@ class SimWatcher(QWebView):
 
     if date != self._date:
       self._started = False
+      self._updates = []
       queued = self._getFile(self._date)
 
       if finals:
@@ -130,7 +131,7 @@ class SimWatcher(QWebView):
       for update in updates:
         if update not in self._updates:
           self._postMessageToSlack(update)
-      self._updates = updates
+          self._updates.append(update)
 
       if finals != self._finals:
         self.capture(url, self._getFile(date))
