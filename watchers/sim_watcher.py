@@ -141,6 +141,38 @@ class SimWatcher(QWebView):
 
     return games
 
+  def _findUpdates(self, page):
+    match = re.findall(r"SCORING UPDATES(.*?)</table>", page, re.DOTALL)
+    box = match[0] if len(match) == 1 else ""
+
+    rows = re.findall(r"<tr>(.*?)</tr>", box, re.DOTALL)
+    updates = []
+    for row in rows:
+      cols = re.findall(r"<td(.*?)</td>", row, re.DOTALL)
+      if len(cols) == 5:
+        teams = re.findall(r"teams/team_(?:\d+)\.html\">([^<]+)<", cols[1])
+        runs = re.findall(r"<div(?:[^>]+)>([^<]+)<", cols[2])
+        inning = re.findall(r"<div(?:[^>]+)>([^<]+)<", cols[3])
+        chunks = cols[4].split(">")
+        summary = chunks[1] if len(chunks) > 1 else ""
+        updates.append(self._formatUpdates(teams, runs, inning, summary))
+
+    return updates
+
+  def _formatUpdates(self, teams, runs, inning, summary):
+    if len(teams) != 2 or len(runs) != 2 or len(inning) != 2:
+      self._sendAlert("Failed to format {0} teams, {1} runs, {2} inning.".format(
+          len(teams), len(runs), len(innings)), False)
+      return ""
+
+    if inning[1] == "&nbsp;":
+      time = "Top {0}".format(filter(str.isdigit, inning[0]))
+    else:
+      time = "Bot {0}".format(filter(str.isdigit, inning[1]))
+
+    score = " ".join([j for i in zip(teams, runs) for j in i])
+    return "{0}: {1}. {2}".format(time, score, summary)
+
   def _getPage(self, url):
     return urllib2.urlopen(url).read()
 
@@ -293,6 +325,10 @@ if __name__ == "__main__":
                     "4254", "3955", "4645", "5847", "4038",
                     "4952", "6032", "4459", "4357"]),
     }
+    updates = {
+        "old1": "Top 4: PIT 10 SF 0. PIT: C.J. Hinojosa hits a 3-run HR.",
+        "old2": "Bot 5: PIT 10 SF 2. SF: David Olmedo-Barrera hits a 2-run HR.",
+    }
 
     # Test _findDate method.
     simWatcherTest = SimWatcherTest(app, urls[:])
@@ -318,6 +354,17 @@ if __name__ == "__main__":
     simWatcherTest = SimWatcherTest(app, urls[:])
     page = urllib2.urlopen(urls[3]).read()
     assert simWatcherTest._findFinals(page) == finals["new"]
+
+    # Test _findUpdates method.
+    simWatcherTest = SimWatcherTest(app, urls[:])
+    page = urllib2.urlopen(urls[0]).read()
+    assert simWatcherTest._findUpdates(page) == [updates["old1"]]
+    page = urllib2.urlopen(urls[1]).read()
+    assert simWatcherTest._findUpdates(page) == []
+    page = urllib2.urlopen(urls[2]).read()
+    assert simWatcherTest._findUpdates(page) == [updates["old2"]]
+    page = urllib2.urlopen(urls[3]).read()
+    assert simWatcherTest._findUpdates(page) == []
 
     # Test _updateLiveSim method for changed case.
     simWatcherTest = SimWatcherTest(app, urls[:])
