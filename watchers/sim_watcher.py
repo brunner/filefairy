@@ -121,6 +121,10 @@ class SimWatcher(QWebView):
       queued = self._getFile(self._date)
 
     if changed:
+      updates = self._findUpdates(page)
+      for update in updates:
+        self._postMessageToSlack(update)
+
       if finals != self._finals:
         self.capture(url, self._getFile(date))
         self._finals = finals
@@ -218,6 +222,12 @@ class SimWatcher(QWebView):
     self._threads.append(t)
     t.start()
 
+  def _postMessageToSlack(self, message):
+    """Posts the message to the Slack team, from a background thread."""
+    t = ThreadedPostMessage(message)
+    self._threads.append(t)
+    t.start()
+
 
 class ThreadedUpload(threading.Thread):
   """Posts a queued photo to the Slack team from a background thread."""
@@ -231,6 +241,19 @@ class ThreadedUpload(threading.Thread):
   def run(self):
     slack.upload(self.filename)
     # subprocess.call(["rm", self.filename])
+
+
+class ThreadedPostMessage(threading.Thread):
+  """Posts a text message to the Slack team from a background thread."""
+
+  def __init__(self, message):
+    """Stores a message to be posted."""
+    self.message = message
+
+    threading.Thread.__init__(self)
+
+  def run(self):
+    slack.postMessage(self.message)
 
 
 class SimWatcherTest(SimWatcher):
@@ -283,6 +306,10 @@ class SimWatcherTest(SimWatcher):
   def _uploadToSlack(self, queued):
     """Stores the queued photo for asserting."""
     self._posted.append(queued)
+
+  def _postMessageToSlack(self, message):
+    """Stores the message for asserting."""
+    self._posted.append(message)
 
 
 if __name__ == "__main__":
@@ -379,17 +406,17 @@ if __name__ == "__main__":
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "secondary_value": "", "current": urls[2],
          "date": dates["old"], "finals": finals["old2"],
-         "captured": {files["old"]: urls[2]}, "posted": []}
+         "captured": {files["old"]: urls[2]}, "posted": [updates["old2"]]}
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "secondary_value": files["old"], "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": []}
+         "posted": [updates["old2"]]}
     assert simWatcherTest._updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": []}
+         "posted": [updates["old2"]]}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
@@ -408,7 +435,7 @@ if __name__ == "__main__":
         {"value": True, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [files["old"], files["new"]]}
+         "posted": [updates["old2"], files["old"], files["new"]]}
 
     # Test _watchLiveSimInternal method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
