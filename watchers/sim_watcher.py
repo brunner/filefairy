@@ -25,6 +25,7 @@ class SimWatcher(QWebView):
     self._date = self._findDate(self._page)
     self._finals = self._findFinals(self._page)
     self._updates = self._findUpdates(self._page)
+    self._started = False
     self._threads = []
 
     self._setUp(app or QApplication(sys.argv))
@@ -75,28 +76,27 @@ class SimWatcher(QWebView):
     """
     sleep, done, timeout = self._getWatchLiveSimValues()
     elapsed = 0
-    captured = False
-    changed = False
+    started = False
 
-    while (not captured and elapsed < timeout) or (captured and elapsed < done):
+    while (not self._started and elapsed < timeout) or (self._started and elapsed < done):
       alert = self._updateLiveSim()
-      captured = self._checkAlert(alert)
+      updated = self._checkAlert(alert)
       queued = self._checkSecondaryAlert(alert)
 
-      if captured and queued:
-        self._uploadToSlack(queued)
-      if captured:
+      if updated:
         elapsed = 0
-        changed = True
+
+      if queued:
+        self._uploadToSlack(queued)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    if changed:
+    if self._started:
       self._uploadToSlack(self._getFile(self._date))
-      alert = self._sendAlert("Live sim change detected.", changed)
+      alert = self._sendAlert("Live sim change detected.", True)
     else:
-      alert = self._sendAlert("Timeout. Live sim change not detected.", changed)
+      alert = self._sendAlert("Timeout. Live sim change not detected.", False)
 
     for t in self._threads:
       t.join()
@@ -112,13 +112,21 @@ class SimWatcher(QWebView):
     page = self._getPage(url)
     date = self._findDate(page)
     finals = self._findFinals(page)
-    captured = False
+    updated = False
     queued = ""
 
     if date != self._date:
+      self._started = False
       queued = self._getFile(self._date)
 
-    if page != self._page:
+      if finals:
+        self.capture(url, self._getFile(date))
+        self._finals = finals
+        updated = True
+
+    elif page != self._page:
+      updated = True
+
       updates = self._findUpdates(page)
       for update in updates:
         if update not in self._updates:
@@ -128,11 +136,13 @@ class SimWatcher(QWebView):
       if finals != self._finals:
         self.capture(url, self._getFile(date))
         self._finals = finals
-        captured = True
 
-      self._page, self._date = page, date
+    self._page, self._date = page, date
 
-    return self._sendAlert("Updated live sim page.", captured, queued)
+    if updated:
+      self._started = True
+
+    return self._sendAlert("Updated live sim page.", updated, queued)
 
   def _findDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
@@ -176,8 +186,10 @@ class SimWatcher(QWebView):
       time = "Bot {0}".format(filter(str.isdigit, inning[1]))
 
     separator = ":white_small_square:"
-    score = "{0} {1} {2} {3} {4}".format(teams[0], runs[0], separator, teams[1], runs[1])
-    formatted = "> {0} {1} {2}\n> {3}".format(time, separator, score, summary.replace(":", ""))
+    score = "{0} {1} {2} {3} {4}".format(
+        teams[0], runs[0], separator, teams[1], runs[1])
+    formatted = "> {0} {1} {2}\n> {3}".format(
+        time, separator, score, summary.replace(":", ""))
 
     pattern = re.compile("|".join(slack.icons.keys()))
     return pattern.sub(lambda x: slack.icons[x.group()], formatted)
@@ -259,6 +271,7 @@ class SimWatcherTest(SimWatcher):
     self._date = self._findDate(self._page)
     self._finals = self._findFinals(self._page)
     self._updates = self._findUpdates(self._page)
+    self._started = False
     self._threads = []
 
     self._setUp(app)
@@ -394,7 +407,7 @@ if __name__ == "__main__":
          "date": dates["old"], "finals": finals["old1"], "captured": {},
          "posted": []}
     assert simWatcherTest._updateLiveSim() == \
-        {"value": False, "secondary_value": "", "current": urls[1],
+        {"value": True, "secondary_value": "", "current": urls[1],
          "date": dates["old"], "finals": finals["old1"], "captured": {},
          "posted": []}
     assert simWatcherTest._updateLiveSim() == \
