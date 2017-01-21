@@ -205,7 +205,7 @@ class SimWatcher(QWebView):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
         6,      # 6 seconds, to sleep between consecutive page checks.
-        60,     # 1 minute, after which (if the page is currently static but
+        180,    # 3 minutes, after which (if the page is currently static but
                 #     had changed previously) the sim is presumed to be over
                 #     and the last screenshot can be uploaded to Slack.
         18000,  # 5 hours, to wait for an initial page change, before timing
