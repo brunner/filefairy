@@ -68,17 +68,15 @@ class SimWatcher(QWebView):
   def _watchLiveSimInternal(self):
     """Itermittently checks the sim page url for any changes.
 
-    If any changes are found, wait for a certain amount of time to capture any
-    additional changes. If not, abandon watching after a timeout.
+    If any changes are found, wait for a certain amount of time before deciding
+    that the sim is done. If not, abandon watching after a timeout.
     Returns a true alert if any changes were found.
     """
-    sleep, post, timeout = self._getWatchLiveSimValues()
+    sleep, done, timeout = self._getWatchLiveSimValues()
     elapsed = 0
-    previous = 1
     found = False
-    posted = False
 
-    while elapsed < timeout:
+    while (not found and elapsed < timeout) or (found and elapsed < done):
       alert = self._updateLiveSim()
       queued = self._checkSecondaryAlert(alert)
 
@@ -87,15 +85,12 @@ class SimWatcher(QWebView):
           self._uploadToSlack(queued)
         elapsed = 0
         found = True
-        posted = False
-      elif found and not posted and elapsed > post:
-        self._uploadToSlack(self._getFile(self._date))
-        posted = True
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
     if found:
+      self._uploadToSlack(self._getFile(self._date))
       alert = self._sendAlert("Live sim change detected.", True)
     else:
       alert = self._sendAlert("Timeout. Live sim change not detected.", False)
@@ -188,12 +183,11 @@ class SimWatcher(QWebView):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
         6,      # 6 seconds, to sleep between consecutive page checks.
-        120,    # 2 minutes, to wait before posting a screenshot (during which
-                #     the page has stopped changing and the sim is presumed
-                #     to be over).
-        3600,   # 1 hour, to wait before officially timing out (during which
-                #     the page has not changed and the sim is presumed
-                #     to be over).
+        60,     # 1 minute, after which (if the page is currently static but
+                #     had changed previously) the sim is presumed to be over
+                #     and the last screenshot can be uploaded to Slack.
+        18000,  # 5 hours, to wait for an initial page change, before timing
+                #     out and exiting the program.
     ]
 
   def _getFile(self, date):
@@ -289,7 +283,7 @@ class SimWatcherTest(SimWatcher):
 
   def _getWatchLiveSimValues(self):
     """Returns a tuple of test values, in seconds, for the watchLiveSim timer."""
-    return [1, 2, 8]
+    return [1, 2, 3]
 
   def _sendAlert(self, message, value, secondary_value=""):
     """Returns an easily assertable value."""
