@@ -76,7 +76,6 @@ class SimWatcher(QWebView):
     """
     sleep, done, timeout = self._getWatchLiveSimValues()
     elapsed = 0
-    started = False
 
     while (not self._started and elapsed < timeout) or (self._started and elapsed < done):
       alert = self._updateLiveSim()
@@ -181,9 +180,9 @@ class SimWatcher(QWebView):
       return ""
 
     if inning[1] == "&nbsp;":
-      time = "Top {0}".format(filter(str.isdigit, inning[0]))
+      time = ":small_red_triangle: {0}".format(filter(str.isdigit, inning[0]))
     else:
-      time = "Bot {0}".format(filter(str.isdigit, inning[1]))
+      time = ":small_red_triangle_down: {0}".format(filter(str.isdigit, inning[1]))
 
     separator = ":white_small_square:"
     score = "{0} {1} {2} {3} {4}".format(
@@ -356,12 +355,12 @@ if __name__ == "__main__":
                     "4952", "6032", "4459", "4357"]),
     }
     updates = {
-        "old1": "> Top 4 :white_small_square: :pirates: 10 " +
+        "old1": "> :small_red_triangle: 4 :white_small_square: :pirates: 10 " +
                 ":white_small_square: :giants: 0\n> :pirates: C.J. Hinojosa " +
                 "hits a 3-run HR.",
-        "old2": "> Bot 5 :white_small_square: :pirates: 10 " +
-                ":white_small_square: :giants: 2\n> :giants: David " +
-                "Olmedo-Barrera hits a 2-run HR.",
+        "old2": "> :small_red_triangle_down: 5 :white_small_square: " +
+                ":pirates: 10 :white_small_square: :giants: 2\n> :giants: " +
+                "David Olmedo-Barrera hits a 2-run HR.",
     }
 
     # Test _findDate method.
