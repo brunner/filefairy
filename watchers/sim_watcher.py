@@ -114,7 +114,7 @@ class SimWatcher(QWebView):
     updated = False
     queued = ""
 
-    if date != self._date:
+    if date and date != self._date:
       self._started = False
       self._updates = []
       queued = self._getFile(self._date)
