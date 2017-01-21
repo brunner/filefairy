@@ -24,6 +24,7 @@ class SimWatcher(QWebView):
     self._page = self._getPage(self._getUrl())
     self._date = self._findDate(self._page)
     self._finals = self._findFinals(self._page)
+    self._updates = self._findUpdates(self._page)
     self._threads = []
 
     self._setUp(app or QApplication(sys.argv))
@@ -120,7 +121,9 @@ class SimWatcher(QWebView):
     if page != self._page:
       updates = self._findUpdates(page)
       for update in updates:
-        self._postMessageToSlack(update)
+        if update not in self._updates:
+          self._postMessageToSlack(update)
+      self._updates = updates
 
       if finals != self._finals:
         self.capture(url, self._getFile(date))
@@ -255,6 +258,7 @@ class SimWatcherTest(SimWatcher):
     self._page = self._getPage(self._current)
     self._date = self._findDate(self._page)
     self._finals = self._findFinals(self._page)
+    self._updates = self._findUpdates(self._page)
     self._threads = []
 
     self._setUp(app)
