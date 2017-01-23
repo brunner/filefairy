@@ -9,7 +9,7 @@ import time
 import urllib2
 
 
-class Master(object):
+class Scheduler(object):
   """Schedules the export and sim watching."""
 
   def __init__(self):
@@ -29,5 +29,5 @@ class Master(object):
     self.exportWatcher.watchLeagueFile()
 
 if __name__ == "__main__":
-  master = Master()
-  master.start()
+  scheduler = Scheduler()
+  scheduler.start()

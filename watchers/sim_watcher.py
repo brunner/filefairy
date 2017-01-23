@@ -16,7 +16,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 
 
-imagespath = "/home/jbrunner/Documents/Repositories/orangeandblueleague/watchers/images/"
+imagespath = "/home/jbrunner/orangeandblueleague/watchers/images/"
 
 
 class SimWatcher(QWebView):
