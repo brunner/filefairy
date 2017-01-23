@@ -16,6 +16,9 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 
 
+imagespath = "/home/jbrunner/Documents/Repositories/orangeandblueleague/watchers/images/"
+
+
 class SimWatcher(QWebView):
   """Watches the live sim page for any changes."""
 
@@ -47,6 +50,7 @@ class SimWatcher(QWebView):
     painter = QPainter(image)
     frame.render(painter)
     painter.end()
+    os.chdir(imagespath)
     image.save(output_file)
 
   def wait_load(self, delay=0):
@@ -232,9 +236,9 @@ class SimWatcher(QWebView):
     """Returns the secondary value of the alert."""
     return alert["secondary_value"]
 
-  def _uploadToSlack(self, queued):
+  def _uploadToSlack(self, path, queued):
     """Posts the queued photo to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.upload, queued, "testing")
+    t = SimWatcherThread(slack.upload, imagespath, queued, "testing")
     self._threads.append(t)
     t.start()
 
@@ -315,7 +319,7 @@ class SimWatcherTest(SimWatcher):
     """Stores the queued photo for asserting."""
     self._posted.append(queued)
     if self._filefairy:
-      slack.upload(queued, "testing")
+      slack.upload(imagespath, queued, "testing")
 
   def _postMessageToSlack(self, message):
     """Stores the message for asserting."""

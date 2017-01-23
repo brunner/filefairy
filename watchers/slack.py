@@ -16,17 +16,19 @@ def postMessage(text, channel):
   urllib2.urlopen(full)
 
 
-def upload(filename, channel):
+def upload(path, filename, channel):
   """Uploads a file to the Slack team."""
   fi = "file=@{0}".format(filename)
   ch = "channels=#{0}".format(channel)
   token = "token={0}".format(tokens.filefairy)
   url = "https://slack.com/api/files.upload"
 
+  os.chdir(path)
+
   with open(os.devnull, "wb") as f:
     subprocess.call(["curl", "-F", fi, "-F", ch, "-F",
                      token, url], stderr=f, stdout=f)
-  # subprocess.call(["rm", self.filename])
+  # subprocess.call(["rm", filename])
 
 icons = {
     "ATL": ":braves:",
