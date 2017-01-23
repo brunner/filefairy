@@ -73,7 +73,7 @@ class ExportWatcher(object):
 
     while elapsed < timeout:
       if self.checkAlert(self.updateLeagueFile()):
-        self.postToSlack(self.getLeagueFileMessage(), "general")
+        self.postToSlack("File is up.", "general")
         return self.sendAlert(True)
 
       time.sleep(sleep)
@@ -138,7 +138,7 @@ class ExportWatcher(object):
     stop checking the page for changes."""
     return [
         600,    # 10 minutes
-        36000,  # 10 hours
+        50400,  # 14 hours
     ]
 
   def getWatchLeagueFileValues(self):
@@ -151,10 +151,6 @@ class ExportWatcher(object):
         60,     # 1 minute
         28800,  # 8 hours
     ]
-
-  def getLeagueFileMessage(self):
-    """Returns the text to be posted when the file date is updated."""
-    return "@everyone: File's up!"
 
   def sendAlert(self, value):
     """Returns the specified value."""
@@ -205,10 +201,6 @@ class ExportWatcherTest(ExportWatcher):
   def getWatchLeagueFileValues(self):
     """Returns a pair of test values, in seconds."""
     return [1, 4]
-
-  def getLeagueFileMessage(self):
-    """Returns the text to be posted when the file date is updated."""
-    return "File's up!"
 
   def sendAlert(self, value):
     """Returns an easily assertable value."""
@@ -263,7 +255,7 @@ if __name__ == "__main__":
         "export2": "Export date change detected.",
         "export3": "Export date change not detected.",
         "file1": "Watching file.",
-        "file2": "File's up!",
+        "file2": "File is up.",
         "file3": "File date change not detected.",
     }
 
