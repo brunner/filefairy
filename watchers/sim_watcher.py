@@ -52,6 +52,7 @@ class SimWatcher(QWebView):
     painter.end()
     os.chdir(imagespath)
     image.save(output_file)
+    self._postMessageToSlack("Captured {0}.".format(output_file), "testing")
 
   def wait_load(self, delay=0):
     while not self._loaded:
@@ -97,9 +98,11 @@ class SimWatcher(QWebView):
 
     if self._started:
       self._uploadToSlack(self._getFile(self._date))
-      alert = self._sendAlert("Live sim change detected.", True)
+      alert = self._sendAlert(True)
     else:
-      alert = self._sendAlert("Timeout. Live sim change not detected.", False)
+      alert = self._sendAlert(False)
+
+    self._postMessageToSlack("Done watching live sim.", "testing")
 
     for t in self._threads:
       t.join()
@@ -122,6 +125,7 @@ class SimWatcher(QWebView):
       self._started = False
       self._updates = []
       queued = self._getFile(self._date)
+      self._postMessageToSlack("Queued {0}.".format(queued), "testing")
 
       if finals and finals != self._finals:
         self.capture(url, self._getFile(date))
@@ -134,7 +138,7 @@ class SimWatcher(QWebView):
       updates = self._findUpdates(page)
       for update in updates:
         if update not in self._updates:
-          self._postMessageToSlack(update)
+          self._postMessageToSlack(update, "live-sim-discussion")
           self._updates.append(update)
 
       if finals and finals != self._finals:
@@ -146,7 +150,7 @@ class SimWatcher(QWebView):
     if updated:
       self._started = True
 
-    return self._sendAlert("Updated live sim page.", updated, queued)
+    return self._sendAlert(updated, queued)
 
   def _findDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
@@ -180,14 +184,13 @@ class SimWatcher(QWebView):
 
   def _formatUpdates(self, teams, runs, inning, summary):
     if len(teams) != 2 or len(runs) != 2 or len(inning) != 2:
-      self._sendAlert("Failed to format {0} teams, {1} runs, {2} inning.".format(
-          len(teams), len(runs), len(innings)), False)
       return ""
 
     if inning[1] == "&nbsp;":
       time = ":small_red_triangle: {0}".format(filter(str.isdigit, inning[0]))
     else:
-      time = ":small_red_triangle_down: {0}".format(filter(str.isdigit, inning[1]))
+      time = ":small_red_triangle_down: {0}".format(
+          filter(str.isdigit, inning[1]))
 
     separator = ":white_small_square:"
     score = "{0} {1} {2} {3} {4}".format(
@@ -220,9 +223,8 @@ class SimWatcher(QWebView):
     """Gets the file name to use for a given live sim date."""
     return "sim{0}.png".format(date)
 
-  def _sendAlert(self, message, value, secondary_value=""):
+  def _sendAlert(self, value, secondary_value=""):
     """Returns the specified value."""
-    print "{0}: {1}".format(str(datetime.datetime.now()), message)
     return {
         "value": value,
         "secondary_value": secondary_value,
@@ -242,9 +244,9 @@ class SimWatcher(QWebView):
     self._threads.append(t)
     t.start()
 
-  def _postMessageToSlack(self, message):
+  def _postMessageToSlack(self, message, channel):
     """Posts the message to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.postMessage, message, "live-sim-discussion")
+    t = SimWatcherThread(slack.postMessage, message, channel)
     self._threads.append(t)
     t.start()
 
@@ -289,6 +291,8 @@ class SimWatcherTest(SimWatcher):
     self._captured[output_file] = url
     if self._filefairy:
       super(SimWatcherTest, self).capture(url, output_file)
+    else:
+      self._postMessageToSlack("Captured {0}.".format(output_file), "testing")
 
   def _getUrl(self):
     """Returns the next test sim page."""
@@ -303,7 +307,7 @@ class SimWatcherTest(SimWatcher):
     """Returns a tuple of test values, in seconds, for the watchLiveSim timer."""
     return [1, 2, 3]
 
-  def _sendAlert(self, message, value, secondary_value=""):
+  def _sendAlert(self, value, secondary_value=""):
     """Returns an easily assertable value."""
     return {
         "value": value,
@@ -321,8 +325,8 @@ class SimWatcherTest(SimWatcher):
     if self._filefairy:
       slack.upload(imagespath, queued, "testing")
 
-  def _postMessageToSlack(self, message):
-    """Stores the message for asserting."""
+  def _postMessageToSlack(self, message, channel):
+    """Stores the message for asserting. Channel is overridden."""
     self._posted.append(message)
     if self._filefairy:
       slack.postMessage(message, "testing")
@@ -377,6 +381,10 @@ if __name__ == "__main__":
         "old2": ":small_red_triangle_down: 5 :white_small_square: :pirates: " +
                 "10 :white_small_square: :giants: 2\n:giants: David " +
                 "Olmedo-Barrera hits a 2-run HR.",
+        "old3": "Captured sim09052018.png.",
+        "old4": "Queued sim09052018.png.",
+        "old5": "Captured sim09092018.png.",
+        "done": "Done watching live sim.",
     }
 
     # Test _findDate method.
@@ -425,17 +433,20 @@ if __name__ == "__main__":
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "secondary_value": "", "current": urls[2],
          "date": dates["old"], "finals": finals["old2"],
-         "captured": {files["old"]: urls[2]}, "posted": [updates["old2"]]}
+         "captured": {files["old"]: urls[2]},
+         "posted": [updates["old2"], updates["old3"]]}
     assert simWatcherTest._updateLiveSim() == \
         {"value": True, "secondary_value": files["old"], "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"]]}
+         "posted": [updates["old2"], updates["old3"], updates["old4"],
+                    updates["old5"]]}
     assert simWatcherTest._updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"]]}
+         "posted": [updates["old2"], updates["old3"], updates["old4"],
+                    updates["old5"]]}
 
     # Test _updateLiveSim method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1], args.filefairy)
@@ -454,14 +465,16 @@ if __name__ == "__main__":
         {"value": True, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"], files["old"], files["new"]]}
+         "posted": [updates["old2"], updates["old3"], updates["old4"],
+                    updates["old5"], files["old"], files["new"],
+                    updates["done"]]}
 
     # Test _watchLiveSimInternal method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1], args.filefairy)
     assert simWatcherTest._watchLiveSimInternal() == \
         {"value": False, "secondary_value": "", "current": urls[0],
          "date": dates["old"], "finals": finals["old1"], "captured": {},
-         "posted": []}
+         "posted": [updates["done"]]}
 
     # Test _watchLiveSim method for changed case.
     simWatcherTest = SimWatcherTest(app, urls[:], args.filefairy)

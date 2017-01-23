@@ -9,12 +9,6 @@ import time
 import urllib2
 
 
-teamexportdetected = "Team export date change detected!"
-teamexporttimeout = "Timeout. Team export date change not detected."
-leaguefiledetected = "League file date change detected!"
-leaguefiletimeout = "Timeout. League file date change not detected."
-
-
 class ExportWatcher(object):
   """Watches the exports page for export and league file date changes."""
 
@@ -54,12 +48,14 @@ class ExportWatcher(object):
 
     while elapsed < timeout:
       if self.checkAlert(self.updateTeamExports()):
-        return self.sendAlert(teamexportdetected, True)
+        self.postToSlack("Export date change detected.", "testing")
+        return self.sendAlert(True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    return self.sendAlert(teamexporttimeout, False)
+    self.postToSlack("Export date change not detected.", "testing")
+    return self.sendAlert(False)
 
   def watchLeagueFileInternal(self):
     """Itermittently checks the exports page url for league file date changes.
@@ -73,13 +69,14 @@ class ExportWatcher(object):
 
     while elapsed < timeout:
       if self.checkAlert(self.updateLeagueFile()):
-        self.postToSlack(self.getLeagueFileMessage())
-        return self.sendAlert(leaguefiledetected, True)
+        self.postToSlack(self.getLeagueFileMessage(), "general")
+        return self.sendAlert(True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    return self.sendAlert(leaguefiletimeout, False)
+    self.postToSlack("File date change not detected.", "testing")
+    return self.sendAlert(False)
 
   def updateTeamExports(self, url=""):
     """Opens the exports page and checks the export date for a list of teams.
@@ -94,7 +91,7 @@ class ExportWatcher(object):
         self.exports[team] = export
         changed = True
 
-    return self.sendAlert("Updated team export dates.", changed)
+    return self.sendAlert(changed)
 
   def updateLeagueFile(self, url=""):
     """Opens the exports page and checks the date of the league file.
@@ -108,7 +105,7 @@ class ExportWatcher(object):
       self.file = file
       changed = True
 
-    return self.sendAlert("Updated league file date.", changed)
+    return self.sendAlert(changed)
 
   def findTeamExport(self, page, team):
     """Parses the exports page and returns the export date for a given team."""
@@ -121,9 +118,9 @@ class ExportWatcher(object):
     match = re.findall(r"League File Updated: ([^<]+)<", page)
     return match[0] if len(match) else ""
 
-  def postToSlack(self, message):
+  def postToSlack(self, message, channel):
     """Posts the message to the Slack team."""
-    slack.postMessage(message, "general")
+    slack.postMessage(message, channel)
 
   def getUrl(self):
     """Returns the exports page url that should be checked for date changes."""
@@ -155,9 +152,8 @@ class ExportWatcher(object):
     """Returns the text to be posted when the file date is updated."""
     return "@everyone: File's up!"
 
-  def sendAlert(self, message, value):
+  def sendAlert(self, value):
     """Returns the specified value."""
-    print "{0}: {1}".format(str(datetime.datetime.now()), message)
     return value
 
   def checkAlert(self, alert):
@@ -183,7 +179,8 @@ class ExportWatcherTest(ExportWatcher):
     self.updateTeamExports(self.current)
     self.updateLeagueFile(self.current)
 
-  def postToSlack(self, message):
+  def postToSlack(self, message, channel):
+    """Stores the message for asserting. Channel is overridden."""
     self.posted.append(message)
     if self.filefairy:
       slack.postMessage(message, "testing")
@@ -209,7 +206,7 @@ class ExportWatcherTest(ExportWatcher):
     """Returns the text to be posted when the file date is updated."""
     return "File's up!"
 
-  def sendAlert(self, message, value):
+  def sendAlert(self, value):
     """Returns an easily assertable value."""
     return {
         "value": value,
@@ -256,6 +253,12 @@ if __name__ == "__main__":
     league = {
         "old": "Saturday January 14, 2017 13:01:09 EST",
         "new": "Tuesday January 17, 2017 09:03:12 EST",
+    }
+    updates = {
+        "export1": "Export date change detected.",
+        "export2": "Export date change not detected.",
+        "file1": "File's up!",
+        "file2": "File date change not detected.",
     }
 
     # Test findTeamExport method.
@@ -347,25 +350,25 @@ if __name__ == "__main__":
     exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
     assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": True, "current": urls[2], "exports": {"Twins": twins[
-            "new"]}, "file": league["old"], "posted": []}
+            "new"]}, "file": league["old"], "posted": [updates["export1"]]}
 
     # Test watchTeamExportsInternal method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"], args.filefairy)
     assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": False, "current": urls[1], "exports": {"Twins": twins[
-            "old"]}, "file": league["old"], "posted": []}
+            "old"]}, "file": league["old"], "posted": [updates["export2"]]}
 
     # Test watchLeagueFileInternal method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
     assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": True, "current": urls[3], "exports": {"Twins": twins[
-            "old"]}, "file": league["new"], "posted": ["File's up!"]}
+            "old"]}, "file": league["new"], "posted": [updates["file1"]]}
 
     # Test watchLeagueFileInternal method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"], args.filefairy)
     assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": False, "current": urls[2], "exports": {"Twins": twins[
-            "old"]}, "file": league["old"], "posted": []}
+            "old"]}, "file": league["old"], "posted": [updates["file2"]]}
 
     # Test watchTeamExports method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
