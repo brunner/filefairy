@@ -82,6 +82,8 @@ class SimWatcher(QWebView):
     sleep, done, timeout = self._getWatchLiveSimValues()
     elapsed = 0
 
+    self._postMessageToSlack("Watching live sim.", "testing")
+
     while (not self._started and elapsed < timeout) or (self._started and elapsed < done):
       alert = self._updateLiveSim()
       updated = self._checkAlert(alert)
@@ -384,6 +386,7 @@ if __name__ == "__main__":
         "old3": "Captured sim09052018.png.",
         "old4": "Queued sim09052018.png.",
         "old5": "Captured sim09092018.png.",
+        "start": "Watching live sim.",
         "done": "Done watching live sim.",
     }
 
@@ -465,16 +468,16 @@ if __name__ == "__main__":
         {"value": True, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"], updates["old3"], updates["old4"],
-                    updates["old5"], files["old"], files["new"],
-                    updates["done"]]}
+         "posted": [updates["start"], updates["old2"], updates["old3"],
+                    updates["old4"], updates["old5"], files["old"],
+                    files["new"], updates["done"]]}
 
     # Test _watchLiveSimInternal method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1], args.filefairy)
     assert simWatcherTest._watchLiveSimInternal() == \
         {"value": False, "secondary_value": "", "current": urls[0],
          "date": dates["old"], "finals": finals["old1"], "captured": {},
-         "posted": [updates["done"]]}
+         "posted": [updates["start"], updates["done"]]}
 
     # Test _watchLiveSim method for changed case.
     simWatcherTest = SimWatcherTest(app, urls[:], args.filefairy)
