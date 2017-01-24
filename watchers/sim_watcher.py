@@ -32,7 +32,8 @@ class SimWatcher(object):
     self.started = False
     self.threads = []
 
-    self.screenshot = screenshot.Screenshot(app or QApplication(sys.argv))
+    self.screenshot = screenshot.Screenshot(
+        app or QApplication(sys.argv), imagespath)
 
     self.updateLiveSim()
 
@@ -262,7 +263,7 @@ class SimWatcherTest(SimWatcher):
     self.started = False
     self.threads = []
 
-    self.screenshot = screenshot.Screenshot(app)
+    self.screenshot = screenshot.Screenshot(app, imagespath)
 
     self.updateLiveSim(self.current)
 

@@ -1,5 +1,6 @@
 #! /usr/bin/python
 
+import os
 import sys
 import time
 
@@ -10,13 +11,17 @@ from PyQt4.QtWebKit import *
 
 class Screenshot(QWebView):
 
-  def __init__(self, app):
+  def __init__(self, app, path):
     self.app = app
+    self._path = path
     QWebView.__init__(self)
     self._loaded = False
     self.loadFinished.connect(self._loadFinished)
 
   def capture(self, url, output_file):
+    cwd = os.getcwd()
+    os.chdir(self._path)
+
     self.load(QUrl(url))
     self.wait_load()
     frame = self.page().mainFrame()
@@ -26,6 +31,8 @@ class Screenshot(QWebView):
     frame.render(painter)
     painter.end()
     image.save(output_file)
+
+    os.chdir(cwd)
 
   def wait_load(self, delay=0):
     while not self._loaded:
