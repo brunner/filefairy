@@ -240,7 +240,7 @@ class SimWatcher(QWebView):
     """Returns the secondary value of the alert."""
     return alert["secondary_value"]
 
-  def _uploadToSlack(self, path, queued):
+  def _uploadToSlack(self, queued):
     """Posts the queued photo to the Slack team, from a background thread."""
     t = SimWatcherThread(slack.upload, imagespath, queued, "testing")
     self._threads.append(t)
