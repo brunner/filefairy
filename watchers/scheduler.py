@@ -22,7 +22,7 @@ class Scheduler(object):
     if not value:
       return
 
-    value = self.simWatcher._watchLiveSim()
+    value = self.simWatcher.watchLiveSim()
     if not value:
       return
 
