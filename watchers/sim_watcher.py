@@ -112,6 +112,8 @@ class SimWatcher(object):
         self.finals = finals
         updated = True
 
+      self.date = date
+
     elif page != self.page:
       updated = True
 
@@ -125,7 +127,7 @@ class SimWatcher(object):
         self.capture(url, self.getFile(date))
         self.finals = finals
 
-    self.page, self.date = page, date
+      self.page = page
 
     if updated:
       self.started = True
