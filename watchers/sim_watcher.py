@@ -71,13 +71,13 @@ class SimWatcher(object):
         elapsed = 0
 
       if queued:
-        self.uploadToSlack(queued)
+        self.uploadToSlack(queued, "live-sim-discussion")
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
     if self.started:
-      self.uploadToSlack(self.getFile(self.date))
+      self.uploadToSlack(self.getFile(self.date), "live-sim-discussion")
       alert = self.sendAlert(True)
     else:
       alert = self.sendAlert(False)
@@ -218,9 +218,9 @@ class SimWatcher(object):
     """Returns the secondary value of the alert."""
     return alert["secondary_value"]
 
-  def uploadToSlack(self, queued):
+  def uploadToSlack(self, queued, channel):
     """Posts the queued photo to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.upload, imagespath, queued, "testing")
+    t = SimWatcherThread(slack.upload, imagespath, queued, channel)
     self.threads.append(t)
     t.start()
 
@@ -300,8 +300,8 @@ class SimWatcherTest(SimWatcher):
         "posted": self.posted,
     }
 
-  def uploadToSlack(self, queued):
-    """Stores the queued photo for asserting."""
+  def uploadToSlack(self, queued, channel):
+    """Stores the queued photo for asserting. Channel is overridden."""
     self.posted.append(queued)
     if self.filefairy:
       slack.upload(imagespath, queued, "testing")
