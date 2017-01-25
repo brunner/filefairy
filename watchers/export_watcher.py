@@ -164,7 +164,7 @@ class ExportWatcher(object):
 class ExportWatcherTest(ExportWatcher):
   """Tests for ExportWatcher."""
 
-  def __init__(self, urls, teams, filefairy):
+  def __init__(self, urls, teams, filefairy=False):
     """Stores a few test export urls and teams.
 
     Pass filefairy=True to interface with the testing Slack channel."""
@@ -223,15 +223,18 @@ if __name__ == "__main__":
   parser.set_defaults(test=False)
   parser.add_argument('--filefairy', dest='filefairy', action='store_true')
   parser.set_defaults(filefairy=False)
+  parser.add_argument('--real', dest='real', action='store_true')
+  parser.set_defaults(real=False)
   args = parser.parse_args()
 
   if args.test:
-    # Real data.
-    url = "http://orangeandblueleaguebaseball.com/StatsLab/exports.php"
-    page = urllib2.urlopen(url).read()
-    exportWatcherTest = ExportWatcherTest([url], ["Twins"], args.filefairy)
-    assert exportWatcherTest.findTeamExport(page, "Twins") != ""
-    assert exportWatcherTest.findLeagueFile(page) != ""
+    if args.real:
+      # Real data.
+      url = "http://orangeandblueleaguebaseball.com/StatsLab/exports.php"
+      page = urllib2.urlopen(url).read()
+      exportWatcherTest = ExportWatcherTest([url], ["Twins"], args.filefairy)
+      assert exportWatcherTest.findTeamExport(page, "Twins") != ""
+      assert exportWatcherTest.findLeagueFile(page) != ""
 
     # Test data.
     path = "http://brunnerj.com/orangeandblueleague/"
@@ -260,7 +263,7 @@ if __name__ == "__main__":
     }
 
     # Test findTeamExport method.
-    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     page = urllib2.urlopen(urls[0]).read()
     assert exportWatcherTest.findTeamExport(page, "Twins") == twins["old"]
     page = urllib2.urlopen(urls[1]).read()
@@ -271,7 +274,7 @@ if __name__ == "__main__":
     assert exportWatcherTest.findTeamExport(page, "Twins") == twins["new"]
 
     # Test findLeagueFile method
-    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     page = urllib2.urlopen(urls[0]).read()
     assert exportWatcherTest.findLeagueFile(page) == league["old"]
     page = urllib2.urlopen(urls[1]).read()
@@ -282,7 +285,7 @@ if __name__ == "__main__":
     assert exportWatcherTest.findLeagueFile(page) == league["new"]
 
     # Test updateTeamExports method for changed case.
-    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.updateTeamExports() == \
         {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
@@ -300,7 +303,7 @@ if __name__ == "__main__":
             "Twins": twins["new"]}, "file": league["old"], "posted": []}
 
     # Test updateTeamExports method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"])
     assert exportWatcherTest.updateTeamExports() == \
         {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
@@ -312,7 +315,7 @@ if __name__ == "__main__":
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
 
     # Test updateLeagueFile method for changed case.
-    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.updateLeagueFile() == \
         {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
@@ -330,7 +333,7 @@ if __name__ == "__main__":
             "Twins": twins["old"]}, "file": league["new"], "posted": []}
 
     # Test updateLeagueFile method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"])
     assert exportWatcherTest.updateLeagueFile() == \
         {"value": False, "current": urls[0], "exports": {
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
@@ -345,28 +348,28 @@ if __name__ == "__main__":
             "Twins": twins["old"]}, "file": league["old"], "posted": []}
 
     # Test watchTeamExportsInternal method for changed case.
-    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": True, "current": urls[2],
          "exports": {"Twins": twins["new"]}, "file": league["old"],
          "posted": [updates["export1"], updates["export2"]]}
 
     # Test watchTeamExportsInternal method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:2], ["Twins"])
     assert exportWatcherTest.watchTeamExportsInternal() == \
         {"value": False, "current": urls[1],
          "exports": {"Twins": twins["old"]}, "file": league["old"],
          "posted": [updates["export1"], updates["export3"]]}
 
     # Test watchLeagueFileInternal method for changed case.
-    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:], ["Twins"])
     assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": True, "current": urls[3],
          "exports": {"Twins": twins["old"]}, "file": league["new"],
          "posted": [updates["file1"], updates["file2"]]}
 
     # Test watchLeagueFileInternal method for unchanged case.
-    exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"], args.filefairy)
+    exportWatcherTest = ExportWatcherTest(urls[:3], ["Twins"])
     assert exportWatcherTest.watchLeagueFileInternal() == \
         {"value": False, "current": urls[2],
          "exports": {"Twins": twins["old"]}, "file": league["old"],
