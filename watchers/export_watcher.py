@@ -137,7 +137,7 @@ class ExportWatcher(object):
     checks. The second value is the amount of time after which the watcher can
     stop checking the page for changes."""
     return [
-        600,    # 10 minutes
+        300,    # 5 minutes
         50400,  # 14 hours
     ]
 
@@ -148,7 +148,7 @@ class ExportWatcher(object):
     checks. The second value is the amount of time after which the watcher can
     stop checking the page for changes."""
     return [
-        60,     # 1 minute
+        30,     # 30 seconds
         28800,  # 8 hours
     ]
 
