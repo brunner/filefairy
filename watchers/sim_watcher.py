@@ -107,8 +107,7 @@ class SimWatcher(object):
       
       if self.date:
         queued = self.getFile(self.date)
-
-      self.postMessageToSlack("Queued {0}.".format(queued), "testing")
+        self.postMessageToSlack("Queued {0}.".format(queued), "testing")
 
       if finals and finals != self.finals:
         self.capture(url, self.getFile(date))
@@ -130,7 +129,7 @@ class SimWatcher(object):
         self.capture(url, self.getFile(date))
         self.finals = finals
 
-      self.page = page
+    self.page = page
 
     if updated:
       self.started = True
@@ -251,7 +250,7 @@ class SimWatcherThread(threading.Thread):
 class SimWatcherTest(SimWatcher):
   """Tests for SimWatcher."""
 
-  def __init__(self, app, urls, filefairy):
+  def __init__(self, app, urls, filefairy=False):
     """Stores a few test sim urls.
 
     Pass filefairy=True to interface with the testing Slack channel."""
@@ -324,17 +323,20 @@ if __name__ == "__main__":
   parser.set_defaults(test=False)
   parser.add_argument('--filefairy', dest='filefairy', action='store_true')
   parser.set_defaults(filefairy=False)
+  parser.add_argument('--real', dest='real', action='store_true')
+  parser.set_defaults(real=False)
   args = parser.parse_args()
 
   if args.test:
     app = QApplication(sys.argv)
 
-    # Real data.
-    url = "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
-    page = urllib2.urlopen(url).read()
-    simWatcherTest = SimWatcherTest(app, [url], args.filefairy)
-    # assert simWatcherTest.findDate(page) != ""
-    # assert simWatcherTest.findFinals(page) != []
+    if args.real:
+      # Real data.
+      url = "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
+      page = urllib2.urlopen(url).read()
+      simWatcherTest = SimWatcherTest(app, [url])
+      assert simWatcherTest.findDate(page) != ""
+      assert simWatcherTest.findFinals(page) != []
 
     # Test data.
     path = "http://brunnerj.com/orangeandblueleague/"
@@ -375,7 +377,7 @@ if __name__ == "__main__":
     }
 
     # Test findDate method.
-    simWatcherTest = SimWatcherTest(app, urls[:], args.filefairy)
+    simWatcherTest = SimWatcherTest(app, urls[:])
     page = urllib2.urlopen(urls[0]).read()
     assert simWatcherTest.findDate(page) == dates["old"]
     page = urllib2.urlopen(urls[1]).read()
@@ -386,7 +388,7 @@ if __name__ == "__main__":
     assert simWatcherTest.findDate(page) == dates["new"]
 
     # Test findFinals method.
-    simWatcherTest = SimWatcherTest(app, urls[:], args.filefairy)
+    simWatcherTest = SimWatcherTest(app, urls[:])
     page = urllib2.urlopen(urls[0]).read()
     assert simWatcherTest.findFinals(page) == finals["old1"]
     page = urllib2.urlopen(urls[1]).read()
@@ -397,7 +399,7 @@ if __name__ == "__main__":
     assert simWatcherTest.findFinals(page) == finals["new"]
 
     # Test findUpdates method.
-    simWatcherTest = SimWatcherTest(app, urls[:], args.filefairy)
+    simWatcherTest = SimWatcherTest(app, urls[:])
     page = urllib2.urlopen(urls[0]).read()
     assert simWatcherTest.findUpdates(page) == [updates["old1"]]
     page = urllib2.urlopen(urls[1]).read()
@@ -408,7 +410,7 @@ if __name__ == "__main__":
     assert simWatcherTest.findUpdates(page) == []
 
     # Test updateLiveSim method for changed case.
-    simWatcherTest = SimWatcherTest(app, urls[:], args.filefairy)
+    simWatcherTest = SimWatcherTest(app, urls[:])
     assert simWatcherTest.updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": urls[0],
          "date": dates["old"], "finals": finals["old1"], "captured": {},
@@ -436,7 +438,7 @@ if __name__ == "__main__":
                     updates["old5"]]}
 
     # Test updateLiveSim method for unchanged case.
-    simWatcherTest = SimWatcherTest(app, urls[:1], args.filefairy)
+    simWatcherTest = SimWatcherTest(app, urls[:1])
     assert simWatcherTest.updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": urls[0],
          "date": dates["old"], "finals": finals["old1"], "captured": {},
@@ -447,7 +449,7 @@ if __name__ == "__main__":
          "posted": []}
 
     # Test watchLiveSimInternal method for changed case.
-    simWatcherTest = SimWatcherTest(app, urls[:], args.filefairy)
+    simWatcherTest = SimWatcherTest(app, urls[:])
     assert simWatcherTest.watchLiveSimInternal() == \
         {"value": True, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
@@ -457,7 +459,7 @@ if __name__ == "__main__":
                     files["new"], updates["done"]]}
 
     # Test watchLiveSimInternal method for unchanged case.
-    simWatcherTest = SimWatcherTest(app, urls[:1], args.filefairy)
+    simWatcherTest = SimWatcherTest(app, urls[:1])
     assert simWatcherTest.watchLiveSimInternal() == \
         {"value": False, "secondary_value": "", "current": urls[0],
          "date": dates["old"], "finals": finals["old1"], "captured": {},
