@@ -105,7 +105,7 @@ class SimWatcher(object):
       self.started = False
       self.updates = []
       
-      if self.date:
+      if self.date and self.started:
         queued = self.getFile(self.date)
         self.postMessageToSlack("Queued {0}.".format(queued), "testing")
 
@@ -370,8 +370,7 @@ if __name__ == "__main__":
                 "10 :white_small_square: :giants: 2\n:giants: David " +
                 "Olmedo-Barrera hits a 2-run HR.",
         "old3": "Captured sim09052018.png.",
-        "old4": "Queued sim09052018.png.",
-        "old5": "Captured sim09092018.png.",
+        "old4": "Captured sim09092018.png.",
         "start": "Watching live sim.",
         "done": "Done watching live sim.",
     }
@@ -425,17 +424,15 @@ if __name__ == "__main__":
          "captured": {files["old"]: urls[2]},
          "posted": [updates["old2"], updates["old3"]]}
     assert simWatcherTest.updateLiveSim() == \
-        {"value": True, "secondary_value": files["old"], "current": urls[3],
+        {"value": True, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"], updates["old3"], updates["old4"],
-                    updates["old5"]]}
+         "posted": [updates["old2"], updates["old3"], updates["old4"]]}
     assert simWatcherTest.updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"], updates["old3"], updates["old4"],
-                    updates["old5"]]}
+         "posted": [updates["old2"], updates["old3"], updates["old4"]]}
 
     # Test updateLiveSim method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
@@ -455,8 +452,7 @@ if __name__ == "__main__":
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
          "posted": [updates["start"], updates["old2"], updates["old3"],
-                    updates["old4"], updates["old5"], files["old"],
-                    files["new"], updates["done"]]}
+                    updates["old4"], files["new"], updates["done"]]}
 
     # Test watchLiveSimInternal method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
