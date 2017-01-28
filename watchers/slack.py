@@ -18,6 +18,10 @@ def postMessage(text, channel):
 
 def upload(path, filename, channel):
   """Uploads a file to the Slack team."""
+  if not os.path.isfile(os.path.join(path, filename)):
+    postMessage("Unable to upload {0}.".format(filename), "testing")
+    return
+
   cwd = os.getcwd()
   os.chdir(path)
 
@@ -32,6 +36,7 @@ def upload(path, filename, channel):
   subprocess.call(["rm", filename])
 
   os.chdir(cwd)
+
 
 icons = {
     "ATL": ":braves:",
