@@ -176,7 +176,7 @@ class SimWatcher(object):
       time = ":small_red_triangle_down: {0}".format(
           filter(str.isdigit, inning[1]))
 
-    separator = ":white_small_square:"
+    separator = ":separator:"
     score = "{0} {1} {2} {3} {4}".format(
         teams[0], runs[0], separator, teams[1], runs[1])
     formatted = "{0} {1} {2}\n{3}".format(
@@ -368,11 +368,11 @@ if __name__ == "__main__":
                     "4952", "6032", "4459", "4357"]),
     }
     updates = {
-        "old1": ":small_red_triangle: 4 :white_small_square: :pirates: 10 " +
-                ":white_small_square: :giants: 0\n:pirates: C.J. Hinojosa " +
+        "old1": ":small_red_triangle: 4 :separator: :pirates: 10 " +
+                ":separator: :giants: 0\n:pirates: C.J. Hinojosa " +
                 "hits a 3-run HR.",
-        "old2": ":small_red_triangle_down: 5 :white_small_square: :pirates: " +
-                "10 :white_small_square: :giants: 2\n:giants: David " +
+        "old2": ":small_red_triangle_down: 5 :separator: :pirates: " +
+                "10 :separator: :giants: 2\n:giants: David " +
                 "Olmedo-Barrera hits a 2-run HR.",
         "old3": "Captured sim09052018.png.",
         "old4": "Captured sim09092018.png.",
