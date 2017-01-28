@@ -186,7 +186,12 @@ class SimWatcher(object):
     return pattern.sub(lambda x: slack.icons[x.group()], formatted)
 
   def getPage(self, url):
-    return urllib2.urlopen(url).read()
+    try:
+      page = urllib2.urlopen(url).read()
+    except Exception as e:
+      page = ""
+
+    return page
 
   def getUrl(self):
     """Returns the live sim page url that should be checked for date changes."""

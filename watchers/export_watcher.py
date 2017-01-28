@@ -102,7 +102,8 @@ class ExportWatcher(object):
 
     Returns a true alert if the date has changed since the previous check.
     """
-    page = urllib2.urlopen(url or self.getUrl()).read()
+    url = url or self.getUrl()
+    page = self.getPage(url)
     changed = False
     file = self.findLeagueFile(page)
     if file and file != self.file:
@@ -125,6 +126,14 @@ class ExportWatcher(object):
   def postToSlack(self, message, channel):
     """Posts the message to the Slack team."""
     slack.postMessage(message, channel)
+
+  def getPage(self, url):
+    try:
+      page = urllib2.urlopen(url).read()
+    except Exception as e:
+      page = ""
+
+    return page
 
   def getUrl(self):
     """Returns the exports page url that should be checked for date changes."""
