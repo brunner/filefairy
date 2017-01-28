@@ -171,9 +171,9 @@ class SimWatcher(object):
       return ""
 
     if inning[1] == "&nbsp;":
-      time = ":small_red_triangle: {0}".format(filter(str.isdigit, inning[0]))
+      time = ":toparrow: {0}".format(filter(str.isdigit, inning[0]))
     else:
-      time = ":small_red_triangle_down: {0}".format(
+      time = ":bottomarrow: {0}".format(
           filter(str.isdigit, inning[1]))
 
     separator = ":separator:"
@@ -368,10 +368,10 @@ if __name__ == "__main__":
                     "4952", "6032", "4459", "4357"]),
     }
     updates = {
-        "old1": ":small_red_triangle: 4 :separator: :pirates: 10 " +
+        "old1": ":toparrow: 4 :separator: :pirates: 10 " +
                 ":separator: :giants: 0\n:pirates: C.J. Hinojosa " +
                 "hits a 3-run HR.",
-        "old2": ":small_red_triangle_down: 5 :separator: :pirates: " +
+        "old2": ":bottomarrow: 5 :separator: :pirates: " +
                 "10 :separator: :giants: 2\n:giants: David " +
                 "Olmedo-Barrera hits a 2-run HR.",
         "old3": "Captured sim09052018.png.",
