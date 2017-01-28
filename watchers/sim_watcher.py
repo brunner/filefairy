@@ -116,7 +116,7 @@ class SimWatcher(object):
 
       self.date = date
 
-    elif page != self.page:
+    elif page and page != self.page:
       updated = True
 
       updates = self.findUpdates(page)
