@@ -101,7 +101,7 @@ class SimWatcher(object):
     updated = False
     queued = ""
 
-    if date and date != self.date:      
+    if date and date != self.date:
       if self.date and self.started:
         queued = self.getFile(self.date)
         self.postMessageToSlack("Queued {0}.".format(queued), "testing")
@@ -141,7 +141,8 @@ class SimWatcher(object):
     return match[0].replace("/", "").strip() if len(match) else ""
 
   def findFinals(self, page):
-    boxes = re.findall(r"FINAL</td>(.*?)</table>", page, re.DOTALL)
+    boxes = re.findall(
+        r"FINAL(?: \(\d+\))?</td>(.*?)</table>", page, re.DOTALL)
     games = set()
     for box in boxes:
       games.add("".join(re.findall(r"teams/team_([^\.]+)\.html", box)))
