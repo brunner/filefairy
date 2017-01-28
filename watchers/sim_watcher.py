@@ -101,13 +101,13 @@ class SimWatcher(object):
     updated = False
     queued = ""
 
-    if date and date != self.date:
-      self.started = False
-      self.updates = []
-      
+    if date and date != self.date:      
       if self.date and self.started:
         queued = self.getFile(self.date)
         self.postMessageToSlack("Queued {0}.".format(queued), "testing")
+
+      self.started = False
+      self.updates = []
 
       if finals and finals != self.finals:
         self.capture(url, self.getFile(date))
