@@ -110,10 +110,10 @@ class SimWatcher(object):
       self.updates = []
 
       if finals and finals != self.finals:
-        self.capture(url, self.getFile(date))
         self.finals = finals
         updated = True
 
+      self.capture(url, self.getFile(date))
       self.date = date
 
     elif page and page != self.page:
@@ -364,9 +364,9 @@ if __name__ == "__main__":
     finals = {
         "old1": set(["5933"]),
         "old2": set(["5933", "5345"]),
-        "new": set(["3348", "4151", "3456", "3637", "5035",
-                    "4254", "3955", "4645", "5847", "4038",
-                    "4952", "6032", "4459", "4357"]),
+        "new": set(["5331", "3348", "4151", "3456", "3637",
+                    "5035", "4254", "3955", "4645", "5847",
+                    "4038", "4952", "6032", "4459", "4357"]),
     }
     updates = {
         "old1": ":toparrow: 4 :separator: :pirates: 10 " +
@@ -376,7 +376,8 @@ if __name__ == "__main__":
                 "10 :separator: :giants: 2\n:giants: David " +
                 "Olmedo-Barrera hits a 2-run HR.",
         "old3": "Captured sim09052018.png.",
-        "old4": "Captured sim09092018.png.",
+        "old4": "Queued sim09052018.png.",
+        "old5": "Captured sim09092018.png.",
         "start": "Watching live sim.",
         "done": "Done watching live sim.",
     }
@@ -430,15 +431,17 @@ if __name__ == "__main__":
          "captured": {files["old"]: urls[2]},
          "posted": [updates["old2"], updates["old3"]]}
     assert simWatcherTest.updateLiveSim() == \
-        {"value": True, "secondary_value": "", "current": urls[3],
+        {"value": True, "secondary_value": files["old"], "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"], updates["old3"], updates["old4"]]}
+         "posted": [updates["old2"], updates["old3"], updates["old4"],
+                    updates["old5"]]}
     assert simWatcherTest.updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": urls[3],
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
-         "posted": [updates["old2"], updates["old3"], updates["old4"]]}
+         "posted": [updates["old2"], updates["old3"], updates["old4"],
+                    updates["old5"]]}
 
     # Test updateLiveSim method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
@@ -458,7 +461,8 @@ if __name__ == "__main__":
          "date": dates["new"], "finals": finals["new"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]},
          "posted": [updates["start"], updates["old2"], updates["old3"],
-                    updates["old4"], files["new"], updates["done"]]}
+                    updates["old4"], updates["old5"], files["old"],
+                    files["new"], updates["done"]]}
 
     # Test watchLiveSimInternal method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
