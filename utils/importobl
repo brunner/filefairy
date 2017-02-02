@@ -31,6 +31,11 @@ def main():
     os.system("wget {0}{1}".format(host, importfile))
     os.system("tar -xzf {0}".format(importfile))
     os.system("rm {0}".format(importfile))
+
+    dirs = ["settings"]
+    for d in dirs:
+      os.system("mv '{0}' '{1}'".format(os.path.join(
+          backuppath, d), os.path.join(leaguepath, d)))
  
 if __name__ == "__main__":
   main()
