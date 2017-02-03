@@ -14,7 +14,7 @@ def main():
 
   host = "http://www.orangeandblueleaguebaseball.com/league/OBL/files/"
   importfile = "orange_and_blue_league_baseball.tar.gz"
-  leaguepath = ("{0}/.Out of the Park Developments/OOTP Baseball 16/custdata/saved_games/" +
+  leaguepath = ("{0}/.Out of the Park Developments/OOTP Baseball 17/custdata/saved_games/" +
                 "{1}").format(os.path.expanduser("~"), leaguefile)
   backuppath = "{0}.bk".format(leaguepath)
 
