@@ -18,13 +18,13 @@ class Scheduler(object):
     self.simWatcher = sim_watcher.SimWatcher()
 
   def start(self):
-    value = self.exportWatcher.watchTeamExports()
-    if not value:
-      return
+    # value = self.exportWatcher.watchTeamExports()
+    # if not value:
+    #   return
 
-    value = self.simWatcher.watchLiveSim()
-    if not value:
-      return
+    # value = self.simWatcher.watchLiveSim()
+    # if not value:
+    #   return
 
     self.exportWatcher.watchLeagueFile()
 
