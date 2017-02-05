@@ -34,8 +34,8 @@ def main():
 
     dirs = ["settings"]
     for d in dirs:
-      os.system("mv '{0}' '{1}'".format(os.path.join(
-          backuppath, d), os.path.join(leaguepath, d)))
+      os.system("rm -rf '{0}' && cp '{1}' '{0}'".format(os.path.join(
+          leaguepath, d), os.path.join(backuppath, d)))
  
 if __name__ == "__main__":
   main()
