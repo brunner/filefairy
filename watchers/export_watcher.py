@@ -158,7 +158,7 @@ class ExportWatcher(object):
     stop checking the page for changes."""
     return [
         30,     # 30 seconds
-        86400,  # 24 hours
+        82800,  # 23 hours
     ]
 
   def sendAlert(self, value):
