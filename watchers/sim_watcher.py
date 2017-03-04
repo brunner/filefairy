@@ -205,7 +205,7 @@ class SimWatcher(object):
         360,    # 6 minutes, after which (if the page is currently static but
                 #     had changed previously) the sim is presumed to be over
                 #     and the last screenshot can be uploaded to Slack.
-        18000,  # 5 hours, to wait for an initial page change, before timing
+        18000,  # 12 hours, to wait for an initial page change, before timing
                 #     out and exiting the program.
     ]
 
@@ -230,13 +230,13 @@ class SimWatcher(object):
 
   def uploadToSlack(self, queued, channel):
     """Posts the queued photo to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.upload, imagespath, queued, channel)
+    t = SimWatcherThread(slack.upload, imagespath, queued, "testing")
     self.threads.append(t)
     t.start()
 
   def postMessageToSlack(self, message, channel):
     """Posts the message to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.postMessage, message, channel)
+    t = SimWatcherThread(slack.postMessage, message, "testing")
     self.threads.append(t)
     t.start()
 

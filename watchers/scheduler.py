@@ -2,6 +2,7 @@
 
 import argparse
 import export_watcher
+import multiprocessing
 import os
 import re
 import sim_watcher
@@ -13,20 +14,18 @@ class Scheduler(object):
   """Schedules the export and sim watching."""
 
   def __init__(self):
-    """Does an initial parse of the exports page."""
     self.exportWatcher = export_watcher.ExportWatcher()
     self.simWatcher = sim_watcher.SimWatcher()
 
   def start(self):
-    # value = self.exportWatcher.watchTeamExports()
-    # if not value:
-    #   return
+    p1 = multiprocessing.Process(target=self.simWatcher.watchLiveSim)
+    p2 = multiprocessing.Process(target=self.exportWatcher.watchLeagueFile)
 
-    # value = self.simWatcher.watchLiveSim()
-    # if not value:
-    #   return
+    p1.start()
+    p2.start()
 
-    self.exportWatcher.watchLeagueFile()
+    p1.join()
+    p2.join()
 
 if __name__ == "__main__":
   scheduler = Scheduler()
