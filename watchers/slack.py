@@ -33,7 +33,7 @@ def upload(path, filename, channel):
   with open(os.devnull, "wb") as f:
     subprocess.call(["curl", "-F", fi, "-F", ch, "-F",
                      token, url], stderr=f, stdout=f)
-  subprocess.call(["rm", filename])
+  # subprocess.call(["rm", filename])
 
   os.chdir(cwd)
 
