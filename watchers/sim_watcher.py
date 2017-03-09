@@ -115,7 +115,7 @@ class SimWatcher(object):
       self.started = False
       self.updates = []
 
-      if finals and finals != self.finals:
+      if finals:
         self.postMessageToSlack(
             "Detected finals change: {0}".format(finals), "testing")
         self.finals = finals
