@@ -223,7 +223,7 @@ class SimWatcher(object):
   def getWatchLiveSimValues(self):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
-        5,      # 5 seconds, to sleep between consecutive page checks.
+        4,      # 4 seconds, to sleep between consecutive page checks.
         360,    # 6 minutes, after which (if the page is currently static but
                 #     had changed previously) the sim is presumed to be over
                 #     and the last screenshot can be uploaded to Slack.
