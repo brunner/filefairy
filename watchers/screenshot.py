@@ -1,9 +1,11 @@
 #! /usr/bin/python
 
 import os
+import subprocess
 import sys
 import time
 
+from PIL import Image
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
@@ -26,11 +28,22 @@ class Screenshot(QWebView):
     self.wait_load()
     frame = self.page().mainFrame()
     self.page().setViewportSize(frame.contentsSize())
-    image = QImage(self.page().viewportSize(), QImage.Format_ARGB32)
-    painter = QPainter(image)
-    frame.render(painter)
-    painter.end()
-    image.save(output_file)
+    qimage = QImage(self.page().viewportSize(), QImage.Format_ARGB32)
+    qpainter = QPainter(qimage)
+    frame.render(qpainter)
+    qpainter.end()
+
+    if os.path.exists(os.path.join(self._path, output_file)):
+      tmp_output_file = "tmp" + output_file
+      qimage.save(tmp_output_file)
+      with Image.open(os.path.join(self._path, output_file)) as image:
+        with Image.open(os.path.join(self._path, tmp_output_file)) as tmp_image:
+          if tmp_image.size[1] < image.size[1]:
+            subprocess.call(["rm", tmp_output_file])
+          else:
+            subprocess.call(["mv", tmp_output_file, output_file])
+    else:
+      qimage.save(output_file)
 
     os.chdir(cwd)
 
