@@ -139,7 +139,7 @@ class SimWatcher(object):
           self.postMessageToSlack(update, "live-sim-discussion")
           self.updates.append(update)
 
-      if finals and finals != self.finals:
+      if finals and finals > self.finals:
         self.postMessageToSlack(
             "Detected finals change: {0}".format(finals), "testing")
 
@@ -150,6 +150,9 @@ class SimWatcher(object):
         self.uploadToSlack(f, "testing")
 
         self.finals = finals
+      elif finals and finals < self.finals:
+        self.postMessageToSlack(
+            "Detected partially loaded finals: {0}".format(finals), "testing")
 
     self.page = page
 
@@ -468,12 +471,12 @@ if __name__ == "__main__":
          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
     assert simWatcherTest.updateLiveSim() == \
         {"value": True, "secondary_value": "", "current": urls[5],
-         "date": dates["new"], "finals": finals["new1"],
-         "captured": {files["old"]: urls[2], files["new"]: urls[5]}}
+         "date": dates["new"], "finals": finals["new2"],
+         "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
     assert simWatcherTest.updateLiveSim() == \
         {"value": False, "secondary_value": "", "current": urls[5],
-         "date": dates["new"], "finals": finals["new1"],
-         "captured": {files["old"]: urls[2], files["new"]: urls[5]}}
+         "date": dates["new"], "finals": finals["new2"],
+         "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
 
     # Test updateLiveSim method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
@@ -488,8 +491,8 @@ if __name__ == "__main__":
     simWatcherTest = SimWatcherTest(app, urls[:])
     assert simWatcherTest.watchLiveSimInternal() == \
         {"value": True, "secondary_value": "", "current": urls[5],
-         "date": dates["new"], "finals": finals["new1"],
-         "captured": {files["old"]: urls[2], files["new"]: urls[5]}}
+         "date": dates["new"], "finals": finals["new2"],
+         "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
 
     # Test watchLiveSimInternal method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
