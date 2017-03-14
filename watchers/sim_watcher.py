@@ -371,7 +371,9 @@ if __name__ == "__main__":
         "sim_09052018_1.html",            # 0. Initial sim page.
         "sim_09052018_2.html",            # 1. Same date. No new final games.
         "sim_09052018_3.html",            # 2. Same date. One new final game.
-        "sim_09092018_1.html",            # 3. Different date.
+        "sim_09092018_1.html",            # 3. Different date, partially loaded.
+        "sim_09092018_2.html",            # 4. Fully loaded.
+        "sim_09092018_3.html",            # 5. Partially loaded again.
     ]
     urls = [os.path.join(path, fi) for fi in files]
     dates = {
@@ -385,9 +387,10 @@ if __name__ == "__main__":
     finals = {
         "old1": set(["5933"]),
         "old2": set(["5933", "5345"]),
-        "new": set(["5331", "3348", "4151", "3456", "3637",
-                    "5035", "4254", "3955", "4645", "5847",
-                    "4038", "4952", "6032", "4459", "4357"]),
+        "new1": set(["4952", "5035", "4254"]),
+        "new2": set(["5331", "3348", "4151", "3456", "3637",
+                     "5035", "4254", "3955", "4645", "5847",
+                     "4038", "4952", "6032", "4459", "4357"]),
     }
     updates = {
         "update1": ":toparrow: 4 :separator: :pirates: 10 " +
@@ -408,6 +411,10 @@ if __name__ == "__main__":
     assert simWatcherTest.findDate(page) == dates["old"]
     page = urllib2.urlopen(urls[3]).read()
     assert simWatcherTest.findDate(page) == dates["new"]
+    page = urllib2.urlopen(urls[4]).read()
+    assert simWatcherTest.findDate(page) == dates["new"]
+    page = urllib2.urlopen(urls[5]).read()
+    assert simWatcherTest.findDate(page) == dates["new"]
 
     # Test findFinals method.
     simWatcherTest = SimWatcherTest(app, urls[:])
@@ -418,7 +425,11 @@ if __name__ == "__main__":
     page = urllib2.urlopen(urls[2]).read()
     assert simWatcherTest.findFinals(page) == finals["old2"]
     page = urllib2.urlopen(urls[3]).read()
-    assert simWatcherTest.findFinals(page) == finals["new"]
+    assert simWatcherTest.findFinals(page) == finals["new1"]
+    page = urllib2.urlopen(urls[4]).read()
+    assert simWatcherTest.findFinals(page) == finals["new2"]
+    page = urllib2.urlopen(urls[5]).read()
+    assert simWatcherTest.findFinals(page) == finals["new1"]
 
     # Test findUpdates method.
     simWatcherTest = SimWatcherTest(app, urls[:])
@@ -429,6 +440,10 @@ if __name__ == "__main__":
     page = urllib2.urlopen(urls[2]).read()
     assert simWatcherTest.findUpdates(page) == [updates["update2"]]
     page = urllib2.urlopen(urls[3]).read()
+    assert simWatcherTest.findUpdates(page) == []
+    page = urllib2.urlopen(urls[4]).read()
+    assert simWatcherTest.findUpdates(page) == []
+    page = urllib2.urlopen(urls[5]).read()
     assert simWatcherTest.findUpdates(page) == []
 
     # Test updateLiveSim method for changed case.
@@ -445,12 +460,20 @@ if __name__ == "__main__":
          "captured": {files["old"]: urls[2]}}
     assert simWatcherTest.updateLiveSim() == \
         {"value": True, "secondary_value": files["old"], "current": urls[3],
-         "date": dates["new"], "finals": finals["new"],
+         "date": dates["new"], "finals": finals["new1"],
          "captured": {files["old"]: urls[2], files["new"]: urls[3]}}
     assert simWatcherTest.updateLiveSim() == \
-        {"value": False, "secondary_value": "", "current": urls[3],
-         "date": dates["new"], "finals": finals["new"],
-         "captured": {files["old"]: urls[2], files["new"]: urls[3]}}
+        {"value": True, "secondary_value": "", "current": urls[4],
+         "date": dates["new"], "finals": finals["new2"],
+         "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
+    assert simWatcherTest.updateLiveSim() == \
+        {"value": True, "secondary_value": "", "current": urls[5],
+         "date": dates["new"], "finals": finals["new1"],
+         "captured": {files["old"]: urls[2], files["new"]: urls[5]}}
+    assert simWatcherTest.updateLiveSim() == \
+        {"value": False, "secondary_value": "", "current": urls[5],
+         "date": dates["new"], "finals": finals["new1"],
+         "captured": {files["old"]: urls[2], files["new"]: urls[5]}}
 
     # Test updateLiveSim method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
@@ -464,9 +487,9 @@ if __name__ == "__main__":
     # Test watchLiveSimInternal method for changed case.
     simWatcherTest = SimWatcherTest(app, urls[:])
     assert simWatcherTest.watchLiveSimInternal() == \
-        {"value": True, "secondary_value": "", "current": urls[3],
-         "date": dates["new"], "finals": finals["new"],
-         "captured": {files["old"]: urls[2], files["new"]: urls[3]}}
+        {"value": True, "secondary_value": "", "current": urls[5],
+         "date": dates["new"], "finals": finals["new1"],
+         "captured": {files["old"]: urls[2], files["new"]: urls[5]}}
 
     # Test watchLiveSimInternal method for unchanged case.
     simWatcherTest = SimWatcherTest(app, urls[:1])
