@@ -71,7 +71,7 @@ class SimWatcher(object):
         elapsed = 0
 
       if queued:
-        self.uploadToSlack(queued, "live-sim-discussion")
+        self.uploadToSlack(queued, "testing")
         self.log("Uploaded {0} to live-sim-discussion.".format(queued))
 
       time.sleep(sleep)
@@ -79,7 +79,7 @@ class SimWatcher(object):
 
     if self.started:
       f = self.getFile(self.date)
-      self.uploadToSlack(f, "live-sim-discussion")
+      self.uploadToSlack(f, "testing")
       self.log("Uploaded {0} to live-sim-discussion.".format(f))
       alert = self.sendAlert(True)
     else:
@@ -132,7 +132,7 @@ class SimWatcher(object):
       updates = self.findUpdates(page)
       for update in updates:
         if update not in self.updates:
-          self.postMessageToSlack(update, "live-sim-discussion")
+          self.postMessageToSlack(update, "testing")
           self.updates.append(update)
 
       if finals and finals > self.finals:
