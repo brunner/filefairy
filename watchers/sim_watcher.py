@@ -31,6 +31,7 @@ class SimWatcher(object):
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.threads = []
+    self.logs = []
 
     self.screenshot = screenshot.Screenshot(
         app or QApplication(sys.argv), imagespath)
@@ -71,8 +72,7 @@ class SimWatcher(object):
 
       if queued:
         self.uploadToSlack(queued, "live-sim-discussion")
-        self.postMessageToSlack(
-            "Uploaded to live-sim-discussion: {0}".format(queued), "testing")
+        self.log("Uploaded {0} to live-sim-discussion.".format(queued))
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
@@ -80,13 +80,13 @@ class SimWatcher(object):
     if self.started:
       f = self.getFile(self.date)
       self.uploadToSlack(f, "live-sim-discussion")
-      self.postMessageToSlack(
-          "Uploaded to live-sim-discussion: {0}".format(f), "testing")
+      self.log("Uploaded {0} to live-sim-discussion.".format(f))
       alert = self.sendAlert(True)
     else:
       alert = self.sendAlert(False)
 
     self.postMessageToSlack("Done watching live sim.", "testing")
+    self.postMessageToSlack("\n".join(self.logs), "testing")
 
     for t in self.threads:
       t.join()
@@ -106,31 +106,27 @@ class SimWatcher(object):
     queued = ""
 
     if date and date != self.date:
-      self.postMessageToSlack(
-          "Detected date change: {0}".format(date), "testing")
+      self.log("Detected date change to {0}.".format(date))
       if self.date and self.started:
         queued = self.getFile(self.date)
-        self.postMessageToSlack("Queued: {0}".format(queued), "testing")
+        self.log("Queued {0} for upload.".format(queued))
 
       self.started = False
       self.updates = []
 
       if finals:
-        self.postMessageToSlack(
-            "Detected finals change: {0}".format(finals), "testing")
+        self.log("Detected {0} finals.".format(len(finals)))
         self.finals = finals
         updated = True
 
       f = self.getFile(date)
       self.capture(url, f)
-
-      self.postMessageToSlack("Captured: {0}".format(f), "testing")
-      self.uploadToSlack(f, "testing")
+      self.log("Captured {0}.".format(f))
 
       self.date = date
 
     elif page and page != self.page:
-      self.postMessageToSlack("Detected page change.", "testing")
+      self.log("Detected page change.")
       updated = True
 
       updates = self.findUpdates(page)
@@ -140,19 +136,15 @@ class SimWatcher(object):
           self.updates.append(update)
 
       if finals and finals > self.finals:
-        self.postMessageToSlack(
-            "Detected finals change: {0}".format(finals), "testing")
+        self.log("Detected {0} finals.".format(len(finals)))
 
         f = self.getFile(date)
         self.capture(url, self.getFile(date))
-
-        self.postMessageToSlack("Captured: {0}".format(f), "testing")
-        self.uploadToSlack(f, "testing")
+        self.log("Captured {0}.".format(f))
 
         self.finals = finals
       elif finals and finals < self.finals:
-        self.postMessageToSlack(
-            "Detected partially loaded finals: {0}".format(finals), "testing")
+        self.log("Ignored partially loaded page with {0} finals.".format(len(finals)))
 
     self.page = page
 
@@ -253,6 +245,11 @@ class SimWatcher(object):
     """Returns the secondary value of the alert."""
     return alert["secondary_value"]
 
+  def log(self, message):
+    timestamp = datetime.datetime.now().strftime('%H:%M:%S')
+    current = self.date
+    self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
+
   def uploadToSlack(self, queued, channel):
     """Posts the queued photo to the Slack team, from a background thread."""
     t = SimWatcherThread(slack.upload, imagespath, queued, channel)
@@ -297,6 +294,7 @@ class SimWatcherTest(SimWatcher):
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.threads = []
+    self.logs = []
 
     self.screenshot = screenshot.Screenshot(app, imagespath)
 
@@ -308,7 +306,7 @@ class SimWatcherTest(SimWatcher):
     if self.filefairy:
       super(SimWatcherTest, self).capture(url, output_file)
     else:
-      self.postMessageToSlack("Captured {0}.".format(output_file), "testing")
+      self.log("Captured {0}.".format(output_file))
 
   def getUrl(self):
     """Returns the next test sim page."""
