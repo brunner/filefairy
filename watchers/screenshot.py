@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 import os
+import subprocess
 import sys
 import time
 
@@ -18,11 +19,15 @@ class Screenshot(QWebView):
     self._loaded = False
     self.loadFinished.connect(self._loadFinished)
 
-  def capture(self, url, output_file):
+  def capture(self, html, filename):
     cwd = os.getcwd()
     os.chdir(self._path)
 
-    self.load(QUrl(url))
+    local = "temp.html"
+    with open(local, "w") as f:
+      f.write(html)
+
+    self.load(QUrl.fromLocalFile(os.path.join(self._path, local)))
     self.wait_load()
     frame = self.page().mainFrame()
     self.page().setViewportSize(frame.contentsSize())
@@ -30,8 +35,9 @@ class Screenshot(QWebView):
     qpainter = QPainter(qimage)
     frame.render(qpainter)
     qpainter.end()
-    qimage.save(output_file)
+    qimage.save(filename)
 
+    subprocess.call(["rm", local])
     os.chdir(cwd)
 
   def wait_load(self, delay=0):

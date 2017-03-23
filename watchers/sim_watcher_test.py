@@ -29,6 +29,7 @@ class SimWatcherTest(SimWatcher):
     self.finals = self.findFinals(self.page)
     self.updates = self.findUpdates(self.page)
     self.started = False
+    self.pages = {}
     self.threads = []
     self.logs = []
 

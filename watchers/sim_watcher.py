@@ -24,6 +24,7 @@ class SimWatcher(object):
     self.finals = self.findFinals(self.page)
     self.updates = self.findUpdates(self.page)
     self.started = False
+    self.pages = {}
     self.threads = []
     self.logs = []
 
@@ -32,8 +33,8 @@ class SimWatcher(object):
 
     self.updateLiveSim()
 
-  def capture(self, url, output_file):
-    self.screenshot.capture(url, output_file)
+  def capture(self, html, filename):
+    self.screenshot.capture(html, filename)
 
   def watchLiveSim(self):
     """Itermittently checks the sim page url for any changes.
@@ -67,9 +68,10 @@ class SimWatcher(object):
       elapsed = elapsed + sleep
 
     if self.started:
-      for f in sorted(os.listdir(self.getImagesPath())):
-        self.uploadToSlack(f, "testing")
-        self.log("Uploaded {0} to live-sim-discussion.".format(f))
+      for filename in sorted(self.pages):
+        self.capture(self.pages[filename], filename)
+        self.uploadToSlack(filename, "testing")
+        self.log("Uploaded {0} to live-sim-discussion.".format(filename))
 
       alert = self.sendAlert(True)
     else:
@@ -100,9 +102,9 @@ class SimWatcher(object):
       self.updates = []
 
       if finals:
-        f = self.getFile(date)
-        self.capture(url, f)
-        self.log("Detected {0} finals and captured screenshot.".format(len(finals)))
+        filename = self.getFile(date)
+        self.pages[filename] = page
+        self.log("Detected {0} finals and saved page snapshot.".format(len(finals)))
         updated = True
 
       self.date = date
@@ -121,9 +123,9 @@ class SimWatcher(object):
       if finals and finals > self.finals:
         self.log("Detected {0} finals.".format(len(finals)))
 
-        f = self.getFile(date)
-        self.capture(url, self.getFile(date))
-        self.log("Captured {0}.".format(f))
+        filename = self.getFile(date)
+        self.pages[filename] = page
+        self.log("Detected {0} finals and saved page snapshot.".format(len(finals)))
 
         self.finals = finals
       elif finals and finals < self.finals:
