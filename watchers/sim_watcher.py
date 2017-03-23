@@ -59,22 +59,18 @@ class SimWatcher(object):
     while (not self.started and elapsed < timeout) or (self.started and elapsed < done):
       alert = self.updateLiveSim()
       updated = self.checkAlert(alert)
-      queued = self.checkSecondaryAlert(alert)
 
       if updated:
         elapsed = 0
-
-      if queued:
-        self.uploadToSlack(queued, "testing")
-        self.log("Uploaded {0} to live-sim-discussion.".format(queued))
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
     if self.started:
-      f = self.getFile(self.date)
-      self.uploadToSlack(f, "testing")
-      self.log("Uploaded {0} to live-sim-discussion.".format(f))
+      for f in sorted(os.listdir(self.getImagesPath())):
+        self.uploadToSlack(f, "testing")
+        self.log("Uploaded {0} to live-sim-discussion.".format(f))
+
       alert = self.sendAlert(True)
     else:
       alert = self.sendAlert(False)
@@ -97,27 +93,20 @@ class SimWatcher(object):
     date = self.findDate(page)
     finals = self.findFinals(page)
     updated = False
-    queued = ""
 
     if date and date != self.date:
       self.log("Detected date change to {0}.".format(date))
-      if self.date and self.started:
-        queued = self.getFile(self.date)
-        self.log("Queued {0} for upload.".format(queued))
-
       self.started = False
       self.updates = []
 
       if finals:
-        self.log("Detected {0} finals.".format(len(finals)))
-        self.finals = finals
+        f = self.getFile(date)
+        self.capture(url, f)
+        self.log("Detected {0} finals and captured screenshot.".format(len(finals)))
         updated = True
 
-      f = self.getFile(date)
-      self.capture(url, f)
-      self.log("Captured {0}.".format(f))
-
       self.date = date
+      self.finals = finals
 
     elif page and page != self.page:
       self.log("Detected page change.")
@@ -145,7 +134,7 @@ class SimWatcher(object):
     if updated:
       self.started = True
 
-    return self.sendAlert(updated, queued)
+    return self.sendAlert(updated)
 
   def findDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
@@ -224,29 +213,24 @@ class SimWatcher(object):
     """Gets the file name to use for a given live sim date."""
     return "sim{0}.png".format(date)
 
-  def sendAlert(self, value, secondary_value=""):
+  def sendAlert(self, value):
     """Returns the specified value."""
     return {
         "value": value,
-        "secondary_value": secondary_value,
     }
 
   def checkAlert(self, alert):
     """Returns the value of the alert."""
     return alert["value"]
 
-  def checkSecondaryAlert(self, alert):
-    """Returns the secondary value of the alert."""
-    return alert["secondary_value"]
-
   def log(self, message):
     timestamp = datetime.datetime.now().strftime('%H:%M:%S')
     current = self.date
     self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
 
-  def uploadToSlack(self, queued, channel):
-    """Posts the queued photo to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.upload, self.getImagesPath(), queued, channel)
+  def uploadToSlack(self, filename, channel):
+    """Posts a PNG screenshot to the Slack team, from a background thread."""
+    t = SimWatcherThread(slack.upload, self.getImagesPath(), filename, channel)
     self.threads.append(t)
     t.start()
 
