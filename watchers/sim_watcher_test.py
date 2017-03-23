@@ -59,13 +59,8 @@ class SimWatcherTest(SimWatcher):
 
   def sendAlert(self, value):
     """Returns an easily assertable value."""
-    return {
-        "value": value,
-        "current": self.current,
-        "date": self.date,
-        "finals": self.finals,
-        "captured": self.captured
-    }
+    return {"value": value, "current": self.current, "date": self.date, "finals": self.finals, "captured": self.captured
+            }
 
   def uploadToSlack(self, queued, channel):
     """Stores the queued photo for asserting. Channel is overridden."""
@@ -107,9 +102,7 @@ finals = {
     "old1": set(["5933"]),
     "old2": set(["5933", "5345"]),
     "new1": set(["4952", "5035", "4254"]),
-    "new2": set(["5331", "3348", "4151", "3456", "3637",
-                 "5035", "4254", "3955", "4645", "5847",
-                 "4038", "4952", "6032", "4459", "4357"]),
+    "new2": set(["5331", "3348", "4151", "3456", "3637", "5035", "4254", "3955", "4645", "5847", "4038", "4952", "6032", "4459", "4357"]),
 }
 
 updates = {
@@ -181,52 +174,51 @@ def testFindUpdates():
 def testUpdateLiveSim(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
   assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "secondary_value": "", "current": urls[0],
-       "date": dates["old"], "finals": finals["old1"], "captured": {}}
+      {"value": False, "current": urls[0], "date": dates["old"],
+          "finals": finals["old1"], "captured": {}}
   assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "secondary_value": "", "current": urls[1],
-       "date": dates["old"], "finals": finals["old1"], "captured": {}}
+      {"value": True, "current": urls[1], "date": dates["old"],
+          "finals": finals["old1"], "captured": {}}
   assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "secondary_value": "", "current": urls[2],
-       "date": dates["old"], "finals": finals["old2"],
-       "captured": {files["old"]: urls[2]}}
+      {"value": True, "current": urls[2], "date": dates["old"],
+          "finals": finals["old2"], "captured": {files["old"]: urls[2]}}
   assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "secondary_value": files["old"], "current": urls[3],
-       "date": dates["new"], "finals": finals["new1"],
-       "captured": {files["old"]: urls[2], files["new"]: urls[3]}}
+      {"value": True, "current": urls[3], "date": dates["new"],
+          "finals": finals["new1"],
+          "captured": {files["old"]: urls[2], files["new"]: urls[3]}}
   assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "secondary_value": "", "current": urls[4],
-       "date": dates["new"], "finals": finals["new2"],
-       "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
+      {"value": True, "current": urls[4], "date": dates["new"],
+          "finals": finals["new2"],
+          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
   assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "secondary_value": "", "current": urls[5],
-       "date": dates["new"], "finals": finals["new2"],
-       "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
+      {"value": True, "current": urls[5], "date": dates["new"],
+          "finals": finals["new2"],
+          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
   assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "secondary_value": "", "current": urls[5],
-       "date": dates["new"], "finals": finals["new2"],
-       "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
+      {"value": False, "current": urls[5], "date": dates["new"],
+          "finals": finals["new2"],
+          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
   assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "secondary_value": "", "current": urls[0],
-       "date": dates["old"], "finals": finals["old1"], "captured": {}}
+      {"value": False, "current": urls[0], "date": dates["old"],
+          "finals": finals["old1"], "captured": {}}
   assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "secondary_value": "", "current": urls[0],
-       "date": dates["old"], "finals": finals["old1"], "captured": {}}
+      {"value": False, "current": urls[0], "date": dates["old"],
+          "finals": finals["old1"], "captured": {}}
 
 
 def testWatchLiveSimInternal(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
   assert simWatcherTest.watchLiveSimInternal() == \
-      {"value": True, "secondary_value": "", "current": urls[5],
-       "date": dates["new"], "finals": finals["new2"],
-       "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
+      {"value": True, "current": urls[5], "date": dates["new"],
+          "finals": finals["new2"],
+          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
   assert simWatcherTest.watchLiveSimInternal() == \
-      {"value": False, "secondary_value": "", "current": urls[0],
-       "date": dates["old"], "finals": finals["old1"], "captured": {}}
+      {"value": False, "current": urls[0], "date": dates["old"],
+          "finals": finals["old1"], "captured": {}}
 
 
 def testWatchLiveSim(slack):
