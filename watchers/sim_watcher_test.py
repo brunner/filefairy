@@ -57,11 +57,10 @@ class SimWatcherTest(SimWatcher):
     """Returns a tuple of test values, in seconds, for the watchLiveSim timer."""
     return [1, 2, 3]
 
-  def sendAlert(self, value, secondary_value=""):
+  def sendAlert(self, value):
     """Returns an easily assertable value."""
     return {
         "value": value,
-        "secondary_value": secondary_value,
         "current": self.current,
         "date": self.date,
         "finals": self.finals,
