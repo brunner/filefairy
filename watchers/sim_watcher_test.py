@@ -131,8 +131,8 @@ def testReal():
   assert simWatcherTest.findFinals(page) != []
 
 
-def testFindDate(slack):
-  simWatcherTest = SimWatcherTest(app, urls[:], slack)
+def testFindDate():
+  simWatcherTest = SimWatcherTest(app, urls[:])
   page = urllib2.urlopen(urls[0]).read()
   assert simWatcherTest.findDate(page) == dates["old"]
   page = urllib2.urlopen(urls[1]).read()
@@ -147,8 +147,8 @@ def testFindDate(slack):
   assert simWatcherTest.findDate(page) == dates["new"]
 
 
-def testFindFinals(slack):
-  simWatcherTest = SimWatcherTest(app, urls[:], slack)
+def testFindFinals():
+  simWatcherTest = SimWatcherTest(app, urls[:])
   page = urllib2.urlopen(urls[0]).read()
   assert simWatcherTest.findFinals(page) == finals["old1"]
   page = urllib2.urlopen(urls[1]).read()
@@ -163,8 +163,8 @@ def testFindFinals(slack):
   assert simWatcherTest.findFinals(page) == finals["new1"]
 
 
-def testFindUpdates(slack):
-  simWatcherTest = SimWatcherTest(app, urls[:], slack)
+def testFindUpdates():
+  simWatcherTest = SimWatcherTest(app, urls[:])
   page = urllib2.urlopen(urls[0]).read()
   assert simWatcherTest.findUpdates(page) == [updates["update1"]]
   page = urllib2.urlopen(urls[1]).read()
@@ -248,13 +248,13 @@ if __name__ == "__main__":
     testReal()
 
   if args.mode == "date" or args.mode == "all":
-    testFindDate(args.slack)
+    testFindDate()
 
   if args.mode == "finals" or args.mode == "all":
-    testFindFinals(args.slack)
+    testFindFinals()
 
   if args.mode == "updates" or args.mode == "all":
-    testFindUpdates(args.slack)
+    testFindUpdates()
 
   if args.mode == "livesim" or args.mode == "all":
     testUpdateLiveSim(args.slack)
