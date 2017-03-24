@@ -38,7 +38,7 @@ class SimWatcher(object):
     slack.postMessage(message, channel)
 
   def upload(self, filename, channel):
-    slack.upload(self.getImagesPath(), filename, "testing")
+    slack.upload(self.getImagesPath(), filename, channel)
 
   def getUrl(self):
     """Returns the live sim page url that should be checked for date changes."""
@@ -117,7 +117,7 @@ class SimWatcher(object):
     if self.started:
       for filename in sorted(self.pages):
         self.capture(self.pages[filename], filename)
-        self.upload(filename, "testing")
+        self.upload(filename, "live-sim-discussion")
         self.log("Uploaded {0} to live-sim-discussion.".format(filename))
 
       alert = self.sendAlert(True)
