@@ -40,6 +40,49 @@ class SimWatcher(object):
   def upload(self, filename, channel):
     slack.upload(self.getImagesPath(), filename, "testing")
 
+  def getUrl(self):
+    """Returns the live sim page url that should be checked for date changes."""
+    return "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
+
+  def getWatchLiveSimValues(self):
+    """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
+    return [
+        2,      # 2 seconds, to sleep between consecutive page checks.
+        180,    # 3 minutes, after which (if the page is currently static but
+                #     had changed previously) the sim is presumed to be over
+                #     and the last screenshot can be uploaded to Slack.
+        18000,  # 12 hours, to wait for an initial page change, before timing
+                #     out and exiting the program.
+    ]
+
+  def sendAlert(self, value):
+    """Returns the specified value."""
+    return {"value": value}
+
+  def checkAlert(self, alert):
+    """Returns the value of the alert."""
+    return alert["value"]
+
+  def getPage(self, url):
+    try:
+      page = urllib2.urlopen(url).read()
+    except Exception as e:
+      page = ""
+
+    return page
+
+  def getFile(self, date):
+    """Gets the file name to use for a given live sim date."""
+    return "sim{0}.png".format(date)
+
+  def getImagesPath(self):
+    return os.path.expanduser("~") + "/orangeandblueleague/watchers/images/"
+
+  def log(self, message):
+    timestamp = datetime.datetime.now().strftime('%H:%M:%S')
+    current = self.date
+    self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
+
   def watchLiveSim(self):
     """Itermittently checks the sim page url for any changes.
 
@@ -194,48 +237,3 @@ class SimWatcher(object):
 
     pattern = re.compile("|".join(slack.icons.keys()))
     return pattern.sub(lambda x: slack.icons[x.group()], formatted)
-
-  def getPage(self, url):
-    try:
-      page = urllib2.urlopen(url).read()
-    except Exception as e:
-      page = ""
-
-    return page
-
-  def getUrl(self):
-    """Returns the live sim page url that should be checked for date changes."""
-    return "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
-
-  def getWatchLiveSimValues(self):
-    """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
-    return [
-        2,      # 2 seconds, to sleep between consecutive page checks.
-        180,    # 3 minutes, after which (if the page is currently static but
-                #     had changed previously) the sim is presumed to be over
-                #     and the last screenshot can be uploaded to Slack.
-        18000,  # 12 hours, to wait for an initial page change, before timing
-                #     out and exiting the program.
-    ]
-
-  def getFile(self, date):
-    """Gets the file name to use for a given live sim date."""
-    return "sim{0}.png".format(date)
-
-  def sendAlert(self, value):
-    """Returns the specified value."""
-    return {
-        "value": value,
-    }
-
-  def checkAlert(self, alert):
-    """Returns the value of the alert."""
-    return alert["value"]
-
-  def log(self, message):
-    timestamp = datetime.datetime.now().strftime('%H:%M:%S')
-    current = self.date
-    self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
-
-  def getImagesPath(self):
-    return os.path.expanduser("~") + "/orangeandblueleague/watchers/images/"
