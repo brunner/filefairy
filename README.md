@@ -40,7 +40,7 @@ rm -rf orangeandblueleague
 This is experimental, but here is my suggestion:
 
 Copy the experimental importobl script to somewhere on your computer.  
-You can find it here: https://github.com/brunner/orangeandblueleague/blob/master/utils/importobltest  
+You can find it here: https://github.com/brunner/orangeandblueleague/blob/master/utils/importtest   
 Paste the contents of the file into a file called "importobl.py"  
 Remove the first line ("#!/usr/bin/env python") from the file.  
 Edit the file to replace "orangeandblue.lg" with whatever you have named your league file.  
