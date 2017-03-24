@@ -7,7 +7,6 @@ import screenshot
 import subprocess
 import slack
 import sys
-import threading
 import time
 import urllib2
 
@@ -25,7 +24,6 @@ class SimWatcher(object):
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.pages = {}
-    self.threads = []
     self.logs = []
 
     self.screenshot = screenshot.Screenshot(
@@ -35,6 +33,12 @@ class SimWatcher(object):
 
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
+
+  def postMessage(self, message, channel):
+    slack.postMessage(message, channel)
+
+  def upload(self, filename, channel):
+    slack.upload(self.getImagesPath(), filename, "testing")
 
   def watchLiveSim(self):
     """Itermittently checks the sim page url for any changes.
@@ -55,7 +59,7 @@ class SimWatcher(object):
     sleep, done, timeout = self.getWatchLiveSimValues()
     elapsed = 0
 
-    self.postMessageToSlack("Watching live sim.", "testing")
+    self.postMessage("Watching live sim.", "testing")
 
     while (not self.started and elapsed < timeout) or (self.started and elapsed < done):
       alert = self.updateLiveSim()
@@ -70,15 +74,15 @@ class SimWatcher(object):
     if self.started:
       for filename in sorted(self.pages):
         self.capture(self.pages[filename], filename)
-        self.uploadToSlack(filename, "testing")
+        self.upload(filename, "testing")
         self.log("Uploaded {0} to live-sim-discussion.".format(filename))
 
       alert = self.sendAlert(True)
     else:
       alert = self.sendAlert(False)
 
-    self.postMessageToSlack("Done watching live sim.", "testing")
-    self.postMessageToSlack("\n".join(self.logs), "testing")
+    self.postMessage("Done watching live sim.", "testing")
+    self.postMessage("\n".join(self.logs), "testing")
 
     for t in self.threads:
       t.join()
@@ -120,7 +124,7 @@ class SimWatcher(object):
       updates = self.findUpdates(page)
       for update in updates:
         if update not in self.updates:
-          self.postMessageToSlack(update, "testing")
+          self.postMessage(update, "testing")
           self.updates.append(update)
 
       if finals and finals > self.finals:
@@ -233,29 +237,5 @@ class SimWatcher(object):
     current = self.date
     self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
 
-  def uploadToSlack(self, filename, channel):
-    """Posts a PNG screenshot to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.upload, self.getImagesPath(), filename, channel)
-    self.threads.append(t)
-    t.start()
-
-  def postMessageToSlack(self, message, channel):
-    """Posts the message to the Slack team, from a background thread."""
-    t = SimWatcherThread(slack.postMessage, message, channel)
-    self.threads.append(t)
-    t.start()
-
   def getImagesPath(self):
     return os.path.expanduser("~") + "/orangeandblueleague/watchers/images/"
-
-
-class SimWatcherThread(threading.Thread):
-  """Calls a method from a background thread."""
-
-  def __init__(self, method, *args):
-    self.method = method
-    self.args = args
-    threading.Thread.__init__(self)
-
-  def run(self):
-    self.method.__call__(*self.args)

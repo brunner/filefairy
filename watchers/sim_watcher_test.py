@@ -42,8 +42,18 @@ class SimWatcherTest(SimWatcher):
     self.captured.append(filename)
     if self.slack:
       super(SimWatcherTest, self).capture(html, filename)
-    else:
-      self.log("Captured {0}.".format(filename))
+
+  def postMessage(self, message, channel):
+    """Stores the message for asserting. Channel is overridden."""
+    self.posted.append(message)
+    if self.slack:
+      slack.postMessage(message, "testing")
+
+  def upload(self, filename, channel):
+    """Stores the PNG screenshot for asserting. Channel is overridden."""
+    self.posted.append(filename)
+    if self.slack:
+      slack.upload(self.getImagesPath(), filename, "testing")
 
   def getUrl(self):
     """Returns the next test sim page."""
@@ -62,18 +72,6 @@ class SimWatcherTest(SimWatcher):
     """Returns an easily assertable value."""
     return {"value": value, "current": self.current, "date": self.date, "finals": self.finals, "captured": self.captured
             }
-
-  def uploadToSlack(self, queued, channel):
-    """Stores the queued photo for asserting. Channel is overridden."""
-    self.posted.append(queued)
-    if self.slack:
-      slack.upload(self.getImagesPath(), queued, "testing")
-
-  def postMessageToSlack(self, message, channel):
-    """Stores the message for asserting. Channel is overridden."""
-    self.posted.append(message)
-    if self.slack:
-      slack.postMessage(message, "testing")
 
 
 app = QApplication(sys.argv)
