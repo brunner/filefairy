@@ -2,7 +2,7 @@
 
 Scripts to simplify exporting and importing OOTP16 files in the Orange and Blue League.
 
-## Preparation
+## Preparation (Linux)
 
 First, download the scripts.  
 This is most easily accomplished by simply cloning the repository:
@@ -34,6 +34,19 @@ Finally, clean up:
 ```bash
 rm -rf orangeandblueleague
 ```
+
+## Preparation (Windows)
+
+This is experimental, but here is my suggestion:
+
+Copy the importobl script to somewhere on your computer.
+You can find it here: https://github.com/brunner/orangeandblueleague/blob/master/utils/importobl
+Paste the contents of the file into a file called "importobl.py"
+Remove the first line ("#!/usr/bin/env python") from the file.
+Edit the file to replace "orangeandblue.lg" with whatever you have named your league file.
+
+Make sure you can run python on your computer: https://docs.python.org/2/faq/windows.
+Run the "importobl.py" script.
 
 ## Import
 
