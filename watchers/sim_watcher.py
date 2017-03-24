@@ -51,7 +51,7 @@ class SimWatcher(object):
         180,    # 3 minutes, after which (if the page is currently static but
                 #     had changed previously) the sim is presumed to be over
                 #     and the last screenshot can be uploaded to Slack.
-        18000,  # 12 hours, to wait for an initial page change, before timing
+        54000,  # 15 hours, to wait for an initial page change, before timing
                 #     out and exiting the program.
     ]
 
