@@ -20,7 +20,7 @@ class SimWatcherTest(SimWatcher):
     Pass slack=True to interface with the testing Slack channel."""
     self.urls = urls
     self.current = self.urls[0]
-    self.captured = {}
+    self.captured = []
     self.posted = []
     self.slack = slack
 
@@ -37,13 +37,13 @@ class SimWatcherTest(SimWatcher):
 
     self.updateLiveSim(self.current)
 
-  def capture(self, url, output_file):
-    """Stores the captured file and url for asserting."""
-    self.captured[output_file] = url
+  def capture(self, html, filename):
+    """Stores the captured file for asserting."""
+    self.captured.append(filename)
     if self.slack:
-      super(SimWatcherTest, self).capture(url, output_file)
+      super(SimWatcherTest, self).capture(html, filename)
     else:
-      self.log("Captured {0}.".format(output_file))
+      self.log("Captured {0}.".format(filename))
 
   def getUrl(self):
     """Returns the next test sim page."""
@@ -120,114 +120,153 @@ def testReal():
   url = "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
   page = urllib2.urlopen(url).read()
   simWatcherTest = SimWatcherTest(app, [url])
-  assert simWatcherTest.findDate(page) != ""
-  assert simWatcherTest.findFinals(page) != []
+
+  assertNotEquals(simWatcherTest.findDate(page), "")
+  assertNotEquals(simWatcherTest.findFinals(page), [])
 
 
 def testFindDate():
   simWatcherTest = SimWatcherTest(app, urls[:])
+
   page = urllib2.urlopen(urls[0]).read()
-  assert simWatcherTest.findDate(page) == dates["old"]
+  assertEquals(simWatcherTest.findDate(page), dates["old"])
+
   page = urllib2.urlopen(urls[1]).read()
-  assert simWatcherTest.findDate(page) == dates["old"]
+  assertEquals(simWatcherTest.findDate(page), dates["old"])
+
   page = urllib2.urlopen(urls[2]).read()
-  assert simWatcherTest.findDate(page) == dates["old"]
+  assertEquals(simWatcherTest.findDate(page), dates["old"])
+
   page = urllib2.urlopen(urls[3]).read()
-  assert simWatcherTest.findDate(page) == dates["new"]
+  assertEquals(simWatcherTest.findDate(page), dates["new"])
+
   page = urllib2.urlopen(urls[4]).read()
-  assert simWatcherTest.findDate(page) == dates["new"]
+  assertEquals(simWatcherTest.findDate(page), dates["new"])
+
   page = urllib2.urlopen(urls[5]).read()
-  assert simWatcherTest.findDate(page) == dates["new"]
+  assertEquals(simWatcherTest.findDate(page), dates["new"])
 
 
 def testFindFinals():
   simWatcherTest = SimWatcherTest(app, urls[:])
+
   page = urllib2.urlopen(urls[0]).read()
-  assert simWatcherTest.findFinals(page) == finals["old1"]
+  assertEquals(simWatcherTest.findFinals(page), finals["old1"])
+
   page = urllib2.urlopen(urls[1]).read()
-  assert simWatcherTest.findFinals(page) == finals["old1"]
+  assertEquals(simWatcherTest.findFinals(page), finals["old1"])
+
   page = urllib2.urlopen(urls[2]).read()
-  assert simWatcherTest.findFinals(page) == finals["old2"]
+  assertEquals(simWatcherTest.findFinals(page), finals["old2"])
+
   page = urllib2.urlopen(urls[3]).read()
-  assert simWatcherTest.findFinals(page) == finals["new1"]
+  assertEquals(simWatcherTest.findFinals(page), finals["new1"])
+
   page = urllib2.urlopen(urls[4]).read()
-  assert simWatcherTest.findFinals(page) == finals["new2"]
+  assertEquals(simWatcherTest.findFinals(page), finals["new2"])
+
   page = urllib2.urlopen(urls[5]).read()
-  assert simWatcherTest.findFinals(page) == finals["new1"]
+  assertEquals(simWatcherTest.findFinals(page), finals["new1"])
 
 
 def testFindUpdates():
   simWatcherTest = SimWatcherTest(app, urls[:])
+
   page = urllib2.urlopen(urls[0]).read()
-  assert simWatcherTest.findUpdates(page) == [updates["update1"]]
+  assertEquals(simWatcherTest.findUpdates(page), [updates["update1"]])
+
   page = urllib2.urlopen(urls[1]).read()
-  assert simWatcherTest.findUpdates(page) == []
+  assertEquals(simWatcherTest.findUpdates(page), [])
+
   page = urllib2.urlopen(urls[2]).read()
-  assert simWatcherTest.findUpdates(page) == [updates["update2"]]
+  assertEquals(simWatcherTest.findUpdates(page), [updates["update2"]])
+
   page = urllib2.urlopen(urls[3]).read()
-  assert simWatcherTest.findUpdates(page) == []
+  assertEquals(simWatcherTest.findUpdates(page), [])
+
   page = urllib2.urlopen(urls[4]).read()
-  assert simWatcherTest.findUpdates(page) == []
+  assertEquals(simWatcherTest.findUpdates(page), [])
+
   page = urllib2.urlopen(urls[5]).read()
-  assert simWatcherTest.findUpdates(page) == []
+  assertEquals(simWatcherTest.findUpdates(page), [])
 
 
 def testUpdateLiveSim(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "current": urls[0], "date": dates["old"],
-          "finals": finals["old1"], "captured": {}}
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "current": urls[1], "date": dates["old"],
-          "finals": finals["old1"], "captured": {}}
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "current": urls[2], "date": dates["old"],
-          "finals": finals["old2"], "captured": {files["old"]: urls[2]}}
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "current": urls[3], "date": dates["new"],
-          "finals": finals["new1"],
-          "captured": {files["old"]: urls[2], files["new"]: urls[3]}}
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "current": urls[4], "date": dates["new"],
-          "finals": finals["new2"],
-          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": True, "current": urls[5], "date": dates["new"],
-          "finals": finals["new2"],
-          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "current": urls[5], "date": dates["new"],
-          "finals": finals["new2"],
-          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
+
+  expected = {"value": False, "current": urls[0], "date": dates["old"],
+              "finals": finals["old1"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  expected = {"value": False, "current": urls[1], "date": dates["old"],
+              "finals": finals["old1"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  expected = {"value": True, "current": urls[2], "date": dates["old"],
+              "finals": finals["old2"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  expected = {"value": True, "current": urls[3], "date": dates["new"],
+              "finals": finals["new1"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  expected = {"value": True, "current": urls[4], "date": dates["new"],
+              "finals": finals["new2"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  expected = {"value": False, "current": urls[5], "date": dates["new"],
+              "finals": finals["new2"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  expected = {"value": False, "current": urls[5], "date": dates["new"],
+              "finals": finals["new2"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "current": urls[0], "date": dates["old"],
-          "finals": finals["old1"], "captured": {}}
-  assert simWatcherTest.updateLiveSim() == \
-      {"value": False, "current": urls[0], "date": dates["old"],
-          "finals": finals["old1"], "captured": {}}
+
+  expected = {"value": False, "current": urls[0], "date": dates["old"],
+              "finals": finals["old1"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  expected = {"value": False, "current": urls[0], "date": dates["old"],
+              "finals": finals["old1"], "captured": []}
+  assertEquals(simWatcherTest.updateLiveSim(), expected)
 
 
 def testWatchLiveSimInternal(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
-  assert simWatcherTest.watchLiveSimInternal() == \
-      {"value": True, "current": urls[5], "date": dates["new"],
-          "finals": finals["new2"],
-          "captured": {files["old"]: urls[2], files["new"]: urls[4]}}
+
+  expected = {"value": True, "current": urls[5], "date": dates["new"],
+              "finals": finals["new2"],
+              "captured": [files["old"], files["new"]]}
+  assertEquals(simWatcherTest.watchLiveSimInternal(), expected)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
-  assert simWatcherTest.watchLiveSimInternal() == \
-      {"value": False, "current": urls[0], "date": dates["old"],
-          "finals": finals["old1"], "captured": {}}
+
+  expected = {"value": False, "current": urls[0], "date": dates["old"],
+              "finals": finals["old1"], "captured": []}
+  assertEquals(simWatcherTest.watchLiveSimInternal(), expected)
 
 
 def testWatchLiveSim(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
-  assert simWatcherTest.watchLiveSim() == True
+  assertEquals(simWatcherTest.watchLiveSim(), True)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
-  assert simWatcherTest.watchLiveSim() == False
+  assertEquals(simWatcherTest.watchLiveSim(), False)
+
+
+def assertEquals(actual, expected):
+  if actual != expected:
+    raise AssertionError(
+        "Expected {0} to match {1}, but it didn't.".format(expected, actual))
+
+
+def assertNotEquals(actual, expected):
+  if actual == expected:
+    raise AssertionError(
+        "Expected {0} to not match {1}, but it did.".format(expected, actual))
+
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()

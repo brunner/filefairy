@@ -91,12 +91,16 @@ class SimWatcher(object):
     Returns a true alert if a screenshot was captured.
     """
     url = url or self.getUrl()
-    page = self.getPage(url)
-    date = self.findDate(page)
+
+    page, date = "", ""
+    while not date:
+      page = self.getPage(url)
+      date = self.findDate(page)
+
     finals = self.findFinals(page)
     updated = False
 
-    if date and date != self.date:
+    if date != self.date:
       self.log("Detected date change to {0}.".format(date))
       self.started = False
       self.updates = []
@@ -110,9 +114,8 @@ class SimWatcher(object):
       self.date = date
       self.finals = finals
 
-    elif page and page != self.page:
+    elif page != self.page:
       self.log("Detected page change.")
-      updated = True
 
       updates = self.findUpdates(page)
       for update in updates:
@@ -121,13 +124,13 @@ class SimWatcher(object):
           self.updates.append(update)
 
       if finals and finals > self.finals:
-        self.log("Detected {0} finals.".format(len(finals)))
-
         filename = self.getFile(date)
         self.pages[filename] = page
         self.log("Detected {0} finals and saved page snapshot.".format(len(finals)))
 
         self.finals = finals
+        updated = True
+
       elif finals and finals < self.finals:
         self.log("Ignored partially loaded page with {0} finals.".format(len(finals)))
 
