@@ -76,7 +76,7 @@ class SimWatcher(object):
     return "sim{0}.png".format(date)
 
   def getImagesPath(self):
-    return os.path.expanduser("~") + "/orangeandblueleague/watchers/images/"
+    return os.path.expanduser("~") + "/orangeandblueleague/watchers/screenshots/"
 
   def log(self, message):
     timestamp = datetime.datetime.now().strftime('%H:%M:%S')
