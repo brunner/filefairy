@@ -127,9 +127,6 @@ class SimWatcher(object):
     self.postMessage("Done watching live sim.", "testing")
     self.postMessage("\n".join(self.logs), "testing")
 
-    for t in self.threads:
-      t.join()
-
     return alert
 
   def updateLiveSim(self, url=""):

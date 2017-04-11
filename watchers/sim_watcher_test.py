@@ -30,7 +30,6 @@ class SimWatcherTest(SimWatcher):
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.pages = {}
-    self.threads = []
     self.logs = []
 
     self.screenshot = screenshot.Screenshot(app, self.getImagesPath())
