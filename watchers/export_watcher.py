@@ -2,9 +2,10 @@
 
 import argparse
 import datetime
-import slack
+import multiprocessing
 import os
 import re
+import slack
 import time
 import urllib2
 
@@ -17,13 +18,16 @@ class ExportWatcher(object):
     self.file = ""
     self.updateLeagueFile()
 
-  def watchLeagueFile(self):
+  def watchLeagueFile(self, up):
     """Itermittently checks the exports page url for league file date changes.
 
     Returns true once a change has been found, or false after a timeout limit
     has been exceeded.
     """
-    return self.checkAlert(self.watchLeagueFileInternal())
+    alert = self.checkAlert(self.watchLeagueFileInternal())
+    up.set()
+
+    return alert
 
   def watchLeagueFileInternal(self):
     """Itermittently checks the exports page url for league file date changes.
@@ -230,10 +234,10 @@ if __name__ == "__main__":
 
     # Test watchLeagueFile method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:], args.filefairy)
-    assert exportWatcherTest.watchLeagueFile() == True
+    assert exportWatcherTest.watchLeagueFile(multiprocessing.Event()) == True
 
     # Test watchLeagueFile method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:2], args.filefairy)
-    assert exportWatcherTest.watchLeagueFile() == False
+    assert exportWatcherTest.watchLeagueFile(multiprocessing.Event()) == False
 
     print "Passed."

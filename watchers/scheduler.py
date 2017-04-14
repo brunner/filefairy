@@ -18,8 +18,10 @@ class Scheduler(object):
     self.simWatcher = sim_watcher.SimWatcher()
 
   def start(self):
-    p1 = multiprocessing.Process(target=self.simWatcher.watchLiveSim)
-    p2 = multiprocessing.Process(target=self.exportWatcher.watchLeagueFile)
+    up = multiprocessing.Event()
+
+    p1 = multiprocessing.Process(target=self.exportWatcher.watchLeagueFile, args=(up,))
+    p2 = multiprocessing.Process(target=self.simWatcher.watchLiveSim, args=(up,))
 
     p1.start()
     p2.start()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import multiprocessing
 import os
 import screenshot
 import slack
@@ -65,7 +66,7 @@ class SimWatcherTest(SimWatcher):
 
   def getWatchLiveSimValues(self):
     """Returns a tuple of test values, in seconds, for the watchLiveSim timer."""
-    return [1, 2, 3]
+    return [1, 2, 4]
 
   def sendAlert(self, value):
     """Returns an easily assertable value."""
@@ -74,6 +75,7 @@ class SimWatcherTest(SimWatcher):
 
 
 app = QApplication(sys.argv)
+up = multiprocessing.Event()
 
 path = "http://brunnerj.com/orangeandblueleague/"
 files = [
@@ -236,21 +238,21 @@ def testWatchLiveSimInternal(slack):
   expected = {"value": True, "current": urls[5], "date": dates["new"],
               "finals": finals["new2"],
               "captured": [files["old"], files["new"]]}
-  assertEquals(simWatcherTest.watchLiveSimInternal(), expected)
+  assertEquals(simWatcherTest.watchLiveSimInternal(up), expected)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
               "finals": finals["old1"], "captured": []}
-  assertEquals(simWatcherTest.watchLiveSimInternal(), expected)
+  assertEquals(simWatcherTest.watchLiveSimInternal(up), expected)
 
 
 def testWatchLiveSim(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
-  assertEquals(simWatcherTest.watchLiveSim(), True)
+  assertEquals(simWatcherTest.watchLiveSim(up), True)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
-  assertEquals(simWatcherTest.watchLiveSim(), False)
+  assertEquals(simWatcherTest.watchLiveSim(up), False)
 
 
 def assertEquals(actual, expected):

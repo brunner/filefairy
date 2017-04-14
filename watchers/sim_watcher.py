@@ -31,6 +31,14 @@ class SimWatcher(object):
 
     self.updateLiveSim()
 
+  def dequeue(self):
+    for filename in sorted(self.pages):
+      self.capture(self.pages[filename], filename)
+      self.upload(filename, "live-sim-discussion")
+      self.log("Uploaded {0} to live-sim-discussion.".format(filename))
+
+    self.pages = {}
+
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
 
@@ -48,7 +56,7 @@ class SimWatcher(object):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
         2,      # 2 seconds, to sleep between consecutive page checks.
-        600,    # 10 minutes, after which (if the page is currently static but
+        120,    # 2 minutes, after which (if the page is currently static but
                 #     had changed previously) the sim is presumed to be over
                 #     and the last screenshot can be uploaded to Slack.
         54000,  # 15 hours, to wait for an initial page change, before timing
@@ -83,28 +91,28 @@ class SimWatcher(object):
     current = self.date
     self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
 
-  def watchLiveSim(self):
+  def watchLiveSim(self, up):
     """Itermittently checks the sim page url for any changes.
 
     If any changes are found, wait for a certain amount of time to capture any
     additional changes. If not, abandon watching after a timeout.
     Returns true if any changes were found.
     """
-    return self.checkAlert(self.watchLiveSimInternal())
+    return self.checkAlert(self.watchLiveSimInternal(up))
 
-  def watchLiveSimInternal(self):
+  def watchLiveSimInternal(self, up):
     """Itermittently checks the sim page url for any changes.
 
-    If any changes are found, wait for a certain amount of time before deciding
-    that the sim is done. If not, abandon watching after a timeout.
+    If any changes are found, wait for a certain amount of time before checking
+    if there are any page snapshots to upload. Abandon watching after a timeout.
     Returns a true alert if any changes were found.
     """
-    sleep, done, timeout = self.getWatchLiveSimValues()
+    sleep, check, timeout = self.getWatchLiveSimValues()
     elapsed = 0
 
     self.postMessage("Watching live sim.", "testing")
 
-    while (not self.started and elapsed < timeout) or (self.started and elapsed < done):
+    while elapsed < timeout:
       alert = self.updateLiveSim()
       updated = self.checkAlert(alert)
 
@@ -114,12 +122,13 @@ class SimWatcher(object):
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    if self.started:
-      for filename in sorted(self.pages):
-        self.capture(self.pages[filename], filename)
-        self.upload(filename, "live-sim-discussion")
-        self.log("Uploaded {0} to live-sim-discussion.".format(filename))
+      if elapsed % check == 0:
+        self.dequeue()
+        if up.is_set():
+          elapsed = timeout
 
+    if self.started:
+      self.dequeue()
       alert = self.sendAlert(True)
     else:
       alert = self.sendAlert(False)
