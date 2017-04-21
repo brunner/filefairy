@@ -269,7 +269,7 @@ class SimWatcher(object):
       formatted = " :separator: ".join(["{0} {1}".format(
           slack.teamidsToEmoji[teamid],
           self.formatRecord(r[teamid])) for teamid in ordered])
-      lines.append("{0}\n> {1}".format(division[0], formatted))
+      lines.append("{0}\n{1}".format(division[0], formatted))
 
     self.postMessage("\n\n".join(lines), "live-sim-discussion")
 
