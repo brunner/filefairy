@@ -21,6 +21,7 @@ class SimWatcher(object):
     self.page = self.getPage(self.getUrl())
     self.date = self.findDate(self.page)
     self.finals = self.findFinals(self.page)
+    self.records = self.initializeRecords()
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.pages = {}
@@ -35,7 +36,12 @@ class SimWatcher(object):
     for filename in sorted(self.pages):
       self.capture(self.pages[filename], filename)
       self.upload(filename, "live-sim-discussion")
+      self.updateRecords(self.pages[filename])
       self.log("Uploaded {0} to live-sim-discussion.".format(filename))
+
+    if self.pages:
+      self.postRecords()
+      self.log("Posted records to live-sim-discussion.")
 
     self.pages = {}
 
@@ -206,6 +212,66 @@ class SimWatcher(object):
       games.add("".join(re.findall(r"teams/team_([^\.]+)\.html", box)))
 
     return games
+
+  def initializeRecords(self):
+    records = {}
+    for teamid in range(31, 61):
+      records[teamid] = {"W": 0, "L": 0, "T": 0}
+
+    return records
+
+  def formatRecord(self, record):
+    if record["T"]:
+      return "{0}-{1}-{2}".format(record["W"], record["L"], record["T"])
+    else:
+      return "{0}-{1}".format(record["W"], record["L"])
+
+  def updateRecords(self, page):
+    boxes = re.findall(
+        r"FINAL(?: \(\d+\))?</td>(.*?)</table>", page, re.DOTALL)
+
+    for box in boxes:
+      teamids = re.findall(r"teams/team_([^\.]+)\.html", box)
+      lines = re.findall(r"<span style=\"color:#F6EF7D;\">([^<]+)<", box)
+      if len(teamids) == 2 and len(lines) == 6:
+        team1, team2 = int(teamids[0]), int(teamids[1])
+        if team1 in self.records and team2 in self.records:
+          if int(lines[0]) > int(lines[3]):
+            self.records[team1]["W"] += 1
+            self.records[team2]["L"] += 1
+          elif int(lines[0]) < int(lines[3]):
+            self.records[team1]["L"] += 1
+            self.records[team2]["W"] += 1
+          else:
+            self.records[team1]["T"] += 1
+            self.records[team2]["T"] += 1
+
+  def postRecords(self):
+    divisions = [
+        ("AL East", [33, 34, 49, 57, 59]),
+        ("AL Central", [35, 38, 40, 43, 47]),
+        ("AL West", [42, 44, 50, 54, 58]),
+        ("NL East", [32, 41, 48, 51, 60]),
+        ("NL Central", [36, 37, 46, 52, 56]),
+        ("NL West", [31, 39, 45, 53, 55]),
+    ]
+
+    lines = []
+    for division in divisions:
+      r = self.records
+      pct = lambda x: (float(r[x]["W"] + 0.5 * r[x]["T"]) / \
+          (r[x]["W"] + r[x]["L"] + r[x]["T"]),    # Winning percentage.
+          r[x]["W"],                              # Tiebreaker: Most wins.
+          float(1)/r[x]["L"] if r[x]["L"] else 2, # Tiebreaker: Fewest losses.
+          r[x]["T"])                              # Tiebreaker: Most ties.
+      ordered = sorted(division[1], key=pct, reverse=True)
+
+      formatted = " :separator: ".join(["{0} {1}".format(
+          slack.teamidsToEmoji[teamid],
+          self.formatRecord(r[teamid])) for teamid in ordered])
+      lines.append("{0}\n> {1}".format(division[0], formatted))
+
+    self.postMessage("\n\n".join(lines), "live-sim-discussion")
 
   def findUpdates(self, page):
     match = re.findall(r"SCORING UPDATES(.*?)</table>", page, re.DOTALL)

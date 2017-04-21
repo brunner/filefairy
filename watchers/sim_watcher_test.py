@@ -28,6 +28,7 @@ class SimWatcherTest(SimWatcher):
     self.page = self.getPage(self.current)
     self.date = self.findDate(self.page)
     self.finals = self.findFinals(self.page)
+    self.records = self.initializeRecords()
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.pages = {}
@@ -70,8 +71,16 @@ class SimWatcherTest(SimWatcher):
 
   def sendAlert(self, value):
     """Returns an easily assertable value."""
-    return {"value": value, "current": self.current, "date": self.date, "finals": self.finals, "captured": self.captured
-            }
+    records = {k: v for k, v in self.records.iteritems() if
+               v["W"] or v["L"] or v["T"]}
+    return {
+        "value": value,
+        "current": self.current,
+        "date": self.date,
+        "finals": self.finals,
+        "records": records,
+        "captured": self.captured,
+    }
 
 
 app = QApplication(sys.argv)
@@ -102,7 +111,21 @@ finals = {
     "old1": set(["5933"]),
     "old2": set(["5933", "5345"]),
     "new1": set(["4952", "5035", "4254"]),
-    "new2": set(["5331", "3348", "4151", "3456", "3637", "5035", "4254", "3955", "4645", "5847", "4038", "4952", "6032", "4459", "4357"]),
+    "new2": set(["5331", "3348", "4151", "3456", "3637", "5035", "4254",
+                 "3955", "4645", "5847", "4038", "4952", "6032", "4459",
+                 "4357"]),
+}
+
+win1 = {"W": 1, "L": 0, "T": 0}
+loss1 = {"W": 0, "L": 1, "T": 0}
+loss2 = {"W": 0, "L": 2, "T": 0}
+split = {"W": 1, "L": 1, "T": 0}
+records = {
+    54: win1, 42: loss1, 50: loss1, 35: win1, 49: win1, 52: loss1,
+    32: win1, 60: loss1, 58: win1, 47: loss1, 44: win1, 59: split,
+    46: win1, 45: split, 51: win1, 41: loss1, 33: split, 48: loss1,
+    38: win1, 40: loss1, 39: win1, 55: loss1, 31: win1, 53: loss2,
+    43: win1, 57: loss1, 34: win1, 56: loss1, 37: win1, 36: loss1
 }
 
 updates = {
@@ -194,41 +217,41 @@ def testUpdateLiveSim(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
-              "finals": finals["old1"], "captured": []}
+              "finals": finals["old1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   expected = {"value": False, "current": urls[1], "date": dates["old"],
-              "finals": finals["old1"], "captured": []}
+              "finals": finals["old1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   expected = {"value": True, "current": urls[2], "date": dates["old"],
-              "finals": finals["old2"], "captured": []}
+              "finals": finals["old2"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   expected = {"value": True, "current": urls[3], "date": dates["new"],
-              "finals": finals["new1"], "captured": []}
+              "finals": finals["new1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   expected = {"value": True, "current": urls[4], "date": dates["new"],
-              "finals": finals["new2"], "captured": []}
+              "finals": finals["new2"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   expected = {"value": False, "current": urls[5], "date": dates["new"],
-              "finals": finals["new2"], "captured": []}
+              "finals": finals["new2"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   expected = {"value": False, "current": urls[5], "date": dates["new"],
-              "finals": finals["new2"], "captured": []}
+              "finals": finals["new2"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
-              "finals": finals["old1"], "captured": []}
+              "finals": finals["old1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
-              "finals": finals["old1"], "captured": []}
+              "finals": finals["old1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
 
@@ -236,14 +259,14 @@ def testWatchLiveSimInternal(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
 
   expected = {"value": True, "current": urls[5], "date": dates["new"],
-              "finals": finals["new2"],
+              "finals": finals["new2"], "records": records,
               "captured": [files["old"], files["new"]]}
   assertEquals(simWatcherTest.watchLiveSimInternal(up), expected)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
-              "finals": finals["old1"], "captured": []}
+              "finals": finals["old1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.watchLiveSimInternal(up), expected)
 
 

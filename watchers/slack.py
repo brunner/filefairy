@@ -49,4 +49,5 @@ emoji = [":dbacks:", ":braves:", ":orioles:", ":redsox:", ":whitesox:",
          ":pirates:", ":padres:", ":mariners:", ":giants:", ":cardinals:",
          ":rays:", ":rangers:", ":jays:", ":nationals:"]
 
+teamidsToEmoji = dict(zip(range(31,61), emoji))
 nicksToEmoji = dict(zip(nicks, emoji))
