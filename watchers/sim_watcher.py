@@ -241,5 +241,5 @@ class SimWatcher(object):
     formatted = "{0} {1} {2}\n{3}".format(
         time, separator, score, summary.replace(":", ""))
 
-    pattern = re.compile("|".join(slack.icons.keys()))
-    return pattern.sub(lambda x: slack.icons[x.group()], formatted)
+    pattern = re.compile("|".join(slack.nicksToEmoji.keys()))
+    return pattern.sub(lambda x: slack.nicksToEmoji[x.group()], formatted)

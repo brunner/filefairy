@@ -37,36 +37,16 @@ def upload(path, filename, channel):
 
   os.chdir(cwd)
 
+nicks = ["ARI", "ATL", "BAL", "BOS", "CWS", "CHC", "CIN", "CLE", "COL", "DET",
+         "MIA", "HOU", "KC", "LAA", "LAD", "MIL", "MIN", "NYM", "NYY", "OAK",
+         "PHI", "PIT", "SD", "SEA", "SF", "STL", "TB", "TEX", "TOR", "WAS"]
 
-icons = {
-    "ATL": ":braves:",
-    "ARI": ":dbacks:",
-    "BAL": ":orioles:",
-    "BOS": ":redsox:",
-    "CHC": ":cubs:",
-    "CIN": ":reds:",
-    "CLE": ":indians:",
-    "COL": ":rockies:",
-    "CWS": ":whitesox:",
-    "DET": ":tigers:",
-    "HOU": ":astros:",
-    "KC": ":royals:",
-    "LAA": ":angels:",
-    "LAD": ":dodgers:",
-    "MIA": ":marlins:",
-    "MIL": ":brewers:",
-    "MIN": ":twins:",
-    "NYM": ":mets:",
-    "NYY": ":yankees:",
-    "OAK": ":athletics:",
-    "PHI": ":phillies:",
-    "PIT": ":pirates:",
-    "SD": ":padres:",
-    "SF": ":giants:",
-    "SEA": ":mariners:",
-    "STL": ":cardinals:",
-    "TB": ":rays:",
-    "TEX": ":rangers:",
-    "TOR": ":jays:",
-    "WAS": ":nationals:",
-}
+
+emoji = [":dbacks:", ":braves:", ":orioles:", ":redsox:", ":whitesox:",
+         ":cubs:", ":reds:", ":indians:", ":rockies:", ":tigers:", ":marlins:",
+         ":astros:", ":royals:", ":angels:", ":dodgers:", ":brewers:",
+         ":twins:", ":mets:", ":yankees:", ":athletics:", ":phillies:",
+         ":pirates:", ":padres:", ":mariners:", ":giants:", ":cardinals:",
+         ":rays:", ":rangers:", ":jays:", ":nationals:"]
+
+nicksToEmoji = dict(zip(nicks, emoji))
