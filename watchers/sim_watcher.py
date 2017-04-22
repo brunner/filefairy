@@ -235,11 +235,12 @@ class SimWatcher(object):
       lines = re.findall(r"<span style=\"color:#F6EF7D;\">([^<]+)<", box)
       if len(teamids) == 2 and len(lines) == 6:
         team1, team2 = int(teamids[0]), int(teamids[1])
+        runs1, runs2 = int(lines[0]), int(lines[3])
         if team1 in self.records and team2 in self.records:
-          if int(lines[0]) > int(lines[3]):
+          if runs1 > runs2:
             self.records[team1]["W"] += 1
             self.records[team2]["L"] += 1
-          elif int(lines[0]) < int(lines[3]):
+          elif runs1 < runs2:
             self.records[team1]["L"] += 1
             self.records[team2]["W"] += 1
           else:
