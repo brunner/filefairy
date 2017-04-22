@@ -38,14 +38,14 @@ def upload(path, filename, channel):
   os.chdir(cwd)
 
 nicks = ["ARI", "ATL", "BAL", "BOS", "CWS", "CHC", "CIN", "CLE", "COL", "DET",
-         "MIA", "HOU", "KC", "LAA", "LAD", "MIL", "MIN", "NYM", "NYY", "OAK",
+         "MIA", "HOU", "KC", "LAA", "LAD", "MIL", "MIN", "NYY", "NYM", "OAK",
          "PHI", "PIT", "SD", "SEA", "SF", "STL", "TB", "TEX", "TOR", "WAS"]
 
 
 emoji = [":dbacks:", ":braves:", ":orioles:", ":redsox:", ":whitesox:",
          ":cubs:", ":reds:", ":indians:", ":rockies:", ":tigers:", ":marlins:",
          ":astros:", ":royals:", ":angels:", ":dodgers:", ":brewers:",
-         ":twins:", ":mets:", ":yankees:", ":athletics:", ":phillies:",
+         ":twins:", ":yankees:", ":mets:", ":athletics:", ":phillies:",
          ":pirates:", ":padres:", ":mariners:", ":giants:", ":cardinals:",
          ":rays:", ":rangers:", ":jays:", ":nationals:"]
 
