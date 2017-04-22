@@ -248,10 +248,10 @@ class SimWatcher(object):
 
   def postRecords(self):
     divisions = [
-        ("AL East", [33, 34, 49, 57, 59]),
+        ("AL East", [33, 34, 48, 57, 59]),
         ("AL Central", [35, 38, 40, 43, 47]),
         ("AL West", [42, 44, 50, 54, 58]),
-        ("NL East", [32, 41, 48, 51, 60]),
+        ("NL East", [32, 41, 49, 51, 60]),
         ("NL Central", [36, 37, 46, 52, 56]),
         ("NL West", [31, 39, 45, 53, 55]),
     ]
