@@ -129,6 +129,9 @@ class SimWatcher(object):
         if not self.inProgress:
           self.inProgress = True
           simIsInProgress.set()
+      elif elapsed < 5:
+        time.sleep(1)
+        elapsed = elapsed + 1
       else:
         time.sleep(sleep)
         elapsed = elapsed + sleep
