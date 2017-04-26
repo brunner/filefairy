@@ -16,7 +16,8 @@ class Logger(object):
     self.logs.append("[{0}] {1}".format(t, message))
 
   def dump(self):
-    slack.postMessage("\n".join(self.logs), "testing")
+    if self.logs:
+      slack.postMessage("\n".join(self.logs), "testing")
     return self.logs
 
 
@@ -34,6 +35,6 @@ class TestLogger(Logger):
     return "0:0:0"
 
   def dump(self):
-    if self.slack:
+    if self.logs and self.slack:
       slack.postMessage("\n".join(self.logs), "testing")
     return self.logs
