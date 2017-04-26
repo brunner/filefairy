@@ -38,6 +38,7 @@ class SimWatcher(object):
       self.upload(filename, "live-sim-discussion")
       self.updateRecords(self.pages[filename])
       self.log("Uploaded {0} to live-sim-discussion.".format(filename))
+      time.sleep(2)
 
     if self.pages:
       self.postRecords()
@@ -124,11 +125,11 @@ class SimWatcher(object):
 
       if updated:
         elapsed = 0
+      else:
+        time.sleep(sleep)
+        elapsed = elapsed + sleep
 
-      time.sleep(sleep)
-      elapsed = elapsed + sleep
-
-      if elapsed % check == 0:
+      if elapsed and elapsed % check == 0:
         self.dequeue()
         if up.is_set():
           elapsed = timeout
