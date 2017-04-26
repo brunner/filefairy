@@ -28,6 +28,9 @@ class SchedulerTest(Scheduler):
     self.exportWatcher = ExportSchedulerTest(TestLogger(), exportUrls)
     self.simWatcher = SimSchedulerTest(TestLogger(), app, simUrls)
 
+  def postMessage(self, message, channel):
+    pass
+
 
 class ExportSchedulerTest(ExportWatcherTest):
   """ExportWatcherTest with a more realistic sleep duration."""
