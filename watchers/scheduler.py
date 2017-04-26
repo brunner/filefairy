@@ -36,6 +36,8 @@ class Scheduler(object):
     p2.join()
     self.logger.log("Joined watcher threads.")
 
+    self.postMessage("Done.", "testing")
+
   def postMessage(self, message, channel):
     slack.postMessage(message, channel)
 
