@@ -3,6 +3,7 @@
 import export_watcher
 import logger
 import sim_watcher
+import slack
 import threading
 
 
@@ -19,6 +20,8 @@ class Scheduler(object):
     self.simWatcher = sim_watcher.SimWatcher()
 
   def start(self):
+    slack.postMessage("Watching.", "testing")
+
     p1 = threading.Thread(target=self.exportWatcher.watchLeagueFile,
                           args=(self.fileIsUp, self.simIsInProgress,))
     self.logger.log("Starting export watcher.")
