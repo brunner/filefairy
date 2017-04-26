@@ -43,6 +43,9 @@ class SimWatcherTest(SimWatcher):
 
     self.updateLiveSim(self.current)
 
+  def dumpLog(self):
+    pass
+
   def capture(self, html, filename):
     """Stores the captured file for asserting."""
     self.captured.append(filename)
@@ -269,7 +272,7 @@ def testUpdateLiveSim(app, slack):
 
 
 def testWatchLiveSimInternal(app, slack):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:], slack)
 
   expected = {"value": True, "current": urls[5], "date": dates["new"],
               "finals": finals["new2"], "records": records,
@@ -279,7 +282,7 @@ def testWatchLiveSimInternal(app, slack):
       expected)
   assertEquals(simWatcherTest.logger.dump(), logs[:-1])
 
-  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:1], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
               "finals": finals["old1"], "records": {}, "captured": []}
@@ -290,11 +293,11 @@ def testWatchLiveSimInternal(app, slack):
 
 
 def testWatchLiveSim(app, slack):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), True)
   assertEquals(simWatcherTest.logger.dump(), logs[:-1])
 
-  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:1], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), False)
   assertEquals(simWatcherTest.logger.dump(), [logs[0], logs[-1]])
 

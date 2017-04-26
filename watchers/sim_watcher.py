@@ -52,6 +52,9 @@ class SimWatcher(object):
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
 
+  def dumpLog(self):
+    self.logger.dump()
+
   def postMessage(self, message, channel):
     slack.postMessage(message, channel)
 
@@ -148,7 +151,7 @@ class SimWatcher(object):
       alert = self.sendAlert(False)
       self.logger.log("Done watching live sim: failure.")
 
-    self.logger.dump()
+    self.dumpLog()
 
     return alert
 
