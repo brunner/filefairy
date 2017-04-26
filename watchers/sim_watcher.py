@@ -260,11 +260,12 @@ class SimWatcher(object):
     lines = []
     for division in divisions:
       r = self.records
-      pct = lambda x: (float(r[x]["W"] + 0.5 * r[x]["T"]) / \
-          (r[x]["W"] + r[x]["L"] + r[x]["T"]),    # Winning percentage.
-          r[x]["W"],                              # Tiebreaker: Most wins.
-          float(1)/r[x]["L"] if r[x]["L"] else 2, # Tiebreaker: Fewest losses.
-          r[x]["T"])                              # Tiebreaker: Most ties.
+      pct = lambda x: (float(r[x]["W"] + 0.5 * r[x]["T"]) /
+                       (r[x]["W"] + r[x]["L"] + r[x]["T"] if r[x]
+                        ["W"] + r[x]["L"] + r[x]["T"] else 1),   # Winning pct.
+                       r[x]["W"],                                # Most wins.
+                       float(1) / r[x]["L"] if r[x]["L"] else 2, # Few. losses.
+                       r[x]["T"])                                # Most ties.
       ordered = sorted(division[1], key=pct, reverse=True)
 
       formatted = " :separator: ".join(["{0} {1}".format(
