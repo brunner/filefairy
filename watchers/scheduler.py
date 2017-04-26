@@ -2,10 +2,10 @@
 
 import argparse
 import export_watcher
-import multiprocessing
 import os
 import re
 import sim_watcher
+import threading
 import time
 import urllib2
 
@@ -18,10 +18,10 @@ class Scheduler(object):
     self.simWatcher = sim_watcher.SimWatcher()
 
   def start(self):
-    up = multiprocessing.Event()
+    up = threading.Event()
 
-    p1 = multiprocessing.Process(target=self.exportWatcher.watchLeagueFile, args=(up,))
-    p2 = multiprocessing.Process(target=self.simWatcher.watchLiveSim, args=(up,))
+    p1 = threading.Thread(target=self.exportWatcher.watchLeagueFile, args=(up,))
+    p2 = threading.Thread(target=self.simWatcher.watchLiveSim, args=(up,))
 
     p1.start()
     p2.start()

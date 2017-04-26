@@ -2,10 +2,10 @@
 
 import argparse
 import datetime
-import multiprocessing
 import os
 import re
 import slack
+import threading
 import time
 import urllib2
 
@@ -234,10 +234,10 @@ if __name__ == "__main__":
 
     # Test watchLeagueFile method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:], args.filefairy)
-    assert exportWatcherTest.watchLeagueFile(multiprocessing.Event()) == True
+    assert exportWatcherTest.watchLeagueFile(threading.Event()) == True
 
     # Test watchLeagueFile method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:2], args.filefairy)
-    assert exportWatcherTest.watchLeagueFile(multiprocessing.Event()) == False
+    assert exportWatcherTest.watchLeagueFile(threading.Event()) == False
 
     print "Passed."

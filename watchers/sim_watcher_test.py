@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import argparse
-import multiprocessing
 import os
 import screenshot
 import slack
 import sys
+import threading
 import urllib2
 
 from PyQt4.QtGui import QApplication
@@ -84,7 +84,7 @@ class SimWatcherTest(SimWatcher):
 
 
 app = QApplication(sys.argv)
-up = multiprocessing.Event()
+up = threading.Event()
 
 path = "http://brunnerj.com/orangeandblueleague/"
 files = [
