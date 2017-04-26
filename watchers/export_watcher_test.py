@@ -10,6 +10,7 @@ import time
 import urllib2
 
 from export_watcher import ExportWatcher
+from utils import assertEquals, assertNotEquals
 
 class ExportWatcherTest(ExportWatcher):
   """Tests for ExportWatcher."""
@@ -161,18 +162,6 @@ def testWatchLeagueFile(slack):
   exportWatcherTest = ExportWatcherTest(urls[:2], slack)
   assertEquals(exportWatcherTest.watchLeagueFile(fileIsUp, simIsInProgress),
                False)
-
-
-def assertEquals(actual, expected):
-  if actual != expected:
-    raise AssertionError(
-        "Expected {0} to match {1}, but it didn't.".format(expected, actual))
-
-
-def assertNotEquals(actual, expected):
-  if actual == expected:
-    raise AssertionError(
-        "Expected {0} to not match {1}, but it did.".format(expected, actual))
 
 
 if __name__ == "__main__":

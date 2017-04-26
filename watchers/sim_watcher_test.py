@@ -10,7 +10,7 @@ import urllib2
 
 from PyQt4.QtGui import QApplication
 from sim_watcher import SimWatcher
-
+from utils import assertEquals, assertNotEquals
 
 class SimWatcherTest(SimWatcher):
   """Tests for SimWatcher."""
@@ -281,18 +281,6 @@ def testWatchLiveSim(slack):
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), False)
-
-
-def assertEquals(actual, expected):
-  if actual != expected:
-    raise AssertionError(
-        "Expected {0} to match {1}, but it didn't.".format(expected, actual))
-
-
-def assertNotEquals(actual, expected):
-  if actual == expected:
-    raise AssertionError(
-        "Expected {0} to not match {1}, but it did.".format(expected, actual))
 
 
 if __name__ == "__main__":
