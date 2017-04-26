@@ -9,12 +9,16 @@ import threading
 import time
 import urllib2
 
+from logger import Logger
+
 
 class ExportWatcher(object):
   """Watches the exports page for export and league file date changes."""
 
-  def __init__(self):
+  def __init__(self, logger=None):
     """Does an initial parse of the exports page."""
+    self.logger = logger or Logger()
+
     self.file = ""
     self.updateLeagueFile()
 
@@ -38,18 +42,19 @@ class ExportWatcher(object):
     sleep, timeout = self.getWatchLeagueFileValues()
     elapsed = 0
 
-    self.postToSlack("Watching file.", "testing")
+    self.logger.log("Started watching file.")
 
     while elapsed < timeout:
       if not simIsInProgress.is_set():
         if self.checkAlert(self.updateLeagueFile()):
           self.postToSlack("File is up.", "general")
+          self.logger.log("Done watching file: success.")
           return self.sendAlert(True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-    self.postToSlack("File date change not detected.", "testing")
+    self.logger.log("Done watching file: failure.")
     return self.sendAlert(False)
 
   def updateLeagueFile(self, url=""):

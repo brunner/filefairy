@@ -25,7 +25,7 @@ class SchedulerTest(Scheduler):
     self.fileIsUp = fileIsUp
     self.simIsInProgress = simIsInProgress
 
-    self.exportWatcher = ExportSchedulerTest(exportUrls)
+    self.exportWatcher = ExportSchedulerTest(TestLogger(), exportUrls)
     self.simWatcher = SimSchedulerTest(TestLogger(), app, simUrls)
 
 

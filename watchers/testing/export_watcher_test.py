@@ -13,15 +13,18 @@ import time
 import urllib2
 
 from export_watcher import ExportWatcher
+from logger import TestLogger
 from utils import assertEquals, assertNotEquals, getExportUrls
 
 class ExportWatcherTest(ExportWatcher):
   """Tests for ExportWatcher."""
 
-  def __init__(self, urls, slack=False):
+  def __init__(self, logger, urls, slack=False):
     """Stores a few test export urls and teams.
 
     Pass slack=True to interface with the testing Slack channel."""
+    self.logger = logger
+
     self.urls = urls
     self.current = self.urls[0]
     self.posted = []
@@ -74,22 +77,26 @@ league = {
 }
 
 updates = {
-    "file1": "Watching file.",
-    "file2": "File is up.",
-    "file3": "File date change not detected.",
+    "file": "File is up.",
 }
+
+logs = [
+    "[0:0:0] Started watching file.",
+    "[0:0:0] Done watching file: success.",
+    "[0:0:0] Done watching file: failure.",
+]
 
 
 def testReal():
   url = "http://orangeandblueleaguebaseball.com/StatsLab/exports.php"
   page = urllib2.urlopen(url).read()
-  exportWatcherTest = ExportWatcherTest([url])
+  exportWatcherTest = ExportWatcherTest(TestLogger(), [url])
 
   assertNotEquals(exportWatcherTest.findLeagueFile(page), "")
 
 
 def testFindLeagueFile():
-  exportWatcherTest = ExportWatcherTest(urls[:])
+  exportWatcherTest = ExportWatcherTest(TestLogger(), urls[:])
 
   page = urllib2.urlopen(urls[0]).read()
   assertEquals(exportWatcherTest.findLeagueFile(page), league["old"])
@@ -102,7 +109,7 @@ def testFindLeagueFile():
 
 
 def testUpdateLeagueFile():
-  exportWatcherTest = ExportWatcherTest(urls[:])
+  exportWatcherTest = ExportWatcherTest(TestLogger(), urls[:])
 
   expected = {"value": False, "current": urls[0], "file": league["old"],
               "posted": []}
@@ -120,7 +127,9 @@ def testUpdateLeagueFile():
               "posted": []}
   assertEquals(exportWatcherTest.updateLeagueFile(), expected)
 
-  exportWatcherTest = ExportWatcherTest(urls[:2])
+  assertEquals(exportWatcherTest.logger.dump(), [])
+
+  exportWatcherTest = ExportWatcherTest(TestLogger(), urls[:2])
 
   expected = {"value": False, "current": urls[0], "file": league["old"],
               "posted": []}
@@ -134,31 +143,37 @@ def testUpdateLeagueFile():
               "posted": []}
   assertEquals(exportWatcherTest.updateLeagueFile(), expected)
 
+  assertEquals(exportWatcherTest.logger.dump(), [])
+
 
 def testWatchLeagueFileInternal(slack):
-  exportWatcherTest = ExportWatcherTest(urls[:], slack)
+  exportWatcherTest = ExportWatcherTest(TestLogger(slack), urls[:], slack)
 
   expected = {"value": True, "current": urls[2], "file": league["new"],
-              "posted": [updates["file1"], updates["file2"]]}
+              "posted": [updates["file"]]}
   assertEquals(exportWatcherTest.watchLeagueFileInternal(simIsInProgress),
                expected)
+  assertEquals(exportWatcherTest.logger.dump(), logs[:-1])
 
-  exportWatcherTest = ExportWatcherTest(urls[:2], slack)
+  exportWatcherTest = ExportWatcherTest(TestLogger(slack), urls[:2], slack)
 
   expected = {"value": False, "current": urls[1], "file": league["old"],
-              "posted": [updates["file1"], updates["file3"]]}
+              "posted": []}
   assertEquals(exportWatcherTest.watchLeagueFileInternal(simIsInProgress),
                expected)
+  assertEquals(exportWatcherTest.logger.dump(), [logs[0], logs[2]])
 
 
 def testWatchLeagueFile(slack):
-  exportWatcherTest = ExportWatcherTest(urls[:], slack)
+  exportWatcherTest = ExportWatcherTest(TestLogger(slack), urls[:], slack)
   assertEquals(exportWatcherTest.watchLeagueFile(fileIsUp, simIsInProgress),
                True)
+  assertEquals(exportWatcherTest.logger.dump(), logs[:-1])
 
-  exportWatcherTest = ExportWatcherTest(urls[:2], slack)
+  exportWatcherTest = ExportWatcherTest(TestLogger(slack), urls[:2], slack)
   assertEquals(exportWatcherTest.watchLeagueFile(fileIsUp, simIsInProgress),
                False)
+  assertEquals(exportWatcherTest.logger.dump(), [logs[0], logs[2]])
 
 
 if __name__ == "__main__":
