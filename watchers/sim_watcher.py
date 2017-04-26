@@ -167,7 +167,8 @@ class SimWatcher(object):
       if finals:
         filename = self.getFile(date)
         self.pages[filename] = page
-        self.log("Detected {0} finals and saved page snapshot.".format(len(finals)))
+        self.log(
+            "Detected {0} finals and saved page snapshot.".format(len(finals)))
         updated = True
 
       self.date = date
@@ -185,13 +186,15 @@ class SimWatcher(object):
       if finals and finals > self.finals:
         filename = self.getFile(date)
         self.pages[filename] = page
-        self.log("Detected {0} finals and saved page snapshot.".format(len(finals)))
+        self.log(
+            "Detected {0} finals and saved page snapshot.".format(len(finals)))
 
         self.finals = finals
         updated = True
 
       elif finals and finals < self.finals:
-        self.log("Ignored partially loaded page with {0} finals.".format(len(finals)))
+        self.log(
+            "Ignored partially loaded page with {0} finals.".format(len(finals)))
 
     self.page = page
 
@@ -262,10 +265,10 @@ class SimWatcher(object):
       r = self.records
       pct = lambda x: (float(r[x]["W"] + 0.5 * r[x]["T"]) /
                        (r[x]["W"] + r[x]["L"] + r[x]["T"] if r[x]
-                        ["W"] + r[x]["L"] + r[x]["T"] else 1),   # Winning pct.
-                       r[x]["W"],                                # Most wins.
-                       float(1) / r[x]["L"] if r[x]["L"] else 2, # Few. losses.
-                       r[x]["T"])                                # Most ties.
+                        ["W"] + r[x]["L"] + r[x]["T"] else 1),    # Winning pct.
+                       r[x]["W"],                                 # Most wins.
+                       float(1) / r[x]["L"] if r[x]["L"] else 2,  # Few. losses.
+                       r[x]["T"])                                 # Most ties.
       ordered = sorted(division[1], key=pct, reverse=True)
 
       formatted = " :separator: ".join(["{0} {1}".format(
