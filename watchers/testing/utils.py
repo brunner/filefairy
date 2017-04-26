@@ -14,6 +14,11 @@ def assertNotEquals(actual, expected):
     raise AssertionError(
         "Expected {0} to not match {1}, but it did.".format(expected, actual))
 
+def assertContains(array, element):
+  if element not in array:
+    raise AssertionError(
+        "Expected {0} to contain {1}, but it didn't.".format(array, element))
+
 
 def getExportUrls():
   path = "http://brunnerj.com/orangeandblueleague/"

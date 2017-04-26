@@ -11,7 +11,7 @@ from export_watcher_test import ExportWatcherTest
 from logger import TestLogger
 from scheduler import Scheduler
 from sim_watcher_test import SimWatcherTest
-from utils import assertEquals, getExportUrls, getSimUrls
+from utils import assertEquals, assertContains, getExportUrls, getSimUrls
 
 
 class SchedulerTest(Scheduler):
@@ -92,11 +92,11 @@ def testStart(app):
 
   # t = 0. Logged by ExportWatcher.watchLeagueFileInternal().
   # ExportWatcher immediately checks if the sim is in progress.
-  assertEquals(logs[1], "[0:0:0] Checked event for simIsInProgress")
+  assertContains(logs[1:3], "[0:0:0] Checked event for simIsInProgress")
 
   # t = 0. Logged by Scheduler.start().
   # Scheduler starts a SimWatcher object.
-  assertEquals(logs[2], "[0:0:0] Starting sim watcher.")
+  assertContains(logs[1:3], "[0:0:0] Starting sim watcher.")
 
   # t ~= 2. Logged by SimWatcher.watchLiveSimInternal().
   # SimWatcher finds the first page with finals after two refreshes.
@@ -115,11 +115,11 @@ def testStart(app):
   # t ~= 10. Logged by SimWatcher.watchLiveSimInternal().
   # SimWatcher pauses to upload two images after t ~= 6. Each upload takes
   #   t ~= 2 extra.
-  assertEquals(logs[6], "[0:0:0] Cleared event for simIsInProgress")
+  assertContains(logs[6:8], "[0:0:0] Cleared event for simIsInProgress")
 
   # t ~= 10. Logged by SimWatcher.watchLiveSimInternal().
   # After uploading, SimWatcher checks if the file is up. It is not.
-  assertEquals(logs[7], "[0:0:0] Checked event for fileIsUp")
+  assertContains(logs[6:8], "[0:0:0] Checked event for fileIsUp")
 
   # t ~= 12. Logged by ExportWatcher.watchLeagueFileInternal().
   # ExportWatcher checks a fourth time if the sim is in progress. It is not,
