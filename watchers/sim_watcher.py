@@ -98,16 +98,16 @@ class SimWatcher(object):
     current = self.date
     self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
 
-  def watchLiveSim(self, up):
+  def watchLiveSim(self, fileIsUp, simIsInProgress):
     """Itermittently checks the sim page url for any changes.
 
     If any changes are found, wait for a certain amount of time to capture any
     additional changes. If not, abandon watching after a timeout.
     Returns true if any changes were found.
     """
-    return self.checkAlert(self.watchLiveSimInternal(up))
+    return self.checkAlert(self.watchLiveSimInternal(fileIsUp, simIsInProgress))
 
-  def watchLiveSimInternal(self, up):
+  def watchLiveSimInternal(self, fileIsUp, simIsInProgress):
     """Itermittently checks the sim page url for any changes.
 
     If any changes are found, wait for a certain amount of time before checking
@@ -125,13 +125,15 @@ class SimWatcher(object):
 
       if updated:
         elapsed = 0
+        simIsInProgress.set()
       else:
         time.sleep(sleep)
         elapsed = elapsed + sleep
 
       if elapsed and elapsed % check == 0:
         self.dequeue()
-        if up.is_set():
+        simIsInProgress.clear()
+        if fileIsUp.is_set():
           elapsed = timeout
 
     if self.started:

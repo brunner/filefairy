@@ -18,10 +18,13 @@ class Scheduler(object):
     self.simWatcher = sim_watcher.SimWatcher()
 
   def start(self):
-    up = threading.Event()
+    fileIsUp = threading.Event()
+    simIsInProgress = threading.Event()
 
-    p1 = threading.Thread(target=self.exportWatcher.watchLeagueFile, args=(up,))
-    p2 = threading.Thread(target=self.simWatcher.watchLiveSim, args=(up,))
+    p1 = threading.Thread(target=self.exportWatcher.watchLeagueFile,
+                          args=(fileIsUp, simIsInProgress,))
+    p2 = threading.Thread(target=self.simWatcher.watchLiveSim,
+                          args=(fileIsUp, simIsInProgress,))
 
     p1.start()
     p2.start()

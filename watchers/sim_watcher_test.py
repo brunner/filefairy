@@ -84,7 +84,8 @@ class SimWatcherTest(SimWatcher):
 
 
 app = QApplication(sys.argv)
-up = threading.Event()
+fileIsUp = threading.Event()
+simIsInProgress = threading.Event()
 
 path = "http://brunnerj.com/orangeandblueleague/"
 files = [
@@ -261,21 +262,25 @@ def testWatchLiveSimInternal(slack):
   expected = {"value": True, "current": urls[5], "date": dates["new"],
               "finals": finals["new2"], "records": records,
               "captured": [files["old"], files["new"]]}
-  assertEquals(simWatcherTest.watchLiveSimInternal(up), expected)
+  assertEquals(
+      simWatcherTest.watchLiveSimInternal(fileIsUp, simIsInProgress),
+      expected)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
               "finals": finals["old1"], "records": {}, "captured": []}
-  assertEquals(simWatcherTest.watchLiveSimInternal(up), expected)
+  assertEquals(
+      simWatcherTest.watchLiveSimInternal(fileIsUp, simIsInProgress),
+      expected)
 
 
 def testWatchLiveSim(slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
-  assertEquals(simWatcherTest.watchLiveSim(up), True)
+  assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), True)
 
   simWatcherTest = SimWatcherTest(app, urls[:1], slack)
-  assertEquals(simWatcherTest.watchLiveSim(up), False)
+  assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), False)
 
 
 def assertEquals(actual, expected):

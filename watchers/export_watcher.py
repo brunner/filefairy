@@ -18,18 +18,18 @@ class ExportWatcher(object):
     self.file = ""
     self.updateLeagueFile()
 
-  def watchLeagueFile(self, up):
+  def watchLeagueFile(self, fileIsUp, simIsInProgress):
     """Itermittently checks the exports page url for league file date changes.
 
     Returns true once a change has been found, or false after a timeout limit
     has been exceeded.
     """
-    alert = self.checkAlert(self.watchLeagueFileInternal())
-    up.set()
+    alert = self.checkAlert(self.watchLeagueFileInternal(simIsInProgress))
+    fileIsUp.set()
 
     return alert
 
-  def watchLeagueFileInternal(self):
+  def watchLeagueFileInternal(self, simIsInProgress):
     """Itermittently checks the exports page url for league file date changes.
 
     Returns a true alert once a change has been found, or a false alert after a
@@ -41,9 +41,10 @@ class ExportWatcher(object):
     self.postToSlack("Watching file.", "testing")
 
     while elapsed < timeout:
-      if self.checkAlert(self.updateLeagueFile()):
-        self.postToSlack("File is up.", "general")
-        return self.sendAlert(True)
+      if not simIsInProgress.is_set():
+        if self.checkAlert(self.updateLeagueFile()):
+          self.postToSlack("File is up.", "general")
+          return self.sendAlert(True)
 
       time.sleep(sleep)
       elapsed = elapsed + sleep
@@ -191,6 +192,9 @@ if __name__ == "__main__":
         "file3": "File date change not detected.",
     }
 
+    fileIsUp = threading.Event()
+    simIsInProgress = threading.Event()
+
     # Test findLeagueFile method
     exportWatcherTest = ExportWatcherTest(urls[:])
     page = urllib2.urlopen(urls[0]).read()
@@ -222,22 +226,23 @@ if __name__ == "__main__":
 
     # Test watchLeagueFileInternal method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:])
-    assert exportWatcherTest.watchLeagueFileInternal() == \
+    assert exportWatcherTest.watchLeagueFileInternal(simIsInProgress) == \
         {"value": True, "current": urls[2], "file": league["new"],
          "posted": [updates["file1"], updates["file2"]]}
 
     # Test watchLeagueFileInternal method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:2])
-    assert exportWatcherTest.watchLeagueFileInternal() == \
+    assert exportWatcherTest.watchLeagueFileInternal(simIsInProgress) == \
         {"value": False, "current": urls[1], "file": league["old"],
          "posted": [updates["file1"], updates["file3"]]}
 
     # Test watchLeagueFile method for changed case.
     exportWatcherTest = ExportWatcherTest(urls[:], args.filefairy)
-    assert exportWatcherTest.watchLeagueFile(threading.Event()) == True
+    assert exportWatcherTest.watchLeagueFile(fileIsUp, simIsInProgress) == True
 
     # Test watchLeagueFile method for unchanged case.
     exportWatcherTest = ExportWatcherTest(urls[:2], args.filefairy)
-    assert exportWatcherTest.watchLeagueFile(threading.Event()) == False
+    assert exportWatcherTest.watchLeagueFile(fileIsUp, simIsInProgress) == \
+        False
 
     print "Passed."
