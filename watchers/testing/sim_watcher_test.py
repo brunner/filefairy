@@ -11,16 +11,19 @@ import threading
 import urllib2
 
 from PyQt4.QtGui import QApplication
+from logger import TestLogger
 from sim_watcher import SimWatcher
 from utils import assertEquals, assertNotEquals, getSimUrls
 
 class SimWatcherTest(SimWatcher):
   """Tests for SimWatcher."""
 
-  def __init__(self, app, urls, slack=False):
+  def __init__(self, logger, app, urls, slack=False):
     """Stores a few test sim urls.
 
     Pass slack=True to interface with the testing Slack channel."""
+    self.logger = logger
+
     self.urls = urls
     self.current = self.urls[0]
     self.captured = []
@@ -34,7 +37,6 @@ class SimWatcherTest(SimWatcher):
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.pages = {}
-    self.logs = []
     self.inProgress = False
 
     self.screenshot = screenshot.Screenshot(app, self.getImagesPath())
@@ -135,14 +137,14 @@ updates = {
 def testReal(app):
   url = "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
   page = urllib2.urlopen(url).read()
-  simWatcherTest = SimWatcherTest(app, [url])
+  simWatcherTest = SimWatcherTest(TestLogger(), app, [url])
 
   assertNotEquals(simWatcherTest.findDate(page), "")
   assertNotEquals(simWatcherTest.findFinals(page), [])
 
 
 def testFindDate(app):
-  simWatcherTest = SimWatcherTest(app, urls[:])
+  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:])
 
   page = urllib2.urlopen(urls[0]).read()
   assertEquals(simWatcherTest.findDate(page), dates["old"])
@@ -164,7 +166,7 @@ def testFindDate(app):
 
 
 def testFindFinals(app):
-  simWatcherTest = SimWatcherTest(app, urls[:])
+  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:])
 
   page = urllib2.urlopen(urls[0]).read()
   assertEquals(simWatcherTest.findFinals(page), finals["old1"])
@@ -186,7 +188,7 @@ def testFindFinals(app):
 
 
 def testFindUpdates(app):
-  simWatcherTest = SimWatcherTest(app, urls[:])
+  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:])
 
   page = urllib2.urlopen(urls[0]).read()
   assertEquals(simWatcherTest.findUpdates(page), [updates["update1"]])
@@ -208,7 +210,7 @@ def testFindUpdates(app):
 
 
 def testUpdateLiveSim(app, slack):
-  simWatcherTest = SimWatcherTest(app, urls[:], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
               "finals": finals["old1"], "records": {}, "captured": []}
@@ -238,7 +240,7 @@ def testUpdateLiveSim(app, slack):
               "finals": finals["new2"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
-  simWatcherTest = SimWatcherTest(app, urls[:1], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
               "finals": finals["old1"], "records": {}, "captured": []}
@@ -250,7 +252,7 @@ def testUpdateLiveSim(app, slack):
 
 
 def testWatchLiveSimInternal(app, slack):
-  simWatcherTest = SimWatcherTest(app, urls[:], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:], slack)
 
   expected = {"value": True, "current": urls[5], "date": dates["new"],
               "finals": finals["new2"], "records": records,
@@ -259,7 +261,7 @@ def testWatchLiveSimInternal(app, slack):
       simWatcherTest.watchLiveSimInternal(fileIsUp, simIsInProgress),
       expected)
 
-  simWatcherTest = SimWatcherTest(app, urls[:1], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
               "finals": finals["old1"], "records": {}, "captured": []}
@@ -269,10 +271,10 @@ def testWatchLiveSimInternal(app, slack):
 
 
 def testWatchLiveSim(app, slack):
-  simWatcherTest = SimWatcherTest(app, urls[:], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), True)
 
-  simWatcherTest = SimWatcherTest(app, urls[:1], slack)
+  simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), False)
 
 

@@ -11,13 +11,16 @@ import time
 import urllib2
 
 from PyQt4.QtGui import QApplication
+from logger import Logger
 
 
 class SimWatcher(object):
   """Watches the live sim page for any changes."""
 
-  def __init__(self, app=None):
+  def __init__(self, logger=None, app=None):
     """Does an initial parse of the live sim page."""
+    self.logger = logger or Logger()
+
     self.page = self.getPage(self.getUrl())
     self.date = self.findDate(self.page)
     self.finals = self.findFinals(self.page)
@@ -25,7 +28,6 @@ class SimWatcher(object):
     self.updates = self.findUpdates(self.page)
     self.started = False
     self.pages = {}
-    self.logs = []
     self.inProgress = False
 
     self.screenshot = screenshot.Screenshot(
@@ -38,12 +40,12 @@ class SimWatcher(object):
       self.capture(self.pages[filename], filename)
       self.upload(filename, "live-sim-discussion")
       self.updateRecords(self.pages[filename])
-      self.log("Uploaded {0} to live-sim-discussion.".format(filename))
+      self.logger.log("Uploaded {0} to live-sim-discussion.".format(filename))
       time.sleep(2)
 
     if self.pages:
       self.postRecords()
-      self.log("Posted records to live-sim-discussion.")
+      self.logger.log("Posted records to live-sim-discussion.")
 
     self.pages = {}
 
@@ -93,11 +95,6 @@ class SimWatcher(object):
 
   def getImagesPath(self):
     return os.path.expanduser("~") + "/orangeandblueleague/watchers/screenshots/"
-
-  def log(self, message):
-    timestamp = datetime.datetime.now().strftime('%H:%M:%S')
-    current = self.date
-    self.logs.append("[{0}] ({1}) {2}".format(timestamp, current, message))
 
   def watchLiveSim(self, fileIsUp, simIsInProgress):
     """Itermittently checks the sim page url for any changes.
@@ -151,7 +148,7 @@ class SimWatcher(object):
       alert = self.sendAlert(False)
 
     self.postMessage("Done watching live sim.", "testing")
-    self.postMessage("\n".join(self.logs), "testing")
+    self.logger.dump()
 
     return alert
 
@@ -171,14 +168,14 @@ class SimWatcher(object):
     updated = False
 
     if date != self.date:
-      self.log("Detected date change to {0}.".format(date))
+      self.logger.log("Detected date change to {0}.".format(date))
       self.started = False
       self.updates = []
 
       if finals:
         filename = self.getFile(date)
         self.pages[filename] = page
-        self.log(
+        self.logger.log(
             "Detected {0} finals and saved page snapshot.".format(len(finals)))
         updated = True
 
@@ -186,7 +183,7 @@ class SimWatcher(object):
       self.finals = finals
 
     elif page != self.page:
-      self.log("Detected page change.")
+      self.logger.log("Detected page change.")
 
       updates = self.findUpdates(page)
       for update in updates:
@@ -197,14 +194,14 @@ class SimWatcher(object):
       if finals and finals > self.finals:
         filename = self.getFile(date)
         self.pages[filename] = page
-        self.log(
+        self.logger.log(
             "Detected {0} finals and saved page snapshot.".format(len(finals)))
 
         self.finals = finals
         updated = True
 
       elif finals and finals < self.finals:
-        self.log(
+        self.logger.log(
             "Ignored partially loaded page with {0} finals.".format(len(finals)))
 
     self.page = page
