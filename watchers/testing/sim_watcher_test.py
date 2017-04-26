@@ -133,6 +133,19 @@ updates = {
     "Olmedo-Barrera hits a 2-run HR."
 }
 
+logs = [
+    "[0:0:0] Started watching live sim.",
+    "[0:0:0] Saved 2 finals on 09052018.",
+    "[0:0:0] Saved 3 finals on 09092018.",
+    "[0:0:0] Saved 15 finals on 09092018.",
+    "[0:0:0] Ignored 3 finals on 09092018.",
+    "[0:0:0] Uploaded sim09052018.png.",
+    "[0:0:0] Uploaded sim09092018.png.",
+    "[0:0:0] Posted records.",
+    "[0:0:0] Done watching live sim: success.",
+    "[0:0:0] Done watching live sim: failure.",
+]
+
 
 def testReal(app):
   url = "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
@@ -240,6 +253,8 @@ def testUpdateLiveSim(app, slack):
               "finals": finals["new2"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
+  assertEquals(simWatcherTest.logger.dump(), logs[1:5])
+
   simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:1], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
@@ -249,6 +264,8 @@ def testUpdateLiveSim(app, slack):
   expected = {"value": False, "current": urls[0], "date": dates["old"],
               "finals": finals["old1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
+
+  assertEquals(simWatcherTest.logger.dump(), [])
 
 
 def testWatchLiveSimInternal(app, slack):
@@ -260,6 +277,7 @@ def testWatchLiveSimInternal(app, slack):
   assertEquals(
       simWatcherTest.watchLiveSimInternal(fileIsUp, simIsInProgress),
       expected)
+  assertEquals(simWatcherTest.logger.dump(), logs[:-1])
 
   simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
 
@@ -268,14 +286,17 @@ def testWatchLiveSimInternal(app, slack):
   assertEquals(
       simWatcherTest.watchLiveSimInternal(fileIsUp, simIsInProgress),
       expected)
+  assertEquals(simWatcherTest.logger.dump(), [logs[0], logs[-1]])
 
 
 def testWatchLiveSim(app, slack):
   simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), True)
+  assertEquals(simWatcherTest.logger.dump(), logs[:-1])
 
   simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), False)
+  assertEquals(simWatcherTest.logger.dump(), [logs[0], logs[-1]])
 
 
 if __name__ == "__main__":

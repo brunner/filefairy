@@ -40,12 +40,12 @@ class SimWatcher(object):
       self.capture(self.pages[filename], filename)
       self.upload(filename, "live-sim-discussion")
       self.updateRecords(self.pages[filename])
-      self.logger.log("Uploaded {0} to live-sim-discussion.".format(filename))
+      self.logger.log("Uploaded {0}.".format(filename))
       time.sleep(2)
 
     if self.pages:
       self.postRecords()
-      self.logger.log("Posted records to live-sim-discussion.")
+      self.logger.log("Posted records.")
 
     self.pages = {}
 
@@ -115,7 +115,7 @@ class SimWatcher(object):
     sleep, check, timeout = self.getWatchLiveSimValues()
     elapsed = 0
 
-    self.postMessage("Watching live sim.", "testing")
+    self.logger.log("Started watching live sim.")
 
     while elapsed < timeout:
       alert = self.updateLiveSim()
@@ -144,10 +144,11 @@ class SimWatcher(object):
     if self.started:
       self.dequeue()
       alert = self.sendAlert(True)
+      self.logger.log("Done watching live sim: success.")
     else:
       alert = self.sendAlert(False)
+      self.logger.log("Done watching live sim: failure.")
 
-    self.postMessage("Done watching live sim.", "testing")
     self.logger.dump()
 
     return alert
@@ -168,23 +169,19 @@ class SimWatcher(object):
     updated = False
 
     if date != self.date:
-      self.logger.log("Detected date change to {0}.".format(date))
       self.started = False
       self.updates = []
 
       if finals:
         filename = self.getFile(date)
         self.pages[filename] = page
-        self.logger.log(
-            "Detected {0} finals and saved page snapshot.".format(len(finals)))
+        self.logger.log("Saved {0} finals on {1}.".format(len(finals), date))
         updated = True
 
       self.date = date
       self.finals = finals
 
     elif page != self.page:
-      self.logger.log("Detected page change.")
-
       updates = self.findUpdates(page)
       for update in updates:
         if update not in self.updates:
@@ -194,15 +191,13 @@ class SimWatcher(object):
       if finals and finals > self.finals:
         filename = self.getFile(date)
         self.pages[filename] = page
-        self.logger.log(
-            "Detected {0} finals and saved page snapshot.".format(len(finals)))
+        self.logger.log("Saved {0} finals on {1}.".format(len(finals), date))
 
         self.finals = finals
         updated = True
 
       elif finals and finals < self.finals:
-        self.logger.log(
-            "Ignored partially loaded page with {0} finals.".format(len(finals)))
+        self.logger.log("Ignored {0} finals on {1}.".format(len(finals), date))
 
     self.page = page
 
