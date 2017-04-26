@@ -26,7 +26,7 @@ class SchedulerTest(Scheduler):
     self.simIsInProgress = simIsInProgress
 
     self.exportWatcher = ExportSchedulerTest(exportUrls)
-    self.simWatcher = SimSchedulerTest(app, simUrls)
+    self.simWatcher = SimSchedulerTest(TestLogger(), app, simUrls)
 
 
 class ExportSchedulerTest(ExportWatcherTest):
@@ -81,6 +81,7 @@ def testStart(app):
 
   schedulerTest.start()
   logs = schedulerTest.logger.dump()
+  assertEquals(len(logs), 14)
 
   # t = 0. Logged by Scheduler.start().
   # Scheduler starts an ExportWatcher object.
