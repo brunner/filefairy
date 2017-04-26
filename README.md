@@ -1,8 +1,8 @@
-# Orange and Blue League
+# Orange and Blue League Utils
 
-Scripts to simplify exporting and importing OOTP16 files in the Orange and Blue League.
+Linux-compatible scripts to simplify exporting and importing OOTP16 files in the Orange and Blue League.
 
-## Preparation (Linux)
+## Preparation
 
 First, download the scripts.  
 This is most easily accomplished by simply cloning the repository:
@@ -35,19 +35,6 @@ Finally, clean up:
 rm -rf orangeandblueleague
 ```
 
-## Preparation (Windows)
-
-This is experimental, but here is my suggestion:
-
-Copy the experimental importobl script to somewhere on your computer.  
-You can find it here: https://github.com/brunner/orangeandblueleague/blob/master/utils/importtest   
-Paste the contents of the file into a file called "importobl.py"  
-Remove the first line ("#!/usr/bin/env python") from the file.  
-Edit the file to replace "orangeandblue.lg" with whatever you have named your league file.  
-
-Make sure you can run python on your computer: https://docs.python.org/2/faq/windows.  
-Run the "importobl.py" script.
-
 ## Import
 
 The import script is a simple shell script that downloads the league file from the league website and unpacks it into the appropriate saved_games directory on your computer. To trigger this, simply run the command from any directory:
@@ -71,7 +58,3 @@ exportobl
 ```
 
 You will be prompted for the password to your email account. The value is not stored- you must type it every time you execute the script. If your email login is successful, your team file will be mailed to the league commissioner and to yourself, so you have a record of it.
-
-## Monitor
-
-The monitor script is not intended for personal use- instead, the goal is to deploy the script and use it to monitor the status of the league sim. The monitor script will eventually alert the team when the sim has begun, take screenshots of the results as they happen, and finally send another alert when the league file is ready to be downloaded. This script is a work in progress and is still being tested for bugs.
