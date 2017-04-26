@@ -66,7 +66,6 @@ class ExportWatcherTest(ExportWatcher):
 fileIsUp = threading.Event()
 simIsInProgress = threading.Event()
 
-
 urls = getExportUrls()
 
 league = {
