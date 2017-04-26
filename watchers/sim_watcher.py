@@ -26,6 +26,7 @@ class SimWatcher(object):
     self.started = False
     self.pages = {}
     self.logs = []
+    self.inProgress = False
 
     self.screenshot = screenshot.Screenshot(
         app or QApplication(sys.argv), self.getImagesPath())
@@ -125,14 +126,21 @@ class SimWatcher(object):
 
       if updated:
         elapsed = 0
-        simIsInProgress.set()
+
+        if not self.inProgress:
+          self.inProgress = True
+          simIsInProgress.set()
       else:
         time.sleep(sleep)
         elapsed = elapsed + sleep
 
       if elapsed and elapsed % check == 0:
         self.dequeue()
-        simIsInProgress.clear()
+
+        if self.inProgress:
+          self.inProgress = False
+          simIsInProgress.clear()
+
         if fileIsUp.is_set():
           elapsed = timeout
 

@@ -13,7 +13,7 @@ import time
 import urllib2
 
 from export_watcher import ExportWatcher
-from utils import assertEquals, assertNotEquals
+from utils import assertEquals, assertNotEquals, getExportUrls
 
 class ExportWatcherTest(ExportWatcher):
   """Tests for ExportWatcher."""
@@ -66,13 +66,8 @@ class ExportWatcherTest(ExportWatcher):
 fileIsUp = threading.Event()
 simIsInProgress = threading.Event()
 
-path = "http://brunnerj.com/orangeandblueleague/"
-files = [
-    "export_01142017_1.html",         # 0. Initial exports page.
-    "export_01142017_2.html",         # 1. League file date has not changed.
-    "export_01172017_1.html",         # 3. League file date has changed.
-]
-urls = [os.path.join(path, fi) for fi in files]
+
+urls = getExportUrls()
 
 league = {
     "old": "Saturday January 14, 2017 13:01:09 EST",

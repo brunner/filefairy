@@ -12,7 +12,7 @@ import urllib2
 
 from PyQt4.QtGui import QApplication
 from sim_watcher import SimWatcher
-from utils import assertEquals, assertNotEquals
+from utils import assertEquals, assertNotEquals, getSimUrls
 
 class SimWatcherTest(SimWatcher):
   """Tests for SimWatcher."""
@@ -35,6 +35,7 @@ class SimWatcherTest(SimWatcher):
     self.started = False
     self.pages = {}
     self.logs = []
+    self.inProgress = False
 
     self.screenshot = screenshot.Screenshot(app, self.getImagesPath())
 
@@ -85,20 +86,10 @@ class SimWatcherTest(SimWatcher):
     }
 
 
-app = QApplication(sys.argv)
 fileIsUp = threading.Event()
 simIsInProgress = threading.Event()
 
-path = "http://brunnerj.com/orangeandblueleague/"
-files = [
-    "sim_09052018_1.html",            # 0. Initial sim page.
-    "sim_09052018_2.html",            # 1. Same date. No new final games.
-    "sim_09052018_3.html",            # 2. Same date. One new final game.
-    "sim_09092018_1.html",            # 3. Different date, partially loaded.
-    "sim_09092018_2.html",            # 4. Fully loaded.
-    "sim_09092018_3.html",            # 5. Partially loaded again.
-]
-urls = [os.path.join(path, fi) for fi in files]
+urls = getSimUrls()
 
 dates = {
     "old": "09052018",
@@ -141,7 +132,7 @@ updates = {
 }
 
 
-def testReal():
+def testReal(app):
   url = "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
   page = urllib2.urlopen(url).read()
   simWatcherTest = SimWatcherTest(app, [url])
@@ -150,7 +141,7 @@ def testReal():
   assertNotEquals(simWatcherTest.findFinals(page), [])
 
 
-def testFindDate():
+def testFindDate(app):
   simWatcherTest = SimWatcherTest(app, urls[:])
 
   page = urllib2.urlopen(urls[0]).read()
@@ -172,7 +163,7 @@ def testFindDate():
   assertEquals(simWatcherTest.findDate(page), dates["new"])
 
 
-def testFindFinals():
+def testFindFinals(app):
   simWatcherTest = SimWatcherTest(app, urls[:])
 
   page = urllib2.urlopen(urls[0]).read()
@@ -194,7 +185,7 @@ def testFindFinals():
   assertEquals(simWatcherTest.findFinals(page), finals["new1"])
 
 
-def testFindUpdates():
+def testFindUpdates(app):
   simWatcherTest = SimWatcherTest(app, urls[:])
 
   page = urllib2.urlopen(urls[0]).read()
@@ -216,7 +207,7 @@ def testFindUpdates():
   assertEquals(simWatcherTest.findUpdates(page), [])
 
 
-def testUpdateLiveSim(slack):
+def testUpdateLiveSim(app, slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
 
   expected = {"value": False, "current": urls[0], "date": dates["old"],
@@ -258,7 +249,7 @@ def testUpdateLiveSim(slack):
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
 
-def testWatchLiveSimInternal(slack):
+def testWatchLiveSimInternal(app, slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
 
   expected = {"value": True, "current": urls[5], "date": dates["new"],
@@ -277,7 +268,7 @@ def testWatchLiveSimInternal(slack):
       expected)
 
 
-def testWatchLiveSim(slack):
+def testWatchLiveSim(app, slack):
   simWatcherTest = SimWatcherTest(app, urls[:], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), True)
 
@@ -286,6 +277,8 @@ def testWatchLiveSim(slack):
 
 
 if __name__ == "__main__":
+  app = QApplication(sys.argv)
+
   parser = argparse.ArgumentParser()
   parser.add_argument('--mode', dest='mode')
   parser.add_argument('--slack', dest='slack', action='store_true')
@@ -293,24 +286,24 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   if args.mode == "real" or args.mode == "all":
-    testReal()
+    testReal(app)
 
   if args.mode == "date" or args.mode == "all":
-    testFindDate()
+    testFindDate(app)
 
   if args.mode == "finals" or args.mode == "all":
-    testFindFinals()
+    testFindFinals(app)
 
   if args.mode == "updates" or args.mode == "all":
-    testFindUpdates()
+    testFindUpdates(app)
 
   if args.mode == "livesim" or args.mode == "all":
-    testUpdateLiveSim(args.slack)
+    testUpdateLiveSim(app, args.slack)
 
   if args.mode == "internal" or args.mode == "all":
-    testWatchLiveSimInternal(args.slack)
+    testWatchLiveSimInternal(app, args.slack)
 
   if args.mode == "watch" or args.mode == "all":
-    testWatchLiveSim(args.slack)
+    testWatchLiveSim(app, args.slack)
 
   print "Passed."
