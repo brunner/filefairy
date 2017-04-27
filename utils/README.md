@@ -42,7 +42,7 @@ rm -rf orangeandblueleague
 First, download and install Cygwin by following the instructions here:
 https://cygwin.com/install.html
 
-You need to install the base, python, and wget packages.
+You need to install the base, nano, python, and wget packages.
 
 Once Cygwin is installed, right click on the desktop icon and click:
 Properties > Advanced > Run as Administrator (and check the box)
@@ -53,6 +53,12 @@ Finally, you will need to download the importobl.py script.
 From the cygwin terminal, run:
 ```bash
 wget https://raw.githubusercontent.com/brunner/orangeandblueleague/master/utils/importobl.py
+```
+
+Edit the export script to include your own information:
+
+```bash
+nano orangeandblueleague/utils/exportobl.py
 ```
 
 ## Import
