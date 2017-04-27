@@ -6,6 +6,16 @@ import os
 # Replace these values with your own information.
 leaguefile = "orangeandblue.lg"
 
+def getLeaguePath():
+  home = os.path.expanduser("~")
+  if os.name == "nt":
+    return os.path.join(home, "Documents", "Out of the Park Developments",
+                        "OOTP Baseball 17", "saved_games", leaguefile)
+  else:
+    return os.path.join(home, ".Out of the Park Developments",
+                        "OOTP Baseball 17", "custdata", "saved_games",
+                        leaguefile)
+
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--recover', dest='recover', action='store_true')
@@ -14,8 +24,7 @@ def main():
 
   host = "http://www.orangeandblueleaguebaseball.com/league/OBL/files/"
   importfile = "orange_and_blue_league_baseball.tar.gz"
-  leaguepath = ("{0}/.Out of the Park Developments/OOTP Baseball 17/custdata/saved_games/" +
-                "{1}").format(os.path.expanduser("~"), leaguefile)
+  leaguepath = getLeaguePath()
   backuppath = "{0}.bk".format(leaguepath)
 
   if args.recover:
