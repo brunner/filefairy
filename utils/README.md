@@ -63,9 +63,11 @@ Finally, edit the export script to include your own information (leaguefile and 
 nano importobl.py
 ```
 
-The nano text editor lists available commands at the bottom of the screen. After editing, keypress Control+O to write out your changes to the importobl.py filename (press enter), and then keypress Control+X to exit the editor.
+The nano text editor lists available commands at the bottom of the screen. After editing, keypress Control+O to write out your changes to the importobl.py filename (press enter), and then keypress Control+X to exit the editor. You can always run the nano command again if you want to confirm that your changes were saved.
 
 ## Import
+
+Note: You should close OOTP 17 before running the import command.
 
 The import script is a simple shell script that downloads the league file from the league website and unpacks it into the appropriate saved_games directory on your computer. To trigger this, simply run the command from any directory:
 
