@@ -2,19 +2,22 @@
 
 import argparse
 import os
+import sys
 
 # Replace these values with your own information.
 leaguefile = "orangeandblue.lg"
 
 def getLeaguePath():
-  home = os.path.expanduser("~")
-  if os.name == "nt":
-    return os.path.join(home, "Documents", "Out of the Park Developments",
-                        "OOTP Baseball 17", "saved_games", leaguefile)
+  if sys.platform == "cygwin":
+    # Replace this with your Windows username, if applicable.
+    username = "Username"
+    return os.path.join("C:", "Users", username, "My Documents",
+                        "Out of the Park Developments", "OOTP Baseball 17",
+                        "saved_games", leaguefile)
   else:
-    return os.path.join(home, ".Out of the Park Developments",
-                        "OOTP Baseball 17", "custdata", "saved_games",
-                        leaguefile)
+    return os.path.join(os.path.expanduser("~"),
+                        ".Out of the Park Developments", "OOTP Baseball 17",
+                        "custdata", "saved_games", leaguefile)
 
 def main():
   parser = argparse.ArgumentParser()
