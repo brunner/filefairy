@@ -85,7 +85,7 @@ Note: you will need to run the script from Cygwin. So, double click on Cygwin an
 python importobl.py
 ```
 
-The first time you run the command, you will need to manually download some config files into a settings/ directory. Refer to the How-To guide for more information here.
+The first time you run the command, you will need to manually download some config files into a settings/ directory. Refer to the tech support How-To guide for more information here.
 
 ## Recover
 
