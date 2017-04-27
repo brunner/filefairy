@@ -46,7 +46,7 @@ You need to install the base, nano, python, and wget packages.
 
 Once Cygwin is installed, right click on the desktop icon and click:
 
-Properties > Advanced > Run as Administrator (check the box)
+Properties > Advanced > Run as Administrator (check the box) > Apply
 
 Then, double click Cygwin to launch.
 
@@ -62,6 +62,8 @@ Finally, edit the export script to include your own information (leaguefile and 
 ```bash
 nano importobl.py
 ```
+
+The nano text editor lists available commands at the bottom of the screen. After editing, keypress Control+O to write out your changes to the importobl.py filename (press enter), and then keypress Control+X to exit the editor.
 
 ## Import
 
