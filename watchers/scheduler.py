@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-import export_watcher
-import logger
-import sim_watcher
 import slack
 import threading
+
+from export_watcher import ExportWatcher
+from logger import Logger
+from sim_watcher import SimWatcher
 
 
 class Scheduler(object):
@@ -16,8 +17,8 @@ class Scheduler(object):
     self.fileIsUp = fileIsUp
     self.simIsInProgress = simIsInProgress
 
-    self.exportWatcher = export_watcher.ExportWatcher()
-    self.simWatcher = sim_watcher.SimWatcher()
+    self.exportWatcher = ExportWatcher()
+    self.simWatcher = SimWatcher()
 
   def start(self):
     self.postMessage("Watching.", "testing")
@@ -43,7 +44,7 @@ class Scheduler(object):
 
 
 if __name__ == "__main__":
-  logger = logger.Logger()
+  logger = Logger()
   fileIsUp = threading.Event()
   simIsInProgress = threading.Event()
 
