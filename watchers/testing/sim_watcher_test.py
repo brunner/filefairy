@@ -43,9 +43,6 @@ class SimWatcherTest(SimWatcher):
 
     self.updateLiveSim(self.current)
 
-  def dumpLog(self):
-    pass
-
   def capture(self, html, filename):
     """Stores the captured file for asserting."""
     self.captured.append(filename)
@@ -256,7 +253,7 @@ def testUpdateLiveSim(app, slack):
               "finals": finals["new2"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
-  assertEquals(simWatcherTest.logger.dump(), logs[1:5])
+  assertEquals(simWatcherTest.logger.logs, logs[1:5])
 
   simWatcherTest = SimWatcherTest(TestLogger(), app, urls[:1], slack)
 
@@ -268,7 +265,7 @@ def testUpdateLiveSim(app, slack):
               "finals": finals["old1"], "records": {}, "captured": []}
   assertEquals(simWatcherTest.updateLiveSim(), expected)
 
-  assertEquals(simWatcherTest.logger.dump(), [])
+  assertEquals(simWatcherTest.logger.logs, [])
 
 
 def testWatchLiveSimInternal(app, slack):
@@ -280,7 +277,7 @@ def testWatchLiveSimInternal(app, slack):
   assertEquals(
       simWatcherTest.watchLiveSimInternal(fileIsUp, simIsInProgress),
       expected)
-  assertEquals(simWatcherTest.logger.dump(), logs[:-1])
+  assertEquals(simWatcherTest.logger.logs, logs[:-1])
 
   simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
 
@@ -289,17 +286,17 @@ def testWatchLiveSimInternal(app, slack):
   assertEquals(
       simWatcherTest.watchLiveSimInternal(fileIsUp, simIsInProgress),
       expected)
-  assertEquals(simWatcherTest.logger.dump(), [logs[0], logs[-1]])
+  assertEquals(simWatcherTest.logger.logs, [logs[0], logs[-1]])
 
 
 def testWatchLiveSim(app, slack):
   simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), True)
-  assertEquals(simWatcherTest.logger.dump(), logs[:-1])
+  assertEquals(simWatcherTest.logger.logs, logs[:-1])
 
   simWatcherTest = SimWatcherTest(TestLogger(slack), app, urls[:1], slack)
   assertEquals(simWatcherTest.watchLiveSim(fileIsUp, simIsInProgress), False)
-  assertEquals(simWatcherTest.logger.dump(), [logs[0], logs[-1]])
+  assertEquals(simWatcherTest.logger.logs, [logs[0], logs[-1]])
 
 
 if __name__ == "__main__":

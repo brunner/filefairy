@@ -21,8 +21,6 @@ class Scheduler(object):
     self.simWatcher = SimWatcher()
 
   def start(self):
-    self.postMessage("Watching.", "testing")
-
     p1 = threading.Thread(target=self.exportWatcher.watchLeagueFile,
                           args=(self.fileIsUp, self.simIsInProgress,))
     self.logger.log("Starting export watcher.")
@@ -36,8 +34,6 @@ class Scheduler(object):
     p1.join()
     p2.join()
     self.logger.log("Joined watcher threads.")
-
-    self.postMessage("Done.", "testing")
 
   def postMessage(self, message, channel):
     slack.postMessage(message, channel)

@@ -74,7 +74,7 @@ simUrls = getSimUrls()
 
 
 def testStart(app):
-  logger = TestLogger()
+  logger = TestLogger(slack=True)
 
   fileIsUp = EventTest(logger, "fileIsUp")
   simIsInProgress = EventTest(logger, "simIsInProgress")
@@ -83,7 +83,8 @@ def testStart(app):
       logger, fileIsUp, simIsInProgress, app, exportUrls, simUrls)
 
   schedulerTest.start()
-  logs = schedulerTest.logger.dump()
+  schedulerTest.logger.dump()
+  logs = schedulerTest.logger.logs
   assertEquals(len(logs), 14)
 
   # t = 0. Logged by Scheduler.start().

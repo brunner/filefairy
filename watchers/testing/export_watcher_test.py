@@ -127,7 +127,8 @@ def testUpdateLeagueFile():
               "posted": []}
   assertEquals(exportWatcherTest.updateLeagueFile(), expected)
 
-  assertEquals(exportWatcherTest.logger.dump(), [])
+  exportWatcherTest.logger.dump()
+  assertEquals(exportWatcherTest.logger.logs, [])
 
   exportWatcherTest = ExportWatcherTest(TestLogger(), urls[:2])
 
@@ -143,7 +144,8 @@ def testUpdateLeagueFile():
               "posted": []}
   assertEquals(exportWatcherTest.updateLeagueFile(), expected)
 
-  assertEquals(exportWatcherTest.logger.dump(), [])
+  exportWatcherTest.logger.dump()
+  assertEquals(exportWatcherTest.logger.logs, [])
 
 
 def testWatchLeagueFileInternal(slack):
@@ -153,7 +155,9 @@ def testWatchLeagueFileInternal(slack):
               "posted": [updates["file"]]}
   assertEquals(exportWatcherTest.watchLeagueFileInternal(simIsInProgress),
                expected)
-  assertEquals(exportWatcherTest.logger.dump(), logs[:-1])
+
+  exportWatcherTest.logger.dump()
+  assertEquals(exportWatcherTest.logger.logs, logs[:-1])
 
   exportWatcherTest = ExportWatcherTest(TestLogger(slack), urls[:2], slack)
 
@@ -161,19 +165,25 @@ def testWatchLeagueFileInternal(slack):
               "posted": []}
   assertEquals(exportWatcherTest.watchLeagueFileInternal(simIsInProgress),
                expected)
-  assertEquals(exportWatcherTest.logger.dump(), [logs[0], logs[2]])
+
+  exportWatcherTest.logger.dump()
+  assertEquals(exportWatcherTest.logger.logs, [logs[0], logs[2]])
 
 
 def testWatchLeagueFile(slack):
   exportWatcherTest = ExportWatcherTest(TestLogger(slack), urls[:], slack)
   assertEquals(exportWatcherTest.watchLeagueFile(fileIsUp, simIsInProgress),
                True)
-  assertEquals(exportWatcherTest.logger.dump(), logs[:-1])
+
+  exportWatcherTest.logger.dump()
+  assertEquals(exportWatcherTest.logger.logs, logs[:-1])
 
   exportWatcherTest = ExportWatcherTest(TestLogger(slack), urls[:2], slack)
   assertEquals(exportWatcherTest.watchLeagueFile(fileIsUp, simIsInProgress),
                False)
-  assertEquals(exportWatcherTest.logger.dump(), [logs[0], logs[2]])
+
+  exportWatcherTest.logger.dump()
+  assertEquals(exportWatcherTest.logger.logs, [logs[0], logs[2]])
 
 
 if __name__ == "__main__":

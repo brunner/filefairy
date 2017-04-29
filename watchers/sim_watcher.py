@@ -48,12 +48,10 @@ class SimWatcher(object):
       self.logger.log("Posted records.")
 
     self.pages = {}
+    self.logger.dump()
 
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
-
-  def dumpLog(self):
-    self.logger.dump()
 
   def postMessage(self, message, channel):
     slack.postMessage(message, channel)
@@ -129,9 +127,6 @@ class SimWatcher(object):
         if not self.inProgress:
           self.inProgress = True
           simIsInProgress.set()
-      elif elapsed < 5:
-        time.sleep(1)
-        elapsed = elapsed + 1
       else:
         time.sleep(sleep)
         elapsed = elapsed + sleep
@@ -154,7 +149,7 @@ class SimWatcher(object):
       alert = self.sendAlert(False)
       self.logger.log("Done watching live sim: failure.")
 
-    self.dumpLog()
+    self.logger.dump()
 
     return alert
 
