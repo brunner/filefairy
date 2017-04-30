@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import os
-
 
 def assertEquals(actual, expected):
   if actual != expected:
