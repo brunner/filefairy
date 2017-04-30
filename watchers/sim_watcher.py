@@ -20,35 +20,21 @@ class SimWatcher(object):
   def __init__(self, logger=None, app=None):
     """Does an initial parse of the live sim page."""
     self.logger = logger or Logger()
-
-    self.page = self.getPage(self.getUrl())
-    self.date = self.findDate(self.page)
-    self.finals = self.findFinals(self.page)
-    self.records = self.initializeRecords()
-    self.updates = self.findUpdates(self.page)
-    self.started = False
-    self.pages = {}
-    self.inProgress = False
-
     self.screenshot = screenshot.Screenshot(
         app or QApplication(sys.argv), self.getImagesPath())
 
-    self.updateLiveSim()
+    self.filePage = self.getPage(self.getFileUrl())
+    self.fileDate = self.findFileDate(self.filePage)
 
-  def dequeue(self):
-    for filename in sorted(self.pages):
-      self.capture(self.pages[filename], filename)
-      self.upload(filename, "live-sim-discussion")
-      self.updateRecords(self.pages[filename])
-      self.logger.log("Uploaded {0}.".format(filename))
-      time.sleep(2)
-
-    if self.pages:
-      self.postRecords()
-      self.logger.log("Posted records.")
+    self.simPage = self.getPage(self.getSimUrl())
+    self.simDate = self.findSimDate(self.simPage)
+    self.finals = self.findFinals(self.simPage)
+    self.updates = self.findUpdates(self.simPage)
 
     self.pages = {}
-    self.logger.dump()
+    self.records = {t: [0, 0, 0] for t in range(31, 61)}
+
+    self.updateLiveSim()
 
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
@@ -59,154 +45,151 @@ class SimWatcher(object):
   def upload(self, filename, channel):
     slack.upload(self.getImagesPath(), filename, channel)
 
-  def getUrl(self):
+  def getFileUrl(self):
+    """Returns the exports page url that should be checked for date changes."""
+    return "http://orangeandblueleaguebaseball.com/StatsLab/exports.php"
+
+  def getSimUrl(self):
     """Returns the live sim page url that should be checked for date changes."""
     return "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
 
-  def getWatchLiveSimValues(self):
+  def getTimerValues(self):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
-        2,      # 2 seconds, to sleep between consecutive page checks.
-        120,    # 2 minutes, after which the watcher pauses and uploads any
-                #     screenshots of saved pages to Slack.
-        54000,  # 15 hours, to wait for a page change, before timing out and
+        2,      # 2 seconds, to sleep between consecutive sim page checks.
+        60,     # 1 minute, after which the watcher pauses to upload any sim
+                #     page screenshots to Slack and check if the file is up.
+        82800,  # 23 hours, to wait for a page change, before timing out and
                 #     exiting the program.
     ]
-
-  def sendAlert(self, value):
-    """Returns the specified value."""
-    return {"value": value}
-
-  def checkAlert(self, alert):
-    """Returns the value of the alert."""
-    return alert["value"]
 
   def getPage(self, url):
     try:
       page = urllib2.urlopen(url).read()
     except Exception as e:
+      self.logger.log("Exception opening {0}: {1}.".format(url, e))
       page = ""
 
     return page
 
-  def getFile(self, date):
-    """Gets the file name to use for a given live sim date."""
-    return "sim{0}.png".format(date)
-
   def getImagesPath(self):
     return os.path.expanduser("~") + "/orangeandblueleague/watchers/screenshots/"
 
-  def watchLiveSim(self, fileIsUp, simIsInProgress):
-    """Itermittently checks the sim page url for any changes.
-
-    If any changes are found, wait for a certain amount of time to capture any
-    additional changes. If not, abandon watching after a timeout.
-    Returns true if any changes were found.
-    """
-    return self.checkAlert(self.watchLiveSimInternal(fileIsUp, simIsInProgress))
-
-  def watchLiveSimInternal(self, fileIsUp, simIsInProgress):
-    """Itermittently checks the sim page url for any changes.
+  def watch(self):
+    """Itermittently checks the page urls for any changes.
 
     If any changes are found, wait for a certain amount of time before checking
     if there are any page snapshots to upload. Abandon watching after a timeout.
-    Returns a true alert if any changes were found.
     """
-    sleep, check, timeout = self.getWatchLiveSimValues()
+    sleep, pause, timeout = self.getTimerValues()
     elapsed = 0
 
-    self.logger.log("Started watching live sim.")
+    self.logger.log("Started watching.")
 
     while elapsed < timeout:
-      alert = self.updateLiveSim()
-      updated = self.checkAlert(alert)
-
-      if updated:
+      if self.updateLiveSim():
         elapsed = 0
-
-        if not self.inProgress:
-          self.inProgress = True
-          simIsInProgress.set()
       else:
         time.sleep(sleep)
         elapsed = elapsed + sleep
 
-      if elapsed and elapsed % check == 0:
-        self.dequeue()
-
-        if self.inProgress:
-          self.inProgress = False
-          simIsInProgress.clear()
-
-        if fileIsUp.is_set():
+      if elapsed and elapsed % pause == 0:
+        self.digest()
+        if self.updateLeagueFile():
           elapsed = timeout
 
-    if self.started:
-      self.dequeue()
-      alert = self.sendAlert(True)
-      self.logger.log("Done watching live sim: success.")
-    else:
-      alert = self.sendAlert(False)
-      self.logger.log("Done watching live sim: failure.")
+    self.logger.log("Done watching.")
+    self.digest()
 
-    self.logger.dump()
+  def updateLeagueFile(self, url=""):
+    """Opens the exports page and checks the league file.
 
-    return alert
-
-  def updateLiveSim(self, url=""):
-    """Opens the live sim page and checks the page content.
-
-    Returns a true alert if a screenshot was captured.
+    Returns true if the file has changed since the previous check.
     """
-    url = url or self.getUrl()
+    url = url or self.getFileUrl()
 
     page, date = "", ""
     while not date:
       page = self.getPage(url)
-      date = self.findDate(page)
+      date = self.findFileDate(page)
+
+    if date != self.fileDate:
+      self.fileDate = date
+      self.postMessage("File is up.", "general")
+      self.logger.log("File is up.")
+      return True
+
+    return False
+
+  def updateLiveSim(self, url=""):
+    """Opens the live sim page and checks the page content.
+
+    Returns true if a page snapshot was saved.
+    """
+    url = url or self.getSimUrl()
+
+    page, date = "", ""
+    while not date:
+      page = self.getPage(url)
+      date = self.findSimDate(page)
 
     finals = self.findFinals(page)
-    updated = False
 
-    if date != self.date:
-      self.started = False
+    ret = False
+    if date != self.simDate:
       self.updates = []
 
       if finals:
-        filename = self.getFile(date)
-        self.pages[filename] = page
-        self.logger.log("Saved {0} finals on {1}.".format(len(finals), date))
-        updated = True
+        self.pages[date] = page
+        ret = True
 
-      self.date = date
+        self.logger.log("Saved {0} finals on {1}.".format(len(finals), date))
+
+      self.simDate = date
       self.finals = finals
 
-    elif page != self.page:
+    elif page != self.simPage:
       updates = self.findUpdates(page)
       for update in updates:
         if update not in self.updates:
-          self.postMessage(update, "testing")
+          self.postMessage(update, "live-sim-discussion")
           self.updates.append(update)
 
       if finals and finals > self.finals:
-        filename = self.getFile(date)
-        self.pages[filename] = page
-        self.logger.log("Saved {0} finals on {1}.".format(len(finals), date))
+        self.pages[date] = page
+        ret = True
 
+        self.logger.log("Saved {0} finals on {1}.".format(len(finals), date))
         self.finals = finals
-        updated = True
 
       elif finals and finals < self.finals:
         self.logger.log("Ignored {0} finals on {1}.".format(len(finals), date))
 
-    self.page = page
+    self.simPage = page
 
-    if updated:
-      self.started = True
+    return ret
 
-    return self.sendAlert(updated)
+  def digest(self):
+    for date in sorted(self.pages):
+      filename = "sim{0}.png".format(date)
+      self.findRecords(self.pages[date])
+      self.capture(self.pages[date], filename)
+      self.upload(filename, "live-sim-discussion")
+      self.logger.log("Uploaded {0}.".format(filename))
 
-  def findDate(self, page):
+    if self.pages:
+      lines = self.formatRecords()
+      self.postMessage("\n\n".join(lines), "live-sim-discussion")
+      self.logger.log("Posted records.")
+
+    self.pages = {}
+    self.logger.dump()
+
+  def findFileDate(self, page):
+    match = re.findall(r"League File Updated: ([^<]+)<", page)
+    return match[0] if len(match) else ""
+
+  def findSimDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
     return match[0].replace("/", "").strip() if len(match) else ""
 
@@ -219,20 +202,7 @@ class SimWatcher(object):
 
     return games
 
-  def initializeRecords(self):
-    records = {}
-    for teamid in range(31, 61):
-      records[teamid] = {"W": 0, "L": 0, "T": 0}
-
-    return records
-
-  def formatRecord(self, record):
-    if record["T"]:
-      return "{0}-{1}-{2}".format(record["W"], record["L"], record["T"])
-    else:
-      return "{0}-{1}".format(record["W"], record["L"])
-
-  def updateRecords(self, page):
+  def findRecords(self, page):
     boxes = re.findall(
         r"FINAL(?: \(\d+\))?</td>(.*?)</table>", page, re.DOTALL)
 
@@ -244,16 +214,16 @@ class SimWatcher(object):
         runs1, runs2 = int(lines[0]), int(lines[3])
         if team1 in self.records and team2 in self.records:
           if runs1 > runs2:
-            self.records[team1]["W"] += 1
-            self.records[team2]["L"] += 1
+            self.records[team1][0] += 1
+            self.records[team2][1] += 1
           elif runs1 < runs2:
-            self.records[team1]["L"] += 1
-            self.records[team2]["W"] += 1
+            self.records[team1][1] += 1
+            self.records[team2][0] += 1
           else:
-            self.records[team1]["T"] += 1
-            self.records[team2]["T"] += 1
+            self.records[team1][2] += 1
+            self.records[team2][2] += 1
 
-  def postRecords(self):
+  def formatRecords(self):
     divisions = [
         ("AL East", [33, 34, 48, 57, 59]),
         ("AL Central", [35, 38, 40, 43, 47]),
@@ -266,20 +236,23 @@ class SimWatcher(object):
     lines = []
     for division in divisions:
       r = self.records
-      pct = lambda x: (float(r[x]["W"] + 0.5 * r[x]["T"]) /
-                       (r[x]["W"] + r[x]["L"] + r[x]["T"] if r[x]
-                        ["W"] + r[x]["L"] + r[x]["T"] else 1),    # Winning pct.
-                       r[x]["W"],                                 # Most wins.
-                       float(1) / r[x]["L"] if r[x]["L"] else 2,  # Few. losses.
-                       r[x]["T"])                                 # Most ties.
+      pct = lambda x: (float(r[x][0] + 0.5 * r[x][2]) / (sum(r[x]) or 1),
+                       r[x][0],
+                       float(1) / r[x][1] if r[x][1] else 2,
+                       r[x][2])
       ordered = sorted(division[1], key=pct, reverse=True)
 
-      formatted = " :separator: ".join(["{0} {1}".format(
-          slack.teamidsToEmoji[teamid],
-          self.formatRecord(r[teamid])) for teamid in ordered])
-      lines.append("{0}\n{1}".format(division[0], formatted))
+      formatted = []
+      for t in ordered:
+        emoji = slack.teamidsToEmoji[t]
+        record = r[t] if r[t][2] else r[t][:2]
+        formatted.append("{0} {1}".format(
+            emoji, "-".join([str(n) for n in record])))
 
-    self.postMessage("\n\n".join(lines), "live-sim-discussion")
+      lines.append("{0}\n{1}".format(
+          division[0], " :separator: ".join(formatted)))
+
+    return lines
 
   def findUpdates(self, page):
     match = re.findall(r"SCORING UPDATES(.*?)</table>", page, re.DOTALL)
@@ -295,25 +268,25 @@ class SimWatcher(object):
         inning = re.findall(r"<div(?:[^>]+)>([^<]+)<", cols[3])
         chunks = cols[4].split(">")
         summary = chunks[1] if len(chunks) > 1 else ""
-        updates.append(self.formatUpdates(teams, runs, inning, summary))
+
+        if len(teams) == 2 and len(runs) == 2 or len(inning) == 2:
+          if inning[1] == "&nbsp;":
+            time = ":toparrow: {0}".format(filter(str.isdigit, inning[0]))
+          else:
+            time = ":bottomarrow: {0}".format(filter(str.isdigit, inning[1]))
+
+          score = "{0} {1} {2} {3} {4}".format(
+              teams[0], runs[0], ":separator:", teams[1], runs[1])
+          formatted = "{0} {1} {2}\n{3}".format(
+              time, ":separator:", score, summary.replace(":", ""))
+
+          pattern = re.compile("|".join(slack.nicksToEmoji.keys()))
+          updates.append(pattern.sub(
+              lambda x: slack.nicksToEmoji[x.group()], formatted))
 
     return updates
 
-  def formatUpdates(self, teams, runs, inning, summary):
-    if len(teams) != 2 or len(runs) != 2 or len(inning) != 2:
-      return ""
 
-    if inning[1] == "&nbsp;":
-      time = ":toparrow: {0}".format(filter(str.isdigit, inning[0]))
-    else:
-      time = ":bottomarrow: {0}".format(
-          filter(str.isdigit, inning[1]))
-
-    separator = ":separator:"
-    score = "{0} {1} {2} {3} {4}".format(
-        teams[0], runs[0], separator, teams[1], runs[1])
-    formatted = "{0} {1} {2}\n{3}".format(
-        time, separator, score, summary.replace(":", ""))
-
-    pattern = re.compile("|".join(slack.nicksToEmoji.keys()))
-    return pattern.sub(lambda x: slack.nicksToEmoji[x.group()], formatted)
+if __name__ == "__main__":
+  simWatcher = SimWatcher()
+  simWatcher.watch()
