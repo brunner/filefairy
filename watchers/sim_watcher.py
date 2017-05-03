@@ -34,8 +34,6 @@ class SimWatcher(object):
     self.pages = {}
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
 
-    self.updateLiveSim()
-
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
 
@@ -56,7 +54,7 @@ class SimWatcher(object):
   def getTimerValues(self):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
     return [
-        2,      # 2 seconds, to sleep between consecutive sim page checks.
+        3,      # 2 seconds, to sleep between consecutive sim page checks.
         60,     # 1 minute, after which the watcher pauses to upload any sim
                 #     page screenshots to Slack and check if the file is up.
         82800,  # 23 hours, to wait for a page change, before timing out and
@@ -87,31 +85,30 @@ class SimWatcher(object):
     self.logger.log("Started watching.")
 
     while elapsed < timeout:
-      if self.updateLiveSim():
-        elapsed = 0
-      else:
-        time.sleep(sleep)
-        elapsed = elapsed + sleep
+      time.sleep(sleep)
+      elapsed = elapsed + sleep
 
-      if elapsed and elapsed % pause == 0:
+      if elapsed % pause == 0:
         self.digest()
         if self.updateLeagueFile():
           elapsed = timeout
+      elif self.updateLiveSim():
+        elapsed = 0
 
     self.logger.log("Done watching.")
     self.digest()
 
-  def updateLeagueFile(self, url=""):
+  def updateLeagueFile(self):
     """Opens the exports page and checks the league file.
 
     Returns true if the file has changed since the previous check.
     """
-    url = url or self.getFileUrl()
+    url = self.getFileUrl()
+    page = self.getPage(url)
+    date = self.findFileDate(page)
 
-    page, date = "", ""
-    while not date:
-      page = self.getPage(url)
-      date = self.findFileDate(page)
+    if not date:
+      return False
 
     if date != self.fileDate:
       self.fileDate = date
@@ -121,17 +118,17 @@ class SimWatcher(object):
 
     return False
 
-  def updateLiveSim(self, url=""):
+  def updateLiveSim(self):
     """Opens the live sim page and checks the page content.
 
     Returns true if a page snapshot was saved.
     """
-    url = url or self.getSimUrl()
+    url = self.getSimUrl()
+    page = self.getPage(url)
+    date = self.findSimDate(page)
 
-    page, date = "", ""
-    while not date:
-      page = self.getPage(url)
-      date = self.findSimDate(page)
+    if not date:
+      return False
 
     finals = self.findFinals(page)
 

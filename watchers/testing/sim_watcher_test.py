@@ -40,8 +40,6 @@ class SimWatcherTest(SimWatcher):
 
     self.slack = slack
 
-    self.updateLiveSim(self.simUrls[self.simIndex])
-
   def capture(self, html, filename):
     self.captured.append(filename)
     self.slack and self.screenshot.capture(html, filename)
@@ -81,8 +79,8 @@ class SimWatcherTest(SimWatcher):
         "posted": self.posted
     }
 
-  def getUpdateLeagueFile(self, url=""):
-    ret = self.updateLeagueFile(url)
+  def getUpdateLeagueFile(self):
+    ret = self.updateLeagueFile()
     self.logger.dump()
     return {
         "ret": ret,
@@ -92,8 +90,8 @@ class SimWatcherTest(SimWatcher):
         "posted": self.posted,
     }
 
-  def getUpdateLiveSim(self, url=""):
-    ret = self.updateLiveSim(url)
+  def getUpdateLiveSim(self):
+    ret = self.updateLiveSim()
     self.logger.dump()
     return {
         "ret": ret,
