@@ -65,7 +65,8 @@ class SimWatcher(object):
     try:
       page = urllib2.urlopen(url).read()
     except Exception as e:
-      self.logger.log("Exception opening {0}: {1}.".format(url, e))
+      name = url.split("/")[-1]
+      self.logger.log("Exception opening {0}: {1}.".format(name, e))
       page = ""
 
     return page
