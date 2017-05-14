@@ -8,7 +8,7 @@ import urllib
 import urllib2
 
 
-def postMessage_(channel, text, thread_ts=""):
+def postMessage_(channel, text, attachments, thread_ts=""):
   """Posts a message to the Slack team."""
   url, fields = "https://slack.com/api/chat.postMessage", {}
 
@@ -17,6 +17,8 @@ def postMessage_(channel, text, thread_ts=""):
   fields["text"] = text
   fields["as_user"] = "true"
 
+  if attachments:
+    fields["attachments"] = attachments
   if thread_ts:
     fields["thread_ts"] = thread_ts
 
@@ -24,7 +26,7 @@ def postMessage_(channel, text, thread_ts=""):
   return urllib2.urlopen(request)
 
 
-def update_(ts, channel, text):
+def update_(ts, channel, text, attachments):
   """Edits a message that was previously posted."""
   url, fields = "https://slack.com/api/chat.update", {}
 
@@ -33,6 +35,9 @@ def update_(ts, channel, text):
   fields["channel"] = channel
   fields["text"] = text
   fields["as_user"] = "true"
+
+  if attachments:
+    fields["attachments"] = attachments
 
   request = urllib2.Request(url, urllib.urlencode(fields))
   return urllib2.urlopen(request)
