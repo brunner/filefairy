@@ -38,7 +38,13 @@ class SimWatcher(object):
     self.screenshot.capture(html, filename)
 
   def postMessage(self, message, channel):
-    slack.postMessage(message, channel)
+    try:
+      slack.postMessage(message, channel)
+    except urllib2.URLError as e:
+      if hasattr(e, "reason"):
+        self.logger.log("Failed to reach server. {0}.".format(e.reason))
+      elif hasattr(e, "code"):
+        self.logger.log("Server failed to handle request. {0}.".format(e.code))
 
   def upload(self, filename, channel):
     slack.upload(self.getImagesPath(), filename, channel)
@@ -181,7 +187,10 @@ class SimWatcher(object):
       self.logger.log("Posted records.")
 
     self.pages = {}
-    self.logger.dump()
+
+    logs = "\n".join(self.logger.collect())
+    if logs:
+      self.postMessage(logs, "testing")
 
   def findFileDate(self, page):
     match = re.findall(r"League File Updated: ([^<]+)<", page)

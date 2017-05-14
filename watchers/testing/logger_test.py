@@ -15,10 +15,10 @@ def testLogger():
   logger.log("bar")
   logger.log("baz")
 
-  logs = logger.dump()
-  assertEquals(logs[0], "[0:0:0] foo")
-  assertEquals(logs[1], "[0:0:0] bar")
-  assertEquals(logs[2], "[0:0:0] baz")
+  logs = logger.collect()
+  assertEquals(logs[0], "[00:00:00] foo")
+  assertEquals(logs[1], "[00:00:00] bar")
+  assertEquals(logs[2], "[00:00:00] baz")
 
 
 if __name__ == "__main__":
