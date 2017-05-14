@@ -31,7 +31,7 @@ class SimWatcher(object):
     self.finals = self.findFinals(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
-    self.pages = {}
+    self.pages, self.posts = {}, []
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
 
   def capture(self, html, filename):
@@ -156,7 +156,7 @@ class SimWatcher(object):
       updates = self.findUpdates(page)
       for update in updates:
         if update not in self.updates:
-          self.postMessage(update, "live-sim-discussion")
+          self.posts.append(update)
           self.updates.append(update)
 
       if finals and finals > self.finals:
@@ -174,6 +174,9 @@ class SimWatcher(object):
     return ret
 
   def digest(self):
+    for post in self.posts:
+      self.postMessage(post, "live-sim-discussion")
+
     for date in sorted(self.pages):
       filename = "sim{0}.png".format(date)
       self.findRecords(self.pages[date])
@@ -186,7 +189,7 @@ class SimWatcher(object):
       self.postMessage("\n\n".join(lines), "live-sim-discussion")
       self.logger.log("Posted records.")
 
-    self.pages = {}
+    self.pages, self.posts = {}, []
 
     logs = "\n".join(self.logger.collect())
     if logs:
@@ -267,7 +270,7 @@ class SimWatcher(object):
 
     rows = re.findall(r"<tr>(.*?)</tr>", box, re.DOTALL)
     updates = []
-    for row in rows:
+    for row in reversed(rows):
       cols = re.findall(r"<td(.*?)</td>", row, re.DOTALL)
       if len(cols) == 5:
         teams = re.findall(r"teams/team_(?:\d+)\.html\">([^<]+)<", cols[1])

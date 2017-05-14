@@ -32,7 +32,7 @@ class SimWatcherTest(SimWatcher):
     self.finals = self.findFinals(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
-    self.pages = {}
+    self.pages, self.posts = {}, []
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
 
     self.captured = []
