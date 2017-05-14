@@ -109,7 +109,8 @@ path = "http://brunnerj.com/orangeandblueleague/"
 filePages = [
     "export_01142017_1.html",         # 0. Initial exports page.
     "export_01142017_2.html",         # 1. League file date has not changed.
-    "export_01172017_1.html",         # 2. League file date has changed.
+    "export_01142017_2.html",         # 2. League file date has not changed.
+    "export_01172017_1.html",         # 3. League file date has changed.
 ]
 fileUrls = [os.path.join(path, fi) for fi in filePages]
 
@@ -134,36 +135,33 @@ simDates = {
 }
 
 filenames = {
-    "old": "sim09052018.png",
     "new": "sim09092018.png",
 }
 
 finals = {
-    "old1": set(["5933"]),
-    "old2": set(["5345", "5933"]),
     "new1": set(["4254", "4952", "5035"]),
     "new2": set(["3348", "3456", "3637", "3955", "4038", "4151", "4254",
                  "4357", "4459", "4645", "4952", "5035", "5331", "5847",
                  "6032"]),
 }
 
-win1, loss1, loss2, split = [1, 0, 0], [0, 1, 0], [0, 2, 0], [1, 1, 0]
+win, loss = [1, 0, 0], [0, 1, 0]
 findRecords = {
-    "old1": {33: loss1, 59: win1},
-    "old2": {33: loss1, 45: win1, 53: loss1, 59: win1},
-    "new1": {35: win1, 42: loss1, 49: win1, 50: loss1, 52: loss1, 54: win1},
+    "old1": {33: loss, 59: win},
+    "old2": {33: loss, 45: win, 53: loss, 59: win},
+    "new1": {35: win, 42: loss, 49: win, 50: loss, 52: loss, 54: win},
     "new2": {
-        31: win1, 32: win1, 33: split, 34: win1, 35: win1, 36: loss1,
-        37: win1, 38: win1, 39: win1, 40: loss1, 41: loss1, 42: loss1,
-        43: win1, 44: win1, 45: split, 46: win1, 47: loss1, 48: loss1,
-        49: win1, 50: loss1, 51: win1, 52: loss1, 53: loss2, 54: win1,
-        55: loss1, 56: loss1, 57: loss1, 58: win1, 59: split, 60: loss1,
+        31: win, 32: win, 33: win, 34: win, 35: win, 36: loss,
+        37: win, 38: win, 39: win, 40: loss, 41: loss, 42: loss,
+        43: win, 44: win, 45: loss, 46: win, 47: loss, 48: loss,
+        49: win, 50: loss, 51: win, 52: loss, 53: loss, 54: win,
+        55: loss, 56: loss, 57: loss, 58: win, 59: loss, 60: loss,
     }
 }
 formatRecords = [
     "AL East\n"
-    + ":redsox: 1-0 :separator: :orioles: 1-1 :separator: :jays: 1-1 "
-    + ":separator: :yankees: 0-1 :separator: :rays: 0-1",
+    + ":orioles: 1-0 :separator: :redsox: 1-0 :separator: :yankees: 0-1 "
+    + ":separator: :rays: 0-1 :separator: :jays: 0-1",
     "AL Central\n"
     + ":whitesox: 1-0 :separator: :indians: 1-0 :separator: :royals: 1-0 "
     + ":separator: :tigers: 0-1 :separator: :twins: 0-1",
@@ -177,8 +175,8 @@ formatRecords = [
     + ":reds: 1-0 :separator: :brewers: 1-0 :separator: :cubs: 0-1 "
     + ":separator: :pirates: 0-1 :separator: :cardinals: 0-1",
     "NL West\n"
-    + ":dbacks: 1-0 :separator: :rockies: 1-0 :separator: :dodgers: 1-1 "
-    + ":separator: :giants: 0-1 :separator: :padres: 0-2"]
+    + ":dbacks: 1-0 :separator: :rockies: 1-0 :separator: :dodgers: 0-1 "
+    + ":separator: :padres: 0-1 :separator: :giants: 0-1"]
 postedRecords = "\n\n".join(formatRecords)
 
 updates = {
@@ -191,16 +189,14 @@ updates = {
 }
 
 logs = [
-    "[00:00:00] Started watching.",
-    "[00:00:00] Saved 2 finals on 09052018.",
-    "[00:00:00] Saved 3 finals on 09092018.",
-    "[00:00:00] Saved 15 finals on 09092018.",
-    "[00:00:00] Ignored 3 finals on 09092018.",
-    "[00:00:00] Uploaded sim09052018.png.",
-    "[00:00:00] Uploaded sim09092018.png.",
-    "[00:00:00] Posted records.",
-    "[00:00:00] File is up.",
-    "[00:00:00] Done watching.",
+    "[00:00:00] Started watching.",             # 0
+    "[00:00:00] Saved 3 finals on 09092018.",   # 1
+    "[00:00:00] Saved 15 finals on 09092018.",  # 2
+    "[00:00:00] Ignored 3 finals on 09092018.", # 3
+    "[00:00:00] Uploaded sim09092018.png.",     # 4
+    "[00:00:00] Posted records.",               # 5
+    "[00:00:00] File is up.",                   # 6
+    "[00:00:00] Done watching.",                # 7
 ]
 
 
@@ -228,6 +224,9 @@ def testFindFileDate(app):
   assertEquals(simWatcherTest.findFileDate(page), fileDates["old"])
 
   page = urllib2.urlopen(fileUrls[2]).read()
+  assertEquals(simWatcherTest.findFileDate(page), fileDates["old"])
+
+  page = urllib2.urlopen(fileUrls[3]).read()
   assertEquals(simWatcherTest.findFileDate(page), fileDates["new"])
 
 
@@ -253,17 +252,39 @@ def testFindSimDate(app):
   assertEquals(simWatcherTest.findSimDate(page), simDates["new"])
 
 
+def testFindBoxes(app):
+  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+
+  page = urllib2.urlopen(simUrls[0]).read()
+  assertEquals(len(simWatcherTest.findBoxes(page)), 0)
+
+  page = urllib2.urlopen(simUrls[1]).read()
+  assertEquals(len(simWatcherTest.findBoxes(page)), 0)
+
+  page = urllib2.urlopen(simUrls[2]).read()
+  assertEquals(len(simWatcherTest.findBoxes(page)), 0)
+
+  page = urllib2.urlopen(simUrls[3]).read()
+  assertEquals(len(simWatcherTest.findBoxes(page)), 3)
+
+  page = urllib2.urlopen(simUrls[4]).read()
+  assertEquals(len(simWatcherTest.findBoxes(page)), 15)
+
+  page = urllib2.urlopen(simUrls[5]).read()
+  assertEquals(len(simWatcherTest.findBoxes(page)), 3)
+
+
 def testFindFinals(app):
   simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(simWatcherTest.findFinals(page), finals["old1"])
+  assertEquals(simWatcherTest.findFinals(page), set())
 
   page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(simWatcherTest.findFinals(page), finals["old1"])
+  assertEquals(simWatcherTest.findFinals(page), set())
 
   page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(simWatcherTest.findFinals(page), finals["old2"])
+  assertEquals(simWatcherTest.findFinals(page), set())
 
   page = urllib2.urlopen(simUrls[3]).read()
   assertEquals(simWatcherTest.findFinals(page), finals["new1"])
@@ -279,7 +300,17 @@ def testFindRecords(app):
   simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(simWatcherTest.getFindRecords(page), findRecords["old1"])
+  assertEquals(simWatcherTest.getFindRecords(page), {})
+  
+  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+
+  page = urllib2.urlopen(simUrls[1]).read()
+  assertEquals(simWatcherTest.getFindRecords(page), {})
+
+  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+
+  page = urllib2.urlopen(simUrls[2]).read()
+  assertEquals(simWatcherTest.getFindRecords(page), {})
 
   simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
@@ -287,9 +318,6 @@ def testFindRecords(app):
   assertEquals(simWatcherTest.getFindRecords(page), findRecords["new1"])
 
   simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
-
-  page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(simWatcherTest.getFindRecords(page), findRecords["old2"])
 
   page = urllib2.urlopen(simUrls[4]).read()
   assertEquals(simWatcherTest.getFindRecords(page), findRecords["new2"])
@@ -327,11 +355,15 @@ def testUpdateLeagueFile(app, slack):
               "date": fileDates["old"], "posted": []}
   assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
 
-  expected = {"ret": True, "collected": logs[8:9], "index": 2,
+  expected = {"ret": False, "collected": [], "index": 2,
+              "date": fileDates["old"], "posted": []}
+  assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
+
+  expected = {"ret": True, "collected": logs[6:7], "index": 3,
               "date": fileDates["new"], "posted": ["File is up."]}
   assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
 
-  expected = {"ret": False, "collected": logs[8:9], "index": 2,
+  expected = {"ret": False, "collected": logs[6:7], "index": 3,
               "date": fileDates["new"], "posted": ["File is up."]}
   assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
 
@@ -340,35 +372,35 @@ def testUpdateLiveSim(app, slack):
   simWatcherTest = SimWatcherTest(
       TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
 
-  expected = {"ret": False, "collected": [], "index": 1, "date": simDates["old"],
-              "finals": finals["old1"], "updates": [updates["update1"]],
+  expected = {"ret": False, "collected": [], "index": 1,
+              "date": simDates["old"], "finals": set(),
+              "updates": [updates["update1"]], "posted": []}
+  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
+
+  expected = {"ret": False, "collected": [], "index": 2,
+              "date": simDates["old"], "finals": set(),
+              "updates": [updates["update1"], updates["update2"]],
               "posted": []}
   assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": True, "collected": logs[1:2], "index": 2,
-              "date": simDates["old"], "finals": finals["old2"],
-              "updates": [updates["update1"], updates["update2"]],
-              "posted": [updates["update2"]]}
-  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
-
-  expected = {"ret": True, "collected": logs[1:3], "index": 3,
+  expected = {"ret": True, "collected": logs[1:2], "index": 3,
               "date": simDates["new"], "finals": finals["new1"], "updates": [],
-              "posted": [updates["update2"]]}
+              "posted": []}
   assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": True, "collected": logs[1:4], "index": 4,
+  expected = {"ret": True, "collected": logs[1:3], "index": 4,
               "date": simDates["new"], "finals": finals["new2"], "updates": [],
-              "posted": [updates["update2"]]}
+              "posted": []}
   assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": False, "collected": logs[1:5], "index": 5,
+  expected = {"ret": False, "collected": logs[1:4], "index": 5,
               "date": simDates["new"], "finals": finals["new2"], "updates": [],
-              "posted": [updates["update2"]]}
+              "posted": []}
   assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": False, "collected": logs[1:5], "index": 5,
+  expected = {"ret": False, "collected": logs[1:4], "index": 5,
               "date": simDates["new"], "finals": finals["new2"], "updates": [],
-              "posted": [updates["update2"]]}
+              "posted": []}
   assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
 
 
@@ -377,10 +409,10 @@ def testWatch(app, slack):
       TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
 
   expected = {"collected": logs,
-              "captured": [filenames["old"], filenames["new"]],
-              "posted": [logs[0], updates["update2"], filenames["old"],
-                         filenames["new"], postedRecords, "\n".join(logs[1:8]),
-                         "File is up.", "\n".join(logs[8:10])]}
+              "captured": [filenames["new"]],
+              "posted": [logs[0], updates["update2"], filenames["new"],
+                         postedRecords, "\n".join(logs[1:6]),
+                         "File is up.", "\n".join(logs[6:8])]}
   assertEquals(simWatcherTest.getWatch(), expected)
 
 
@@ -401,6 +433,9 @@ if __name__ == "__main__":
 
   if args.mode == "simdate" or args.mode == "all":
     testFindSimDate(app)
+
+  if args.mode == "boxes" or args.mode == "all":
+    testFindBoxes(app)
 
   if args.mode == "finals" or args.mode == "all":
     testFindFinals(app)

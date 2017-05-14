@@ -205,19 +205,24 @@ class SimWatcher(object):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
     return match[0].replace("/", "").strip() if len(match) else ""
 
-  def findFinals(self, page):
+  def findBoxes(self, page):
     boxes = re.findall(
         r"FINAL(?: \(\d+\))?</td>(.*?)</table>", page, re.DOTALL)
-    games = set()
-    for box in boxes:
-      games.add("".join(re.findall(r"teams/team_([^\.]+)\.html", box)))
+    if len(boxes) == page.count("Box Score</a>"):
+      return boxes
 
-    return games
+    return []
+
+  def findFinals(self, page):
+    finals = set()
+    boxes = self.findBoxes(page)
+    for box in boxes:
+      finals.add("".join(re.findall(r"teams/team_([^\.]+)\.html", box)))
+
+    return finals
 
   def findRecords(self, page):
-    boxes = re.findall(
-        r"FINAL(?: \(\d+\))?</td>(.*?)</table>", page, re.DOTALL)
-
+    boxes = self.findBoxes(page)
     for box in boxes:
       teamids = re.findall(r"teams/team_([^\.]+)\.html", box)
       lines = re.findall(r"<span style=\"color:#F6EF7D;\">([^<]+)<", box)
