@@ -1,10 +1,63 @@
 #!/usr/bin/env python
 
+import base64
 import os
 import subprocess
 import tokens
 import urllib
 import urllib2
+
+
+def postMessage_(channel, text, thread_ts=""):
+  """Posts a message to the Slack team."""
+  url, fields = "https://slack.com/api/chat.postMessage", {}
+
+  fields["token"] = tokens.filefairy
+  fields["channel"] = channel
+  fields["text"] = text
+  fields["as_user"] = "true"
+
+  if thread_ts:
+    fields["thread_ts"] = thread_ts
+
+  request = urllib2.Request(url, urllib.urlencode(fields))
+  return urllib2.urlopen(request)
+
+
+def update_(ts, channel, text):
+  """Edits a message that was previously posted."""
+  url, fields = "https://slack.com/api/chat.update", {}
+
+  fields["token"] = tokens.filefairy
+  fields["ts"] = ts
+  fields["channel"] = channel
+  fields["text"] = text
+  fields["as_user"] = "true"
+
+  request = urllib2.Request(url, urllib.urlencode(fields))
+  return urllib2.urlopen(request)
+
+
+def upload_(path, filename, channel):
+  cwd = os.getcwd()
+  os.chdir(path)
+
+  url, fields = "https://slack.com/api/files.upload", {}
+
+  content = "data:image/png;base64," + \
+      base64.b64encode(open(filename, "rb").read())
+
+  fields["token"] = tokens.filefairy
+  fields["content"] = content
+  fields["filename"] = filename
+  fields["channels"] = channel
+
+  request = urllib2.Request(url, urllib.urlencode(fields))
+  response = urllib2.urlopen(request)
+
+  os.chdir(cwd)
+
+  return response
 
 
 def postMessage(text, channel):
