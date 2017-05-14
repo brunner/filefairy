@@ -11,8 +11,8 @@ from utils import assertEquals
 
 
 def test():
-  attachments = [{"fallback": "a", "pretext": "b", "fields": [
-      {"value": "c", "short": "true"}, {"value": "d", "short": "true"}]}]
+  attachments = [{"fallback": "a", "pretext": "b",
+                  "fields": [{"value": "c"}, {"value": "d"}]}]
   response = slack.postMessage_("testing", "foo", attachments)
   obj = json.loads(response.read())
   channel = obj["channel"]
@@ -22,8 +22,8 @@ def test():
   assertEquals(obj["message"]["attachments"][0]["fields"][0]["value"], "c")
   assertEquals(obj["message"]["attachments"][0]["fields"][1]["value"], "d")
 
-  attachments = [{"fallback": "e", "pretext": "f", "fields": [
-      {"value": "g", "short": "true"}, {"value": "h", "short": "true"}]}]
+  attachments = [{"fallback": "e", "pretext": "f",
+                  "fields": [{"value": "g"}, {"value": "h"}]}]
   response = slack.postMessage_(channel, "bar", attachments, ts)
   obj = json.loads(response.read())
   thread_ts = obj["message"]["thread_ts"]
@@ -34,8 +34,8 @@ def test():
   assertEquals(obj["message"]["attachments"][0]["fields"][1]["value"], "h")
   assertEquals(ts, thread_ts)
 
-  attachments = [{"fallback": "a", "pretext": "b", "fields": [
-      {"value": "i", "short": "true"}, {"value": "j", "short": "true"}]}]
+  attachments = [{"fallback": "a", "pretext": "b",
+                  "fields": [{"value": "i"}, {"value": "j"}]}]
   response = slack.update_(ts, channel, "baz", attachments)
   obj = json.loads(response.read())
   assertEquals(obj["ok"], True)
@@ -44,8 +44,8 @@ def test():
   assertEquals(obj["message"]["attachments"][0]["fields"][0]["value"], "i")
   assertEquals(obj["message"]["attachments"][0]["fields"][1]["value"], "j")
 
-  attachments = [{"fallback": "e", "pretext": "f", "fields": [
-      {"value": "k", "short": "true"}, {"value": "l", "short": "true"}]}]
+  attachments = [{"fallback": "e", "pretext": "f",
+                  "fields": [{"value": "k"}, {"value": "l"}]}]
   response = slack.update_(reply_ts, channel, "bar", attachments)
   obj = json.loads(response.read())
   thread_ts = obj["message"]["thread_ts"]
