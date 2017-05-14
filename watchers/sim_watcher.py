@@ -70,9 +70,11 @@ class SimWatcher(object):
   def getPage(self, url):
     try:
       page = urllib2.urlopen(url).read()
-    except Exception as e:
-      name = url.split("/")[-1]
-      self.logger.log("Exception opening {0}: {1}.".format(name, e))
+    except urllib2.URLError as e:
+      if hasattr(e, "reason"):
+        self.logger.log("Failed to reach server. {0}.".format(e.reason))
+      elif hasattr(e, "code"):
+        self.logger.log("Server failed to handle request. {0}.".format(e.code))
       page = ""
 
     return page
