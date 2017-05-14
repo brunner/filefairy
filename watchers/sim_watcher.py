@@ -45,6 +45,8 @@ class SimWatcher(object):
         self.logger.log("Failed to reach server. {0}.".format(e.reason))
       elif hasattr(e, "code"):
         self.logger.log("Server failed to handle request. {0}.".format(e.code))
+    except:
+      self.logger.log("Unspecified exception. {0}.".format(e))
 
   def upload(self, filename, channel):
     slack.upload(self.getImagesPath(), filename, channel)
@@ -68,6 +70,7 @@ class SimWatcher(object):
     ]
 
   def getPage(self, url):
+    page = ""
     try:
       page = urllib2.urlopen(url).read()
     except urllib2.URLError as e:
@@ -75,7 +78,8 @@ class SimWatcher(object):
         self.logger.log("Failed to reach server. {0}.".format(e.reason))
       elif hasattr(e, "code"):
         self.logger.log("Server failed to handle request. {0}.".format(e.code))
-      page = ""
+    except:
+      self.logger.log("Unspecified exception. {0}.".format(e))
 
     return page
 
