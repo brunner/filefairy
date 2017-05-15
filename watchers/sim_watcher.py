@@ -32,7 +32,14 @@ class SimWatcher(object):
     self.updates = self.findUpdates(self.simPage)
 
     self.pages, self.posts = {}, []
+    self.postseason = True
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
+
+    if self.postseason:
+      self.records[47], self.records[50] = [0, 0, 0], [0, 0, 0]
+      self.records[38], self.records[48] = [0, 0, 0], [0, 0, 0]
+      self.records[37], self.records[60] = [0, 0, 0], [0, 0, 0]
+      self.records[49], self.records[53] = [0, 0, 0], [0, 0, 0]
 
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
@@ -253,15 +260,22 @@ class SimWatcher(object):
         ("NL Central", [36, 37, 46, 52, 56]),
         ("NL West", [31, 39, 45, 53, 55]),
     ]
+    playoffs = [
+        ("AL Division Series", [47, 50]),
+        ("AL Division Series", [38, 48]),
+        ("NL Division Series", [37, 60]),
+        ("NL Division Series", [49, 53]),
+    ]
 
+    groups = playoffs if self.postseason else divisions
     lines = []
-    for division in divisions:
+    for group in groups:
       r = self.records
       pct = lambda x: (float(r[x][0] + 0.5 * r[x][2]) / (sum(r[x]) or 1),
                        r[x][0],
                        float(1) / r[x][1] if r[x][1] else 2,
                        r[x][2])
-      ordered = sorted(division[1], key=pct, reverse=True)
+      ordered = sorted(group[1], key=pct, reverse=True)
 
       formatted = []
       for t in ordered:
@@ -271,7 +285,7 @@ class SimWatcher(object):
             emoji, "-".join([str(n) for n in record])))
 
       lines.append("{0}\n{1}".format(
-          division[0], " :separator: ".join(formatted)))
+          group[0], " :separator: ".join(formatted)))
 
     return lines
 

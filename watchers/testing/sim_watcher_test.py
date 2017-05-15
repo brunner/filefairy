@@ -18,7 +18,7 @@ from utils import assertEquals, assertNotEquals
 class SimWatcherTest(SimWatcher):
   """Tests for SimWatcher."""
 
-  def __init__(self, logger, app, fileUrls, simUrls, slack=False):
+  def __init__(self, logger, app, fileUrls, simUrls, postseason=False, slack=False):
     self.logger = logger
     self.screenshot = screenshot.Screenshot(app, self.getImagesPath())
 
@@ -33,6 +33,7 @@ class SimWatcherTest(SimWatcher):
     self.updates = self.findUpdates(self.simPage)
 
     self.pages, self.posts = {}, []
+    self.postseason = postseason
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
 
     self.captured = []
@@ -158,7 +159,7 @@ findRecords = {
         55: loss, 56: loss, 57: loss, 58: win, 59: loss, 60: loss,
     }
 }
-formatRecords = [
+formatDivisionsRecords = [
     "AL East\n"
     + ":orioles: 1-0 :separator: :redsox: 1-0 :separator: :yankees: 0-1 "
     + ":separator: :rays: 0-1 :separator: :jays: 0-1",
@@ -177,7 +178,17 @@ formatRecords = [
     "NL West\n"
     + ":dbacks: 1-0 :separator: :rockies: 1-0 :separator: :dodgers: 0-1 "
     + ":separator: :padres: 0-1 :separator: :giants: 0-1"]
-postedRecords = "\n\n".join(formatRecords)
+formatPlayoffsRecords = [
+    "AL Division Series\n"
+    + ":twins: 0-1 :separator: :athletics: 0-1",
+    "AL Division Series\n"
+    + ":indians: 1-0 :separator: :yankees: 0-1",
+    "NL Division Series\n"
+    + ":reds: 1-0 :separator: :nationals: 0-1",
+    "NL Division Series\n"
+    + ":mets: 1-0 :separator: :padres: 0-1"]
+postedDivisionsRecords = "\n\n".join(formatDivisionsRecords)
+postedPlayoffsRecords = "\n\n".join(formatPlayoffsRecords)
 
 updates = {
     "update1": ":toparrow: 4 :separator: :pirates: 10 " +
@@ -322,7 +333,14 @@ def testFindRecords(app):
   page = urllib2.urlopen(simUrls[4]).read()
   assertEquals(simWatcherTest.getFindRecords(page), findRecords["new2"])
 
-  assertEquals(simWatcherTest.formatRecords(), formatRecords)
+  assertEquals(simWatcherTest.formatRecords(), formatDivisionsRecords)
+
+  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:], True)
+
+  page = urllib2.urlopen(simUrls[4]).read()
+  assertEquals(simWatcherTest.getFindRecords(page), findRecords["new2"])
+
+  assertEquals(simWatcherTest.formatRecords(), formatPlayoffsRecords)
 
 
 def testFindUpdates(app):
@@ -349,7 +367,7 @@ def testFindUpdates(app):
 
 def testUpdateLeagueFile(app, slack):
   simWatcherTest = SimWatcherTest(
-      TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
+      TestLogger(slack), app, fileUrls[:], simUrls[:], False, slack)
 
   expected = {"ret": False, "collected": [], "index": 1,
               "date": fileDates["old"], "posted": []}
@@ -370,7 +388,7 @@ def testUpdateLeagueFile(app, slack):
 
 def testUpdateLiveSim(app, slack):
   simWatcherTest = SimWatcherTest(
-      TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
+      TestLogger(slack), app, fileUrls[:], simUrls[:], False, slack)
 
   expected = {"ret": False, "collected": [], "index": 1,
               "date": simDates["old"], "finals": set(),
@@ -406,12 +424,22 @@ def testUpdateLiveSim(app, slack):
 
 def testWatch(app, slack):
   simWatcherTest = SimWatcherTest(
-      TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
+      TestLogger(slack), app, fileUrls[:], simUrls[:], False, slack)
 
   expected = {"collected": logs,
               "captured": [filenames["new"]],
               "posted": [logs[0], updates["update2"], filenames["new"],
-                         postedRecords, "\n".join(logs[1:6]),
+                         postedDivisionsRecords, "\n".join(logs[1:6]),
+                         "File is up.", "\n".join(logs[6:8])]}
+  assertEquals(simWatcherTest.getWatch(), expected)
+
+  simWatcherTest = SimWatcherTest(
+      TestLogger(slack), app, fileUrls[:], simUrls[:], True, slack)
+
+  expected = {"collected": logs,
+              "captured": [filenames["new"]],
+              "posted": [logs[0], updates["update2"], filenames["new"],
+                         postedPlayoffsRecords, "\n".join(logs[1:6]),
                          "File is up.", "\n".join(logs[6:8])]}
   assertEquals(simWatcherTest.getWatch(), expected)
 
