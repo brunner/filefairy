@@ -36,10 +36,8 @@ class SimWatcher(object):
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
 
     if self.postseason:
-      self.records[47], self.records[50] = [1, 2, 0], [2, 1, 0]
-      self.records[38], self.records[48] = [1, 2, 0], [2, 1, 0]
-      self.records[37], self.records[60] = [2, 0, 0], [0, 2, 0]
-      self.records[49], self.records[53] = [1, 1, 0], [1, 1, 0]
+      self.records[48], self.records[50] = [0, 0, 0], [0, 0, 0]
+      self.records[37], self.records[53] = [0, 0, 0], [0, 0, 0]
 
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
@@ -261,10 +259,8 @@ class SimWatcher(object):
         ("NL West", [31, 39, 45, 53, 55]),
     ]
     playoffs = [
-        ("AL Division Series", [47, 50]),
-        ("AL Division Series", [38, 48]),
-        ("NL Division Series", [37, 60]),
-        ("NL Division Series", [49, 53]),
+        ("AL Championship Series", [48, 50]),
+        ("NL Championship Series", [37, 53]),
     ]
 
     groups = playoffs if self.postseason else divisions
