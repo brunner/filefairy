@@ -179,10 +179,8 @@ formatDivisionsRecords = [
     + ":dbacks: 1-0 :separator: :rockies: 1-0 :separator: :dodgers: 0-1 "
     + ":separator: :padres: 0-1 :separator: :giants: 0-1"]
 formatPlayoffsRecords = [
-    "AL Championship Series\n"
-    + ":yankees: 0-1 :separator: :athletics: 0-1",
-    "NL Championship Series\n"
-    + ":reds: 1-0 :separator: :padres: 0-1"]
+    "World Series\n"
+    + ":reds: 1-0 :separator: :yankees: 0-1"]
 postedDivisionsRecords = "\n\n".join(formatDivisionsRecords)
 postedPlayoffsRecords = "\n\n".join(formatPlayoffsRecords)
 
