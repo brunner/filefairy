@@ -36,7 +36,7 @@ class SimWatcher(object):
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
 
     if self.postseason:
-      self.records[37], self.records[48] = [0, 0, 0], [0, 0, 0]
+      self.records[37], self.records[48] = [2, 2, 0], [2, 2, 0]
 
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
@@ -50,7 +50,7 @@ class SimWatcher(object):
       elif hasattr(e, "code"):
         self.logger.log("Server failed to handle request. {0}.".format(e.code))
     except:
-      self.logger.log("Unspecified exception. {0}.".format(e))
+      self.logger.log("Unspecified exception.")
 
   def upload(self, filename, channel):
     slack.upload(self.getImagesPath(), filename, channel)
@@ -83,7 +83,7 @@ class SimWatcher(object):
       elif hasattr(e, "code"):
         self.logger.log("Server failed to handle request. {0}.".format(e.code))
     except:
-      self.logger.log("Unspecified exception. {0}.".format(e))
+      self.logger.log("Unspecified exception.")
 
     return page
 
