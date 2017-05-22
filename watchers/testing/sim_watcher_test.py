@@ -32,6 +32,8 @@ class SimWatcherTest(SimWatcher):
     self.finals = self.findFinals(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
+    self.exports = self.readExports()
+
     self.pages, self.posts = {}, []
     self.postseason = postseason
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
@@ -64,6 +66,12 @@ class SimWatcherTest(SimWatcher):
       self.simIndex = self.simIndex + 1
 
     return self.simUrls[self.simIndex]
+
+  def getExportsInputFile(self):
+    return os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/exportsin.txt"
+
+  def getExportsOutputFile(self):
+    return os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/exportsout.txt"
 
   def getTimerValues(self):
     return [1, 2, 8]
@@ -114,6 +122,43 @@ filePages = [
     "export_01172017_1.html",         # 3. League file date has changed.
 ]
 fileUrls = [os.path.join(path, fi) for fi in filePages]
+
+new1 = [0, 0, -1, []]
+new2 = [1, 0, 1, [1]]
+zero1 = [0, 1, 1, [0]]
+zero2a = [1, 1, 1, [0, 1]]
+zero2b = [0, 2, 2, [0, 0]]
+five1 = [5, 1, 3, [1, 0, 1, 1, 1]]
+five2 = [5, 2, 1, [1, 0, 1, 1, 1, 0]]
+seven1 = [7, 2, 4, [1, 0, 1, 1, 0, 1, 1, 1, 1]]
+seven2a = [8, 2, 5, [1, 0, 1, 1, 0, 1, 1, 1, 1, 1]]
+seven2b = [7, 3, 1, [1, 0, 1, 1, 0, 1, 1, 1, 1, 0]]
+nine1 = [9, 4, 5, [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]]
+nine2 = [9, 5, 1, [0, 0, 1, 0, 1, 1, 1, 1, 1, 0]]
+ten1 = [10, 3, 6, [1, 1, 0, 0, 1, 1, 1, 1, 1, 1]]
+ten2 = [10, 4, 1, [1, 0, 0, 1, 1, 1, 1, 1, 1, 0]]
+eleven1 = [11, 2, 1, [1, 1, 0, 1, 1, 1, 1, 1, 0, 1]]
+eleven2 = [11, 3, 1, [1, 0, 1, 1, 1, 1, 1, 0, 1, 0]]
+twelve1 = [12, 1, 7, [1, 1, 0, 1, 1, 1, 1, 1, 1, 1]]
+twelve2 = [12, 2, 1, [1, 0, 1, 1, 1, 1, 1, 1, 1, 0]]
+thirteen1 = [13, 0, 13, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+thirteen2a = [14, 0, 14, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+thirteen2b = [13, 1, 1, [1, 1, 1, 1, 1, 1, 1, 1, 1, 0]]
+exports1 = {
+  31: zero1, 32: eleven1, 33: nine1, 34: nine1, 35: twelve1, 36: thirteen1,
+  37: thirteen1, 38: ten1, 39: nine1, 40: thirteen1, 41: seven1, 42: twelve1,
+  43: new1, 44: ten1, 45: twelve1, 46: eleven1, 47: thirteen1, 48: nine1,
+  49: seven1, 50: twelve1, 51: five1, 52: thirteen1, 53: nine1, 54: ten1,
+  55: eleven1, 56: five1, 57: twelve1, 58: zero1, 59: ten1, 60: new1,
+}
+exports2 = {
+  31: zero2b, 32: eleven2, 33: nine2, 34: nine2, 35: twelve2, 36: thirteen2b,
+  37: thirteen2b, 38: ten2, 39: nine2, 40: thirteen2a, 41: seven2b, 42: twelve2,
+  43: new2, 44: ten2, 45: twelve2, 46: eleven2, 47: thirteen2b, 48: nine2,
+  49: seven2a, 50: twelve2, 51: five2, 52: thirteen2b, 53: nine2, 54: ten2,
+  55: eleven2, 56: five2, 57: twelve2, 58: zero2a, 59: ten2, 60: new1,
+}
+teamids = [40, 43, 58, 49]
 
 fileDates = {
     "old": "Saturday January 14, 2017 13:01:09 EST",
@@ -201,7 +246,8 @@ logs = [
     "[00:00:00] Uploaded sim09092018.png.",     # 4
     "[00:00:00] Posted records.",               # 5
     "[00:00:00] File is up.",                   # 6
-    "[00:00:00] Done watching.",                # 7
+    "[00:00:00] 4 teams exported.",             # 7
+    "[00:00:00] Done watching.",                # 8
 ]
 
 
@@ -233,6 +279,32 @@ def testFindFileDate(app):
 
   page = urllib2.urlopen(fileUrls[3]).read()
   assertEquals(simWatcherTest.findFileDate(page), fileDates["new"])
+
+
+def testFindExports(app):
+  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+
+  page = urllib2.urlopen(fileUrls[0]).read()
+  assertEquals(simWatcherTest.findExports(page), [])
+
+  page = urllib2.urlopen(fileUrls[1]).read()
+  assertEquals(simWatcherTest.findExports(page), teamids)
+
+  page = urllib2.urlopen(fileUrls[2]).read()
+  assertEquals(simWatcherTest.findExports(page), teamids)
+
+  page = urllib2.urlopen(fileUrls[3]).read()
+  assertEquals(simWatcherTest.findExports(page), [])
+
+
+def testReadExports(app):
+  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  assertEquals(simWatcherTest.readExports(), exports1)
+
+
+def testWriteExports(app):
+  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  assertEquals(simWatcherTest.writeExports(exports1, teamids), exports2)
 
 
 def testFindSimDate(app):
@@ -366,6 +438,7 @@ def testUpdateLeagueFile(app, slack):
   expected = {"ret": False, "collected": [], "index": 1,
               "date": fileDates["old"], "posted": []}
   assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
+  assertFileNotEquals()
 
   expected = {"ret": False, "collected": [], "index": 2,
               "date": fileDates["old"], "posted": []}
@@ -424,7 +497,7 @@ def testWatch(app, slack):
               "captured": [filenames["new"]],
               "posted": [logs[0], updates["update2"], filenames["new"],
                          postedDivisionsRecords, "\n".join(logs[1:6]),
-                         "File is up.", "\n".join(logs[6:8])]}
+                         "File is up.", "\n".join(logs[6:9])]}
   assertEquals(simWatcherTest.getWatch(), expected)
 
   simWatcherTest = SimWatcherTest(
@@ -434,7 +507,7 @@ def testWatch(app, slack):
               "captured": [filenames["new"]],
               "posted": [logs[0], updates["update2"], filenames["new"],
                          postedPlayoffsRecords, "\n".join(logs[1:6]),
-                         "File is up.", "\n".join(logs[6:8])]}
+                         "File is up.", "\n".join(logs[6:9])]}
   assertEquals(simWatcherTest.getWatch(), expected)
 
 
@@ -447,11 +520,20 @@ if __name__ == "__main__":
   parser.set_defaults(slack=False)
   args = parser.parse_args()
 
-  # if args.mode == "real" or args.mode == "all":
-  #   testReal(app)
+  if args.mode == "real" or args.mode == "all":
+    testReal(app)
 
   if args.mode == "filedate" or args.mode == "all":
     testFindFileDate(app)
+
+  if args.mode == "findexports" or args.mode == "all":
+    testFindExports(app)
+
+  if args.mode == "readexports" or args.mode == "all":
+    testReadExports(app)
+
+  if args.mode == "writeexports" or args.mode == "all":
+    testWriteExports(app)
 
   if args.mode == "simdate" or args.mode == "all":
     testFindSimDate(app)

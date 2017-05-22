@@ -31,6 +31,8 @@ class SimWatcher(object):
     self.finals = self.findFinals(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
+    self.exports = self.readExports()
+
     self.pages, self.posts = {}, []
     self.postseason = True
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
@@ -62,6 +64,14 @@ class SimWatcher(object):
   def getSimUrl(self):
     """Returns the live sim page url that should be checked for date changes."""
     return "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
+
+  def getExportsInputFile(self):
+    """Returns the file that exports data is saved to."""
+    return os.path.expanduser("~") + "/orangeandblueleague/watchers/data/exports.txt"
+
+  def getExportsInputFile(self):
+    """Returns the file that exports data is saved to."""
+    return self.getExportsInputFile()
 
   def getTimerValues(self):
     """Returns a tuple of values, in seconds, for the watchLiveSim timer."""
@@ -127,13 +137,21 @@ class SimWatcher(object):
     if not date:
       return False
 
+    ret = False
     if date != self.fileDate:
-      self.fileDate = date
       self.postMessage("File is up.", "general")
       self.logger.log("File is up.")
-      return True
 
-    return False
+      teamids = self.findExports(self.filePage)
+      self.writeExports(self.exports, teamids)
+      self.logger.log("{0} teams exported.".format(len(teamids)))
+
+      ret = True
+
+    self.filePage = page
+    self.fileDate = date
+
+    return ret
 
   def updateLiveSim(self):
     """Opens the live sim page and checks the page content.
@@ -208,6 +226,53 @@ class SimWatcher(object):
   def findFileDate(self, page):
     match = re.findall(r"League File Updated: ([^<]+)<", page)
     return match[0] if len(match) else ""
+
+  def findExports(self, page):
+    teams = re.findall(r"teams/team_(.*?) Export", page)
+    exports = []
+    for team in teams:
+      if team[-3:] == "New":
+        exports.append(int(team[:2]))
+
+    return exports
+
+  def readExports(self):
+    exports = {}
+    with open(self.getExportsInputFile(), "r") as f:
+      for line in f.readlines():
+        entries = line.split()
+        if len(entries) > 2:
+          teamid = int(entries[0])
+          wins = int(entries[1])
+          losses = int(entries[2])
+          streak = int(entries[3]) if len(entries) > 3 else -1
+          recent = [int(e) for e in entries[4:]] if len(entries) > 4 else []
+          exports[teamid] = [wins, losses, streak, recent]
+
+    return exports
+
+  def writeExports(self, exports, teamids):
+    with open(self.getExportsOutputFile(), "w") as f:
+      for teamid in sorted(exports.keys()):
+        wins, losses, streak, recent = exports[teamid]
+        if teamid in teamids:
+          wins = wins + 1
+          streak = streak + 1 if len(recent) and recent[-1] == 1 else 1
+          recent = (recent + [1])[-10:]
+        elif not streak == -1:
+          losses = losses + 1
+          streak = streak + 1 if len(recent) and recent[-1] == 0 else 1
+          recent = (recent + [0])[-10:]
+
+        if not streak == -1:
+          f.write("{0}  {1:<3} {2:<3} {3:<3} {4}\n".format(
+              teamid, wins, losses, streak, " ".join([str(r) for r in recent])))
+        else:
+          f.write("{0}  {1:<3} {2:<3}\n".format(teamid, wins, losses))
+
+        exports[teamid] = [wins, losses, streak, recent]
+
+    return exports
 
   def findSimDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
