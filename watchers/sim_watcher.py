@@ -65,7 +65,7 @@ class SimWatcher(object):
     """Returns the file that exports data is saved to."""
     return os.path.expanduser("~") + "/orangeandblueleague/watchers/data/exports.txt"
 
-  def getExportsInputFile(self):
+  def getExportsOutputFile(self):
     """Returns the file that exports data is saved to."""
     return self.getExportsInputFile()
 
