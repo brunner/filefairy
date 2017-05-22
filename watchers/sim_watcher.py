@@ -34,11 +34,7 @@ class SimWatcher(object):
     self.exports = self.readExports()
 
     self.pages, self.posts = {}, []
-    self.postseason = True
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
-
-    if self.postseason:
-      self.records[37], self.records[48] = [2, 2, 0], [2, 2, 0]
 
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
@@ -314,7 +310,7 @@ class SimWatcher(object):
             self.records[team2][2] += 1
 
   def formatRecords(self):
-    divisions = [
+    groups = [
         ("AL East", [33, 34, 48, 57, 59]),
         ("AL Central", [35, 38, 40, 43, 47]),
         ("AL West", [42, 44, 50, 54, 58]),
@@ -322,11 +318,7 @@ class SimWatcher(object):
         ("NL Central", [36, 37, 46, 52, 56]),
         ("NL West", [31, 39, 45, 53, 55]),
     ]
-    playoffs = [
-        ("World Series", [37, 48]),
-    ]
 
-    groups = playoffs if self.postseason else divisions
     lines = []
     for group in groups:
       r = self.records
