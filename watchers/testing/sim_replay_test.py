@@ -61,7 +61,8 @@ class SimReplay(object):
     if "condition" not in kwargs or kwargs["condition"]:
       match = re.search(regex, self.line)
       if match:
-        self.chunk.append(text.format(*match.groups()))
+        if not text.startswith("__"):
+          self.chunk.append(text.format(*match.groups()))
         for callback in args:
           callback()
         return match
@@ -89,17 +90,22 @@ class SimReplay(object):
         if self.runners[base]])
 
   def storeChunk(self):
-    self.data.append(self.chunk[:])
-    del self.chunk[:]
+    if self.chunk:
+      self.chunk.insert(0, "Home {0} - Away {1} - {2} out".format(
+        self.homeruns, self.awayruns, self.outs))
+      self.data.append(self.chunk[:])
+      del self.chunk[:]
 
   def storeInningStart(self):
     match = re.search("(\w+) of the (\d+)\w+ -", self.line)
     self.frame = self.parseFrame(match.groups()[0])
     self.inning = int(match.groups()[1])
+    self.chunk.append("{0} {1}".format(*match.groups()))
 
   def storePitcher(self):
     match = re.search("Pitching: \w+ (.+)", self.line)
     self.pitcher = match.groups()[0]
+    self.chunk.append("Pitching: {0}".format(match.groups()[0]))
 
   def storeBatter(self):
     self.balls, self.strikes = 0, 0
@@ -215,12 +221,14 @@ class SimReplay(object):
     return self.search(
         "Base on Balls",
         "{0} walks.".format(self.batter),
+        self.storeBall,
         partial(self.storeBatterToBase, Base.FIRST))
 
   def handleRareWalk(self):
     return self.search(
         "Ball",
         "{0} walks.".format(self.batter),
+        self.storeBall,
         partial(self.storeBatterToBase, Base.FIRST),
         condition=(self.balls == 3))
 
@@ -245,7 +253,8 @@ class SimReplay(object):
   def handleStrikeOut(self):
     return self.search(
         "Strikes out",
-        "{0} {1}".format(self.batter, self.line.lower()),
+        "{0} {1}.".format(self.batter, self.line.lower()),
+        self.storeStrike,
         self.storeOut)
 
   def handleBuntRunnerOutAtHome(self):
@@ -689,3 +698,5 @@ class SimReplay(object):
 
     for d in self.data:
       print ", ".join(d)
+
+simReplay = SimReplay(24789)
