@@ -20,8 +20,9 @@ class Frame:
 class SimReplay(object):
   """Replays a game log via Slack."""
 
-  def __init__(self, gameid):
+  def __init__(self, gameid, path):
     self.gameid = gameid
+    self.path = path
     self.log = self.getLog()
 
     self.chunk, self.data = [], []
@@ -37,7 +38,7 @@ class SimReplay(object):
 
   def getLog(self):
     """Returns the contents of the specified log file."""
-    with open("/home/jbrunner/Downloads/orange_and_blue_league_baseball/news/txt/leagues/log_{0}.txt".format(self.gameid)) as f:
+    with open(os.path.join(self.path, "log_{0}.txt".format(self.gameid))) as f:
       return f.read()
 
   def sanitize(self, log):
@@ -639,6 +640,15 @@ class SimReplay(object):
         partial(self.storeRunnerErasedOrBatter, Base.FIRST),
         condition=self.runners[Base.FIRST])
 
+  def handleRunnerAdvancesFromSecondToThirdError(self):
+    return self.search(
+        "Runner from 2nd tries for 3rd, throw and ERROR! Runner scores".format(
+            self.runners[Base.SECOND]),
+        "{0} scores on error.".format(self.runners[Base.SECOND]),
+        self.storeRun,
+        partial(self.storeRunnerErasedOrBatter, Base.SECOND),
+        condition=self.runners[Base.SECOND])
+
   def handleRunnerAdvancesFromSecondToThirdSafe(self):
     return self.search(
         "{0} to third|Runner from 2nd (?:tries for 3rd|tags up), SAFE".format(
@@ -865,6 +875,7 @@ class SimReplay(object):
             self.handleRunnerScoresFromThirdOut() or \
             self.handleRunnerScoresFromSecondSafe() or \
             self.handleRunnerScoresFromFirstSafe() or \
+            self.handleRunnerAdvancesFromSecondToThirdError() or \
             self.handleRunnerAdvancesFromSecondToThirdSafe() or \
             self.handleRunnerAdvancesFromSecondToThirdOut() or \
             self.handleRunnerAdvancesFromFirstToThird() or \
@@ -886,13 +897,13 @@ class SimReplay(object):
             self.handleFodder() or \
             self.handleUnhandled()
 
-    for d in self.data:
-      print ", ".join(d)
+    # for d in self.data:
+    #   print ", ".join(d)
 
 
-path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"
+path = os.path.expanduser("~") + "/.Out of the Park Developments/OOTP Baseball 17/custdata/saved_games/orangeandblue.lg/news/txt/leagues/"
 for filename in os.listdir(path):
-  match = re.search("log_(2830).txt", filename)
+  match = re.search("log_(\d+).txt", filename)
   if match:
-    simReplay = SimReplay(match.groups()[0])
+    simReplay = SimReplay(match.groups()[0], path)
     simReplay.start()
