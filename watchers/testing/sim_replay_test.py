@@ -31,18 +31,14 @@ class SimReplay(object):
     self.awaypitcher, self.homepitcher, self.batter, self.runner = "", "", "", ""
     self.frame, self.inning = Frame.TOP, 1
 
-    self.clearLine()
-    self.parseLog()
+    self.balls, self.strikes, self.outs = 0, 0, 0
+    self.runners = {Base.FIRST: "", Base.SECOND: "", Base.THIRD: ""}
+    self.batterToBase, self.runnerToBase = Base.NONE, Base.NONE
 
   def getLog(self):
     """Returns the contents of the specified log file."""
     with open("/home/jbrunner/Downloads/orange_and_blue_league_baseball/news/txt/leagues/log_{0}.txt".format(self.gameid)) as f:
       return f.read()
-
-  def clearLine(self):
-    self.balls, self.strikes, self.outs = 0, 0, 0
-    self.runners = {Base.FIRST: "", Base.SECOND: "", Base.THIRD: ""}
-    self.batterToBase, self.runnerToBase = Base.NONE, Base.NONE
 
   def sanitize(self, log):
     """Removes junk characters and HTML tags from log text."""
@@ -79,32 +75,27 @@ class SimReplay(object):
     else:
       return Frame.BOTTOM
 
-  def basesCleared(self):
-    return " ".join([
-        "{0} scores.".format(self.runners[base]) for base in [
-            Base.THIRD, Base.SECOND, Base.FIRST]
-        if self.runners[base]])
-
   def storeChunk(self):
     if self.chunk:
-      frame = "Top" if self.frame == Frame.TOP else "Bot"
-      self.chunk.insert(0, "{0} {1} - Home {2} - Away {3} - {4} out".format(
-        frame, self.inning, self.homeruns, self.awayruns, self.outs))
       self.data.append(self.chunk[:])
       del self.chunk[:]
 
   def storeInningStart(self):
+    self.outs = 0
     match = re.search("(\w+) of the (\d+)\w+ -", self.line)
     self.frame = self.parseFrame(match.groups()[0])
     self.inning = int(match.groups()[1])
 
   def storePitcher(self):
     match = re.search("Pitching: \w+ (.+)", self.line)
-    self.pitcher = match.groups()[0]
-    self.chunk.append("Pitching: {0}".format(match.groups()[0]))
+    if self.frame == Frame.TOP:
+      self.homepitcher = match.groups()[0]
+    else:
+      self.awaypitcher = match.groups()[0]
 
   def storeBatter(self):
-    self.balls, self.strikes, self.batterToBase, self.runnerToBase = 0, 0, Base.NONE, Base.NONE
+    self.balls, self.strikes = 0, 0
+    self.batterToBase, self.runnerToBase = Base.NONE, Base.NONE
     match = re.search("(?:Batting|Pinch Hitting): \w+ (.+)", self.line)
     self.batter = match.groups()[0]
 
@@ -189,15 +180,14 @@ class SimReplay(object):
     return self.search(
         "\w+ of the \d+\w+ -",
         "__Inning start.",
-        self.storeInningStart,
-        self.clearLine)
+        self.storeInningStart)
 
   def handleInningEnd(self):
     return self.search(
         "\w+ of the \d+\w+ over -",
         "__Inning end.",
         self.storeRunnersAllErased,
-        self.storeChunk,)
+        self.storeChunk)
 
   def handleChangePitcher(self):
     return self.search(
@@ -496,31 +486,35 @@ class SimReplay(object):
   def handleTwoRunHomerun(self):
     return self.search(
         "2-RUN HOME RUN",
-        "{0} hits a 2-run homerun. {1}".format(self.batter,
-                                               self.basesCleared()),
+        "{0} hits a 2-run homerun.".format(self.batter),
         self.storeRun,
         self.storeRun,
-        self.storeRunnersAllErased)
+        self.storeRunnersAdvance,
+        self.storeRunnersAdvance,
+        self.storeRunnersAdvance)
 
   def handleThreeRunHomerun(self):
     return self.search(
         "3-RUN HOME RUN",
-        "{0} hits a 3-run homerun. {1}".format(self.batter,
-                                               self.basesCleared()),
+        "{0} hits a 3-run homerun.".format(self.batter),
         self.storeRun,
         self.storeRun,
         self.storeRun,
-        self.storeRunnersAllErased)
+        self.storeRunnersAdvance,
+        self.storeRunnersAdvance,
+        self.storeRunnersAdvance)
 
   def handleGrandSlamHomerun(self):
     return self.search(
         "GRAND SLAM HOME RUN",
-        "{0} hits a grand slam. {1}".format(self.batter, self.basesCleared()),
+        "{0} hits a grand slam.".format(self.batter),
         self.storeRun,
         self.storeRun,
         self.storeRun,
         self.storeRun,
-        self.storeRunnersAllErased)
+        self.storeRunnersAdvance,
+        self.storeRunnersAdvance,
+        self.storeRunnersAdvance)
 
   def handlePitch(self):
     match = re.match("\d-\d: (.+)", self.line)
@@ -732,12 +726,14 @@ class SimReplay(object):
         partial(self.storeRunnerErased, Base.FIRST),
         condition=self.runners[Base.FIRST])
 
-  def handleLineIntoDoublePlay(self):
+  def handleLineIntoDoublePlaySecond(self):
     return self.search(
-        "Lined into DP",
-        "{0} lines into a double play.".format(self.batter),
+        "Lined into DP, \d-[46] \(",
+        "{0} lines into a double play. {1} out at second.".format(self.batter, self.runners[Base.SECOND]),
         self.storeOut,
-        self.storeRunnersAllErased)
+        self.storeOut,
+        partial(self.storeRunnerErased, Base.SECOND),
+        condition=self.runners[Base.SECOND])
 
   def handlePickoffError(self):
     return self.search(
@@ -828,7 +824,7 @@ class SimReplay(object):
     print "{0}: {1}".format(self.gameid, self.line)
     self.chunk.append("__Unhandled {1}".format(self.gameid, self.line))
 
-  def parseLog(self):
+  def start(self):
     innings = self.parseInnings()
     for inning in innings:
       for line in inning.splitlines():
@@ -862,7 +858,7 @@ class SimReplay(object):
             self.handleRunnerStealsThirdOut() or \
             self.handleRunnerStealsSecondSafe() or \
             self.handleRunnerStealsSecondOut() or \
-            self.handleLineIntoDoublePlay() or \
+            self.handleLineIntoDoublePlaySecond() or \
             self.handlePickoffError() or \
             self.handlePickoffThird() or \
             self.handlePickoffSecond() or \
@@ -876,6 +872,7 @@ class SimReplay(object):
 
 path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"
 for filename in os.listdir(path):
-  match = re.search("log_(\d+).txt", filename)
+  match = re.search("log_(2830).txt", filename)
   if match:
     simReplay = SimReplay(match.groups()[0])
+    simReplay.start()
