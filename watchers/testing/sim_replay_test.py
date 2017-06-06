@@ -726,14 +726,32 @@ class SimReplay(object):
         partial(self.storeRunnerErased, Base.FIRST),
         condition=self.runners[Base.FIRST])
 
+  def handleLineIntoDoublePlayThird(self):
+    return self.search(
+        "Lined into DP, (?:U5|\d-[5]) \(",
+        "{0} lines into a double play. {1} out at third.".format(self.batter, self.runners[Base.THIRD]),
+        self.storeOut,
+        self.storeOut,
+        partial(self.storeRunnerErased, Base.THIRD),
+        condition=self.runners[Base.THIRD])
+
   def handleLineIntoDoublePlaySecond(self):
     return self.search(
-        "Lined into DP, \d-[46] \(",
+        "Lined into DP, (U[46]|\d-[46]) \(",
         "{0} lines into a double play. {1} out at second.".format(self.batter, self.runners[Base.SECOND]),
         self.storeOut,
         self.storeOut,
         partial(self.storeRunnerErased, Base.SECOND),
         condition=self.runners[Base.SECOND])
+
+  def handleLineIntoDoublePlayFirst(self):
+    return self.search(
+        "Lined into DP, (?:U3|\d-[3]) \(",
+        "{0} lines into a double play. {1} out at first.".format(self.batter, self.runners[Base.FIRST]),
+        self.storeOut,
+        self.storeOut,
+        partial(self.storeRunnerErased, Base.FIRST),
+        condition=self.runners[Base.FIRST])
 
   def handlePickoffError(self):
     return self.search(
@@ -858,7 +876,9 @@ class SimReplay(object):
             self.handleRunnerStealsThirdOut() or \
             self.handleRunnerStealsSecondSafe() or \
             self.handleRunnerStealsSecondOut() or \
+            self.handleLineIntoDoublePlayThird() or \
             self.handleLineIntoDoublePlaySecond() or \
+            self.handleLineIntoDoublePlayFirst() or \
             self.handlePickoffError() or \
             self.handlePickoffThird() or \
             self.handlePickoffSecond() or \
