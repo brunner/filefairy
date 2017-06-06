@@ -91,8 +91,9 @@ class SimReplay(object):
 
   def storeChunk(self):
     if self.chunk:
-      self.chunk.insert(0, "Home {0} - Away {1} - {2} out".format(
-        self.homeruns, self.awayruns, self.outs))
+      frame = "Top" if self.frame == Frame.TOP else "Bot"
+      self.chunk.insert(0, "{0} {1} - Home {2} - Away {3} - {4} out".format(
+        frame, self.inning, self.homeruns, self.awayruns, self.outs))
       self.data.append(self.chunk[:])
       del self.chunk[:]
 
@@ -100,7 +101,6 @@ class SimReplay(object):
     match = re.search("(\w+) of the (\d+)\w+ -", self.line)
     self.frame = self.parseFrame(match.groups()[0])
     self.inning = int(match.groups()[1])
-    self.chunk.append("{0} {1}".format(*match.groups()))
 
   def storePitcher(self):
     match = re.search("Pitching: \w+ (.+)", self.line)
@@ -699,4 +699,4 @@ class SimReplay(object):
     for d in self.data:
       print ", ".join(d)
 
-simReplay = SimReplay(24789)
+simReplay = SimReplay(693)
