@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 
+import os
 import re
 from functools import partial
 
-# TODO:
-# play at home in case of a sacrifice bunt or fielders choice
-# double play with 0 outs and an out made at home or third
-# line into double play with 0 outs and more than one player on base
-# triple play
 
 class Base:
   NONE = 0
@@ -32,7 +28,7 @@ class SimReplay(object):
     self.line = ""
 
     self.awayruns, self.homeruns = 0, 0
-    self.awaypitcher, self.homepitcher, self.batter = "", "", ""
+    self.awaypitcher, self.homepitcher, self.batter, self.runner = "", "", "", ""
     self.frame, self.inning = Frame.TOP, 1
 
     self.clearLine()
@@ -40,13 +36,13 @@ class SimReplay(object):
 
   def getLog(self):
     """Returns the contents of the specified log file."""
-    with open("log_{0}.txt".format(self.gameid)) as f:
+    with open("/home/jbrunner/Downloads/orange_and_blue_league_baseball/news/txt/leagues/log_{0}.txt".format(self.gameid)) as f:
       return f.read()
 
   def clearLine(self):
     self.balls, self.strikes, self.outs = 0, 0, 0
     self.runners = {Base.FIRST: "", Base.SECOND: "", Base.THIRD: ""}
-    self.toBase = Base.NONE
+    self.batterToBase, self.runnerToBase = Base.NONE, Base.NONE
 
   def sanitize(self, log):
     """Removes junk characters and HTML tags from log text."""
@@ -108,15 +104,18 @@ class SimReplay(object):
     self.chunk.append("Pitching: {0}".format(match.groups()[0]))
 
   def storeBatter(self):
-    self.balls, self.strikes = 0, 0
+    self.balls, self.strikes, self.batterToBase, self.runnerToBase = 0, 0, Base.NONE, Base.NONE
     match = re.search("(?:Batting|Pinch Hitting): \w+ (.+)", self.line)
     self.batter = match.groups()[0]
 
   def storeBatterToBase(self, base):
     if self.runners[base]:
-      self.toBase = base
+      self.batterToBase = base
     else:
       self.runners[base] = self.batter
+
+  def storeBatterErased(self):
+    self.batterToBase = Base.NONE
 
   def storeRunner(self):
     match = re.search("Pinch Runner at (\w+) (.+):", self.line)
@@ -124,19 +123,28 @@ class SimReplay(object):
     self.runners[base] = match.groups()[1]
 
   def storeRunnerToBase(self, base, previous):
-    self.runners[base] = self.runners[previous]
-    if self.toBase == previous:
-      self.runners[previous] = self.batter
-    else:
+    if self.runners[base]:
+      self.runnerToBase = base
+      self.runner = self.runners[previous]
       self.runners[previous] = ""
+    else:
+      self.runners[base] = self.runners[previous]
+      if self.batterToBase == previous:
+        self.runners[previous] = self.batter
+        self.batterToBase = Base.NONE
+      elif self.runnerToBase == previous:
+        self.runners[previous] = self.runner
+        self.runner = ""
+      else:
+        self.runners[previous] = ""
 
   def storeRunnerErased(self, base):
     self.runners[base] = ""
 
   def storeRunnerErasedOrBatter(self, base):
-    if self.toBase == base:
+    if self.batterToBase == base:
       self.runners[base] = self.batter
-      self.toBase = Base.NONE
+      self.batterToBase = Base.NONE
     else:
       self.runners[base] = ""
 
@@ -144,6 +152,20 @@ class SimReplay(object):
     self.runners[Base.FIRST] = ""
     self.runners[Base.SECOND] = ""
     self.runners[Base.THIRD] = ""
+
+  def storeRunnersAdvance(self):
+    if self.runners[Base.THIRD]:
+      self.chunk.append("{0} scores.".format(self.runners[Base.THIRD]))
+    self.runners[Base.THIRD] = self.runners[Base.SECOND]
+    self.runners[Base.SECOND] = self.runners[Base.FIRST]
+    self.runners[Base.FIRST] = ""
+
+  def storeUnfinishedBatterToBase(self):
+    if self.batterToBase != Base.NONE:
+      while self.runners[self.batterToBase]:
+        self.storeRunnersAdvance()
+      self.runners[self.batterToBase] = self.batter
+
 
   def storeBall(self):
     self.balls = self.balls + 1
@@ -174,7 +196,8 @@ class SimReplay(object):
     return self.search(
         "\w+ of the \d+\w+ over -",
         "__Inning end.",
-        self.storeChunk)
+        self.storeRunnersAllErased,
+        self.storeChunk,)
 
   def handleChangePitcher(self):
     return self.search(
@@ -185,7 +208,8 @@ class SimReplay(object):
   def handleChangeBatter(self):
     return self.search(
         "(?:Batting|Pinch Hitting): \w+ .+",
-        "__New batter.",
+        "__New batter. ({0},{1},{2})".format(self.runners[Base.FIRST], self.runners[Base.SECOND], self.runners[Base.THIRD]),
+        self.storeUnfinishedBatterToBase,
         self.storeBatter)
 
   def handleChangeRunner(self):
@@ -199,10 +223,22 @@ class SimReplay(object):
         "Wild Pitch!",
         "Wild pitch.")
 
+  def handleSingleMissedBase(self):
+    return self.search(
+        "SINGLE, but batter called out on appeal for missing \w+ base",
+        "{0} singles, out on appeal.".format(self.batter),
+        self.storeOut)
+
+  def handleDoubleMissedBase(self):
+    return self.search(
+        "DOUBLE, but batter called out on appeal for missing \w+ base",
+        "{0} doubles, out on appeal.".format(self.batter),
+        self.storeOut)
+
   def handleStrike(self):
     return self.search(
         "Swinging Strike|Called Strike",
-        "__Strike.",
+        "__Strike {0}-{1}.".format(self.balls, self.strikes + 1),
         self.storeStrike)
 
   def handleFoulBall(self):
@@ -224,6 +260,12 @@ class SimReplay(object):
         self.storeBall,
         partial(self.storeBatterToBase, Base.FIRST))
 
+  def handleIntentionalWalk(self):
+    return self.search(
+        "Intentional Walk",
+        "{0} walks intentionally.".format(self.batter),
+        partial(self.storeBatterToBase, Base.FIRST))
+
   def handleRareWalk(self):
     return self.search(
         "Ball",
@@ -235,12 +277,12 @@ class SimReplay(object):
   def handleBall(self):
     return self.search(
         "Ball",
-        "__Ball.",
+        "__Ball {0}-{1}.".format(self.balls + 1, self.strikes),
         self.storeBall)
 
   def handleGroundOut(self):
     return self.search(
-        "Ground out",
+        "Grounds? out",
         "{0} grounds out.".format(self.batter),
         self.storeOut)
 
@@ -249,6 +291,13 @@ class SimReplay(object):
         "Fly out",
         "{0} flies out.".format(self.batter),
         self.storeOut)
+
+  def handleStrikeOutReachesFirst(self):
+    return self.search(
+        "Strikes out .*? reaches first",
+        "{0} reaches first.".format(self.batter, self.line.lower()),
+        self.storeStrike,
+        partial(self.storeBatterToBase, Base.FIRST))
 
   def handleStrikeOut(self):
     return self.search(
@@ -263,16 +312,16 @@ class SimReplay(object):
         "{0} bunts into a fielders choice. {1} out at home.".format(
             self.batter, self.runners[Base.THIRD]),
         self.storeOut,
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerErased, Base.THIRD))
+        partial(self.storeRunnerErased, Base.THIRD),
+        partial(self.storeBatterToBase, Base.FIRST))
 
   def handleBuntRunnerSafeAtHome(self):
     return self.search(
         "Bunt.*?- play at home, runner safe",
         "{0} bunts. {1} safe at home.".format(
             self.batter, self.runners[Base.THIRD]),
-        partial(self.storeBatterToBase, Base.FIRST),
-        self.storeRun)
+        self.storeRun,
+        partial(self.storeBatterToBase, Base.FIRST))
 
   def handleBuntRunnerOutAtThird(self):
     return self.search(
@@ -280,16 +329,16 @@ class SimReplay(object):
         "{0} bunts into a fielders choice. {1} out at third.".format(
             self.batter, self.runners[Base.SECOND]),
         self.storeOut,
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerErased, Base.SECOND))
+        partial(self.storeRunnerErased, Base.SECOND),
+        partial(self.storeBatterToBase, Base.FIRST))
 
   def handleBuntRunnerSafeAtThird(self):
     return self.search(
         "Bunt.*?- play at third, runner safe",
         "{0} bunts. {1} safe at third.".format(
             self.batter, self.runners[Base.SECOND]),
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND))
+        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND),
+        partial(self.storeBatterToBase, Base.FIRST))
 
   def handleBuntRunnerOutAtSecond(self):
     return self.search(
@@ -297,21 +346,27 @@ class SimReplay(object):
         "{0} bunts into a fielders choice. {1} out at second.".format(
             self.batter, self.runners[Base.FIRST]),
         self.storeOut,
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerErased, Base.FIRST))
+        partial(self.storeRunnerErased, Base.FIRST),
+        partial(self.storeBatterToBase, Base.FIRST))
 
   def handleBuntRunnerSafeAtSecond(self):
     return self.search(
         "Bunt.*?- play at second, runner safe",
         "{0} bunts. {1} safe at second.".format(
             self.batter, self.runners[Base.FIRST]),
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerToBase, Base.SECOND, Base.FIRST))
+        partial(self.storeRunnerToBase, Base.SECOND, Base.FIRST),
+        partial(self.storeBatterToBase, Base.FIRST))
 
-  def handleBuntBatterOut(self):
+  def handleBuntBatterPlayOut(self):
     return self.search(
         "Bunt.*?- play at first, batter OUT",
         "{0} bunts, out at first.".format(self.batter),
+        self.storeOut)
+
+  def handleBuntBatterFlyOut(self):
+    return self.search(
+        "Bunt - Flyout",
+        "{0} pops out on a bunt.".format(self.batter),
         self.storeOut)
 
   def handleBuntBatterSafe(self):
@@ -320,11 +375,23 @@ class SimReplay(object):
         "{0} bunts, safe at first.".format(self.batter),
         partial(self.storeBatterToBase, Base.FIRST))
 
+  def handleSingleAdvancesToSecond(self):
+    return self.search(
+        "Single.*? batter to second",
+        "{0} singles, advances to second".format(self.batter),
+        partial(self.storeBatterToBase, Base.SECOND))
+
   def handleSingleStretchOutAtSecond(self):
     return self.search(
         "SINGLE.*?- OUT at second",
         "{0} singles, out at second".format(self.batter),
         self.storeOut)
+
+  def handleDoubleAdvancesToThird(self):
+    return self.search(
+        "Double.*? batter to third",
+        "{0} doubles, advances to third".format(self.batter),
+        partial(self.storeBatterToBase, Base.THIRD))
 
   def handleDoubleStretchOutAtThird(self):
     return self.search(
@@ -338,12 +405,21 @@ class SimReplay(object):
         "{0} triples, out at home".format(self.batter),
         self.storeOut)
 
-  def handleFieldersChoiceAtHome(self):
+  def handleFieldersChoiceAtHomeOut(self):
     return self.search(
-        "Fielders Choice at home",
+        "fielders choice \d-2",
         "{0} hits into a fielders choice. {1} out at home.".format(
             self.batter, self.runners[Base.THIRD]),
         self.storeOut,
+        partial(self.storeBatterToBase, Base.FIRST),
+        partial(self.storeRunnerErased, Base.THIRD))
+
+  def handleFieldersChoiceAtHomeSafe(self):
+    return self.search(
+        "Fielders Choice attempt at home, Runner SAFE",
+        "{0} hits into a fielders choice. {1} scores.".format(
+            self.batter, self.runners[Base.THIRD]),
+        self.storeRun,
         partial(self.storeBatterToBase, Base.FIRST),
         partial(self.storeRunnerErased, Base.THIRD))
 
@@ -365,18 +441,17 @@ class SimReplay(object):
         partial(self.storeBatterToBase, Base.FIRST),
         partial(self.storeRunnerErasedOrBatter, Base.FIRST))
 
-  def handleTriplePlay(self):
+  def handleGroundIntoDoublePlayHomeToFirst(self):
     return self.search(
-        "triple play",
-        "{0} hits into a triple play.",
+        "Grounds into double play, \d-2-3 \(",
+        "{0} grounds into a double play.".format(self.batter),
         self.storeOut,
         self.storeOut,
-        self.storeOut,
-        self.storeRunnersAllErased)
+        partial(self.storeRunnerErased, Base.THIRD))
 
-  def handleGroundIntoDoublePlay(self):
+  def handleGroundIntoDoublePlaySecondToFirst(self):
     return self.search(
-        "Grounds into double play",
+        "Grounds into double play, (?:U3-6|3-6-[14]|4-3-6|U[46]-3|\d-[46]-3) \(",
         "{0} grounds into a double play.".format(self.batter),
         self.storeOut,
         self.storeOut,
@@ -390,7 +465,7 @@ class SimReplay(object):
 
   def handleReachOnError(self):
     return self.search(
-        "Reached on error|Reaches on Catchers interference",
+        "Reached \w+ [eE]rror|Reaches on Catchers interference",
         "{0} reaches on an error.".format(self.batter),
         partial(self.storeBatterToBase, Base.FIRST))
 
@@ -444,6 +519,7 @@ class SimReplay(object):
         self.storeRun,
         self.storeRun,
         self.storeRun,
+        self.storeRun,
         self.storeRunnersAllErased)
 
   def handlePitch(self):
@@ -456,11 +532,13 @@ class SimReplay(object):
           self.handleFoulBall() or \
           self.handleFoulBunt() or \
           self.handleWalk() or \
+          self.handleIntentionalWalk() or \
           self.handleRareWalk() or \
           self.handleBall() or \
           self.handleWildPitch() or \
           self.handleGroundOut() or \
           self.handleFlyOut() or \
+          self.handleStrikeOutReachesFirst() or \
           self.handleStrikeOut() or \
           self.handleBuntRunnerOutAtHome() or \
           self.handleBuntRunnerSafeAtHome() or \
@@ -468,16 +546,22 @@ class SimReplay(object):
           self.handleBuntRunnerSafeAtThird() or \
           self.handleBuntRunnerOutAtSecond() or \
           self.handleBuntRunnerSafeAtSecond() or \
-          self.handleBuntBatterOut() or \
+          self.handleBuntBatterPlayOut() or \
+          self.handleBuntBatterFlyOut() or \
           self.handleBuntBatterSafe() or \
+          self.handleSingleAdvancesToSecond() or \
+          self.handleSingleMissedBase() or \
           self.handleSingleStretchOutAtSecond() or \
+          self.handleDoubleAdvancesToThird() or \
+          self.handleDoubleMissedBase() or \
           self.handleDoubleStretchOutAtThird() or \
           self.handleTripleStretchOutAtHome() or \
-          self.handleFieldersChoiceAtHome() or \
+          self.handleFieldersChoiceAtHomeOut() or \
+          self.handleFieldersChoiceAtHomeSafe() or \
           self.handleFieldersChoiceAtThird() or \
           self.handleFieldersChoiceAtSecond() or \
-          self.handleTriplePlay() or \
-          self.handleGroundIntoDoublePlay() or \
+          self.handleGroundIntoDoublePlayHomeToFirst() or \
+          self.handleGroundIntoDoublePlaySecondToFirst() or \
           self.handleHitByPitch() or \
           self.handleReachOnError() or \
           self.handleSingle() or \
@@ -487,6 +571,45 @@ class SimReplay(object):
           self.handleTwoRunHomerun() or \
           self.handleThreeRunHomerun() or \
           self.handleGrandSlamHomerun()
+
+  def handleBatterScores(self):
+    return self.search(
+        "{0} scores".format(self.batter),
+        "{0} scores.".format(self.batter),
+        self.storeRun,
+        partial(self.storeRunnerErased, Base.THIRD))
+
+  def handleBatterAdvancesToThird(self):
+    return self.search(
+        "{0} to third".format(self.batter),
+        "{0} to third.".format(self.batter),
+        self.storeBatterErased,
+        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND))
+
+  def handleBatterAdvancesToSecond(self):
+    return self.search(
+        "{0} to second".format(self.batter),
+        "{0} to second.".format(self.batter),
+        self.storeBatterErased,
+        partial(self.storeRunnerToBase, Base.SECOND, Base.FIRST))
+
+  def handleRunnerScoresFromThirdTrailingRunnerSafe(self):
+    return self.search(
+        "Runner from 3rd tries for Home, SAFE, throw made at trailing runner, SAFE at third",
+        "{0} scores. {1} to third.".format(self.runners[Base.THIRD], self.runners[Base.SECOND]),
+        self.storeRun,
+        partial(self.storeRunnerErased, Base.THIRD),
+        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND),
+        condition=self.runners[Base.THIRD])
+
+  def handleRunnerScoresFromThirdTrailingRunnerOut(self):
+    return self.search(
+        "Runner from 3rd tries for Home, SAFE, throw made at trailing runner, OUT at third",
+        "{0} scores. {1} out at third.".format(self.runners[Base.THIRD], self.runners[Base.SECOND]),
+        self.storeRun,
+        partial(self.storeRunnerErased, Base.THIRD),
+        partial(self.storeRunnerErasedOrBatter, Base.SECOND),
+        condition=self.runners[Base.THIRD])
 
   def handleRunnerScoresFromThirdSafe(self):
     return self.search(
@@ -499,7 +622,7 @@ class SimReplay(object):
 
   def handleRunnerScoresFromThirdOut(self):
     return self.search(
-        "Runner from 3rd (?:tries for Hometags up), OUT".format(
+        "Runner from 3rd (?:tries for Home, throw and OUT|tags up, OUT)".format(
             self.runners[Base.THIRD]),
         "{0} out at home.".format(self.runners[Base.THIRD]),
         self.storeOut,
@@ -618,12 +741,12 @@ class SimReplay(object):
 
   def handlePickoffError(self):
     return self.search(
-        "Pickoff Throw to \w+ - Error",
+        "Pickoff Throw(?: by Catcher)? to \w+ - Error",
         "Throwing error.")
 
   def handlePickoffThird(self):
     return self.search(
-        "Pickoff Throw to Third - Out",
+        "Pickoff Throw(?: by Catcher)? to Third - Out",
         "{0} picked off third.".format(self.runners[Base.THIRD]),
         self.storeOut,
         partial(self.storeRunnerErased, Base.THIRD),
@@ -631,7 +754,7 @@ class SimReplay(object):
 
   def handlePickoffSecond(self):
     return self.search(
-        "Pickoff Throw to Second - Out",
+        "Pickoff Throw(?: by Catcher)? to Second - Out",
         "{0} picked off second.".format(self.runners[Base.SECOND]),
         self.storeOut,
         partial(self.storeRunnerErased, Base.SECOND),
@@ -639,7 +762,7 @@ class SimReplay(object):
 
   def handlePickoffFirst(self):
     return self.search(
-        "Pickoff Throw to First - Out",
+        "Pickoff Throw(?: by Catcher)? to First - Out",
         "{0} picked off first.".format(self.runners[Base.FIRST]),
         self.storeOut,
         partial(self.storeRunnerErased, Base.FIRST),
@@ -651,15 +774,59 @@ class SimReplay(object):
         "__New fielder.")
 
   def handleBatterStrikesOut(self):
-    return self.search("Batter strikes out", "EVENT_BATTER_STRIKES_OUT")
+    return self.search(
+        "Batter strikes out",
+        "__Batter strikes out.")
+
+  def handlePassedBall(self):
+    return self.search(
+        "Passed Ball",
+        "__Passed ball.")
+
+  def handleBalk(self):
+    return self.search(
+        "Balk",
+        "__Balk.")
+
+  def handleThrowingError(self):
+    return self.search(
+        "Throwing error",
+        "__Throwing error.")
+
+  def handleErrorOnFoulBall(self):
+    return self.search(
+        "Error on foul ball",
+        "__Error on foul ball.")
+
+  def handleBuntMissed(self):
+    return self.search(
+        "Bunt missed",
+        "__Bunt missed.")
+
+  def handleRainDelay(self):
+    return self.search(
+        "Rain delay",
+        "__Rain delay.")
+
+  def handleGameOver(self):
+    return self.search(
+        "Game Over",
+        "__Game over.")
 
   def handleFodder(self):
     return self.handleChangeFielder() or \
-        self.handleBatterStrikesOut()
+        self.handleBatterStrikesOut() or \
+        self.handlePassedBall() or \
+        self.handleBalk() or \
+        self.handleThrowingError() or \
+        self.handleErrorOnFoulBall() or \
+        self.handleBuntMissed() or \
+        self.handleRainDelay() or \
+        self.handleGameOver()
 
   def handleUnhandled(self):
-    print self.line
-    self.chunk.append("UNHANDLED: {0}".format(self.line))
+    print "{0}: {1}".format(self.gameid, self.line)
+    self.chunk.append("__Unhandled {1}".format(self.gameid, self.line))
 
   def parseLog(self):
     innings = self.parseInnings()
@@ -672,7 +839,14 @@ class SimReplay(object):
             self.handleChangeBatter() or \
             self.handleChangeRunner() or \
             self.handleWildPitch() or \
+            self.handleSingleMissedBase() or \
+            self.handleDoubleMissedBase() or \
             self.handlePitch() or \
+            self.handleBatterScores() or \
+            self.handleBatterAdvancesToThird() or \
+            self.handleBatterAdvancesToSecond() or \
+            self.handleRunnerScoresFromThirdTrailingRunnerSafe() or \
+            self.handleRunnerScoresFromThirdTrailingRunnerOut() or \
             self.handleRunnerScoresFromThirdSafe() or \
             self.handleRunnerScoresFromThirdOut() or \
             self.handleRunnerScoresFromSecondSafe() or \
@@ -699,4 +873,9 @@ class SimReplay(object):
     for d in self.data:
       print ", ".join(d)
 
-simReplay = SimReplay(693)
+
+path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"
+for filename in os.listdir(path):
+  match = re.search("log_(\d+).txt", filename)
+  if match:
+    simReplay = SimReplay(match.groups()[0])
