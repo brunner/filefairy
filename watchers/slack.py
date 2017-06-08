@@ -100,6 +100,12 @@ nicks = ["ARI", "ATL", "BAL", "BOS", "CWS", "CHC", "CIN", "CLE", "COL", "DET",
          "PHI", "PIT", "SD", "SEA", "SF", "STL", "TB", "TEX", "TOR", "WAS"]
 
 
+def getNickname(number):
+  if number < 31 or number > 60:
+    return "???"
+  return nicks[number - 31]
+
+
 emoji = [":dbacks:", ":braves:", ":orioles:", ":redsox:", ":whitesox:",
          ":cubs:", ":reds:", ":indians:", ":rockies:", ":tigers:", ":marlins:",
          ":astros:", ":royals:", ":angels:", ":dodgers:", ":brewers:",
@@ -107,5 +113,13 @@ emoji = [":dbacks:", ":braves:", ":orioles:", ":redsox:", ":whitesox:",
          ":pirates:", ":padres:", ":mariners:", ":giants:", ":cardinals:",
          ":rays:", ":rangers:", ":jays:", ":nationals:"]
 
+
+def getEmoji(number):
+  if number < 31 or number > 60:
+    return ":grey_question:"
+  return emoji[number - 31]
+
+
+teamidsToNicks = dict(zip(range(31, 61), nicks))
 teamidsToEmoji = dict(zip(range(31, 61), emoji))
 nicksToEmoji = dict(zip(nicks, emoji))

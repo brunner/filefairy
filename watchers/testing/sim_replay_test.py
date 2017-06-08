@@ -2,6 +2,11 @@
 
 import os
 import re
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import slack
+
 from functools import partial
 
 
@@ -11,51 +16,204 @@ class Base:
   SECOND = 2
   THIRD = 3
 
+BASES = [Base.FIRST, Base.SECOND, Base.THIRD]
 
-class Frame:
-  TOP = 1
-  BOTTOM = 2
+
+class Half:
+  AWAY = 1
+  HOME = 2
+
+
+class Qualifier:
+  BATTING = "Batting"
+  PITCHING = "Pitching"
+
+
+class Stats:
+  BATTING = ["AB", "H", "2B", "3B", "HR", "RBI", "BB", "R"]
+  PITCHING = ["IP", "H", "R", "BB", "K"]
 
 
 class SimReplay(object):
   """Replays a game log via Slack."""
 
-  def __init__(self, gameid, path):
-    self.gameid = gameid
-    self.path = path
-    self.log = self.getLog()
+  def __init__(self, number, path, home, away):
+    self.innings = self.parseInnings(number, path)
+    self.players = {}
+
+    self.game = self.parseGame(number, home, away)
+    slack.postMessage(self.printGame(), "testing")
 
     self.chunk, self.data = [], []
     self.line = ""
 
     self.awayruns, self.homeruns = 0, 0
     self.awaypitcher, self.homepitcher, self.batter, self.runner = "", "", "", ""
-    self.frame, self.inning = Frame.TOP, 1
+    self.frame, self.inning = Half.AWAY, 1
 
     self.balls, self.strikes, self.outs = 0, 0, 0
     self.runners = {Base.FIRST: "", Base.SECOND: "", Base.THIRD: ""}
     self.batterToBase, self.runnerToBase = Base.NONE, Base.NONE
 
-  def getLog(self):
-    """Returns the contents of the specified log file."""
-    with open(os.path.join(self.path, "log_{0}.txt".format(self.gameid))) as f:
-      return f.read()
+  def parseInnings(self, number, path):
+    with open(os.path.join(path, "log_{0}.txt".format(number))) as f:
+      log = f.read()
+      sanitized = re.sub("\[%\w\]\t|</?b>", "", log).replace("  ", " ")
+      match = re.split("(\w+ of the \w+ -)", sanitized)
+      return [x[0] + x[1] for x in zip(match[1::2], match[2::2])]
 
-  def sanitize(self, log):
-    """Removes junk characters and HTML tags from log text."""
-    return re.sub("\[%\w\]\t|<(?:a[^>]*>|/a>)|</?b>", "", log.replace("  ", " "))
+  def parseGame(self, number, home, away):
+    top1 = self.innings[0] if self.innings else ""
+    bot1 = self.innings[1] if len(self.innings) > 1 else ""
 
-  def parseInnings(self):
-    """Splits log text by inning into a list."""
-    match = re.split("(\w+ of the \w+ -)", self.sanitize(self.log))
-    return [x[0] + x[1] for x in zip(match[1::2], match[2::2])]
+    pitcher1 = self.parsePlayer(top1, Qualifier.PITCHING)
+    pitcher2 = self.parsePlayer(bot1, Qualifier.PITCHING)
+    batter = self.parsePlayer(top1, Qualifier.BATTING)
+
+    inning = {"frame": 1, "half": Half.AWAY}
+    count = {"balls": 0, "strikes": 0, "outs": 0}
+    bases = {base: {"runner": 0, "pitcher": 0, "batter": 0} for base in BASES}
+
+    team1 = {"number": home, "pitcher": pitcher1, "runs": 0}
+    team2 = {"number": away, "pitcher": pitcher2, "runs": 0}
+
+    return {"number": number, Half.AWAY: team2, Half.HOME: team1,
+            "pitcher": pitcher1, "batter": batter, "inning": inning,
+            "count": count, "bases": bases, "ticker": ""}
+
+  def parsePlayer(self, text, qualifier):
+    pattern = qualifier + \
+        ": (\w+) <a href=\"../players/player_(\d+).html\">([^<]+)</a>"
+    match = re.search(pattern, text)
+
+    if not match:
+      return 0
+
+    hand, number, full = match.groups()
+    first, last = full.rsplit(" ", 1) if full.count(" ") else ("", full)
+
+    if number not in self.players:
+      self.players[number] = {"first": first, "last": last,
+                              "batting": {k: 0 for k in Stats.BATTING},
+                              "pitching": {k: 0 for k in Stats.PITCHING}}
+
+    if qualifier == Qualifier.BATTING:
+      self.players[number]["bats"] = hand
+    else:
+      self.players[number]["throws"] = hand
+
+    return number
+
+  def printInning(self):
+    inning = self.game["inning"]
+    arrow = ":small_red_triangle:" if inning["half"] == Half.AWAY \
+        else ":small_red_triangle_down:"
+    return "{} {}".format(arrow, inning["frame"])
+
+  def printTeamRuns(self, half):
+    team = self.game[half]
+    emoji = slack.getEmoji(team["number"])
+    return "{} {}".format(emoji, team["runs"])
+
+  def printCount(self):
+    count = self.game["count"]
+    return "{}-{}, {} out".format(count["balls"], count["strikes"], count["outs"])
+
+  def printBases(self):
+    bases = self.game["bases"]
+    colors = map(lambda x: "red" if bases[x]["runner"] else "grey", BASES)
+    diamonds = map(lambda x: ":{}diamond:".format(x), colors)
+    return "{} {} {}".format(*diamonds)
+
+  def printPlayerName(self, number, short=False):
+    if number not in self.players:
+      return ""
+
+    player = self.players[number]
+    return player["last"] if short else player["first"] + " " + player["last"]
+
+  def printBatterBats(self, number):
+    if number not in self.players:
+      return ""
+
+    return self.players[number]["bats"]
+
+  def printBatterStats(self, number):
+    if number not in self.players:
+      return ""
+
+    stats = self.players[number]["batting"]
+    sb = ""
+
+    for stat in Stats.BATTING:
+      if stat == "AB":
+        sb = sb + "{}-".format(stats["AB"])
+      elif stat == "H":
+        sb = sb + str(stats["H"])
+      elif stats[stat]:
+        number = str(stats[stat]) + " " if stats[stat] > 1 else ""
+        sb = sb + ", {}{}".format(number, stat)
+
+    return "(" + sb + ")"
+
+  def printPitcherThrows(self, number):
+    if number not in self.players:
+      return ""
+
+    return self.players[number]["throws"]
+
+  def printPitcherStats(self, number):
+    if number not in self.players:
+      return ""
+
+    stats = self.players[number]["pitching"]
+    sb = ""
+
+    for stat in Stats.PITCHING:
+      if stat == "IP":
+        sb = sb + "{:0.1f} IP".format(stats["IP"])
+      else:
+        sb = sb + ", {} {}".format(stats[stat], stat)
+
+    return "(" + sb + ")"
+
+  def printGame(self):
+    lines = []
+
+    inning = self.printInning()
+    away = self.printTeamRuns(Half.AWAY)
+    home = self.printTeamRuns(Half.HOME)
+    count = self.printCount()
+    bases = self.printBases()
+    lines.append(" :separator: ".join([inning, away, home, count, bases]))
+
+    if self.game["batter"]:
+      batter = self.game["batter"]
+      batting = "{} {} {}".format(self.printBatterBats(batter),
+                                   self.printPlayerName(batter),
+                                   self.printBatterStats(batter))
+
+      pitcher = self.game["pitcher"]
+      pitching = "{} {} {}".format(self.printPitcherThrows(pitcher),
+                                   self.printPlayerName(pitcher),
+                                   self.printPitcherStats(pitcher))
+
+      lines.append("*Batting:* {}\n*Pitching:* {}".format(batting, pitching))
+
+    if self.game["ticker"]:
+      half = self.game["inning"]["half"]
+      team = self.game[half]["number"]
+      emoji = slack.getEmoji(team)
+      lines.append("{} _{}_".format(emoji, self.game["ticker"]))
+
+    return "\n\n".join(lines)
 
   def search(self, regex, text, *args, **kwargs):
     if "condition" not in kwargs or kwargs["condition"]:
       match = re.search(regex, self.line)
       if match:
-        if not text.startswith("__"):
-          self.chunk.append(text.format(*match.groups()))
+        # if not text.startswith("__"):
+        self.chunk.append(text.format(*match.groups()))
         for callback in args:
           callback()
         return match
@@ -70,11 +228,11 @@ class SimReplay(object):
     else:
       return Base.NONE
 
-  def parseFrame(self, string):
+  def parseHalf(self, string):
     if string == "Top":
-      return Frame.TOP
+      return Half.AWAY
     else:
-      return Frame.BOTTOM
+      return Half.HOME
 
   def storeChunk(self):
     if self.chunk:
@@ -84,12 +242,12 @@ class SimReplay(object):
   def storeInningStart(self):
     self.outs = 0
     match = re.search("(\w+) of the (\d+)\w+ -", self.line)
-    self.frame = self.parseFrame(match.groups()[0])
+    self.frame = self.parseHalf(match.groups()[0])
     self.inning = int(match.groups()[1])
 
   def storePitcher(self):
     match = re.search("Pitching: \w+ (.+)", self.line)
-    if self.frame == Frame.TOP:
+    if self.frame == Half.AWAY:
       self.homepitcher = match.groups()[0]
     else:
       self.awaypitcher = match.groups()[0]
@@ -158,7 +316,6 @@ class SimReplay(object):
         self.storeRunnersAdvance()
       self.runners[self.batterToBase] = self.batter
 
-
   def storeBall(self):
     self.balls = self.balls + 1
 
@@ -172,7 +329,7 @@ class SimReplay(object):
     self.outs = self.outs + 1
 
   def storeRun(self):
-    if self.frame == Frame.TOP:
+    if self.frame == Half.AWAY:
       self.awayruns = self.awayruns + 1
     else:
       self.homeruns = self.homeruns + 1
@@ -199,7 +356,8 @@ class SimReplay(object):
   def handleChangeBatter(self):
     return self.search(
         "(?:Batting|Pinch Hitting): \w+ .+",
-        "__New batter. ({0},{1},{2})".format(self.runners[Base.FIRST], self.runners[Base.SECOND], self.runners[Base.THIRD]),
+        "__New batter. ({0},{1},{2})".format(self.runners[Base.FIRST], self.runners[
+            Base.SECOND], self.runners[Base.THIRD]),
         self.storeUnfinishedBatterToBase,
         self.storeBatter)
 
@@ -292,8 +450,8 @@ class SimReplay(object):
 
   def handleStrikeOut(self):
     return self.search(
-        "Strikes out",
-        "{0} {1}.".format(self.batter, self.line.lower()),
+        "Strikes out (\w+)",
+        "{0} strikes out {1}.".format(self.batter, "{0}"),
         self.storeStrike,
         self.storeOut)
 
@@ -521,8 +679,6 @@ class SimReplay(object):
     match = re.match("\d-\d: (.+)", self.line)
     if match:
       self.storeChunk()
-
-      self.line = match.groups()[0]
       return self.handleStrike() or \
           self.handleFoulBall() or \
           self.handleFoulBunt() or \
@@ -591,7 +747,8 @@ class SimReplay(object):
   def handleRunnerScoresFromThirdTrailingRunnerSafe(self):
     return self.search(
         "Runner from 3rd tries for Home, SAFE, throw made at trailing runner, SAFE at third",
-        "{0} scores. {1} to third.".format(self.runners[Base.THIRD], self.runners[Base.SECOND]),
+        "{0} scores. {1} to third.".format(
+            self.runners[Base.THIRD], self.runners[Base.SECOND]),
         self.storeRun,
         partial(self.storeRunnerErased, Base.THIRD),
         partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND),
@@ -600,7 +757,8 @@ class SimReplay(object):
   def handleRunnerScoresFromThirdTrailingRunnerOut(self):
     return self.search(
         "Runner from 3rd tries for Home, SAFE, throw made at trailing runner, OUT at third",
-        "{0} scores. {1} out at third.".format(self.runners[Base.THIRD], self.runners[Base.SECOND]),
+        "{0} scores. {1} out at third.".format(
+            self.runners[Base.THIRD], self.runners[Base.SECOND]),
         self.storeRun,
         partial(self.storeRunnerErased, Base.THIRD),
         partial(self.storeRunnerErasedOrBatter, Base.SECOND),
@@ -739,7 +897,8 @@ class SimReplay(object):
   def handleLineIntoDoublePlayThird(self):
     return self.search(
         "Lined into DP, (?:U5|\d-[5]) \(",
-        "{0} lines into a double play. {1} out at third.".format(self.batter, self.runners[Base.THIRD]),
+        "{0} lines into a double play. {1} out at third.".format(
+            self.batter, self.runners[Base.THIRD]),
         self.storeOut,
         self.storeOut,
         partial(self.storeRunnerErased, Base.THIRD),
@@ -748,7 +907,8 @@ class SimReplay(object):
   def handleLineIntoDoublePlaySecond(self):
     return self.search(
         "Lined into DP, (U[46]|\d-[46]) \(",
-        "{0} lines into a double play. {1} out at second.".format(self.batter, self.runners[Base.SECOND]),
+        "{0} lines into a double play. {1} out at second.".format(
+            self.batter, self.runners[Base.SECOND]),
         self.storeOut,
         self.storeOut,
         partial(self.storeRunnerErased, Base.SECOND),
@@ -757,7 +917,8 @@ class SimReplay(object):
   def handleLineIntoDoublePlayFirst(self):
     return self.search(
         "Lined into DP, (?:U3|\d-[3]) \(",
-        "{0} lines into a double play. {1} out at first.".format(self.batter, self.runners[Base.FIRST]),
+        "{0} lines into a double play. {1} out at first.".format(
+            self.batter, self.runners[Base.FIRST]),
         self.storeOut,
         self.storeOut,
         partial(self.storeRunnerErased, Base.FIRST),
@@ -852,9 +1013,10 @@ class SimReplay(object):
     print "{0}: {1}".format(self.gameid, self.line)
     self.chunk.append("__Unhandled {1}".format(self.gameid, self.line))
 
-  def start(self):
-    innings = self.parseInnings()
-    for inning in innings:
+  def play(self):
+    """Splits log text by inning into a list."""
+
+    for inning in innings[0:1]:
       for line in inning.splitlines():
         self.line = line
         self.handleInningStart() or \
@@ -897,13 +1059,12 @@ class SimReplay(object):
             self.handleFodder() or \
             self.handleUnhandled()
 
-    # for d in self.data:
-    #   print ", ".join(d)
+    for d in self.data:
+      print ", ".join(d)
 
 
-path = os.path.expanduser("~") + "/.Out of the Park Developments/OOTP Baseball 17/custdata/saved_games/orangeandblue.lg/news/txt/leagues/"
+path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"
 for filename in os.listdir(path):
-  match = re.search("log_(\d+).txt", filename)
+  match = re.search("log_(693).txt", filename)
   if match:
-    simReplay = SimReplay(match.groups()[0], path)
-    simReplay.start()
+    simReplay = SimReplay(match.groups()[0], path, 34, 35)
