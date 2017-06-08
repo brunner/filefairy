@@ -42,7 +42,7 @@ class SimReplay(object):
     self.players = {}
 
     self.game = self.parseGame(number, home, away)
-    slack.postMessage(self.printGame(), "testing")
+    slack.postMessage_("testing", self.printGame())
 
     self.chunk, self.data = [], []
     self.line = ""
@@ -1065,6 +1065,6 @@ class SimReplay(object):
 
 path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"
 for filename in os.listdir(path):
-  match = re.search("log_(693).txt", filename)
+  match = re.search("log_(1708).txt", filename)
   if match:
-    simReplay = SimReplay(match.groups()[0], path, 34, 35)
+    simReplay = SimReplay(match.groups()[0], path, 49, 51)
