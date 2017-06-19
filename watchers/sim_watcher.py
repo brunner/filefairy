@@ -270,6 +270,37 @@ class SimWatcher(object):
 
     return exports
 
+  def formatExports(self):
+    e = self.exports
+    f = lambda x: (float(e[x][0]) / ((e[x][0] + e[x][1]) or 1),
+                   e[x][0],
+                   float(1) / e[x][1] if e[x][1] else 2,
+                   float(e[x][3].count(1)) /
+                   ((e[x][3].count(1) + e[x][3].count(0)) or 1),
+                   0 if e[x][2] <= 0 else e[x][2] if e[x][3][-1] else -e[x][2])
+    ordered = sorted(e, key=f, reverse=True)
+
+    formatted = []
+    formatted.append("{0:<12} {1:>3}-{2:<4} {3:>5} {4:>6}    {5:<3}".format(
+        "team", "W", "L", "%", "L10", "*"))
+    formatted.append("-"*44)
+    for t in ordered:
+      emoji = slack.teamidsToEmoji[t].replace(":", "")
+
+      if e[t][2] > 0:
+        streak = "{0}{1}".format("W" if e[t][3][-1] else "L", e[t][2])
+      else:
+        streak = "W0"
+
+      pct = "{0:1.3f}".format(float(e[t][0]) / ((e[t][0] + e[t][1]) or 1))
+      if pct[0] == "0":
+        pct = " " + pct[1:]
+
+      formatted.append("{0:<12} {1:>3}-{2:<4} {3:<7} {4:>2}-{5:<4} {6:<3}".format(
+          emoji, e[t][0], e[t][1], pct, e[t][3].count(1), e[t][3].count(0), streak))
+
+    print "\n".join(formatted)
+
   def findSimDate(self, page):
     match = re.findall(r"MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<", page)
     return match[0].replace("/", "").strip() if len(match) else ""
