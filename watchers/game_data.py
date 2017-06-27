@@ -8,6 +8,7 @@ class Base:
   FIRST = 1
   SECOND = 2
   THIRD = 3
+  HOME = 4
 
 BASES = [Base.FIRST, Base.SECOND, Base.THIRD]
 
@@ -174,11 +175,17 @@ class GameData(object):
     team = Half.HOME if self.half == Half.AWAY else Half.AWAY
     return self.teams[team][Key.PITCHER]
 
-  def recordBatterSimpleStat(self, stat):
+  def recordBatterRun(self, batter):
+    if batter in self.players:
+      stats = self.players[batter][Key.BATTING]
+      stats["R"] += 1
+
+  def recordBatterSimpleStats(self, *args):
     batter = self.getBatter()
     if batter in self.players:
       stats = self.players[batter][Key.BATTING]
-      stats[stat] += 1
+      for stat in args:
+        stats[stat] += 1
 
   def recordPitcherOut(self):
     pitcher = self.getPitcher()
@@ -189,11 +196,17 @@ class GameData(object):
         stats["IP"] += 1
         stats["O"] = 0
 
-  def recordPitcherSimpleStat(self,stat):
+  def recordPitcherRun(self, pitcher):
+    if pitcher in self.players:
+      stats = self.players[pitcher][Key.PITCHING]
+      stats["R"] += 1
+
+  def recordPitcherSimpleStats(self, *args):
     pitcher = self.getPitcher()
     if pitcher in self.players:
       stats = self.players[pitcher][Key.PITCHING]
-      stats[stat] += 1
+      for stat in args:
+        stats[stat] += 1
 
   def recordStrikeOut(self):
     pitcher = self.getPitcher()
@@ -232,7 +245,12 @@ class GameData(object):
   def storeRunnerToBase(self, base, previous, text):
     value = self.bases[previous][Key.CURRENT]
     runner = value[Key.RUNNER]
-    if self.bases[base][Key.CURRENT][Key.RUNNER]:
+    if base == Base.HOME:
+      self.storeRun()
+      self.recordBatterSimpleStats("RBI")
+      self.recordBatterRun(runner)
+      self.recordPitcherRun(value[Key.PITCHER])
+    elif self.bases[base][Key.CURRENT][Key.RUNNER]:
       self.bases[base][Key.FUTURE] = value
     else:
       self.bases[base][Key.CURRENT] = value
@@ -243,6 +261,11 @@ class GameData(object):
       self.bases[previous][Key.FUTURE] = {Key.RUNNER: 0, Key.PITCHER: 0}
     else:
       self.bases[previous][Key.CURRENT] = {Key.RUNNER: 0, Key.PITCHER: 0}
+
+  def storeAllRunnersScore(self):
+    for base in reversed(BASES):
+      if self.bases[base][Key.CURRENT][Key.RUNNER]:
+        self.storeRunnerToBase(Base.HOME, base, "{} scores.")
 
   def storeBall(self):
     self.balls += 1
@@ -257,33 +280,52 @@ class GameData(object):
   def storeOut(self):
     self.outs += 1
 
+  def storeRun(self):
+    self.teams[self.half][Key.RUNS] += 1
+
   def storeSimpleOut(self, text):
     self.storeOut()
     self.recordPitcherOut()
-    self.recordBatterSimpleStat("AB")
+    self.recordBatterSimpleStats("AB")
     self.ticker = text.format(self.printPlayerName(self.getBatter()))
 
   def storeStrikeOut(self, text):
     self.storeStrike()
     self.storeOut()
-    self.recordBatterSimpleStat("AB")
+    self.recordBatterSimpleStats("AB")
     self.recordPitcherOut()
-    self.recordPitcherSimpleStat("K")
+    self.recordPitcherSimpleStats("K")
     self.ticker = text.format(self.printPlayerName(self.getBatter()))
 
   def storeStrikeOutReachesFirst(self):
     self.storeStrike()
     self.storeBatterToBase(Base.FIRST, "{} reaches first.")
-    self.recordBatterSimpleStat("AB")
-    self.recordPitcherSimpleStat("K")
+    self.recordBatterSimpleStats("AB")
+    self.recordPitcherSimpleStats("K")
 
   def storeWalk(self):
     self.storeBall()
     self.storeBatterToBase(Base.FIRST, "{} walks.")
-    self.recordPitcherSimpleStat("BB")
+    self.recordPitcherSimpleStats("BB")
 
   def storeSingle(self):
     self.storeBatterToBase(Base.FIRST, "{} singles.")
-    self.recordBatterSimpleStat("AB")
-    self.recordBatterSimpleStat("H")
-    self.recordPitcherSimpleStat("H")
+    self.recordBatterSimpleStats("AB", "H")
+    self.recordPitcherSimpleStats("H")
+
+  def storeDouble(self):
+    self.storeBatterToBase(Base.SECOND, "{} doubles.")
+    self.recordBatterSimpleStats("AB", "H", "2B")
+    self.recordPitcherSimpleStats("H")
+
+  def storeTriple(self):
+    self.storeBatterToBase(Base.THIRD, "{} triples.")
+    self.recordBatterSimpleStats("AB", "H", "3B")
+    self.recordPitcherSimpleStats("H")
+
+  def storeHomerun(self, text):
+    self.ticker = text.format(self.printPlayerName(self.getBatter()))
+    self.storeRun()
+    self.storeAllRunnersScore()
+    self.recordBatterSimpleStats("AB", "H", "HR", "RBI", "R")
+    self.recordPitcherSimpleStats("H", "R")

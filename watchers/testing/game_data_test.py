@@ -109,6 +109,50 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
+  gameData.addPlayer(7, "Brett", "Austin", Qualifier.BATTING, "SHB")
+  gameData.setBatter(7)
+  gameData.storeDouble()
+  gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
+  gameData.storeRunnerToBase(Base.HOME, Base.SECOND, "{} scores.")
+  gameData.storeRunnerToBase(Base.THIRD, Base.FIRST, "{} to third.")
+  away = ":whitesox: 2"
+  count = "0-0, 2 out"
+  bases = ":reddiamond: :reddiamond: :greydiamond:"
+  batting = "*Batting:* SHB Brett Austin (1-1, 2B, 2 RBI)"
+  pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 2 H, 2 R, 1 BB, 2 K)"
+  ticker = ":whitesox: _Brett Austin doubles. Adam Eaton scores. Matt Davidson scores. Viosergy Rosa to third._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
+
+  gameData.addPlayer(8, "Micah", "Johnson", Qualifier.BATTING, "SHB")
+  gameData.setBatter(8)
+  gameData.storeTriple()
+  gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
+  gameData.storeRunnerToBase(Base.HOME, Base.SECOND, "{} scores.")
+  away = ":whitesox: 4"
+  count = "0-0, 2 out"
+  bases = ":reddiamond: :greydiamond: :greydiamond:"
+  batting = "*Batting:* SHB Micah Johnson (1-1, 3B, 2 RBI)"
+  pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 3 H, 4 R, 1 BB, 2 K)"
+  ticker = ":whitesox: _Micah Johnson triples. Viosergy Rosa scores. Brett Austin scores._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
+
+  gameData.addPlayer(9, "Carlos", "Sanchez", Qualifier.BATTING, "SHB")
+  gameData.setBatter(9)
+  gameData.storeHomerun("{} hits a 2-run homerun.")
+  away = ":whitesox: 6"
+  count = "0-0, 2 out"
+  bases = ":greydiamond: :greydiamond: :greydiamond:"
+  batting = "*Batting:* SHB Carlos Sanchez (1-1, HR, 2 RBI, R)"
+  pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 4 H, 6 R, 1 BB, 2 K)"
+  ticker = ":whitesox: _Carlos Sanchez hits a 2-run homerun. Micah Johnson scores._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
+
 
 def createBox(inning, away, home, count, bases, batting="", pitching="", ticker=""):
   lines = [" :separator: ".join([inning, away, home, count, bases])]
