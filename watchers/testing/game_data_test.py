@@ -4,7 +4,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from game_data import GameData, Half, Qualifier
+from game_data import GameData, Base, Half, Qualifier
 from utils import assertEquals, assertNotEquals
 
 
@@ -61,6 +61,50 @@ def testGameData():
   batting = "*Batting:* LHB Jake Bauers (0-1)"
   pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 0 H, 0 R, 0 BB, 1 K)"
   ticker = ":whitesox: _Jake Bauers grounds out._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
+
+  gameData.addPlayer(4, "Adam", "Eaton", Qualifier.BATTING, "LHB")
+  gameData.setBatter(4)
+  gameData.storeStrike()
+  gameData.storeStrike()
+  gameData.storeStrikeOutReachesFirst()
+  count = "0-3, 2 out"
+  bases = ":greydiamond: :greydiamond: :reddiamond:"
+  batting = "*Batting:* LHB Adam Eaton (0-1)"
+  pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 0 H, 0 R, 0 BB, 2 K)"
+  ticker = ":whitesox: _Adam Eaton reaches first._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
+
+  gameData.addPlayer(5, "Matt", "Davidson", Qualifier.BATTING, "RHB")
+  gameData.setBatter(5)
+  gameData.storeBall()
+  gameData.storeBall()
+  gameData.storeBall()
+  gameData.storeWalk()
+  gameData.storeRunnerToBase(Base.SECOND, Base.FIRST, "{} to second.")
+  count = "4-0, 2 out"
+  bases = ":greydiamond: :reddiamond: :reddiamond:"
+  batting = "*Batting:* RHB Matt Davidson (0-0)"
+  pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 0 H, 0 R, 1 BB, 2 K)"
+  ticker = ":whitesox: _Matt Davidson walks. Adam Eaton to second._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
+
+  gameData.addPlayer(6, "Viosergy", "Rosa", Qualifier.BATTING, "LHB")
+  gameData.setBatter(6)
+  gameData.storeSingle()
+  gameData.storeRunnerToBase(Base.THIRD, Base.SECOND, "{} to third.")
+  gameData.storeRunnerToBase(Base.SECOND, Base.FIRST, "{} to second.")
+  count = "0-0, 2 out"
+  bases = ":reddiamond: :reddiamond: :reddiamond:"
+  batting = "*Batting:* LHB Viosergy Rosa (1-1)"
+  pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 1 H, 0 R, 1 BB, 2 K)"
+  ticker = ":whitesox: _Viosergy Rosa singles. Adam Eaton to third. Matt Davidson to second._"
   expected = createBox(inning, away, home, count,
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())

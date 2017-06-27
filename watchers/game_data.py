@@ -31,7 +31,9 @@ class Key:
   BATTER = "batter"
   BATS = "bats"
   BATTING = "batting"
+  CURRENT = "current"
   FIRST = "first"
+  FUTURE = "future"
   LAST = "last"
   NUMBER = "number"
   PITCHER = "pitcher"
@@ -65,8 +67,8 @@ class GameData(object):
     return "{}-{}, {} out".format(self.balls, self.strikes, self.outs)
 
   def printBases(self):
-    colors = map(lambda x: "red" if self.bases[x][
-                 Key.RUNNER] else "grey", BASES)
+    colors = map(lambda x: "red" if self.bases[x][Key.CURRENT][Key.RUNNER]
+                 else "grey", reversed(BASES))
     diamonds = map(lambda x: ":{}diamond:".format(x), colors)
     return "{} {} {}".format(*diamonds)
 
@@ -172,33 +174,40 @@ class GameData(object):
     team = Half.HOME if self.half == Half.AWAY else Half.AWAY
     return self.teams[team][Key.PITCHER]
 
-  def recordOut(self):
-    pitcher = self.getPitcher()
-    if pitcher in self.players:
-      stats = self.players[pitcher][Key.PITCHING]
-      stats["O"] = stats["O"] + 1
-      if stats["O"] == 3:
-        stats["IP"] = stats["IP"] + 1
-        stats["O"] = 0
-
+  def recordBatterSimpleStat(self, stat):
     batter = self.getBatter()
     if batter in self.players:
       stats = self.players[batter][Key.BATTING]
-      stats["AB"] = stats["AB"] + 1
+      stats[stat] += 1
+
+  def recordPitcherOut(self):
+    pitcher = self.getPitcher()
+    if pitcher in self.players:
+      stats = self.players[pitcher][Key.PITCHING]
+      stats["O"] += 1
+      if stats["O"] == 3:
+        stats["IP"] += 1
+        stats["O"] = 0
+
+  def recordPitcherSimpleStat(self,stat):
+    pitcher = self.getPitcher()
+    if pitcher in self.players:
+      stats = self.players[pitcher][Key.PITCHING]
+      stats[stat] += 1
 
   def recordStrikeOut(self):
     pitcher = self.getPitcher()
     if pitcher in self.players:
       stats = self.players[pitcher][Key.PITCHING]
-      stats["K"] = stats["K"] + 1
+      stats["K"] += 1
 
   def setInning(self, half, frame):
     self.half = Half.AWAY if half == "Top" else Half.HOME
     self.frame = frame
 
     self.balls, self.strikes, self.outs = 0, 0, 0
-    self.bases = {base: {Key.RUNNER: 0, Key.PITCHER: 0, Key.BATTER: 0}
-                  for base in BASES}
+    self.bases = {base: {Key.CURRENT: {Key.RUNNER: 0, Key.PITCHER: 0},
+                         Key.FUTURE: {Key.RUNNER: 0, Key.PITCHER: 0}} for base in BASES}
     self.batter = 0
 
   def setBatter(self, number):
@@ -211,26 +220,70 @@ class GameData(object):
       team = Half.HOME if self.half == Half.AWAY else Half.AWAY
       self.teams[team][Key.PITCHER] = number
 
+  def storeBatterToBase(self, base, text):
+    batter = self.getBatter()
+    value = {Key.RUNNER: batter, Key.PITCHER: self.getPitcher()}
+    if self.bases[base][Key.CURRENT][Key.RUNNER]:
+      self.bases[base][Key.FUTURE] = value
+    else:
+      self.bases[base][Key.CURRENT] = value
+    self.ticker = text.format(self.printPlayerName(batter))
+
+  def storeRunnerToBase(self, base, previous, text):
+    value = self.bases[previous][Key.CURRENT]
+    runner = value[Key.RUNNER]
+    if self.bases[base][Key.CURRENT][Key.RUNNER]:
+      self.bases[base][Key.FUTURE] = value
+    else:
+      self.bases[base][Key.CURRENT] = value
+    self.ticker += " " + text.format(self.printPlayerName(runner))
+
+    if self.bases[previous][Key.FUTURE][Key.RUNNER]:
+      self.bases[previous][Key.CURRENT] = self.bases[previous][Key.FUTURE]
+      self.bases[previous][Key.FUTURE] = {Key.RUNNER: 0, Key.PITCHER: 0}
+    else:
+      self.bases[previous][Key.CURRENT] = {Key.RUNNER: 0, Key.PITCHER: 0}
+
   def storeBall(self):
-    self.balls = self.balls + 1
+    self.balls += 1
 
   def storeStrike(self):
-    self.strikes = self.strikes + 1
+    self.strikes += 1
 
   def storeFoul(self):
     if self.strikes < 2:
       self.storeStrike()
 
   def storeOut(self):
-    self.outs = self.outs + 1
-    self.recordOut()
+    self.outs += 1
 
   def storeSimpleOut(self, text):
     self.storeOut()
+    self.recordPitcherOut()
+    self.recordBatterSimpleStat("AB")
     self.ticker = text.format(self.printPlayerName(self.getBatter()))
 
   def storeStrikeOut(self, text):
     self.storeStrike()
     self.storeOut()
-    self.recordStrikeOut()
+    self.recordBatterSimpleStat("AB")
+    self.recordPitcherOut()
+    self.recordPitcherSimpleStat("K")
     self.ticker = text.format(self.printPlayerName(self.getBatter()))
+
+  def storeStrikeOutReachesFirst(self):
+    self.storeStrike()
+    self.storeBatterToBase(Base.FIRST, "{} reaches first.")
+    self.recordBatterSimpleStat("AB")
+    self.recordPitcherSimpleStat("K")
+
+  def storeWalk(self):
+    self.storeBall()
+    self.storeBatterToBase(Base.FIRST, "{} walks.")
+    self.recordPitcherSimpleStat("BB")
+
+  def storeSingle(self):
+    self.storeBatterToBase(Base.FIRST, "{} singles.")
+    self.recordBatterSimpleStat("AB")
+    self.recordBatterSimpleStat("H")
+    self.recordPitcherSimpleStat("H")
