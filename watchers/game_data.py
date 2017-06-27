@@ -51,7 +51,6 @@ class GameData(object):
     self.teams[Half.AWAY] = {Key.NUMBER: away, Key.PITCHER: 0, Key.RUNS: 0}
     self.teams[Half.HOME] = {Key.NUMBER: home, Key.PITCHER: 0, Key.RUNS: 0}
     self.players = {}
-    self.ticker = ""
 
     self.setInning("Top", 1)
 
@@ -222,6 +221,7 @@ class GameData(object):
     self.bases = {base: {Key.CURRENT: {Key.RUNNER: 0, Key.PITCHER: 0},
                          Key.FUTURE: {Key.RUNNER: 0, Key.PITCHER: 0}} for base in BASES}
     self.batter = 0
+    self.ticker = ""
 
   def setBatter(self, number):
     if number in self.players:
@@ -245,7 +245,10 @@ class GameData(object):
   def storeRunnerToBase(self, base, previous, text):
     value = self.bases[previous][Key.CURRENT]
     runner = value[Key.RUNNER]
-    if base == Base.HOME:
+    if base == Base.NONE:
+      self.storeOut()
+      self.recordPitcherOut()
+    elif base == Base.HOME:
       self.storeRun()
       self.recordBatterSimpleStats("RBI")
       self.recordBatterRun(runner)
@@ -329,3 +332,26 @@ class GameData(object):
     self.storeAllRunnersScore()
     self.recordBatterSimpleStats("AB", "H", "HR", "RBI", "R")
     self.recordPitcherSimpleStats("H", "R")
+
+  def storeBuntFieldersChoiceOut(self):
+    self.storeOut()
+    self.storeBatterToBase(Base.FIRST, "{} bunts.")
+    self.recordBatterSimpleStats("AB")
+
+  def storeBuntFieldersChoiceSafe(self):
+    self.storeBatterToBase(Base.FIRST, "{} bunts.")
+    self.recordBatterSimpleStats("AB", "H")
+    self.recordPitcherSimpleStats("H")
+
+  def storeBuntOutAtFirst(self):
+    self.ticker = "{} bunts, out at first.".format(
+        self.printPlayerName(self.getBatter()))
+    self.storeOut()
+    if not any([self.bases[base][Key.CURRENT][Key.RUNNER] for base in BASES]):
+      self.recordBatterSimpleStats("AB")
+    self.recordPitcherOut()
+
+  def storeBuntSafeAtFirst(self):
+    self.storeBatterToBase(Base.FIRST, "{} bunts, safe at first.")
+    self.recordBatterSimpleStats("AB", "H")
+    self.recordPitcherSimpleStats("H")
