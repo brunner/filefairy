@@ -186,16 +186,16 @@ class GameData(object):
       team = Half.HOME if self.half == Half.AWAY else Half.AWAY
       self.teams[team][Key.PITCHER] = number
 
-  def storeBatterToBase(self, base, text):
+  def storeBatterToBase(self, base, ticker):
     batter = self.getBatter()
     value = {Key.RUNNER: batter, Key.PITCHER: self.getPitcher()}
     if self.bases[base][Key.CURRENT][Key.RUNNER]:
       self.bases[base][Key.FUTURE] = value
     else:
       self.bases[base][Key.CURRENT] = value
-    self.ticker = text.format(self.printPlayerName(batter))
+    self.ticker = ticker.format(self.printPlayerName(batter))
 
-  def storeRunnerToBase(self, base, previous, text):
+  def storeRunnerToBase(self, base, previous, ticker):
     value = self.bases[previous][Key.CURRENT]
     runner = value[Key.RUNNER]
     if base == Base.NONE:
@@ -210,7 +210,7 @@ class GameData(object):
       self.bases[base][Key.FUTURE] = value
     else:
       self.bases[base][Key.CURRENT] = value
-    self.ticker += " " + text.format(self.printPlayerName(runner))
+    self.ticker += " " + ticker.format(self.printPlayerName(runner))
 
     if self.bases[previous][Key.FUTURE][Key.RUNNER]:
       self.bases[previous][Key.CURRENT] = self.bases[previous][Key.FUTURE]
@@ -243,19 +243,19 @@ class GameData(object):
   def storeRun(self):
     self.teams[self.half][Key.RUNS] += 1
 
-  def storeSimpleOut(self, text):
+  def storeSimpleOut(self, ticker):
     self.storeOut()
     self.recordPitcherOut()
     self.recordBatterSimpleStats("AB")
-    self.ticker = text.format(self.printPlayerName(self.getBatter()))
+    self.ticker = ticker.format(self.printPlayerName(self.getBatter()))
 
-  def storeStrikeOut(self, text):
+  def storeStrikeOut(self, ticker):
     self.storeStrike()
     self.storeOut()
     self.recordBatterSimpleStats("AB")
     self.recordPitcherOut()
     self.recordPitcherSimpleStats("K")
-    self.ticker = text.format(self.printPlayerName(self.getBatter()))
+    self.ticker = ticker.format(self.printPlayerName(self.getBatter()))
 
   def storeStrikeOutReachesFirst(self):
     self.storeStrike()
@@ -283,8 +283,8 @@ class GameData(object):
     self.recordBatterSimpleStats("AB", "H", "3B")
     self.recordPitcherSimpleStats("H")
 
-  def storeHomerun(self, text):
-    self.ticker = text.format(self.printPlayerName(self.getBatter()))
+  def storeHomerun(self, ticker):
+    self.ticker = ticker.format(self.printPlayerName(self.getBatter()))
     self.storeRun()
     self.storeAllRunnersScore()
     self.recordBatterSimpleStats("AB", "H", "HR", "RBI", "R")
