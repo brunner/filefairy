@@ -11,12 +11,12 @@ from utils import assertEquals, assertNotEquals
 def testGameData():
   gameData = GameData(35, 34)
 
-  gameData.storePlayer(1, "Sean", "Newcomb", Qualifier.PITCHING, "LHP")
-  gameData.storePitcher(1)
+  gameData.storePlayer(1, "Sean", "Newcomb")
+  gameData.storePitcher(1, "LHP")
 
-  gameData.storePlayer(2, "Jacob", "May", Qualifier.BATTING, "SHB")
-  gameData.storeBatter(2)
-
+  gameData.storePlayer(2, "Jacob", "May")
+  gameData.storeBatter(2, "SHB")
+  
   inning = ":small_red_triangle: 1"
   away, home = ":whitesox: 0", ":redsox: 0"
   count = "0-0, 0 out"
@@ -47,8 +47,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(3, "Jake", "Bauers", Qualifier.BATTING, "LHB")
-  gameData.storeBatter(3)
+  gameData.storePlayer(3, "Jake", "Bauers")
+  gameData.storeBatter(3, "LHB")
   count = "0-0, 1 out"
   batting = "*Batting:* LHB Jake Bauers (0-0)"
   expected = createBox(inning, away, home, count,
@@ -64,8 +64,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(4, "Adam", "Eaton", Qualifier.BATTING, "LHB")
-  gameData.storeBatter(4)
+  gameData.storePlayer(4, "Adam", "Eaton")
+  gameData.storeBatter(4, "LHB")
   gameData.storeStrike()
   gameData.storeStrike()
   gameData.storeStrikeOutReachesFirst()
@@ -78,8 +78,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(5, "Matt", "Davidson", Qualifier.BATTING, "RHB")
-  gameData.storeBatter(5)
+  gameData.storePlayer(5, "Matt", "Davidson")
+  gameData.storeBatter(5, "RHB")
   gameData.storeBall()
   gameData.storeBall()
   gameData.storeBall()
@@ -94,8 +94,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(6, "Viosergy", "Rosa", Qualifier.BATTING, "LHB")
-  gameData.storeBatter(6)
+  gameData.storePlayer(6, "Viosergy", "Rosa")
+  gameData.storeBatter(6, "LHB")
   gameData.storeSingle()
   gameData.storeRunnerToBase(Base.THIRD, Base.SECOND, "{} to third.")
   gameData.storeRunnerToBase(Base.SECOND, Base.FIRST, "{} to second.")
@@ -108,8 +108,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(7, "Brett", "Austin", Qualifier.BATTING, "SHB")
-  gameData.storeBatter(7)
+  gameData.storePlayer(7, "Brett", "Austin")
+  gameData.storeBatter(7, "SHB")
   gameData.storeDouble()
   gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
   gameData.storeRunnerToBase(Base.HOME, Base.SECOND, "{} scores.")
@@ -124,8 +124,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(8, "Micah", "Johnson", Qualifier.BATTING, "SHB")
-  gameData.storeBatter(8)
+  gameData.storePlayer(8, "Micah", "Johnson")
+  gameData.storeBatter(8, "SHB")
   gameData.storeTriple()
   gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
   gameData.storeRunnerToBase(Base.HOME, Base.SECOND, "{} scores.")
@@ -139,8 +139,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(10, "Carlos", "Sanchez", Qualifier.BATTING, "SHB")
-  gameData.storeBatter(10)
+  gameData.storePlayer(10, "Carlos", "Sanchez")
+  gameData.storeBatter(10, "SHB")
   gameData.storeHomerun("{} hits a 2-run homerun.")
   away = ":whitesox: 6"
   count = "0-0, 2 out"
@@ -152,8 +152,8 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(11, "Luigi", "Rodriguez", Qualifier.BATTING, "SHB")
-  gameData.storeBatter(11)
+  gameData.storePlayer(11, "Luigi", "Rodriguez")
+  gameData.storeBatter(11, "SHB")
   gameData.storeSimpleOut("{} flies out.")
   away = ":whitesox: 6"
   count = "0-0, 3 out"
@@ -167,12 +167,12 @@ def testGameData():
 
   gameData.storeInning("Bottom", 1)
 
-  gameData.storePlayer(12, "Junior", "Reyes", Qualifier.PITCHING, "LHP")
-  gameData.storePitcher(12)
+  gameData.storePlayer(12, "Junior", "Reyes")
+  gameData.storePitcher(12, "LHP")
 
-  gameData.storePlayer(13, "Xander", "Bogaerts", Qualifier.BATTING, "RHB")
-  gameData.storeBatter(13)
-
+  gameData.storePlayer(13, "Xander", "Bogaerts")
+  gameData.storeBatter(13, "RHB")
+  
   inning = ":small_red_triangle_down: 1"
   count = "0-0, 0 out"
   batting = "*Batting:* RHB Xander Bogaerts (0-0)"
@@ -193,16 +193,16 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storePlayer(14, "Blake", "Swihart", Qualifier.BATTING, "SHB")
-  gameData.storeBatter(14)
+  gameData.storePlayer(14, "Blake", "Swihart")
+  gameData.storeBatter(14, "SHB")
   gameData.storeBuntSafeAtFirst()
   bases = ":greydiamond: :greydiamond: :reddiamond:"
   batting = "*Batting:* SHB Blake Swihart (1-1)"
   pitching = "*Pitching:* LHP Junior Reyes (0.1 IP, 1 H, 0 R, 0 BB, 0 K)"
   ticker = ":redsox: _Blake Swihart bunts, safe at first._"
 
-  gameData.storePlayer(15, "Connor", "Harrell", Qualifier.BATTING, "RHB")
-  gameData.storeBatter(15)
+  gameData.storePlayer(15, "Connor", "Harrell")
+  gameData.storeBatter(15, "RHB")
   gameData.storeBuntOutAtFirst()
   gameData.storeRunnerToBase(Base.SECOND, Base.FIRST, "{} to second.")
   count = "0-0, 2 out"
@@ -211,8 +211,8 @@ def testGameData():
   pitching = "*Pitching:* LHP Junior Reyes (0.2 IP, 1 H, 0 R, 0 BB, 0 K)"
   ticker = ":redsox: _Connor Harrell bunts, out at first. Blake Swihart to second._"
 
-  gameData.storePlayer(16, "Joey", "Gallo", Qualifier.BATTING, "LHB")
-  gameData.storeBatter(16)
+  gameData.storePlayer(16, "Joey", "Gallo")
+  gameData.storeBatter(16, "LHB")
   gameData.storeBuntFieldersChoiceSafe()
   gameData.storeRunnerToBase(Base.THIRD, Base.SECOND, "{} to third.")
   bases = ":reddiamond: :greydiamond: :reddiamond:"
@@ -220,15 +220,15 @@ def testGameData():
   pitching = "*Pitching:* LHP Junior Reyes (0.2 IP, 2 H, 0 R, 0 BB, 0 K)"
   ticker = ":redsox: _Joey Gallo bunts. Blake Swihart to third._"
 
-  gameData.storePlayer(17, "Javier", "Baez", Qualifier.BATTING, "RHB")
-  gameData.storeBatter(17)
+  gameData.storePlayer(17, "Javier", "Baez")
+  gameData.storeBatter(17, "RHB")
   gameData.storeBuntFieldersChoiceOut()
   gameData.storeRunnerToBase(Base.NONE, Base.FIRST, "{} out at second.")
   gameData.storeAllRunnersErased()
+  gameData.storeBatterErased()
   count = "0-0, 3 out"
   bases = ":greydiamond: :greydiamond: :greydiamond:"
-  batting = "*Batting:* RHB Javier Baez (0-1)"
-  pitching = "*Pitching:* LHP Junior Reyes (1.0 IP, 2 H, 0 R, 0 BB, 0 K)"
+  batting = ""
   ticker = ":redsox: _Javier Baez bunts. Joey Gallo out at second._"
 
 

@@ -164,27 +164,26 @@ class GameData(object):
     self.batter = 0
     self.ticker = ""
 
-  def storePlayer(self, number, first, last, qualifier, hand):
+  def storePlayer(self, number, first, last):
     if number not in self.players:
       self.players[number] = {Key.FIRST: first, Key.LAST: last,
                               Key.BATTING: {k: 0 for k in Stats.BATTING},
-                              Key.PITCHING: {k: 0 for k in Stats.PITCHING},
-                              Key.BATS: "", Key.THROWS: ""}
+                              Key.PITCHING: {k: 0 for k in Stats.PITCHING}}
 
-    if qualifier == Qualifier.BATTING:
-      self.players[number][Key.BATS] = hand
-    else:
-      self.players[number][Key.THROWS] = hand
-
-  def storeBatter(self, number):
+  def storeBatter(self, number, hand):
     if number in self.players:
       self.batter = number
       self.balls, self.strikes = 0, 0
+      self.players[number][Key.BATS] = hand
 
-  def storePitcher(self, number):
+  def storeBatterErased(self):
+    self.batter = 0
+
+  def storePitcher(self, number, hand):
     if number in self.players:
       team = Half.HOME if self.half == Half.AWAY else Half.AWAY
       self.teams[team][Key.PITCHER] = number
+      self.players[number][Key.THROWS] = hand
 
   def storeBatterToBase(self, base, ticker):
     batter = self.getBatter()
