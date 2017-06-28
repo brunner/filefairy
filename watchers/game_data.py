@@ -52,7 +52,8 @@ class GameData(object):
     self.teams[Half.HOME] = {Key.NUMBER: home, Key.PITCHER: 0, Key.RUNS: 0}
     self.players = {}
 
-    self.setInning("Top", 1)
+    self.storeInning("Top", 1)
+    self.storeAllRunnersErased()
 
   def printInning(self):
     arrow = ":small_red_triangle:" if self.half == Half.AWAY \
@@ -155,7 +156,15 @@ class GameData(object):
 
     return "\n\n".join(lines)
 
-  def addPlayer(self, number, first, last, qualifier, hand):
+  def storeInning(self, half, frame):
+    self.half = Half.AWAY if half == "Top" else Half.HOME
+    self.frame = frame
+
+    self.balls, self.strikes, self.outs = 0, 0, 0
+    self.batter = 0
+    self.ticker = ""
+
+  def storePlayer(self, number, first, last, qualifier, hand):
     if number not in self.players:
       self.players[number] = {Key.FIRST: first, Key.LAST: last,
                               Key.BATTING: {k: 0 for k in Stats.BATTING},
@@ -167,68 +176,12 @@ class GameData(object):
     else:
       self.players[number][Key.THROWS] = hand
 
-  def getBatter(self):
-    return self.batter
-
-  def getPitcher(self):
-    team = Half.HOME if self.half == Half.AWAY else Half.AWAY
-    return self.teams[team][Key.PITCHER]
-
-  def recordBatterRun(self, batter):
-    if batter in self.players:
-      stats = self.players[batter][Key.BATTING]
-      stats["R"] += 1
-
-  def recordBatterSimpleStats(self, *args):
-    batter = self.getBatter()
-    if batter in self.players:
-      stats = self.players[batter][Key.BATTING]
-      for stat in args:
-        stats[stat] += 1
-
-  def recordPitcherOut(self):
-    pitcher = self.getPitcher()
-    if pitcher in self.players:
-      stats = self.players[pitcher][Key.PITCHING]
-      stats["O"] += 1
-      if stats["O"] == 3:
-        stats["IP"] += 1
-        stats["O"] = 0
-
-  def recordPitcherRun(self, pitcher):
-    if pitcher in self.players:
-      stats = self.players[pitcher][Key.PITCHING]
-      stats["R"] += 1
-
-  def recordPitcherSimpleStats(self, *args):
-    pitcher = self.getPitcher()
-    if pitcher in self.players:
-      stats = self.players[pitcher][Key.PITCHING]
-      for stat in args:
-        stats[stat] += 1
-
-  def recordStrikeOut(self):
-    pitcher = self.getPitcher()
-    if pitcher in self.players:
-      stats = self.players[pitcher][Key.PITCHING]
-      stats["K"] += 1
-
-  def setInning(self, half, frame):
-    self.half = Half.AWAY if half == "Top" else Half.HOME
-    self.frame = frame
-
-    self.balls, self.strikes, self.outs = 0, 0, 0
-    self.bases = {base: {Key.CURRENT: {Key.RUNNER: 0, Key.PITCHER: 0},
-                         Key.FUTURE: {Key.RUNNER: 0, Key.PITCHER: 0}} for base in BASES}
-    self.batter = 0
-    self.ticker = ""
-
-  def setBatter(self, number):
+  def storeBatter(self, number):
     if number in self.players:
       self.batter = number
       self.balls, self.strikes = 0, 0
 
-  def setPitcher(self, number):
+  def storePitcher(self, number):
     if number in self.players:
       team = Half.HOME if self.half == Half.AWAY else Half.AWAY
       self.teams[team][Key.PITCHER] = number
@@ -264,6 +217,10 @@ class GameData(object):
       self.bases[previous][Key.FUTURE] = {Key.RUNNER: 0, Key.PITCHER: 0}
     else:
       self.bases[previous][Key.CURRENT] = {Key.RUNNER: 0, Key.PITCHER: 0}
+
+  def storeAllRunnersErased(self):
+    self.bases = {base: {Key.CURRENT: {Key.RUNNER: 0, Key.PITCHER: 0},
+                         Key.FUTURE: {Key.RUNNER: 0, Key.PITCHER: 0}} for base in BASES}
 
   def storeAllRunnersScore(self):
     for base in reversed(BASES):
@@ -355,3 +312,49 @@ class GameData(object):
     self.storeBatterToBase(Base.FIRST, "{} bunts, safe at first.")
     self.recordBatterSimpleStats("AB", "H")
     self.recordPitcherSimpleStats("H")
+
+  def getBatter(self):
+    return self.batter
+
+  def getPitcher(self):
+    team = Half.HOME if self.half == Half.AWAY else Half.AWAY
+    return self.teams[team][Key.PITCHER]
+
+  def recordBatterRun(self, batter):
+    if batter in self.players:
+      stats = self.players[batter][Key.BATTING]
+      stats["R"] += 1
+
+  def recordBatterSimpleStats(self, *args):
+    batter = self.getBatter()
+    if batter in self.players:
+      stats = self.players[batter][Key.BATTING]
+      for stat in args:
+        stats[stat] += 1
+
+  def recordPitcherOut(self):
+    pitcher = self.getPitcher()
+    if pitcher in self.players:
+      stats = self.players[pitcher][Key.PITCHING]
+      stats["O"] += 1
+      if stats["O"] == 3:
+        stats["IP"] += 1
+        stats["O"] = 0
+
+  def recordPitcherRun(self, pitcher):
+    if pitcher in self.players:
+      stats = self.players[pitcher][Key.PITCHING]
+      stats["R"] += 1
+
+  def recordPitcherSimpleStats(self, *args):
+    pitcher = self.getPitcher()
+    if pitcher in self.players:
+      stats = self.players[pitcher][Key.PITCHING]
+      for stat in args:
+        stats[stat] += 1
+
+  def recordStrikeOut(self):
+    pitcher = self.getPitcher()
+    if pitcher in self.players:
+      stats = self.players[pitcher][Key.PITCHING]
+      stats["K"] += 1
