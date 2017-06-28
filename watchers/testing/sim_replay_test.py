@@ -1,59 +1,23 @@
 #!/usr/bin/env python
 
+import json
 import os
 import re
 import sys
+import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import slack
-
 from functools import partial
-
-
-class Base:
-  NONE = 0
-  FIRST = 1
-  SECOND = 2
-  THIRD = 3
-
-BASES = [Base.FIRST, Base.SECOND, Base.THIRD]
-
-
-class Half:
-  AWAY = 1
-  HOME = 2
-
-
-class Qualifier:
-  BATTING = "Batting"
-  PITCHING = "Pitching"
-
-
-class Stats:
-  BATTING = ["AB", "H", "2B", "3B", "HR", "RBI", "BB", "R"]
-  PITCHING = ["IP", "H", "R", "BB", "K"]
-
+from game_data import GameData
 
 class SimReplay(object):
   """Replays a game log via Slack."""
 
-  def __init__(self, number, path, home, away):
+  def __init__(self, number, path, away, home):
+    self.gameData = GameData(away, home)
     self.innings = self.parseInnings(number, path)
-    self.players = {}
-
-    self.game = self.parseGame(number, home, away)
-    slack.postMessage_("testing", self.printGame())
-
-    self.chunk, self.data = [], []
-    self.line = ""
-
-    self.awayruns, self.homeruns = 0, 0
-    self.awaypitcher, self.homepitcher, self.batter, self.runner = "", "", "", ""
-    self.frame, self.inning = Half.AWAY, 1
-
-    self.balls, self.strikes, self.outs = 0, 0, 0
-    self.runners = {Base.FIRST: "", Base.SECOND: "", Base.THIRD: ""}
-    self.batterToBase, self.runnerToBase = Base.NONE, Base.NONE
+    self.parseUpdates()
 
   def parseInnings(self, number, path):
     with open(os.path.join(path, "log_{0}.txt".format(number))) as f:
@@ -62,304 +26,17 @@ class SimReplay(object):
       match = re.split("(\w+ of the \w+ -)", sanitized)
       return [x[0] + x[1] for x in zip(match[1::2], match[2::2])]
 
-  def parseGame(self, number, home, away):
-    top1 = self.innings[0] if self.innings else ""
-    bot1 = self.innings[1] if len(self.innings) > 1 else ""
-
-    pitcher1 = self.parsePlayer(top1, Qualifier.PITCHING)
-    pitcher2 = self.parsePlayer(bot1, Qualifier.PITCHING)
-    batter = self.parsePlayer(top1, Qualifier.BATTING)
-
-    inning = {"frame": 1, "half": Half.AWAY}
-    count = {"balls": 0, "strikes": 0, "outs": 0}
-    bases = {base: {"runner": 0, "pitcher": 0, "batter": 0} for base in BASES}
-
-    team1 = {"number": home, "pitcher": pitcher1, "runs": 0}
-    team2 = {"number": away, "pitcher": pitcher2, "runs": 0}
-
-    return {"number": number, Half.AWAY: team2, Half.HOME: team1,
-            "pitcher": pitcher1, "batter": batter, "inning": inning,
-            "count": count, "bases": bases, "ticker": ""}
-
-  def parsePlayer(self, text, qualifier):
-    pattern = qualifier + \
-        ": (\w+) <a href=\"../players/player_(\d+).html\">([^<]+)</a>"
-    match = re.search(pattern, text)
-
-    if not match:
-      return 0
-
-    hand, number, full = match.groups()
-    first, last = full.rsplit(" ", 1) if full.count(" ") else ("", full)
-
-    if number not in self.players:
-      self.players[number] = {"first": first, "last": last,
-                              "batting": {k: 0 for k in Stats.BATTING},
-                              "pitching": {k: 0 for k in Stats.PITCHING}}
-
-    if qualifier == Qualifier.BATTING:
-      self.players[number]["bats"] = hand
-    else:
-      self.players[number]["throws"] = hand
-
-    return number
-
-  def printInning(self):
-    inning = self.game["inning"]
-    arrow = ":small_red_triangle:" if inning["half"] == Half.AWAY \
-        else ":small_red_triangle_down:"
-    return "{} {}".format(arrow, inning["frame"])
-
-  def printTeamRuns(self, half):
-    team = self.game[half]
-    emoji = slack.getEmoji(team["number"])
-    return "{} {}".format(emoji, team["runs"])
-
-  def printCount(self):
-    count = self.game["count"]
-    return "{}-{}, {} out".format(count["balls"], count["strikes"], count["outs"])
-
-  def printBases(self):
-    bases = self.game["bases"]
-    colors = map(lambda x: "red" if bases[x]["runner"] else "grey", BASES)
-    diamonds = map(lambda x: ":{}diamond:".format(x), colors)
-    return "{} {} {}".format(*diamonds)
-
-  def printPlayerName(self, number, short=False):
-    if number not in self.players:
-      return ""
-
-    player = self.players[number]
-    return player["last"] if short else player["first"] + " " + player["last"]
-
-  def printBatterBats(self, number):
-    if number not in self.players:
-      return ""
-
-    return self.players[number]["bats"]
-
-  def printBatterStats(self, number):
-    if number not in self.players:
-      return ""
-
-    stats = self.players[number]["batting"]
-    sb = ""
-
-    for stat in Stats.BATTING:
-      if stat == "AB":
-        sb = sb + "{}-".format(stats["AB"])
-      elif stat == "H":
-        sb = sb + str(stats["H"])
-      elif stats[stat]:
-        number = str(stats[stat]) + " " if stats[stat] > 1 else ""
-        sb = sb + ", {}{}".format(number, stat)
-
-    return "(" + sb + ")"
-
-  def printPitcherThrows(self, number):
-    if number not in self.players:
-      return ""
-
-    return self.players[number]["throws"]
-
-  def printPitcherStats(self, number):
-    if number not in self.players:
-      return ""
-
-    stats = self.players[number]["pitching"]
-    sb = ""
-
-    for stat in Stats.PITCHING:
-      if stat == "IP":
-        sb = sb + "{:0.1f} IP".format(stats["IP"])
-      else:
-        sb = sb + ", {} {}".format(stats[stat], stat)
-
-    return "(" + sb + ")"
-
-  def printGame(self):
-    lines = []
-
-    inning = self.printInning()
-    away = self.printTeamRuns(Half.AWAY)
-    home = self.printTeamRuns(Half.HOME)
-    count = self.printCount()
-    bases = self.printBases()
-    lines.append(" :separator: ".join([inning, away, home, count, bases]))
-
-    if self.game["batter"]:
-      batter = self.game["batter"]
-      batting = "{} {} {}".format(self.printBatterBats(batter),
-                                   self.printPlayerName(batter),
-                                   self.printBatterStats(batter))
-
-      pitcher = self.game["pitcher"]
-      pitching = "{} {} {}".format(self.printPitcherThrows(pitcher),
-                                   self.printPlayerName(pitcher),
-                                   self.printPitcherStats(pitcher))
-
-      lines.append("*Batting:* {}\n*Pitching:* {}".format(batting, pitching))
-
-    if self.game["ticker"]:
-      half = self.game["inning"]["half"]
-      team = self.game[half]["number"]
-      emoji = slack.getEmoji(team)
-      lines.append("{} _{}_".format(emoji, self.game["ticker"]))
-
-    return "\n\n".join(lines)
-
-  def search(self, regex, text, *args, **kwargs):
-    if "condition" not in kwargs or kwargs["condition"]:
-      match = re.search(regex, self.line)
-      if match:
-        # if not text.startswith("__"):
-        self.chunk.append(text.format(*match.groups()))
-        for callback in args:
-          callback()
-        return match
-
-  def parseBase(self, string):
-    if string == "1st":
-      return Base.FIRST
-    elif string == "2nd":
-      return Base.SECOND
-    elif string == "3rd":
-      return Base.THIRD
-    else:
-      return Base.NONE
-
-  def parseHalf(self, string):
-    if string == "Top":
-      return Half.AWAY
-    else:
-      return Half.HOME
-
-  def storeChunk(self):
-    if self.chunk:
-      self.data.append(self.chunk[:])
-      del self.chunk[:]
-
-  def storeInningStart(self):
-    self.outs = 0
-    match = re.search("(\w+) of the (\d+)\w+ -", self.line)
-    self.frame = self.parseHalf(match.groups()[0])
-    self.inning = int(match.groups()[1])
-
-  def storePitcher(self):
-    match = re.search("Pitching: \w+ (.+)", self.line)
-    if self.frame == Half.AWAY:
-      self.homepitcher = match.groups()[0]
-    else:
-      self.awaypitcher = match.groups()[0]
-
-  def storeBatter(self):
-    self.balls, self.strikes = 0, 0
-    self.batterToBase, self.runnerToBase = Base.NONE, Base.NONE
-    match = re.search("(?:Batting|Pinch Hitting): \w+ (.+)", self.line)
-    self.batter = match.groups()[0]
-
-  def storeBatterToBase(self, base):
-    if self.runners[base]:
-      self.batterToBase = base
-    else:
-      self.runners[base] = self.batter
-
-  def storeBatterErased(self):
-    self.batterToBase = Base.NONE
-
+  # begin deprecated methods
   def storeRunner(self):
     match = re.search("Pinch Runner at (\w+) (.+):", self.line)
     base = self.parseBase(match.groups()[0])
     self.runners[base] = match.groups()[1]
-
-  def storeRunnerToBase(self, base, previous):
-    if self.runners[base]:
-      self.runnerToBase = base
-      self.runner = self.runners[previous]
-      self.runners[previous] = ""
-    else:
-      self.runners[base] = self.runners[previous]
-      if self.batterToBase == previous:
-        self.runners[previous] = self.batter
-        self.batterToBase = Base.NONE
-      elif self.runnerToBase == previous:
-        self.runners[previous] = self.runner
-        self.runner = ""
-      else:
-        self.runners[previous] = ""
-
-  def storeRunnerErased(self, base):
-    self.runners[base] = ""
-
-  def storeRunnerErasedOrBatter(self, base):
-    if self.batterToBase == base:
-      self.runners[base] = self.batter
-      self.batterToBase = Base.NONE
-    else:
-      self.runners[base] = ""
-
-  def storeRunnersAllErased(self):
-    self.runners[Base.FIRST] = ""
-    self.runners[Base.SECOND] = ""
-    self.runners[Base.THIRD] = ""
-
-  def storeRunnersAdvance(self):
-    if self.runners[Base.THIRD]:
-      self.chunk.append("{0} scores.".format(self.runners[Base.THIRD]))
-    self.runners[Base.THIRD] = self.runners[Base.SECOND]
-    self.runners[Base.SECOND] = self.runners[Base.FIRST]
-    self.runners[Base.FIRST] = ""
 
   def storeUnfinishedBatterToBase(self):
     if self.batterToBase != Base.NONE:
       while self.runners[self.batterToBase]:
         self.storeRunnersAdvance()
       self.runners[self.batterToBase] = self.batter
-
-  def storeBall(self):
-    self.balls = self.balls + 1
-
-  def storeStrike(self):
-    self.strikes = self.strikes + 1
-
-  def storeFoul(self):
-    self.strikes = max(2, self.strikes + 1)
-
-  def storeOut(self):
-    self.outs = self.outs + 1
-
-  def storeRun(self):
-    if self.frame == Half.AWAY:
-      self.awayruns = self.awayruns + 1
-    else:
-      self.homeruns = self.homeruns + 1
-
-  def handleInningStart(self):
-    return self.search(
-        "\w+ of the \d+\w+ -",
-        "__Inning start.",
-        self.storeInningStart)
-
-  def handleInningEnd(self):
-    return self.search(
-        "\w+ of the \d+\w+ over -",
-        "__Inning end.",
-        self.storeRunnersAllErased,
-        self.storeChunk)
-
-  def handleChangePitcher(self):
-    return self.search(
-        "Pitching: \w+ .+",
-        "__New pitcher.",
-        self.storePitcher)
-
-  def handleChangeBatter(self):
-    return self.search(
-        "(?:Batting|Pinch Hitting): \w+ .+",
-        "__New batter. ({0},{1},{2})".format(self.runners[Base.FIRST], self.runners[
-            Base.SECOND], self.runners[Base.THIRD]),
-        self.storeUnfinishedBatterToBase,
-        self.storeBatter)
 
   def handleChangeRunner(self):
     return self.search(
@@ -384,145 +61,11 @@ class SimReplay(object):
         "{0} doubles, out on appeal.".format(self.batter),
         self.storeOut)
 
-  def handleStrike(self):
-    return self.search(
-        "Swinging Strike|Called Strike",
-        "__Strike {0}-{1}.".format(self.balls, self.strikes + 1),
-        self.storeStrike)
-
-  def handleFoulBall(self):
-    return self.search(
-        "Foul Ball",
-        "__Foul ball.",
-        self.storeFoul)
-
   def handleFoulBunt(self):
     return self.search(
         "Bunted foul",
         "__Foul bunt.",
         self.storeStrike)
-
-  def handleWalk(self):
-    return self.search(
-        "Base on Balls",
-        "{0} walks.".format(self.batter),
-        self.storeBall,
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleIntentionalWalk(self):
-    return self.search(
-        "Intentional Walk",
-        "{0} walks intentionally.".format(self.batter),
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleRareWalk(self):
-    return self.search(
-        "Ball",
-        "{0} walks.".format(self.batter),
-        self.storeBall,
-        partial(self.storeBatterToBase, Base.FIRST),
-        condition=(self.balls == 3))
-
-  def handleBall(self):
-    return self.search(
-        "Ball",
-        "__Ball {0}-{1}.".format(self.balls + 1, self.strikes),
-        self.storeBall)
-
-  def handleGroundOut(self):
-    return self.search(
-        "Grounds? out",
-        "{0} grounds out.".format(self.batter),
-        self.storeOut)
-
-  def handleFlyOut(self):
-    return self.search(
-        "Fly out",
-        "{0} flies out.".format(self.batter),
-        self.storeOut)
-
-  def handleStrikeOutReachesFirst(self):
-    return self.search(
-        "Strikes out .*? reaches first",
-        "{0} reaches first.".format(self.batter, self.line.lower()),
-        self.storeStrike,
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleStrikeOut(self):
-    return self.search(
-        "Strikes out (\w+)",
-        "{0} strikes out {1}.".format(self.batter, "{0}"),
-        self.storeStrike,
-        self.storeOut)
-
-  def handleBuntRunnerOutAtHome(self):
-    return self.search(
-        "Bunt.*?- play at home, runner OUT",
-        "{0} bunts into a fielders choice. {1} out at home.".format(
-            self.batter, self.runners[Base.THIRD]),
-        self.storeOut,
-        partial(self.storeRunnerErased, Base.THIRD),
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleBuntRunnerSafeAtHome(self):
-    return self.search(
-        "Bunt.*?- play at home, runner safe",
-        "{0} bunts. {1} safe at home.".format(
-            self.batter, self.runners[Base.THIRD]),
-        self.storeRun,
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleBuntRunnerOutAtThird(self):
-    return self.search(
-        "Bunt.*?- play at third, runner OUT",
-        "{0} bunts into a fielders choice. {1} out at third.".format(
-            self.batter, self.runners[Base.SECOND]),
-        self.storeOut,
-        partial(self.storeRunnerErased, Base.SECOND),
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleBuntRunnerSafeAtThird(self):
-    return self.search(
-        "Bunt.*?- play at third, runner safe",
-        "{0} bunts. {1} safe at third.".format(
-            self.batter, self.runners[Base.SECOND]),
-        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND),
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleBuntRunnerOutAtSecond(self):
-    return self.search(
-        "Bunt.*?- play at second, runner OUT",
-        "{0} bunts into a fielders choice. {1} out at second.".format(
-            self.batter, self.runners[Base.FIRST]),
-        self.storeOut,
-        partial(self.storeRunnerErased, Base.FIRST),
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleBuntRunnerSafeAtSecond(self):
-    return self.search(
-        "Bunt.*?- play at second, runner safe",
-        "{0} bunts. {1} safe at second.".format(
-            self.batter, self.runners[Base.FIRST]),
-        partial(self.storeRunnerToBase, Base.SECOND, Base.FIRST),
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleBuntBatterPlayOut(self):
-    return self.search(
-        "Bunt.*?- play at first, batter OUT",
-        "{0} bunts, out at first.".format(self.batter),
-        self.storeOut)
-
-  def handleBuntBatterFlyOut(self):
-    return self.search(
-        "Bunt - Flyout",
-        "{0} pops out on a bunt.".format(self.batter),
-        self.storeOut)
-
-  def handleBuntBatterSafe(self):
-    return self.search(
-        "Bunt.*?- play at first, batter safe",
-        "{0} bunts, safe at first.".format(self.batter),
-        partial(self.storeBatterToBase, Base.FIRST))
 
   def handleSingleAdvancesToSecond(self):
     return self.search(
@@ -617,111 +160,6 @@ class SimReplay(object):
         "Reached \w+ [eE]rror|Reaches on Catchers interference",
         "{0} reaches on an error.".format(self.batter),
         partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleSingle(self):
-    return self.search(
-        "SINGLE",
-        "{0} singles.".format(self.batter),
-        partial(self.storeBatterToBase, Base.FIRST))
-
-  def handleDouble(self):
-    return self.search(
-        "DOUBLE",
-        "{0} doubles.".format(self.batter),
-        partial(self.storeBatterToBase, Base.SECOND))
-
-  def handleTriple(self):
-    return self.search(
-        "TRIPLE",
-        "{0} triples.".format(self.batter),
-        partial(self.storeBatterToBase, Base.THIRD))
-
-  def handleOneRunHomerun(self):
-    return self.search(
-        "SOLO HOME RUN",
-        "{0} hits a solo homerun.".format(self.batter),
-        self.storeRun)
-
-  def handleTwoRunHomerun(self):
-    return self.search(
-        "2-RUN HOME RUN",
-        "{0} hits a 2-run homerun.".format(self.batter),
-        self.storeRun,
-        self.storeRun,
-        self.storeRunnersAdvance,
-        self.storeRunnersAdvance,
-        self.storeRunnersAdvance)
-
-  def handleThreeRunHomerun(self):
-    return self.search(
-        "3-RUN HOME RUN",
-        "{0} hits a 3-run homerun.".format(self.batter),
-        self.storeRun,
-        self.storeRun,
-        self.storeRun,
-        self.storeRunnersAdvance,
-        self.storeRunnersAdvance,
-        self.storeRunnersAdvance)
-
-  def handleGrandSlamHomerun(self):
-    return self.search(
-        "GRAND SLAM HOME RUN",
-        "{0} hits a grand slam.".format(self.batter),
-        self.storeRun,
-        self.storeRun,
-        self.storeRun,
-        self.storeRun,
-        self.storeRunnersAdvance,
-        self.storeRunnersAdvance,
-        self.storeRunnersAdvance)
-
-  def handlePitch(self):
-    match = re.match("\d-\d: (.+)", self.line)
-    if match:
-      self.storeChunk()
-      return self.handleStrike() or \
-          self.handleFoulBall() or \
-          self.handleFoulBunt() or \
-          self.handleWalk() or \
-          self.handleIntentionalWalk() or \
-          self.handleRareWalk() or \
-          self.handleBall() or \
-          self.handleWildPitch() or \
-          self.handleGroundOut() or \
-          self.handleFlyOut() or \
-          self.handleStrikeOutReachesFirst() or \
-          self.handleStrikeOut() or \
-          self.handleBuntRunnerOutAtHome() or \
-          self.handleBuntRunnerSafeAtHome() or \
-          self.handleBuntRunnerOutAtThird() or \
-          self.handleBuntRunnerSafeAtThird() or \
-          self.handleBuntRunnerOutAtSecond() or \
-          self.handleBuntRunnerSafeAtSecond() or \
-          self.handleBuntBatterPlayOut() or \
-          self.handleBuntBatterFlyOut() or \
-          self.handleBuntBatterSafe() or \
-          self.handleSingleAdvancesToSecond() or \
-          self.handleSingleMissedBase() or \
-          self.handleSingleStretchOutAtSecond() or \
-          self.handleDoubleAdvancesToThird() or \
-          self.handleDoubleMissedBase() or \
-          self.handleDoubleStretchOutAtThird() or \
-          self.handleTripleStretchOutAtHome() or \
-          self.handleFieldersChoiceAtHomeOut() or \
-          self.handleFieldersChoiceAtHomeSafe() or \
-          self.handleFieldersChoiceAtThird() or \
-          self.handleFieldersChoiceAtSecond() or \
-          self.handleGroundIntoDoublePlayHomeToFirst() or \
-          self.handleGroundIntoDoublePlaySecondToFirst() or \
-          self.handleHitByPitch() or \
-          self.handleReachOnError() or \
-          self.handleSingle() or \
-          self.handleDouble() or \
-          self.handleTriple() or \
-          self.handleOneRunHomerun() or \
-          self.handleTwoRunHomerun() or \
-          self.handleThreeRunHomerun() or \
-          self.handleGrandSlamHomerun()
 
   def handleBatterScores(self):
     return self.search(
@@ -1012,59 +450,237 @@ class SimReplay(object):
   def handleUnhandled(self):
     print "{0}: {1}".format(self.gameid, self.line)
     self.chunk.append("__Unhandled {1}".format(self.gameid, self.line))
+  # end deprecated methods
 
-  def play(self):
-    """Splits log text by inning into a list."""
+  def search(self, pattern, text, *callbacks):
+    match = re.search(pattern, text)
+    if match:
+      for callback in callbacks:
+        callback()
 
-    for inning in innings[0:1]:
-      for line in inning.splitlines():
-        self.line = line
-        self.handleInningStart() or \
-            self.handleInningEnd() or \
-            self.handleChangePitcher() or \
-            self.handleChangeBatter() or \
-            self.handleChangeRunner() or \
-            self.handleWildPitch() or \
-            self.handleSingleMissedBase() or \
-            self.handleDoubleMissedBase() or \
-            self.handlePitch() or \
-            self.handleBatterScores() or \
-            self.handleBatterAdvancesToThird() or \
-            self.handleBatterAdvancesToSecond() or \
-            self.handleRunnerScoresFromThirdTrailingRunnerSafe() or \
-            self.handleRunnerScoresFromThirdTrailingRunnerOut() or \
-            self.handleRunnerScoresFromThirdSafe() or \
-            self.handleRunnerScoresFromThirdOut() or \
-            self.handleRunnerScoresFromSecondSafe() or \
-            self.handleRunnerScoresFromFirstSafe() or \
-            self.handleRunnerAdvancesFromSecondToThirdError() or \
-            self.handleRunnerAdvancesFromSecondToThirdSafe() or \
-            self.handleRunnerAdvancesFromSecondToThirdOut() or \
-            self.handleRunnerAdvancesFromFirstToThird() or \
-            self.handleRunnerAdvancesFromFirstToSecondSafe() or \
-            self.handleRunnerAdvancesFromFirstToSecondOut() or \
-            self.handleRunnerStealsHomeSafe() or \
-            self.handleRunnerStealsHomeOut() or \
-            self.handleRunnerStealsThirdSafe() or \
-            self.handleRunnerStealsThirdOut() or \
-            self.handleRunnerStealsSecondSafe() or \
-            self.handleRunnerStealsSecondOut() or \
-            self.handleLineIntoDoublePlayThird() or \
-            self.handleLineIntoDoublePlaySecond() or \
-            self.handleLineIntoDoublePlayFirst() or \
-            self.handlePickoffError() or \
-            self.handlePickoffThird() or \
-            self.handlePickoffSecond() or \
-            self.handlePickoffFirst() or \
-            self.handleFodder() or \
-            self.handleUnhandled()
+    return match
 
-    for d in self.data:
-      print ", ".join(d)
+  def storeInning(self, pattern, text):
+    match = re.search(pattern, text)
+    half, frame = match.groups()
+    self.gameData.storeInning(half, frame)
+
+  def storePlayer(self, text):
+    pattern = "<a href=\"../players/player_(\d+).html\">([^<]+)</a>"
+    match = re.search(pattern, text)
+
+    if not match:
+      return 0
+
+    number, full = match.groups()
+    first, last = full.rsplit(" ", 1) if full.count(" ") else ("", full)
+    self.gameData.storePlayer(number, first, last)
+
+    return number
+
+  def storePitcher(self, pattern, text):
+    player = self.storePlayer(text)
+    match = re.search(pattern, text)
+    self.gameData.storePitcher(player, match.groups()[0])
+
+  def storeBatter(self, pattern, text):
+    player = self.storePlayer(text)
+    match = re.search(pattern, text)
+    self.gameData.storeBatter(player, match.groups()[0])
+
+  def storeStrikeOut(self, pattern, text):
+    match = re.search(pattern, text)
+    self.gameData.storeStrikeOut("{} strikes out " + match.groups()[0] + ".")
+
+  def storeHomerun(self, pattern, text):
+    match = re.search(pattern, text)
+    self.gameData.storeHomerun(
+        "{} hits a " + match.groups()[0].lower + "homerun.")
+
+  def storeBunt(self, pattern, text):
+    match = re.search(pattern, text)
+    value, runner = match.groups()
+
+    values = ["first", "second", "third", "home"]
+    i = values.index(value) if value in values else -1
+
+    bases = [Base.FIRST, Base.SECOND, Base.THIRD, Base.HOME, Base.NONE]
+    base = bases[i] if runner == "safe" else Base.NONE
+    previous = bases[i - 1] if i > 0 else Base.NONE
+    ticker = "{} " + "{} at {}".format(runner.lower(), value)
+
+    if runner == "safe" and base == Base.FIRST:
+      self.gameData.storeBuntSafeAtFirst()
+    elif base == Base.FIRST:
+      self.gameData.storeBuntOutAtFirst()
+    elif runner == "safe":
+      self.gameData.storeBuntFieldersChoiceSafe()
+      self.gameData.storeRunnerToBase(base, previous, ticker)
+    else:
+      self.gameData.storeBuntFieldersChoiceOut()
+      self.gameData.storeRunnerToBase(base, previous, ticker)
+
+  def storeRunnerScoresTrailing(self, pattern, text):
+    match = re.search(pattern, text)
+    runner = match.groups()[0]
+    base = Base.THIRD if runner == "SAFE" else Base.NONE
+    ticker = "{} " + "{} at third".format(runner.lower())
+    self.gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
+    self.gameData.storeRunnerToBase(base, Base.SECOND, ticker)
+
+  def handleInningStart(self, text):
+    pattern = "(\w+) of the (\d+)\w+ -"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeInning, pattern, text))
+
+  def handleInningEnd(self, text):
+    return self.search(
+        "\w+ of the \d+\w+ over -",
+        text,
+        self.gameData.storeAllRunnersErased,
+        self.gameData.storeBatterErased)
+
+  def handleChangePitcher(self, text):
+    pattern = "Pitching: (\w+) "
+    return self.search(
+        pattern,
+        text,
+        partial(self.storePitcher, pattern, text))
+
+  def handleChangeBatter(self, text):
+    pattern = "(?:Batting|Pinch Hitting): (\w+) "
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeBatter, pattern, text))
+
+  def handleStrike(self, text):
+    return self.search(
+        "Swinging Strike|Called Strike",
+        text,
+        self.gameData.storeStrike)
+
+  def handleFoulBall(self, text):
+    return self.search(
+        "Foul Ball",
+        text,
+        self.gameData.storeFoul)
+
+  def handleBall(self, text):
+    return self.search(
+        "Ball",
+        text,
+        self.gameData.storeBall)
+
+  def handleGroundOut(self, text):
+    return self.search(
+        "Grounds? out",
+        text,
+        partial(self.gameData.storeSimpleOut, "{} grounds out."))
+
+  def handleFlyOut(self, text):
+    return self.search(
+        "Fly out",
+        text,
+        partial(self.gameData.storeSimpleOut, "{} flies out."))
+
+  def handleStrikeOut(self, text):
+    pattern = "Strikes out (\w+)"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeStrikeOut, pattern, text))
+
+  def handleStrikeOutReaches(self, text):
+    return self.search(
+        "Strikes out .*? reaches first",
+        text,
+        self.gameData.storeStrikeOutReachesFirst)
+
+  def handleWalk(self, text):
+    return self.search(
+        "Base on Balls|Intentional Walk|3-\d: Ball",
+        text,
+        self.gameData.storeWalk)
+
+  def handleSingle(self, text):
+    return self.search(
+        "SINGLE",
+        text,
+        self.gameData.storeSingle)
+
+  def handleDouble(self, text):
+    return self.search(
+        "DOUBLE",
+        text,
+        self.gameData.storeDouble)
+
+  def handleTriple(self, text):
+    return self.search(
+        "TRIPLE",
+        text,
+        self.gameData.storeTriple)
+
+  def handleHomerun(self, text):
+    pattern = "(SOLO|2-RUN|3-RUN|GRAND SLAM) HOME RUN"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeHomerun, pattern, text))
+
+  def handleBunt(self, text):
+    pattern = "Bunt.*?- play at (\w+), runner (\w+)"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeBunt, pattern, text))
+
+  def handleBuntFlyOut(self, text):
+    return self.search(
+        "Bunt - Flyout",
+        text,
+        partial(self.gameData.storeSimpleOut, "{} pops out on a bunt."))
+
+  def handleRunnerScoresTrailing_(self, text):
+    pattern = "throw made at trailing runner, (\w+) at third"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeRunnerScoresTrailing, pattern, text))
+
+  def parseUpdates(self):
+    for inning in self.innings[0:1]:
+      for text in inning.splitlines():
+        match = re.match("\d-\d: (.+)", text)
+        if match:
+          self.handleStrike(text) or \
+              self.handleFoulBall(text) or \
+              self.handleBall(text) or \
+              self.handleGroundOut(text) or \
+              self.handleFlyOut(text) or \
+              self.handleStrikeOut(text) or \
+              self.handleStrikeOutReaches(text) or \
+              self.handleWalk(text) or \
+              self.handleSingle(text) or \
+              self.handleDouble(text) or \
+              self.handleTriple(text) or \
+              self.handleHomerun(text) or \
+              self.handleBunt(text) or \
+              self.handleBuntFlyOut(text)
+
+        else:
+          self.handleInningStart(text) or \
+              self.handleInningEnd(text) or \
+              self.handleChangePitcher(text) or \
+              self.handleChangeBatter(text)
+
+        print self.gameData.printBox()
 
 
 path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"
 for filename in os.listdir(path):
   match = re.search("log_(1708).txt", filename)
   if match:
-    simReplay = SimReplay(match.groups()[0], path, 49, 51)
+    simReplay = SimReplay(match.groups()[0], path, 51, 49)
