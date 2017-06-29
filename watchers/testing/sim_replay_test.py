@@ -9,12 +9,14 @@ import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import slack
 from functools import partial
-from game_data import GameData
+from game_data import GameData, Base
+
 
 class SimReplay(object):
   """Replays a game log via Slack."""
 
   def __init__(self, number, path, away, home):
+    self.number = number
     self.gameData = GameData(away, home)
     self.innings = self.parseInnings(number, path)
     self.parseUpdates()
@@ -61,12 +63,6 @@ class SimReplay(object):
         "{0} doubles, out on appeal.".format(self.batter),
         self.storeOut)
 
-  def handleFoulBunt(self):
-    return self.search(
-        "Bunted foul",
-        "__Foul bunt.",
-        self.storeStrike)
-
   def handleSingleAdvancesToSecond(self):
     return self.search(
         "Single.*? batter to second",
@@ -97,15 +93,6 @@ class SimReplay(object):
         "{0} triples, out at home".format(self.batter),
         self.storeOut)
 
-  def handleFieldersChoiceAtHomeOut(self):
-    return self.search(
-        "fielders choice \d-2",
-        "{0} hits into a fielders choice. {1} out at home.".format(
-            self.batter, self.runners[Base.THIRD]),
-        self.storeOut,
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerErased, Base.THIRD))
-
   def handleFieldersChoiceAtHomeSafe(self):
     return self.search(
         "Fielders Choice attempt at home, Runner SAFE",
@@ -114,24 +101,6 @@ class SimReplay(object):
         self.storeRun,
         partial(self.storeBatterToBase, Base.FIRST),
         partial(self.storeRunnerErased, Base.THIRD))
-
-  def handleFieldersChoiceAtThird(self):
-    return self.search(
-        "Fielders Choice at 3rd",
-        "{0} hits into a fielders choice. {1} out at third.".format(
-            self.batter, self.runners[Base.SECOND]),
-        self.storeOut,
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerErased, Base.SECOND))
-
-  def handleFieldersChoiceAtSecond(self):
-    return self.search(
-        "Fielders Choice at 2nd",
-        "{0} hits into a fielders choice. {1} out at second.".format(
-            self.batter, self.runners[Base.FIRST]),
-        self.storeOut,
-        partial(self.storeBatterToBase, Base.FIRST),
-        partial(self.storeRunnerErasedOrBatter, Base.FIRST))
 
   def handleGroundIntoDoublePlayHomeToFirst(self):
     return self.search(
@@ -155,12 +124,6 @@ class SimReplay(object):
         "{0} hit by the pitch.".format(self.batter),
         partial(self.storeBatterToBase, Base.FIRST))
 
-  def handleReachOnError(self):
-    return self.search(
-        "Reached \w+ [eE]rror|Reaches on Catchers interference",
-        "{0} reaches on an error.".format(self.batter),
-        partial(self.storeBatterToBase, Base.FIRST))
-
   def handleBatterScores(self):
     return self.search(
         "{0} scores".format(self.batter),
@@ -173,68 +136,14 @@ class SimReplay(object):
         "{0} to third".format(self.batter),
         "{0} to third.".format(self.batter),
         self.storeBatterErased,
-        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND))
+        partial(self.storeBaseToBase, Base.SECOND, Base.THIRD))
 
   def handleBatterAdvancesToSecond(self):
     return self.search(
         "{0} to second".format(self.batter),
         "{0} to second.".format(self.batter),
         self.storeBatterErased,
-        partial(self.storeRunnerToBase, Base.SECOND, Base.FIRST))
-
-  def handleRunnerScoresFromThirdTrailingRunnerSafe(self):
-    return self.search(
-        "Runner from 3rd tries for Home, SAFE, throw made at trailing runner, SAFE at third",
-        "{0} scores. {1} to third.".format(
-            self.runners[Base.THIRD], self.runners[Base.SECOND]),
-        self.storeRun,
-        partial(self.storeRunnerErased, Base.THIRD),
-        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND),
-        condition=self.runners[Base.THIRD])
-
-  def handleRunnerScoresFromThirdTrailingRunnerOut(self):
-    return self.search(
-        "Runner from 3rd tries for Home, SAFE, throw made at trailing runner, OUT at third",
-        "{0} scores. {1} out at third.".format(
-            self.runners[Base.THIRD], self.runners[Base.SECOND]),
-        self.storeRun,
-        partial(self.storeRunnerErased, Base.THIRD),
-        partial(self.storeRunnerErasedOrBatter, Base.SECOND),
-        condition=self.runners[Base.THIRD])
-
-  def handleRunnerScoresFromThirdSafe(self):
-    return self.search(
-        "{0} scores|Runner from 3rd (?:tries for Home, SAFE|tags up, SCORES)".format(
-            self.runners[Base.THIRD]),
-        "{0} scores.".format(self.runners[Base.THIRD]),
-        self.storeRun,
-        partial(self.storeRunnerErasedOrBatter, Base.THIRD),
-        condition=self.runners[Base.THIRD])
-
-  def handleRunnerScoresFromThirdOut(self):
-    return self.search(
-        "Runner from 3rd (?:tries for Home, throw and OUT|tags up, OUT)".format(
-            self.runners[Base.THIRD]),
-        "{0} out at home.".format(self.runners[Base.THIRD]),
-        self.storeOut,
-        partial(self.storeRunnerErasedOrBatter, Base.THIRD),
-        condition=self.runners[Base.THIRD])
-
-  def handleRunnerScoresFromSecondSafe(self):
-    return self.search(
-        "{0} scores".format(self.runners[Base.SECOND]),
-        "{0} scores.".format(self.runners[Base.SECOND]),
-        self.storeRun,
-        partial(self.storeRunnerErasedOrBatter, Base.SECOND),
-        condition=self.runners[Base.SECOND])
-
-  def handleRunnerScoresFromFirstSafe(self):
-    return self.search(
-        "{0} scores".format(self.runners[Base.FIRST]),
-        "{0} scores.".format(self.runners[Base.FIRST]),
-        self.storeRun,
-        partial(self.storeRunnerErasedOrBatter, Base.FIRST),
-        condition=self.runners[Base.FIRST])
+        partial(self.storeBaseToBase, Base.FIRST, Base.SECOND))
 
   def handleRunnerAdvancesFromSecondToThirdError(self):
     return self.search(
@@ -247,40 +156,29 @@ class SimReplay(object):
 
   def handleRunnerAdvancesFromSecondToThirdSafe(self):
     return self.search(
-        "{0} to third|Runner from 2nd (?:tries for 3rd|tags up), SAFE".format(
-            self.runners[Base.SECOND]),
+        "Runner from 2nd (?:tries for 3rd|tags up), SAFE",
         "{0} to third.".format(self.runners[Base.SECOND]),
-        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND),
+        partial(self.storeBaseToBase, Base.SECOND, Base.THIRD),
         condition=self.runners[Base.SECOND])
 
   def handleRunnerAdvancesFromSecondToThirdOut(self):
     return self.search(
-        "Runner from 2nd (?:tries for 3rd|tags up), OUT".format(
-            self.runners[Base.SECOND]),
+        "Runner from 2nd (?:tries for 3rd|tags up), OUT",
         "{0} out at third.".format(self.runners[Base.SECOND]),
         self.storeOut,
         partial(self.storeRunnerErasedOrBatter, Base.SECOND),
         condition=self.runners[Base.SECOND])
 
-  def handleRunnerAdvancesFromFirstToThird(self):
-    return self.search(
-        "{0} to third".format(self.runners[Base.FIRST]),
-        "{0} to third.".format(self.runners[Base.FIRST]),
-        partial(self.storeRunnerToBase, Base.THIRD, Base.FIRST),
-        condition=self.runners[Base.FIRST])
-
   def handleRunnerAdvancesFromFirstToSecondSafe(self):
     return self.search(
-        "{0} to second|Runner from 1st (?:tries for 2nd|tags up), SAFE".format(
-            self.runners[Base.FIRST]),
+        "Runner from 1st (?:tries for 2nd|tags up), SAFE",
         "{0} to second.".format(self.runners[Base.FIRST]),
-        partial(self.storeRunnerToBase, Base.SECOND, Base.FIRST),
+        partial(self.storeBaseToBase, Base.FIRST, Base.SECOND),
         condition=self.runners[Base.FIRST])
 
   def handleRunnerAdvancesFromFirstToSecondOut(self):
     return self.search(
-        "Runner from 1st (?:tries for 2nd|tags up), OUT".format(
-            self.runners[Base.FIRST]),
+        "Runner from 1st (?:tries for 2nd|tags up), OUT",
         "{0} out at second.".format(self.runners[Base.FIRST]),
         self.storeOut,
         partial(self.storeRunnerErasedOrBatter, Base.FIRST),
@@ -306,7 +204,7 @@ class SimReplay(object):
     return self.search(
         "{0} steals 3rd base".format(self.runners[Base.SECOND]),
         "{0} steals third.".format(self.runners[Base.SECOND]),
-        partial(self.storeRunnerToBase, Base.THIRD, Base.SECOND),
+        partial(self.storeBaseToBase, Base.SECOND, Base.THIRD),
         condition=self.runners[Base.SECOND])
 
   def handleRunnerStealsThirdOut(self):
@@ -321,7 +219,7 @@ class SimReplay(object):
     return self.search(
         "{0} steals 2nd base".format(self.runners[Base.FIRST]),
         "{0} steals second.".format(self.runners[Base.FIRST]),
-        partial(self.storeRunnerToBase, Base.SECOND, Base.FIRST),
+        partial(self.storeBaseToBase, Base.FIRST, Base.SECOND),
         condition=self.runners[Base.FIRST])
 
   def handleRunnerStealsSecondOut(self):
@@ -437,8 +335,7 @@ class SimReplay(object):
         "__Game over.")
 
   def handleFodder(self):
-    return self.handleChangeFielder() or \
-        self.handleBatterStrikesOut() or \
+    return self.handleBatterStrikesOut() or \
         self.handlePassedBall() or \
         self.handleBalk() or \
         self.handleThrowingError() or \
@@ -446,10 +343,6 @@ class SimReplay(object):
         self.handleBuntMissed() or \
         self.handleRainDelay() or \
         self.handleGameOver()
-
-  def handleUnhandled(self):
-    print "{0}: {1}".format(self.gameid, self.line)
-    self.chunk.append("__Unhandled {1}".format(self.gameid, self.line))
   # end deprecated methods
 
   def search(self, pattern, text, *callbacks):
@@ -492,10 +385,17 @@ class SimReplay(object):
     match = re.search(pattern, text)
     self.gameData.storeStrikeOut("{} strikes out " + match.groups()[0] + ".")
 
+  def storeFoulBunt(self, pattern, text):
+    match = re.search(pattern, text)
+    if match.groups()[0] == 2:
+      self.gameData.storeStrikeOut("{} strikes out on a foul bunt.")
+    else:
+      self.gameData.storeStrike()
+
   def storeHomerun(self, pattern, text):
     match = re.search(pattern, text)
     self.gameData.storeHomerun(
-        "{} hits a " + match.groups()[0].lower + "homerun.")
+        "{} hits a " + match.groups()[0].lower() + " homerun.")
 
   def storeBunt(self, pattern, text):
     match = re.search(pattern, text)
@@ -506,27 +406,48 @@ class SimReplay(object):
 
     bases = [Base.FIRST, Base.SECOND, Base.THIRD, Base.HOME, Base.NONE]
     base = bases[i] if runner == "safe" else Base.NONE
-    previous = bases[i - 1] if i > 0 else Base.NONE
+    b = bases[i - 1] if i > 0 else Base.NONE
     ticker = "{} " + "{} at {}".format(runner.lower(), value)
 
     if runner == "safe" and base == Base.FIRST:
       self.gameData.storeBuntSafeAtFirst()
     elif base == Base.FIRST:
       self.gameData.storeBuntOutAtFirst()
-    elif runner == "safe":
-      self.gameData.storeBuntFieldersChoiceSafe()
-      self.gameData.storeRunnerToBase(base, previous, ticker)
     else:
-      self.gameData.storeBuntFieldersChoiceOut()
-      self.gameData.storeRunnerToBase(base, previous, ticker)
+      if runner == "safe":
+        self.gameData.storeBuntFieldersChoiceSafe()
+      else:
+        self.gameData.storeBuntFieldersChoiceOut()
+      if not b == Base.NONE:
+        self.gameData.storeBaseToBase(b, base, ticker)
+
+  def storeRunnerAdvances(self, pattern, text):
+    player = self.storePlayer(text)
+    match = re.search(pattern, text)
+    value = match.groups()[0]
+    base = Base.HOME if value == "scores" else Base.THIRD if value == "to third" else Base.SECOND
+    self.gameData.storePlayerToBase(player, base, "{} " + value + ".")
 
   def storeRunnerScoresTrailing(self, pattern, text):
     match = re.search(pattern, text)
     runner = match.groups()[0]
     base = Base.THIRD if runner == "SAFE" else Base.NONE
     ticker = "{} " + "{} at third".format(runner.lower())
-    self.gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
-    self.gameData.storeRunnerToBase(base, Base.SECOND, ticker)
+    self.gameData.storeBaseToBase(Base.THIRD, Base.HOME, "{} scores.")
+    self.gameData.storeBaseToBase(Base.SECOND, base, ticker)
+
+  def storeRunnerTriesForHome(self, pattern, text):
+    match = re.search(pattern, text)
+    value = match.groups()[0]
+    base = Base.HOME if value == "SAFE" or value == "SCORES" else Base.NONE
+    ticker = " scores." if base == Base.HOME else " out at home."
+    self.gameData.storeBaseToBase(Base.THIRD, base, "{} " + ticker)
+
+  def storeFieldersChoice(self, pattern, text):
+    match = re.search(pattern, text)
+    value = match.groups()[0]
+    base = Base.SECOND if value == "2nd" else Base.THIRD
+    self.gameData.storeFieldersChoice(base)
 
   def handleInningStart(self, text):
     pattern = "(\w+) of the (\d+)\w+ -"
@@ -539,8 +460,7 @@ class SimReplay(object):
     return self.search(
         "\w+ of the \d+\w+ over -",
         text,
-        self.gameData.storeAllRunnersErased,
-        self.gameData.storeBatterErased)
+        self.gameData.storeAllRunnersErased)
 
   def handleChangePitcher(self, text):
     pattern = "Pitching: (\w+) "
@@ -558,7 +478,7 @@ class SimReplay(object):
 
   def handleStrike(self, text):
     return self.search(
-        "Swinging Strike|Called Strike",
+        "Swinging Strike|Called Strike|[01]: Bunted foul",
         text,
         self.gameData.storeStrike)
 
@@ -568,9 +488,16 @@ class SimReplay(object):
         text,
         self.gameData.storeFoul)
 
+  def handleFoulBunt(self, text):
+    pattern = "(\d): Bunted foul"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeFoulBunt, pattern, text))
+
   def handleBall(self, text):
     return self.search(
-        "Ball",
+        ": Ball",
         text,
         self.gameData.storeBall)
 
@@ -643,20 +570,72 @@ class SimReplay(object):
         text,
         partial(self.gameData.storeSimpleOut, "{} pops out on a bunt."))
 
-  def handleRunnerScoresTrailing_(self, text):
+  def handleReachedOnError(self, text):
+    return self.search(
+        "Reached on error|Reaches on Catchers interference",
+        text,
+        self.gameData.storeReachedOnError)
+
+  def handleRunnerAdvances(self, text):
+    pattern = "> (scores|to third|to second)"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeRunnerAdvances, pattern, text))
+
+  def handleRunnerScoresTrailing(self, text):
     pattern = "throw made at trailing runner, (\w+) at third"
     return self.search(
         pattern,
         text,
         partial(self.storeRunnerScoresTrailing, pattern, text))
 
+  def handleRunnerTriesForHome(self, text):
+    pattern = "tries for Home, (\w+)|tags up, (\w+)"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeRunnerTriesForHome, pattern, text))
+
+  def handleFieldersChoice(self, text):
+    pattern = "Fielders Choice at (\w+)"
+    return self.search(
+        pattern,
+        text,
+        partial(self.storeFieldersChoice, pattern, text))
+
+  def handleFieldersChoiceHome(self, text):
+    return self.search(
+        "fielders choice",
+        text,
+        partial(self.gameData.storeBatterToBase, Base.FIRST,
+                "{} grounds into a fielders choice."),
+        partial(self.gameData.storeBaseToBase,
+                Base.THIRD, Base.NONE, "{} out at home."),
+        partial(self.gameData.storeBaseToBase,
+                Base.SECOND, Base.THIRD, "{} to third."),
+        partial(self.gameData.storeBaseToBase, Base.FIRST, Base.SECOND, "{} to second."))
+
+  def handleFlavor(self, text):
+    return self.search(
+        "Now (?:at|in)",
+        text)
+
+  def handleUnhandled(self, text):
+    print "{0}: {1}".format(self.number, text)
+
   def parseUpdates(self):
-    for inning in self.innings[0:1]:
+    self.postToSlack = True
+    self.ts, self.channel = 0, ""
+
+    for inning in self.innings:
       for text in inning.splitlines():
         match = re.match("\d-\d: (.+)", text)
         if match:
+          self.post()
           self.handleStrike(text) or \
               self.handleFoulBall(text) or \
+              self.handleFoulBunt(text) or \
               self.handleBall(text) or \
               self.handleGroundOut(text) or \
               self.handleFlyOut(text) or \
@@ -668,15 +647,38 @@ class SimReplay(object):
               self.handleTriple(text) or \
               self.handleHomerun(text) or \
               self.handleBunt(text) or \
-              self.handleBuntFlyOut(text)
+              self.handleBuntFlyOut(text) or \
+              self.handleReachedOnError(text) or \
+              self.handleFieldersChoice(text) or \
+              self.handleUnhandled(text)
 
         else:
-          self.handleInningStart(text) or \
-              self.handleInningEnd(text) or \
-              self.handleChangePitcher(text) or \
+          match = self.handleInningEnd(text) or \
               self.handleChangeBatter(text)
+          if match:
+            self.post()
+          else:
+            self.handleInningStart(text) or \
+                self.handleChangePitcher(text) or \
+                self.handleRunnerAdvances(text) or \
+                self.handleRunnerScoresTrailing(text) or \
+                self.handleRunnerTriesForHome(text) or \
+                self.handleFlavor(text) or \
+                self.handleUnhandled(text)
 
-        print self.gameData.printBox()
+    self.gameData.printPlayers()
+
+  def post(self):
+    if self.postToSlack and self.ts:
+      time.sleep(2)
+      slack.update_(self.ts, self.channel, self.gameData.printBox())
+    elif self.postToSlack:
+      response = slack.postMessage_("testing", self.gameData.printBox())
+      obj = json.loads(response.read())
+      self.channel = obj["channel"]
+      self.ts = obj["message"]["ts"]
+    else:
+      print self.gameData.printBox()
 
 
 path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"

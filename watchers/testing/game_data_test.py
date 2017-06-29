@@ -84,7 +84,7 @@ def testGameData():
   gameData.storeBall()
   gameData.storeBall()
   gameData.storeWalk()
-  gameData.storeRunnerToBase(Base.SECOND, Base.FIRST, "{} to second.")
+  gameData.storePlayerToBase(4, Base.SECOND, "{} to second.")
   count = "4-0, 2 out"
   bases = ":greydiamond: :reddiamond: :reddiamond:"
   batting = "*Batting:* RHB Matt Davidson (0-0)"
@@ -97,8 +97,8 @@ def testGameData():
   gameData.storePlayer(6, "Viosergy", "Rosa")
   gameData.storeBatter(6, "LHB")
   gameData.storeSingle()
-  gameData.storeRunnerToBase(Base.THIRD, Base.SECOND, "{} to third.")
-  gameData.storeRunnerToBase(Base.SECOND, Base.FIRST, "{} to second.")
+  gameData.storePlayerToBase(4, Base.THIRD, "{} to third.")
+  gameData.storePlayerToBase(5, Base.SECOND, "{} to second.")
   count = "0-0, 2 out"
   bases = ":reddiamond: :reddiamond: :reddiamond:"
   batting = "*Batting:* LHB Viosergy Rosa (1-1)"
@@ -111,9 +111,9 @@ def testGameData():
   gameData.storePlayer(7, "Brett", "Austin")
   gameData.storeBatter(7, "SHB")
   gameData.storeDouble()
-  gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
-  gameData.storeRunnerToBase(Base.HOME, Base.SECOND, "{} scores.")
-  gameData.storeRunnerToBase(Base.THIRD, Base.FIRST, "{} to third.")
+  gameData.storePlayerToBase(4, Base.HOME, "{} scores.")
+  gameData.storePlayerToBase(5, Base.HOME, "{} scores.")
+  gameData.storePlayerToBase(6, Base.THIRD, "{} to third.")
   away = ":whitesox: 2"
   count = "0-0, 2 out"
   bases = ":reddiamond: :reddiamond: :greydiamond:"
@@ -127,8 +127,8 @@ def testGameData():
   gameData.storePlayer(8, "Micah", "Johnson")
   gameData.storeBatter(8, "SHB")
   gameData.storeTriple()
-  gameData.storeRunnerToBase(Base.HOME, Base.THIRD, "{} scores.")
-  gameData.storeRunnerToBase(Base.HOME, Base.SECOND, "{} scores.")
+  gameData.storePlayerToBase(6, Base.HOME, "{} scores.")
+  gameData.storePlayerToBase(7, Base.HOME, "{} scores.")
   away = ":whitesox: 4"
   count = "0-0, 2 out"
   bases = ":reddiamond: :greydiamond: :greydiamond:"
@@ -200,36 +200,48 @@ def testGameData():
   batting = "*Batting:* SHB Blake Swihart (1-1)"
   pitching = "*Pitching:* LHP Junior Reyes (0.1 IP, 1 H, 0 R, 0 BB, 0 K)"
   ticker = ":redsox: _Blake Swihart bunts, safe at first._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
 
   gameData.storePlayer(15, "Connor", "Harrell")
   gameData.storeBatter(15, "RHB")
   gameData.storeBuntOutAtFirst()
-  gameData.storeRunnerToBase(Base.SECOND, Base.FIRST, "{} to second.")
+  gameData.storePlayerToBase(14, Base.SECOND, "{} to second.")
   count = "0-0, 2 out"
   bases = ":greydiamond: :reddiamond: :greydiamond:"
   batting = "*Batting:* RHB Connor Harrell (0-0)"
   pitching = "*Pitching:* LHP Junior Reyes (0.2 IP, 1 H, 0 R, 0 BB, 0 K)"
   ticker = ":redsox: _Connor Harrell bunts, out at first. Blake Swihart to second._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
 
   gameData.storePlayer(16, "Joey", "Gallo")
   gameData.storeBatter(16, "LHB")
   gameData.storeBuntFieldersChoiceSafe()
-  gameData.storeRunnerToBase(Base.THIRD, Base.SECOND, "{} to third.")
+  gameData.storeBaseToBase(Base.SECOND, Base.THIRD, "{} to third.")
   bases = ":reddiamond: :greydiamond: :reddiamond:"
   batting = "*Batting:* LHB Joey Gallo (1-1)"
   pitching = "*Pitching:* LHP Junior Reyes (0.2 IP, 2 H, 0 R, 0 BB, 0 K)"
   ticker = ":redsox: _Joey Gallo bunts. Blake Swihart to third._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
 
   gameData.storePlayer(17, "Javier", "Baez")
   gameData.storeBatter(17, "RHB")
   gameData.storeBuntFieldersChoiceOut()
-  gameData.storeRunnerToBase(Base.NONE, Base.FIRST, "{} out at second.")
+  gameData.storeBaseToBase(Base.FIRST, Base.NONE, "{} out at second.")
   gameData.storeAllRunnersErased()
   gameData.storeBatterErased()
   count = "0-0, 3 out"
   bases = ":greydiamond: :greydiamond: :greydiamond:"
   batting = ""
   ticker = ":redsox: _Javier Baez bunts. Joey Gallo out at second._"
+  expected = createBox(inning, away, home, count,
+                       bases, batting, pitching, ticker)
+  assertEquals(expected, gameData.printBox())
 
 
 def createBox(inning, away, home, count, bases, batting="", pitching="", ticker=""):
