@@ -21,9 +21,6 @@ class SimReplay(object):
     self.innings = self.parseInnings(number, path)
     self.parseUpdates()
 
-  def getPlaintext(self, text):
-    return re.sub("<(?:a[^>]*>|/a>)", "", text)
-
   def parseInnings(self, number, path):
     with open(os.path.join(path, "log_{0}.txt".format(number))) as f:
       log = f.read()
@@ -632,7 +629,7 @@ class SimReplay(object):
     self.postToSlack = True
     self.ts, self.channel = 0, ""
 
-    for inning in self.innings[17:]:
+    for inning in self.innings:
       for text in inning.splitlines():
         match = re.match("\d-\d: (.+)", text)
         if match:
