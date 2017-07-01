@@ -21,6 +21,9 @@ class SimReplay(object):
     self.innings = self.parseInnings(number, path)
     self.parseUpdates()
 
+  def getPlaintext(self, text):
+    return re.sub("<(?:a[^>]*>|/a>)", "", text)
+
   def parseInnings(self, number, path):
     with open(os.path.join(path, "log_{0}.txt".format(number))) as f:
       log = f.read()
@@ -356,7 +359,8 @@ class SimReplay(object):
   def storeInning(self, pattern, text):
     match = re.search(pattern, text)
     half, frame = match.groups()
-    self.gameData.storeInning(half, frame)
+    ticker = text.rsplit("-", 1)[0].strip()
+    self.gameData.storeInning(half, frame, ticker)
 
   def storePlayer(self, text):
     pattern = "<a href=\"../players/player_(\d+).html\">([^<]+)</a>"
@@ -450,7 +454,7 @@ class SimReplay(object):
     self.gameData.storeFieldersChoice(base)
 
   def handleInningStart(self, text):
-    pattern = "(\w+) of the (\d+)\w+ -"
+    pattern = "(\w+) of the (\d+)\w+ - [^-]*- Pitching"
     return self.search(
         pattern,
         text,
@@ -628,7 +632,7 @@ class SimReplay(object):
     self.postToSlack = True
     self.ts, self.channel = 0, ""
 
-    for inning in self.innings:
+    for inning in self.innings[17:]:
       for text in inning.splitlines():
         match = re.match("\d-\d: (.+)", text)
         if match:

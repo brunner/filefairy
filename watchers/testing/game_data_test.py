@@ -11,19 +11,20 @@ from utils import assertEquals, assertNotEquals
 def testGameData():
   gameData = GameData(35, 34)
 
+  gameData.storeInning("Top", 1, "Top of the 1st - Chicago White Sox batting")
   gameData.storePlayer(1, "Sean", "Newcomb")
   gameData.storePitcher(1, "LHP")
 
   gameData.storePlayer(2, "Jacob", "May")
   gameData.storeBatter(2, "SHB")
-  
+
   inning = ":small_red_triangle: 1"
   away, home = ":whitesox: 0", ":redsox: 0"
   count = "0-0, 0 out"
   bases = ":greydiamond: :greydiamond: :greydiamond:"
   batting = "*Batting:* SHB Jacob May (0-0)"
   pitching = "*Pitching:* LHP Sean Newcomb (0.0 IP, 0 H, 0 R, 0 BB, 0 K)"
-  ticker = ""
+  ticker = ":whitesox: _Top of the 1st - Chicago White Sox batting_"
 
   expected = createBox(inning, away, home, count,
                        bases, batting, pitching, ticker)
@@ -87,7 +88,7 @@ def testGameData():
   gameData.storePlayerToBase(4, Base.SECOND, "{} to second.")
   count = "4-0, 2 out"
   bases = ":greydiamond: :reddiamond: :reddiamond:"
-  batting = "*Batting:* RHB Matt Davidson (0-0)"
+  batting = "*Batting:* RHB Matt Davidson (0-0, BB)"
   pitching = "*Pitching:* LHP Sean Newcomb (0.2 IP, 0 H, 0 R, 1 BB, 2 K)"
   ticker = ":whitesox: _Matt Davidson walks. Adam Eaton to second._"
   expected = createBox(inning, away, home, count,
@@ -165,19 +166,19 @@ def testGameData():
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storeInning("Bottom", 1)
+  gameData.storeInning("Bottom", 1, "Bottom of the 1st - Boston Red Sox batting")
 
   gameData.storePlayer(12, "Junior", "Reyes")
   gameData.storePitcher(12, "LHP")
 
   gameData.storePlayer(13, "Xander", "Bogaerts")
   gameData.storeBatter(13, "RHB")
-  
+
   inning = ":small_red_triangle_down: 1"
   count = "0-0, 0 out"
   batting = "*Batting:* RHB Xander Bogaerts (0-0)"
   pitching = "*Pitching:* LHP Junior Reyes (0.0 IP, 0 H, 0 R, 0 BB, 0 K)"
-  ticker = ""
+  ticker = ":redsox: _Bottom of the 1st - Boston Red Sox batting_"
 
   expected = createBox(inning, away, home, count,
                        bases, batting, pitching, ticker)
@@ -234,10 +235,10 @@ def testGameData():
   gameData.storeBuntFieldersChoiceOut()
   gameData.storeBaseToBase(Base.FIRST, Base.NONE, "{} out at second.")
   gameData.storeAllRunnersErased()
-  gameData.storeBatterErased()
   count = "0-0, 3 out"
   bases = ":greydiamond: :greydiamond: :greydiamond:"
-  batting = ""
+  batting = "*Batting:* RHB Javier Baez (0-1)"
+  pitching = "*Pitching:* LHP Junior Reyes (1.0 IP, 2 H, 0 R, 0 BB, 0 K)"
   ticker = ":redsox: _Javier Baez bunts. Joey Gallo out at second._"
   expected = createBox(inning, away, home, count,
                        bases, batting, pitching, ticker)
