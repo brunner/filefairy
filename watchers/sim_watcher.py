@@ -32,6 +32,7 @@ class SimWatcher(object):
     self.updates = self.findUpdates(self.simPage)
 
     self.exports = self.readExports()
+    print self.formatExports()
 
     self.pages, self.posts = {}, []
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
@@ -59,7 +60,7 @@ class SimWatcher(object):
 
   def getSimUrl(self):
     """Returns the live sim page url that should be checked for date changes."""
-    return "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
+    return "http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html"
 
   def getExportsInputFile(self):
     """Returns the file that exports data is saved to."""
