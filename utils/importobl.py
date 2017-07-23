@@ -7,6 +7,7 @@ import sys
 # Replace these values with your own information.
 leaguefile = "orangeandblue.lg"
 
+
 def getLeaguePath():
   if sys.platform == "cygwin":
     # Replace this with your Windows username, if applicable.
@@ -18,6 +19,7 @@ def getLeaguePath():
     return os.path.join(os.path.expanduser("~"),
                         ".Out of the Park Developments", "OOTP Baseball 17",
                         "custdata", "saved_games", leaguefile)
+
 
 def main():
   parser = argparse.ArgumentParser()
@@ -44,7 +46,8 @@ def main():
     os.system("tar -xzf {0}".format(importfile))
     os.system("rm {0}".format(importfile))
 
-    dirs = ["settings"]
+    dirs = ["ballcaps", "jerseys", "news/html/images",
+            "news/html/images/profile_pictures", "settings"]
     for d in dirs:
       os.system("rm -rf '{0}' && cp -R '{1}' '{0}'".format(os.path.join(
           leaguepath, d), os.path.join(backuppath, d)))
