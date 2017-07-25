@@ -252,7 +252,7 @@ def testReal(app):
   fileUrl = "http://orangeandblueleaguebaseball.com/StatsLab/exports.php"
   filePage = urllib2.urlopen(fileUrl).read()
 
-  simUrl = "http://orangeandblueleaguebaseball.com/league/OBL/reports/news/html/real_time_sim/index.html"
+  simUrl = "http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html"
   simPage = urllib2.urlopen(simUrl).read()
 
   simWatcherTest = SimWatcherTest(TestLogger(), app, [fileUrl], [simUrl])
