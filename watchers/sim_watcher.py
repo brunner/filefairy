@@ -31,8 +31,7 @@ class SimWatcher(object):
     self.finals = self.findFinals(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
-    self.exports = self.readExports()
-    print self.formatExports()
+    self.exports = self.readExports() 
 
     self.pages, self.posts = {}, []
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
