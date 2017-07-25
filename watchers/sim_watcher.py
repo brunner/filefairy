@@ -85,7 +85,8 @@ class SimWatcher(object):
       page = urllib2.urlopen(url).read()
     except urllib2.URLError as e:
       if hasattr(e, "reason"):
-        self.logger.log("Failed to reach server. {0}.".format(e.reason))
+        pass
+        # self.logger.log("Failed to reach server. {0}.".format(e.reason))
       elif hasattr(e, "code"):
         self.logger.log("Server failed to handle request. {0}.".format(e.code))
     except:
