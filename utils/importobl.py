@@ -29,28 +29,35 @@ def main():
 
   host = "http://www.orangeandblueleaguebaseball.com/league_file/"
   importfile = "orange_and_blue_league_baseball.tar.gz"
+
   leaguepath = getLeaguePath()
   backuppath = "{0}.bk".format(leaguepath)
+  temppath = "{}.tmp".format(leaguepath)
 
   if args.recover:
     if os.path.isdir(backuppath):
       os.system("rm -rf '{0}' && mv '{1}' '{0}'".format(leaguepath, backuppath))
   else:
+    os.system("rm -rf '{0}' && mkdir '{0}'".format(temppath))
+    os.chdir(temppath)
+    
+    code = os.system("wget {0}{1} && tar -xzf {1}".format(host, importfile))
+    if code != 0:
+      os.system("rm -rf '{0}'".format(temppath))
+      return
+
     if os.path.isdir(leaguepath):
       os.system("rm -rf '{0}' && mv '{1}' '{0}'".format(backuppath, leaguepath))
 
-    os.system("rm -rf '{0}' && mkdir '{0}'".format(leaguepath))
-    os.chdir(leaguepath)
+    os.system("rm -rf '{0}'".format(leaguepath))
+    os.system("mv '{0}' '{1}' && rm -rf '{0}'".format(temppath, leaguepath))
 
-    os.system("wget {0}{1}".format(host, importfile))
-    os.system("tar -xzf {0}".format(importfile))
-    os.system("rm {0}".format(importfile))
-
-    dirs = ["ballcaps", "jerseys", "news/html/images",
-            "news/html/images/profile_pictures", "settings"]
+    dirs = ["ballcaps", "jerseys", "news/html/images", "settings"]
     for d in dirs:
-      os.system("rm -rf '{0}' && cp -R '{1}' '{0}'".format(os.path.join(
-          leaguepath, d), os.path.join(backuppath, d)))
+      leaguedir = os.path.join(leaguepath, d)
+      backupdir = os.path.join(backuppath, d)
+      if os.path.isdir(backupdir):
+        os.system("rm -rf '{0}' && cp -R '{1}' '{0}'".format(leaguedir, backupdir))
 
 if __name__ == "__main__":
   main()
