@@ -42,7 +42,7 @@ rm -rf orangeandblueleague
 First, download and install Cygwin by following the instructions here:
 https://cygwin.com/install.html
 
-You need to install the base, nano, python, and wget packages.
+On the "Select Packages" screen, you'll need to find and choose base, nano, python, and wget. You can use the searchbox to find these packages more easily. Make sure the "View" checkbox is set to the "Full" option, so that all available packages will be listed.
 
 Once Cygwin is installed, right click on the desktop icon and click:
 
