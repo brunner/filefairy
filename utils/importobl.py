@@ -27,7 +27,7 @@ def main():
   parser.set_defaults(recover=False)
   args = parser.parse_args()
 
-  host = "http://www.orangeandblueleaguebaseball.com/league_file/"
+  host = "http://www.orangeandblueleaguebaseball.com/StatsLab/league_file/"
   importfile = "orange_and_blue_league_baseball.tar.gz"
 
   leaguepath = getLeaguePath()
