@@ -52,7 +52,7 @@ class GameData(object):
     self.teams[Half.HOME] = {Key.NUMBER: home, Key.PITCHER: 0, Key.RUNS: 0}
     self.players = {}
 
-    self.storeInning("Top", 1, "")
+    self.storeInningStart("Top", 1, "")
     self.storeAllRunnersErased()
 
   def printInning(self):
@@ -167,13 +167,22 @@ class GameData(object):
 
       print sb
 
-  def storeInning(self, half, frame, ticker):
+  def storeInningStart(self, half, frame, ticker):
     self.half = Half.AWAY if half == "Top" else Half.HOME
     self.frame = frame
 
     self.balls, self.strikes, self.outs = 0, 0, 0
     self.batter = 0
     self.ticker = ticker
+    self.thread = {Key.RUNS: 0}
+
+  def storeInningEnd(self, runs, lob):
+    if runs == self.thread[Key.RUNS]:
+      self.ticker += " {} run(s).".format(runs)
+    if lob == len([base for base in BASES if self.getCurrentBaserunner(base)]):
+      self.ticker += " {} left on base.".format(lob)
+
+    self.storeAllRunnersErased()
 
   def storePlayer(self, number, first, last):
     if number not in self.players:
@@ -267,6 +276,7 @@ class GameData(object):
 
   def storeRun(self):
     self.teams[self.half][Key.RUNS] += 1
+    self.thread[Key.RUNS] += 1
 
   def storeSimpleOut(self, ticker):
     self.storeOut()

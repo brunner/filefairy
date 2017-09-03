@@ -353,11 +353,16 @@ class SimReplay(object):
 
     return match
 
-  def storeInning(self, pattern, text):
+  def storeInningStart(self, pattern, text):
     match = re.search(pattern, text)
     half, frame = match.groups()
     ticker = text.rsplit("-", 1)[0].strip()
-    self.gameData.storeInning(half, frame, ticker)
+    self.gameData.storeInningStart(half, frame, ticker)
+
+  def storeInningEnd(self, pattern, text):
+    match = re.search(pattern, text)
+    runs, lob = match.groups()
+    self.gameData.storeInningEnd(runs, lob)
 
   def storePlayer(self, text):
     pattern = "<a href=\"../players/player_(\d+).html\">([^<]+)</a>"
@@ -455,13 +460,15 @@ class SimReplay(object):
     return self.search(
         pattern,
         text,
-        partial(self.storeInning, pattern, text))
+        partial(self.storeInningStart, pattern, text))
 
   def handleInningEnd(self, text):
+    pattern = "\w+ of the \d+\w+ over - (\d+) run\(s\), \d+ hit\(s\), \d+ " + \
+              "error\(s\), (\d+) left on base"
     return self.search(
-        "\w+ of the \d+\w+ over -",
+        pattern,
         text,
-        self.gameData.storeAllRunnersErased)
+        partial(self.storeInningEnd, pattern, text))
 
   def handleChangePitcher(self, text):
     pattern = "Pitching: (\w+) "

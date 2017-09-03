@@ -11,7 +11,7 @@ from utils import assertEquals, assertNotEquals
 def testGameData():
   gameData = GameData(35, 34)
 
-  gameData.storeInning("Top", 1, "Top of the 1st - Chicago White Sox batting")
+  gameData.storeInningStart("Top", 1, "Top of the 1st - Chicago White Sox batting")
   gameData.storePlayer(1, "Sean", "Newcomb")
   gameData.storePitcher(1, "LHP")
 
@@ -156,17 +156,18 @@ def testGameData():
   gameData.storePlayer(11, "Luigi", "Rodriguez")
   gameData.storeBatter(11, "SHB")
   gameData.storeSimpleOut("{} flies out.")
+  gameData.storeInningEnd(6, 0)
   away = ":whitesox: 6"
   count = "0-0, 3 out"
   bases = ":greydiamond: :greydiamond: :greydiamond:"
   batting = "*Batting:* SHB Luigi Rodriguez (0-1)"
   pitching = "*Pitching:* LHP Sean Newcomb (1.0 IP, 4 H, 6 R, 1 BB, 2 K)"
-  ticker = ":whitesox: _Luigi Rodriguez flies out._"
+  ticker = ":whitesox: _Luigi Rodriguez flies out. 6 run(s). 0 left on base._"
   expected = createBox(inning, away, home, count,
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
 
-  gameData.storeInning("Bottom", 1, "Bottom of the 1st - Boston Red Sox batting")
+  gameData.storeInningStart("Bottom", 1, "Bottom of the 1st - Boston Red Sox batting")
 
   gameData.storePlayer(12, "Junior", "Reyes")
   gameData.storePitcher(12, "LHP")
@@ -234,12 +235,12 @@ def testGameData():
   gameData.storeBatter(17, "RHB")
   gameData.storeBuntFieldersChoiceOut()
   gameData.storeBaseToBase(Base.FIRST, Base.NONE, "{} out at second.")
-  gameData.storeAllRunnersErased()
+  gameData.storeInningEnd(0, 1)
   count = "0-0, 3 out"
   bases = ":greydiamond: :greydiamond: :greydiamond:"
   batting = "*Batting:* RHB Javier Baez (0-1)"
   pitching = "*Pitching:* LHP Junior Reyes (1.0 IP, 2 H, 0 R, 0 BB, 0 K)"
-  ticker = ":redsox: _Javier Baez bunts. Joey Gallo out at second._"
+  ticker = ":redsox: _Javier Baez bunts. Joey Gallo out at second. 0 run(s). 1 left on base._"
   expected = createBox(inning, away, home, count,
                        bases, batting, pitching, ticker)
   assertEquals(expected, gameData.printBox())
