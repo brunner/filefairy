@@ -55,7 +55,7 @@ def test():
   assertEquals(obj["message"]["attachments"][0]["fields"][1]["value"], "l")
   assertEquals(ts, thread_ts)
 
-  path = os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/"
+  path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
   response = slack.upload_(path, "image.png", "testing")
   obj = json.loads(response.read())
   assertEquals(obj["ok"], True)

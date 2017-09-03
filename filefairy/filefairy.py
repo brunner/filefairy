@@ -14,7 +14,7 @@ from PyQt4.QtGui import QApplication
 from logger import Logger
 
 
-class SimWatcher(object):
+class Filefairy(object):
   """Watches the live sim page for any changes."""
 
   def __init__(self, logger=None, app=None):
@@ -63,7 +63,7 @@ class SimWatcher(object):
 
   def getExportsInputFile(self):
     """Returns the file that exports data is saved to."""
-    return os.path.expanduser("~") + "/orangeandblueleague/watchers/data/exports.txt"
+    return os.path.expanduser("~") + "/orangeandblueleague/filefairy/data/exports.txt"
 
   def getExportsOutputFile(self):
     """Returns the file that exports data is saved to."""
@@ -95,7 +95,7 @@ class SimWatcher(object):
     return page
 
   def getImagesPath(self):
-    return os.path.expanduser("~") + "/orangeandblueleague/watchers/screenshots/"
+    return os.path.expanduser("~") + "/orangeandblueleague/filefairy/screenshots/"
 
   def watch(self):
     """Itermittently checks the page urls for any changes.
@@ -406,5 +406,5 @@ class SimWatcher(object):
 
 
 if __name__ == "__main__":
-  simWatcher = SimWatcher()
-  simWatcher.watch()
+  filefairy = Filefairy()
+  filefairy.watch()

@@ -12,12 +12,12 @@ import urllib2
 
 from PyQt4.QtGui import QApplication
 from logger import TestLogger
-from sim_watcher import SimWatcher
+from filefairy import Filefairy
 from utils import assertEquals, assertNotEquals
 
 
-class SimWatcherTest(SimWatcher):
-  """Tests for SimWatcher."""
+class FilefairyTest(Filefairy):
+  """Tests for Filefairy."""
 
   def __init__(self, logger, app, fileUrls, simUrls, slack=False):
     self.logger = logger
@@ -49,11 +49,11 @@ class SimWatcherTest(SimWatcher):
 
   def postMessage(self, message, channel):
     self.posted.append(message)
-    self.slack and super(SimWatcherTest, self).postMessage(message, "testing")
+    self.slack and super(FilefairyTest, self).postMessage(message, "testing")
 
   def upload(self, filename, channel):
     self.posted.append(filename)
-    self.slack and super(SimWatcherTest, self).upload(filename, "testing")
+    self.slack and super(FilefairyTest, self).upload(filename, "testing")
 
   def getFileUrl(self):
     if len(self.fileUrls) > self.fileIndex + 1:
@@ -68,10 +68,10 @@ class SimWatcherTest(SimWatcher):
     return self.simUrls[self.simIndex]
 
   def getExportsInputFile(self):
-    return os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/exportsin.txt"
+    return os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/exportsin.txt"
 
   def getExportsOutputFile(self):
-    return os.path.expanduser("~") + "/orangeandblueleague/watchers/testing/exportsout.txt"
+    return os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/exportsout.txt"
 
   def getTimerValues(self):
     return [1, 2, 8]
@@ -255,231 +255,231 @@ def testReal(app):
   simUrl = "http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html"
   simPage = urllib2.urlopen(simUrl).read()
 
-  simWatcherTest = SimWatcherTest(TestLogger(), app, [fileUrl], [simUrl])
+  filefairyTest = FilefairyTest(TestLogger(), app, [fileUrl], [simUrl])
 
-  assertNotEquals(simWatcherTest.findFileDate(filePage), "")
-  assertNotEquals(simWatcherTest.findSimDate(simPage), "")
-  assertNotEquals(simWatcherTest.findFinals(simPage), [])
+  assertNotEquals(filefairyTest.findFileDate(filePage), "")
+  assertNotEquals(filefairyTest.findSimDate(simPage), "")
+  assertNotEquals(filefairyTest.findFinals(simPage), [])
 
 
 def testFindFileDate(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(fileUrls[0]).read()
-  assertEquals(simWatcherTest.findFileDate(page), fileDates["old"])
+  assertEquals(filefairyTest.findFileDate(page), fileDates["old"])
 
   page = urllib2.urlopen(fileUrls[1]).read()
-  assertEquals(simWatcherTest.findFileDate(page), fileDates["old"])
+  assertEquals(filefairyTest.findFileDate(page), fileDates["old"])
 
   page = urllib2.urlopen(fileUrls[2]).read()
-  assertEquals(simWatcherTest.findFileDate(page), fileDates["old"])
+  assertEquals(filefairyTest.findFileDate(page), fileDates["old"])
 
   page = urllib2.urlopen(fileUrls[3]).read()
-  assertEquals(simWatcherTest.findFileDate(page), fileDates["new"])
+  assertEquals(filefairyTest.findFileDate(page), fileDates["new"])
 
 
 def testFindExports(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(fileUrls[0]).read()
-  assertEquals(simWatcherTest.findExports(page), [])
+  assertEquals(filefairyTest.findExports(page), [])
 
   page = urllib2.urlopen(fileUrls[1]).read()
-  assertEquals(simWatcherTest.findExports(page), teamids)
+  assertEquals(filefairyTest.findExports(page), teamids)
 
   page = urllib2.urlopen(fileUrls[2]).read()
-  assertEquals(simWatcherTest.findExports(page), teamids)
+  assertEquals(filefairyTest.findExports(page), teamids)
 
   page = urllib2.urlopen(fileUrls[3]).read()
-  assertEquals(simWatcherTest.findExports(page), [])
+  assertEquals(filefairyTest.findExports(page), [])
 
 
 def testReadExports(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
-  assertEquals(simWatcherTest.readExports(), exports1)
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  assertEquals(filefairyTest.readExports(), exports1)
 
 
 def testWriteExports(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
-  assertEquals(simWatcherTest.writeExports(exports1, teamids), exports2)
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  assertEquals(filefairyTest.writeExports(exports1, teamids), exports2)
 
 
 def testFindSimDate(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(simWatcherTest.findSimDate(page), simDates["old"])
+  assertEquals(filefairyTest.findSimDate(page), simDates["old"])
 
   page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(simWatcherTest.findSimDate(page), simDates["old"])
+  assertEquals(filefairyTest.findSimDate(page), simDates["old"])
 
   page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(simWatcherTest.findSimDate(page), simDates["old"])
+  assertEquals(filefairyTest.findSimDate(page), simDates["old"])
 
   page = urllib2.urlopen(simUrls[3]).read()
-  assertEquals(simWatcherTest.findSimDate(page), simDates["new"])
+  assertEquals(filefairyTest.findSimDate(page), simDates["new"])
 
   page = urllib2.urlopen(simUrls[4]).read()
-  assertEquals(simWatcherTest.findSimDate(page), simDates["new"])
+  assertEquals(filefairyTest.findSimDate(page), simDates["new"])
 
   page = urllib2.urlopen(simUrls[5]).read()
-  assertEquals(simWatcherTest.findSimDate(page), simDates["new"])
+  assertEquals(filefairyTest.findSimDate(page), simDates["new"])
 
 
 def testFindBoxes(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(len(simWatcherTest.findBoxes(page)), 0)
+  assertEquals(len(filefairyTest.findBoxes(page)), 0)
 
   page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(len(simWatcherTest.findBoxes(page)), 0)
+  assertEquals(len(filefairyTest.findBoxes(page)), 0)
 
   page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(len(simWatcherTest.findBoxes(page)), 0)
+  assertEquals(len(filefairyTest.findBoxes(page)), 0)
 
   page = urllib2.urlopen(simUrls[3]).read()
-  assertEquals(len(simWatcherTest.findBoxes(page)), 3)
+  assertEquals(len(filefairyTest.findBoxes(page)), 3)
 
   page = urllib2.urlopen(simUrls[4]).read()
-  assertEquals(len(simWatcherTest.findBoxes(page)), 15)
+  assertEquals(len(filefairyTest.findBoxes(page)), 15)
 
   page = urllib2.urlopen(simUrls[5]).read()
-  assertEquals(len(simWatcherTest.findBoxes(page)), 3)
+  assertEquals(len(filefairyTest.findBoxes(page)), 3)
 
 
 def testFindFinals(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(simWatcherTest.findFinals(page), set())
+  assertEquals(filefairyTest.findFinals(page), set())
 
   page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(simWatcherTest.findFinals(page), set())
+  assertEquals(filefairyTest.findFinals(page), set())
 
   page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(simWatcherTest.findFinals(page), set())
+  assertEquals(filefairyTest.findFinals(page), set())
 
   page = urllib2.urlopen(simUrls[3]).read()
-  assertEquals(simWatcherTest.findFinals(page), finals["new1"])
+  assertEquals(filefairyTest.findFinals(page), finals["new1"])
 
   page = urllib2.urlopen(simUrls[4]).read()
-  assertEquals(simWatcherTest.findFinals(page), finals["new2"])
+  assertEquals(filefairyTest.findFinals(page), finals["new2"])
 
   page = urllib2.urlopen(simUrls[5]).read()
-  assertEquals(simWatcherTest.findFinals(page), finals["new1"])
+  assertEquals(filefairyTest.findFinals(page), finals["new1"])
 
 
 def testFindRecords(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(simWatcherTest.getFindRecords(page), {})
+  assertEquals(filefairyTest.getFindRecords(page), {})
   
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(simWatcherTest.getFindRecords(page), {})
+  assertEquals(filefairyTest.getFindRecords(page), {})
 
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(simWatcherTest.getFindRecords(page), {})
+  assertEquals(filefairyTest.getFindRecords(page), {})
 
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[3]).read()
-  assertEquals(simWatcherTest.getFindRecords(page), findRecords["new1"])
+  assertEquals(filefairyTest.getFindRecords(page), findRecords["new1"])
 
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[4]).read()
-  assertEquals(simWatcherTest.getFindRecords(page), findRecords["new2"])
+  assertEquals(filefairyTest.getFindRecords(page), findRecords["new2"])
 
-  assertEquals(simWatcherTest.formatRecords(), formatRecords)
+  assertEquals(filefairyTest.formatRecords(), formatRecords)
 
 
 def testFindUpdates(app):
-  simWatcherTest = SimWatcherTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(simWatcherTest.findUpdates(page), [updates["update1"]])
+  assertEquals(filefairyTest.findUpdates(page), [updates["update1"]])
 
   page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(simWatcherTest.findUpdates(page), [])
+  assertEquals(filefairyTest.findUpdates(page), [])
 
   page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(simWatcherTest.findUpdates(page), [updates["update2"]])
+  assertEquals(filefairyTest.findUpdates(page), [updates["update2"]])
 
   page = urllib2.urlopen(simUrls[3]).read()
-  assertEquals(simWatcherTest.findUpdates(page), [])
+  assertEquals(filefairyTest.findUpdates(page), [])
 
   page = urllib2.urlopen(simUrls[4]).read()
-  assertEquals(simWatcherTest.findUpdates(page), [])
+  assertEquals(filefairyTest.findUpdates(page), [])
 
   page = urllib2.urlopen(simUrls[5]).read()
-  assertEquals(simWatcherTest.findUpdates(page), [])
+  assertEquals(filefairyTest.findUpdates(page), [])
 
 
 def testUpdateLeagueFile(app, slack):
-  simWatcherTest = SimWatcherTest(
+  filefairyTest = FilefairyTest(
       TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
 
   expected = {"ret": False, "collected": [], "index": 1,
               "date": fileDates["old"], "posted": []}
-  assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
+  assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
   expected = {"ret": False, "collected": [], "index": 2,
               "date": fileDates["old"], "posted": []}
-  assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
+  assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
   expected = {"ret": True, "collected": logs[6:8], "index": 3,
               "date": fileDates["new"], "posted": ["File is up."]}
-  assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
+  assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
   expected = {"ret": False, "collected": logs[6:8], "index": 3,
               "date": fileDates["new"], "posted": ["File is up."]}
-  assertEquals(simWatcherTest.getUpdateLeagueFile(), expected)
+  assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
 
 def testUpdateLiveSim(app, slack):
-  simWatcherTest = SimWatcherTest(
+  filefairyTest = FilefairyTest(
       TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
 
   expected = {"ret": False, "collected": [], "index": 1,
               "date": simDates["old"], "finals": set(),
               "updates": [updates["update1"]], "posted": []}
-  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
+  assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": False, "collected": [], "index": 2,
               "date": simDates["old"], "finals": set(),
               "updates": [updates["update1"], updates["update2"]],
               "posted": []}
-  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
+  assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": True, "collected": logs[1:2], "index": 3,
               "date": simDates["new"], "finals": finals["new1"], "updates": [],
               "posted": []}
-  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
+  assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": True, "collected": logs[1:3], "index": 4,
               "date": simDates["new"], "finals": finals["new2"], "updates": [],
               "posted": []}
-  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
+  assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": False, "collected": logs[1:4], "index": 5,
               "date": simDates["new"], "finals": finals["new2"], "updates": [],
               "posted": []}
-  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
+  assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": False, "collected": logs[1:4], "index": 5,
               "date": simDates["new"], "finals": finals["new2"], "updates": [],
               "posted": []}
-  assertEquals(simWatcherTest.getUpdateLiveSim(), expected)
+  assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
 
 def testWatch(app, slack):
-  simWatcherTest = SimWatcherTest(
+  filefairyTest = FilefairyTest(
       TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
 
   expected = {"collected": logs,
@@ -487,7 +487,7 @@ def testWatch(app, slack):
               "posted": [logs[0], updates["update2"], filenames["new"],
                          postedRecords, "\n".join(logs[1:6]),
                          "File is up.", "\n".join(logs[6:9])]}
-  assertEquals(simWatcherTest.getWatch(), expected)
+  assertEquals(filefairyTest.getWatch(), expected)
 
 
 if __name__ == "__main__":
