@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import base64
+import json
 import os
 import subprocess
 import tokens
@@ -8,73 +9,45 @@ import urllib
 import urllib2
 
 
-def postMessage_(channel, text, attachments=[], thread_ts=""):
-  """Posts a message to the Slack team."""
-  url, fields = "https://slack.com/api/chat.postMessage", {}
-
-  fields["token"] = tokens.filefairy
-  fields["channel"] = channel
-  fields["text"] = text
-  fields["as_user"] = "true"
-
-  if attachments:
-    fields["attachments"] = attachments
-  if thread_ts:
-    fields["thread_ts"] = thread_ts
-
+def callApi(method, fields):
+  url = "https://slack.com/api/{}".format(method)
   request = urllib2.Request(url, urllib.urlencode(fields))
   return urllib2.urlopen(request)
 
 
-def update_(ts, channel, text, attachments=[]):
-  """Edits a message that was previously posted."""
-  url, fields = "https://slack.com/api/chat.update", {}
-
-  fields["token"] = tokens.filefairy
-  fields["ts"] = ts
-  fields["channel"] = channel
-  fields["text"] = text
-  fields["as_user"] = "true"
-
-  if attachments:
-    fields["attachments"] = attachments
-
-  request = urllib2.Request(url, urllib.urlencode(fields))
-  return urllib2.urlopen(request)
+def postMessage(channel, text, attachments=[], thread_ts=""):
+  return callApi("chat.postMessage", {
+      "token": tokens.filefairy,
+      "channel": channel,
+      "text": text,
+      "as_user": "true",
+      "attachments": attachments,
+      "link_names": "true",
+      "thread_ts": thread_ts
+  })
 
 
-def upload_(path, filename, channel):
-  cwd = os.getcwd()
-  os.chdir(path)
-
-  url, fields = "https://slack.com/api/files.upload", {}
-
-  content = "data:image/png;base64," + \
-      base64.b64encode(open(filename, "rb").read())
-
-  fields["token"] = tokens.filefairy
-  fields["content"] = content
-  fields["filename"] = filename
-  fields["channels"] = channel
-
-  request = urllib2.Request(url, urllib.urlencode(fields))
-  response = urllib2.urlopen(request)
-
-  os.chdir(cwd)
-
-  return response
+def update(ts, channel, text, attachments=[]):
+  return callApi("chat.update", {
+      "token": tokens.filefairy,
+      "ts": ts,
+      "channel": channel,
+      "text": text,
+      "as_user": "true",
+      "attachments": attachments,
+  })
 
 
-def postMessage(text, channel):
-  """Posts a text message to the Slack team."""
-  url = "https://slack.com/api/chat.postMessage"
-  fields = {"text": text, "token": tokens.filefairy, "channel": channel,
-            "link_names": "brunnerj,everyone", "as_user": "true"}
-  full = "{0}?{1}".format(url, urllib.urlencode(fields))
-  urllib2.urlopen(full)
+def reactionsAdd(name, channel, timestamp):
+  return callApi("reactions.add", {
+      "token": tokens.filefairy,
+      "name": name,
+      "channel": channel,
+      "timestamp": timestamp
+  })
 
 
-def upload(path, filename, channel):
+def upload(path, filename, channel, keep=False):
   """Uploads a file to the Slack team."""
   if not os.path.isfile(os.path.join(path, filename)):
     postMessage("Unable to upload {0}.".format(filename), "testing")
@@ -91,7 +64,9 @@ def upload(path, filename, channel):
   with open(os.devnull, "wb") as f:
     subprocess.call(["curl", "-F", fi, "-F", ch, "-F",
                      token, url], stderr=f, stdout=f)
-  subprocess.call(["rm", filename])
+
+  if not keep:
+    subprocess.call(["rm", filename])
 
   os.chdir(cwd)
 

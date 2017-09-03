@@ -41,7 +41,7 @@ class Filefairy(object):
 
   def postMessage(self, message, channel):
     try:
-      slack.postMessage(message, channel)
+      slack.postMessage(channel, message)
     except urllib2.URLError as e:
       if hasattr(e, "reason"):
         self.logger.log("Failed to reach server. {0}.".format(e.reason))
