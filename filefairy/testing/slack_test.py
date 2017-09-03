@@ -4,7 +4,9 @@ import argparse
 import json
 import os
 import sys
+import thread
 import time
+import websocket
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import slack
@@ -74,6 +76,37 @@ def testReactions():
   obj = json.loads(response.read())
   assertEquals(obj["ok"], True)
 
+
+def on_message(ws, message):
+  obj = json.loads(message)
+  if "text" in obj and "snack me" in obj["text"].lower():
+    channel = obj["channel"]
+    ts = obj["ts"]
+    response = slack.reactionsAdd("eggplant", channel, ts)
+    obj = json.loads(response.read())
+    assertEquals(obj["ok"], True)
+
+
+def on_open(ws):
+  def run(*args):
+    slack.postMessage("testing", "Snack me, @filefairy!")
+    time.sleep(1)
+    ws.close()
+
+  thread.start_new_thread(run, ())
+
+
+def testRtm():
+  response = slack.rtmConnect()
+  obj = json.loads(response.read())
+  url = obj["url"]
+  assertEquals(obj["ok"], True)
+
+  ws = websocket.WebSocketApp(url, on_message=on_message)
+  ws.on_open = on_open
+  ws.run_forever()
+
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument('--mode', dest='mode')
@@ -87,5 +120,8 @@ if __name__ == "__main__":
 
   if args.mode == "reactions" or args.mode == "all":
     testReactions()
+
+  if args.mode == "rtm" or args.mode == "all":
+    testRtm()
 
   print "Passed."

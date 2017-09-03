@@ -47,6 +47,10 @@ def reactionsAdd(name, channel, timestamp):
   })
 
 
+def rtmConnect():
+  return callApi("rtm.connect", {"token": tokens.filefairy})
+
+
 def upload(path, filename, channel, keep=False):
   """Uploads a file to the Slack team."""
   if not os.path.isfile(os.path.join(path, filename)):
