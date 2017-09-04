@@ -5,21 +5,24 @@ import os
 import re
 import screenshot
 import subprocess
-import slack
+import slack_api
 import sys
 import time
 import urllib2
 
 from PyQt4.QtGui import QApplication
 from logger import Logger
+from slack_api import SlackApi
 
 
 class Filefairy(object):
   """Watches the live sim page for any changes."""
 
-  def __init__(self, logger=None, app=None):
+  def __init__(self, logger, slackApi, app=None):
     """Does an initial parse of the live sim page."""
-    self.logger = logger or Logger()
+    self.logger = logger
+    self.slackApi = slackApi
+
     self.screenshot = screenshot.Screenshot(
         app or QApplication(sys.argv), self.getImagesPath())
 
@@ -39,20 +42,6 @@ class Filefairy(object):
   def capture(self, html, filename):
     self.screenshot.capture(html, filename)
 
-  def postMessage(self, message, channel):
-    try:
-      slack.postMessage(channel, message)
-    except urllib2.URLError as e:
-      if hasattr(e, "reason"):
-        self.logger.log("Failed to reach server. {0}.".format(e.reason))
-      elif hasattr(e, "code"):
-        self.logger.log("Server failed to handle request. {0}.".format(e.code))
-    except:
-      self.logger.log("Unspecified exception.")
-
-  def upload(self, filename, channel):
-    slack.upload(self.getImagesPath(), filename, channel)
-
   def getFileUrl(self):
     """Returns the exports page url that should be checked for date changes."""
     return "http://orangeandblueleaguebaseball.com/StatsLab/exports.php"
@@ -60,6 +49,12 @@ class Filefairy(object):
   def getSimUrl(self):
     """Returns the live sim page url that should be checked for date changes."""
     return "http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html"
+
+  def getChannelGeneral(self):
+    return "general"
+
+  def getChannelLiveSimDiscussion(self):
+    return "live-sim-discussion"
 
   def getExportsInputFile(self):
     """Returns the file that exports data is saved to."""
@@ -136,7 +131,7 @@ class Filefairy(object):
 
     ret = False
     if date != self.fileDate:
-      self.postMessage("File is up.", "general")
+      self.slackApi.chatPostMessage(self.getChannelGeneral(), "File is up.")
       self.logger.log("File is up.")
 
       teamids = self.findExports(self.filePage)
@@ -200,25 +195,25 @@ class Filefairy(object):
 
   def digest(self):
     for post in self.posts:
-      self.postMessage(post, "live-sim-discussion")
+      self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), post)
 
     for date in sorted(self.pages):
       filename = "sim{0}.png".format(date)
       self.findRecords(self.pages[date])
       self.capture(self.pages[date], filename)
-      self.upload(filename, "live-sim-discussion")
+      self.slackApi.filesUpload(self.getImagesPath(), filename, self.getChannelLiveSimDiscussion())
       self.logger.log("Uploaded {0}.".format(filename))
 
     if self.pages:
       lines = self.formatRecords()
-      self.postMessage("\n\n".join(lines), "live-sim-discussion")
+      self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), "\n\n".join(lines))
       self.logger.log("Posted records.")
 
     self.pages, self.posts = {}, []
 
     logs = "\n".join(self.logger.collect())
     if logs:
-      self.postMessage(logs, "testing")
+      self.slackApi.chatPostMessage("testing", logs)
 
   def findFileDate(self, page):
     match = re.findall(r"League File Updated: ([^<]+)<", page)
@@ -286,7 +281,7 @@ class Filefairy(object):
         "team", "W", "L", "%", "L10", "*"))
     formatted.append("-"*44)
     for t in ordered:
-      emoji = slack.teamidsToEmoji[t].replace(":", "")
+      emoji = slack_api.teamidsToEmoji[t].replace(":", "")
 
       if e[t][2] > 0:
         streak = "{0}{1}".format("W" if e[t][3][-1] else "L", e[t][2])
@@ -362,7 +357,7 @@ class Filefairy(object):
 
       formatted = []
       for t in ordered:
-        emoji = slack.teamidsToEmoji[t]
+        emoji = slack_api.teamidsToEmoji[t]
         record = r[t] if r[t][2] else r[t][:2]
         formatted.append("{0} {1}".format(
             emoji, "-".join([str(n) for n in record])))
@@ -398,13 +393,16 @@ class Filefairy(object):
           formatted = "{0} {1} {2}\n{3}".format(
               time, ":separator:", score, summary.replace(":", ""))
 
-          pattern = re.compile("|".join(slack.nicksToEmoji.keys()))
+          pattern = re.compile("|".join(slack_api.nicksToEmoji.keys()))
           updates.append(pattern.sub(
-              lambda x: slack.nicksToEmoji[x.group()], formatted))
+              lambda x: slack_api.nicksToEmoji[x.group()], formatted))
 
     return updates
 
 
 if __name__ == "__main__":
-  filefairy = Filefairy()
+  logger = Logger()
+  slackApi = SlackApi(logger)
+
+  filefairy = Filefairy(logger, slackApi)
   filefairy.watch()

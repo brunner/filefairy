@@ -7,20 +7,22 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import argparse
 import filecmp
 import screenshot
-import slack
 import urllib2
 
 from PyQt4.QtGui import QApplication
 from logger import TestLogger
 from filefairy import Filefairy
+from slack_api import SlackApi, TestSlackApi
 from utils import assertEquals, assertNotEquals
 
 
 class FilefairyTest(Filefairy):
   """Tests for Filefairy."""
 
-  def __init__(self, logger, app, fileUrls, simUrls, slack=False):
+  def __init__(self, logger, slackApi, app, fileUrls, simUrls):
     self.logger = logger
+    self.slackApi = slackApi
+
     self.screenshot = screenshot.Screenshot(app, self.getImagesPath())
 
     self.fileUrls, self.fileIndex = fileUrls, 0
@@ -39,21 +41,10 @@ class FilefairyTest(Filefairy):
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
 
     self.captured = []
-    self.posted = []
-
-    self.slack = slack
 
   def capture(self, html, filename):
     self.captured.append(filename)
-    self.slack and self.screenshot.capture(html, filename)
-
-  def postMessage(self, message, channel):
-    self.posted.append(message)
-    self.slack and super(FilefairyTest, self).postMessage(message, "testing")
-
-  def upload(self, filename, channel):
-    self.posted.append(filename)
-    self.slack and super(FilefairyTest, self).upload(filename, "testing")
+    self.screenshot.capture(html, filename)
 
   def getFileUrl(self):
     if len(self.fileUrls) > self.fileIndex + 1:
@@ -66,6 +57,12 @@ class FilefairyTest(Filefairy):
       self.simIndex = self.simIndex + 1
 
     return self.simUrls[self.simIndex]
+
+  def getChannelGeneral(self):
+    return "testing"
+
+  def getChannelLiveSimDiscussion(self):
+    return "testing"
 
   def getExportsInputFile(self):
     return os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/exportsin.txt"
@@ -84,8 +81,7 @@ class FilefairyTest(Filefairy):
     self.watch()
     return {
         "collected": self.logger.collected,
-        "captured": self.captured,
-        "posted": self.posted
+        "captured": self.captured
     }
 
   def getUpdateLeagueFile(self):
@@ -96,7 +92,6 @@ class FilefairyTest(Filefairy):
         "collected": self.logger.collected,
         "index": self.fileIndex,
         "date": self.fileDate,
-        "posted": self.posted,
     }
 
   def getUpdateLiveSim(self):
@@ -109,7 +104,6 @@ class FilefairyTest(Filefairy):
         "date": self.simDate,
         "finals": self.finals,
         "updates": self.updates,
-        "posted": self.posted,
     }
 
 
@@ -236,15 +230,15 @@ updates = {
 }
 
 logs = [
-    "[00:00:00] Started watching.",             # 0
-    "[00:00:00] Saved 3 finals on 09092018.",   # 1
-    "[00:00:00] Saved 15 finals on 09092018.",  # 2
-    "[00:00:00] Ignored 3 finals on 09092018.", # 3
-    "[00:00:00] Uploaded sim09092018.png.",     # 4
-    "[00:00:00] Posted records.",               # 5
-    "[00:00:00] File is up.",                   # 6
-    "[00:00:00] 4 teams exported.",             # 7
-    "[00:00:00] Done watching.",                # 8
+    "Started watching.",             # 0
+    "Saved 3 finals on 09092018.",   # 1
+    "Saved 15 finals on 09092018.",  # 2
+    "Ignored 3 finals on 09092018.", # 3
+    "Uploaded sim09092018.png.",     # 4
+    "Posted records.",               # 5
+    "File is up.",                   # 6
+    "4 teams exported.",             # 7
+    "Done watching.",                # 8
 ]
 
 
@@ -255,7 +249,9 @@ def testReal(app):
   simUrl = "http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html"
   simPage = urllib2.urlopen(simUrl).read()
 
-  filefairyTest = FilefairyTest(TestLogger(), app, [fileUrl], [simUrl])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, [fileUrl], [simUrl])
 
   assertNotEquals(filefairyTest.findFileDate(filePage), "")
   assertNotEquals(filefairyTest.findSimDate(simPage), "")
@@ -263,7 +259,9 @@ def testReal(app):
 
 
 def testFindFileDate(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(fileUrls[0]).read()
   assertEquals(filefairyTest.findFileDate(page), fileDates["old"])
@@ -279,7 +277,9 @@ def testFindFileDate(app):
 
 
 def testFindExports(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(fileUrls[0]).read()
   assertEquals(filefairyTest.findExports(page), [])
@@ -295,17 +295,23 @@ def testFindExports(app):
 
 
 def testReadExports(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
   assertEquals(filefairyTest.readExports(), exports1)
 
 
 def testWriteExports(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
   assertEquals(filefairyTest.writeExports(exports1, teamids), exports2)
 
 
 def testFindSimDate(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
   assertEquals(filefairyTest.findSimDate(page), simDates["old"])
@@ -327,7 +333,9 @@ def testFindSimDate(app):
 
 
 def testFindBoxes(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
   assertEquals(len(filefairyTest.findBoxes(page)), 0)
@@ -349,7 +357,9 @@ def testFindBoxes(app):
 
 
 def testFindFinals(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
   assertEquals(filefairyTest.findFinals(page), set())
@@ -371,27 +381,37 @@ def testFindFinals(app):
 
 
 def testFindRecords(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
   assertEquals(filefairyTest.getFindRecords(page), {})
   
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[1]).read()
   assertEquals(filefairyTest.getFindRecords(page), {})
 
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[2]).read()
   assertEquals(filefairyTest.getFindRecords(page), {})
 
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[3]).read()
   assertEquals(filefairyTest.getFindRecords(page), findRecords["new1"])
 
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[4]).read()
   assertEquals(filefairyTest.getFindRecords(page), findRecords["new2"])
@@ -400,7 +420,9 @@ def testFindRecords(app):
 
 
 def testFindUpdates(app):
-  filefairyTest = FilefairyTest(TestLogger(), app, fileUrls[:], simUrls[:])
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
   assertEquals(filefairyTest.findUpdates(page), [updates["update1"]])
@@ -421,72 +443,67 @@ def testFindUpdates(app):
   assertEquals(filefairyTest.findUpdates(page), [])
 
 
-def testUpdateLeagueFile(app, slack):
-  filefairyTest = FilefairyTest(
-      TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
+def testUpdateLeagueFile(app):
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   expected = {"ret": False, "collected": [], "index": 1,
-              "date": fileDates["old"], "posted": []}
+              "date": fileDates["old"]}
   assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
   expected = {"ret": False, "collected": [], "index": 2,
-              "date": fileDates["old"], "posted": []}
+              "date": fileDates["old"]}
   assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
   expected = {"ret": True, "collected": logs[6:8], "index": 3,
-              "date": fileDates["new"], "posted": ["File is up."]}
+              "date": fileDates["new"]}
   assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
   expected = {"ret": False, "collected": logs[6:8], "index": 3,
-              "date": fileDates["new"], "posted": ["File is up."]}
+              "date": fileDates["new"]}
   assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
 
-def testUpdateLiveSim(app, slack):
-  filefairyTest = FilefairyTest(
-      TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
+def testUpdateLiveSim(app):
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   expected = {"ret": False, "collected": [], "index": 1,
               "date": simDates["old"], "finals": set(),
-              "updates": [updates["update1"]], "posted": []}
+              "updates": [updates["update1"]]}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": False, "collected": [], "index": 2,
               "date": simDates["old"], "finals": set(),
-              "updates": [updates["update1"], updates["update2"]],
-              "posted": []}
+              "updates": [updates["update1"], updates["update2"]]}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": True, "collected": logs[1:2], "index": 3,
-              "date": simDates["new"], "finals": finals["new1"], "updates": [],
-              "posted": []}
+              "date": simDates["new"], "finals": finals["new1"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": True, "collected": logs[1:3], "index": 4,
-              "date": simDates["new"], "finals": finals["new2"], "updates": [],
-              "posted": []}
+              "date": simDates["new"], "finals": finals["new2"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": False, "collected": logs[1:4], "index": 5,
-              "date": simDates["new"], "finals": finals["new2"], "updates": [],
-              "posted": []}
+              "date": simDates["new"], "finals": finals["new2"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
   expected = {"ret": False, "collected": logs[1:4], "index": 5,
-              "date": simDates["new"], "finals": finals["new2"], "updates": [],
-              "posted": []}
+              "date": simDates["new"], "finals": finals["new2"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
 
-def testWatch(app, slack):
-  filefairyTest = FilefairyTest(
-      TestLogger(slack), app, fileUrls[:], simUrls[:], slack)
+def testWatch(app):
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   expected = {"collected": logs,
-              "captured": [filenames["new"]],
-              "posted": [logs[0], updates["update2"], filenames["new"],
-                         postedRecords, "\n".join(logs[1:6]),
-                         "File is up.", "\n".join(logs[6:9])]}
+              "captured": [filenames["new"]]}
   assertEquals(filefairyTest.getWatch(), expected)
 
 
@@ -495,8 +512,6 @@ if __name__ == "__main__":
 
   parser = argparse.ArgumentParser()
   parser.add_argument('--mode', dest='mode')
-  parser.add_argument('--slack', dest='slack', action='store_true')
-  parser.set_defaults(slack=False)
   args = parser.parse_args()
 
   # if args.mode == "real" or args.mode == "all":
@@ -530,12 +545,12 @@ if __name__ == "__main__":
     testFindUpdates(app)
 
   if args.mode == "leaguefile" or args.mode == "all":
-    testUpdateLeagueFile(app, args.slack)
+    testUpdateLeagueFile(app)
 
   if args.mode == "livesim" or args.mode == "all":
-    testUpdateLiveSim(app, args.slack)
+    testUpdateLiveSim(app)
 
   if args.mode == "watch" or args.mode == "all":
-    testWatch(app, args.slack)
+    testWatch(app)
 
   print "Passed."
