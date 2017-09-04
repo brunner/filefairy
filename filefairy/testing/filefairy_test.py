@@ -140,18 +140,18 @@ thirteen1 = [13, 0, 13, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 thirteen2a = [14, 0, 14, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 thirteen2b = [13, 1, 1, [1, 1, 1, 1, 1, 1, 1, 1, 1, 0]]
 exports1 = {
-  31: zero1, 32: eleven1, 33: nine1, 34: nine1, 35: twelve1, 36: thirteen1,
-  37: thirteen1, 38: ten1, 39: nine1, 40: thirteen1, 41: seven1, 42: twelve1,
-  43: new1b, 44: ten1, 45: twelve1, 46: eleven1, 47: thirteen1, 48: nine1,
-  49: seven1, 50: twelve1, 51: five1, 52: thirteen1, 53: nine1, 54: ten1,
-  55: eleven1, 56: five1, 57: twelve1, 58: zero1, 59: ten1, 60: new1a,
+    31: zero1, 32: eleven1, 33: nine1, 34: nine1, 35: twelve1, 36: thirteen1,
+    37: thirteen1, 38: ten1, 39: nine1, 40: thirteen1, 41: seven1, 42: twelve1,
+    43: new1b, 44: ten1, 45: twelve1, 46: eleven1, 47: thirteen1, 48: nine1,
+    49: seven1, 50: twelve1, 51: five1, 52: thirteen1, 53: nine1, 54: ten1,
+    55: eleven1, 56: five1, 57: twelve1, 58: zero1, 59: ten1, 60: new1a,
 }
 exports2 = {
-  31: zero2b, 32: eleven2, 33: nine2, 34: nine2, 35: twelve2, 36: thirteen2b,
-  37: thirteen2b, 38: ten2, 39: nine2, 40: thirteen2a, 41: seven2b, 42: twelve2,
-  43: new2, 44: ten2, 45: twelve2, 46: eleven2, 47: thirteen2b, 48: nine2,
-  49: seven2a, 50: twelve2, 51: five2, 52: thirteen2b, 53: nine2, 54: ten2,
-  55: eleven2, 56: five2, 57: twelve2, 58: zero2a, 59: ten2, 60: new1a,
+    31: zero2b, 32: eleven2, 33: nine2, 34: nine2, 35: twelve2, 36: thirteen2b,
+    37: thirteen2b, 38: ten2, 39: nine2, 40: thirteen2a, 41: seven2b, 42: twelve2,
+    43: new2, 44: ten2, 45: twelve2, 46: eleven2, 47: thirteen2b, 48: nine2,
+    49: seven2a, 50: twelve2, 51: five2, 52: thirteen2b, 53: nine2, 54: ten2,
+    55: eleven2, 56: five2, 57: twelve2, 58: zero2a, 59: ten2, 60: new1a,
 }
 teamids = [40, 43, 58, 49]
 
@@ -231,14 +231,21 @@ updates = {
 
 logs = [
     "Started watching.",             # 0
-    "Saved 3 finals on 09092018.",   # 1
-    "Saved 15 finals on 09092018.",  # 2
-    "Ignored 3 finals on 09092018.", # 3
-    "Uploaded sim09092018.png.",     # 4
-    "Posted records.",               # 5
-    "File is up.",                   # 6
-    "4 teams exported.",             # 7
-    "Done watching.",                # 8
+    "Test mocked chat.postMessage.",  # 1
+    "Test mocked chat.postMessage.",  # 2
+    "Test mocked chat.postMessage.",  # 3
+    "Saved 3 finals on 09092018.",   # 4
+    "Saved 15 finals on 09092018.",  # 5
+    "Ignored 3 finals on 09092018.",  # 6
+    "Test mocked files.upload.",     # 7
+    "Uploaded sim09092018.png.",     # 8
+    "Test mocked chat.postMessage.",  # 9
+    "Posted records.",               # 10
+    "Test mocked chat.postMessage.",  # 11
+    "Test mocked chat.postMessage.",  # 12
+    "File is up.",                   # 13
+    "4 teams exported.",             # 14
+    "Done watching.",                # 15
 ]
 
 
@@ -250,7 +257,7 @@ def testReal(app):
   simPage = urllib2.urlopen(simUrl).read()
 
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, [fileUrl], [simUrl])
 
   assertNotEquals(filefairyTest.findFileDate(filePage), "")
@@ -260,7 +267,7 @@ def testReal(app):
 
 def testFindFileDate(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(fileUrls[0]).read()
@@ -278,7 +285,7 @@ def testFindFileDate(app):
 
 def testFindExports(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(fileUrls[0]).read()
@@ -296,21 +303,21 @@ def testFindExports(app):
 
 def testReadExports(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
   assertEquals(filefairyTest.readExports(), exports1)
 
 
 def testWriteExports(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
   assertEquals(filefairyTest.writeExports(exports1, teamids), exports2)
 
 
 def testFindSimDate(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
@@ -334,7 +341,7 @@ def testFindSimDate(app):
 
 def testFindBoxes(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
@@ -358,7 +365,7 @@ def testFindBoxes(app):
 
 def testFindFinals(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
@@ -382,35 +389,35 @@ def testFindFinals(app):
 
 def testFindRecords(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
   assertEquals(filefairyTest.getFindRecords(page), {})
-  
+
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[1]).read()
   assertEquals(filefairyTest.getFindRecords(page), {})
 
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[2]).read()
   assertEquals(filefairyTest.getFindRecords(page), {})
 
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[3]).read()
   assertEquals(filefairyTest.getFindRecords(page), findRecords["new1"])
 
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[4]).read()
@@ -421,7 +428,7 @@ def testFindRecords(app):
 
 def testFindUpdates(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   page = urllib2.urlopen(simUrls[0]).read()
@@ -445,7 +452,7 @@ def testFindUpdates(app):
 
 def testUpdateLeagueFile(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   expected = {"ret": False, "collected": [], "index": 1,
@@ -456,18 +463,18 @@ def testUpdateLeagueFile(app):
               "date": fileDates["old"]}
   assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
-  expected = {"ret": True, "collected": logs[6:8], "index": 3,
+  expected = {"ret": True, "collected": logs[12:15], "index": 3,
               "date": fileDates["new"]}
   assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
-  expected = {"ret": False, "collected": logs[6:8], "index": 3,
+  expected = {"ret": False, "collected": logs[12:15], "index": 3,
               "date": fileDates["new"]}
   assertEquals(filefairyTest.getUpdateLeagueFile(), expected)
 
 
 def testUpdateLiveSim(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   expected = {"ret": False, "collected": [], "index": 1,
@@ -480,29 +487,39 @@ def testUpdateLiveSim(app):
               "updates": [updates["update1"], updates["update2"]]}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": True, "collected": logs[1:2], "index": 3,
+  expected = {"ret": True, "collected": logs[4:5], "index": 3,
               "date": simDates["new"], "finals": finals["new1"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": True, "collected": logs[1:3], "index": 4,
+  expected = {"ret": True, "collected": logs[4:6], "index": 4,
               "date": simDates["new"], "finals": finals["new2"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": False, "collected": logs[1:4], "index": 5,
+  expected = {"ret": False, "collected": logs[4:7], "index": 5,
               "date": simDates["new"], "finals": finals["new2"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
-  expected = {"ret": False, "collected": logs[1:4], "index": 5,
+  expected = {"ret": False, "collected": logs[4:7], "index": 5,
               "date": simDates["new"], "finals": finals["new2"], "updates": []}
   assertEquals(filefairyTest.getUpdateLiveSim(), expected)
 
 
 def testWatch(app):
   logger = TestLogger()
-  slackApi = SlackApi(logger)
+  slackApi = TestSlackApi(logger)
   filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
 
   expected = {"collected": logs,
+              "captured": [filenames["new"]]}
+  assertEquals(filefairyTest.getWatch(), expected)
+
+
+def testIntegration(app):
+  logger = TestLogger()
+  slackApi = SlackApi(logger)
+  filefairyTest = FilefairyTest(logger, slackApi, app, fileUrls[:], simUrls[:])
+
+  expected = {"collected": logs[0:1] + logs[4:7] + logs[8:9] + logs[10:11] + logs[13:16],
               "captured": [filenames["new"]]}
   assertEquals(filefairyTest.getWatch(), expected)
 
@@ -552,5 +569,8 @@ if __name__ == "__main__":
 
   if args.mode == "watch" or args.mode == "all":
     testWatch(app)
+
+  if args.mode == "integration" or args.mode == "all":
+    testIntegration(app)
 
   print "Passed."
