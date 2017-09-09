@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import datetime
+import json
 import os
+import random
 import re
 import screenshot
 import subprocess
@@ -9,6 +11,7 @@ import slack_api
 import sys
 import time
 import urllib2
+import websocket
 
 from PyQt4.QtGui import QApplication
 from logger import Logger
@@ -34,7 +37,7 @@ class Filefairy(object):
     self.finals = self.findFinals(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
-    self.exports = self.readExports() 
+    self.exports = self.readExports()
 
     self.pages, self.posts = {}, []
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
@@ -201,12 +204,14 @@ class Filefairy(object):
       filename = "sim{0}.png".format(date)
       self.findRecords(self.pages[date])
       self.capture(self.pages[date], filename)
-      self.slackApi.filesUpload(self.getImagesPath(), filename, self.getChannelLiveSimDiscussion())
+      self.slackApi.filesUpload(
+          self.getImagesPath(), filename, self.getChannelLiveSimDiscussion())
       self.logger.log("Uploaded {0}.".format(filename))
 
     if self.pages:
       lines = self.formatRecords()
-      self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), "\n\n".join(lines))
+      self.slackApi.chatPostMessage(
+          self.getChannelLiveSimDiscussion(), "\n\n".join(lines))
       self.logger.log("Posted records.")
 
     self.pages, self.posts = {}, []
@@ -279,7 +284,7 @@ class Filefairy(object):
     formatted = []
     formatted.append("{0:<12} {1:>3}-{2:<4} {3:>5} {4:>6}    {5:<3}".format(
         "team", "W", "L", "%", "L10", "*"))
-    formatted.append("-"*44)
+    formatted.append("-" * 44)
     for t in ordered:
       emoji = slack_api.teamidsToEmoji[t].replace(":", "")
 
@@ -400,9 +405,135 @@ class Filefairy(object):
     return updates
 
 
-if __name__ == "__main__":
-  logger = Logger()
-  slackApi = SlackApi(logger)
+# if __name__ == "__main__":
+#   logger = Logger()
+#   slackApi = SlackApi(logger)
 
-  filefairy = Filefairy(logger, slackApi)
-  filefairy.watch()
+#   filefairy = Filefairy(logger, slackApi)
+#   filefairy.watch()
+
+
+
+snacks = [
+    "green_apple", "apple", "pear", "tangerine", "lemon", "banana",
+    "watermelon", "grapes", "strawberry", "melon", "cherries", "peach",
+    "pineapple", "tomato", "eggplant", "hot_pepper", "corn", "sweet_potato",
+    "honey_pot", "bread", "cheese_wedge", "poultry_leg", "meat_on_bone",
+    "fried_shrimp", "egg", "hamburger", "fries", "hotdog", "pizza",
+    "spaghetti", "taco", "burrito", "ramen", "stew", "fish_cake", "sushi",
+    "bento", "curry", "rice_ball", "rice", "rice_cracker", "oden", "dango",
+    "shaved_ice", "ice_cream", "icecream", "cake", "birthday", "custard",
+    "candy", "lollipop", "chocolate_bar", "popcorn", "doughnut", "cookie",
+    "beer", "beers", "wine_glass", "cocktail", "tropical_drink", "champagne",
+    "sake", "tea", "coffee", "baby_bottle", "fork_and_knife",
+    "knife_fork_plate"
+]
+
+websocket.enableTrace(True)
+
+
+class FilefairyChat(object):
+
+  def __init__(self, logger, slackApi):
+    self.logger = logger
+    self.slackApi = slackApi
+
+    self.set_behaviors()
+    self.set_rates()
+
+    self.logger.log('Opened chat.')
+
+    def on_message_(ws, message):
+      obj = json.loads(message)
+      print obj
+
+      if 'type' not in obj:
+        pass
+
+      if obj['type'] == 'message':
+        self.handle_message(ws, obj)
+
+    obj = slackApi.rtmConnect()
+    if (obj['ok']):
+      url = obj['url']
+      ws = websocket.WebSocketApp(url, on_message=on_message_)
+      ws.run_forever()
+
+    self.logger.log('Closed chat.')
+
+    logs = '\n'.join(self.logger.collect())
+    if logs:
+      self.slackApi.chatPostMessage('testing', logs)
+
+  def set_behaviors(self):
+    self.behaviors = [{
+        'text': 'ff/stop',
+        'channels': ['random', 'testing'],
+        'users': ['brunnerj'],
+        'rate': 0,
+        'f': self.close
+    }, {
+        'text': 'snack me',
+        'channels': ['random', 'testing'],
+        'users': [],
+        'rate': 120,
+        'f': self.snack_me
+    }]
+
+  def set_rates(self):
+    self.rates = {}
+    for b in self.behaviors:
+      if b['rate'] != 0:
+        self.rates[b['text']] = {}
+
+  def handle_message(self, ws, obj):
+    for b in self.behaviors:
+      text = b['text'] in obj['text'].lower() and \
+          '\'' + b['text'] + '\'' not in obj['text'].lower()
+      channel = len(b['channels']) == 0 or \
+          slackApi.getChannel(obj['channel']) in b['channels']
+      user = len(b['users']) == 0 or slackApi.getUser(obj['user']) in b['users']
+
+      if text and channel and user:
+        if b['rate'] == 0:
+          b['f'](ws, obj)
+        elif obj['user'] not in self.rates[b['text']]:
+          b['f'](ws, obj)
+          self.rates[b['text']][obj['user']] = int(time.time()) + b['rate']
+        else:
+          current = int(time.time())
+          if current > self.rates[b['text']][obj['user']]:
+            b['f'](ws, obj)
+            self.rates[b['text']][obj['user']] = current + b['rate']
+          else:
+            self.rates[b['text']][obj['user']] = current + b['rate']
+            imOpenObj = self.slackApi.imOpen(obj['user'])
+            if imOpenObj["ok"]:
+              im = imOpenObj["channel"]["id"]
+              e = ('To limit spam, \'{}\' is rate limited. You may next use '
+                   + 'the phrase in {} minutes. If you believe you received '
+                   + 'this message in error, please pm brunnerj. '
+                   + 'Thanks!').format(b['text'], b['rate'] / 60)
+              self.slackApi.chatPostMessage(im, e)
+
+              user = slackApi.getUser(obj['user'])
+              self.slackApi.chatPostMessage(
+                  'testing', 'Sent pm to {}: {}'.format(user, e))
+
+  def close(self, ws, obj):
+    ws.close()
+
+  def snack_me(self, ws, obj):
+    channel = obj["channel"]
+    ts = obj["ts"]
+    snack1 = random.choice(snacks)
+    snack2 = random.choice(snacks)
+    self.slackApi.reactionsAdd(snack1, channel, ts)
+    if snack2 == snack1:
+      self.slackApi.reactionsAdd("star", channel, ts)
+    else:
+      self.slackApi.reactionsAdd(snack2, channel, ts)
+
+logger = Logger()
+slackApi = SlackApi(logger)
+filefairyChat = FilefairyChat(logger, slackApi)

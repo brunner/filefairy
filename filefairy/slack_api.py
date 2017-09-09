@@ -13,6 +13,8 @@ class SlackApi(object):
 
   def __init__(self, logger):
     self.logger = logger
+    self.setChannels()
+    self.setUsers()
 
   def call_(self, method, params):
     url = "https://slack.com/api/{}".format(method)
@@ -63,6 +65,58 @@ class SlackApi(object):
 
   def rtmConnect(self):
     return self.call_("rtm.connect", {"token": tokens.filefairy})
+
+  def channelsList(self):
+    return self.call_("channels.list", {"token": tokens.filefairy})
+
+  def groupsList(self):
+    return self.call_("groups.list", {"token": tokens.filefairy})
+
+  def usersList(self):
+    return self.call_("users.list", {"token": tokens.filefairy})
+
+  def imOpen(self, user):
+    return self.call_("im.open", {
+        "token": tokens.filefairy,
+        "user": user,
+        "return_im": "true"
+    })
+
+  def setChannels(self):
+    self.channels = {}
+
+    obj = self.channelsList()
+    if obj['ok']:
+      for channel in obj['channels']:
+        key, value = channel['id'], channel['name']
+        self.channels[key] = value
+
+    obj = self.groupsList()
+    if obj['ok']:
+      for group in obj['groups']:
+        key, value = group['id'], group['name']
+        self.channels[key] = value
+
+  def getChannel(self, key):
+    if key in self.channels:
+      return self.channels[key]
+
+    return ''
+
+  def setUsers(self):
+    self.users = {}
+
+    obj = self.usersList()
+    if obj['ok']:
+      for user in obj['members']:
+        key, value = user['id'], user['name']
+        self.users[key] = value
+
+  def getUser(self, key):
+    if key in self.users:
+      return self.users[key]
+
+    return ''
 
   def filesUpload(self, path, filename, channel, keep=False):
     if not os.path.isfile(os.path.join(path, filename)):

@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from logger import TestLogger
 from slack_api import SlackApi, TestSlackApi
-from utils import assertEquals
+from utils import assertEquals, assertContains
 
 
 def slackApi_chatPostMessage():
@@ -112,99 +112,25 @@ def slackApi_rtmConnect():
   ws.run_forever()
 
 
-def testSlackApi_chatPostMessage():
+def slackApi_channelsList():
   logger = TestLogger()
-  slackApi = TestSlackApi(logger)
+  slackApi = SlackApi(logger)
 
-  attachments = [{"fields": [{"value": "a1"}]}]
-  obj = slackApi.chatPostMessage("testing", "m1", attachments)
-  assertEquals(obj, {"ok": True})
-  assertEquals(slackApi.logger.collect(), ["Test mocked chat.postMessage."])
-
-  channel = "testing"
-  ts = u"1234"
-  reply_ts = u"5678"
-
-  attachments = [{"fields": [{"value": "a2"}]}]
-  obj = slackApi.chatPostMessage(channel, "m2", attachments, ts)
-  assertEquals(obj, {"ok": True})
-  assertEquals(slackApi.logger.collect(), ["Test mocked chat.postMessage."])
-
-  attachments = [{"fields": [{"value": "a3"}]}]
-  obj = slackApi.chatUpdate(ts, channel, "m3", attachments)
-  assertEquals(obj, {"ok": True})
-  assertEquals(slackApi.logger.collect(), ["Test mocked chat.update."])
-
-  attachments = [{"fields": [{"value": "a4"}]}]
-  obj = slackApi.chatUpdate(reply_ts, channel, "m4", attachments)
-  assertEquals(obj, {"ok": True})
-  assertEquals(slackApi.logger.collect(), ["Test mocked chat.update."])
-
-
-def testSlackApi_filesUpload():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-
-  path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
-  obj = slackApi.filesUpload(path, "image.png", "testing", keep=True)
+  obj = slackApi.channelsList()
   assertEquals(obj["ok"], True)
-  assertEquals(slackApi.logger.collect(), ["Test mocked files.upload."])
 
+  channels = []
+  for channel in obj["channels"]:
+    channels.append(channel["name"])
+  assertContains(channels, "general")
 
-def testSlackApi_reactionsAdd():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-
-  obj = slackApi.chatPostMessage("testing", "Snack me, @filefairy!")
+  obj = slackApi.groupsList()
+  assertEquals(obj["ok"], True)
   
-  channel = "testing"
-  ts = u"1234"
-  
-  assertEquals(obj["ok"], True)
-  assertEquals(slackApi.logger.collect(), ["Test mocked chat.postMessage."])
-
-  obj = slackApi.reactionsAdd("eggplant", channel, ts)
-  assertEquals(obj["ok"], True)
-  assertEquals(slackApi.logger.collect(), ["Test mocked reactions.add."])
-
-
-def testSlackApi_rtmConnect():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-
-  def on_message(ws, message):
-    obj = json.loads(message)
-    if "text" in obj and "snack me" in obj["text"].lower():
-      channel = "testing"
-      ts = u"1234"
-
-      obj = slackApi.reactionsAdd("eggplant", channel, ts)
-      assertEquals(obj["ok"], True)
-      assertEquals(slackApi.logger.collect(), ["Test mocked reactions.add."])
-
-  def on_close(ws):
-    assertEquals(slackApi.logger.collect(), [])
-
-  def on_open(ws):
-    def run(*args):
-      obj = slackApi.chatPostMessage("testing", "Snack me, @filefairy!")
-      assertEquals(obj["ok"], True)
-      assertEquals(slackApi.logger.collect(), ["Test mocked chat.postMessage."])
-      time.sleep(1)
-      ws.close()
-
-    thread.start_new_thread(run, ())
-
-  obj = slackApi.rtmConnect()
-
-  url = "wss://..."
-
-  assertEquals(obj["ok"], True)
-  assertEquals(slackApi.logger.collect(), ["Test mocked rtm.connect."])
-
-  ws = websocket.WebSocketApp(url, on_message=on_message)
-  ws.on_open = on_open
-  ws.run_forever()
+  groups = []
+  for group in obj["groups"]:
+    groups.append(group["name"])
+  assertContains(groups, "testing")
 
 
 if __name__ == "__main__":
@@ -224,10 +150,7 @@ if __name__ == "__main__":
   if args.mode == "rtm" or args.mode == "all":
     slackApi_rtmConnect()
 
-  if args.mode == "test" or args.mode == "all":
-    testSlackApi_chatPostMessage()
-    testSlackApi_filesUpload()
-    testSlackApi_reactionsAdd()
-    testSlackApi_rtmConnect()
+  if args.mode == "list" or args.mode == "all":
+    slackApi_channelsList()
 
   print "Passed."
