@@ -429,7 +429,7 @@ snacks = [
     "knife_fork_plate"
 ]
 
-websocket.enableTrace(True)
+# websocket.enableTrace(True)
 
 
 class FilefairyChat(object):
@@ -445,7 +445,7 @@ class FilefairyChat(object):
 
     def on_message_(ws, message):
       obj = json.loads(message)
-      print obj
+      # print obj
 
       if 'type' not in obj:
         pass
