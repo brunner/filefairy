@@ -86,13 +86,13 @@ class SlackApi(object):
     self.channels = {}
 
     obj = self.channelsList()
-    if obj['ok']:
+    if obj['ok'] and 'channels' in obj:
       for channel in obj['channels']:
         key, value = channel['id'], channel['name']
         self.channels[key] = value
 
     obj = self.groupsList()
-    if obj['ok']:
+    if obj['ok'] and 'groups' in obj:
       for group in obj['groups']:
         key, value = group['id'], group['name']
         self.channels[key] = value
@@ -107,7 +107,7 @@ class SlackApi(object):
     self.users = {}
 
     obj = self.usersList()
-    if obj['ok']:
+    if obj['ok'] and 'members' in obj:
       for user in obj['members']:
         key, value = user['id'], user['name']
         self.users[key] = value
@@ -143,6 +143,9 @@ class SlackApi(object):
 
 class TestSlackApi(SlackApi):
 
+  def __init__(self, logger):
+    self.logger = logger
+
   def call_(self, method, params):
     self.logger.log("Test mocked {}.".format(method))
     return {"ok": True}
@@ -152,7 +155,6 @@ class TestSlackApi(SlackApi):
     obj = json.dumps(params, sort_keys=True)
     self.logger.log("Test mocked files.upload.")
     return {"ok": True}
-
 
 # TODO: Move the below utilities into a helper class.
 nicks = ["ARI", "ATL", "BAL", "BOS", "CWS", "CHC", "CIN", "CLE", "COL", "DET",
