@@ -18,7 +18,7 @@ from logger import Logger
 from slack_api import SlackApi
 
 
-class Filefairy(object):
+class App(object):
   """Watches the live sim page for any changes."""
 
   def __init__(self, logger, slackApi, app=None):
@@ -51,7 +51,7 @@ class Filefairy(object):
 
   def getSimUrl(self):
     """Returns the live sim page url that should be checked for date changes."""
-    return "http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_timeh_sim/index.html"
+    return "http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html"
 
   def getChannelGeneral(self):
     return "general"
@@ -409,8 +409,8 @@ if __name__ == "__main__":
   logger = Logger()
   slackApi = SlackApi(logger)
 
-  filefairy = Filefairy(logger, slackApi)
-  filefairy.watch()
+  app = App(logger, slackApi)
+  app.watch()
 
 
 
@@ -432,7 +432,7 @@ if __name__ == "__main__":
 # websocket.enableTrace(True)
 
 
-# class FilefairyChat(object):
+# class AppChat(object):
 
 #   def __init__(self, logger, slackApi):
 #     self.logger = logger
@@ -536,4 +536,4 @@ if __name__ == "__main__":
 
 # logger = Logger()
 # slackApi = SlackApi(logger)
-# filefairyChat = FilefairyChat(logger, slackApi)
+# appChat = AppChat(logger, slackApi)
