@@ -33,18 +33,6 @@ class App(object):
     self.hasNewRecords = False
     self.ws = None
 
-    self.launch()
-
-  def launch(self):
-    t1 = threading.Thread(target=self.listen)
-    t1.start()
-
-    t2 = threading.Thread(target=self.watch)
-    t2.start()
-
-    t1.join()
-    t2.join()
-
   def getFileUrl(self):
     return 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
@@ -65,8 +53,8 @@ class App(object):
 
   def getTimerValues(self):
     return [
-        15,     # Sleep between consecutive sim page checks.
-        60,     # Pause and check if the file is up/post records.
+        10,     # Sleep between consecutive sim page checks.
+        30,     # Pause and check if the file is up/post records.
         82800,  # Time out and exiting the program.
     ]
 
@@ -100,10 +88,10 @@ class App(object):
       self.logger.log('Started listening.')
 
       self.ws = websocket.WebSocketApp(obj['url'], on_message=on_message_)
-      self.ws.run_forever()
 
-      self.slackApi.chatPostMessage('testing', 'Done listening.')
-      self.logger.log('Done listening.')
+      t = threading.Thread(target=self.ws.run_forever)
+      t.daemon = True
+      t.start()
 
   def handleStatsplus(self, text):
     if 'MAJOR LEAGUE BASEBALL Final Scores' in text:
@@ -144,6 +132,8 @@ class App(object):
   def handleClose(self):
     if self.ws:
       self.ws.close()
+      self.slackApi.chatPostMessage('testing', 'Done listening.')
+      self.logger.log('Done listening.')
 
   def watch(self):
     sleep, pause, timeout = self.getTimerValues()
@@ -287,3 +277,5 @@ if __name__ == '__main__':
   logger = Logger()
   slackApi = SlackApi(logger)
   app = App(logger, slackApi)
+  app.listen()
+  app.watch()
