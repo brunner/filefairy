@@ -44,10 +44,13 @@ class App(object):
     t2.join()
 
   def getFileUrl(self):
-    return 'http://orangeandblueleaguebaseball.com/StatsLab/exports.php'
+    return 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
   def getSimUrl(self):
-    return 'http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html'
+    return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html'
+
+  def getBoxScoreUrl(self, boxid):
+    return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_{}.html'.format(boxid)
 
   def getChannelGeneral(self):
     return 'general'
@@ -107,6 +110,31 @@ class App(object):
   def handleFinalScores(self, text):
     text = text.replace('MAJOR LEAGUE BASEBALL Final Scores', '')
     self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), text)
+
+    cities = ['Chicago', 'Los Angeles', 'New York']
+    for line in text.splitlines():
+      match = re.findall(
+          r'game_box_(\d+)\.html\|([^\d]+)(\d+),([^\d]+)(\d+)', line)
+      if match:
+        boxid, wteam, wruns, lteam, lruns = match[0]
+        wteam, lteam = wteam.strip(), lteam.strip()
+
+        if wteam in cities or lteam in cities:
+          url = self.getBoxScoreUrl(boxid)
+          page = self.getPage(url)
+          score = r'([^<]+)</(?:.*?)<b>(\d+)</b>'
+          wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<]+)</b>', page)
+          lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<]+)</td>', page)
+          if wmatch and wteam in cities:
+            wteam = wmatch[0].strip()
+          if lmatch and lteam in cities:
+            lteam = lmatch[0].strip()
+
+        if wteam in slack_api.nicksToTeamids and lteam in slack_api.nicksToTeamids:
+          wid = slack_api.nicksToTeamids[wteam]
+          lid = slack_api.nicksToTeamids[lteam]
+          self.records[wid][0] += 1
+          self.records[lid][1] += 1
 
   def handleClose(self):
     if self.ws:
@@ -204,11 +232,42 @@ class App(object):
           formatted = '{0} {1} {2}\n{3}'.format(
               time, ':separator:', score, summary.replace(':', ''))
 
-          pattern = re.compile('|'.join(slack_api.nicksToEmoji.keys()))
+          pattern = re.compile('|'.join(slack_api.abbsToEmoji.keys()))
           updates.append(pattern.sub(
-              lambda x: slack_api.nicksToEmoji[x.group()], formatted))
+              lambda x: slack_api.abbsToEmoji[x.group()], formatted))
 
     return updates
+
+  def formatRecords(self):
+    groups = [
+        ('AL East', [33, 34, 48, 57, 59]),
+        ('AL Central', [35, 38, 40, 43, 47]),
+        ('AL West', [42, 44, 50, 54, 58]),
+        ('NL East', [32, 41, 49, 51, 60]),
+        ('NL Central', [36, 37, 46, 52, 56]),
+        ('NL West', [31, 39, 45, 53, 55]),
+    ]
+
+    lines = []
+    for group in groups:
+      r = self.records
+      pct = lambda x: (float(r[x][0] + 0.5 * r[x][2]) / (sum(r[x]) or 1),
+                       r[x][0],
+                       float(1) / r[x][1] if r[x][1] else 2,
+                       r[x][2])
+      ordered = sorted(group[1], key=pct, reverse=True)
+
+      formatted = []
+      for t in ordered:
+        emoji = slack_api.teamidsToEmoji[t]
+        record = r[t] if r[t][2] else r[t][:2]
+        formatted.append('{0} {1}'.format(
+            emoji, '-'.join([str(n) for n in record])))
+
+      lines.append('{0}\n{1}'.format(
+          group[0], ' :separator: '.join(formatted)))
+
+    return '\n\n'.join(lines)
 
 
 if __name__ == '__main__':

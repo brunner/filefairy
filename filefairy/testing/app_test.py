@@ -109,7 +109,7 @@ class AppTest(App):
 
     self.logger.collect()
     return {
-      'collected': self.logger.collected
+        'collected': self.logger.collected
     }
 
   def getWatch(self):
@@ -132,9 +132,8 @@ class AppTest(App):
 
     self.logger.collect()
     return {
-      'collected': self.logger.collected
+        'collected': self.logger.collected
     }
-
 
   def getUpdateLeagueFile(self):
     ret = self.updateLeagueFile()
@@ -196,6 +195,22 @@ updates = {
     '10 :separator: :giants: 2\n:giants: David ' +
     'Olmedo-Barrera hits a 2-run HR.'
 }
+
+records = {
+    31: [0, 0, 0], 32: [1, 0, 0], 33: [0, 1, 0], 34: [0, 0, 0], 35: [0, 1, 0],
+    36: [0, 1, 0], 37: [0, 1, 0], 38: [1, 0, 0], 39: [0, 1, 0], 40: [0, 1, 0],
+    41: [1, 0, 0], 42: [1, 0, 0], 43: [1, 0, 0], 44: [1, 0, 0], 45: [1, 0, 0],
+    46: [1, 0, 0], 47: [0, 1, 0], 48: [0, 1, 0], 49: [1, 0, 0], 50: [1, 0, 0],
+    51: [1, 0, 0], 52: [0, 1, 0], 53: [0, 1, 0], 54: [1, 0, 0], 55: [0, 1, 0],
+    56: [1, 0, 0], 57: [0, 1, 0], 58: [1, 0, 0], 59: [0, 1, 0], 60: [0, 1, 0]
+}
+
+formatRecords = 'AL East\n:redsox: 0-0 :separator: :orioles: 0-1 :separator: :yankees: 0-1 :separator: :rays: 0-1 :separator: :jays: 0-1\n\n' + \
+    'AL Central\n:indians: 1-0 :separator: :royals: 1-0 :separator: :whitesox: 0-1 :separator: :tigers: 0-1 :separator: :twins: 0-1\n\n' + \
+    'AL West\n:astros: 1-0 :separator: :angels: 1-0 :separator: :athletics: 1-0 :separator: :mariners: 1-0 :separator: :rangers: 1-0\n\n' + \
+    'NL East\n:braves: 1-0 :separator: :marlins: 1-0 :separator: :mets: 1-0 :separator: :phillies: 1-0 :separator: :nationals: 0-1\n\n' + \
+    'NL Central\n:brewers: 1-0 :separator: :cardinals: 1-0 :separator: :cubs: 0-1 :separator: :reds: 0-1 :separator: :pirates: 0-1\n\n' + \
+    'NL West\n:dodgers: 1-0 :separator: :dbacks: 0-0 :separator: :rockies: 0-1 :separator: :padres: 0-1 :separator: :giants: 0-1'
 
 logs = [
     'Started listening.',             # 0
@@ -354,6 +369,16 @@ def testWatch():
   assertEquals(appTest.getWatch(), expected)
 
 
+def testFinalScores():
+  logger = TestLogger()
+  slackApi = TestSlackApi(logger)
+  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
+
+  appTest.handleFinalScores(finalScores)
+  assertEquals(appTest.records, records)
+  assertEquals(appTest.formatRecords(), formatRecords)
+
+
 def testListen():
   logger = TestLogger()
   slackApi = SlackApi(logger)
@@ -394,6 +419,9 @@ if __name__ == '__main__':
 
   if args.mode == 'watch' or args.mode == 'all':
     testWatch()
+
+  if args.mode == 'finalscores' or args.mode == 'all':
+    testFinalScores()
 
   if args.mode == 'listen' or args.mode == 'all':
     testListen()

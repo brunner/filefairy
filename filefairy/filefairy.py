@@ -398,9 +398,9 @@ class Filefairy(object):
           formatted = "{0} {1} {2}\n{3}".format(
               time, ":separator:", score, summary.replace(":", ""))
 
-          pattern = re.compile("|".join(slack_api.nicksToEmoji.keys()))
+          pattern = re.compile("|".join(slack_api.abbsToEmoji.keys()))
           updates.append(pattern.sub(
-              lambda x: slack_api.nicksToEmoji[x.group()], formatted))
+              lambda x: slack_api.abbsToEmoji[x.group()], formatted))
 
     return updates
 

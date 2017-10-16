@@ -157,10 +157,16 @@ class TestSlackApi(SlackApi):
     return {"ok": True}
 
 # TODO: Move the below utilities into a helper class.
-nicks = ["ARI", "ATL", "BAL", "BOS", "CWS", "CHC", "CIN", "CLE", "COL", "DET",
-         "MIA", "HOU", "KC", "LAA", "LAD", "MIL", "MIN", "NYY", "NYM", "OAK",
-         "PHI", "PIT", "SD", "SEA", "SF", "STL", "TB", "TEX", "TOR", "WAS"]
+nicks = ['Arizona', 'Atlanta', 'Baltimore', 'Boston', 'White Sox', 'Cubs',
+         'Cincinnati', 'Cleveland', 'Colorado', 'Detroit', 'Miami', 'Houston',
+         'Kansas City', 'Angels', 'Dodgers', 'Milwaukee', 'Minnesota',
+         'Yankees', 'Mets', 'Oakland', 'Philadelphia', 'Pittsburgh',
+         'San Diego', 'Seattle', 'San Francisco', 'St. Louis', 'Tampa Bay',
+         'Texas', 'Toronto', 'Washington']
 
+abbs = ["ARI", "ATL", "BAL", "BOS", "CWS", "CHC", "CIN", "CLE", "COL", "DET",
+        "MIA", "HOU", "KC", "LAA", "LAD", "MIL", "MIN", "NYY", "NYM", "OAK",
+        "PHI", "PIT", "SD", "SEA", "SF", "STL", "TB", "TEX", "TOR", "WAS"]
 
 def getNickname(number):
   if number < 31 or number > 60:
@@ -182,6 +188,7 @@ def getEmoji(number):
   return emoji[number - 31]
 
 
-teamidsToNicks = dict(zip(range(31, 61), nicks))
+nicksToTeamids = dict(zip(nicks, range(31, 61)))
+teamidsToAbbs = dict(zip(range(31, 61), abbs))
 teamidsToEmoji = dict(zip(range(31, 61), emoji))
-nicksToEmoji = dict(zip(nicks, emoji))
+abbsToEmoji = dict(zip(abbs, emoji))
