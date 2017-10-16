@@ -29,6 +29,8 @@ class App(object):
     self.updates = self.findUpdates(self.simPage)
 
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
+    self.recordsLock = threading.Lock()
+    self.hasNewRecords = False
     self.ws = None
 
     self.launch()
@@ -64,7 +66,7 @@ class App(object):
   def getTimerValues(self):
     return [
         15,     # Sleep between consecutive sim page checks.
-        60,     # Pause and check if the file is up.
+        60,     # Pause and check if the file is up/post records.
         82800,  # Time out and exiting the program.
     ]
 
@@ -111,6 +113,7 @@ class App(object):
     text = text.replace('MAJOR LEAGUE BASEBALL Final Scores', '')
     self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), text)
 
+    self.recordsLock.acquire()
     cities = ['Chicago', 'Los Angeles', 'New York']
     for line in text.splitlines():
       match = re.findall(
@@ -135,6 +138,8 @@ class App(object):
           lid = slack_api.nicksToTeamids[lteam]
           self.records[wid][0] += 1
           self.records[lid][1] += 1
+    self.hasNewRecords = True
+    self.recordsLock.release()
 
   def handleClose(self):
     if self.ws:
@@ -151,8 +156,16 @@ class App(object):
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-      if elapsed % pause == 0 and self.updateLeagueFile():
-        elapsed = timeout
+      if elapsed % pause == 0:
+        if self.updateLeagueFile():
+          elapsed = timeout
+
+        self.recordsLock.acquire()
+        if self.hasNewRecords:
+          self.slackApi.chatPostMessage(
+              self.getChannelLiveSimDiscussion(), self.formatRecords())
+          self.hasNewRecords = False
+        self.recordsLock.release()
       else:
         self.updateLiveSim()
 

@@ -49,6 +49,8 @@ class AppTest(App):
     self.updates = self.findUpdates(self.simPage)
 
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
+    self.recordsLock = threading.Lock()
+    self.hasNewRecords = False
     self.ws = None
     self.integration = integration
 
