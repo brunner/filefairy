@@ -213,7 +213,7 @@ formatRecords = [
     + ":braves: 1-0 :separator: :mets: 1-0 :separator: :phillies: 1-0 "
     + ":separator: :marlins: 0-1 :separator: :nationals: 0-1",
     "NL Central\n"
-    + ":reds: 1-0 :separator: :brewers: 1-0 :separator: :cubs: 0-1 "
+    + ":reds: 1-0 :separator: :brewers: 1-0 :separator: :cubbies: 0-1 "
     + ":separator: :pirates: 0-1 :separator: :cardinals: 0-1",
     "NL West\n"
     + ":dbacks: 1-0 :separator: :rox: 1-0 :separator: :dodgers: 0-1 "
