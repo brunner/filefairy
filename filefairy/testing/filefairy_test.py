@@ -204,8 +204,8 @@ formatRecords = [
     + ":orioles: 1-0 :separator: :redsox: 1-0 :separator: :yankees: 0-1 "
     + ":separator: :rays: 0-1 :separator: :jays: 0-1",
     "AL Central\n"
-    + ":whitesox: 1-0 :separator: :indians: 1-0 :separator: :royals: 1-0 "
-    + ":separator: :tigers: 0-1 :separator: :twins: 0-1",
+    + ":whitesox: 1-0 :separator: :indians: 1-0 :separator: :monarchs: 1-0 "
+    + ":separator: :crackeyes: 0-1 :separator: :twincities: 0-1",
     "AL West\n"
     + ":angels: 1-0 :separator: :mariners: 1-0 :separator: :rangers: 1-0 "
     + ":separator: :astros: 0-1 :separator: :athletics: 0-1",
@@ -216,8 +216,8 @@ formatRecords = [
     + ":reds: 1-0 :separator: :brewers: 1-0 :separator: :cubs: 0-1 "
     + ":separator: :pirates: 0-1 :separator: :cardinals: 0-1",
     "NL West\n"
-    + ":dbacks: 1-0 :separator: :rockies: 1-0 :separator: :dodgers: 0-1 "
-    + ":separator: :padres: 0-1 :separator: :giants: 0-1"]
+    + ":dbacks: 1-0 :separator: :rox: 1-0 :separator: :dodgers: 0-1 "
+    + ":separator: :pads: 0-1 :separator: :giants: 0-1"]
 postedRecords = "\n\n".join(formatRecords)
 
 updates = {
