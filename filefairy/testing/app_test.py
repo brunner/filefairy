@@ -209,7 +209,7 @@ records = {
 
 formatRecords = 'AL East\n:redsox: 0-0 :separator: :orioles: 0-1 :separator: :yankees: 0-1 :separator: :rays: 0-1 :separator: :jays: 0-1\n\n' + \
     'AL Central\n:indians: 1-0 :separator: :monarchs: 1-0 :separator: :whitesox: 0-1 :separator: :crackeyes: 0-1 :separator: :twincities: 0-1\n\n' + \
-    'AL West\n:astros: 1-0 :separator: :angels: 1-0 :separator: :athletics: 1-0 :separator: :mariners: 1-0 :separator: :rangers: 1-0\n\n' + \
+    'AL West\n:stros: 1-0 :separator: :angels: 1-0 :separator: :athletics: 1-0 :separator: :mariners: 1-0 :separator: :rangers: 1-0\n\n' + \
     'NL East\n:braves: 1-0 :separator: :marlins: 1-0 :separator: :mets: 1-0 :separator: :phillies: 1-0 :separator: :nationals: 0-1\n\n' + \
     'NL Central\n:brewers: 1-0 :separator: :cardinals: 1-0 :separator: :cubbies: 0-1 :separator: :reds: 0-1 :separator: :pirates: 0-1\n\n' + \
     'NL West\n:dodgers: 1-0 :separator: :dbacks: 0-0 :separator: :rox: 0-1 :separator: :pads: 0-1 :separator: :giants: 0-1'

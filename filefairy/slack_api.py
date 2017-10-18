@@ -176,7 +176,7 @@ def getNickname(number):
 
 emoji = [":dbacks:", ":braves:", ":orioles:", ":redsox:", ":whitesox:",
          ":cubbies:", ":reds:", ":indians:", ":rox:", ":crackeyes:",
-         ":marlins:", ":astros:", ":monarchs:", ":angels:", ":dodgers:",
+         ":marlins:", ":stros:", ":monarchs:", ":angels:", ":dodgers:",
          ":brewers:", ":twincities:", ":yankees:", ":mets:", ":athletics:",
          ":phillies:", ":pirates:", ":pads:", ":mariners:", ":giants:",
          ":cardinals:", ":rays:", ":rangers:", ":jays:", ":nationals:"]
