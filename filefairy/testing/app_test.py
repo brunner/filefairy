@@ -81,7 +81,7 @@ class AppTest(App):
     return 'testing'
 
   def getTimerValues(self):
-    return [1, 2, 8]
+    return [1, 2, 2, 8]
 
   def chatInjuryTest(self):
     self.slackApi.chatPostMessage('testing', injury)

@@ -31,6 +31,7 @@ class App(object):
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
     self.recordsLock = threading.Lock()
     self.hasNewRecords = False
+    self.lastRecordsTime = 0
     self.ws = None
 
   def getFileUrl(self):
@@ -54,7 +55,8 @@ class App(object):
   def getTimerValues(self):
     return [
         10,     # Sleep between consecutive sim page checks.
-        30,     # Pause and check if the file is up/post records.
+        30,     # Pause and check if the file is up.
+        120,    # Pause and post records.
         82800,  # Time out and exiting the program.
     ]
 
@@ -127,6 +129,7 @@ class App(object):
           self.records[wid][0] += 1
           self.records[lid][1] += 1
     self.hasNewRecords = True
+    self.lastRecordsTime = int(time.time())
     self.recordsLock.release()
 
   def handleClose(self):
@@ -136,7 +139,7 @@ class App(object):
       self.logger.log('Done listening.')
 
   def watch(self):
-    sleep, pause, timeout = self.getTimerValues()
+    sleep, pause, records, timeout = self.getTimerValues()
     elapsed = 0
 
     self.slackApi.chatPostMessage('testing', 'Started watching.')
@@ -151,7 +154,7 @@ class App(object):
           elapsed = timeout
 
         self.recordsLock.acquire()
-        if self.hasNewRecords:
+        if self.hasNewRecords and int(time.time()) - self.lastRecordsTime > records:
           self.slackApi.chatPostMessage(
               self.getChannelLiveSimDiscussion(), self.formatRecords())
           self.hasNewRecords = False
