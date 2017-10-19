@@ -49,6 +49,7 @@ class AppTest(App):
     self.updates = self.findUpdates(self.simPage)
 
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
+    self.posted = []
     self.recordsLock = threading.Lock()
     self.hasNewRecords = False
     self.ws = None
@@ -67,6 +68,8 @@ class AppTest(App):
     if self.integration and self.simIndex == 1:
       self.slackApi.chatPostMessage('testing', injury)
     elif self.integration and self.simIndex == 2:
+      self.slackApi.chatPostMessage('testing', finalScores)
+    elif self.integration and self.simIndex == 3:
       self.slackApi.chatPostMessage('testing', finalScores)
 
     return self.simUrls[self.simIndex]

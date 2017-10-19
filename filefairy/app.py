@@ -29,6 +29,7 @@ class App(object):
     self.updates = self.findUpdates(self.simPage)
 
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
+    self.posted = []
     self.recordsLock = threading.Lock()
     self.hasNewRecords = False
     self.lastRecordsTime = 0
@@ -101,6 +102,10 @@ class App(object):
 
   def handleFinalScores(self, text):
     text = text.replace('MAJOR LEAGUE BASEBALL Final Scores', '')
+    if text in self.posted:
+      return
+
+    self.posted.append(text)
     self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), text)
 
     self.recordsLock.acquire()
