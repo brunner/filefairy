@@ -28,11 +28,10 @@ class App(object):
     self.simDate = self.findSimDate(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
+    self.finalScores = []
+    self.finalScoresLock = threading.Lock()
+    self.lastFinalScoreTime = 0
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
-    self.posted = []
-    self.recordsLock = threading.Lock()
-    self.hasNewRecords = False
-    self.lastRecordsTime = 0
     self.ws = None
 
   def getFileUrl(self):
@@ -101,41 +100,41 @@ class App(object):
       self.handleFinalScores(text)
 
   def handleFinalScores(self, text):
+    self.finalScoresLock.acquire()
     text = text.replace('MAJOR LEAGUE BASEBALL Final Scores', '')
-    if text in self.posted:
-      return
+    if text not in self.finalScores:
+      self.finalScores.append(text)
+      self.lastFinalScoreTime = int(time.time())
+    self.finalScoresLock.release()
 
-    self.posted.append(text)
-    self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), text)
+  def processFinalScores(self):
+    for finalScore in self.finalScores:
+      self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), finalScore)
 
-    self.recordsLock.acquire()
-    cities = ['Chicago', 'Los Angeles', 'New York']
-    for line in text.splitlines():
-      match = re.findall(
-          r'game_box_(\d+)\.html\|([^\d]+)(\d+),([^\d]+)(\d+)', line)
-      if match:
-        boxid, wteam, wruns, lteam, lruns = match[0]
-        wteam, lteam = wteam.strip(), lteam.strip()
+      cities = ['Chicago', 'Los Angeles', 'New York']
+      for line in finalScore.splitlines():
+        match = re.findall(
+            r'game_box_(\d+)\.html\|([^\d]+)(\d+),([^\d]+)(\d+)', line)
+        if match:
+          boxid, wteam, wruns, lteam, lruns = match[0]
+          wteam, lteam = wteam.strip(), lteam.strip()
 
-        if wteam in cities or lteam in cities:
-          url = self.getBoxScoreUrl(boxid)
-          page = self.getPage(url)
-          score = r'([^<]+)</(?:.*?)<b>(\d+)</b>'
-          wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<]+)</b>', page)
-          lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<]+)</td>', page)
-          if wmatch and wteam in cities:
-            wteam = wmatch[0].strip()
-          if lmatch and lteam in cities:
-            lteam = lmatch[0].strip()
+          if wteam in cities or lteam in cities:
+            url = self.getBoxScoreUrl(boxid)
+            page = self.getPage(url)
+            score = r'([^<]+)</(?:.*?)<b>(\d+)</b>'
+            wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<]+)</b>', page)
+            lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<]+)</td>', page)
+            if wmatch and wteam in cities:
+              wteam = wmatch[0].strip()
+            if lmatch and lteam in cities:
+              lteam = lmatch[0].strip()
 
-        if wteam in slack_api.nicksToTeamids and lteam in slack_api.nicksToTeamids:
-          wid = slack_api.nicksToTeamids[wteam]
-          lid = slack_api.nicksToTeamids[lteam]
-          self.records[wid][0] += 1
-          self.records[lid][1] += 1
-    self.hasNewRecords = True
-    self.lastRecordsTime = int(time.time())
-    self.recordsLock.release()
+          if wteam in slack_api.nicksToTeamids and lteam in slack_api.nicksToTeamids:
+            wid = slack_api.nicksToTeamids[wteam]
+            lid = slack_api.nicksToTeamids[lteam]
+            self.records[wid][0] += 1
+            self.records[lid][1] += 1
 
   def handleClose(self):
     if self.ws:
@@ -158,12 +157,13 @@ class App(object):
         if self.updateLeagueFile():
           elapsed = timeout
 
-        self.recordsLock.acquire()
-        if self.hasNewRecords and int(time.time()) - self.lastRecordsTime > records:
+        self.finalScoresLock.acquire()
+        if self.finalScores and int(time.time()) - self.lastFinalScoreTime > records:
+          self.processFinalScores()
           self.slackApi.chatPostMessage(
               self.getChannelLiveSimDiscussion(), self.formatRecords())
-          self.hasNewRecords = False
-        self.recordsLock.release()
+          self.finalScores = []
+        self.finalScoresLock.release()
       else:
         self.updateLiveSim()
 

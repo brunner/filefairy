@@ -48,10 +48,10 @@ class AppTest(App):
     self.simDate = self.findSimDate(self.simPage)
     self.updates = self.findUpdates(self.simPage)
 
+    self.finalScores = []
+    self.finalScoresLock = threading.Lock()
+    self.lastFinalScoreTime = 0
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
-    self.posted = []
-    self.recordsLock = threading.Lock()
-    self.hasNewRecords = False
     self.ws = None
     self.integration = integration
 
@@ -84,7 +84,7 @@ class AppTest(App):
     return 'testing'
 
   def getTimerValues(self):
-    return [1, 2, 2, 8]
+    return [1, 2, 3, 8]
 
   def chatInjuryTest(self):
     self.slackApi.chatPostMessage('testing', injury)
@@ -380,6 +380,7 @@ def testFinalScores():
   appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
 
   appTest.handleFinalScores(finalScores)
+  appTest.processFinalScores()
   assertEquals(appTest.records, records)
   assertEquals(appTest.formatRecords(), formatRecords)
 
