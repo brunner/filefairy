@@ -164,8 +164,8 @@ class App(object):
               self.getChannelLiveSimDiscussion(), self.formatRecords())
           self.finalScores = []
         self.finalScoresLock.release()
-      else:
-        self.updateLiveSim()
+      # else:
+      #   self.updateLiveSim()
 
     self.slackApi.chatPostMessage('testing', 'Done watching.')
     self.logger.log('Done watching.')

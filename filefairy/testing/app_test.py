@@ -59,18 +59,18 @@ class AppTest(App):
     if len(self.fileUrls) > self.fileIndex + 1:
       self.fileIndex = self.fileIndex + 1
 
+    if self.integration and self.fileIndex == 1:
+      self.slackApi.chatPostMessage('testing', injury)
+    elif self.integration and self.fileIndex == 2:
+      self.slackApi.chatPostMessage('testing', finalScores)
+    elif self.integration and self.fileIndex == 3:
+      self.slackApi.chatPostMessage('testing', finalScores)
+
     return self.fileUrls[self.fileIndex]
 
   def getSimUrl(self):
     if len(self.simUrls) > self.simIndex + 1:
       self.simIndex = self.simIndex + 1
-
-    if self.integration and self.simIndex == 1:
-      self.slackApi.chatPostMessage('testing', injury)
-    elif self.integration and self.simIndex == 2:
-      self.slackApi.chatPostMessage('testing', finalScores)
-    elif self.integration and self.simIndex == 3:
-      self.slackApi.chatPostMessage('testing', finalScores)
 
     return self.simUrls[self.simIndex]
 
@@ -370,7 +370,7 @@ def testWatch():
   slackApi = TestSlackApi(logger)
   appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
 
-  expected = {'collected': logs[1:5] + logs[5:8]}
+  expected = {'collected': logs[1:4] + logs[5:8]}
   assertEquals(appTest.getWatch(), expected)
 
 
@@ -408,8 +408,8 @@ if __name__ == '__main__':
   parser.add_argument('--mode', dest='mode')
   args = parser.parse_args()
 
-  if args.mode == 'real' or args.mode == 'all':
-    testReal()
+  # if args.mode == 'real' or args.mode == 'all':
+  #   testReal()
 
   if args.mode == 'filedate' or args.mode == 'all':
     testFindFileDate()
