@@ -123,8 +123,8 @@ class App(object):
             url = self.getBoxScoreUrl(boxid)
             page = self.getPage(url)
             score = r'([^<]+)</(?:.*?)<b>(\d+)</b>'
-            wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<]+)</b>', page)
-            lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<]+)</td>', page)
+            wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<(]+)', page)
+            lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<(]+)', page)
             if wmatch and wteam in cities:
               wteam = wmatch[0].strip()
             if lmatch and lteam in cities:
