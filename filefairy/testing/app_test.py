@@ -35,18 +35,13 @@ finalScores = '03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' + \
 class AppTest(App):
   '''Tests for App.'''
 
-  def __init__(self, logger, slackApi, fileUrls, simUrls, integration=False):
+  def __init__(self, logger, slackApi, fileUrls, integration=False):
     self.logger = logger
     self.slackApi = slackApi
 
     self.fileUrls, self.fileIndex = fileUrls, 0
     self.filePage = self.getPage(self.fileUrls[0])
     self.fileDate = self.findFileDate(self.filePage)
-
-    self.simUrls, self.simIndex = simUrls, 0
-    self.simPage = self.getPage(self.simUrls[0])
-    self.simDate = self.findSimDate(self.simPage)
-    self.updates = self.findUpdates(self.simPage)
 
     self.finalScores = []
     self.finalScoresLock = threading.Lock()
@@ -67,12 +62,6 @@ class AppTest(App):
       self.slackApi.chatPostMessage('testing', finalScores)
 
     return self.fileUrls[self.fileIndex]
-
-  def getSimUrl(self):
-    if len(self.simUrls) > self.simIndex + 1:
-      self.simIndex = self.simIndex + 1
-
-    return self.simUrls[self.simIndex]
 
   def getChannelGeneral(self):
     return 'testing'
@@ -150,17 +139,6 @@ class AppTest(App):
         'date': self.fileDate,
     }
 
-  def getUpdateLiveSim(self):
-    ret = self.updateLiveSim()
-    self.logger.collect()
-    return {
-        'ret': ret,
-        'collected': self.logger.collected,
-        'index': self.simIndex,
-        'date': self.simDate,
-        'updates': self.updates,
-    }
-
 
 path = 'http://brunnerj.com/orangeandblueleague/'
 
@@ -175,30 +153,6 @@ fileUrls = [os.path.join(path, fi) for fi in filePages]
 fileDates = {
     'old': 'Saturday January 14, 2017 13:01:09 EST',
     'new': 'Tuesday January 17, 2017 09:03:12 EST',
-}
-
-simPages = [
-    'sim_09052018_1.html',            # 0. Initial sim page.
-    'sim_09052018_2.html',            # 1. Same date. No new final games.
-    'sim_09052018_3.html',            # 2. Same date. One new final game.
-    'sim_09092018_1.html',            # 3. Different date, partially loaded.
-    'sim_09092018_2.html',            # 4. Fully loaded.
-    'sim_09092018_3.html',            # 5. Partially loaded again.
-]
-simUrls = [os.path.join(path, fi) for fi in simPages]
-
-simDates = {
-    'old': '09052018',
-    'new': '09092018',
-}
-
-updates = {
-    'update1': ':toparrow: 4 :separator: :pirates: 10 ' +
-    ':separator: :giants: 0\n:pirates: C.J. Hinojosa ' +
-    'hits a 3-run HR.',
-    'update2': ':bottomarrow: 5 :separator: :pirates: ' +
-    '10 :separator: :giants: 2\n:giants: David ' +
-    'Olmedo-Barrera hits a 2-run HR.'
 }
 
 records = {
@@ -234,21 +188,17 @@ def testReal():
   fileUrl = 'http://orangeandblueleaguebaseball.com/StatsLab/exports.php'
   filePage = urllib2.urlopen(fileUrl).read()
 
-  simUrl = 'http://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html'
-  simPage = urllib2.urlopen(simUrl).read()
-
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, [fileUrl], [simUrl])
+  appTest = AppTest(logger, slackApi, [fileUrl])
 
   assertNotEquals(appTest.findFileDate(filePage), '')
-  assertNotEquals(appTest.findSimDate(simPage), '')
 
 
 def testFindFileDate():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:])
 
   page = urllib2.urlopen(fileUrls[0]).read()
   assertEquals(appTest.findFileDate(page), fileDates['old'])
@@ -263,58 +213,10 @@ def testFindFileDate():
   assertEquals(appTest.findFileDate(page), fileDates['new'])
 
 
-def testFindSimDate():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
-
-  page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(appTest.findSimDate(page), simDates['old'])
-
-  page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(appTest.findSimDate(page), simDates['old'])
-
-  page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(appTest.findSimDate(page), simDates['old'])
-
-  page = urllib2.urlopen(simUrls[3]).read()
-  assertEquals(appTest.findSimDate(page), simDates['new'])
-
-  page = urllib2.urlopen(simUrls[4]).read()
-  assertEquals(appTest.findSimDate(page), simDates['new'])
-
-  page = urllib2.urlopen(simUrls[5]).read()
-  assertEquals(appTest.findSimDate(page), simDates['new'])
-
-
-def testFindUpdates():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
-
-  page = urllib2.urlopen(simUrls[0]).read()
-  assertEquals(appTest.findUpdates(page), [updates['update1']])
-
-  page = urllib2.urlopen(simUrls[1]).read()
-  assertEquals(appTest.findUpdates(page), [])
-
-  page = urllib2.urlopen(simUrls[2]).read()
-  assertEquals(appTest.findUpdates(page), [updates['update2']])
-
-  page = urllib2.urlopen(simUrls[3]).read()
-  assertEquals(appTest.findUpdates(page), [])
-
-  page = urllib2.urlopen(simUrls[4]).read()
-  assertEquals(appTest.findUpdates(page), [])
-
-  page = urllib2.urlopen(simUrls[5]).read()
-  assertEquals(appTest.findUpdates(page), [])
-
-
 def testUpdateLeagueFile():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:])
 
   expected = {'ret': False, 'collected': [], 'index': 1,
               'date': fileDates['old']}
@@ -333,42 +235,10 @@ def testUpdateLeagueFile():
   assertEquals(appTest.getUpdateLeagueFile(), expected)
 
 
-def testUpdateLiveSim():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
-
-  expected = {'ret': True, 'collected': [], 'index': 1,
-              'date': simDates['old'],
-              'updates': [updates['update1']]}
-  assertEquals(appTest.getUpdateLiveSim(), expected)
-
-  expected = {'ret': True, 'collected': logs[1:2], 'index': 2,
-              'date': simDates['old'],
-              'updates': [updates['update1'], updates['update2']]}
-  assertEquals(appTest.getUpdateLiveSim(), expected)
-
-  expected = {'ret': True, 'collected': logs[1:2], 'index': 3,
-              'date': simDates['new'], 'updates': []}
-  assertEquals(appTest.getUpdateLiveSim(), expected)
-
-  expected = {'ret': True, 'collected': logs[1:2], 'index': 4,
-              'date': simDates['new'], 'updates': []}
-  assertEquals(appTest.getUpdateLiveSim(), expected)
-
-  expected = {'ret': True, 'collected': logs[1:2], 'index': 5,
-              'date': simDates['new'], 'updates': []}
-  assertEquals(appTest.getUpdateLiveSim(), expected)
-
-  expected = {'ret': True, 'collected': logs[1:2], 'index': 5,
-              'date': simDates['new'], 'updates': []}
-  assertEquals(appTest.getUpdateLiveSim(), expected)
-
-
 def testWatch():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:])
 
   expected = {'collected': logs[1:4] + logs[5:8]}
   assertEquals(appTest.getWatch(), expected)
@@ -377,7 +247,7 @@ def testWatch():
 def testFinalScores():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:])
 
   appTest.handleFinalScores(finalScores)
   appTest.processFinalScores()
@@ -388,7 +258,7 @@ def testFinalScores():
 def testListen():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:])
 
   expected = {'collected': logs[:1] + logs[8:]}
   assertEquals(appTest.getListen(), expected)
@@ -397,7 +267,7 @@ def testListen():
 def testIntegration():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], simUrls[:], True)
+  appTest = AppTest(logger, slackApi, fileUrls[:], True)
 
   expected = {'collected': logs[:1] + logs[2:3] + logs[5:6] + logs[7:9]}
   assertEquals(appTest.getIntegration(), expected)
@@ -408,20 +278,14 @@ if __name__ == '__main__':
   parser.add_argument('--mode', dest='mode')
   args = parser.parse_args()
 
-  # if args.mode == 'real' or args.mode == 'all':
-  #   testReal()
+  if args.mode == 'real' or args.mode == 'all':
+    testReal()
 
   if args.mode == 'filedate' or args.mode == 'all':
     testFindFileDate()
 
-  if args.mode == 'updates' or args.mode == 'all':
-    testFindUpdates()
-
   if args.mode == 'leaguefile' or args.mode == 'all':
     testUpdateLeagueFile()
-
-  if args.mode == 'livesim' or args.mode == 'all':
-    testUpdateLiveSim()
 
   if args.mode == 'watch' or args.mode == 'all':
     testWatch()

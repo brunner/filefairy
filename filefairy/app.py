@@ -24,10 +24,6 @@ class App(object):
     page = self.getPage(self.getFileUrl())
     self.fileDate = self.findFileDate(page)
 
-    self.simPage = self.getPage(self.getSimUrl())
-    self.simDate = self.findSimDate(self.simPage)
-    self.updates = self.findUpdates(self.simPage)
-
     self.finalScores = []
     self.finalScoresLock = threading.Lock()
     self.lastFinalScoreTime = 0
@@ -36,9 +32,6 @@ class App(object):
 
   def getFileUrl(self):
     return 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
-
-  def getSimUrl(self):
-    return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/real_time_sim/index.html'
 
   def getBoxScoreUrl(self, boxid):
     return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_{}.html'.format(boxid)
@@ -54,8 +47,7 @@ class App(object):
 
   def getTimerValues(self):
     return [
-        10,     # Sleep between consecutive sim page checks.
-        30,     # Pause and check if the file is up.
+        30,     # Sleep between consecutive file page checks.
         120,    # Pause and post records.
         82800,  # Time out and exiting the program.
     ]
@@ -153,19 +145,16 @@ class App(object):
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-      if elapsed % pause == 0:
-        if self.updateLeagueFile():
-          elapsed = timeout
+      if self.updateLeagueFile():
+        elapsed = timeout
 
-        self.finalScoresLock.acquire()
-        if self.finalScores and int(time.time()) - self.lastFinalScoreTime > records:
-          self.processFinalScores()
-          self.slackApi.chatPostMessage(
-              self.getChannelLiveSimDiscussion(), self.formatRecords())
-          self.finalScores = []
-        self.finalScoresLock.release()
-      # else:
-      #   self.updateLiveSim()
+      self.finalScoresLock.acquire()
+      if self.finalScores and int(time.time()) - self.lastFinalScoreTime > records:
+        self.processFinalScores()
+        self.slackApi.chatPostMessage(
+            self.getChannelLiveSimDiscussion(), self.formatRecords())
+        self.finalScores = []
+      self.finalScoresLock.release()
 
     self.slackApi.chatPostMessage('testing', 'Done watching.')
     self.logger.log('Done watching.')
@@ -187,67 +176,9 @@ class App(object):
 
     return False
 
-  def updateLiveSim(self):
-    url = self.getSimUrl()
-    page = self.getPage(url)
-    date = self.findSimDate(page)
-
-    if not date:
-      return False
-
-    if date != self.simDate:
-      self.updates = []
-      self.simDate = date
-    elif page != self.simPage:
-      updates = self.findUpdates(page)
-      for update in updates:
-        if update not in self.updates:
-          self.slackApi.chatPostMessage(
-              self.getChannelLiveSimDiscussion(), update)
-          self.updates.append(update)
-
-    self.simPage = page
-    return True
-
   def findFileDate(self, page):
     match = re.findall(r'League File Updated: ([^<]+)<', page)
     return match[0] if len(match) else ''
-
-  def findSimDate(self, page):
-    match = re.findall(r'MAJOR LEAGUE BASEBALL<br(?: /)?>([^<]+)<', page)
-    return match[0].replace('/', '').strip() if len(match) else ''
-
-  def findUpdates(self, page):
-    match = re.findall(r'SCORING UPDATES(.*?)</table>', page, re.DOTALL)
-    box = match[0] if len(match) == 1 else ''
-
-    rows = re.findall(r'<tr>(.*?)</tr>', box, re.DOTALL)
-    updates = []
-    for row in reversed(rows):
-      cols = re.findall(r'<td(.*?)</td>', row, re.DOTALL)
-      if len(cols) == 5:
-        teams = re.findall(r'teams/team_(?:\d+)\.html\">([^<]+)<', cols[1])
-        runs = re.findall(r'<div(?:[^>]+)>([^<]+)<', cols[2])
-        inning = re.findall(r'<div(?:[^>]+)>([^<]+)<', cols[3])
-        chunks = cols[4].split('>')
-        summary = chunks[1] if len(chunks) > 1 else ''
-
-        if len(teams) == 2 and len(runs) == 2 or len(inning) == 2:
-          if inning[1] == '&nbsp;':
-            time = ':toparrow: {0}'.format(filter(str.isdigit, inning[0]))
-          else:
-            time = ':bottomarrow: {0}'.format(filter(str.isdigit, inning[1]))
-
-          score = '{0} {1} {2} {3} {4}'.format(
-              teams[0], runs[0], ':separator:', teams[1], runs[1])
-          formatted = '{0} {1} {2}\n{3}'.format(
-              time, ':separator:', score, summary.replace(':', ''))
-
-          pattern = re.compile('|'.join(slack_api.abbsToEmoji.keys()))
-          updates.append(pattern.sub(
-              lambda x: slack_api.abbsToEmoji[x.group()], formatted))
-
-    return updates
 
   def formatRecords(self):
     groups = [
