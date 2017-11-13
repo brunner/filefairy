@@ -16,20 +16,20 @@ from utils import assertEquals, assertNotEquals
 
 injury = '03/21/2021 RP Drew Pomeranz was injured while pitching (Baltimore @ Seattle)'
 finalScores = '03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' + \
-              '<game_box_24216.html|Atlanta 7, Colorado 6>\n' + \
-              '<game_box_24018.html|Cleveland 5, Toronto 1>\n' + \
-              '<game_box_24015.html|Houston 5, Tampa Bay 3>\n' + \
-              '<game_box_24014.html|Kansas City 7, Detroit 2>\n' + \
-              '<game_box_24212.html|Los Angeles 3, Cincinnati 2>\n' + \
-              '<game_box_24013.html|Los Angeles 7, New York 6>\n' + \
-              '<game_box_24214.html|Miami 4, Pittsburgh 1>\n' + \
-              '<game_box_24215.html|Milwaukee 9, Washington 8>\n' + \
-              '<game_box_24218.html|New York 6, San Diego 1>\n' + \
-              '<game_box_24017.html|Oakland 5, Minnesota 2>\n' + \
-              '<game_box_24213.html|Philadelphia 4, San Francisco 2>\n' + \
-              '<game_box_24016.html|Seattle 3, Baltimore 2>\n' + \
-              '<game_box_24217.html|St. Louis 2, Chicago 0>\n' + \
-              '<game_box_24019.html|Texas 8, Chicago 2>'
+              '<https://game_box_24216.html|Atlanta 7, Colorado 6>\n' + \
+              '<https://game_box_24018.html|Cleveland 5, Toronto 1>\n' + \
+              '<https://game_box_24015.html|Houston 5, Tampa Bay 3>\n' + \
+              '<https://game_box_24014.html|Kansas City 7, Detroit 2>\n' + \
+              '<https://game_box_24212.html|Los Angeles 3, Cincinnati 2>\n' + \
+              '<https://game_box_24013.html|Los Angeles 7, New York 6>\n' + \
+              '<https://game_box_24214.html|Miami 4, Pittsburgh 1>\n' + \
+              '<https://game_box_24215.html|Milwaukee 9, Washington 8>\n' + \
+              '<https://game_box_24218.html|New York 6, San Diego 1>\n' + \
+              '<https://game_box_24017.html|Oakland 5, Minnesota 2>\n' + \
+              '<https://game_box_24213.html|Philadelphia 4, San Francisco 2>\n' + \
+              '<https://game_box_24016.html|Seattle 3, Baltimore 2>\n' + \
+              '<https://game_box_24217.html|St. Louis 2, Chicago 0>\n' + \
+              '<https://game_box_24019.html|Texas 8, Chicago 2>'
 
 
 class AppTest(App):
@@ -82,6 +82,9 @@ class AppTest(App):
     path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
     cwd = os.getcwd()
     os.chdir(path)
+
+    if url.startswith('https://'):
+      url = url.substring(8)
 
     page = ''
     with open(url, 'r') as f:
