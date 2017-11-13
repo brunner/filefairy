@@ -16,20 +16,20 @@ from utils import assertEquals, assertNotEquals
 
 injury = '03/21/2021 RP Drew Pomeranz was injured while pitching (Baltimore @ Seattle)'
 finalScores = '03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24216.html|Atlanta 7, Colorado 6>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24018.html|Cleveland 5, Toronto 1>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24015.html|Houston 5, Tampa Bay 3>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24014.html|Kansas City 7, Detroit 2>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24212.html|Los Angeles 3, Cincinnati 2>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24013.html|Los Angeles 7, New York 6>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24214.html|Miami 4, Pittsburgh 1>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24215.html|Milwaukee 9, Washington 8>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24218.html|New York 6, San Diego 1>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24017.html|Oakland 5, Minnesota 2>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24213.html|Philadelphia 4, San Francisco 2>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24016.html|Seattle 3, Baltimore 2>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24217.html|St. Louis 2, Chicago 0>\n' + \
-              '<https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_24019.html|Texas 8, Chicago 2>'
+              '<game_box_24216.html|Atlanta 7, Colorado 6>\n' + \
+              '<game_box_24018.html|Cleveland 5, Toronto 1>\n' + \
+              '<game_box_24015.html|Houston 5, Tampa Bay 3>\n' + \
+              '<game_box_24014.html|Kansas City 7, Detroit 2>\n' + \
+              '<game_box_24212.html|Los Angeles 3, Cincinnati 2>\n' + \
+              '<game_box_24013.html|Los Angeles 7, New York 6>\n' + \
+              '<game_box_24214.html|Miami 4, Pittsburgh 1>\n' + \
+              '<game_box_24215.html|Milwaukee 9, Washington 8>\n' + \
+              '<game_box_24218.html|New York 6, San Diego 1>\n' + \
+              '<game_box_24017.html|Oakland 5, Minnesota 2>\n' + \
+              '<game_box_24213.html|Philadelphia 4, San Francisco 2>\n' + \
+              '<game_box_24016.html|Seattle 3, Baltimore 2>\n' + \
+              '<game_box_24217.html|St. Louis 2, Chicago 0>\n' + \
+              '<game_box_24019.html|Texas 8, Chicago 2>'
 
 
 class AppTest(App):
@@ -63,6 +63,9 @@ class AppTest(App):
 
     return self.fileUrls[self.fileIndex]
 
+  def getBoxScoreUrl(self, boxid):
+    return 'game_box_{}.html'.format(boxid)
+
   def getChannelGeneral(self):
     return 'testing'
 
@@ -74,6 +77,18 @@ class AppTest(App):
 
   def getTimerValues(self):
     return [1, 2, 3, 8]
+
+  def getPage(self, url):
+    path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
+    cwd = os.getcwd()
+    os.chdir(path)
+
+    page = ''
+    with open(url, 'r') as f:
+      page = f.read()
+
+    os.chdir(cwd)
+    return page
 
   def chatInjuryTest(self):
     self.slackApi.chatPostMessage('testing', injury)
@@ -139,16 +154,12 @@ class AppTest(App):
         'date': self.fileDate,
     }
 
-
-path = 'http://brunnerj.com/orangeandblueleague/'
-
-filePages = [
+fileUrls = [
     'export_01142017_1.html',         # 0. Initial exports page.
     'export_01142017_2.html',         # 1. League file date has not changed.
     'export_01142017_2.html',         # 2. League file date has not changed.
     'export_01172017_1.html',         # 3. League file date has changed.
 ]
-fileUrls = [os.path.join(path, fi) for fi in filePages]
 
 fileDates = {
     'old': 'Saturday January 14, 2017 13:01:09 EST',
@@ -190,7 +201,7 @@ def testReal():
 
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, [fileUrl])
+  appTest = AppTest(logger, slackApi, fileUrls[:])
 
   assertNotEquals(appTest.findFileDate(filePage), '')
 
@@ -200,16 +211,16 @@ def testFindFileDate():
   slackApi = TestSlackApi(logger)
   appTest = AppTest(logger, slackApi, fileUrls[:])
 
-  page = urllib2.urlopen(fileUrls[0]).read()
+  page = appTest.getPage(fileUrls[0])
   assertEquals(appTest.findFileDate(page), fileDates['old'])
 
-  page = urllib2.urlopen(fileUrls[1]).read()
+  page = appTest.getPage(fileUrls[1])
   assertEquals(appTest.findFileDate(page), fileDates['old'])
 
-  page = urllib2.urlopen(fileUrls[2]).read()
+  page = appTest.getPage(fileUrls[2])
   assertEquals(appTest.findFileDate(page), fileDates['old'])
 
-  page = urllib2.urlopen(fileUrls[3]).read()
+  page = appTest.getPage(fileUrls[3])
   assertEquals(appTest.findFileDate(page), fileDates['new'])
 
 
