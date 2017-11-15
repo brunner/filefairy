@@ -14,7 +14,14 @@ from app import App
 from slack_api import SlackApi, TestSlackApi
 from utils import assertEquals, assertNotEquals
 
-injury = '03/21/2021 RP Drew Pomeranz was injured while pitching (Baltimore @ Seattle)'
+injury1 = '03/21/2021 RP <https://player_33610.html|Drew Pomeranz> was injured ' + \
+          'while pitching (Baltimore @ Seattle)'
+injury2 = '03/21/2021 LF <https://player_37732.html|Alexis Rivera> was injured ' + \
+          'on a defensive play (Cleveland @ Toronto)'
+injury3 = '03/21/2021 SS <https://player_39374.html|Amed Rosario> was injured ' + \
+          'in a collision at a base (Kansas City @ Detroit)'
+injury4 = '03/21/2021 SS <https://player_39374.html|Amed Rosario> was injured ' + \
+          'during a surprise event (Kansas City @ Detroit)'
 finalScores = '03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' + \
               '<https://game_box_24216.html|Atlanta 7, Colorado 6>\n' + \
               '<https://game_box_24018.html|Cleveland 5, Toronto 1>\n' + \
@@ -44,8 +51,9 @@ class AppTest(App):
     self.fileDate = self.findFileDate(self.filePage)
 
     self.finalScores = []
-    self.finalScoresLock = threading.Lock()
-    self.lastFinalScoreTime = 0
+    self.injuries = []
+    self.lock = threading.Lock()
+    self.tick = 0
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
     self.ws = None
     self.integration = integration
@@ -55,11 +63,9 @@ class AppTest(App):
       self.fileIndex = self.fileIndex + 1
 
     if self.integration and self.fileIndex == 1:
-      self.slackApi.chatPostMessage('testing', injury)
-    elif self.integration and self.fileIndex == 2:
-      self.slackApi.chatPostMessage('testing', finalScores)
-    elif self.integration and self.fileIndex == 3:
-      self.slackApi.chatPostMessage('testing', finalScores)
+      self.chatInjuryTest()
+      self.chatFinalScoresTest()
+      self.chatFinalScoresTest()
 
     return self.fileUrls[self.fileIndex]
 
@@ -76,7 +82,7 @@ class AppTest(App):
     return 'testing'
 
   def getTimerValues(self):
-    return [1, 2, 3, 8]
+    return [1, 2, 8]
 
   def getPage(self, url):
     path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
@@ -94,7 +100,10 @@ class AppTest(App):
     return page
 
   def chatInjuryTest(self):
-    self.slackApi.chatPostMessage('testing', injury)
+    self.slackApi.chatPostMessage('testing', injury1)
+    self.slackApi.chatPostMessage('testing', injury2)
+    self.slackApi.chatPostMessage('testing', injury3)
+    self.slackApi.chatPostMessage('testing', injury4)
 
   def chatFinalScoresTest(self):
     self.slackApi.chatPostMessage('testing', finalScores)

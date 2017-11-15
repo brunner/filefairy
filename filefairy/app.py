@@ -15,6 +15,10 @@ from logger import Logger
 from slack_api import SlackApi
 
 
+import logging
+logging.basicConfig()
+
+
 class App(object):
 
   def __init__(self, logger, slackApi, app=None):
@@ -25,8 +29,9 @@ class App(object):
     self.fileDate = self.findFileDate(page)
 
     self.finalScores = []
-    self.finalScoresLock = threading.Lock()
-    self.lastFinalScoreTime = 0
+    self.injuries = []
+    self.lock = threading.Lock()
+    self.tick = 0
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
     self.ws = None
 
@@ -48,7 +53,7 @@ class App(object):
   def getTimerValues(self):
     return [
         30,     # Sleep between consecutive file page checks.
-        120,    # Pause and post records.
+        120,    # Pause and post records/injuries.
         82800,  # Time out and exiting the program.
     ]
 
@@ -90,18 +95,21 @@ class App(object):
   def handleStatsplus(self, text):
     if 'MAJOR LEAGUE BASEBALL Final Scores' in text:
       self.handleFinalScores(text)
+    elif re.findall(r'\d{2}\/\d{2}\/\d{4}', text) and 'was injured' in text:
+      self.handleInjuries(text)
 
   def handleFinalScores(self, text):
-    self.finalScoresLock.acquire()
+    self.lock.acquire()
     text = text.replace('MAJOR LEAGUE BASEBALL Final Scores', '')
     if text not in self.finalScores:
       self.finalScores.append(text)
-      self.lastFinalScoreTime = int(time.time())
-    self.finalScoresLock.release()
+      self.tick = int(time.time())
+    self.lock.release()
 
   def processFinalScores(self):
     for finalScore in self.finalScores:
-      self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), finalScore)
+      self.slackApi.chatPostMessage(
+          self.getChannelLiveSimDiscussion(), finalScore)
 
       cities = ['Chicago', 'Los Angeles', 'New York']
       for line in finalScore.splitlines():
@@ -128,6 +136,30 @@ class App(object):
             self.records[wid][0] += 1
             self.records[lid][1] += 1
 
+    self.finalScores = []
+
+  def handleInjuries(self, text):
+    self.lock.acquire()
+    if text not in self.injuries:
+      self.injuries.append(text)
+      self.tick = int(time.time())
+    self.lock.release()
+
+  def processInjuries(self):
+    lines = ['Injuries']
+    for injury in self.injuries:
+      match = re.findall(r' \w+ ([^\(]+)\(', injury)
+      if match:
+        line = re.sub('was injured (?:(?:in a|on a|while) )?',
+                      '(', match[0].strip())
+        if not line == match[0]:
+          line += ')'
+        lines.append(line)
+
+    self.slackApi.chatPostMessage(
+        self.getChannelLiveSimDiscussion(), '\n'.join(lines))
+    self.injuries = []
+
   def handleClose(self):
     if self.ws:
       self.ws.close()
@@ -135,7 +167,7 @@ class App(object):
       self.logger.log('Done listening.')
 
   def watch(self):
-    sleep, pause, records, timeout = self.getTimerValues()
+    sleep, records, timeout = self.getTimerValues()
     elapsed = 0
 
     self.slackApi.chatPostMessage('testing', 'Started watching.')
@@ -148,13 +180,13 @@ class App(object):
       if self.updateLeagueFile():
         elapsed = timeout
 
-      self.finalScoresLock.acquire()
-      if self.finalScores and int(time.time()) - self.lastFinalScoreTime > records:
+      self.lock.acquire()
+      if self.finalScores and int(time.time()) - self.tick > records:
         self.processFinalScores()
+        self.processInjuries()
         self.slackApi.chatPostMessage(
             self.getChannelLiveSimDiscussion(), self.formatRecords())
-        self.finalScores = []
-      self.finalScoresLock.release()
+      self.lock.release()
 
     self.slackApi.chatPostMessage('testing', 'Done watching.')
     self.logger.log('Done watching.')
