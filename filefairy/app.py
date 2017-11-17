@@ -130,10 +130,12 @@ class App(object):
             if lmatch and lteam in cities:
               lteam = lmatch[0].strip()
 
-          if wteam in slack_api.nicksToTeamids and lteam in slack_api.nicksToTeamids:
+          if wteam in slack_api.nicksToTeamids:
             wid = slack_api.nicksToTeamids[wteam]
-            lid = slack_api.nicksToTeamids[lteam]
             self.records[wid][0] += 1
+
+          if lteam in slack_api.nicksToTeamids:
+            lid = slack_api.nicksToTeamids[lteam]
             self.records[lid][1] += 1
 
     self.finalScores = []
@@ -148,13 +150,16 @@ class App(object):
   def processInjuries(self):
     lines = ['Injuries']
     for injury in self.injuries:
-      match = re.findall(r' \w+ ([^\(]+)\(', injury)
-      if match:
-        line = re.sub('was injured (?:(?:in a|on a|while) )?',
-                      '(', match[0].strip())
-        if not line == match[0]:
-          line += ')'
-        lines.append(line)
+      for chunk in injury.split('. '):
+        print 'chunk: ' + chunk
+        match = re.findall(r'(\<[^\(]+)\(', chunk)
+        if match:
+          print 'match: ' + match[0]
+          line = re.sub('was injured (?:(?:in a|on a|while) )?',
+                        '(', match[0].strip())
+          if not line == match[0]:
+            line += ')'
+          lines.append(line)
 
     self.slackApi.chatPostMessage(
         self.getChannelLiveSimDiscussion(), '\n'.join(lines))

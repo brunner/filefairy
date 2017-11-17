@@ -18,7 +18,8 @@ injury1 = '03/21/2021 RP <https://player_33610.html|Drew Pomeranz> was injured '
           'while pitching (Baltimore @ Seattle)'
 injury2 = '03/21/2021 LF <https://player_37732.html|Alexis Rivera> was injured ' + \
           'on a defensive play (Cleveland @ Toronto)'
-injury3 = '03/21/2021 SS <https://player_39374.html|Amed Rosario> was injured ' + \
+injury3 = '03/21/2021 Rain delay of 16 minutes in the 7th inning. ' + \
+          'SS <https://player_39374.html|Amed Rosario> was injured ' + \
           'in a collision at a base (Kansas City @ Detroit)'
 injury4 = '03/21/2021 SS <https://player_39374.html|Amed Rosario> was injured ' + \
           'during a surprise event (Kansas City @ Detroit)'
@@ -85,7 +86,7 @@ class AppTest(App):
     return [1, 2, 8]
 
   def getPage(self, url):
-    path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
+    path = os.path.expanduser("~") + "/orangeandblueleague1/orangeandblueleague/filefairy/testing/"
     cwd = os.getcwd()
     os.chdir(path)
 
@@ -298,7 +299,7 @@ def testIntegration():
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
-  parser.add_argument('--mode', dest='mode')
+  parser.add_argument('--mode', dest='mode', default='all')
   args = parser.parse_args()
 
   if args.mode == 'real' or args.mode == 'all':
