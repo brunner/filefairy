@@ -24,20 +24,20 @@ injury3 = '03/21/2021 Rain delay of 16 minutes in the 7th inning. ' + \
 injury4 = '03/21/2021 SS <https://player_39374.html|Amed Rosario> was injured ' + \
           'during a surprise event (Kansas City @ Detroit)'
 finalScores = '03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' + \
-              '<https://game_box_24216.html|Atlanta 7, Colorado 6>\n' + \
-              '<https://game_box_24018.html|Cleveland 5, Toronto 1>\n' + \
-              '<https://game_box_24015.html|Houston 5, Tampa Bay 3>\n' + \
-              '<https://game_box_24014.html|Kansas City 7, Detroit 2>\n' + \
-              '<https://game_box_24212.html|Los Angeles 3, Cincinnati 2>\n' + \
-              '<https://game_box_24013.html|Los Angeles 7, New York 6>\n' + \
-              '<https://game_box_24214.html|Miami 4, Pittsburgh 1>\n' + \
-              '<https://game_box_24215.html|Milwaukee 9, Washington 8>\n' + \
-              '<https://game_box_24218.html|New York 6, San Diego 1>\n' + \
-              '<https://game_box_24017.html|Oakland 5, Minnesota 2>\n' + \
-              '<https://game_box_24213.html|Philadelphia 4, San Francisco 2>\n' + \
-              '<https://game_box_24016.html|Seattle 3, Baltimore 2>\n' + \
-              '<https://game_box_24217.html|St. Louis 2, Chicago 0>\n' + \
-              '<https://game_box_24019.html|Texas 8, Chicago 2>'
+              '*<https://game_box_24216.html|Atlanta 7, Colorado 6>*\n' + \
+              '*<https://game_box_24018.html|Cleveland 5, Toronto 1>*\n' + \
+              '*<https://game_box_24015.html|Houston 5, Tampa Bay 3>*\n' + \
+              '*<https://game_box_24014.html|Kansas City 7, Detroit 2>*\n' + \
+              '*<https://game_box_24212.html|Los Angeles 3, Cincinnati 2>*\n' + \
+              '*<https://game_box_24013.html|Los Angeles 7, New York 6>*\n' + \
+              '*<https://game_box_24214.html|Miami 4, Pittsburgh 1>*\n' + \
+              '*<https://game_box_24215.html|Milwaukee 9, Washington 8>*\n' + \
+              '*<https://game_box_24218.html|New York 6, San Diego 1>*\n' + \
+              '*<https://game_box_24017.html|Oakland 5, Minnesota 2>*\n' + \
+              '*<https://game_box_24213.html|Philadelphia 4, San Francisco 2>*\n' + \
+              '*<https://game_box_24016.html|Seattle 3, Baltimore 2>*\n' + \
+              '*<https://game_box_24217.html|St. Louis 2, Chicago 0>*\n' + \
+              '*<https://game_box_24019.html|Texas 8, Chicago 2>*'
 
 
 class AppTest(App):

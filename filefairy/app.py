@@ -29,7 +29,7 @@ class App(object):
     self.injuries = []
     self.lock = threading.Lock()
     self.tick = 0
-    self.records = {t: [0, 0, 0] for t in range(31, 61)}
+    self.records = {t: [0, 0] for t in range(31, 61)}
     self.table = self.getTable()
     self.ws = None
 
@@ -75,14 +75,10 @@ class App(object):
   def getTable(self):
     table = {}
     with open(self.getTableFile(), 'r') as f:
-      lines = f.readlines()
-      header, teams = lines[:1], lines[1:]
-      if header and teams:
-        header = header[0].strip()
-        prevdate, skipdate = [datetime.datetime.strptime(s, '%m/%d/%Y') for s in header.split(',')]
-        for team in teams:
-          name, prevwin, skipwin = team.strip().split(',')
-          table[name] = {prevdate: int(prevwin), skipdate: int(skipwin)}
+      for line in f.readlines():
+        if line.count(' ') == 2:
+          t, w, l = line.split()
+          table[t] = [int(w), int(l)]
 
     return table
 
@@ -115,7 +111,7 @@ class App(object):
 
   def handleFinalScores(self, text):
     self.lock.acquire()
-    text = text.replace('MAJOR LEAGUE BASEBALL Final Scores', '')
+    text = re.sub(r'(MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
     if text not in self.finalScores:
       self.finalScores.append(text)
       self.tick = int(time.time())
@@ -165,11 +161,9 @@ class App(object):
     lines = ['Injuries']
     for injury in self.injuries:
       for chunk in injury.split('. '):
-        print 'chunk: ' + chunk
         match = re.findall(r'(\<[^\(]+)\(', chunk)
         if match:
-          print 'match: ' + match[0]
-          line = re.sub('was injured (?:(?:in a|on a|while) )?',
+          line = re.sub(r'was injured (?:(?:in a|on a|while) )?',
                         '(', match[0].strip())
           if not line == match[0]:
             line += ')'
@@ -244,18 +238,16 @@ class App(object):
     lines = []
     for group in groups:
       r = self.records
-      pct = lambda x: (float(r[x][0] + 0.5 * r[x][2]) / (sum(r[x]) or 1),
+      pct = lambda x: (float(r[x][0]) / (sum(r[x]) or 1),
                        r[x][0],
-                       float(1) / r[x][1] if r[x][1] else 2,
-                       r[x][2])
+                       float(1) / r[x][1] if r[x][1] else 2)
       ordered = sorted(group[1], key=pct, reverse=True)
 
       formatted = []
       for t in ordered:
         emoji = slack_api.teamidsToEmoji[t]
-        record = r[t] if r[t][2] else r[t][:2]
         formatted.append('{0} {1}'.format(
-            emoji, '-'.join([str(n) for n in record])))
+            emoji, '-'.join([str(n) for n in r[t]])))
 
       lines.append('{0}\n{1}'.format(
           group[0], ' :separator: '.join(formatted)))
