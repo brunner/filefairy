@@ -86,7 +86,7 @@ class AppTest(App):
     return [1, 2, 8]
 
   def getPage(self, url):
-    path = os.path.expanduser("~") + "/orangeandblueleague1/orangeandblueleague/filefairy/testing/"
+    path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
     cwd = os.getcwd()
     os.chdir(path)
 

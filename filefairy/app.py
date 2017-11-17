@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import json
 import os
 import re
@@ -13,10 +14,6 @@ import websocket
 
 from logger import Logger
 from slack_api import SlackApi
-
-
-import logging
-logging.basicConfig()
 
 
 class App(object):
@@ -33,6 +30,7 @@ class App(object):
     self.lock = threading.Lock()
     self.tick = 0
     self.records = {t: [0, 0, 0] for t in range(31, 61)}
+    self.table = self.getTable()
     self.ws = None
 
   def getFileUrl(self):
@@ -40,6 +38,9 @@ class App(object):
 
   def getBoxScoreUrl(self, boxid):
     return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_{}.html'.format(boxid)
+
+  def getTableFile(self):
+    return os.path.expanduser("~") + "/orangeandblueleague/filefairy/data/table.txt"
 
   def getChannelGeneral(self):
     return 'general'
@@ -70,6 +71,20 @@ class App(object):
       self.logger.log('Unspecified exception.')
 
     return page
+
+  def getTable(self):
+    table = {}
+    with open(self.getTableFile(), 'r') as f:
+      lines = f.readlines()
+      header, teams = lines[:1], lines[1:]
+      if header and teams:
+        header = header[0].strip()
+        prevdate, skipdate = [datetime.datetime.strptime(s, '%m/%d/%Y') for s in header.split(',')]
+        for team in teams:
+          name, prevwin, skipwin = team.strip().split(',')
+          table[name] = {prevdate: int(prevwin), skipdate: int(skipwin)}
+
+    return table
 
   def listen(self):
     def on_message_(ws, message):
@@ -122,7 +137,6 @@ class App(object):
           if wteam in cities or lteam in cities:
             url = self.getBoxScoreUrl(boxid)
             page = self.getPage(url)
-            score = r'([^<]+)</(?:.*?)<b>(\d+)</b>'
             wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<(]+)', page)
             lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<(]+)', page)
             if wmatch and wteam in cities:
