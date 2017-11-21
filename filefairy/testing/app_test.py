@@ -75,13 +75,15 @@ liveTable = '```MAJOR LEAGUE BASEBALL Live Table - 03/21/2021\n' + \
 class AppTest(App):
   '''Tests for App.'''
 
-  def __init__(self, logger, slackApi, fileUrls, integration=False):
+  def __init__(self, logger, slackApi, fileUrls, standingsInFile, integration=False):
     self.logger = logger
     self.slackApi = slackApi
 
     self.fileUrls, self.fileIndex = fileUrls, 0
     self.filePage = self.getPage(self.fileUrls[0])
     self.fileDate = self.findFileDate(self.filePage)
+
+    self.standingsInFile = standingsInFile
 
     self.finalScores = []
     self.injuries = []
@@ -115,7 +117,7 @@ class AppTest(App):
     return self.getStandingsPath() + 'standingsgold.txt'
 
   def getStandingsInFile(self):
-    return self.getStandingsPath() + 'standingsin.txt'
+    return self.getStandingsPath() + self.standingsInFile
 
   def getStandingsOutFile(self):
     return self.getStandingsPath() + 'standingsout.txt'
@@ -233,12 +235,16 @@ records = {
 }
 
 standings = {
-    31: [25, 44], 32: [40, 30], 33: [37, 35], 34: [36, 33], 35: [33, 38],
-    36: [35, 36], 37: [48, 21], 38: [34, 36], 39: [43, 26], 40: [34, 36],
-    41: [25, 45], 42: [31, 39], 43: [40, 33], 44: [31 ,39], 45: [43, 26],
-    46: [33, 38], 47: [41, 30], 48: [34, 37], 49: [38, 33], 50: [30, 40],
-    51: [38, 32], 52: [21, 50], 53: [42, 29], 54: [40, 28], 55: [30, 41],
-    56: [41, 28], 57: [36, 35], 58: [25, 46], 59: [40, 29], 60: [31, 40],
+    31: {'l': 44, 'w': 25}, 32: {'l': 30, 'w': 40}, 33: {'l': 35, 'w': 37},
+    34: {'l': 33, 'w': 36}, 35: {'l': 38, 'w': 33}, 36: {'l': 36, 'w': 35},
+    37: {'l': 21, 'w': 48}, 38: {'l': 36, 'w': 34}, 39: {'l': 26, 'w': 43},
+    40: {'l': 36, 'w': 34}, 41: {'l': 45, 'w': 25}, 42: {'l': 39, 'w': 31},
+    43: {'l': 33, 'w': 40}, 44: {'l': 39, 'w': 31}, 45: {'l': 26, 'w': 43},
+    46: {'l': 38, 'w': 33}, 47: {'l': 30, 'w': 41}, 48: {'l': 37, 'w': 34},
+    49: {'l': 33, 'w': 38}, 50: {'l': 40, 'w': 30}, 51: {'l': 32, 'w': 38},
+    52: {'l': 50, 'w': 21}, 53: {'l': 29, 'w': 42}, 54: {'l': 28, 'w': 40},
+    55: {'l': 41, 'w': 30}, 56: {'l': 28, 'w': 41}, 57: {'l': 35, 'w': 36},
+    58: {'l': 46, 'w': 25}, 59: {'l': 29, 'w': 40}, 60: {'l': 40, 'w': 31},
 }
 
 formatRecords = 'AL East\n:redsox: 0-0 :separator: :orioles: 0-1 :separator: :yankees: 0-1 ' + \
@@ -254,66 +260,78 @@ formatRecords = 'AL East\n:redsox: 0-0 :separator: :orioles: 0-1 :separator: :ya
                 'NL West\n:dodgers: 1-0 :separator: :dbacks: 0-0 :separator: :rox: 0-1 ' + \
                 ':separator: :pads: 0-1 :separator: :giants: 0-1'
 
-formatStandingsA = 'AL East         |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Toronto         |  40 |  29 |    - |  90\n' + \
-                   'Boston          |  36 |  33 |  4.0 |    \n' + \
-                   'Baltimore       |  37 |  35 |  4.5 |    \n' + \
-                   'Tampa Bay       |  36 |  35 |  5.0 |    \n' + \
-                   'New York        |  34 |  37 |  7.0 |    \n\n' + \
-                   'AL Central      |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Minnesota       |  41 |  30 |    - |  89\n' + \
-                   'Kansas City     |  40 |  33 |  2.0 |    \n' + \
-                   'Cleveland       |  34 |  36 |  6.5 |    \n' + \
-                   'Detroit         |  34 |  36 |  6.5 |    \n' + \
-                   'Chicago         |  33 |  38 |  8.0 |    \n\n' + \
-                   'AL West         |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Seattle         |  40 |  28 |    - |  84\n' + \
-                   'Houston         |  31 |  39 | 10.0 |    \n' + \
-                   'Los Angeles     |  31 |  39 | 10.0 |    \n' + \
-                   'Oakland         |  30 |  40 | 11.0 |    \n' + \
-                   'Texas           |  25 |  46 | 16.5 |    \n\n' + \
-                   'AL Wild Card    |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Kansas City     |  40 |  33 | +2.0 |  88\n' + \
-                   'Boston          |  36 |  33 |    - |  92\n' + \
-                   'Baltimore       |  37 |  35 |  0.5 |    \n' + \
-                   'Tampa Bay       |  36 |  35 |  1.0 |    \n' + \
-                   'Cleveland       |  34 |  36 |  2.5 |    \n' + \
-                   'Detroit         |  34 |  36 |  2.5 |    '
+formatStandingsA = 'AL East         |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Toronto         |  40 |  29 |     - |  90\n' + \
+                   'Boston          |  36 |  33 |   4.0 |    \n' + \
+                   'Baltimore       |  37 |  35 |   4.5 |    \n' + \
+                   'Tampa Bay       |  36 |  35 |   5.0 |    \n' + \
+                   'New York        |  34 |  37 |   7.0 |    \n\n' + \
+                   'AL Central      |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Minnesota       |  41 |  30 |     - |  89\n' + \
+                   'Kansas City     |  40 |  33 |   2.0 |    \n' + \
+                   'Cleveland       |  34 |  36 |   6.5 |    \n' + \
+                   'Detroit         |  34 |  36 |   6.5 |    \n' + \
+                   'Chicago         |  33 |  38 |   8.0 |    \n\n' + \
+                   'AL West         |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Seattle         |  40 |  28 |     - |  84\n' + \
+                   'Houston         |  31 |  39 |  10.0 |    \n' + \
+                   'Los Angeles     |  31 |  39 |  10.0 |    \n' + \
+                   'Oakland         |  30 |  40 |  11.0 |    \n' + \
+                   'Texas           |  25 |  46 |  16.5 |    \n\n' + \
+                   'AL Wild Card    |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Kansas City     |  40 |  33 |  +2.0 |  88\n' + \
+                   'Boston          |  36 |  33 |     - |  92\n' + \
+                   'Baltimore       |  37 |  35 |   0.5 |    \n' + \
+                   'Tampa Bay       |  36 |  35 |   1.0 |    \n' + \
+                   'Cleveland       |  34 |  36 |   2.5 |    \n' + \
+                   'Detroit         |  34 |  36 |   2.5 |    \n' + \
+                   'New York        |  34 |  37 |   3.0 |    \n' + \
+                   'Chicago         |  33 |  38 |   4.0 |    \n' + \
+                   'Houston         |  31 |  39 |   5.5 |    \n' + \
+                   'Los Angeles     |  31 |  39 |   5.5 |    \n' + \
+                   'Oakland         |  30 |  40 |   6.5 |    \n' + \
+                   'Texas           |  25 |  46 |  12.0 |    '
 
-formatStandingsN = 'NL East         |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Atlanta         |  40 |  30 |    - |  91\n' + \
-                   'Philadelphia    |  38 |  32 |  2.0 |    \n' + \
-                   'New York        |  38 |  33 |  2.5 |    \n' + \
-                   'Washington      |  31 |  40 |  9.5 |    \n' + \
-                   'Miami           |  25 |  45 | 15.0 |    \n\n' + \
-                   'NL Central      |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Cincinnati      |  48 |  21 |    - |  87\n' + \
-                   'St. Louis       |  41 |  28 |  7.0 |    \n' + \
-                   'Chicago         |  35 |  36 | 14.0 |    \n' + \
-                   'Milwaukee       |  33 |  38 | 16.0 |    \n' + \
-                   'Pittsburgh      |  21 |  50 | 28.0 |    \n\n' + \
-                   'NL West         |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Colorado        |  43 |  26 |    - |  94\n' + \
-                   'Los Angeles     |  43 |  26 |    - |  94\n' + \
-                   'San Diego       |  42 |  29 |  2.0 |    \n' + \
-                   'San Francisco   |  30 |  41 | 14.0 |    \n' + \
-                   'Arizona         |  25 |  44 | 18.0 |    \n\n' + \
-                   'NL Wild Card    |   W |   L |   GB |  M#\n' + \
-                   '----------------|-----|-----|------|-----\n' + \
-                   'Los Angeles     |  43 |  26 | +2.0 |  88\n' + \
-                   'St. Louis       |  41 |  28 |    - |  90\n' + \
-                   'San Diego       |  42 |  29 |    - |  89\n' + \
-                   'Philadelphia    |  38 |  32 |  3.5 |    \n' + \
-                   'New York        |  38 |  33 |  4.0 |    \n' + \
-                   'Chicago         |  35 |  36 |  7.0 |    \n' + \
-                   'Milwaukee       |  33 |  38 |  9.0 |    '
+formatStandingsN = 'NL East         |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Atlanta         |  40 |  30 |     - |  91\n' + \
+                   'Philadelphia    |  38 |  32 |   2.0 |    \n' + \
+                   'New York        |  38 |  33 |   2.5 |    \n' + \
+                   'Washington      |  31 |  40 |   9.5 |    \n' + \
+                   'Miami           |  25 |  45 |  15.0 |    \n\n' + \
+                   'NL Central      |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Cincinnati      |  48 |  21 |     - |  87\n' + \
+                   'St. Louis       |  41 |  28 |   7.0 |    \n' + \
+                   'Chicago         |  35 |  36 |  14.0 |    \n' + \
+                   'Milwaukee       |  33 |  38 |  16.0 |    \n' + \
+                   'Pittsburgh      |  21 |  50 |  28.0 |    \n\n' + \
+                   'NL West         |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Colorado        |  43 |  26 |     - |  94\n' + \
+                   'Los Angeles     |  43 |  26 |     - |  94\n' + \
+                   'San Diego       |  42 |  29 |   2.0 |    \n' + \
+                   'San Francisco   |  30 |  41 |  14.0 |    \n' + \
+                   'Arizona         |  25 |  44 |  18.0 |    \n\n' + \
+                   'NL Wild Card    |   W |   L |    GB |  M#\n' + \
+                   '----------------|-----|-----|-------|-----\n' + \
+                   'Colorado        |  43 |  26 |  +2.0 |  91\n' + \
+                   'Los Angeles     |  43 |  26 |  +2.0 |  91\n' + \
+                   'St. Louis       |  41 |  28 |     - |  93\n' + \
+                   'San Diego       |  42 |  29 |     - |  93\n' + \
+                   'Philadelphia    |  38 |  32 |   3.5 |    \n' + \
+                   'New York        |  38 |  33 |   4.0 |    \n' + \
+                   'Chicago         |  35 |  36 |   7.0 |    \n' + \
+                   'Milwaukee       |  33 |  38 |   9.0 |    \n' + \
+                   'Washington      |  31 |  40 |  11.0 |    \n' + \
+                   'San Francisco   |  30 |  41 |  12.0 |    \n' + \
+                   'Arizona         |  25 |  44 |  16.0 |    \n' + \
+                   'Miami           |  25 |  45 |  16.5 |    \n' + \
+                   'Pittsburgh      |  21 |  50 |  21.0 |    '
 
 logs = [
     'Started listening.',             # 0
@@ -334,7 +352,7 @@ def testReal():
 
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
 
   assertNotEquals(appTest.findFileDate(filePage), '')
 
@@ -342,7 +360,7 @@ def testReal():
 def testFindFileDate():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
 
   page = appTest.getPage(fileUrls[0])
   assertEquals(appTest.findFileDate(page), fileDates['old'])
@@ -363,7 +381,7 @@ def testFindFileDate():
 def testUpdateLeagueFile():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
 
   expected = {'ret': False, 'collected': [], 'index': 1,
               'date': fileDates['old']}
@@ -389,7 +407,7 @@ def testUpdateLeagueFile():
 def testWatch():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
 
   expected = {'collected': logs[1:4] + logs[5:8]}
   assertEquals(appTest.getWatch(), expected)
@@ -398,7 +416,7 @@ def testWatch():
 def testFinalScores():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
 
   appTest.handleFinalScores(finalScores)
   appTest.handleLiveTable(liveTable)
@@ -410,10 +428,39 @@ def testFinalScores():
   assertEquals(appTest.formatStandingsNL(), formatStandingsN)
 
 
+def testStandings():
+  logger = TestLogger()
+  slackApi = TestSlackApi(logger)
+
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_openingday.txt')
+  print appTest.formatStandingsAL()
+  print appTest.formatStandingsNL()
+  print '\n--------------------\n'
+
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_linear.txt')
+  print appTest.formatStandingsAL()
+  print appTest.formatStandingsNL()
+  print '\n--------------------\n'
+
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_final.txt')
+  print appTest.formatStandingsAL()
+  print appTest.formatStandingsNL()
+  print '\n--------------------\n'
+
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_baddivision.txt')
+  print appTest.formatStandingsAL()
+  print appTest.formatStandingsNL()
+  print '\n--------------------\n'
+
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_today.txt')
+  print appTest.formatStandingsAL()
+  print appTest.formatStandingsNL()
+
+
 def testListen():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:])
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
 
   expected = {'collected': logs[:1] + logs[8:]}
   assertEquals(appTest.getListen(), expected)
@@ -422,7 +469,7 @@ def testListen():
 def testIntegration():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], True)
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt', True)
 
   with open(appTest.getStandingsOutFile(), 'w') as f:
     pass
@@ -457,6 +504,9 @@ if __name__ == '__main__':
 
   if args.mode == 'finalscores' or args.mode == 'all':
     testFinalScores()
+
+  # if args.mode == 'standings' or args.mode == 'all':
+  #   testStandings()
 
   if args.mode == 'listen' or args.mode == 'all':
     testListen()
