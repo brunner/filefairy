@@ -505,8 +505,8 @@ if __name__ == '__main__':
   if args.mode == 'finalscores' or args.mode == 'all':
     testFinalScores()
 
-  # if args.mode == 'standings' or args.mode == 'all':
-  #   testStandings()
+  if args.mode == 'standings':
+    testStandings()
 
   if args.mode == 'listen' or args.mode == 'all':
     testListen()

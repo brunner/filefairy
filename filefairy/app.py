@@ -333,12 +333,41 @@ class App(object):
     return [k + ey for ey in ['gb', 'en', 'mn']]
 
   def getGamesBehind(self, s, u, t0):
+    """Return the number of games that u is behind t.
+
+    Args:
+        s: the copy of the standings data.
+        u: the trailing team.
+        t0: the leading team.
+    Returns:
+        the number of games that u is behind t.
+
+    """
     return (s[t0]['w'] - s[u]['w'] + s[u]['l'] - s[t0]['l']) / 2.0
 
   def getEliminationNumber(self, s, u, t):
+    """Return the elimination number for a team.
+
+    Args:
+        s: the copy of the standings data.
+        u: the trailing team.
+        t0: the leading team.
+    Returns:
+        the elimination number for u.
+
+    """
     return max(163 - s[t]['w'] - s[u]['l'], 0)
 
   def getOrdered(self, s, group):
+    """Return a set of teams, sorted by winning percentage.
+
+    Args:
+        s: the copy of the standings data.
+        group: the set of team ids to sort.
+    Returns:
+        the sorted group.
+
+    """
     pct = lambda t: (float(s[t]['w']) / ((s[t]['w'] + s[t]['l']) or 1),
                      s[t]['w'],
                      float(1) / s[t]['l'] if s[t]['l'] else 2,
@@ -346,6 +375,15 @@ class App(object):
     return sorted(group, key=pct, reverse=True)
 
   def processEliminationNumbers(self, s, ordered, i, k):
+    """Annotates the standings with elimination number data.
+
+    Args:
+        s: the copy of the standings data.
+        ordered: the ordered set of team ids to annotate (e.g. a division).
+        i: the index of the team occupying the final playoff spot in ordered.
+        k: the key prefix to use when setting annotations ('d' for division, 'w' for wild card).
+
+    """
     kgb, ken, kmn = self.getStandingsKeys(k)
     ts = filter(lambda v: s[v][kgb] <= 0, ordered)
     if len(ts) == len(ordered):
@@ -371,6 +409,17 @@ class App(object):
           del s[v][ken]
 
   def getStandingsOutput(self, s, kgroup, group, k):
+    """Populates a standings template with data for a set of teams.
+
+    Args:
+        s: the copy of the standings data.
+        kgroup: the title of the group (e.g. 'AL East')
+        group: the set of team ids in the group.
+        k: the key prefix to use when getting annotations ('d' for division, 'w' for wild card).
+    Returns:
+        the populated standings template.
+
+    """
     kgb, ken, kmn = self.getStandingsKeys(k)
     div = ' | '
     top = '{title:<15}{div}  W{div}  L{div}   GB{div} M#\n' + \
@@ -391,25 +440,39 @@ class App(object):
     return '\n'.join(lines)
 
   def formatStandingsInternal(self, east, cent, west, k):
+    """Return a string representation of the standings for a league.
+
+    Args:
+        east: the set of team ids in the east division.
+        cent: the set of team ids in the central division.
+        west: the set of team ids in the west division.
+        kgroup: the title of the group (e.g. 'AL East').
+        k: the league title prefix (e.g. 'AL').
+    Returns:
+        the string representation of the standings.
+
+    """
     s = self.standings.copy()
     keast, kcent, kwest, kwc = [k + ' ' + ey for ey in ['East', 'Central', 'West', 'Wild Card']]
 
+    # Set the games behind and elimination numbers for each division.
+    # If a team is the only leader in its division, annotate it with 'dbg0'.
     for group in [east, cent, west]:
       ordered = self.getOrdered(s, group)
       t0, s[t0]['dgb'], s[t0]['dgb0'] = ordered[0], 0.0, 1
-
       for u in ordered[1:]:
         gb = self.getGamesBehind(s, u, t0)
         s[u]['dgb'] = gb
         if gb == 0.0 and 'dgb0' in s[t0]:
           del s[t0]['dgb0']
-
       self.processEliminationNumbers(s, ordered, 0, 'd')
 
+    # Filter division leaders out of the set of wild card teams.
     lg = east + cent + west
     wc = filter(lambda v: 'dgb0' not in s[v], lg)
-    ordered = self.getOrdered(s, lg)
 
+    # Find the index of the team occupying the final playoff spot in the league.
+    ordered = self.getOrdered(s, lg)
     k, j = 0, 2
     for i, t0 in enumerate(ordered):
       if 'dgb0' not in s[t0]:
@@ -419,20 +482,29 @@ class App(object):
       if k == j:
         break
 
+    # Set the games behind and elimination numbers for the wild card.
     s[t0]['wgb'] = 0.0
     for v in ordered:
       s[v]['wgb'] = self.getGamesBehind(s, v, t0)
-
     self.processEliminationNumbers(s, ordered, i, 'w')
 
+    # Annotate the standings with team prefixes, if applicable.
     for v in ordered:
       if s[v].get('den', 1) == 0 and s[v].get('wen', 1) == 0:
+        # v has been eliminated.
         s[v]['p'] = 'e-'
       if s[v].get('dmn', 1) == 0:
+        # v has clinched the division.
         s[v]['p'] = 'x-'
       elif s[v].get('wmn', 1) == 0:
-        s[v]['p'] = 'y-' if 'dgb0' in s[v] else 'z-'
+        if 'dgb0' in s[v]:
+          # v has clinched a playoff berth.
+          s[v]['p'] = 'y-'
+        else:
+          # v has clinched the wild card.
+          s[v]['p'] = 'z-'
 
+    # Feed the annotated standings data into a helper method to populate the standings template.
     groups = zip([keast, kcent, kwest, kwc], [east, cent, west, wc], ['d', 'd', 'd', 'w'])
     ret = [self.getStandingsOutput(s, kgroup, group, k) for (kgroup, group, k) in groups]
     return '\n\n'.join(ret)
