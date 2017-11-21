@@ -80,19 +80,19 @@ class App(object):
     return page
 
   def getStandings(self):
-    table = {}
+    standings = {}
     with open(self.getStandingsInFile(), 'r') as f:
       for line in f.readlines():
         if line.count(' ') == 2:
           t, w, l = line.split()
-          table[int(t)] = [int(w), int(l)]
+          standings[int(t)] = {'w': int(w), 'l': int(l)}
 
-    return table
+    return standings
 
   def writeStandings(self):
     with open(self.getStandingsOutFile(), 'w') as f:
       for t in self.standings:
-        w, l = self.standings[t]
+        w, l = self.standings[t]['w'], self.standings[t]['l']
         f.write('{} {} {}\n'.format(t, w, l))
 
   def listen(self):
@@ -174,20 +174,20 @@ class App(object):
             elif tw and uw and l == 0:
               # If both teams played and neither lost, we calculate using the live table.
               # The number of wins for the current team is the diff between the table and standings.
-              w = int(tw[0]) - self.standings[t][0]
+              w = int(tw[0]) - self.standings[t]['w']
             elif tw and uw and w == 1 and l == 1:
               # If both teams played and one won and one lost, we calculate using the live table.
               # The number of wins for the current team is the diff between the table and standings.
-              w = int(tw[0]) - self.standings[t][0]
+              w = int(tw[0]) - self.standings[t]['w']
               l = 0 if w else 1
 
           self.records[t][0] += w
           self.records[t][1] += l
 
-          self.standings[t][0] += w
-          self.standings[t][1] += l
+          self.standings[t]['w'] += w
+          self.standings[t]['l'] += l
 
-      ## Save for now, this might be useful for the edge cases.
+      # Save for now, this might be useful for the edge cases.
       # cities = ['Chicago', 'Los Angeles', 'New York']
       # for line in finalScore.splitlines():
       #   match = re.findall(
@@ -329,92 +329,193 @@ class App(object):
 
     return '\n\n'.join(lines)
 
-  def formatStandingsAL(self):
-    groups = [
-        ('AL East', [33, 34, 48, 57, 59]),
-        ('AL Central', [35, 38, 40, 43, 47]),
-        ('AL West', [42, 44, 50, 54, 58]),
-    ]
+  def getStandingsKeys(self, k):
+    return [k + ey for ey in ['gb', 'en', 'mn']]
 
-    return self.formatStandingsInternal(groups, 'AL Wild Card')
+  def getGamesBehind(self, s, u, t0):
+    """Return the number of games that u is behind t.
 
-  def formatStandingsNL(self):
-    groups = [
-        ('NL East', [32, 41, 49, 51, 60]),
-        ('NL Central', [36, 37, 46, 52, 56]),
-        ('NL West', [31, 39, 45, 53, 55]),
-    ]
+    Args:
+        s: the copy of the standings data.
+        u: the trailing team.
+        t0: the leading team.
+    Returns:
+        the number of games that u is behind t.
 
-    return self.formatStandingsInternal(groups, 'NL Wild Card')
+    """
+    return (s[t0]['w'] - s[u]['w'] + s[u]['l'] - s[t0]['l']) / 2.0
 
-  def formatStandingsInternal(self, groups, wildcard):
+  def getEliminationNumber(self, s, u, t):
+    """Return the elimination number for a team.
+
+    Args:
+        s: the copy of the standings data.
+        u: the trailing team.
+        t0: the leading team.
+    Returns:
+        the elimination number for u.
+
+    """
+    return max(163 - s[t]['w'] - s[u]['l'], 0)
+
+  def getOrdered(self, s, group):
+    """Return a set of teams, sorted by winning percentage.
+
+    Args:
+        s: the copy of the standings data.
+        group: the set of team ids to sort.
+    Returns:
+        the sorted group.
+
+    """
+    pct = lambda t: (float(s[t]['w']) / ((s[t]['w'] + s[t]['l']) or 1),
+                     s[t]['w'],
+                     float(1) / s[t]['l'] if s[t]['l'] else 2,
+                     float(1) / t)
+    return sorted(group, key=pct, reverse=True)
+
+  def processEliminationNumbers(self, s, ordered, i, k):
+    """Annotates the standings with elimination number data.
+
+    Args:
+        s: the copy of the standings data.
+        ordered: the ordered set of team ids to annotate (e.g. a division).
+        i: the index of the team occupying the final playoff spot in ordered.
+        k: the key prefix to use when setting annotations ('d' for division, 'w' for wild card).
+
+    """
+    kgb, ken, kmn = self.getStandingsKeys(k)
+    ts = filter(lambda v: s[v][kgb] <= 0, ordered)
+    if len(ts) == len(ordered):
+      for t in ordered:
+        u0 = sorted(filter(lambda v: v != t, ts), key=lambda v: s[v]['l'], reverse=True)[0]
+        en = self.getEliminationNumber(s, u0, t)
+        if kmn not in s[t] or en > s[t][kmn]:
+          s[t][kmn] = en
+    else:
+      for t in ts:
+        for u in ordered:
+          if u == t or (u not in ts and 'dgb0' in s[u]):
+            continue
+          en = self.getEliminationNumber(s, u, t)
+          s[u].setdefault(ken, []).append(en)
+          s[t].setdefault(kmn, []).append(en)
+      for v in ordered:
+        if kmn in s[v]:
+          s[v][kmn] = sorted(s[v][kmn], reverse=True)[i]
+        elif ken in s[v]:
+          s[v][ken] = sorted(s[v][ken])[i]
+        if kmn in s[v] and ken in s[v]:
+          del s[v][ken]
+
+  def getStandingsOutput(self, s, kgroup, group, k):
+    """Populates a standings template with data for a set of teams.
+
+    Args:
+        s: the copy of the standings data.
+        kgroup: the title of the group (e.g. 'AL East')
+        group: the set of team ids in the group.
+        k: the key prefix to use when getting annotations ('d' for division, 'w' for wild card).
+    Returns:
+        the populated standings template.
+
+    """
+    kgb, ken, kmn = self.getStandingsKeys(k)
     div = ' | '
-    top = '{division:<15}{div}  W{div}  L{div}  GB{div} M#\n' + \
-          '----------------|-----|-----|------|-----'
-    row = '{city:<15}{div}{w:>3}{div}{l:>3}{div}{gb:>4}{div}{mn:>3}'
+    top = '{title:<15}{div}  W{div}  L{div}   GB{div} M#\n' + \
+          '----------------|-----|-----|-------|-----'
+    row = '{city:<15}{div}{w:>3}{div}{l:>3}{div}{gb:>5}{div}{mn:>3}'
 
-    s = self.standings
-    pct = lambda t: (float(s[t][0]) / (sum(s[t]) or 1),
-                     s[t][0],
-                     float(1) / s[t][1] if s[t][1] else 2)
+    lines = [top.format(title=kgroup, div=div)]
+    for v in self.getOrdered(s, group):
+      city = slack_api.teamidsToCities[v]
+      if 'p' in s[v]:
+        city = s[v]['p'] + city
+      w, l, dgb = s[v]['w'], s[v]['l'], s[v][kgb]
+      gb = '{:0.1f}'.format(dgb) if dgb > 0 else '+{:0.1f}'.format(abs(dgb)) if dgb < 0 else '-'
+      mn = '' if kmn not in s[v] else s[v][kmn] if s[v][kmn] > 0 else 'X'
+      en = '' if ken not in s[v] else s[v][ken]
+      lines.append(row.format(city=city, div=div, w=w, l=l, gb=gb, mn=mn))
 
-    lines = []
-    wc = []
-    for group in groups:
-      lines.append(top.format(division=group[0], div=div))
-      ordered = sorted(group[1], key=pct, reverse=True)
+    return '\n'.join(lines)
 
-      t = ordered[0]
-      wc.extend(ordered[1:])
+  def formatStandingsInternal(self, east, cent, west, k):
+    """Return a string representation of the standings for a league.
 
-      leaders = 1
+    Args:
+        east: the set of team ids in the east division.
+        cent: the set of team ids in the central division.
+        west: the set of team ids in the west division.
+        kgroup: the title of the group (e.g. 'AL East').
+        k: the league title prefix (e.g. 'AL').
+    Returns:
+        the string representation of the standings.
+
+    """
+    s = self.standings.copy()
+    keast, kcent, kwest, kwc = [k + ' ' + ey for ey in ['East', 'Central', 'West', 'Wild Card']]
+
+    # Set the games behind and elimination numbers for each division.
+    # If a team is the only leader in its division, annotate it with 'dbg0'.
+    for group in [east, cent, west]:
+      ordered = self.getOrdered(s, group)
+      t0, s[t0]['dgb'], s[t0]['dgb0'] = ordered[0], 0.0, 1
       for u in ordered[1:]:
-        if (s[t][0] - s[u][0] + s[u][1] - s[t][1]) / 2.0 == 0:
-          leaders += 1
-        else:
-          break
+        gb = self.getGamesBehind(s, u, t0)
+        s[u]['dgb'] = gb
+        if gb == 0.0 and 'dgb0' in s[t0]:
+          del s[t0]['dgb0']
+      self.processEliminationNumbers(s, ordered, 0, 'd')
 
-      for l in ordered[:leaders]:
-        city = slack_api.teamidsToCities[l]
-        wa = s[l][0]
-        lb = min(s[v][1] for v in ordered if l != v)
-        mn = 163 - wa - lb
-        lines.append(row.format(city=city, div=div, w=s[l][0], l=s[l][1], gb='-', mn=mn))
-      for f in ordered[leaders:]:
-        city = slack_api.teamidsToCities[f]
-        gb = '{:0.1f}'.format((s[t][0] - s[f][0] + s[f][1] - s[t][1]) / 2.0)
-        lines.append(row.format(city=city, div=div, w=s[f][0], l=s[f][1], gb=gb, mn=''))
+    # Filter division leaders out of the set of wild card teams.
+    lg = east + cent + west
+    wc = filter(lambda v: 'dgb0' not in s[v], lg)
 
-      lines.append('')
-
-    lines.append(top.format(division=wildcard, div=div))
-    ordered = sorted(wc, key=pct, reverse=True)
-
-    t = ordered[0]
-    u = ordered[1]
-    leaders = 2
-    for v in ordered[2:]:
-      if (s[u][0] - s[v][0] + s[v][1] - s[u][1]) / 2.0 == 0:
-        leaders += 1
-      else:
+    # Find the index of the team occupying the final playoff spot in the league.
+    ordered = self.getOrdered(s, lg)
+    k, j = 0, 2
+    for i, t0 in enumerate(ordered):
+      if 'dgb0' not in s[t0]:
+        k += 1
+        if s[t0]['dgb'] == 0:
+          j = 3
+      if k == j:
         break
 
-    l = ordered[leaders - 1]
-    for m in ordered[:leaders]:
-      city = slack_api.teamidsToCities[m]
-      wa = s[m][0]
-      lb = min(s[v][1] for v in ordered[leaders:])
-      mn = 163 - wa - lb
-      gb = (s[m][0] - s[l][0] + s[l][1] - s[m][1]) / 2.0
-      gb = '-' if gb == 0 else '{:+0.1f}'.format(gb)
-      lines.append(row.format(city=city, div=div, w=s[m][0], l=s[m][1], gb=gb, mn=mn))
-    for f in ordered[leaders:leaders + 4]:
-      city = slack_api.teamidsToCities[f]
-      gb = '{:0.1f}'.format((s[l][0] - s[f][0] + s[f][1] - s[l][1]) / 2.0)
-      lines.append(row.format(city=city, div=div, w=s[f][0], l=s[f][1], gb=gb, mn=''))
+    # Set the games behind and elimination numbers for the wild card.
+    s[t0]['wgb'] = 0.0
+    for v in ordered:
+      s[v]['wgb'] = self.getGamesBehind(s, v, t0)
+    self.processEliminationNumbers(s, ordered, i, 'w')
 
-  
-    return '\n'.join(lines)
+    # Annotate the standings with team prefixes, if applicable.
+    for v in ordered:
+      if s[v].get('den', 1) == 0 and s[v].get('wen', 1) == 0:
+        # v has been eliminated.
+        s[v]['p'] = 'e-'
+      if s[v].get('dmn', 1) == 0:
+        # v has clinched the division.
+        s[v]['p'] = 'x-'
+      elif s[v].get('wmn', 1) == 0:
+        if 'dgb0' in s[v]:
+          # v has clinched a playoff berth.
+          s[v]['p'] = 'y-'
+        else:
+          # v has clinched the wild card.
+          s[v]['p'] = 'z-'
+
+    # Feed the annotated standings data into a helper method to populate the standings template.
+    groups = zip([keast, kcent, kwest, kwc], [east, cent, west, wc], ['d', 'd', 'd', 'w'])
+    ret = [self.getStandingsOutput(s, kgroup, group, k) for (kgroup, group, k) in groups]
+    return '\n\n'.join(ret)
+
+  def formatStandingsAL(self):
+    aleast, alcent, alwest = [33, 34, 48, 57, 59], [35, 38, 40, 43, 47], [42, 44, 50, 54, 58]
+    return self.formatStandingsInternal(aleast, alcent, alwest, 'AL')
+
+  def formatStandingsNL(self):
+    nleast, nlcent, nlwest = [32, 41, 49, 51, 60], [36, 37, 46, 52, 56], [31, 39, 45, 53, 55]
+    return self.formatStandingsInternal(nleast, nlcent, nlwest, 'NL')
 
 
 if __name__ == '__main__':
