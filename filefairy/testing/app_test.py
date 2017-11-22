@@ -71,13 +71,20 @@ liveTable = '```MAJOR LEAGUE BASEBALL Live Table - 03/21/2021\n' + \
             'Texas Rangers                  25\n' + \
             'Pittsburgh Pirates             21````'
 
+overstandings = '31 36 46\n32 43 38\n33 45 38\n34 43 39\n35 41 41\n36 42 40\n' + \
+                '37 57 24\n38 38 44\n39 48 33\n40 39 43\n41 29 53\n42 36 46\n' + \
+                '43 43 41\n44 39 42\n45 48 33\n46 38 44\n47 48 35\n48 38 44\n' + \
+                '49 45 38\n50 34 47\n51 42 39\n52 25 57\n53 49 33\n54 49 31\n' + \
+                '55 36 46\n56 44 37\n57 43 40\n58 28 54\n59 47 35\n60 35 47\n'
 
 class AppTest(App):
   '''Tests for App.'''
 
-  def __init__(self, logger, slackApi, fileUrls, standingsInFile, integration=False):
+  def __init__(self, logger, slackApi, fileUrls, standingsInFile, over=False, integration=False):
     self.logger = logger
     self.slackApi = slackApi
+    self.over = over
+    self.integration = integration
 
     self.fileUrls, self.fileIndex = fileUrls, 0
     self.filePage = self.getPage(self.fileUrls[0])
@@ -93,7 +100,6 @@ class AppTest(App):
     self.records = {t: [0, 0] for t in range(31, 61)}
     self.standings = self.getStandings()
     self.ws = None
-    self.integration = integration
 
   def getFileUrl(self):
     if len(self.fileUrls) > self.fileIndex + 1:
@@ -110,17 +116,16 @@ class AppTest(App):
   def getBoxScoreUrl(self, boxid):
     return 'game_box_{}.html'.format(boxid)
 
-  def getStandingsPath(self):
-    return os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/'
-
   def getStandingsGoldFile(self):
-    return self.getStandingsPath() + 'standingsgold.txt'
+    return self.getFilefairyPath() + 'testing/standingsgold.txt'
 
   def getStandingsInFile(self):
-    return self.getStandingsPath() + self.standingsInFile
+    if self.over:
+      return super(AppTest, self).getStandingsInFile()
+    return self.getFilefairyPath() + self.standingsInFile
 
   def getStandingsOutFile(self):
-    return self.getStandingsPath() + 'standingsout.txt'
+    return self.getFilefairyPath() + 'testing/standingsout.txt'
 
   def getChannelGeneral(self):
     return 'testing'
@@ -352,7 +357,7 @@ def testReal():
 
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
 
   assertNotEquals(appTest.findFileDate(filePage), '')
 
@@ -360,7 +365,7 @@ def testReal():
 def testFindFileDate():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
 
   page = appTest.getPage(fileUrls[0])
   assertEquals(appTest.findFileDate(page), fileDates['old'])
@@ -381,7 +386,7 @@ def testFindFileDate():
 def testUpdateLeagueFile():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
 
   expected = {'ret': False, 'collected': [], 'index': 1,
               'date': fileDates['old']}
@@ -407,7 +412,7 @@ def testUpdateLeagueFile():
 def testWatch():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
 
   expected = {'collected': logs[1:4] + logs[5:8]}
   assertEquals(appTest.getWatch(), expected)
@@ -416,7 +421,7 @@ def testWatch():
 def testFinalScores():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
 
   appTest.handleFinalScores(finalScores)
   appTest.handleLiveTable(liveTable)
@@ -432,27 +437,34 @@ def testStandings():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
 
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_openingday.txt')
-  print appTest.formatStandingsAL()
-  print appTest.formatStandingsNL()
-  print '\n--------------------\n'
+  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_openingday.txt')
+  # print appTest.formatStandingsAL()
+  # print appTest.formatStandingsNL()
+  # print '\n--------------------\n'
 
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_linear.txt')
-  print appTest.formatStandingsAL()
-  print appTest.formatStandingsNL()
-  print '\n--------------------\n'
+  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_linear.txt')
+  # print appTest.formatStandingsAL()
+  # print appTest.formatStandingsNL()
+  # print '\n--------------------\n'
 
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_final.txt')
-  print appTest.formatStandingsAL()
-  print appTest.formatStandingsNL()
-  print '\n--------------------\n'
+  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_final.txt')
+  # print appTest.formatStandingsAL()
+  # print appTest.formatStandingsNL()
+  # print '\n--------------------\n'
 
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_baddivision.txt')
-  print appTest.formatStandingsAL()
-  print appTest.formatStandingsNL()
-  print '\n--------------------\n'
+  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_baddivision.txt')
+  # print appTest.formatStandingsAL()
+  # print appTest.formatStandingsNL()
+  # print '\n--------------------\n'
 
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standings_today.txt')
+  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_today.txt')
+  # print appTest.formatStandingsAL()
+  # print appTest.formatStandingsNL()
+
+  path = os.path.expanduser('~') + '/orangeandblueleague/filefairy/overdata/standings.txt'
+  with open(path, 'w') as f:
+    f.write(overstandings)
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'data/standings.txt', True)
   print appTest.formatStandingsAL()
   print appTest.formatStandingsNL()
 
@@ -460,7 +472,7 @@ def testStandings():
 def testListen():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt')
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
 
   expected = {'collected': logs[:1] + logs[8:]}
   assertEquals(appTest.getListen(), expected)
@@ -469,7 +481,7 @@ def testListen():
 def testIntegration():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'standingsin.txt', True)
+  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt', False, True)
 
   with open(appTest.getStandingsOutFile(), 'w') as f:
     pass

@@ -40,14 +40,17 @@ class App(object):
   def getBoxScoreUrl(self, boxid):
     return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_{}.html'.format(boxid)
 
-  def getStandingsPath(self):
-    return os.path.expanduser('~') + '/orangeandblueleague/filefairy/data/'
+  def getFilefairyPath(self):
+    return os.path.expanduser('~') + '/orangeandblueleague/filefairy/'
 
   def getStandingsInFile(self):
-    return self.getStandingsPath() + 'standings.txt'
+    path, data = self.getFilefairyPath(), 'data/'
+    if os.path.isfile(path + 'overdata/standings.txt'):
+      data = 'overdata/'
+    return path + data + 'standings.txt'
 
   def getStandingsOutFile(self):
-    return self.getStandingsInFile()
+    return self.getFilefairyPath() + 'data/standings.txt'
 
   def getChannelGeneral(self):
     return 'general'
