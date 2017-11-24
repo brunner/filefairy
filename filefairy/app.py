@@ -100,13 +100,16 @@ class App(object):
 
   def listen(self):
     def on_message_(ws, message):
+      self.lock.acquire()
       obj = json.loads(message)
       if 'type' not in obj or 'channel' not in obj or 'text' not in obj:
+        self.lock.release()
         return
 
       channel = self.slackApi.getChannel(obj['channel'])
       if obj['type'] == 'message' and channel == self.getChannelStatsplus():
         self.handleStatsplus(obj['text'])
+      self.lock.release()
 
     obj = self.slackApi.rtmConnect()
     if obj['ok'] and 'url' in obj:
@@ -128,12 +131,10 @@ class App(object):
       self.handleInjuries(text)
 
   def handleFinalScores(self, text):
-    self.lock.acquire()
     text = re.sub(r'(MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
     if text not in self.finalScores:
       self.finalScores.append(text)
       self.tick = int(time.time())
-    self.lock.release()
 
   def processFinalScores(self):
     if len(self.finalScores) == len(self.liveTables):
@@ -220,39 +221,43 @@ class App(object):
     self.finalScores, self.liveTables = [], []
 
   def handleLiveTable(self, text):
-    self.lock.acquire()
     self.liveTables.append(text)
     self.tick = int(time.time())
-    self.lock.release()
 
   def handleInjuries(self, text):
-    self.lock.acquire()
     if text not in self.injuries:
       self.injuries.append(text)
       self.tick = int(time.time())
-    self.lock.release()
 
   def processInjuries(self):
-    lines = ['Injuries']
-    for injury in self.injuries:
-      for chunk in injury.split('. '):
-        match = re.findall(r'(\<[^\(]+)\(', chunk)
-        if match:
-          line = re.sub(r'was injured (?:(?:in a|on a|while) )?',
-                        '(', match[0].strip())
-          if not line == match[0]:
-            line += ')'
-          lines.append(line)
+    lines = []
+    if self.injuries:
+      lines.append('Injuries:')
+      for injury in self.injuries:
+        for chunk in injury.split('. '):
+          match = re.findall(r'(\<[^\(]+)\(', chunk)
+          if match:
+            line = re.sub(r'was injured (?:(?:in a|on a|while) )?',
+                          '(', match[0].strip())
+            if not line == match[0]:
+              line += ')'
+            lines.append(line)
 
-    self.slackApi.chatPostMessage(
-        self.getChannelLiveSimDiscussion(), '\n'.join(lines))
-    self.injuries = []
+      self.injuries = []
+
+    ret = '\n'.join(lines)
+    if ret:
+      self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), ret)
+
+    return ret
 
   def handleClose(self):
+    self.lock.acquire()
     if self.ws:
       self.ws.close()
       self.slackApi.chatPostMessage('testing', 'Done listening.')
       self.logger.log('Done listening.')
+    self.lock.release()
 
   def watch(self):
     sleep, records, timeout = self.getTimerValues()

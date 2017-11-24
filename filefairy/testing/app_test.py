@@ -14,15 +14,6 @@ from app import App
 from slack_api import SlackApi, TestSlackApi
 from utils import assertEquals, assertNotEquals
 
-injury1 = '03/21/2021 RP <https://player_33610.html|Drew Pomeranz> was injured ' + \
-          'while pitching (Baltimore @ Seattle)'
-injury2 = '03/21/2021 LF <https://player_37732.html|Alexis Rivera> was injured ' + \
-          'on a defensive play (Cleveland @ Toronto)'
-injury3 = '03/21/2021 Rain delay of 16 minutes in the 7th inning. ' + \
-          'SS <https://player_39374.html|Amed Rosario> was injured ' + \
-          'in a collision at a base (Kansas City @ Detroit)'
-injury4 = '03/21/2021 SS <https://player_39374.html|Amed Rosario> was injured ' + \
-          'during a surprise event (Kansas City @ Detroit)'
 finalScores = '03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' + \
               '*<https://game_box_24216.html|Atlanta 7, Colorado 6>*\n' + \
               '*<https://game_box_24018.html|Cleveland 5, Toronto 1>*\n' + \
@@ -77,10 +68,20 @@ overstandings = '31 36 46\n32 43 38\n33 45 38\n34 43 39\n35 41 41\n36 42 40\n' +
                 '49 45 38\n50 34 47\n51 42 39\n52 25 57\n53 49 33\n54 49 31\n' + \
                 '55 36 46\n56 44 37\n57 43 40\n58 28 54\n59 47 35\n60 35 47\n'
 
+
+fileUrls = [
+    'export_01142017_1.html',         # 0. Initial exports page.
+    'export_01142017_2.html',         # 1. League file date has not changed.
+    'export_01142017_2.html',         # 2. League file date has not changed.
+    'export_01142017_2.html',         # 3. League file date has not changed.
+    'export_01172017_1.html',         # 3. League file date has changed.
+]
+
+
 class AppTest(App):
   '''Tests for App.'''
 
-  def __init__(self, logger, slackApi, fileUrls, standingsInFile, over=False, integration=False):
+  def __init__(self, logger, slackApi, fileUrls=fileUrls, standingsInFile='testing/standingsin.txt', over=False, integration=False):
     self.logger = logger
     self.slackApi = slackApi
     self.over = over
@@ -106,7 +107,6 @@ class AppTest(App):
       self.fileIndex = self.fileIndex + 1
 
     if self.integration and self.fileIndex == 1:
-      self.chatInjuryTest()
       self.chatFinalScoresTest()
       self.chatFinalScoresTest()
       self.chatLiveTableTest()
@@ -154,12 +154,6 @@ class AppTest(App):
     os.chdir(cwd)
     return page
 
-  def chatInjuryTest(self):
-    self.slackApi.chatPostMessage('testing', injury1)
-    self.slackApi.chatPostMessage('testing', injury2)
-    self.slackApi.chatPostMessage('testing', injury3)
-    self.slackApi.chatPostMessage('testing', injury4)
-
   def chatFinalScoresTest(self):
     self.slackApi.chatPostMessage('testing', finalScores)
 
@@ -170,8 +164,6 @@ class AppTest(App):
     t1 = threading.Thread(target=self.listen)
     t1.start()
     time.sleep(6)
-
-    self.chatInjuryTest()
     self.chatFinalScoresTest()
     self.chatLiveTableTest()
 
@@ -216,14 +208,6 @@ class AppTest(App):
         'index': self.fileIndex,
         'date': self.fileDate,
     }
-
-fileUrls = [
-    'export_01142017_1.html',         # 0. Initial exports page.
-    'export_01142017_2.html',         # 1. League file date has not changed.
-    'export_01142017_2.html',         # 2. League file date has not changed.
-    'export_01142017_2.html',         # 3. League file date has not changed.
-    'export_01172017_1.html',         # 3. League file date has changed.
-]
 
 fileDates = {
     'old': 'Saturday January 14, 2017 13:01:09 EST',
@@ -357,7 +341,7 @@ def testReal():
 
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
+  appTest = AppTest(logger, slackApi)
 
   assertNotEquals(appTest.findFileDate(filePage), '')
 
@@ -365,7 +349,7 @@ def testReal():
 def testFindFileDate():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
+  appTest = AppTest(logger, slackApi)
 
   page = appTest.getPage(fileUrls[0])
   assertEquals(appTest.findFileDate(page), fileDates['old'])
@@ -386,7 +370,7 @@ def testFindFileDate():
 def testUpdateLeagueFile():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
+  appTest = AppTest(logger, slackApi)
 
   expected = {'ret': False, 'collected': [], 'index': 1,
               'date': fileDates['old']}
@@ -412,7 +396,7 @@ def testUpdateLeagueFile():
 def testWatch():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
+  appTest = AppTest(logger, slackApi)
 
   expected = {'collected': logs[1:4] + logs[5:8]}
   assertEquals(appTest.getWatch(), expected)
@@ -421,7 +405,7 @@ def testWatch():
 def testFinalScores():
   logger = TestLogger()
   slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
+  appTest = AppTest(logger, slackApi)
 
   appTest.handleFinalScores(finalScores)
   appTest.handleLiveTable(liveTable)
@@ -464,7 +448,7 @@ def testStandings():
   path = os.path.expanduser('~') + '/orangeandblueleague/filefairy/overdata/standings.txt'
   with open(path, 'w') as f:
     f.write(overstandings)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'data/standings.txt', True)
+  appTest = AppTest(logger, slackApi, over=True)
   print appTest.formatStandingsAL()
   print appTest.formatStandingsNL()
 
@@ -472,7 +456,7 @@ def testStandings():
 def testListen():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt')
+  appTest = AppTest(logger, slackApi)
 
   expected = {'collected': logs[:1] + logs[8:]}
   assertEquals(appTest.getListen(), expected)
@@ -481,8 +465,7 @@ def testListen():
 def testIntegration():
   logger = TestLogger()
   slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standingsin.txt', False, True)
-
+  appTest = AppTest(logger, slackApi, integration=True)
   with open(appTest.getStandingsOutFile(), 'w') as f:
     pass
 
