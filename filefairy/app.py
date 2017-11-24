@@ -128,7 +128,7 @@ class App(object):
       self.handleInjuries(text)
 
   def handleFinalScores(self, text):
-    text = re.sub(r'(MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
+    text = re.sub(r'( MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
     if text not in self.finalScores:
       self.finalScores.append(text)
       self.tick = int(time.time())
@@ -215,7 +215,10 @@ class App(object):
       #       lid = slack_api.nicksToTeamids[lteam]
       #       self.records[lid][1] += 1
 
+
+    ret = '\n'.join(self.finalScores)
     self.finalScores, self.liveTables = [], []
+    return ret
 
   def handleLiveTable(self, text):
     self.liveTables.append(text)
@@ -248,6 +251,19 @@ class App(object):
 
     return ret
 
+  def processRecords(self):
+    ret = self.formatRecords()
+    self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), ret)
+    return ret
+
+  def processStandings(self):
+    retA = self.formatStandingsAL()
+    retB = self.formatStandingsNL()
+    self.slackApi.filesUpload(retA, 'AL.txt', 'testing')
+    self.slackApi.filesUpload(retB, 'NL.txt', 'testing')
+    self.writeStandings()
+    return '\n'.join([retA, retB])
+
   def handleClose(self):
     self.lock.acquire()
     if self.ws:
@@ -274,11 +290,8 @@ class App(object):
       if self.finalScores and int(time.time()) - self.tick > records:
         self.processFinalScores()
         self.processInjuries()
-        self.slackApi.chatPostMessage(
-            self.getChannelLiveSimDiscussion(), self.formatRecords())
-        self.slackApi.filesUpload(self.formatStandingsAL(), 'AL.txt', 'testing')
-        self.slackApi.filesUpload(self.formatStandingsNL(), 'NL.txt', 'testing')
-        self.writeStandings()
+        self.processRecords()
+        self.processStandings()
       self.lock.release()
 
     self.slackApi.chatPostMessage('testing', 'Done watching.')
