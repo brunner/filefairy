@@ -102,13 +102,10 @@ class App(object):
     def on_message_(ws, message):
       self.lock.acquire()
       obj = json.loads(message)
-      if 'type' not in obj or 'channel' not in obj or 'text' not in obj:
-        self.lock.release()
-        return
-
-      channel = self.slackApi.getChannel(obj['channel'])
-      if obj['type'] == 'message' and channel == self.getChannelStatsplus():
-        self.handleStatsplus(obj['text'])
+      if all(k in obj for k in ['type', 'channel', 'text']):
+        channel = self.slackApi.getChannel(obj['channel'])
+        if obj['type'] == 'message' and channel == self.getChannelStatsplus():
+          self.handleStatsplus(obj['text'])
       self.lock.release()
 
     obj = self.slackApi.rtmConnect()
