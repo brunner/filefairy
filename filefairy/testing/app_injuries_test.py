@@ -26,7 +26,7 @@ outpt = 'Injuries:\n' + \
         '<https://player_31259.html|Matt Davidson> (during a surprise event)'
 
 
-def testInjuries():
+def test():
   logger = TestLogger()
   slackApi = SlackApi(logger)
   appTest = AppTest(logger, slackApi)
@@ -46,4 +46,4 @@ def testInjuries():
 
 
 if __name__ == '__main__':
-  testInjuries()
+  test()
