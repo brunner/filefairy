@@ -14,6 +14,9 @@ from app import App
 from slack_api import SlackApi, TestSlackApi
 from utils import assertEquals, assertNotEquals
 
+injury = '03/21/2021 RP <https://player_33610.html|Drew Pomeranz> was injured ' + \
+         'while pitching (Baltimore @ Seattle)'
+
 finalScores = '03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' + \
               '*<https://game_box_24216.html|Atlanta 7, Colorado 6>*\n' + \
               '*<https://game_box_24018.html|Cleveland 5, Toronto 1>*\n' + \
@@ -107,6 +110,7 @@ class AppTest(App):
       self.fileIndex = self.fileIndex + 1
 
     if self.integration and self.fileIndex == 1:
+      self.chatInjuryTest()
       self.chatFinalScoresTest()
       self.chatFinalScoresTest()
       self.chatLiveTableTest()
@@ -154,6 +158,9 @@ class AppTest(App):
     os.chdir(cwd)
     return page
 
+  def chatInjuryTest(self):
+    self.slackApi.chatPostMessage('testing', injury)
+
   def chatFinalScoresTest(self):
     self.slackApi.chatPostMessage('testing', finalScores)
 
@@ -164,6 +171,8 @@ class AppTest(App):
     t1 = threading.Thread(target=self.listen)
     t1.start()
     time.sleep(6)
+
+    self.chatInjuryTest()
     self.chatFinalScoresTest()
     self.chatLiveTableTest()
 
