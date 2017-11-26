@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import copy
 import datetime
 import json
 import os
@@ -470,7 +471,7 @@ class App(object):
         the string representation of the standings.
 
     """
-    s = self.standings.copy()
+    s = copy.deepcopy(self.standings)
     keast, kcent, kwest, kwc = [k + ' ' + ey for ey in ['East', 'Central', 'West', 'Wild Card']]
 
     # Set the games behind and elimination numbers for each division.
