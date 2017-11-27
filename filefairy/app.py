@@ -58,20 +58,14 @@ class App(object):
   def get_statsplus_id(self):
     return 'C7JSGHW8G'
 
-  def getTimerValues(self):
-    return [
-        30,     # Sleep between consecutive file page checks.
-        120,    # Pause and post records/injuries.
-        82800,  # Time out and exiting the program.
-    ]
+  def get_timer_values(self):
+    return [120, 82800]
 
   def get_page(self, url):
-    page = ''
     try:
-      page = urllib2.urlopen(url).read()
+      return urllib2.urlopen(url).read()
     except:
-      pass
-    return page
+      return ''
 
   def getStandings(self):
     standings = {}
@@ -258,7 +252,7 @@ class App(object):
     self.lock.release()
 
   def watch(self):
-    sleep, records, timeout = self.getTimerValues()
+    sleep, timeout = self.get_timer_values()
     elapsed = 0
     chat_post_message('testing', 'Started watching.')
 
@@ -270,7 +264,7 @@ class App(object):
         elapsed = timeout
 
       self.lock.acquire()
-      if self.finalScores and int(time.time()) - self.tick > records:
+      if self.finalScores and int(time.time()) - self.tick > sleep:
         self.process_final_scores()
         self.process_injuries()
         self.process_records()

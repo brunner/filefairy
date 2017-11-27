@@ -107,10 +107,10 @@ class AppTest(App):
       self.fileIndex = self.fileIndex + 1
 
     if self.integration and self.fileIndex == 1:
-      self.chatInjuryTest()
-      self.chatFinalScoresTest()
-      self.chatFinalScoresTest()
-      self.chatLiveTableTest()
+      chat_post_message('testing', injury)
+      chat_post_message('testing', finalScores)
+      chat_post_message('testing', finalScores)
+      chat_post_message('testing', liveTable)
 
     return self.fileUrls[self.fileIndex]
 
@@ -137,32 +137,19 @@ class AppTest(App):
   def get_statsplus_id(self):
     return 'G3SUFLMK4'
 
-  def getTimerValues(self):
-    return [1, 2, 10]
+  def get_timer_values(self):
+    return [2, 10]
 
   def get_page(self, url):
-    path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
+    path = self.get_path() + 'testing/'
     cwd = os.getcwd()
     os.chdir(path)
-
-    if url.startswith('https://'):
-      url = url.substring(8)
-
     page = ''
     with open(url, 'r') as f:
       page = f.read()
-
     os.chdir(cwd)
     return page
 
-  def chatInjuryTest(self):
-    chat_post_message('testing', injury)
-
-  def chatFinalScoresTest(self):
-    chat_post_message('testing', finalScores)
-
-  def chatLiveTableTest(self):
-    chat_post_message('testing', liveTable)
 
 records = {
     31: [0, 0], 32: [1, 0], 33: [0, 1], 34: [0, 0], 35: [0, 1],
@@ -344,16 +331,16 @@ def testStandings():
 
 def testListen():
   appTest = AppTest()
-  
+
   t1 = threading.Thread(target=appTest.listen)
   t1.start()
   time.sleep(6)
 
-  appTest.chatInjuryTest()
-  appTest.chatFinalScoresTest()
-  appTest.chatLiveTableTest()
+  chat_post_message('testing', injury)
+  chat_post_message('testing', finalScores)
+  chat_post_message('testing', liveTable)
 
-  appTest.handleClose()
+  appTest.handle_close()
   time.sleep(1)
   t1.join()
 
@@ -372,6 +359,8 @@ def testIntegration():
 
   t1.join()
   t2.join()
+
+  appTest.handle_close()
 
   out, gold = '', ''
   with open(appTest.get_standings_outfile(), 'r') as f:
