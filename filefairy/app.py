@@ -13,14 +13,14 @@ import time
 import urllib2
 import websocket
 
-from slack_api import chatPostMessage, filesUpload, rtmConnect
+from slack_api import chat_post_message, files_upload, rtm_connect
 
 
 class App(object):
 
   def __init__(self):
-    page = self.getPage(self.getFileUrl())
-    self.fileDate = self.findFileDate(page)
+    page = self.get_page(self.get_file_url())
+    self.fileDate = self.get_file_date(page)
 
     self.finalScores = []
     self.injuries = []
@@ -31,31 +31,31 @@ class App(object):
     self.standings = self.getStandings()
     self.ws = None
 
-  def getFileUrl(self):
+  def get_file_url(self):
     return 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
   def getBoxScoreUrl(self, boxid):
     return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_{}.html'.format(boxid)
 
-  def getFilefairyPath(self):
+  def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/'
 
-  def getStandingsInFile(self):
-    path, data = self.getFilefairyPath(), 'data/'
+  def get_standings_infile(self):
+    path, data = self.get_path(), 'data/'
     if os.path.isfile(path + 'overdata/standings.txt'):
       data = 'overdata/'
     return path + data + 'standings.txt'
 
-  def getStandingsOutFile(self):
-    return self.getFilefairyPath() + 'data/standings.txt'
+  def get_standings_outfile(self):
+    return self.get_path() + 'data/standings.txt'
 
-  def general_name(self):
+  def get_general_name(self):
     return 'general'
 
-  def live_sim_discussion_name(self):
+  def get_live_sim_discussion_name(self):
     return 'live-sim-discussion'
 
-  def statsplus_id(self):
+  def get_statsplus_id(self):
     return 'C7JSGHW8G'
 
   def getTimerValues(self):
@@ -65,7 +65,7 @@ class App(object):
         82800,  # Time out and exiting the program.
     ]
 
-  def getPage(self, url):
+  def get_page(self, url):
     page = ''
     try:
       page = urllib2.urlopen(url).read()
@@ -75,7 +75,7 @@ class App(object):
 
   def getStandings(self):
     standings = {}
-    with open(self.getStandingsInFile(), 'r') as f:
+    with open(self.get_standings_infile(), 'r') as f:
       for line in f.readlines():
         if line.count(' ') == 2:
           t, w, l = line.split()
@@ -84,7 +84,7 @@ class App(object):
     return standings
 
   def writeStandings(self):
-    with open(self.getStandingsOutFile(), 'w') as f:
+    with open(self.get_standings_outfile(), 'w') as f:
       for t in self.standings:
         w, l = self.standings[t]['w'], self.standings[t]['l']
         f.write('{} {} {}\n'.format(t, w, l))
@@ -94,13 +94,13 @@ class App(object):
       self.lock.acquire()
       obj = json.loads(message)
       if all(k in obj for k in ['type', 'channel', 'text']):
-        if obj['type'] == 'message' and obj['channel'] == self.statsplus_id():
+        if obj['type'] == 'message' and obj['channel'] == self.get_statsplus_id():
           self.handleStatsplus(obj['text'])
       self.lock.release()
 
-    obj = rtmConnect()
+    obj = rtm_connect()
     if obj['ok'] and 'url' in obj:
-      chatPostMessage('testing', 'Started listening.')
+      chat_post_message('testing', 'Started listening.')
       self.ws = websocket.WebSocketApp(obj['url'], on_message=on_message_)
 
       t = threading.Thread(target=self.ws.run_forever)
@@ -121,10 +121,10 @@ class App(object):
       self.finalScores.append(text)
       self.tick = int(time.time())
 
-  def processFinalScores(self):
+  def process_final_scores(self):
     if len(self.finalScores) == len(self.liveTables):
       for finalScore, liveTable in zip(self.finalScores, self.liveTables):
-        chatPostMessage(self.live_sim_discussion_name(), finalScore)
+        chat_post_message(self.get_live_sim_discussion_name(), finalScore)
         for t in range(31, 61):
           # Look up the city of the team.
           # For example, city could be 'Red Sox' or 'Chicago'.
@@ -185,7 +185,7 @@ class App(object):
 
       #     if wteam in cities or lteam in cities:
       #       url = self.getBoxScoreUrl(boxid)
-      #       page = self.getPage(url)
+      #       page = self.get_page(url)
       #       wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<(]+)', page)
       #       lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<(]+)', page)
       #       if wmatch and wteam in cities:
@@ -215,7 +215,7 @@ class App(object):
       self.injuries.append(text)
       self.tick = int(time.time())
 
-  def processInjuries(self):
+  def process_injuries(self):
     lines = []
     if self.injuries:
       lines.append('Injuries:')
@@ -233,34 +233,34 @@ class App(object):
 
     ret = '\n'.join(lines)
     if ret:
-      chatPostMessage(self.live_sim_discussion_name(), ret)
+      chat_post_message(self.get_live_sim_discussion_name(), ret)
 
     return ret
 
-  def processRecords(self):
+  def process_records(self):
     ret = self.formatRecords()
-    chatPostMessage(self.live_sim_discussion_name(), ret)
+    chat_post_message(self.get_live_sim_discussion_name(), ret)
     return ret
 
-  def processStandings(self):
+  def process_standings(self):
     retA = self.formatStandingsAL()
     retB = self.formatStandingsNL()
-    filesUpload(retA, 'AL.txt', 'testing')
-    filesUpload(retB, 'NL.txt', 'testing')
+    files_upload(retA, 'AL.txt', 'testing')
+    files_upload(retB, 'NL.txt', 'testing')
     self.writeStandings()
     return '\n'.join([retA, retB])
 
-  def handleClose(self):
+  def handle_close(self):
     self.lock.acquire()
     if self.ws:
       self.ws.close()
-      chatPostMessage('testing', 'Done listening.')
+      chat_post_message('testing', 'Done listening.')
     self.lock.release()
 
   def watch(self):
     sleep, records, timeout = self.getTimerValues()
     elapsed = 0
-    chatPostMessage('testing', 'Started watching.')
+    chat_post_message('testing', 'Started watching.')
 
     while elapsed < timeout:
       time.sleep(sleep)
@@ -271,31 +271,31 @@ class App(object):
 
       self.lock.acquire()
       if self.finalScores and int(time.time()) - self.tick > records:
-        self.processFinalScores()
-        self.processInjuries()
-        self.processRecords()
-        self.processStandings()
+        self.process_final_scores()
+        self.process_injuries()
+        self.process_records()
+        self.process_standings()
       self.lock.release()
 
-    chatPostMessage('testing', 'Done watching.')
-    self.handleClose()
+    chat_post_message('testing', 'Done watching.')
+    self.handle_close()
 
   def updateLeagueFile(self):
-    url = self.getFileUrl()
-    page = self.getPage(url)
-    date = self.findFileDate(page)
+    url = self.get_file_url()
+    page = self.get_page(url)
+    date = self.get_file_date(page)
 
     if not date:
       return False
 
     if date != self.fileDate:
-      chatPostMessage(self.general_name(), 'File is up.')
+      chat_post_message(self.get_general_name(), 'File is up.')
       self.fileDate = date
       return True
 
     return False
 
-  def findFileDate(self, page):
+  def get_file_date(self, page):
     match = re.findall(r'League File Updated: ([^<]+)<', page)
     return match[0] if len(match) else ''
 

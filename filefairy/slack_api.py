@@ -19,7 +19,7 @@ def call_(method, params):
   return obj
 
 
-def chatPostMessage(channel, text, attachments=[], thread_ts=''):
+def chat_post_message(channel, text, attachments=[], thread_ts=''):
   return call_('chat.postMessage', {
       'token': tokens.filefairy,
       'channel': channel,
@@ -31,7 +31,7 @@ def chatPostMessage(channel, text, attachments=[], thread_ts=''):
   })
 
 
-def filesUpload(content, filename, channel):
+def files_upload(content, filename, channel):
   return call_('files.upload', {
       'token': tokens.filefairy,
       'content': content,
@@ -40,7 +40,7 @@ def filesUpload(content, filename, channel):
   })
 
 
-def rtmConnect():
+def rtm_connect():
   return call_('rtm.connect', {'token': tokens.filefairy})
 
 

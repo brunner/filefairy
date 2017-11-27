@@ -4,8 +4,8 @@ import threading
 import time
 
 from app_test import AppTest
-from slack_api import chatPostMessage
-from utils import assertEquals
+from slack_api import chat_post_message
+from utils import assert_equals
 
 
 inpt = ['03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
@@ -292,25 +292,25 @@ def test():
   t1.start()
   time.sleep(6)
 
-  chatPostMessage('testing', inpt[0])
-  chatPostMessage('testing', inpt[1])
-  assertEquals(appTest.processFinalScores(), outp[0])
-  assertEquals(appTest.processRecords(), rcrd[0])
-  assertEquals(appTest.processStandings(), stnd[0])
+  chat_post_message('testing', inpt[0])
+  chat_post_message('testing', inpt[1])
+  assert_equals(appTest.process_final_scores(), outp[0])
+  assert_equals(appTest.process_records(), rcrd[0])
+  assert_equals(appTest.process_standings(), stnd[0])
 
-  chatPostMessage('testing', inpt[2])
-  chatPostMessage('testing', inpt[3])
-  assertEquals(appTest.processFinalScores(), outp[1])
-  assertEquals(appTest.processRecords(), rcrd[1])
-  assertEquals(appTest.processStandings(), stnd[1])
+  chat_post_message('testing', inpt[2])
+  chat_post_message('testing', inpt[3])
+  assert_equals(appTest.process_final_scores(), outp[1])
+  assert_equals(appTest.process_records(), rcrd[1])
+  assert_equals(appTest.process_standings(), stnd[1])
 
-  appTest.handleClose()
+  appTest.handle_close()
   time.sleep(1)
   t1.join()
 
-  with open(appTest.getStandingsOutFile(), 'r') as fo:
-    with open(appTest.getFilefairyPath() + 'testing/standings_final_scores_gold.txt', 'r') as fg:
-      assertEquals(fo.read(), fg.read())
+  with open(appTest.get_standings_outfile(), 'r') as fo:
+    with open(appTest.get_path() + 'testing/standings_final_scores_gold.txt', 'r') as fg:
+      assert_equals(fo.read(), fg.read())
 
 
 if __name__ == '__main__':

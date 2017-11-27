@@ -10,8 +10,8 @@ import time
 import urllib2
 
 from app import App
-from slack_api import chatPostMessage
-from utils import assertEquals, assertNotEquals
+from slack_api import chat_post_message
+from utils import assert_equals
 
 injury = '03/21/2021 RP <https://player_33610.html|Drew Pomeranz> was injured ' + \
          'while pitching (Baltimore @ Seattle)'
@@ -72,11 +72,11 @@ overstandings = '31 36 46\n32 43 38\n33 45 38\n34 43 39\n35 41 41\n36 42 40\n' +
 
 
 fileUrls = [
-    'export_01142017_1.html',         # 0. Initial exports page.
+    'exports1.html',                  # 0. Initial exports page.
     'export_01142017_2.html',         # 1. League file date has not changed.
     'export_01142017_2.html',         # 2. League file date has not changed.
     'export_01142017_2.html',         # 3. League file date has not changed.
-    'export_01172017_1.html',         # 4. League file date has changed.
+    'exports2.html',                  # 4. League file date has changed.
 ]
 
 
@@ -88,8 +88,8 @@ class AppTest(App):
     self.integration = integration
 
     self.fileUrls, self.fileIndex = fileUrls, 0
-    self.filePage = self.getPage(self.fileUrls[0])
-    self.fileDate = self.findFileDate(self.filePage)
+    self.filePage = self.get_page(self.fileUrls[0])
+    self.fileDate = self.get_file_date(self.filePage)
 
     self.standingsInFile = standingsInFile
 
@@ -102,7 +102,7 @@ class AppTest(App):
     self.standings = self.getStandings()
     self.ws = None
 
-  def getFileUrl(self):
+  def get_file_url(self):
     if len(self.fileUrls) > self.fileIndex + 1:
       self.fileIndex = self.fileIndex + 1
 
@@ -117,30 +117,30 @@ class AppTest(App):
   def getBoxScoreUrl(self, boxid):
     return 'game_box_{}.html'.format(boxid)
 
-  def getStandingsGoldFile(self):
-    return self.getFilefairyPath() + 'testing/standingsgold.txt'
+  def get_standings_goldfile(self):
+    return self.get_path() + 'testing/standingsgold.txt'
 
-  def getStandingsInFile(self):
+  def get_standings_infile(self):
     if self.over:
-      return super(AppTest, self).getStandingsInFile()
-    return self.getFilefairyPath() + self.standingsInFile
+      return super(AppTest, self).get_standings_infile()
+    return self.get_path() + self.standingsInFile
 
-  def getStandingsOutFile(self):
-    return self.getFilefairyPath() + 'testing/standingsout.txt'
+  def get_standings_outfile(self):
+    return self.get_path() + 'testing/standingsout.txt'
 
-  def general_name(self):
+  def get_general_name(self):
     return 'testing'
 
-  def live_sim_discussion_name(self):
+  def get_live_sim_discussion_name(self):
     return 'testing'
 
-  def statsplus_id(self):
+  def get_statsplus_id(self):
     return 'G3SUFLMK4'
 
   def getTimerValues(self):
     return [1, 2, 10]
 
-  def getPage(self, url):
+  def get_page(self, url):
     path = os.path.expanduser("~") + "/orangeandblueleague/filefairy/testing/"
     cwd = os.getcwd()
     os.chdir(path)
@@ -156,13 +156,13 @@ class AppTest(App):
     return page
 
   def chatInjuryTest(self):
-    chatPostMessage('testing', injury)
+    chat_post_message('testing', injury)
 
   def chatFinalScoresTest(self):
-    chatPostMessage('testing', finalScores)
+    chat_post_message('testing', finalScores)
 
   def chatLiveTableTest(self):
-    chatPostMessage('testing', liveTable)
+    chat_post_message('testing', liveTable)
 
 records = {
     31: [0, 0], 32: [1, 0], 33: [0, 1], 34: [0, 0], 35: [0, 1],
@@ -273,66 +273,40 @@ formatStandingsN = 'NL East         |   W |   L |    GB |  M#\n' + \
                    'Pittsburgh      |  21 |  50 |  21.0 |    '
 
 
-def testReal():
-  fileUrl = 'http://orangeandblueleaguebaseball.com/StatsLab/exports.php'
-  filePage = urllib2.urlopen(fileUrl).read()
-
-  appTest = AppTest()
-  assertNotEquals(appTest.findFileDate(filePage), '')
-
-
-def testFindFileDate():
-  appTest = AppTest()
-  page = appTest.getPage(fileUrls[0])
-  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
-
-  page = appTest.getPage(fileUrls[1])
-  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
-
-  page = appTest.getPage(fileUrls[2])
-  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
-
-  page = appTest.getPage(fileUrls[3])
-  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
-
-  page = appTest.getPage(fileUrls[4])
-  assertEquals(appTest.findFileDate(page), 'Tuesday January 17, 2017 09:03:12 EST')
-
-
 def testUpdateLeagueFile():
   appTest = AppTest()
   appTest.updateLeagueFile()
-  assertEquals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
+  assert_equals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
 
   appTest.updateLeagueFile()
-  assertEquals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
+  assert_equals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
 
   appTest.updateLeagueFile()
-  assertEquals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
+  assert_equals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
 
   appTest.updateLeagueFile()
-  assertEquals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
+  assert_equals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
 
   appTest.updateLeagueFile()
-  assertEquals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
+  assert_equals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
 
 
 def testWatch():
   appTest = AppTest()
   appTest.watch()
-  assertEquals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
+  assert_equals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
 
 
 def testFinalScores():
   appTest = AppTest()
   appTest.handleFinalScores(finalScores)
   appTest.handleLiveTable(liveTable)
-  appTest.processFinalScores()
-  assertEquals(appTest.records, records)
-  assertEquals(appTest.standings, standings)
-  assertEquals(appTest.formatRecords(), formatRecords)
-  assertEquals(appTest.formatStandingsAL(), formatStandingsA)
-  assertEquals(appTest.formatStandingsNL(), formatStandingsN)
+  appTest.process_final_scores()
+  assert_equals(appTest.records, records)
+  assert_equals(appTest.standings, standings)
+  assert_equals(appTest.formatRecords(), formatRecords)
+  assert_equals(appTest.formatStandingsAL(), formatStandingsA)
+  assert_equals(appTest.formatStandingsNL(), formatStandingsN)
 
 
 def testStandings():
@@ -386,7 +360,7 @@ def testListen():
 
 def testIntegration():
   appTest = AppTest(integration=True)
-  with open(appTest.getStandingsOutFile(), 'w') as f:
+  with open(appTest.get_standings_outfile(), 'w') as f:
     pass
 
   t1 = threading.Thread(target=appTest.listen)
@@ -400,23 +374,17 @@ def testIntegration():
   t2.join()
 
   out, gold = '', ''
-  with open(appTest.getStandingsOutFile(), 'r') as f:
+  with open(appTest.get_standings_outfile(), 'r') as f:
     out = f.read()
-  with open(appTest.getStandingsGoldFile(), 'r') as f:
+  with open(appTest.get_standings_goldfile(), 'r') as f:
     gold = f.read()
-  assertEquals(out, gold)
+  assert_equals(out, gold)
 
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--mode', dest='mode', default='all')
   args = parser.parse_args()
-
-  if args.mode == 'real' or args.mode == 'all':
-    testReal()
-
-  if args.mode == 'filedate' or args.mode == 'all':
-    testFindFileDate()
 
   if args.mode == 'leaguefile' or args.mode == 'all':
     testUpdateLeagueFile()

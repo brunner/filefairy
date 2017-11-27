@@ -1,18 +1,9 @@
 #!/usr/bin/env python
 
+from difflib import ndiff
 
-def assertEquals(actual, expected):
+
+def assert_equals(actual, expected):
   if actual != expected:
-    raise AssertionError(
-        "Expected {0} to match {1}, but it didn't.".format(expected, actual))
-
-
-def assertNotEquals(actual, expected):
-  if actual == expected:
-    raise AssertionError(
-        "Expected {0} to not match {1}, but it did.".format(expected, actual))
-
-def assertContains(iterable, element):
-  if element not in iterable:
-    raise AssertionError(
-        "Expected {0} to contain {1}, but it didn't.".format(iterable, element))
+    diff = '\n'.join(ndiff(actual, expected))
+    raise AssertionError("Actual did not match expected:\n{}".format(diff))

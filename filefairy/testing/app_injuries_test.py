@@ -4,8 +4,8 @@ import threading
 import time
 
 from app_test import AppTest
-from slack_api import chatPostMessage
-from utils import assertEquals
+from slack_api import chat_post_message
+from utils import assert_equals
 
 
 inpt = ['03/21/2021 RP <https://player_33610.html|Drew Pomeranz> was injured ' +
@@ -33,13 +33,13 @@ def test():
   time.sleep(6)
 
   for injury in inpt:
-    chatPostMessage('testing', injury)
+    chat_post_message('testing', injury)
 
-  appTest.handleClose()
+  appTest.handle_close()
   time.sleep(1)
   t1.join()
 
-  assertEquals(appTest.processInjuries(), outpt)
+  assert_equals(appTest.process_injuries(), outpt)
 
 
 if __name__ == '__main__':
