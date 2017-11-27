@@ -71,18 +71,9 @@ overstandings = '31 36 46\n32 43 38\n33 45 38\n34 43 39\n35 41 41\n36 42 40\n' +
                 '55 36 46\n56 44 37\n57 43 40\n58 28 54\n59 47 35\n60 35 47\n'
 
 
-fileUrls = [
-    'data/exports1.html',             # 0. Initial exports page.
-    'export_01142017_2.html',         # 1. League file date has not changed.
-    'export_01142017_2.html',         # 2. League file date has not changed.
-    'export_01142017_2.html',         # 3. League file date has not changed.
-    'data/exports2.html',             # 4. League file date has changed.
-]
-
-
 class AppTest(App):
 
-  def __init__(self, file_url='data/exports1.html', standings_in='data/standings_in.txt'):
+  def __init__(self, file_url='', standings_in='data/standings_in.txt'):
     self.file_url = file_url
     self.standings_in = standings_in
 
@@ -109,8 +100,9 @@ class AppTest(App):
     cwd = os.getcwd()
     os.chdir(path)
     page = ''
-    with open(url, 'r') as f:
-      page = f.read()
+    if url:
+      with open(url, 'r') as f:
+        page = f.read()
     os.chdir(cwd)
     return page
 
@@ -224,34 +216,6 @@ formatStandingsN = 'NL East         |   W |   L |    GB |  M#\n' + \
                    'Pittsburgh      |  21 |  50 |  21.0 |    '
 
 
-def testUpdateLeagueFile():
-  appTest = AppTest()
-  appTest.setup()
-
-  appTest.update_league_file()
-  assert_equals(appTest.file_date, 'Saturday January 14, 2017 13:01:09 EST')
-
-  appTest.file_url = 'data/exports2.html'
-  appTest.update_league_file()
-  assert_equals(appTest.file_date, 'Tuesday January 17, 2017 09:03:12 EST')
-
-
-def testWatch():
-  appTest = AppTest()
-  appTest.setup()
-
-  t1 = threading.Thread(target=appTest.watch)
-  t1.start()
-  time.sleep(2)
-
-  assert_equals(appTest.file_date, 'Saturday January 14, 2017 13:01:09 EST')
-
-  appTest.file_url = 'data/exports2.html'
-  time.sleep(2)
-
-  assert_equals(appTest.file_date, 'Tuesday January 17, 2017 09:03:12 EST')
-
-
 def testFinalScores():
   appTest = AppTest()
   appTest.setup()
@@ -320,7 +284,7 @@ def testListen():
 
 
 def testIntegration():
-  appTest = AppTest()
+  appTest = AppTest(file_url='data/exports1.html')
   appTest.setup()
 
   with open(appTest.get_standings_out(), 'w') as f:
@@ -358,12 +322,6 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--mode', dest='mode', default='all')
   args = parser.parse_args()
-
-  if args.mode == 'leaguefile' or args.mode == 'all':
-    testUpdateLeagueFile()
-
-  if args.mode == 'watch' or args.mode == 'all':
-    testWatch()
 
   if args.mode == 'finalscores' or args.mode == 'all':
     testFinalScores()
