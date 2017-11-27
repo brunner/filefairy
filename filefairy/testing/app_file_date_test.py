@@ -7,7 +7,7 @@ from app_test import AppTest
 from utils import assert_equals
 
 
-inpt = ['exports1.html', 'exports2.html']
+inpt = ['data/exports1.html', 'data/exports2.html']
 outp = ['Saturday January 14, 2017 13:01:09 EST', 'Tuesday January 17, 2017 09:03:12 EST']
 
 

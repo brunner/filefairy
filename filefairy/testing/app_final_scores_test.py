@@ -308,8 +308,8 @@ def test():
   time.sleep(1)
   t1.join()
 
-  with open(appTest.get_standings_outfile(), 'r') as fo:
-    with open(appTest.get_path() + 'testing/standings_final_scores_gold.txt', 'r') as fg:
+  with open(appTest.get_standings_out(), 'r') as fo:
+    with open(appTest.get_path() + 'data/standings_final_scores_gold.txt', 'r') as fg:
       assert_equals(fo.read(), fg.read())
 
 

@@ -72,26 +72,24 @@ overstandings = '31 36 46\n32 43 38\n33 45 38\n34 43 39\n35 41 41\n36 42 40\n' +
 
 
 fileUrls = [
-    'exports1.html',                  # 0. Initial exports page.
+    'data/exports1.html',             # 0. Initial exports page.
     'export_01142017_2.html',         # 1. League file date has not changed.
     'export_01142017_2.html',         # 2. League file date has not changed.
     'export_01142017_2.html',         # 3. League file date has not changed.
-    'exports2.html',                  # 4. League file date has changed.
+    'data/exports2.html',             # 4. League file date has changed.
 ]
 
 
 class AppTest(App):
   '''Tests for App.'''
 
-  def __init__(self, fileUrls=fileUrls, standingsInFile='testing/standingsin.txt', over=False, integration=False):
-    self.over = over
-    self.integration = integration
-
+  def __init__(self, fileUrls=fileUrls, standings_in='data/standings_in.txt', integration=False):
     self.fileUrls, self.fileIndex = fileUrls, 0
     self.filePage = self.get_page(self.fileUrls[0])
     self.fileDate = self.get_file_date(self.filePage)
 
-    self.standingsInFile = standingsInFile
+    self.standings_in = standings_in
+    self.integration = integration
 
     self.finalScores = []
     self.injuries = []
@@ -117,16 +115,11 @@ class AppTest(App):
   def getBoxScoreUrl(self, boxid):
     return 'game_box_{}.html'.format(boxid)
 
-  def get_standings_goldfile(self):
-    return self.get_path() + 'testing/standingsgold.txt'
+  def get_path(self):
+    return os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/'
 
-  def get_standings_infile(self):
-    if self.over:
-      return super(AppTest, self).get_standings_infile()
-    return self.get_path() + self.standingsInFile
-
-  def get_standings_outfile(self):
-    return self.get_path() + 'testing/standingsout.txt'
+  def get_standings_out(self):
+    return self.get_path() + 'data/standings_out.txt'
 
   def get_general_name(self):
     return 'testing'
@@ -141,7 +134,7 @@ class AppTest(App):
     return [2, 10]
 
   def get_page(self, url):
-    path = self.get_path() + 'testing/'
+    path = self.get_path()
     cwd = os.getcwd()
     os.chdir(path)
     page = ''
@@ -297,36 +290,37 @@ def testFinalScores():
 
 
 def testStandings():
-  # appTest = AppTest(fileUrls[:], 'testing/standings_openingday.txt')
+  # appTest = AppTest(fileUrls[:], 'data/standings_openingday.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(fileUrls[:], 'testing/standings_linear.txt')
+  # appTest = AppTest(fileUrls[:], 'data/standings_linear.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(fileUrls[:], 'testing/standings_final.txt')
+  # appTest = AppTest(fileUrls[:], 'data/standings_final.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(fileUrls[:], 'testing/standings_baddivision.txt')
+  # appTest = AppTest(fileUrls[:], 'data/standings_baddivision.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(fileUrls[:], 'testing/standings_today.txt')
+  # appTest = AppTest(fileUrls[:], 'data/standings_today.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
 
-  path = os.path.expanduser('~') + '/orangeandblueleague/filefairy/overdata/standings.txt'
+  path = os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/data/standings_over.txt'
   with open(path, 'w') as f:
     f.write(overstandings)
-  appTest = AppTest(over=True)
+  appTest = AppTest()
   print appTest.formatStandingsAL()
   print appTest.formatStandingsNL()
+  os.remove(path)
 
 
 def testListen():
@@ -347,7 +341,7 @@ def testListen():
 
 def testIntegration():
   appTest = AppTest(integration=True)
-  with open(appTest.get_standings_outfile(), 'w') as f:
+  with open(appTest.get_standings_out(), 'w') as f:
     pass
 
   t1 = threading.Thread(target=appTest.listen)
@@ -363,9 +357,9 @@ def testIntegration():
   appTest.handle_close()
 
   out, gold = '', ''
-  with open(appTest.get_standings_outfile(), 'r') as f:
+  with open(appTest.get_standings_out(), 'r') as f:
     out = f.read()
-  with open(appTest.get_standings_goldfile(), 'r') as f:
+  with open(appTest.get_path() + 'data/standings_gold.txt', 'r') as f:
     gold = f.read()
   assert_equals(out, gold)
 

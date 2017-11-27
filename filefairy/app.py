@@ -19,6 +19,8 @@ from slack_api import chat_post_message, files_upload, rtm_connect
 class App(object):
 
   def __init__(self):
+    self.standings_in = 'data/standings.txt'
+
     page = self.get_page(self.get_file_url())
     self.fileDate = self.get_file_date(page)
 
@@ -40,13 +42,13 @@ class App(object):
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/'
 
-  def get_standings_infile(self):
-    path, data = self.get_path(), 'data/'
-    if os.path.isfile(path + 'overdata/standings.txt'):
-      data = 'overdata/'
-    return path + data + 'standings.txt'
+  def get_standings_in(self):
+    s_i = self.standings_in
+    if os.path.isfile(self.get_path() + 'data/standings_over.txt'):
+      s_i = 'data/standings_over.txt'
+    return self.get_path() + s_i
 
-  def get_standings_outfile(self):
+  def get_standings_out(self):
     return self.get_path() + 'data/standings.txt'
 
   def get_general_name(self):
@@ -69,7 +71,7 @@ class App(object):
 
   def getStandings(self):
     standings = {}
-    with open(self.get_standings_infile(), 'r') as f:
+    with open(self.get_standings_in(), 'r') as f:
       for line in f.readlines():
         if line.count(' ') == 2:
           t, w, l = line.split()
@@ -78,7 +80,7 @@ class App(object):
     return standings
 
   def writeStandings(self):
-    with open(self.get_standings_outfile(), 'w') as f:
+    with open(self.get_standings_out(), 'w') as f:
       for t in self.standings:
         w, l = self.standings[t]['w'], self.standings[t]['l']
         f.write('{} {} {}\n'.format(t, w, l))
