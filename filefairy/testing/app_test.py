@@ -9,9 +9,8 @@ import threading
 import time
 import urllib2
 
-from logger import TestLogger
 from app import App
-from slack_api import SlackApi, TestSlackApi
+from slack_api import chatPostMessage
 from utils import assertEquals, assertNotEquals
 
 injury = '03/21/2021 RP <https://player_33610.html|Drew Pomeranz> was injured ' + \
@@ -77,16 +76,14 @@ fileUrls = [
     'export_01142017_2.html',         # 1. League file date has not changed.
     'export_01142017_2.html',         # 2. League file date has not changed.
     'export_01142017_2.html',         # 3. League file date has not changed.
-    'export_01172017_1.html',         # 3. League file date has changed.
+    'export_01172017_1.html',         # 4. League file date has changed.
 ]
 
 
 class AppTest(App):
   '''Tests for App.'''
 
-  def __init__(self, logger, slackApi, fileUrls=fileUrls, standingsInFile='testing/standingsin.txt', over=False, integration=False):
-    self.logger = logger
-    self.slackApi = slackApi
+  def __init__(self, fileUrls=fileUrls, standingsInFile='testing/standingsin.txt', over=False, integration=False):
     self.over = over
     self.integration = integration
 
@@ -131,14 +128,14 @@ class AppTest(App):
   def getStandingsOutFile(self):
     return self.getFilefairyPath() + 'testing/standingsout.txt'
 
-  def getChannelGeneral(self):
+  def general_name(self):
     return 'testing'
 
-  def getChannelLiveSimDiscussion(self):
+  def live_sim_discussion_name(self):
     return 'testing'
 
-  def getChannelStatsplus(self):
-    return 'testing'
+  def statsplus_id(self):
+    return 'G3SUFLMK4'
 
   def getTimerValues(self):
     return [1, 2, 10]
@@ -159,69 +156,13 @@ class AppTest(App):
     return page
 
   def chatInjuryTest(self):
-    self.slackApi.chatPostMessage('testing', injury)
+    chatPostMessage('testing', injury)
 
   def chatFinalScoresTest(self):
-    self.slackApi.chatPostMessage('testing', finalScores)
+    chatPostMessage('testing', finalScores)
 
   def chatLiveTableTest(self):
-    self.slackApi.chatPostMessage('testing', liveTable)
-
-  def getListen(self):
-    t1 = threading.Thread(target=self.listen)
-    t1.start()
-    time.sleep(6)
-
-    self.chatInjuryTest()
-    self.chatFinalScoresTest()
-    self.chatLiveTableTest()
-
-    self.handleClose()
-    time.sleep(1)
-    t1.join()
-
-    self.logger.collect()
-    return {
-        'collected': self.logger.collected
-    }
-
-  def getWatch(self):
-    self.watch()
-    self.logger.collect()
-    return {
-        'collected': self.logger.collected,
-    }
-
-  def getIntegration(self):
-    t1 = threading.Thread(target=self.listen)
-    t1.start()
-    time.sleep(6)
-
-    t2 = threading.Thread(target=self.watch)
-    t2.start()
-
-    t1.join()
-    t2.join()
-
-    self.logger.collect()
-    return {
-        'collected': self.logger.collected
-    }
-
-  def getUpdateLeagueFile(self):
-    ret = self.updateLeagueFile()
-    self.logger.collect()
-    return {
-        'ret': ret,
-        'collected': self.logger.collected,
-        'index': self.fileIndex,
-        'date': self.fileDate,
-    }
-
-fileDates = {
-    'old': 'Saturday January 14, 2017 13:01:09 EST',
-    'new': 'Tuesday January 17, 2017 09:03:12 EST',
-}
+    chatPostMessage('testing', liveTable)
 
 records = {
     31: [0, 0], 32: [1, 0], 33: [0, 1], 34: [0, 0], 35: [0, 1],
@@ -331,91 +272,59 @@ formatStandingsN = 'NL East         |   W |   L |    GB |  M#\n' + \
                    'Miami           |  25 |  45 |  16.5 |    \n' + \
                    'Pittsburgh      |  21 |  50 |  21.0 |    '
 
-logs = [
-    'Started listening.',             # 0
-    'Test mocked chat.postMessage.',  # 1
-    'Started watching.',              # 2
-    'Test mocked chat.postMessage.',  # 3
-    'Test mocked chat.postMessage.',  # 4
-    'File is up.',                    # 5
-    'Test mocked chat.postMessage.',  # 6
-    'Done watching.',                 # 7
-    'Done listening.',                # 8
-]
-
 
 def testReal():
   fileUrl = 'http://orangeandblueleaguebaseball.com/StatsLab/exports.php'
   filePage = urllib2.urlopen(fileUrl).read()
 
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi)
-
+  appTest = AppTest()
   assertNotEquals(appTest.findFileDate(filePage), '')
 
 
 def testFindFileDate():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi)
-
+  appTest = AppTest()
   page = appTest.getPage(fileUrls[0])
-  assertEquals(appTest.findFileDate(page), fileDates['old'])
+  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
 
   page = appTest.getPage(fileUrls[1])
-  assertEquals(appTest.findFileDate(page), fileDates['old'])
+  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
 
   page = appTest.getPage(fileUrls[2])
-  assertEquals(appTest.findFileDate(page), fileDates['old'])
+  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
 
   page = appTest.getPage(fileUrls[3])
-  assertEquals(appTest.findFileDate(page), fileDates['old'])
+  assertEquals(appTest.findFileDate(page), 'Saturday January 14, 2017 13:01:09 EST')
 
   page = appTest.getPage(fileUrls[4])
-  assertEquals(appTest.findFileDate(page), fileDates['new'])
+  assertEquals(appTest.findFileDate(page), 'Tuesday January 17, 2017 09:03:12 EST')
 
 
 def testUpdateLeagueFile():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi)
+  appTest = AppTest()
+  appTest.updateLeagueFile()
+  assertEquals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
 
-  expected = {'ret': False, 'collected': [], 'index': 1,
-              'date': fileDates['old']}
-  assertEquals(appTest.getUpdateLeagueFile(), expected)
+  appTest.updateLeagueFile()
+  assertEquals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
 
-  expected = {'ret': False, 'collected': [], 'index': 2,
-              'date': fileDates['old']}
-  assertEquals(appTest.getUpdateLeagueFile(), expected)
+  appTest.updateLeagueFile()
+  assertEquals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
 
-  expected = {'ret': False, 'collected': [], 'index': 3,
-              'date': fileDates['old']}
-  assertEquals(appTest.getUpdateLeagueFile(), expected)
+  appTest.updateLeagueFile()
+  assertEquals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
 
-  expected = {'ret': True, 'collected': logs[4:6], 'index': 4,
-              'date': fileDates['new']}
-  assertEquals(appTest.getUpdateLeagueFile(), expected)
-
-  expected = {'ret': False, 'collected': logs[4:6], 'index': 4,
-              'date': fileDates['new']}
-  assertEquals(appTest.getUpdateLeagueFile(), expected)
+  appTest.updateLeagueFile()
+  assertEquals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
 
 
 def testWatch():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi)
-
-  expected = {'collected': logs[1:4] + logs[5:8]}
-  assertEquals(appTest.getWatch(), expected)
+  appTest = AppTest()
+  appTest.watch()
+  assertEquals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
 
 
 def testFinalScores():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-  appTest = AppTest(logger, slackApi)
-
+  appTest = AppTest()
   appTest.handleFinalScores(finalScores)
   appTest.handleLiveTable(liveTable)
   appTest.processFinalScores()
@@ -427,59 +336,68 @@ def testFinalScores():
 
 
 def testStandings():
-  logger = TestLogger()
-  slackApi = TestSlackApi(logger)
-
-  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_openingday.txt')
+  # appTest = AppTest(fileUrls[:], 'testing/standings_openingday.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_linear.txt')
+  # appTest = AppTest(fileUrls[:], 'testing/standings_linear.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_final.txt')
+  # appTest = AppTest(fileUrls[:], 'testing/standings_final.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_baddivision.txt')
+  # appTest = AppTest(fileUrls[:], 'testing/standings_baddivision.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
   # print '\n--------------------\n'
 
-  # appTest = AppTest(logger, slackApi, fileUrls[:], 'testing/standings_today.txt')
+  # appTest = AppTest(fileUrls[:], 'testing/standings_today.txt')
   # print appTest.formatStandingsAL()
   # print appTest.formatStandingsNL()
 
   path = os.path.expanduser('~') + '/orangeandblueleague/filefairy/overdata/standings.txt'
   with open(path, 'w') as f:
     f.write(overstandings)
-  appTest = AppTest(logger, slackApi, over=True)
+  appTest = AppTest(over=True)
   print appTest.formatStandingsAL()
   print appTest.formatStandingsNL()
 
 
 def testListen():
-  logger = TestLogger()
-  slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi)
+  appTest = AppTest()
+  
+  t1 = threading.Thread(target=appTest.listen)
+  t1.start()
+  time.sleep(6)
 
-  expected = {'collected': logs[:1] + logs[8:]}
-  assertEquals(appTest.getListen(), expected)
+  appTest.chatInjuryTest()
+  appTest.chatFinalScoresTest()
+  appTest.chatLiveTableTest()
+
+  appTest.handleClose()
+  time.sleep(1)
+  t1.join()
 
 
 def testIntegration():
-  logger = TestLogger()
-  slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi, integration=True)
+  appTest = AppTest(integration=True)
   with open(appTest.getStandingsOutFile(), 'w') as f:
     pass
 
-  expected = {'collected': logs[:1] + logs[2:3] + logs[5:6] + logs[7:9]}
-  assertEquals(appTest.getIntegration(), expected)
+  t1 = threading.Thread(target=appTest.listen)
+  t1.start()
+  time.sleep(6)
+
+  t2 = threading.Thread(target=appTest.watch)
+  t2.start()
+
+  t1.join()
+  t2.join()
 
   out, gold = '', ''
   with open(appTest.getStandingsOutFile(), 'r') as f:

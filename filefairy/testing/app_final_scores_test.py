@@ -4,8 +4,7 @@ import threading
 import time
 
 from app_test import AppTest
-from logger import TestLogger
-from slack_api import SlackApi
+from slack_api import chatPostMessage
 from utils import assertEquals
 
 
@@ -287,22 +286,20 @@ stnd = ['AL East         |   W |   L |    GB |  M#\n' +
 
 
 def test():
-  logger = TestLogger()
-  slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi)
+  appTest = AppTest()
 
   t1 = threading.Thread(target=appTest.listen)
   t1.start()
   time.sleep(6)
 
-  slackApi.chatPostMessage('testing', inpt[0])
-  slackApi.chatPostMessage('testing', inpt[1])
+  chatPostMessage('testing', inpt[0])
+  chatPostMessage('testing', inpt[1])
   assertEquals(appTest.processFinalScores(), outp[0])
   assertEquals(appTest.processRecords(), rcrd[0])
   assertEquals(appTest.processStandings(), stnd[0])
 
-  slackApi.chatPostMessage('testing', inpt[2])
-  slackApi.chatPostMessage('testing', inpt[3])
+  chatPostMessage('testing', inpt[2])
+  chatPostMessage('testing', inpt[3])
   assertEquals(appTest.processFinalScores(), outp[1])
   assertEquals(appTest.processRecords(), rcrd[1])
   assertEquals(appTest.processStandings(), stnd[1])

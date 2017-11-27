@@ -4,8 +4,7 @@ import threading
 import time
 
 from app_test import AppTest
-from logger import TestLogger
-from slack_api import SlackApi
+from slack_api import chatPostMessage
 from utils import assertEquals
 
 
@@ -27,16 +26,14 @@ outpt = 'Injuries:\n' + \
 
 
 def test():
-  logger = TestLogger()
-  slackApi = SlackApi(logger)
-  appTest = AppTest(logger, slackApi)
+  appTest = AppTest()
 
   t1 = threading.Thread(target=appTest.listen)
   t1.start()
   time.sleep(6)
 
   for injury in inpt:
-    slackApi.chatPostMessage('testing', injury)
+    chatPostMessage('testing', injury)
 
   appTest.handleClose()
   time.sleep(1)

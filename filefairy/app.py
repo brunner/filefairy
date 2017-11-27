@@ -13,16 +13,12 @@ import time
 import urllib2
 import websocket
 
-from logger import Logger
-from slack_api import SlackApi
+from slack_api import chatPostMessage, filesUpload, rtmConnect
 
 
 class App(object):
 
-  def __init__(self, logger, slackApi, app=None):
-    self.logger = logger
-    self.slackApi = slackApi
-
+  def __init__(self):
     page = self.getPage(self.getFileUrl())
     self.fileDate = self.findFileDate(page)
 
@@ -53,14 +49,14 @@ class App(object):
   def getStandingsOutFile(self):
     return self.getFilefairyPath() + 'data/standings.txt'
 
-  def getChannelGeneral(self):
+  def general_name(self):
     return 'general'
 
-  def getChannelLiveSimDiscussion(self):
+  def live_sim_discussion_name(self):
     return 'live-sim-discussion'
 
-  def getChannelStatsplus(self):
-    return 'statsplus'
+  def statsplus_id(self):
+    return 'C7JSGHW8G'
 
   def getTimerValues(self):
     return [
@@ -73,14 +69,8 @@ class App(object):
     page = ''
     try:
       page = urllib2.urlopen(url).read()
-    except urllib2.URLError as e:
-      if hasattr(e, 'reason'):
-        pass  # Failed to reach server.
-      elif hasattr(e, 'code'):
-        self.logger.log('Server failed to handle request. {0}.'.format(e.code))
     except:
-      self.logger.log('Unspecified exception.')
-
+      pass
     return page
 
   def getStandings(self):
@@ -104,16 +94,13 @@ class App(object):
       self.lock.acquire()
       obj = json.loads(message)
       if all(k in obj for k in ['type', 'channel', 'text']):
-        channel = self.slackApi.getChannel(obj['channel'])
-        if obj['type'] == 'message' and channel == self.getChannelStatsplus():
+        if obj['type'] == 'message' and obj['channel'] == self.statsplus_id():
           self.handleStatsplus(obj['text'])
       self.lock.release()
 
-    obj = self.slackApi.rtmConnect()
+    obj = rtmConnect()
     if obj['ok'] and 'url' in obj:
-      self.slackApi.chatPostMessage('testing', 'Started listening.')
-      self.logger.log('Started listening.')
-
+      chatPostMessage('testing', 'Started listening.')
       self.ws = websocket.WebSocketApp(obj['url'], on_message=on_message_)
 
       t = threading.Thread(target=self.ws.run_forever)
@@ -137,9 +124,7 @@ class App(object):
   def processFinalScores(self):
     if len(self.finalScores) == len(self.liveTables):
       for finalScore, liveTable in zip(self.finalScores, self.liveTables):
-        self.slackApi.chatPostMessage(
-            self.getChannelLiveSimDiscussion(), finalScore)
-
+        chatPostMessage(self.live_sim_discussion_name(), finalScore)
         for t in range(31, 61):
           # Look up the city of the team.
           # For example, city could be 'Red Sox' or 'Chicago'.
@@ -248,20 +233,20 @@ class App(object):
 
     ret = '\n'.join(lines)
     if ret:
-      self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), ret)
+      chatPostMessage(self.live_sim_discussion_name(), ret)
 
     return ret
 
   def processRecords(self):
     ret = self.formatRecords()
-    self.slackApi.chatPostMessage(self.getChannelLiveSimDiscussion(), ret)
+    chatPostMessage(self.live_sim_discussion_name(), ret)
     return ret
 
   def processStandings(self):
     retA = self.formatStandingsAL()
     retB = self.formatStandingsNL()
-    self.slackApi.filesUpload(retA, 'AL.txt', 'testing')
-    self.slackApi.filesUpload(retB, 'NL.txt', 'testing')
+    filesUpload(retA, 'AL.txt', 'testing')
+    filesUpload(retB, 'NL.txt', 'testing')
     self.writeStandings()
     return '\n'.join([retA, retB])
 
@@ -269,16 +254,13 @@ class App(object):
     self.lock.acquire()
     if self.ws:
       self.ws.close()
-      self.slackApi.chatPostMessage('testing', 'Done listening.')
-      self.logger.log('Done listening.')
+      chatPostMessage('testing', 'Done listening.')
     self.lock.release()
 
   def watch(self):
     sleep, records, timeout = self.getTimerValues()
     elapsed = 0
-
-    self.slackApi.chatPostMessage('testing', 'Started watching.')
-    self.logger.log('Started watching.')
+    chatPostMessage('testing', 'Started watching.')
 
     while elapsed < timeout:
       time.sleep(sleep)
@@ -295,8 +277,7 @@ class App(object):
         self.processStandings()
       self.lock.release()
 
-    self.slackApi.chatPostMessage('testing', 'Done watching.')
-    self.logger.log('Done watching.')
+    chatPostMessage('testing', 'Done watching.')
     self.handleClose()
 
   def updateLeagueFile(self):
@@ -308,8 +289,7 @@ class App(object):
       return False
 
     if date != self.fileDate:
-      self.slackApi.chatPostMessage(self.getChannelGeneral(), 'File is up.')
-      self.logger.log('File is up.')
+      chatPostMessage(self.general_name(), 'File is up.')
       self.fileDate = date
       return True
 
@@ -538,8 +518,6 @@ class App(object):
 
 
 if __name__ == '__main__':
-  logger = Logger()
-  slackApi = SlackApi(logger)
-  app = App(logger, slackApi)
+  app = App()
   app.listen()
   app.watch()
