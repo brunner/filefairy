@@ -19,11 +19,11 @@ from slack_api import chat_post_message, files_upload, rtm_connect
 class App(object):
 
   def __init__(self):
+    self.file_url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
     self.standings_in = 'data/standings.txt'
 
-    page = self.get_page(self.get_file_url())
-    self.fileDate = self.get_file_date(page)
-
+  def setup(self):
+    self.file_date = self.get_file_date(self.get_page(self.file_url))
     self.finalScores = []
     self.injuries = []
     self.liveTables = []
@@ -32,12 +32,6 @@ class App(object):
     self.records = {t: [0, 0] for t in range(31, 61)}
     self.standings = self.getStandings()
     self.ws = None
-
-  def get_file_url(self):
-    return 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
-
-  def getBoxScoreUrl(self, boxid):
-    return 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_{}.html'.format(boxid)
 
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/'
@@ -262,7 +256,7 @@ class App(object):
       time.sleep(sleep)
       elapsed = elapsed + sleep
 
-      if self.updateLeagueFile():
+      if self.update_league_file():
         elapsed = timeout
 
       self.lock.acquire()
@@ -276,19 +270,12 @@ class App(object):
     chat_post_message('testing', 'Done watching.')
     self.handle_close()
 
-  def updateLeagueFile(self):
-    url = self.get_file_url()
-    page = self.get_page(url)
-    date = self.get_file_date(page)
-
-    if not date:
-      return False
-
-    if date != self.fileDate:
+  def update_league_file(self):
+    date = self.get_file_date(self.get_page(self.file_url))
+    if date and date != self.file_date:
       chat_post_message(self.get_general_name(), 'File is up.')
-      self.fileDate = date
+      self.file_date = date
       return True
-
     return False
 
   def get_file_date(self, page):
@@ -515,5 +502,6 @@ class App(object):
 
 if __name__ == '__main__':
   app = App()
+  app.setup()
   app.listen()
   app.watch()

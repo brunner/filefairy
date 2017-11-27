@@ -81,39 +81,10 @@ fileUrls = [
 
 
 class AppTest(App):
-  '''Tests for App.'''
 
-  def __init__(self, fileUrls=fileUrls, standings_in='data/standings_in.txt', integration=False):
-    self.fileUrls, self.fileIndex = fileUrls, 0
-    self.filePage = self.get_page(self.fileUrls[0])
-    self.fileDate = self.get_file_date(self.filePage)
-
+  def __init__(self, file_url='data/exports1.html', standings_in='data/standings_in.txt'):
+    self.file_url = file_url
     self.standings_in = standings_in
-    self.integration = integration
-
-    self.finalScores = []
-    self.injuries = []
-    self.liveTables = []
-    self.lock = threading.Lock()
-    self.tick = 0
-    self.records = {t: [0, 0] for t in range(31, 61)}
-    self.standings = self.getStandings()
-    self.ws = None
-
-  def get_file_url(self):
-    if len(self.fileUrls) > self.fileIndex + 1:
-      self.fileIndex = self.fileIndex + 1
-
-    if self.integration and self.fileIndex == 1:
-      chat_post_message('testing', injury)
-      chat_post_message('testing', finalScores)
-      chat_post_message('testing', finalScores)
-      chat_post_message('testing', liveTable)
-
-    return self.fileUrls[self.fileIndex]
-
-  def getBoxScoreUrl(self, boxid):
-    return 'game_box_{}.html'.format(boxid)
 
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/'
@@ -255,30 +226,36 @@ formatStandingsN = 'NL East         |   W |   L |    GB |  M#\n' + \
 
 def testUpdateLeagueFile():
   appTest = AppTest()
-  appTest.updateLeagueFile()
-  assert_equals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
+  appTest.setup()
 
-  appTest.updateLeagueFile()
-  assert_equals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
+  appTest.update_league_file()
+  assert_equals(appTest.file_date, 'Saturday January 14, 2017 13:01:09 EST')
 
-  appTest.updateLeagueFile()
-  assert_equals(appTest.fileDate, 'Saturday January 14, 2017 13:01:09 EST')
-
-  appTest.updateLeagueFile()
-  assert_equals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
-
-  appTest.updateLeagueFile()
-  assert_equals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
+  appTest.file_url = 'data/exports2.html'
+  appTest.update_league_file()
+  assert_equals(appTest.file_date, 'Tuesday January 17, 2017 09:03:12 EST')
 
 
 def testWatch():
   appTest = AppTest()
-  appTest.watch()
-  assert_equals(appTest.fileDate, 'Tuesday January 17, 2017 09:03:12 EST')
+  appTest.setup()
+
+  t1 = threading.Thread(target=appTest.watch)
+  t1.start()
+  time.sleep(2)
+
+  assert_equals(appTest.file_date, 'Saturday January 14, 2017 13:01:09 EST')
+
+  appTest.file_url = 'data/exports2.html'
+  time.sleep(2)
+
+  assert_equals(appTest.file_date, 'Tuesday January 17, 2017 09:03:12 EST')
 
 
 def testFinalScores():
   appTest = AppTest()
+  appTest.setup()
+
   appTest.handleFinalScores(finalScores)
   appTest.handleLiveTable(liveTable)
   appTest.process_final_scores()
@@ -318,6 +295,8 @@ def testStandings():
   with open(path, 'w') as f:
     f.write(overstandings)
   appTest = AppTest()
+  appTest.setup()
+
   print appTest.formatStandingsAL()
   print appTest.formatStandingsNL()
   os.remove(path)
@@ -325,6 +304,7 @@ def testStandings():
 
 def testListen():
   appTest = AppTest()
+  appTest.setup()
 
   t1 = threading.Thread(target=appTest.listen)
   t1.start()
@@ -333,14 +313,16 @@ def testListen():
   chat_post_message('testing', injury)
   chat_post_message('testing', finalScores)
   chat_post_message('testing', liveTable)
+  time.sleep(2)
 
   appTest.handle_close()
-  time.sleep(1)
   t1.join()
 
 
 def testIntegration():
-  appTest = AppTest(integration=True)
+  appTest = AppTest()
+  appTest.setup()
+
   with open(appTest.get_standings_out(), 'w') as f:
     pass
 
@@ -350,11 +332,19 @@ def testIntegration():
 
   t2 = threading.Thread(target=appTest.watch)
   t2.start()
+  time.sleep(2)
 
-  t1.join()
-  t2.join()
+  chat_post_message('testing', injury)
+  chat_post_message('testing', finalScores)
+  chat_post_message('testing', liveTable)
+  time.sleep(2)
+
+  appTest.file_url = 'data/exports2.html'
+  time.sleep(2)
 
   appTest.handle_close()
+  t1.join()
+  t2.join()
 
   out, gold = '', ''
   with open(appTest.get_standings_out(), 'r') as f:

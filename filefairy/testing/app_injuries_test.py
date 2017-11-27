@@ -27,6 +27,7 @@ outpt = 'Injuries:\n' + \
 
 def test():
   appTest = AppTest()
+  appTest.setup()
 
   t1 = threading.Thread(target=appTest.listen)
   t1.start()
@@ -34,9 +35,9 @@ def test():
 
   for injury in inpt:
     chat_post_message('testing', injury)
+  time.sleep(2)
 
   appTest.handle_close()
-  time.sleep(1)
   t1.join()
 
   assert_equals(appTest.process_injuries(), outpt)

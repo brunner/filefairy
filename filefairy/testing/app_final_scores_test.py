@@ -287,6 +287,7 @@ stnd = ['AL East         |   W |   L |    GB |  M#\n' +
 
 def test():
   appTest = AppTest()
+  appTest.setup()
 
   t1 = threading.Thread(target=appTest.listen)
   t1.start()
@@ -294,18 +295,19 @@ def test():
 
   chat_post_message('testing', inpt[0])
   chat_post_message('testing', inpt[1])
+  time.sleep(2)
   assert_equals(appTest.process_final_scores(), outp[0])
   assert_equals(appTest.process_records(), rcrd[0])
   assert_equals(appTest.process_standings(), stnd[0])
 
   chat_post_message('testing', inpt[2])
   chat_post_message('testing', inpt[3])
+  time.sleep(2)
   assert_equals(appTest.process_final_scores(), outp[1])
   assert_equals(appTest.process_records(), rcrd[1])
   assert_equals(appTest.process_standings(), stnd[1])
 
   appTest.handle_close()
-  time.sleep(1)
   t1.join()
 
   with open(appTest.get_standings_out(), 'r') as fo:

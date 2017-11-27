@@ -13,6 +13,8 @@ outp = ['Saturday January 14, 2017 13:01:09 EST', 'Tuesday January 17, 2017 09:0
 
 def test():
   appTest = AppTest()
+  appTest.setup()
+
   page = appTest.get_page(inpt[0])
   assert_equals(appTest.get_file_date(page), outp[0])
 
