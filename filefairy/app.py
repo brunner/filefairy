@@ -14,6 +14,7 @@ import urllib2
 import websocket
 
 from slack_api import chat_post_message, files_upload, rtm_connect
+from teams import get_city, get_emoji, get_neighbor, get_nickname
 
 
 class App(object):
@@ -118,7 +119,7 @@ class App(object):
         for t in range(31, 61):
           # Look up the city of the team.
           # For example, city could be 'Red Sox' or 'Chicago'.
-          city = slack_api.teamidsToCities[t]
+          city = get_city(t)
 
           w = len(re.findall(r'\|' + re.escape(city), finalScore))
           l = len(re.findall(r', ' + re.escape(city), finalScore))
@@ -126,12 +127,12 @@ class App(object):
           if t in [35, 36, 44, 45, 48, 49]:
             # Look up the nickname of the team.
             # For example, tnick could be 'Cubs'.
-            tnick = slack_api.teamidsToNicks[t]
+            tnick = get_nickname(t)
 
             # Look up the id and nickname of the team in the same city.
             # For example, u could be 36 and unick could be 'White Sox'.
-            u = slack_api.teamidsToNeighbors[t]
-            unick = slack_api.teamidsToNicks[u]
+            u = get_neighbor(t)
+            unick = get_nickname(u)
 
             # Find the number of wins for both teams in the live table.
             # For example, tw (Cubs wins) could be 4 and tu (White Sox wins) could be 2.
@@ -302,7 +303,7 @@ class App(object):
 
       formatted = []
       for t in ordered:
-        emoji = slack_api.teamidsToEmoji[t]
+        emoji = get_emoji(t)
         formatted.append('{0} {1}'.format(
             emoji, '-'.join([str(n) for n in r[t]])))
 
@@ -410,7 +411,7 @@ class App(object):
 
     lines = [top.format(title=kgroup, div=div)]
     for v in self.getOrdered(s, group):
-      city = slack_api.teamidsToCities[v]
+      city = get_city(v)
       if 'p' in s[v]:
         city = s[v]['p'] + city
       w, l, dgb = s[v]['w'], s[v]['l'], s[v][kgb]
