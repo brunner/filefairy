@@ -41,7 +41,7 @@ class App(object):
     s_i = self.standings_in
     if os.path.isfile(self.get_path() + 'data/standings_over.txt'):
       s_i = 'data/standings_over.txt'
-    return self.get_path() + s_i
+    return self.get_path() + s_i if s_i else ''
 
   def get_standings_out(self):
     return self.get_path() + 'data/standings.txt'
@@ -65,14 +65,16 @@ class App(object):
       return ''
 
   def getStandings(self):
-    standings = {}
-    with open(self.get_standings_in(), 'r') as f:
-      for line in f.readlines():
-        if line.count(' ') == 2:
-          t, w, l = line.split()
-          standings[int(t)] = {'w': int(w), 'l': int(l)}
-
-    return standings
+    s_i, s = self.get_standings_in(), {t: {'w': 0, 'l': 0} for t in range(31, 61)}
+    if s_i:
+      with open(s_i, 'r') as f:
+        for line in f.readlines():
+          if line.count(' ') == 2:
+            t, w, l = [int(n) for n in line.split()]
+            if t in s:
+              s[t]['w'] = w
+              s[t]['l'] = l
+    return s
 
   def writeStandings(self):
     with open(self.get_standings_out(), 'w') as f:
@@ -192,7 +194,6 @@ class App(object):
       #       lid = slack_api.nicksToTeamids[lteam]
       #       self.records[lid][1] += 1
 
-
     ret = '\n'.join(self.finalScores)
     self.finalScores, self.liveTables = [], []
     return ret
@@ -234,8 +235,8 @@ class App(object):
     return ret
 
   def process_standings(self):
-    retA = self.formatStandingsAL()
-    retB = self.formatStandingsNL()
+    retA = self.format_standings_al()
+    retB = self.format_standings_nl()
     files_upload(retA, 'AL.txt', 'testing')
     files_upload(retB, 'NL.txt', 'testing')
     self.writeStandings()
@@ -492,11 +493,11 @@ class App(object):
     ret = [self.getStandingsOutput(s, kgroup, group, k) for (kgroup, group, k) in groups]
     return '\n\n'.join(ret)
 
-  def formatStandingsAL(self):
+  def format_standings_al(self):
     aleast, alcent, alwest = [33, 34, 48, 57, 59], [35, 38, 40, 43, 47], [42, 44, 50, 54, 58]
     return self.formatStandingsInternal(aleast, alcent, alwest, 'AL')
 
-  def formatStandingsNL(self):
+  def format_standings_nl(self):
     nleast, nlcent, nlwest = [32, 41, 49, 51, 60], [36, 37, 46, 52, 56], [31, 39, 45, 53, 55]
     return self.formatStandingsInternal(nleast, nlcent, nlwest, 'NL')
 

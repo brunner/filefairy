@@ -4,7 +4,6 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import argparse
 import threading
 import time
 import urllib2
@@ -73,7 +72,7 @@ overstandings = '31 36 46\n32 43 38\n33 45 38\n34 43 39\n35 41 41\n36 42 40\n' +
 
 class AppTest(App):
 
-  def __init__(self, file_url='', standings_in='data/standings_in.txt'):
+  def __init__(self, file_url='', standings_in=''):
     self.file_url = file_url
     self.standings_in = standings_in
 
@@ -216,75 +215,8 @@ formatStandingsN = 'NL East         |   W |   L |    GB |  M#\n' + \
                    'Pittsburgh      |  21 |  50 |  21.0 |    '
 
 
-def testFinalScores():
-  appTest = AppTest()
-  appTest.setup()
-
-  appTest.handleFinalScores(finalScores)
-  appTest.handleLiveTable(liveTable)
-  appTest.process_final_scores()
-  assert_equals(appTest.records, records)
-  assert_equals(appTest.standings, standings)
-  assert_equals(appTest.formatRecords(), formatRecords)
-  assert_equals(appTest.formatStandingsAL(), formatStandingsA)
-  assert_equals(appTest.formatStandingsNL(), formatStandingsN)
-
-
-def testStandings():
-  # appTest = AppTest(fileUrls[:], 'data/standings_openingday.txt')
-  # print appTest.formatStandingsAL()
-  # print appTest.formatStandingsNL()
-  # print '\n--------------------\n'
-
-  # appTest = AppTest(fileUrls[:], 'data/standings_linear.txt')
-  # print appTest.formatStandingsAL()
-  # print appTest.formatStandingsNL()
-  # print '\n--------------------\n'
-
-  # appTest = AppTest(fileUrls[:], 'data/standings_final.txt')
-  # print appTest.formatStandingsAL()
-  # print appTest.formatStandingsNL()
-  # print '\n--------------------\n'
-
-  # appTest = AppTest(fileUrls[:], 'data/standings_baddivision.txt')
-  # print appTest.formatStandingsAL()
-  # print appTest.formatStandingsNL()
-  # print '\n--------------------\n'
-
-  # appTest = AppTest(fileUrls[:], 'data/standings_today.txt')
-  # print appTest.formatStandingsAL()
-  # print appTest.formatStandingsNL()
-
-  path = os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/data/standings_over.txt'
-  with open(path, 'w') as f:
-    f.write(overstandings)
-  appTest = AppTest()
-  appTest.setup()
-
-  print appTest.formatStandingsAL()
-  print appTest.formatStandingsNL()
-  os.remove(path)
-
-
-def testListen():
-  appTest = AppTest()
-  appTest.setup()
-
-  t1 = threading.Thread(target=appTest.listen)
-  t1.start()
-  time.sleep(6)
-
-  chat_post_message('testing', injury)
-  chat_post_message('testing', finalScores)
-  chat_post_message('testing', liveTable)
-  time.sleep(2)
-
-  appTest.handle_close()
-  t1.join()
-
-
 def testIntegration():
-  appTest = AppTest(file_url='data/exports1.html')
+  appTest = AppTest(file_url='data/exports1.html', standings_in='data/standings_in.txt')
   appTest.setup()
 
   with open(appTest.get_standings_out(), 'w') as f:
@@ -319,20 +251,4 @@ def testIntegration():
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--mode', dest='mode', default='all')
-  args = parser.parse_args()
-
-  if args.mode == 'finalscores' or args.mode == 'all':
-    testFinalScores()
-
-  if args.mode == 'standings':
-    testStandings()
-
-  if args.mode == 'listen' or args.mode == 'all':
-    testListen()
-
-  if args.mode == 'integration' or args.mode == 'all':
-    testIntegration()
-
-  print 'Passed.'
+  testIntegration()
