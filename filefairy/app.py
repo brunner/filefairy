@@ -30,8 +30,8 @@ class App(object):
     self.liveTables = []
     self.lock = threading.Lock()
     self.tick = 0
-    self.records = {t: [0, 0] for t in range(31, 61)}
-    self.standings = self.getStandings()
+    self.records = {t: {'w': 0, 'l': 0} for t in range(31, 61)}
+    self.standings = self.read_standings()
     self.ws = None
 
   def get_path(self):
@@ -64,7 +64,7 @@ class App(object):
     except:
       return ''
 
-  def getStandings(self):
+  def read_standings(self):
     s_i, s = self.get_standings_in(), {t: {'w': 0, 'l': 0} for t in range(31, 61)}
     if s_i:
       with open(s_i, 'r') as f:
@@ -76,7 +76,7 @@ class App(object):
               s[t]['l'] = l
     return s
 
-  def writeStandings(self):
+  def write_standings(self):
     with open(self.get_standings_out(), 'w') as f:
       for t in self.standings:
         w, l = self.standings[t]['w'], self.standings[t]['l']
@@ -88,7 +88,7 @@ class App(object):
       obj = json.loads(message)
       if all(k in obj for k in ['type', 'channel', 'text']):
         if obj['type'] == 'message' and obj['channel'] == self.get_statsplus_id():
-          self.handleStatsplus(obj['text'])
+          self.handle_statsplus(obj['text'])
       self.lock.release()
 
     obj = rtm_connect()
@@ -100,15 +100,15 @@ class App(object):
       t.daemon = True
       t.start()
 
-  def handleStatsplus(self, text):
+  def handle_statsplus(self, text):
     if 'MAJOR LEAGUE BASEBALL Final Scores' in text:
-      self.handleFinalScores(text)
+      self.handle_final_scores(text)
     elif 'MAJOR LEAGUE BASEBALL Live Table' in text:
-      self.handleLiveTable(text)
+      self.handle_live_table(text)
     elif re.findall(r'\d{2}\/\d{2}\/\d{4}', text) and 'was injured' in text:
-      self.handleInjuries(text)
+      self.handle_injuries(text)
 
-  def handleFinalScores(self, text):
+  def handle_final_scores(self, text):
     text = re.sub(r'( MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
     if text not in self.finalScores:
       self.finalScores.append(text)
@@ -161,8 +161,8 @@ class App(object):
               w = int(tw[0]) - self.standings[t]['w']
               l = 0 if w else 1
 
-          self.records[t][0] += w
-          self.records[t][1] += l
+          self.records[t]['w'] += w
+          self.records[t]['l'] += l
 
           self.standings[t]['w'] += w
           self.standings[t]['l'] += l
@@ -198,11 +198,11 @@ class App(object):
     self.finalScores, self.liveTables = [], []
     return ret
 
-  def handleLiveTable(self, text):
+  def handle_live_table(self, text):
     self.liveTables.append(text)
     self.tick = int(time.time())
 
-  def handleInjuries(self, text):
+  def handle_injuries(self, text):
     if text not in self.injuries:
       self.injuries.append(text)
       self.tick = int(time.time())
@@ -230,7 +230,7 @@ class App(object):
     return ret
 
   def process_records(self):
-    ret = self.formatRecords()
+    ret = self.format_records()
     chat_post_message(self.get_live_sim_discussion_name(), ret)
     return ret
 
@@ -239,7 +239,7 @@ class App(object):
     retB = self.format_standings_nl()
     files_upload(retA, 'AL.txt', 'testing')
     files_upload(retB, 'NL.txt', 'testing')
-    self.writeStandings()
+    self.write_standings()
     return '\n'.join([retA, retB])
 
   def handle_close(self):
@@ -284,7 +284,7 @@ class App(object):
     match = re.findall(r'League File Updated: ([^<]+)<', page)
     return match[0] if len(match) else ''
 
-  def formatRecords(self):
+  def format_records(self):
     groups = [
         ('AL East', [33, 34, 48, 57, 59]),
         ('AL Central', [35, 38, 40, 43, 47]),
@@ -293,30 +293,21 @@ class App(object):
         ('NL Central', [36, 37, 46, 52, 56]),
         ('NL West', [31, 39, 45, 53, 55]),
     ]
-
     lines = []
     for group in groups:
       r = self.records
-      pct = lambda t: (float(r[t][0]) / (sum(r[t]) or 1),
-                       r[t][0],
-                       float(1) / r[t][1] if r[t][1] else 2)
-      ordered = sorted(group[1], key=pct, reverse=True)
-
+      ordered = self.get_ordered(r, group[1])
       formatted = []
       for t in ordered:
         emoji = get_emoji(t)
-        formatted.append('{0} {1}'.format(
-            emoji, '-'.join([str(n) for n in r[t]])))
-
-      lines.append('{0}\n{1}'.format(
-          group[0], ' :separator: '.join(formatted)))
-
+        formatted.append('{0} {1}-{2}'.format(emoji, r[t]['w'], r[t]['l']))
+      lines.append('{0}\n{1}'.format(group[0], ' :separator: '.join(formatted)))
     return '\n\n'.join(lines)
 
-  def getStandingsKeys(self, k):
+  def get_standings_keys(self, k):
     return [k + ey for ey in ['gb', 'en', 'mn']]
 
-  def getGamesBehind(self, s, u, t0):
+  def get_games_behind(self, s, u, t0):
     """Return the number of games that u is behind t.
 
     Args:
@@ -329,7 +320,7 @@ class App(object):
     """
     return (s[t0]['w'] - s[u]['w'] + s[u]['l'] - s[t0]['l']) / 2.0
 
-  def getEliminationNumber(self, s, u, t):
+  def get_elimination_number(self, s, u, t):
     """Return the elimination number for a team.
 
     Args:
@@ -342,7 +333,7 @@ class App(object):
     """
     return max(163 - s[t]['w'] - s[u]['l'], 0)
 
-  def getOrdered(self, s, group):
+  def get_ordered(self, s, group):
     """Return a set of teams, sorted by winning percentage.
 
     Args:
@@ -358,7 +349,7 @@ class App(object):
                      float(1) / t)
     return sorted(group, key=pct, reverse=True)
 
-  def processEliminationNumbers(self, s, ordered, i, k):
+  def process_elimination_numbers(self, s, ordered, i, k):
     """Annotates the standings with elimination number data.
 
     Args:
@@ -368,12 +359,12 @@ class App(object):
         k: the key prefix to use when setting annotations ('d' for division, 'w' for wild card).
 
     """
-    kgb, ken, kmn = self.getStandingsKeys(k)
+    kgb, ken, kmn = self.get_standings_keys(k)
     ts = filter(lambda v: s[v][kgb] <= 0, ordered)
     if len(ts) == len(ordered):
       for t in ordered:
         u0 = sorted(filter(lambda v: v != t, ts), key=lambda v: s[v]['l'], reverse=True)[0]
-        en = self.getEliminationNumber(s, u0, t)
+        en = self.get_elimination_number(s, u0, t)
         if kmn not in s[t] or en > s[t][kmn]:
           s[t][kmn] = en
     else:
@@ -381,7 +372,7 @@ class App(object):
         for u in ordered:
           if u == t or (u not in ts and 'dgb0' in s[u]):
             continue
-          en = self.getEliminationNumber(s, u, t)
+          en = self.get_elimination_number(s, u, t)
           s[u].setdefault(ken, []).append(en)
           s[t].setdefault(kmn, []).append(en)
       for v in ordered:
@@ -392,7 +383,7 @@ class App(object):
         if kmn in s[v] and ken in s[v]:
           del s[v][ken]
 
-  def getStandingsOutput(self, s, kgroup, group, k):
+  def get_standings_output(self, s, kgroup, group, k):
     """Populates a standings template with data for a set of teams.
 
     Args:
@@ -404,14 +395,14 @@ class App(object):
         the populated standings template.
 
     """
-    kgb, ken, kmn = self.getStandingsKeys(k)
+    kgb, ken, kmn = self.get_standings_keys(k)
     div = ' | '
     top = '{title:<15}{div}  W{div}  L{div}   GB{div} M#\n' + \
           '----------------|-----|-----|-------|-----'
     row = '{city:<15}{div}{w:>3}{div}{l:>3}{div}{gb:>5}{div}{mn:>3}'
 
     lines = [top.format(title=kgroup, div=div)]
-    for v in self.getOrdered(s, group):
+    for v in self.get_ordered(s, group):
       city = get_city(v)
       if 'p' in s[v]:
         city = s[v]['p'] + city
@@ -423,7 +414,7 @@ class App(object):
 
     return '\n'.join(lines)
 
-  def formatStandingsInternal(self, east, cent, west, k):
+  def format_standings_internal(self, east, cent, west, k):
     """Return a string representation of the standings for a league.
 
     Args:
@@ -442,21 +433,21 @@ class App(object):
     # Set the games behind and elimination numbers for each division.
     # If a team is the only leader in its division, annotate it with 'dbg0'.
     for group in [east, cent, west]:
-      ordered = self.getOrdered(s, group)
+      ordered = self.get_ordered(s, group)
       t0, s[t0]['dgb'], s[t0]['dgb0'] = ordered[0], 0.0, 1
       for u in ordered[1:]:
-        gb = self.getGamesBehind(s, u, t0)
+        gb = self.get_games_behind(s, u, t0)
         s[u]['dgb'] = gb
         if gb == 0.0 and 'dgb0' in s[t0]:
           del s[t0]['dgb0']
-      self.processEliminationNumbers(s, ordered, 0, 'd')
+      self.process_elimination_numbers(s, ordered, 0, 'd')
 
     # Filter division leaders out of the set of wild card teams.
     lg = east + cent + west
     wc = filter(lambda v: 'dgb0' not in s[v], lg)
 
     # Find the index of the team occupying the final playoff spot in the league.
-    ordered = self.getOrdered(s, lg)
+    ordered = self.get_ordered(s, lg)
     k, j = 0, 2
     for i, t0 in enumerate(ordered):
       if 'dgb0' not in s[t0]:
@@ -469,8 +460,8 @@ class App(object):
     # Set the games behind and elimination numbers for the wild card.
     s[t0]['wgb'] = 0.0
     for v in ordered:
-      s[v]['wgb'] = self.getGamesBehind(s, v, t0)
-    self.processEliminationNumbers(s, ordered, i, 'w')
+      s[v]['wgb'] = self.get_games_behind(s, v, t0)
+    self.process_elimination_numbers(s, ordered, i, 'w')
 
     # Annotate the standings with team prefixes, if applicable.
     for v in ordered:
@@ -490,16 +481,16 @@ class App(object):
 
     # Feed the annotated standings data into a helper method to populate the standings template.
     groups = zip([keast, kcent, kwest, kwc], [east, cent, west, wc], ['d', 'd', 'd', 'w'])
-    ret = [self.getStandingsOutput(s, kgroup, group, k) for (kgroup, group, k) in groups]
+    ret = [self.get_standings_output(s, kgroup, group, k) for (kgroup, group, k) in groups]
     return '\n\n'.join(ret)
 
   def format_standings_al(self):
     aleast, alcent, alwest = [33, 34, 48, 57, 59], [35, 38, 40, 43, 47], [42, 44, 50, 54, 58]
-    return self.formatStandingsInternal(aleast, alcent, alwest, 'AL')
+    return self.format_standings_internal(aleast, alcent, alwest, 'AL')
 
   def format_standings_nl(self):
     nleast, nlcent, nlwest = [32, 41, 49, 51, 60], [36, 37, 46, 52, 56], [31, 39, 45, 53, 55]
-    return self.formatStandingsInternal(nleast, nlcent, nlwest, 'NL')
+    return self.format_standings_internal(nleast, nlcent, nlwest, 'NL')
 
 
 if __name__ == '__main__':
