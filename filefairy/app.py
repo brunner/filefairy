@@ -237,8 +237,8 @@ class App(object):
   def process_standings(self):
     retA = self.format_standings_al()
     retB = self.format_standings_nl()
-    files_upload(retA, 'AL.txt', 'testing')
-    files_upload(retB, 'NL.txt', 'testing')
+    files_upload(retA, 'AL.txt', self.get_live_sim_discussion_name())
+    files_upload(retB, 'NL.txt', self.get_live_sim_discussion_name())
     self.write_standings()
     return '\n'.join([retA, retB])
 
