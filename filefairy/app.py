@@ -48,6 +48,9 @@ class App(object):
   def get_live_sim_discussion_name(self):
     return 'live-sim-discussion'
 
+  def get_testing_name(self):
+    return 'testing'
+
   def get_statsplus_id(self):
     return 'C7JSGHW8G'
 
@@ -146,7 +149,9 @@ class App(object):
               w, l = 0, 0
             elif tw and uw and w == 0:
               # If both teams played and neither won, we have limited information.
-              l = 0 if l == 3 else l / 2
+              # Send an alert and correct manually for the time being.
+              l = 1 if l == 3 else l / 2
+              chat_post_message(self.get_testing_name(), 'Neighbors {} and {} lost.'.format(t, u))
             elif tw and uw and l == 0:
               # If both teams played and neither lost, we calculate using the live table.
               # The number of wins for the current team is the diff between the table and standings.
