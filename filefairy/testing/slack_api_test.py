@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import argparse
 import json
 import os
 import sys
@@ -68,17 +67,6 @@ def test_rtm_connect():
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--mode', dest='mode')
-  args = parser.parse_args()
-
-  if args.mode == 'post' or args.mode == 'all':
-    test_chat_post_message()
-
-  if args.mode == 'upload' or args.mode == 'all':
-    test_files_upload()
-
-  if args.mode == 'rtm' or args.mode == 'all':
-    test_rtm_connect()
-
-  print 'Passed.'
+  test_chat_post_message()
+  test_files_upload()
+  test_rtm_connect()
