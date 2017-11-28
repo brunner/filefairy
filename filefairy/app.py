@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 
 import copy
-import datetime
 import json
 import os
 import re
-import subprocess
-import slack_api
-import sys
 import threading
 import time
 import urllib2
