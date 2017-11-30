@@ -114,10 +114,10 @@ class App(object):
       self.tick = int(time.time())
 
   def process_final_scores(self):
-    if len(self.finalScores) == len(self.liveTables):
-      for finalScore, liveTable in zip(self.finalScores, self.liveTables):
-        chat_post_message(self.get_live_sim_discussion_name(), finalScore)
-
+    for i, finalScore in enumerate(self.finalScores):
+      chat_post_message(self.get_live_sim_discussion_name(), finalScore)
+      if len(self.finalScores) == len(self.liveTables):
+        liveTable = self.liveTables[i]
         for t in range(31, 61):
           if t in [35, 36, 44, 45, 48, 49]:
             continue

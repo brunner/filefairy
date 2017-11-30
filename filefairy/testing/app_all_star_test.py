@@ -9,9 +9,7 @@ from utils import assert_equals
 
 
 inpt = ['07/27/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
-        '*<https://game_box_0.html|AL 4, NL 3>*',
-        '```MAJOR LEAGUE BASEBALL Live Table - 03/21/2021\n' +
-        'AL                              1\nNL                              0````']
+        '*<https://game_box_0.html|AL 4, NL 3>*']
 
 outpt = '07/27/2021\n' + \
         '<https://game_box_0.html|AL 4, NL 3>'
