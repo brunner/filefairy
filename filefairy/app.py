@@ -214,9 +214,9 @@ class App(object):
       #       self.records[lid][1] += 1
 
     for t, u in zip([35, 44, 48], [36, 45, 49]):
-      if 'scs' not in self.standings[t]:
+      if 'scs' not in self.records[t]:
         continue
-      tscs, uscs = self.standings[t]['scs'], self.standings[u]['scs']
+      tscs, uscs = self.records[t]['scs'], self.records[u]['scs']
       if len(tscs) < 2:
         continue
       for i in range(len(tscs)):
@@ -291,11 +291,11 @@ class App(object):
     self.standings[t]['w'] += w
     self.standings[t]['l'] += l
 
-  def add_schedule(self, t, sc):
-    self.standings[t].setdefault('scs', []).append(sc)
-
   def get_score(self, t, key):
     return self.standings[t][key]
+
+  def add_schedule(self, t, sc):
+    self.records[t].setdefault('scs', []).append(sc)
 
   def handle_live_table(self, text):
     self.liveTables.append(text)
@@ -398,9 +398,25 @@ class App(object):
       ordered = self.get_ordered(r, group[1])
       formatted = []
       for t in ordered:
-        emoji = get_emoji(t)
-        formatted.append('{0} {1}-{2}'.format(emoji, r[t]['w'], r[t]['l']))
-      lines.append('{0}\n{1}'.format(group[0], ' :separator: '.join(formatted)))
+        if r[t]['w'] + r[t]['l'] > 0:
+          emoji = get_emoji(t)
+          formatted.append('{0} {1}-{2}'.format(emoji, r[t]['w'], r[t]['l']))
+      if formatted:
+        lines.append('{0}\n{1}'.format(group[0], ' :separator: '.join(formatted)))
+
+    unhandled = []
+    for t in [35, 44, 48]:
+      if 'scs' not in self.records[t]:
+        continue
+      city = get_city(t)
+      tscs = self.records[t]['scs']
+      for sc in tscs:
+        for tk in sc:
+          if sc[tk]:
+            unhandled.append('Unhandled loss for {}.'.format(city))
+    if unhandled:
+      lines.append('_{}_'.format(' '.join(unhandled)))
+
     return '\n\n'.join(lines)
 
   def get_standings_keys(self, k):
