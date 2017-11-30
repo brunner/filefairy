@@ -25,20 +25,13 @@ emoji = dict(zip(range(31, 61), [
     ':rangers:', ':jays:', ':nationals:']))
 
 
-def get_nickname(teamid):
-  return lookup_(nicknames, teamid, '')
-
-
-neighbors = dict(zip([35, 36, 44, 45, 48, 49], [36, 35, 45, 44, 49, 48]))
-
-
-def get_neighbor(teamid):
-  return lookup_(neighbors, teamid, -1)
-
-
 def get_emoji(teamid):
   return lookup_(emoji, teamid, '')
 
 
 nicknames = dict(zip([35, 36, 44, 45, 48, 49], [
     'White Sox', 'Cubs', 'Angels', 'Dodgers', 'Yankees', 'Mets']))
+
+
+def get_nickname(teamid):
+  return lookup_(nicknames, teamid, '')

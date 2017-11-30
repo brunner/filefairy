@@ -10,7 +10,7 @@ import urllib2
 import websocket
 
 from slack_api import chat_post_message, files_upload, rtm_connect
-from teams import get_city, get_emoji, get_neighbor, get_nickname
+from teams import get_city, get_emoji, get_nickname
 
 
 class App(object):
@@ -117,56 +117,74 @@ class App(object):
     if len(self.finalScores) == len(self.liveTables):
       for finalScore, liveTable in zip(self.finalScores, self.liveTables):
         chat_post_message(self.get_live_sim_discussion_name(), finalScore)
+
         for t in range(31, 61):
-          # Look up the city of the team.
-          # For example, city could be 'Red Sox' or 'Chicago'.
-          city = get_city(t)
-
-          w = len(re.findall(r'\|' + re.escape(city), finalScore))
-          l = len(re.findall(r', ' + re.escape(city), finalScore))
-
           if t in [35, 36, 44, 45, 48, 49]:
-            # Look up the nickname of the team.
-            # For example, tnick could be 'Cubs'.
-            tnick = get_nickname(t)
+            continue
+          city = get_city(t)
+          cw = len(re.findall(r'\|' + re.escape(city), finalScore))
+          cl = len(re.findall(r', ' + re.escape(city), finalScore))
+          self.add_score(t, cw, cl)
 
-            # Look up the id and nickname of the team in the same city.
-            # For example, u could be 36 and unick could be 'White Sox'.
-            u = get_neighbor(t)
-            unick = get_nickname(u)
+        for t, u in zip([35, 44, 48], [36, 45, 49]):
+          city = get_city(t)
+          cw = len(re.findall(r'\|' + re.escape(city), finalScore))
+          cl = len(re.findall(r', ' + re.escape(city), finalScore))
 
-            # Find the number of wins for both teams in the live table.
-            # For example, tw (Cubs wins) could be 4 and tu (White Sox wins) could be 2.
-            tw = re.findall(re.escape(tnick) + r'\s+(\d+)', liveTable)
-            uw = re.findall(re.escape(unick) + r'\s+(\d+)', liveTable)
+          ws = re.findall(r'\|' + re.escape(city) + '\s\d+,\s([^\d]+)\d', finalScore)
+          ls = re.findall(r'\|([^\d]+)\d+,\s' + re.escape(city), finalScore)
 
-            if tw and not uw:
-              # If the other team didn't play, their wins/losses are correct.
-              pass
-            elif not tw and uw:
-              # If the current team didn't play, their wins/losses are zero.
-              # This is because the recorded wins/losses belong to the other team.
-              w, l = 0, 0
-            elif tw and uw and w == 0:
-              # If both teams played and neither won, we have limited information.
-              # Send an alert and correct manually for the time being.
-              l = 1 if l == 3 else l / 2
-              chat_post_message(self.get_testing_name(), 'Neighbors {} and {} lost.'.format(t, u))
-            elif tw and uw and l == 0:
-              # If both teams played and neither lost, we calculate using the live table.
-              # The number of wins for the current team is the diff between the table and standings.
-              w = int(tw[0]) - self.standings[t]['w']
-            elif tw and uw and w == 1 and l == 1:
-              # If both teams played and one won and one lost, we calculate using the live table.
-              # The number of wins for the current team is the diff between the table and standings.
-              w = int(tw[0]) - self.standings[t]['w']
-              l = 0 if w else 1
+          tn = get_nickname(t)
+          tt = re.findall(re.escape(tn) + r'\s+(\d+)', liveTable)
+          ts = self.get_score(t, 'w')
 
-          self.records[t]['w'] += w
-          self.records[t]['l'] += l
+          un = get_nickname(u)
+          ut = re.findall(re.escape(un) + r'\s+(\d+)', liveTable)
+          us = self.get_score(u, 'w')
 
-          self.standings[t]['w'] += w
-          self.standings[t]['l'] += l
+          if tt and ut:
+            ct = cw + cl
+            tw, uw = int(tt[0]) - ts, int(ut[0]) - us
+            if ct != 3:
+              tl, ul = ct / 2 - tw, ct / 2 - uw
+              self.add_score(t, tw, tl)
+              self.add_score(u, uw, ul)
+            else:
+              tl, ul = 0 if tw else 1, 0 if uw else 1
+              self.add_score(t, tw, tl)
+              self.add_score(u, uw, ul)
+            if tw == uw or cw == 1 and cl == 2:
+              _ = list(set().union(ws, ls))
+              tk, uk = _ if len(_) == 2 else ('', '')
+              if ct != 3:
+                self.add_schedule(t, {tk: False, uk: False})
+                self.add_schedule(u, {tk: False, uk: False})
+              else:
+                td = ws.count(tk) + ls.count(tk) == 2
+                ud = ws.count(uk) + ls.count(uk) == 2
+                self.add_schedule(t, {tk: td, uk: ud})
+                self.add_schedule(u, {tk: td, uk: ud})
+            else:
+              tk, uk = '', ''
+              for k in ws:
+                tk = k if ws.count(k) == tw and not tk else tk
+                uk = k if ws.count(k) == uw and not uk else uk
+              for k in ls:
+                tk = k if ls.count(k) == tl and not tk else tk
+                uk = k if ls.count(k) == ul and not uk else uk
+              self.add_schedule(t, {tk: False})
+              self.add_schedule(u, {uk: False})
+          else:
+            _ = list(set().union(ws, ls))
+            sk = _[0] if len(_) == 1 else ''
+            if tt:
+              self.add_score(t, cw, cl)
+              self.add_schedule(t, {sk: False})
+              self.add_schedule(u, {'': False})
+            if ut:
+              self.add_score(u, cw, cl)
+              self.add_schedule(t, {'': False})
+              self.add_schedule(u, {sk: False})
 
       # Save for now, this might be useful for the edge cases.
       # cities = ['Chicago', 'Los Angeles', 'New York']
@@ -195,9 +213,89 @@ class App(object):
       #       lid = slack_api.nicksToTeamids[lteam]
       #       self.records[lid][1] += 1
 
+    for t, u in zip([35, 44, 48], [36, 45, 49]):
+      if 'scs' not in self.standings[t]:
+        continue
+      tscs, uscs = self.standings[t]['scs'], self.standings[u]['scs']
+      if len(tscs) < 2:
+        continue
+      for i in range(len(tscs)):
+        if len(tscs[i].keys()) == 2:
+          vk, wk = tscs[i].keys()
+          tvn, uvn, twn, uwn = 0, 0, 0, 0
+          for j in tscs[i-1::-1]:
+            if vk not in j and wk not in j:
+              break
+            if vk in j:
+              tvn += 1
+            if wk in j:
+              twn += 1
+          for j in uscs[i-1::-1]:
+            if vk not in j and wk not in j:
+              break
+            if vk in j:
+              uvn += 1
+            if wk in j:
+              uwn += 1
+          for j in tscs[i+1:]:
+            if vk not in j and wk not in j:
+              break
+            if vk in j:
+              tvn += 1
+            if wk in j:
+              twn += 1
+          for j in uscs[i+1:]:
+            if vk not in j and wk not in j:
+              break
+            if vk in j:
+              uvn += 1
+            if wk in j:
+              uwn += 1
+          if tvn > twn:
+            if tscs[i][vk]:
+              self.add_score(t, 0, 1)
+              tscs[i][vk] = False
+            elif uscs[i][wk]:
+              self.add_score(u, 0, 1)
+              uscs[i][wk] = False
+          elif twn > tvn:
+            if tscs[i][wk]:
+              self.add_score(t, 0, 1)
+              tscs[i][wk] = False
+            elif uscs[i][vk]:
+              self.add_score(u, 0, 1)
+              uscs[i][vk] = False
+          elif uvn > uwn:
+            if uscs[i][vk]:
+              self.add_score(u, 0, 1)
+              uscs[i][vk] = False
+            elif tscs[i][wk]:
+              self.add_score(t, 0, 1)
+              tscs[i][wk] = False
+          elif uwn > uvn:
+            if uscs[i][wk]:
+              self.add_score(u, 0, 1)
+              uscs[i][wk] = False
+            elif tscs[i][vk]:
+              self.add_score(t, 0, 1)
+              tscs[i][vk] = False
+
     ret = '\n'.join(self.finalScores)
     self.finalScores, self.liveTables = [], []
     return ret
+
+  def add_score(self, t, w, l):
+    self.records[t]['w'] += w
+    self.records[t]['l'] += l
+
+    self.standings[t]['w'] += w
+    self.standings[t]['l'] += l
+
+  def add_schedule(self, t, sc):
+    self.standings[t].setdefault('scs', []).append(sc)
+
+  def get_score(self, t, key):
+    return self.standings[t][key]
 
   def handle_live_table(self, text):
     self.liveTables.append(text)
