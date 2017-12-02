@@ -111,6 +111,7 @@ class App(object):
     text = re.sub(r'( MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
     if text not in self.finalScores:
       self.finalScores.append(text)
+      self.liveTables.append('')
       self.tick = int(time.time())
 
   def process_final_scores(self):
@@ -298,7 +299,8 @@ class App(object):
     self.records[t].setdefault('scs', []).append(sc)
 
   def handle_live_table(self, text):
-    self.liveTables.append(text)
+    i = len(self.liveTables) - 1
+    self.liveTables[i] = text
     self.tick = int(time.time())
 
   def handle_injuries(self, text):
