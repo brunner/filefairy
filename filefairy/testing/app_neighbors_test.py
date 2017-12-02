@@ -77,7 +77,14 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '```MAJOR LEAGUE BASEBALL Live Table - 07/30/2021\n' +
         'Baltimore Orioles               8\nChicago Cubs                    8\n' +
         'Chicago White Sox               8\nArizona Diamondbacks            1\n' +
-        'Boston Red Sox                  1\nAtlanta Braves                  0```']
+        'Boston Red Sox                  1\nAtlanta Braves                  0```',
+        '07/30/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Boston 5, Chicago 1>*\n' +
+        '*<https://game_box_0.html|Chicago 2, Atlanta 1>*',
+        '```MAJOR LEAGUE BASEBALL Live Table - 07/30/2021\n' +
+        'Chicago Cubs                    9\nBaltimore Orioles               8\n' +
+        'Chicago White Sox               8\nArizona Diamondbacks            1\n' +
+        'Boston Red Sox                  2\nAtlanta Braves                  0```']
 
 outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
         'AL East\n:orioles: 1-1\n\nAL Central\n:whitesox: 1-1',
@@ -99,7 +106,10 @@ outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
         'AL East\n:orioles: 8-7 :separator: :redsox: 1-1\n\n' +
         'AL Central\n:whitesox: 8-8\n\nNL East\n:braves: 0-1\n\n' +
         'NL Central\n:cubbies: 8-1\n\nNL West\n:dbacks: 1-7\n\n' +
-        '_Unhandled loss for Chicago._']
+        '_Unhandled loss for Chicago._',
+        'AL East\n:redsox: 2-1 :separator: :orioles: 8-7\n\n' +
+        'AL Central\n:whitesox: 8-10\n\nNL East\n:braves: 0-2\n\n' +
+        'NL Central\n:cubbies: 9-1\n\nNL West\n:dbacks: 1-7']
 
 
 def test():
