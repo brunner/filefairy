@@ -8,7 +8,7 @@ from teams import get_city, get_emoji, get_nickname
 from utils import assert_equals
 
 
-def assert_teams(teamid, city, emoji, neighbor, nickname):
+def assert_teams(teamid, city, emoji, nickname):
   assert_equals(get_city(teamid), city)
   assert_equals(get_emoji(teamid), emoji)
   assert_equals(get_nickname(teamid), nickname)

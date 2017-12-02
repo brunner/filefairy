@@ -256,30 +256,38 @@ class App(object):
             if tscs[i][vk]:
               self.add_score(t, 0, 1)
               tscs[i][vk] = False
+              uscs[i][vk] = False
             elif uscs[i][wk]:
               self.add_score(u, 0, 1)
+              tscs[i][wk] = False
               uscs[i][wk] = False
           elif twn > tvn:
             if tscs[i][wk]:
               self.add_score(t, 0, 1)
               tscs[i][wk] = False
+              uscs[i][wk] = False
             elif uscs[i][vk]:
               self.add_score(u, 0, 1)
+              tscs[i][vk] = False
               uscs[i][vk] = False
           elif uvn > uwn:
             if uscs[i][vk]:
               self.add_score(u, 0, 1)
+              tscs[i][vk] = False
               uscs[i][vk] = False
             elif tscs[i][wk]:
               self.add_score(t, 0, 1)
               tscs[i][wk] = False
+              uscs[i][wk] = False
           elif uwn > uvn:
             if uscs[i][wk]:
               self.add_score(u, 0, 1)
+              tscs[i][wk] = False
               uscs[i][wk] = False
             elif tscs[i][vk]:
               self.add_score(t, 0, 1)
               tscs[i][vk] = False
+              uscs[i][vk] = False
 
     ret = '\n'.join(self.finalScores)
     self.finalScores, self.liveTables = [], []
