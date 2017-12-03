@@ -78,13 +78,44 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         'Baltimore Orioles               8\nChicago Cubs                    8\n' +
         'Chicago White Sox               8\nArizona Diamondbacks            1\n' +
         'Boston Red Sox                  1\nAtlanta Braves                  0```',
-        '07/30/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '07/31/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Boston 5, Chicago 1>*\n' +
         '*<https://game_box_0.html|Chicago 2, Atlanta 1>*',
-        '```MAJOR LEAGUE BASEBALL Live Table - 07/30/2021\n' +
+        '```MAJOR LEAGUE BASEBALL Live Table - 07/31/2021\n' +
         'Chicago Cubs                    9\nBaltimore Orioles               8\n' +
-        'Chicago White Sox               8\nArizona Diamondbacks            1\n' +
-        'Boston Red Sox                  2\nAtlanta Braves                  0```']
+        'Chicago White Sox               8\nBoston Red Sox                  2\n' +
+        'Arizona Diamondbacks            1\nAtlanta Braves                  0```',
+        '08/01/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Atlanta 6, Chicago 4>*\n' +
+        '*<https://game_box_0.html|Boston 8, Chicago 0>*\n' +
+        '*<https://game_box_0.html|Chicago 3, Boston 2>*',
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/01/2021\n' +
+        'Chicago Cubs                    9\nChicago White Sox               9\n' +
+        'Baltimore Orioles               8\nBoston Red Sox                  2\n' +
+        'Arizona Diamondbacks            1\nAtlanta Braves                  1```',
+        '08/01/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Atlanta 3, Chicago 2>*\n' +
+        '*<https://game_box_0.html|Chicago 3, Boston 0>*\n' +
+        '*<https://game_box_0.html|Chicago 8, Boston 2>*',
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/01/2021\n' +
+        'Chicago White Sox              11\nChicago Cubs                    9\n' +
+        'Baltimore Orioles               8\nAtlanta Braves                  2\n' +
+        'Boston Red Sox                  2\nArizona Diamondbacks            1```',
+        '08/01/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Baltimore 5, Chicago 1>*\n' +
+        '*<https://game_box_0.html|Baltimore 8, Chicago 7>*\n' +
+        '*<https://game_box_0.html|Arizona 10, Chicago 0>*',
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/01/2021\n' +
+        'Chicago White Sox              11\nBaltimore Orioles              10\n' +
+        'Chicago Cubs                    9\nArizona Diamondbacks            2\n' +
+        'Atlanta Braves                  2\nBoston Red Sox                  2```',
+        '07/31/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Baltimore 6, Chicago 1>*\n' +
+        '*<https://game_box_0.html|Chicago 2, Arizona 1>*',
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/01/2021\n' +
+        'Baltimore Orioles              11\nChicago White Sox              11\n' +
+        'Chicago Cubs                   10\nArizona Diamondbacks            2\n' +
+        'Atlanta Braves                  2\nBoston Red Sox                  2```']
 
 outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
         'AL East\n:orioles: 1-1\n\nAL Central\n:whitesox: 1-1',
@@ -109,7 +140,20 @@ outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
         '_Unhandled loss for Chicago._',
         'AL East\n:redsox: 2-1 :separator: :orioles: 8-7\n\n' +
         'AL Central\n:whitesox: 8-10\n\nNL East\n:braves: 0-2\n\n' +
-        'NL Central\n:cubbies: 9-1\n\nNL West\n:dbacks: 1-7']
+        'NL Central\n:cubbies: 9-1\n\nNL West\n:dbacks: 1-7',
+        'AL East\n:redsox: 3-2 :separator: :orioles: 8-7\n\n' +
+        'AL Central\n:whitesox: 9-11\n\nNL East\n:braves: 1-2\n\n' +
+        'NL Central\n:cubbies: 9-2\n\nNL West\n:dbacks: 1-7',
+        'AL East\n:orioles: 8-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 11-11\n\nNL East\n:braves: 2-2\n\n' +
+        'NL Central\n:cubbies: 9-3\n\nNL West\n:dbacks: 1-7',
+        'AL East\n:orioles: 10-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 11-12\n\nNL East\n:braves: 2-2\n\n' +
+        'NL Central\n:cubbies: 9-4\n\nNL West\n:dbacks: 2-7\n\n' +
+        '_Unhandled loss for Chicago._',
+        'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 11-14\n\nNL East\n:braves: 2-2\n\n' +
+        'NL Central\n:cubbies: 10-4\n\nNL West\n:dbacks: 2-8']
 
 
 def test():
