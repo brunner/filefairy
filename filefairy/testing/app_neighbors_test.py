@@ -93,28 +93,88 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         'Chicago Cubs                    9\nChicago White Sox               9\n' +
         'Baltimore Orioles               8\nBoston Red Sox                  2\n' +
         'Arizona Diamondbacks            1\nAtlanta Braves                  1```',
-        '08/01/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '08/02/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Atlanta 3, Chicago 2>*\n' +
         '*<https://game_box_0.html|Chicago 3, Boston 0>*\n' +
         '*<https://game_box_0.html|Chicago 8, Boston 2>*',
-        '```MAJOR LEAGUE BASEBALL Live Table - 08/01/2021\n' +
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/02/2021\n' +
         'Chicago White Sox              11\nChicago Cubs                    9\n' +
         'Baltimore Orioles               8\nAtlanta Braves                  2\n' +
         'Boston Red Sox                  2\nArizona Diamondbacks            1```',
-        '08/01/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '08/03/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Baltimore 5, Chicago 1>*\n' +
         '*<https://game_box_0.html|Baltimore 8, Chicago 7>*\n' +
         '*<https://game_box_0.html|Arizona 10, Chicago 0>*',
-        '```MAJOR LEAGUE BASEBALL Live Table - 08/01/2021\n' +
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/03/2021\n' +
         'Chicago White Sox              11\nBaltimore Orioles              10\n' +
         'Chicago Cubs                    9\nArizona Diamondbacks            2\n' +
         'Atlanta Braves                  2\nBoston Red Sox                  2```',
-        '07/31/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '08/04/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Baltimore 6, Chicago 1>*\n' +
         '*<https://game_box_0.html|Chicago 2, Arizona 1>*',
-        '```MAJOR LEAGUE BASEBALL Live Table - 08/01/2021\n' +
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/04/2021\n' +
         'Baltimore Orioles              11\nChicago White Sox              11\n' +
         'Chicago Cubs                   10\nArizona Diamondbacks            2\n' +
+        'Atlanta Braves                  2\nBoston Red Sox                  2```',
+        '08/05/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Chicago 10, Cleveland 3>*\n' +
+        '*<https://game_box_0.html|Chicago 2, Cleveland 0>*\n' +
+        '*<https://game_box_0.html|Chicago 4, Cincinnati 3>*\n' +
+        '*<https://game_box_0.html|Chicago 8, Cincinnati 6>*', 
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/05/2021\n' +
+        'Chicago White Sox              13\nChicago Cubs                   12\n' +
+        'Baltimore Orioles              11\nArizona Diamondbacks            2\n' +
+        'Atlanta Braves                  2\nBoston Red Sox                  2\n' +
+        'Cincinnati Reds                 0\nCleveland Indians               0```',
+        '08/06/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Chicago 13, Cleveland 7>*\n' +
+        '*<https://game_box_0.html|Chicago 7, Cleveland 3>*\n' +
+        '*<https://game_box_0.html|Chicago 8, Cincinnati 1>*\n' +
+        '*<https://game_box_0.html|Cincinnati 2, Chicago 0>*', 
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/06/2021\n' +
+        'Chicago White Sox              15\nChicago Cubs                   13\n' +
+        'Baltimore Orioles              11\nArizona Diamondbacks            2\n' +
+        'Atlanta Braves                  2\nBoston Red Sox                  2\n' +
+        'Cincinnati Reds                 1\nCleveland Indians               0```',
+        '08/07/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Chicago 4, Cleveland 2>*\n' +
+        '*<https://game_box_0.html|Chicago 7, Cleveland 1>*\n' +
+        '*<https://game_box_0.html|Cincinnati 3, Chicago 2>*\n' +
+        '*<https://game_box_0.html|Cincinnati 9, Chicago 5>*', 
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/07/2021\n' +
+        'Chicago White Sox              17\nChicago Cubs                   13\n' +
+        'Baltimore Orioles              11\nCincinnati Reds                 3\n' +
+        'Arizona Diamondbacks            2\nAtlanta Braves                  2\n' +
+        'Boston Red Sox                  2\nCleveland Indians               0```',
+        '08/08/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Chicago 6, Cincinnati 2>*\n' +
+        '*<https://game_box_0.html|Chicago 2, Cleveland 1>*\n' +
+        '*<https://game_box_0.html|Cincinnati 10, Chicago 6>*\n' +
+        '*<https://game_box_0.html|Cleveland 7, Chicago 2>*', 
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/08/2021\n' +
+        'Chicago White Sox              18\nChicago Cubs                   14\n' +
+        'Baltimore Orioles              11\nCincinnati Reds                 4\n' +
+        'Arizona Diamondbacks            2\nAtlanta Braves                  2\n' +
+        'Boston Red Sox                  2\nCleveland Indians               1```',
+        '08/09/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Chicago 7, Cleveland 4>*\n' +
+        '*<https://game_box_0.html|Cincinnati 6, Chicago 4>*\n' +
+        '*<https://game_box_0.html|Cincinnati 8, Chicago 7>*\n' +
+        '*<https://game_box_0.html|Cleveland 3, Chicago 2>*', 
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/09/2021\n' +
+        'Chicago White Sox              19\nChicago Cubs                   14\n' +
+        'Baltimore Orioles              11\nCincinnati Reds                 6\n' +
+        'Arizona Diamondbacks            2\nAtlanta Braves                  2\n' +
+        'Boston Red Sox                  2\nCleveland Indians               2```',
+        '08/10/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
+        '*<https://game_box_0.html|Cincinnati 7, Chicago 6>*\n' +
+        '*<https://game_box_0.html|Cincinnati 2, Chicago 0>*\n' +
+        '*<https://game_box_0.html|Cleveland 6, Chicago 2>*\n' +
+        '*<https://game_box_0.html|Cleveland 4, Chicago 3>*', 
+        '```MAJOR LEAGUE BASEBALL Live Table - 08/10/2021\n' +
+        'Chicago White Sox              19\nChicago Cubs                   14\n' +
+        'Baltimore Orioles              11\nCincinnati Reds                 8\n' +
+        'Cleveland Indians               4\nArizona Diamondbacks            2\n' +
         'Atlanta Braves                  2\nBoston Red Sox                  2```']
 
 outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
@@ -153,7 +213,31 @@ outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
         '_Unhandled loss for Chicago._',
         'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
         'AL Central\n:whitesox: 11-14\n\nNL East\n:braves: 2-2\n\n' +
-        'NL Central\n:cubbies: 10-4\n\nNL West\n:dbacks: 2-8']
+        'NL Central\n:cubbies: 10-4\n\nNL West\n:dbacks: 2-8',
+        'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 13-14 :separator: :indians: 0-2\n\n' +
+        'NL East\n:braves: 2-2\n\nNL Central\n:cubbies: 12-4 ' +
+        ':separator: :reds: 0-2\n\nNL West\n:dbacks: 2-8',
+        'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 15-14 :separator: :indians: 0-4\n\n' +
+        'NL East\n:braves: 2-2\n\nNL Central\n:cubbies: 13-5 ' +
+        ':separator: :reds: 1-3\n\nNL West\n:dbacks: 2-8',
+        'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 17-14 :separator: :indians: 0-6\n\n' +
+        'NL East\n:braves: 2-2\n\nNL Central\n:cubbies: 13-7 ' +
+        ':separator: :reds: 3-3\n\nNL West\n:dbacks: 2-8',
+        'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 18-15 :separator: :indians: 1-7\n\n' +
+        'NL East\n:braves: 2-2\n\nNL Central\n:cubbies: 14-8 ' +
+        ':separator: :reds: 4-4\n\nNL West\n:dbacks: 2-8',
+        'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 19-16 :separator: :indians: 2-8\n\n' +
+        'NL East\n:braves: 2-2\n\nNL Central\n:reds: 6-4 ' +
+        ':separator: :cubbies: 14-10\n\nNL West\n:dbacks: 2-8',
+        'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
+        'AL Central\n:whitesox: 19-18 :separator: :indians: 4-8\n\n' +
+        'NL East\n:braves: 2-2\n\nNL Central\n:reds: 8-4 ' +
+        ':separator: :cubbies: 14-12\n\nNL West\n:dbacks: 2-8']
 
 
 def test():

@@ -187,33 +187,6 @@ class App(object):
               self.add_schedule(t, {'': False})
               self.add_schedule(u, {sk: False})
 
-      # Save for now, this might be useful for the edge cases.
-      # cities = ['Chicago', 'Los Angeles', 'New York']
-      # for line in finalScore.splitlines():
-      #   match = re.findall(
-      #       r'game_box_(\d+)\.html\|([^\d]+)(\d+),([^\d]+)(\d+)', line)
-      #   if match:
-      #     boxid, wteam, wruns, lteam, lruns = match[0]
-      #     wteam, lteam = wteam.strip(), lteam.strip()
-
-      #     if wteam in cities or lteam in cities:
-      #       url = self.getBoxScoreUrl(boxid)
-      #       page = self.get_page(url)
-      #       wmatch = re.findall(r'<b>' + re.escape(wteam) + r'([^<(]+)', page)
-      #       lmatch = re.findall(r'\">' + re.escape(lteam) + r'([^<(]+)', page)
-      #       if wmatch and wteam in cities:
-      #         wteam = wmatch[0].strip()
-      #       if lmatch and lteam in cities:
-      #         lteam = lmatch[0].strip()
-
-      #     if wteam in slack_api.nicksToTeamids:
-      #       wid = slack_api.nicksToTeamids[wteam]
-      #       self.records[wid][0] += 1
-
-      #     if lteam in slack_api.nicksToTeamids:
-      #       lid = slack_api.nicksToTeamids[lteam]
-      #       self.records[lid][1] += 1
-
     for t, u in zip([35, 44, 48], [36, 45, 49]):
       if 'scs' not in self.records[t]:
         continue
