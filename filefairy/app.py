@@ -27,7 +27,7 @@ class App(object):
     self.lock = threading.Lock()
     self.tick = 0
     self.records = {t: {'w': 0, 'l': 0} for t in range(31, 61)}
-    self.standings = self.read_standings()
+    self.standings = self.read_standings(self.get_standings_in())
     self.ws = None
 
   def get_path(self):
@@ -63,23 +63,37 @@ class App(object):
     except:
       return ''
 
-  def read_standings(self):
-    s_i, s = self.get_standings_in(), {t: {'w': 0, 'l': 0} for t in range(31, 61)}
-    if s_i:
-      with open(s_i, 'r') as f:
+  def read_standings(self, standings_in):
+    """Read standings data from file.
+
+    Args:
+        standings_in: the file to read the standings data from.
+    Returns:
+        a mapping of team ids to season win/loss pairs.
+
+    """
+    s = {t: {'w': 0, 'l': 0} for t in range(31, 61)}
+    if os.path.isfile(standings_in):
+      with open(standings_in, 'r') as f:
         for line in f.readlines():
-          if line.count(' ') == 2:
-            t, w, l = [int(n) for n in line.split()]
-            if t in s:
-              s[t]['w'] = w
-              s[t]['l'] = l
+          t, w, l = [int(n) for n in line.split()]
+          s[t]['w'], s[t]['l'] = w, l
     return s
 
-  def write_standings(self):
-    with open(self.get_standings_out(), 'w') as f:
-      for t in self.standings:
-        w, l = self.standings[t]['w'], self.standings[t]['l']
-        f.write('{} {} {}\n'.format(t, w, l))
+  def write_standings(self, standings_out, s):
+    """Write standings data to file.
+
+    Args:
+        standings_out: the file to write the standings data to.
+        s: the copy of the standings data.
+    Returns:
+        None
+
+    """
+    lines = ['{} {} {}\n'.format(t, s[t]['w'], s[t]['l']) for t in s]
+    if os.path.isfile(standings_out):
+      with open(standings_out, 'w') as f:
+        f.writelines(lines)
 
   def listen(self):
     def on_message_(ws, message):
@@ -321,7 +335,7 @@ class App(object):
     retB = self.format_standings_nl()
     files_upload(retA, 'AL.txt', self.get_live_sim_discussion_name())
     files_upload(retB, 'NL.txt', self.get_live_sim_discussion_name())
-    self.write_standings()
+    self.write_standings(self.get_standings_out(), self.standings)
     return '\n'.join([retA, retB])
 
   def handle_close(self):
