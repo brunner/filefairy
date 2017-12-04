@@ -120,7 +120,7 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Chicago 10, Cleveland 3>*\n' +
         '*<https://game_box_0.html|Chicago 2, Cleveland 0>*\n' +
         '*<https://game_box_0.html|Chicago 4, Cincinnati 3>*\n' +
-        '*<https://game_box_0.html|Chicago 8, Cincinnati 6>*', 
+        '*<https://game_box_0.html|Chicago 8, Cincinnati 6>*',
         '```MAJOR LEAGUE BASEBALL Live Table - 08/05/2021\n' +
         'Chicago White Sox              13\nChicago Cubs                   12\n' +
         'Baltimore Orioles              11\nArizona Diamondbacks            2\n' +
@@ -130,7 +130,7 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Chicago 13, Cleveland 7>*\n' +
         '*<https://game_box_0.html|Chicago 7, Cleveland 3>*\n' +
         '*<https://game_box_0.html|Chicago 8, Cincinnati 1>*\n' +
-        '*<https://game_box_0.html|Cincinnati 2, Chicago 0>*', 
+        '*<https://game_box_0.html|Cincinnati 2, Chicago 0>*',
         '```MAJOR LEAGUE BASEBALL Live Table - 08/06/2021\n' +
         'Chicago White Sox              15\nChicago Cubs                   13\n' +
         'Baltimore Orioles              11\nArizona Diamondbacks            2\n' +
@@ -140,7 +140,7 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Chicago 4, Cleveland 2>*\n' +
         '*<https://game_box_0.html|Chicago 7, Cleveland 1>*\n' +
         '*<https://game_box_0.html|Cincinnati 3, Chicago 2>*\n' +
-        '*<https://game_box_0.html|Cincinnati 9, Chicago 5>*', 
+        '*<https://game_box_0.html|Cincinnati 9, Chicago 5>*',
         '```MAJOR LEAGUE BASEBALL Live Table - 08/07/2021\n' +
         'Chicago White Sox              17\nChicago Cubs                   13\n' +
         'Baltimore Orioles              11\nCincinnati Reds                 3\n' +
@@ -150,7 +150,7 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Chicago 6, Cincinnati 2>*\n' +
         '*<https://game_box_0.html|Chicago 2, Cleveland 1>*\n' +
         '*<https://game_box_0.html|Cincinnati 10, Chicago 6>*\n' +
-        '*<https://game_box_0.html|Cleveland 7, Chicago 2>*', 
+        '*<https://game_box_0.html|Cleveland 7, Chicago 2>*',
         '```MAJOR LEAGUE BASEBALL Live Table - 08/08/2021\n' +
         'Chicago White Sox              18\nChicago Cubs                   14\n' +
         'Baltimore Orioles              11\nCincinnati Reds                 4\n' +
@@ -160,7 +160,7 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Chicago 7, Cleveland 4>*\n' +
         '*<https://game_box_0.html|Cincinnati 6, Chicago 4>*\n' +
         '*<https://game_box_0.html|Cincinnati 8, Chicago 7>*\n' +
-        '*<https://game_box_0.html|Cleveland 3, Chicago 2>*', 
+        '*<https://game_box_0.html|Cleveland 3, Chicago 2>*',
         '```MAJOR LEAGUE BASEBALL Live Table - 08/09/2021\n' +
         'Chicago White Sox              19\nChicago Cubs                   14\n' +
         'Baltimore Orioles              11\nCincinnati Reds                 6\n' +
@@ -170,7 +170,7 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_0.html|Cincinnati 7, Chicago 6>*\n' +
         '*<https://game_box_0.html|Cincinnati 2, Chicago 0>*\n' +
         '*<https://game_box_0.html|Cleveland 6, Chicago 2>*\n' +
-        '*<https://game_box_0.html|Cleveland 4, Chicago 3>*', 
+        '*<https://game_box_0.html|Cleveland 4, Chicago 3>*',
         '```MAJOR LEAGUE BASEBALL Live Table - 08/10/2021\n' +
         'Chicago White Sox              19\nChicago Cubs                   14\n' +
         'Baltimore Orioles              11\nCincinnati Reds                 8\n' +

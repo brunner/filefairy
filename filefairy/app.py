@@ -211,28 +211,28 @@ class App(object):
         if len(tscs[i].keys()) == 2:
           vk, wk = tscs[i].keys()
           tvn, uvn, twn, uwn = 0, 0, 0, 0
-          for j in tscs[i-1::-1]:
+          for j in tscs[i - 1::-1]:
             if vk not in j and wk not in j:
               break
             if vk in j:
               tvn += 1
             if wk in j:
               twn += 1
-          for j in uscs[i-1::-1]:
+          for j in uscs[i - 1::-1]:
             if vk not in j and wk not in j:
               break
             if vk in j:
               uvn += 1
             if wk in j:
               uwn += 1
-          for j in tscs[i+1:]:
+          for j in tscs[i + 1:]:
             if vk not in j and wk not in j:
               break
             if vk in j:
               tvn += 1
             if wk in j:
               twn += 1
-          for j in uscs[i+1:]:
+          for j in uscs[i + 1:]:
             if vk not in j and wk not in j:
               break
             if vk in j:

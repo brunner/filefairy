@@ -439,6 +439,7 @@ stnds = 'AL East         |   W |   L |    GB |  M#\n' + \
         'Miami           |  31 |  65 |  22.5 |    \n' + \
         'Pittsburgh      |  29 |  67 |  24.5 |    '
 
+
 def test():
   appTest = AppTest(standings_in='data/standings_full_week.txt')
   appTest.setup()

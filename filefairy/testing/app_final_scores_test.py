@@ -105,7 +105,7 @@ outp = ['03/21/2021\n' +
         '<https://game_box_1803.html|Toronto 5, St. Louis 4>']
 
 rcrd = ['AL East\n' +
-        ':orioles: 0-1 :separator: :yankees: 0-1 :separator: :rays: 0-1 ' + \
+        ':orioles: 0-1 :separator: :yankees: 0-1 :separator: :rays: 0-1 ' +
         ':separator: :jays: 0-1\n\n' +
         'AL Central\n' +
         ':indians: 1-0 :separator: :monarchs: 1-0 :separator: :whitesox: 0-1 ' +
@@ -120,7 +120,7 @@ rcrd = ['AL East\n' +
         ':brewers: 1-0 :separator: :cardinals: 1-0 :separator: :cubbies: 0-1 ' +
         ':separator: :reds: 0-1 :separator: :pirates: 0-1\n\n' +
         'NL West\n' +
-        ':dodgers: 1-0 :separator: :rox: 0-1 :separator: :pads: 0-1 ' + \
+        ':dodgers: 1-0 :separator: :rox: 0-1 :separator: :pads: 0-1 ' +
         ':separator: :giants: 0-1',
         'AL East\n' +
         ':redsox: 1-0 :separator: :orioles: 1-1 :separator: :yankees: 1-1 ' +
