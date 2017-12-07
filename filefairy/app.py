@@ -481,8 +481,10 @@ class App(object):
           s[t][kmn] = en
     else:
       for t in ts:
-        for u in ordered:
-          if u == t or (u not in ts and 'dgb0' in s[u]):
+        for j, u in enumerate(ordered):
+          if u == t:
+            continue
+          if  'dgb0' in s[u] and (u not in ts or j > i):
             continue
           en = self.get_elimination_number(s, u, t)
           s[u].setdefault(ken, []).append(en)
