@@ -232,8 +232,8 @@ outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
         ':separator: :reds: 4-4\n\nNL West\n:dbacks: 2-8',
         'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
         'AL Central\n:whitesox: 19-16 :separator: :indians: 2-8\n\n' +
-        'NL East\n:braves: 2-2\n\nNL Central\n:reds: 6-4 ' +
-        ':separator: :cubbies: 14-10\n\nNL West\n:dbacks: 2-8',
+        'NL East\n:braves: 2-2\n\nNL Central\n:cubbies: 14-10 ' +
+        ':separator: :reds: 6-4\n\nNL West\n:dbacks: 2-8',
         'AL East\n:orioles: 11-7 :separator: :redsox: 3-4\n\n' +
         'AL Central\n:whitesox: 19-18 :separator: :indians: 4-8\n\n' +
         'NL East\n:braves: 2-2\n\nNL Central\n:reds: 8-4 ' +

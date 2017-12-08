@@ -430,7 +430,7 @@ class App(object):
         the number of games that u is behind t.
 
     """
-    return (s[t0]['w'] - s[u]['w'] + s[u]['l'] - s[t0]['l']) / 2.0
+    return (s[u]['w'] - s[t0]['w'] + s[t0]['l'] - s[u]['l']) / 2.0
 
   def get_elimination_number(self, s, u, t):
     """Return the elimination number for a team.
@@ -455,7 +455,8 @@ class App(object):
         the sorted group.
 
     """
-    pct = lambda t: (float(s[t]['w']) / ((s[t]['w'] + s[t]['l']) or 1),
+    pct = lambda t: (abs(min([self.get_games_behind(s, u, t) for u in group])),
+                     float(s[t]['w']) / ((s[t]['w'] + s[t]['l']) or 1),
                      s[t]['w'],
                      float(1) / s[t]['l'] if s[t]['l'] else 2,
                      float(1) / t)
@@ -472,7 +473,7 @@ class App(object):
 
     """
     kgb, ken, kmn = self.get_standings_keys(k)
-    ts = filter(lambda v: s[v][kgb] <= 0, ordered)
+    ts = filter(lambda v: s[v][kgb] >= 0, ordered)
     if len(ts) == len(ordered):
       for t in ordered:
         u0 = sorted(filter(lambda v: v != t, ts), key=lambda v: s[v]['l'], reverse=True)[0]
@@ -521,7 +522,7 @@ class App(object):
       if 'p' in s[v]:
         city = s[v]['p'] + city
       w, l, dgb = s[v]['w'], s[v]['l'], s[v][kgb]
-      gb = '{:0.1f}'.format(dgb) if dgb > 0 else '+{:0.1f}'.format(abs(dgb)) if dgb < 0 else '-'
+      gb = '{:0.1f}'.format(abs(dgb)) if dgb < 0 else '+{:0.1f}'.format(dgb) if dgb > 0 else '-'
       mn = '' if kmn not in s[v] else s[v][kmn] if s[v][kmn] > 0 else 'X'
       en = '' if ken not in s[v] else s[v][ken]
       lines.append(row.format(city=city, div=div, w=w, l=l, gb=gb, mn=mn))

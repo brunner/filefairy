@@ -6,6 +6,7 @@ from utils import assert_equals
 inpt = ['data/standings_august.txt',
         'data/standings_baddivision.txt',
         'data/standings_final.txt',
+        'data/standings_irregular.txt',
         'data/standings_linear.txt',
         'data/standings_opening_day.txt',
         'data/standings_today.txt']
@@ -222,6 +223,78 @@ outp = ['AL East         |   W |   L |    GB |  M#\n' +
         'e-Chicago       |  73 |  89 |  13.0 |    \n' +
         'e-Washington    |  70 |  92 |  16.0 |    \n' +
         'e-Cincinnati    |  69 |  93 |  17.0 |    ',
+        'AL East         |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Baltimore       |  26 |  15 |     - | 124\n' +
+        'Boston          |  23 |  13 |   0.5 |    \n' +
+        'New York        |  17 |  20 |   7.0 |    \n' +
+        'Tampa Bay       |  16 |  21 |   8.0 |    \n' +
+        'Toronto         |  13 |  26 |  12.0 |    \n\n' +
+        'AL Central      |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Cleveland       |  23 |  15 |     - | 124\n' +
+        'Chicago         |  24 |  16 |     - | 124\n' +
+        'Detroit         |  22 |  17 |   1.5 |    \n' +
+        'Kansas City     |  13 |  26 |  10.5 |    \n' +
+        'Minnesota       |  10 |  32 |  15.0 |    \n\n' +
+        'AL West         |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Houston         |  25 |  13 |     - | 120\n' +
+        'Los Angeles     |  21 |  18 |   4.5 |    \n' +
+        'Oakland         |  19 |  19 |   6.0 |    \n' +
+        'Seattle         |  17 |  20 |   7.5 |    \n' +
+        'Texas           |  14 |  24 |  11.0 |    \n\n' +
+        'AL Wild Card    |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Boston          |  23 |  13 |  +1.0 | 123\n' +
+        'Cleveland       |  23 |  15 |     - | 123\n' +
+        'Chicago         |  24 |  16 |     - | 122\n' +
+        'Detroit         |  22 |  17 |   1.5 |    \n' +
+        'Los Angeles     |  21 |  18 |   2.5 |    \n' +
+        'Oakland         |  19 |  19 |   4.0 |    \n' +
+        'New York        |  17 |  20 |   5.5 |    \n' +
+        'Seattle         |  17 |  20 |   5.5 |    \n' +
+        'Tampa Bay       |  16 |  21 |   6.5 |    \n' +
+        'Texas           |  14 |  24 |   9.0 |    \n' +
+        'Kansas City     |  13 |  26 |  10.5 |    \n' +
+        'Toronto         |  13 |  26 |  10.5 |    \n' +
+        'Minnesota       |  10 |  32 |  15.0 |    \n' +
+        'NL East         |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Atlanta         |  25 |  12 |     - | 121\n' +
+        'Miami           |  21 |  17 |   4.5 |    \n' +
+        'New York        |  18 |  19 |   7.0 |    \n' +
+        'Philadelphia    |  17 |  22 |   9.0 |    \n' +
+        'Washington      |  14 |  26 |  12.5 |    \n\n' +
+        'NL Central      |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Cincinnati      |  22 |  17 |     - | 123\n' +
+        'Chicago         |  23 |  18 |     - | 123\n' +
+        'Milwaukee       |  20 |  20 |   2.5 |    \n' +
+        'Pittsburgh      |  16 |  19 |   4.0 |    \n' +
+        'St. Louis       |  13 |  25 |   8.5 |    \n\n' +
+        'NL West         |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Colorado        |  23 |  15 |     - | 124\n' +
+        'Los Angeles     |  22 |  16 |   1.0 |    \n' +
+        'Arizona         |  24 |  18 |   1.0 |    \n' +
+        'San Diego       |  20 |  23 |   5.5 |    \n' +
+        'San Francisco   |  16 |  26 |   9.0 |    \n\n' +
+        'NL Wild Card    |   W |   L |    GB |  M#\n' +
+        '----------------|-----|-----|-------|-----\n' +
+        'Los Angeles     |  22 |  16 |     - | 124\n' +
+        'Arizona         |  24 |  18 |     - | 122\n' +
+        'Cincinnati      |  22 |  17 |   0.5 |    \n' +
+        'Chicago         |  23 |  18 |   0.5 |    \n' +
+        'Miami           |  21 |  17 |   1.0 |    \n' +
+        'Milwaukee       |  20 |  20 |   3.0 |    \n' +
+        'New York        |  18 |  19 |   3.5 |    \n' +
+        'San Diego       |  20 |  23 |   4.5 |    \n' +
+        'Pittsburgh      |  16 |  19 |   4.5 |    \n' +
+        'Philadelphia    |  17 |  22 |   5.5 |    \n' +
+        'San Francisco   |  16 |  26 |   8.0 |    \n' +
+        'Washington      |  14 |  26 |   9.0 |    \n' +
+        'St. Louis       |  13 |  25 |   9.0 |    ',
         'AL East         |   W |   L |    GB |  M#\n' +
         '----------------|-----|-----|-------|-----\n' +
         'Baltimore       |   5 |   1 |     - | 156\n' +
