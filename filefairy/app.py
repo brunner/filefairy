@@ -13,6 +13,20 @@ from slack_api import chat_post_message, files_upload, rtm_connect
 from teams import get_city, get_emoji, get_nickname
 
 
+class Standings(object):
+  def __init__(self):
+    self.w = {'s': 0, 'w': 0}
+    self.l = {'s': 0, 'w': 0}
+
+    self.gb = {'d': 0, 'w': 0}
+    self.mn = {'d': [], 'w': []}
+    self.tn = {'d': [], 'w': []}
+
+    self.d0 = False
+    self.games = []
+    self.p = ''
+
+
 class App(object):
 
   def __init__(self):
@@ -26,7 +40,6 @@ class App(object):
     self.liveTables = []
     self.lock = threading.Lock()
     self.tick = 0
-    self.records = {t: {'w': 0, 'l': 0} for t in range(31, 61)}
     self.standings = self.read_standings(self.get_standings_in())
     self.ws = None
 
@@ -72,12 +85,12 @@ class App(object):
         a mapping of team ids to season win/loss pairs.
 
     """
-    s = {t: {'w': 0, 'l': 0} for t in range(31, 61)}
+    s = {t: Standings() for t in range(31, 61)}
     if os.path.isfile(standings_in):
       with open(standings_in, 'r') as f:
         for line in f.readlines():
           t, w, l = [int(n) for n in line.split()]
-          s[t]['w'], s[t]['l'] = w, l
+          s[t].w['s'], s[t].l['s'] = w, l
     return s
 
   def write_standings(self, standings_out, s):
@@ -90,7 +103,7 @@ class App(object):
         None
 
     """
-    lines = ['{} {} {}\n'.format(t, s[t]['w'], s[t]['l']) for t in s]
+    lines = ['{} {} {}\n'.format(t, s[t].w['s'], s[t].l['s']) for t in s]
     if os.path.isfile(standings_out):
       with open(standings_out, 'w') as f:
         f.writelines(lines)
@@ -151,11 +164,11 @@ class App(object):
 
           tn = get_nickname(t)
           tt = re.findall(re.escape(tn) + r'\s+(\d+)', liveTable)
-          ts = self.get_score(t, 'w')
+          ts = self.standings[t].w['s']
 
           un = get_nickname(u)
           ut = re.findall(re.escape(un) + r'\s+(\d+)', liveTable)
-          us = self.get_score(u, 'w')
+          us = self.standings[u].w['s']
 
           if tt and ut:
             ct = cw + cl
@@ -172,13 +185,13 @@ class App(object):
               _ = list(set().union(ws, ls))
               tk, uk = _ if len(_) == 2 else ('', '')
               if ct != 3:
-                self.add_schedule(t, {tk: False, uk: False})
-                self.add_schedule(u, {tk: False, uk: False})
+                self.add_game(t, {tk: False, uk: False})
+                self.add_game(u, {tk: False, uk: False})
               else:
                 td = ws.count(tk) + ls.count(tk) == 2
                 ud = ws.count(uk) + ls.count(uk) == 2
-                self.add_schedule(t, {tk: td, uk: ud})
-                self.add_schedule(u, {tk: td, uk: ud})
+                self.add_game(t, {tk: td, uk: ud})
+                self.add_game(u, {tk: td, uk: ud})
             else:
               tk, uk = '', ''
               for k in ws:
@@ -187,52 +200,52 @@ class App(object):
               for k in ls:
                 tk = k if ls.count(k) == tl and not tk else tk
                 uk = k if ls.count(k) == ul and not uk else uk
-              self.add_schedule(t, {tk: False})
-              self.add_schedule(u, {uk: False})
+              self.add_game(t, {tk: False})
+              self.add_game(u, {uk: False})
           else:
             _ = list(set().union(ws, ls))
             sk = _[0] if len(_) == 1 else ''
             if tt:
               self.add_score(t, cw, cl)
-              self.add_schedule(t, {sk: False})
-              self.add_schedule(u, {'': False})
+              self.add_game(t, {sk: False})
+              self.add_game(u, {'': False})
             if ut:
               self.add_score(u, cw, cl)
-              self.add_schedule(t, {'': False})
-              self.add_schedule(u, {sk: False})
+              self.add_game(t, {'': False})
+              self.add_game(u, {sk: False})
 
     for t, u in zip([35, 44, 48], [36, 45, 49]):
-      if 'scs' not in self.records[t]:
+      if not len(self.standings[t].games):
         continue
-      tscs, uscs = self.records[t]['scs'], self.records[u]['scs']
-      if len(tscs) < 2:
+      tgames, ugames = self.standings[t].games, self.standings[u].games
+      if len(tgames) < 2:
         continue
-      for i in range(len(tscs)):
-        if len(tscs[i].keys()) == 2:
-          vk, wk = tscs[i].keys()
+      for i in range(len(tgames)):
+        if len(tgames[i].keys()) == 2:
+          vk, wk = tgames[i].keys()
           tvn, uvn, twn, uwn = 0, 0, 0, 0
-          for j in tscs[i - 1::-1]:
+          for j in tgames[i - 1::-1]:
             if vk not in j and wk not in j:
               break
             if vk in j:
               tvn += 1
             if wk in j:
               twn += 1
-          for j in uscs[i - 1::-1]:
+          for j in ugames[i - 1::-1]:
             if vk not in j and wk not in j:
               break
             if vk in j:
               uvn += 1
             if wk in j:
               uwn += 1
-          for j in tscs[i + 1:]:
+          for j in tgames[i + 1:]:
             if vk not in j and wk not in j:
               break
             if vk in j:
               tvn += 1
             if wk in j:
               twn += 1
-          for j in uscs[i + 1:]:
+          for j in ugames[i + 1:]:
             if vk not in j and wk not in j:
               break
             if vk in j:
@@ -240,58 +253,54 @@ class App(object):
             if wk in j:
               uwn += 1
           if tvn > twn:
-            if tscs[i][vk]:
+            if tgames[i][vk]:
               self.add_score(t, 0, 1)
-              tscs[i][vk] = False
-              uscs[i][vk] = False
-            elif uscs[i][wk]:
+              tgames[i][vk] = False
+              ugames[i][vk] = False
+            elif ugames[i][wk]:
               self.add_score(u, 0, 1)
-              tscs[i][wk] = False
-              uscs[i][wk] = False
+              tgames[i][wk] = False
+              ugames[i][wk] = False
           elif twn > tvn:
-            if tscs[i][wk]:
+            if tgames[i][wk]:
               self.add_score(t, 0, 1)
-              tscs[i][wk] = False
-              uscs[i][wk] = False
-            elif uscs[i][vk]:
+              tgames[i][wk] = False
+              ugames[i][wk] = False
+            elif ugames[i][vk]:
               self.add_score(u, 0, 1)
-              tscs[i][vk] = False
-              uscs[i][vk] = False
+              tgames[i][vk] = False
+              ugames[i][vk] = False
           elif uvn > uwn:
-            if uscs[i][vk]:
+            if ugames[i][vk]:
               self.add_score(u, 0, 1)
-              tscs[i][vk] = False
-              uscs[i][vk] = False
-            elif tscs[i][wk]:
+              tgames[i][vk] = False
+              ugames[i][vk] = False
+            elif tgames[i][wk]:
               self.add_score(t, 0, 1)
-              tscs[i][wk] = False
-              uscs[i][wk] = False
+              tgames[i][wk] = False
+              ugames[i][wk] = False
           elif uwn > uvn:
-            if uscs[i][wk]:
+            if ugames[i][wk]:
               self.add_score(u, 0, 1)
-              tscs[i][wk] = False
-              uscs[i][wk] = False
-            elif tscs[i][vk]:
+              tgames[i][wk] = False
+              ugames[i][wk] = False
+            elif tgames[i][vk]:
               self.add_score(t, 0, 1)
-              tscs[i][vk] = False
-              uscs[i][vk] = False
+              tgames[i][vk] = False
+              ugames[i][vk] = False
 
     ret = '\n'.join(self.finalScores)
     self.finalScores, self.liveTables = [], []
     return ret
 
   def add_score(self, t, w, l):
-    self.records[t]['w'] += w
-    self.records[t]['l'] += l
+    self.standings[t].w['s'] += w
+    self.standings[t].w['w'] += w
+    self.standings[t].l['s'] += l
+    self.standings[t].l['w'] += l
 
-    self.standings[t]['w'] += w
-    self.standings[t]['l'] += l
-
-  def get_score(self, t, key):
-    return self.standings[t][key]
-
-  def add_schedule(self, t, sc):
-    self.records[t].setdefault('scs', []).append(sc)
+  def add_game(self, t, g):
+    self.standings[t].games.append(g)
 
   def handle_live_table(self, text):
     i = len(self.liveTables) - 1
@@ -391,25 +400,25 @@ class App(object):
     ]
     lines = []
     for group in groups:
-      r = self.records
-      ordered = self.get_ordered(r, group[1])
+      s = self.standings
+      ordered = self.get_ordered(s, group[1], 'w')
       formatted = []
       for t in ordered:
-        if r[t]['w'] + r[t]['l'] > 0:
+        if s[t].w['w'] + s[t].l['w'] > 0:
           emoji = get_emoji(t)
-          formatted.append('{0} {1}-{2}'.format(emoji, r[t]['w'], r[t]['l']))
+          formatted.append('{0} {1}-{2}'.format(emoji, s[t].w['w'], s[t].l['w']))
       if formatted:
         lines.append('{0}\n{1}'.format(group[0], ' :separator: '.join(formatted)))
 
     unhandled = []
     for t in [35, 44, 48]:
-      if 'scs' not in self.records[t]:
+      if not len(self.standings[t].games):
         continue
       city = get_city(t)
-      tscs = self.records[t]['scs']
-      for sc in tscs:
-        for tk in sc:
-          if sc[tk]:
+      tgames = self.standings[t].games
+      for g in tgames:
+        for tk in g:
+          if g[tk]:
             unhandled.append('Unhandled loss for {}.'.format(city))
     if unhandled:
       lines.append('_{}_'.format(' '.join(unhandled)))
@@ -419,18 +428,19 @@ class App(object):
   def get_standings_keys(self, k):
     return [k + ey for ey in ['gb', 'en', 'mn']]
 
-  def get_games_behind(self, s, u, t0):
+  def get_games_behind(self, s, u, t0, k):
     """Return the number of games that u is behind t.
 
     Args:
         s: the copy of the standings data.
         u: the trailing team.
         t0: the leading team.
+        k: the key prefix to use when getting standings data ('s' for season, 'w' for week).
     Returns:
         the number of games that u is behind t.
 
     """
-    return (s[u]['w'] - s[t0]['w'] + s[t0]['l'] - s[u]['l']) / 2.0
+    return (s[u].w[k] - s[t0].w[k] + s[t0].l[k] - s[u].l[k]) / 2.0
 
   def get_elimination_number(self, s, u, t):
     """Return the elimination number for a team.
@@ -443,22 +453,23 @@ class App(object):
         the elimination number for u.
 
     """
-    return max(163 - s[t]['w'] - s[u]['l'], 0)
+    return max(163 - s[t].w['s'] - s[u].l['s'], 0)
 
-  def get_ordered(self, s, group):
+  def get_ordered(self, s, group, k):
     """Return a set of teams, sorted by winning percentage.
 
     Args:
         s: the copy of the standings data.
         group: the set of team ids to sort.
+        k: the key prefix to use when getting standings data ('s' for season, 'w' for week).
     Returns:
         the sorted group.
 
     """
-    pct = lambda t: (abs(min([self.get_games_behind(s, u, t) for u in group])),
-                     float(s[t]['w']) / ((s[t]['w'] + s[t]['l']) or 1),
-                     s[t]['w'],
-                     float(1) / s[t]['l'] if s[t]['l'] else 2,
+    pct = lambda t: (abs(min([self.get_games_behind(s, u, t, k) for u in group])),
+                     float(s[t].w[k]) / ((s[t].w[k] + s[t].l[k]) or 1),
+                     s[t].w[k],
+                     float(1) / s[t].l[k] if s[t].l[k] else 2,
                      float(1) / t)
     return sorted(group, key=pct, reverse=True)
 
@@ -473,30 +484,30 @@ class App(object):
 
     """
     kgb, ken, kmn = self.get_standings_keys(k)
-    ts = filter(lambda v: s[v][kgb] >= 0, ordered)
+    ts = filter(lambda v: s[v].gb[k] >= 0, ordered)
     if len(ts) == len(ordered):
       for t in ordered:
-        u0 = sorted(filter(lambda v: v != t, ts), key=lambda v: s[v]['l'], reverse=True)[0]
+        u0 = sorted(filter(lambda v: v != t, ts), key=lambda v: s[v].l, reverse=True)[0]
         en = self.get_elimination_number(s, u0, t)
-        if kmn not in s[t] or en > s[t][kmn]:
-          s[t][kmn] = en
+        if s[t].mn[k] == [] or en > s[t].mn[k]:
+          s[t].mn[k] = en
     else:
       for t in ts:
         for j, u in enumerate(ordered):
           if u == t:
             continue
-          if  'dgb0' in s[u] and (u not in ts or j > i):
+          if  s[u].d0 and (u not in ts or j > i):
             continue
           en = self.get_elimination_number(s, u, t)
-          s[u].setdefault(ken, []).append(en)
-          s[t].setdefault(kmn, []).append(en)
+          s[u].tn[k].append(en)
+          s[t].mn[k].append(en)
       for v in ordered:
-        if kmn in s[v]:
-          s[v][kmn] = sorted(s[v][kmn], reverse=True)[i]
-        elif ken in s[v]:
-          s[v][ken] = sorted(s[v][ken])[i]
-        if kmn in s[v] and ken in s[v]:
-          del s[v][ken]
+        if s[v].mn[k]:
+          s[v].mn[k] = sorted(s[v].mn[k], reverse=True)[i]
+        elif s[v].tn[k]:
+          s[v].tn[k] = sorted(s[v].tn[k])[i]
+        if s[v].mn[k] and s[v].tn[k]:
+          s[v].tn[k] = []
 
   def get_standings_output(self, s, kgroup, group, k):
     """Populates a standings template with data for a set of teams.
@@ -517,14 +528,13 @@ class App(object):
     row = '{city:<15}{div}{w:>3}{div}{l:>3}{div}{gb:>5}{div}{mn:>3}'
 
     lines = [top.format(title=kgroup, div=div)]
-    for v in self.get_ordered(s, group):
+    for v in self.get_ordered(s, group, 's'):
       city = get_city(v)
-      if 'p' in s[v]:
-        city = s[v]['p'] + city
-      w, l, dgb = s[v]['w'], s[v]['l'], s[v][kgb]
+      if s[v].p:
+        city = s[v].p + city
+      w, l, dgb = s[v].w['s'], s[v].l['s'], s[v].gb[k]
       gb = '{:0.1f}'.format(abs(dgb)) if dgb < 0 else '+{:0.1f}'.format(dgb) if dgb > 0 else '-'
-      mn = '' if kmn not in s[v] else s[v][kmn] if s[v][kmn] > 0 else 'X'
-      en = '' if ken not in s[v] else s[v][ken]
+      mn = 'X' if s[v].mn[k] == 0 else '' if not s[v].mn[k] else s[v].mn[k]
       lines.append(row.format(city=city, div=div, w=w, l=l, gb=gb, mn=mn))
 
     return '\n'.join(lines)
@@ -548,51 +558,51 @@ class App(object):
     # Set the games behind and elimination numbers for each division.
     # If a team is the only leader in its division, annotate it with 'dbg0'.
     for group in [east, cent, west]:
-      ordered = self.get_ordered(s, group)
-      t0, s[t0]['dgb'], s[t0]['dgb0'] = ordered[0], 0.0, 1
+      ordered = self.get_ordered(s, group, 's')
+      t0, s[t0].gb['d'], s[t0].d0 = ordered[0], 0.0, True
       for u in ordered[1:]:
-        gb = self.get_games_behind(s, u, t0)
-        s[u]['dgb'] = gb
-        if gb == 0.0 and 'dgb0' in s[t0]:
-          del s[t0]['dgb0']
+        gb = self.get_games_behind(s, u, t0, 's')
+        s[u].gb['d'] = gb
+        if gb == 0.0 and s[t0].d0:
+          s[t0].d0 = False
       self.process_elimination_numbers(s, ordered, 0, 'd')
 
     # Filter division leaders out of the set of wild card teams.
     lg = east + cent + west
-    wc = filter(lambda v: 'dgb0' not in s[v], lg)
+    wc = filter(lambda v: s[v].d0 == False, lg)
 
     # Find the index of the team occupying the final playoff spot in the league.
-    ordered = self.get_ordered(s, lg)
+    ordered = self.get_ordered(s, lg, 's')
     k, j = 0, 2
     for i, t0 in enumerate(ordered):
-      if 'dgb0' not in s[t0]:
+      if not s[t0].d0:
         k += 1
-        if s[t0]['dgb'] == 0:
+        if s[t0].gb['d'] == 0:
           j = 3
       if k == j:
         break
 
     # Set the games behind and elimination numbers for the wild card.
-    s[t0]['wgb'] = 0.0
+    s[t0].gb['w'] = 0.0
     for v in ordered:
-      s[v]['wgb'] = self.get_games_behind(s, v, t0)
+      s[v].gb['w'] = self.get_games_behind(s, v, t0, 's')
     self.process_elimination_numbers(s, ordered, i, 'w')
 
     # Annotate the standings with team prefixes, if applicable.
     for v in ordered:
-      if s[v].get('den', 1) == 0 and s[v].get('wen', 1) == 0:
+      if s[v].tn['d'] == 0 and s[v].tn['w'] == 0:
         # v has been eliminated.
-        s[v]['p'] = 'e-'
-      if s[v].get('dmn', 1) == 0:
+        s[v].p = 'e-'
+      if s[v].mn['d'] == 0:
         # v has clinched the division.
-        s[v]['p'] = 'x-'
-      elif s[v].get('wmn', 1) == 0:
-        if 'dgb0' in s[v]:
+        s[v].p = 'x-'
+      elif s[v].mn['w'] == 0:
+        if s[v].d0:
           # v has clinched a playoff berth.
-          s[v]['p'] = 'y-'
+          s[v].p = 'y-'
         else:
           # v has clinched the wild card.
-          s[v]['p'] = 'z-'
+          s[v].p = 'z-'
 
     # Feed the annotated standings data into a helper method to populate the standings template.
     groups = zip([keast, kcent, kwest, kwc], [east, cent, west, wc], ['d', 'd', 'd', 'w'])
