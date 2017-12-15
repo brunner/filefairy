@@ -45,7 +45,7 @@ def test_watch():
   assert_equals(appTest.file_date, outp[0])
 
   appTest.file_url = inpt[1]
-  time.sleep(2)
+  time.sleep(6)
 
   assert_equals(appTest.file_date, outp[1])
 
