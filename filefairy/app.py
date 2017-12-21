@@ -597,12 +597,8 @@ class App(object):
         # v has clinched the division.
         s[v].p = 'x-'
       elif s[v].mn['w'] == 0:
-        if s[v].d0:
-          # v has clinched a playoff berth.
-          s[v].p = 'y-'
-        else:
-          # v has clinched the wild card.
-          s[v].p = 'z-'
+        # v has clinched the wild card.
+        s[v].p = 'z-'
 
     # Feed the annotated standings data into a helper method to populate the standings template.
     groups = zip([keast, kcent, kwest, kwc], [east, cent, west, wc], ['d', 'd', 'd', 'w'])
