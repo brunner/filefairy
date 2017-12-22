@@ -2,6 +2,7 @@
 
 import os
 import sys
+import threading
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import App
@@ -11,9 +12,11 @@ class AppTest(App):
 
   def __init__(self, file_url='', playoffs_in='', settings_in='', standings_in=''):
     self.file_url = file_url
+    self.lock = threading.Lock()
     self.playoffs_in = playoffs_in
     self.settings_in = settings_in
     self.standings_in = standings_in
+    self.ws = None
 
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/'
@@ -33,8 +36,8 @@ class AppTest(App):
   def get_statsplus_id(self):
     return 'G3SUFLMK4'
 
-  def get_timer_values(self):
-    return [2, 10]
+  def get_sleep(self):
+    return 2
 
   def get_page(self, url):
     path = self.get_path()

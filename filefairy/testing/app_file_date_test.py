@@ -49,6 +49,9 @@ def test_watch():
 
   assert_equals(appTest.file_date, outp[1])
 
+  appTest.keep_running = False
+  t1.join()
+
 
 if __name__ == '__main__':
   test_get_file_date()

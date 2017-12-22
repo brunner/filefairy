@@ -22,7 +22,7 @@ rcrds = 'NL East\n:braves: 1-0\n\nNL West\n:rox: 0-1'
 
 
 def test():
-  appTest = AppTest()
+  appTest = AppTest(settings_in='data/settings_in.txt')
   appTest.setup()
 
   t1 = threading.Thread(target=appTest.listen)

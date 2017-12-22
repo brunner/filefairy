@@ -441,7 +441,7 @@ stnds = 'AL East         |   W |   L |    GB |  M#\n' + \
 
 
 def test():
-  appTest = AppTest(standings_in='data/standings_full_week.txt')
+  appTest = AppTest(settings_in='data/settings_in.txt', standings_in='data/standings_full_week.txt')
   appTest.setup()
 
   t1 = threading.Thread(target=appTest.listen)

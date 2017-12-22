@@ -286,7 +286,7 @@ stnd = ['AL East         |   W |   L |    GB |  M#\n' +
 
 
 def test():
-  appTest = AppTest(standings_in='data/standings_in.txt')
+  appTest = AppTest(settings_in='data/settings_in.txt', standings_in='data/standings_in.txt')
   appTest.setup()
 
   t1 = threading.Thread(target=appTest.listen)

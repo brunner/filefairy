@@ -241,7 +241,7 @@ outp = ['AL East\n:orioles: 0-1\n\nAL Central\n:whitesox: 1-0',
 
 
 def test():
-  appTest = AppTest()
+  appTest = AppTest(settings_in='data/settings_in.txt')
   appTest.setup()
 
   t1 = threading.Thread(target=appTest.listen)

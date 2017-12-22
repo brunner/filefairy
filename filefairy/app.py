@@ -4,6 +4,8 @@ import copy
 import json
 import os
 import re
+import subprocess
+import sys
 import threading
 import time
 import urllib2
@@ -11,6 +13,9 @@ import websocket
 
 from slack_api import chat_post_message, files_upload, rtm_connect
 from teams import get_city, get_emoji, get_nickname
+
+import logging
+logging.basicConfig()
 
 
 class Standings(object):
@@ -32,22 +37,23 @@ class App(object):
 
   def __init__(self):
     self.file_url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
+    self.lock = threading.Lock()
     self.playoffs_in = 'data/playoffs.txt'
     self.settings_in = 'data/settings.txt'
     self.standings_in = 'data/standings.txt'
+    self.ws = None
 
   def setup(self):
     self.file_date = self.get_file_date(self.get_page(self.file_url))
-    self.finalScores = []
+    self.final_scores = []
     self.injuries = []
-    self.liveTables = []
-    self.lock = threading.Lock()
+    self.live_tables = []
     self.tick = 0
     self.playoffs = self.read_playoffs(self.get_playoffs_in())
-    self.playoffsCompleted = False
+    self.playoffs_completed = False
     self.settings = self.read_settings(self.get_settings_in())
     self.standings = self.read_standings(self.get_standings_in())
-    self.ws = None
+    self.keep_running = True
 
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/'
@@ -62,7 +68,10 @@ class App(object):
     return self.get_path() + 'data/playoffs.txt'
 
   def get_settings_in(self):
-    return self.get_path() + self.settings_in
+    s_i = self.settings_in
+    if os.path.isfile(self.get_path() + 'data/settings_over.txt'):
+      s_i = 'data/settings_over.txt'
+    return self.get_path() + s_i if s_i else ''
 
   def get_standings_in(self):
     s_i = self.standings_in
@@ -85,8 +94,11 @@ class App(object):
   def get_statsplus_id(self):
     return 'C7JSGHW8G'
 
-  def get_timer_values(self):
-    return [120, 82800]
+  def get_testing_id(self):
+    return 'G3SUFLMK4'
+
+  def get_sleep(self):
+    return 120
 
   def get_page(self, url):
     try:
@@ -192,6 +204,8 @@ class App(object):
       if all(k in obj for k in ['type', 'channel', 'text']) and obj['type'] == 'message':
         if obj['channel'] == self.get_statsplus_id():
           self.handle_statsplus(obj['text'])
+        if obj['channel'] == self.get_testing_id():
+          self.handle_testing(obj['text'])
       self.lock.release()
 
     obj = rtm_connect()
@@ -211,18 +225,33 @@ class App(object):
     elif re.findall(r'\d{2}\/\d{2}\/\d{4}', text) and 'was injured' in text:
       self.handle_injuries(text)
 
+  def handle_testing(self, text):
+    if text == 'Run git pull.':
+      deb = subprocess.check_output(['git', 'pull'])
+      chat_post_message(self.get_testing_name(), deb.strip('\n'))
+    elif text == 'Run setup.':
+      self.setup()
+      deb, txt = self.format_playoffs()
+      files_upload(deb, txt, self.get_testing_name())
+      files_upload(self.format_standings_al(), 'AL.txt', self.get_testing_name())
+      files_upload(self.format_standings_nl(), 'NL.txt', self.get_testing_name())
+      deb = ', '.join(['{}: {}'.format(k.title(), self.settings[k]) for k in self.settings]) + '.'
+      chat_post_message(self.get_testing_name(), deb)
+    if text == 'Run shutdown.':
+      self.keep_running = False
+
   def handle_final_scores(self, text):
     text = re.sub(r'( MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
-    if text not in self.finalScores:
-      self.finalScores.append(text)
-      self.liveTables.append('')
+    if text not in self.final_scores:
+      self.final_scores.append(text)
+      self.live_tables.append('')
       self.tick = int(time.time())
 
   def process_final_scores(self):
-    for i, finalScore in enumerate(self.finalScores):
+    for i, finalScore in enumerate(self.final_scores):
       chat_post_message(self.get_live_sim_discussion_name(), finalScore)
-      if len(self.finalScores) == len(self.liveTables):
-        liveTable = self.liveTables[i]
+      if len(self.final_scores) == len(self.live_tables):
+        liveTable = self.live_tables[i]
         for t in range(31, 61):
           if t in [35, 36, 44, 45, 48, 49]:
             continue
@@ -374,51 +403,53 @@ class App(object):
               tgames[i][vk] = False
               ugames[i][vk] = False
 
-    ret = '\n'.join(self.finalScores)
-    self.finalScores, self.liveTables = [], []
+    ret = '\n'.join(self.final_scores)
+    self.final_scores, self.live_tables = [], []
     return ret
 
   def add_score(self, t, w, l):
-    p = self.playoffs
-    if w > 0:
-      for k in sorted(p.keys(), reverse=True):
-        t0, w0 = p[k]['t0'], p[k]['w0']
-        t1, w1 = p[k]['t1'], p[k]['w1']
-        if isinstance(t0, int) and isinstance(t1, int) and (t0 == t or t1 == t):
-          s = p[k]['s']
-          g = [1, 3, 4, 4][s-1]
-          if t0 == t:
-            p[k]['w0'] = w0 + w
-          if t1 == t:
-            p[k]['w1'] = w1 + w
-          if (t0 == t and w0 + w == g) or (t1 == t and w1 + w == g):
-            j = p[k]['j']
-            if j == 'X':
-              self.playoffsCompleted = True
-            else:
-              if p[j]['t0'] == k:
-                p[j]['t0'] = t
-              if p[j]['t1'] == k:
-                p[j]['t1'] = t
-              t0, t1 = p[j]['t0'], p[j]['t1']
-              if isinstance(t0, int) and isinstance(t1, int):
-                t1, t0 = self.get_ordered(self.standings, [t0, t1], 's')
-              p[j]['t0'] = t0
-              p[j]['t1'] = t1
-          break
+    if self.settings.get('playoffs', False):
+      p = self.playoffs
+      if w > 0:
+        for k in sorted(p.keys(), reverse=True):
+          t0, w0 = p[k]['t0'], p[k]['w0']
+          t1, w1 = p[k]['t1'], p[k]['w1']
+          if isinstance(t0, int) and isinstance(t1, int) and (t0 == t or t1 == t):
+            s = p[k]['s']
+            g = [1, 3, 4, 4][s-1]
+            if t0 == t:
+              p[k]['w0'] = w0 + w
+            if t1 == t:
+              p[k]['w1'] = w1 + w
+            if (t0 == t and w0 + w == g) or (t1 == t and w1 + w == g):
+              j = p[k]['j']
+              if j == 'X':
+                self.playoffs_completed = True
+              else:
+                if p[j]['t0'] == k:
+                  p[j]['t0'] = t
+                if p[j]['t1'] == k:
+                  p[j]['t1'] = t
+                t0, t1 = p[j]['t0'], p[j]['t1']
+                if isinstance(t0, int) and isinstance(t1, int):
+                  t1, t0 = self.get_ordered(self.standings, [t0, t1], 's')
+                p[j]['t0'] = t0
+                p[j]['t1'] = t1
+            break
 
-    s = self.standings
-    s[t].w['s'] += w
-    s[t].w['w'] += w
-    s[t].l['s'] += l
-    s[t].l['w'] += l
+    if self.settings.get('standings', False):
+      s = self.standings
+      s[t].w['s'] += w
+      s[t].w['w'] += w
+      s[t].l['s'] += l
+      s[t].l['w'] += l
 
   def add_game(self, t, g):
     self.standings[t].games.append(g)
 
   def handle_live_table(self, text):
-    i = len(self.liveTables) - 1
-    self.liveTables[i] = text
+    i = len(self.live_tables) - 1
+    self.live_tables[i] = text
     self.tick = int(time.time())
 
   def handle_injuries(self, text):
@@ -475,32 +506,21 @@ class App(object):
     self.lock.release()
 
   def watch(self):
-    sleep, timeout = self.get_timer_values()
-    elapsed = 0
     chat_post_message('testing', 'Started watching.')
-
-    playoffs = self.settings.get('playoffs', False)
-    while elapsed < timeout:
+    sleep = self.get_sleep()
+    while self.keep_running:
       time.sleep(sleep)
-      if not playoffs:
-        elapsed = elapsed + sleep
-
-      if self.update_league_file() and not playoffs:
-        elapsed = timeout
-
       self.lock.acquire()
-      if self.finalScores and int(time.time()) - self.tick > sleep:
+      self.update_league_file()
+      if self.final_scores and int(time.time()) - self.tick > sleep:
         self.process_final_scores()
         self.process_injuries()
         if self.settings.get('standings', False):
           self.process_records()
           self.process_standings()
-        if playoffs:
+        if self.settings.get('playoffs', False):
           self.process_playoffs()
-          if self.playoffsCompleted:
-            playoffs = False
       self.lock.release()
-
     chat_post_message('testing', 'Done watching.')
     self.handle_close()
 
@@ -674,7 +694,7 @@ class App(object):
     """
     p = self.playoffs
 
-    s = 0
+    s = 1
     for k in sorted(p.keys(), reverse=True):
       t0, w0 = p[k]['t0'], p[k]['w0']
       t1, w1 = p[k]['t1'], p[k]['w1']

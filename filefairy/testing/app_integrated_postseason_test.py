@@ -109,6 +109,9 @@ def test():
       time.sleep(1)
       chat_post_message('testing', i)
 
+  time.sleep(1)
+  chat_post_message('testing', 'Run shutdown.')
+
   t1.join()
   t2.join()
 
