@@ -226,12 +226,10 @@ class App(object):
 
   def handle_testing(self, text):
     if text == 'Run git pull.':
-      deb = subprocess.check_output(
-          ['git', 'pull'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+      deb = subprocess.check_output(['git', 'pull', '>/dev/null'])
       chat_post_message(self.get_testing_name(), deb.strip('\n'))
     if text == 'Run git reset.':
-      deb = subprocess.check_output(
-          ['git', 'reset', '--hard'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+      deb = subprocess.check_output(['git', 'reset', '--hard', '>/dev/null'])
       chat_post_message(self.get_testing_name(), deb.strip('\n'))
     elif text == 'Run setup.':
       self.setup()
