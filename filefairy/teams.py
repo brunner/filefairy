@@ -29,8 +29,11 @@ def get_emoji(teamid):
   return lookup_(emoji, teamid, '')
 
 
-nicknames = dict(zip([35, 36, 44, 45, 48, 49], [
-    'White Sox', 'Cubs', 'Angels', 'Dodgers', 'Yankees', 'Mets']))
+nicknames = dict(zip(range(31, 61), [
+    'Diamondbacks', 'Braves', 'Orioles', 'Red Sox', 'White Sox', 'Cubs', 'Reds', 'Indians',
+    'Rockies', 'Tigers', 'Marlins', 'Astros', 'Royals', 'Angels', 'Dodgers', 'Brewers', 'Twins',
+    'Yankees', 'Mets', 'Athletics', 'Phillies', 'Pirates', 'Padres', 'Mariners', 'Giants',
+    'Cardinals', 'Rays', 'Rangers', 'Blue Jays', 'Nationals']))
 
 
 def get_nickname(teamid):

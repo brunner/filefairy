@@ -14,6 +14,7 @@ from teams import get_city, get_emoji, get_nickname
 
 
 class Standings(object):
+
   def __init__(self):
     self.w = {'s': 0, 'w': 0}
     self.l = {'s': 0, 'w': 0}
@@ -31,6 +32,7 @@ class App(object):
 
   def __init__(self):
     self.file_url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
+    self.playoffs_in = 'data/playoffs.txt'
     self.standings_in = 'data/standings.txt'
 
   def setup(self):
@@ -40,11 +42,21 @@ class App(object):
     self.liveTables = []
     self.lock = threading.Lock()
     self.tick = 0
+    self.playoffs = self.read_playoffs(self.get_playoffs_in())
     self.standings = self.read_standings(self.get_standings_in())
     self.ws = None
 
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/'
+
+  def get_playoffs_in(self):
+    p_i = self.playoffs_in
+    if os.path.isfile(self.get_path() + 'data/playoffs_over.txt'):
+      p_i = 'data/playoffs_over.txt'
+    return self.get_path() + p_i if p_i else ''
+
+  def get_playoffs_out(self):
+    return self.get_path() + 'data/playoffs.txt'
 
   def get_standings_in(self):
     s_i = self.standings_in
@@ -75,6 +87,49 @@ class App(object):
       return urllib2.urlopen(url).read()
     except:
       return ''
+
+  def read_playoffs(self, playoffs_in):
+    """Read playoffs data from file.
+
+    Args:
+        playoffs_in: the file to read the playoffs data from.
+    Returns:
+        a tree of playoff series with current win totals.
+
+    """
+    p = {}
+    if os.path.isfile(playoffs_in):
+      with open(playoffs_in, 'r') as f:
+        for line in f.readlines():
+          i, s, l, t0, w0, t1, w1, j = line.split()
+          p[i] = {
+              's': int(s),
+              'l': int(l),
+              't0': int(t0) if t0.isdigit() else t0,
+              'w0': int(w0),
+              't1': int(t1) if t1.isdigit() else t1,
+              'w1': int(w1),
+              'j': j,
+          }
+    return p
+
+  def write_playoffs(self, playoffs_out, p):
+    """Write playoffs data to file.
+
+    Args:
+        standings_out: the file to write the standings data to.
+        s: the copy of the standings data.
+    Returns:
+        None
+
+    """
+    lines = []
+    for i in sorted(p.keys()):
+      k = ['s', 'l', 't0', 'w0', 't1', 'w1', 'j']
+      lines.append(' '.join([i] + [str(p[i][j]) for j in k]) + '\n')
+    if os.path.isfile(playoffs_out):
+      with open(playoffs_out, 'w') as f:
+        f.writelines(lines)
 
   def read_standings(self, standings_in):
     """Read standings data from file.
@@ -339,6 +394,12 @@ class App(object):
     chat_post_message(self.get_live_sim_discussion_name(), ret)
     return ret
 
+  def process_playoffs(self):
+    ret, txt = self.format_playoffs()
+    files_upload(ret, txt, self.get_live_sim_discussion_name())
+    self.write_playoffs(self.get_playoffs_out(), self.playoffs)
+    return ret
+
   def process_standings(self):
     retA = self.format_standings_al()
     retB = self.format_standings_nl()
@@ -496,7 +557,7 @@ class App(object):
         for j, u in enumerate(ordered):
           if u == t:
             continue
-          if  s[u].d0 and (u not in ts or j > i):
+          if s[u].d0 and (u not in ts or j > i):
             continue
           en = self.get_elimination_number(s, u, t)
           s[u].tn[k].append(en)
@@ -508,6 +569,60 @@ class App(object):
           s[v].tn[k] = sorted(s[v].tn[k])[i]
         if s[v].mn[k] and s[v].tn[k]:
           s[v].tn[k] = []
+
+  def get_playoffs_output(self, pvalue, title):
+    """Populates a playoffs template with data for a series.
+
+    Args:
+        pvalue: the playoffs data for the series.
+        title: the title of the series (e.g. 'Wild Card')
+    Returns:
+        the populated playoffs template.
+
+    """
+    div = ' | '
+    top = '{ktitle:<23}{div} W\n' + \
+          '------------------------|----'
+    row = '{team:<23}{div}{w:>2}'
+
+    k = 'AL ' if pvalue['l'] == 1 else 'NL ' if pvalue['l'] == 2 else ''
+    lines = [top.format(ktitle=(k + title), div=div)]
+
+    t0, w0 = pvalue['t0'], pvalue['w0']
+    team = ' '.join([get_city(t0), get_nickname(t0)])
+    lines.append(row.format(team=team, div=div, w=w0))
+    t1, w1 = pvalue['t1'], pvalue['w1']
+    team = ' '.join([get_city(t1), get_nickname(t1)])
+    lines.append(row.format(team=team, div=div, w=w1))
+
+    return '\n'.join(lines)
+
+  def format_playoffs(self):
+    """Return a string representation of the playoff tree for a league.
+
+    Args:
+        None
+    Returns:
+        the string representation of the playoff tree.
+
+    """
+    p = self.playoffs
+
+    s = 0
+    for k in sorted(p.keys(), reverse=True):
+      t0, w0 = p[k]['t0'], p[k]['w0']
+      t1, w1 = p[k]['t1'], p[k]['w1']
+      if w0 + w1 > 0:
+        s = max(s, p[k]['s'])
+
+    keys = filter(lambda k: p[k]['s'] == s, sorted(p.keys()))
+    title = 'Wild Card' if s == 1 else \
+            'Division Series' if s == 2 else \
+            'Championship Series' if s == 3 else \
+            'World Series' if s == 4 else ''
+
+    ret = [self.get_playoffs_output(p[k], title) for k in keys]
+    return '\n\n'.join(ret), ''.join([c for c in title if c.isupper()])
 
   def get_standings_output(self, s, kgroup, group, k):
     """Populates a standings template with data for a set of teams.
@@ -540,7 +655,7 @@ class App(object):
     return '\n'.join(lines)
 
   def format_standings_internal(self, east, cent, west, k):
-    """Return a string representation of the standings for a league.
+    """Return a string representation of the standings table for a league.
 
     Args:
         east: the set of team ids in the east division.
@@ -549,7 +664,7 @@ class App(object):
         kgroup: the title of the group (e.g. 'AL East').
         k: the league title prefix (e.g. 'AL').
     Returns:
-        the string representation of the standings.
+        the string representation of the standings table.
 
     """
     s = copy.deepcopy(self.standings)

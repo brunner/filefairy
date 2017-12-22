@@ -9,12 +9,16 @@ from app import App
 
 class AppTest(App):
 
-  def __init__(self, file_url='', standings_in=''):
+  def __init__(self, file_url='', playoffs_in='', standings_in=''):
     self.file_url = file_url
+    self.playoffs_in = playoffs_in
     self.standings_in = standings_in
 
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/'
+
+  def get_playoffs_out(self):
+    return self.get_path() + 'data/playoffs_out.txt'
 
   def get_standings_out(self):
     return self.get_path() + 'data/standings_out.txt'
