@@ -33,6 +33,7 @@ class App(object):
   def __init__(self):
     self.file_url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
     self.playoffs_in = 'data/playoffs.txt'
+    self.settings_in = 'data/settings.txt'
     self.standings_in = 'data/standings.txt'
 
   def setup(self):
@@ -43,6 +44,8 @@ class App(object):
     self.lock = threading.Lock()
     self.tick = 0
     self.playoffs = self.read_playoffs(self.get_playoffs_in())
+    self.playoffsCompleted = False
+    self.settings = self.read_settings(self.get_settings_in())
     self.standings = self.read_standings(self.get_standings_in())
     self.ws = None
 
@@ -57,6 +60,9 @@ class App(object):
 
   def get_playoffs_out(self):
     return self.get_path() + 'data/playoffs.txt'
+
+  def get_settings_in(self):
+    return self.get_path() + self.settings_in
 
   def get_standings_in(self):
     s_i = self.standings_in
@@ -131,6 +137,22 @@ class App(object):
       with open(playoffs_out, 'w') as f:
         f.writelines(lines)
 
+  def read_settings(self, settings_in):
+    """Read settings data from file.
+
+    Args:
+        settings_in: the file to read the settings data from.
+    Returns:
+        an object containing the settings data.
+
+    """
+    s = {}
+    if os.path.isfile(settings_in):
+      with open(settings_in, 'r') as f:
+        s = json.loads(f.read())
+    return s
+
+
   def read_standings(self, standings_in):
     """Read standings data from file.
 
@@ -167,8 +189,8 @@ class App(object):
     def on_message_(ws, message):
       self.lock.acquire()
       obj = json.loads(message)
-      if all(k in obj for k in ['type', 'channel', 'text']):
-        if obj['type'] == 'message' and obj['channel'] == self.get_statsplus_id():
+      if all(k in obj for k in ['type', 'channel', 'text']) and obj['type'] == 'message':
+        if obj['channel'] == self.get_statsplus_id():
           self.handle_statsplus(obj['text'])
       self.lock.release()
 
@@ -225,7 +247,15 @@ class App(object):
           ut = re.findall(re.escape(un) + r'\s+(\d+)', liveTable)
           us = self.standings[u].w['s']
 
-          if tt and ut:
+          # Hack for 2021 playoffs. Clean up during offseason.
+          if self.settings.get('playoffs', False):
+            if t == 35:
+              self.add_score(t, cw, cl)
+            elif u == 45:
+              self.add_score(u, cw, cl)
+            elif u == 49:
+              self.add_score(u, cw, cl)
+          elif tt and ut:
             ct = cw + cl
             tw, uw = int(tt[0]) - ts, int(ut[0]) - us
             if ct != 3:
@@ -349,10 +379,39 @@ class App(object):
     return ret
 
   def add_score(self, t, w, l):
-    self.standings[t].w['s'] += w
-    self.standings[t].w['w'] += w
-    self.standings[t].l['s'] += l
-    self.standings[t].l['w'] += l
+    p = self.playoffs
+    if w > 0:
+      for k in sorted(p.keys(), reverse=True):
+        t0, w0 = p[k]['t0'], p[k]['w0']
+        t1, w1 = p[k]['t1'], p[k]['w1']
+        if isinstance(t0, int) and isinstance(t1, int) and (t0 == t or t1 == t):
+          s = p[k]['s']
+          g = [1, 3, 4, 4][s-1]
+          if t0 == t:
+            p[k]['w0'] = w0 + w
+          if t1 == t:
+            p[k]['w1'] = w1 + w
+          if (t0 == t and w0 + w == g) or (t1 == t and w1 + w == g):
+            j = p[k]['j']
+            if j == 'X':
+              self.playoffsCompleted = True
+            else:
+              if p[j]['t0'] == k:
+                p[j]['t0'] = t
+              if p[j]['t1'] == k:
+                p[j]['t1'] = t
+              t0, t1 = p[j]['t0'], p[j]['t1']
+              if isinstance(t0, int) and isinstance(t1, int):
+                t1, t0 = self.get_ordered(self.standings, [t0, t1], 's')
+              p[j]['t0'] = t0
+              p[j]['t1'] = t1
+          break
+
+    s = self.standings
+    s[t].w['s'] += w
+    s[t].w['w'] += w
+    s[t].l['s'] += l
+    s[t].l['w'] += l
 
   def add_game(self, t, g):
     self.standings[t].games.append(g)
@@ -420,19 +479,26 @@ class App(object):
     elapsed = 0
     chat_post_message('testing', 'Started watching.')
 
+    playoffs = self.settings.get('playoffs', False)
     while elapsed < timeout:
       time.sleep(sleep)
-      elapsed = elapsed + sleep
+      if not playoffs:
+        elapsed = elapsed + sleep
 
-      if self.update_league_file():
+      if self.update_league_file() and not playoffs:
         elapsed = timeout
 
       self.lock.acquire()
       if self.finalScores and int(time.time()) - self.tick > sleep:
         self.process_final_scores()
         self.process_injuries()
-        self.process_records()
-        self.process_standings()
+        if self.settings.get('standings', False):
+          self.process_records()
+          self.process_standings()
+        if playoffs:
+          self.process_playoffs()
+          if self.playoffsCompleted:
+            playoffs = False
       self.lock.release()
 
     chat_post_message('testing', 'Done watching.')

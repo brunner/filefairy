@@ -9,9 +9,10 @@ from app import App
 
 class AppTest(App):
 
-  def __init__(self, file_url='', playoffs_in='', standings_in=''):
+  def __init__(self, file_url='', playoffs_in='', settings_in='', standings_in=''):
     self.file_url = file_url
     self.playoffs_in = playoffs_in
+    self.settings_in = settings_in
     self.standings_in = standings_in
 
   def get_path(self):
