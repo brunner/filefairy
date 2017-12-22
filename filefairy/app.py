@@ -164,7 +164,6 @@ class App(object):
         s = json.loads(f.read())
     return s
 
-
   def read_standings(self, standings_in):
     """Read standings data from file.
 
@@ -227,10 +226,12 @@ class App(object):
 
   def handle_testing(self, text):
     if text == 'Run git pull.':
-      deb = subprocess.check_output(['git', 'pull'])
+      deb = subprocess.check_output(['git', 'pull'], stdout=open(
+          os.devnull, 'w'), stderr=subprocess.STDOUT)
       chat_post_message(self.get_testing_name(), deb.strip('\n'))
     if text == 'Run git reset.':
-      deb = subprocess.check_output(['git', 'reset', '--hard'])
+      deb = subprocess.check_output(['git', 'reset', '--hard'], stdout=open(
+          os.devnull, 'w'), stderr=subprocess.STDOUT))
       chat_post_message(self.get_testing_name(), deb.strip('\n'))
     elif text == 'Run setup.':
       self.setup()
@@ -419,7 +420,7 @@ class App(object):
           t1, w1 = p[k]['t1'], p[k]['w1']
           if isinstance(t0, int) and isinstance(t1, int) and (t0 == t or t1 == t):
             s = p[k]['s']
-            g = [1, 3, 4, 4][s-1]
+            g = [1, 3, 4, 4][s - 1]
             if t0 == t:
               p[k]['w0'] = w0 + w
             if t1 == t:
