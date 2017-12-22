@@ -229,6 +229,9 @@ class App(object):
     if text == 'Run git pull.':
       deb = subprocess.check_output(['git', 'pull'])
       chat_post_message(self.get_testing_name(), deb.strip('\n'))
+    if text == 'Run git reset.':
+      deb = subprocess.check_output(['git', 'reset', '--hard'])
+      chat_post_message(self.get_testing_name(), deb.strip('\n'))
     elif text == 'Run setup.':
       self.setup()
       deb, txt = self.format_playoffs()
