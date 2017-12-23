@@ -231,16 +231,20 @@ class App(object):
     if text == 'Run git reset.':
       deb = subprocess.check_output(['git', 'reset', '--hard'])
       chat_post_message(self.get_testing_name(), deb.strip('\n'))
-    elif text == 'Run setup.':
+    if text == 'Run app reboot.':
+      os.execv(sys.executable, ['python'] + sys.argv)
+    if text == 'Run app setup.':
       self.setup()
+      chat_post_message(self.get_testing_name(), 'Done.')
+    if text == 'Run app shutdown.':
+      self.keep_running = False
+    if text == 'Run app status report.':
       deb, txt = self.format_playoffs()
       files_upload(deb, txt, self.get_testing_name())
       files_upload(self.format_standings_al(), 'AL.txt', self.get_testing_name())
       files_upload(self.format_standings_nl(), 'NL.txt', self.get_testing_name())
       deb = ', '.join(['{}: {}'.format(k.title(), self.settings[k]) for k in self.settings]) + '.'
       chat_post_message(self.get_testing_name(), deb)
-    if text == 'Run shutdown.':
-      self.keep_running = False
 
   def handle_final_scores(self, text):
     text = re.sub(r'( MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)

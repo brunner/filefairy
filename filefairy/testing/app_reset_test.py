@@ -38,7 +38,8 @@ def test():
             'H 3 2 E 0 F 0 I\n' +
             'I 4 0 G 0 H 0 X')
 
-  chat_post_message('testing', 'Run setup.')
+  chat_post_message('testing', 'Run app setup.')
+  chat_post_message('testing', 'Run app status report.')
   time.sleep(6)
 
   assert_equals(appTest.settings['playoffs'], True)

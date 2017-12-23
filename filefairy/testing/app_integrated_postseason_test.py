@@ -110,7 +110,7 @@ def test():
       chat_post_message('testing', i)
 
   time.sleep(1)
-  chat_post_message('testing', 'Run shutdown.')
+  chat_post_message('testing', 'Run app shutdown.')
 
   t1.join()
   t2.join()
