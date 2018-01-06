@@ -36,12 +36,13 @@ class Standings(object):
 class App(object):
 
   def __init__(self):
-    self.file_url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
     self.lock = threading.Lock()
+    self.ws = None
+
+    self.file_url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
     self.playoffs_in = 'data/playoffs.txt'
     self.settings_in = 'data/settings.txt'
     self.standings_in = 'data/standings.txt'
-    self.ws = None
 
   def setup(self):
     self.file_date = self.get_file_date(self.get_page(self.file_url))
@@ -50,7 +51,6 @@ class App(object):
     self.live_tables = []
     self.tick = 0
     self.playoffs = self.read_playoffs(self.get_playoffs_in())
-    self.playoffs_completed = False
     self.settings = self.read_settings(self.get_settings_in())
     self.standings = self.read_standings(self.get_standings_in())
     self.keep_running = True
@@ -219,9 +219,9 @@ class App(object):
   def handle_statsplus(self, text):
     if 'MAJOR LEAGUE BASEBALL Final Scores' in text:
       self.handle_final_scores(text)
-    elif 'MAJOR LEAGUE BASEBALL Live Table' in text:
+    if 'MAJOR LEAGUE BASEBALL Live Table' in text:
       self.handle_live_table(text)
-    elif re.findall(r'\d{2}\/\d{2}\/\d{4}', text) and 'was injured' in text:
+    if re.findall(r'\d{2}\/\d{2}\/\d{4}', text) and 'was injured' in text:
       self.handle_injuries(text)
 
   def handle_testing(self, text):
@@ -257,7 +257,6 @@ class App(object):
     for i, finalScore in enumerate(self.final_scores):
       chat_post_message(self.get_live_sim_discussion_name(), finalScore)
       if len(self.final_scores) == len(self.live_tables):
-        liveTable = self.live_tables[i]
         for t in range(31, 61):
           if t in [35, 36, 44, 45, 48, 49]:
             continue
@@ -266,6 +265,7 @@ class App(object):
           cl = len(re.findall(r', ' + re.escape(city), finalScore))
           self.add_score(t, cw, cl)
 
+        liveTable = self.live_tables[i]
         for t, u in zip([35, 44, 48], [36, 45, 49]):
           city = get_city(t)
           cw = len(re.findall(r'\|' + re.escape(city), finalScore))
@@ -429,9 +429,7 @@ class App(object):
               p[k]['w1'] = w1 + w
             if (t0 == t and w0 + w == g) or (t1 == t and w1 + w == g):
               j = p[k]['j']
-              if j == 'X':
-                self.playoffs_completed = True
-              else:
+              if j in p:
                 if p[j]['t0'] == k:
                   p[j]['t0'] = t
                 if p[j]['t1'] == k:

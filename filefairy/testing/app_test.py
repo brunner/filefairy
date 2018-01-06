@@ -11,12 +11,13 @@ from app import App
 class AppTest(App):
 
   def __init__(self, file_url='', playoffs_in='', settings_in='', standings_in=''):
-    self.file_url = file_url
     self.lock = threading.Lock()
+    self.ws = None
+
+    self.file_url = file_url
     self.playoffs_in = playoffs_in
     self.settings_in = settings_in
     self.standings_in = standings_in
-    self.ws = None
 
   def get_path(self):
     return os.path.expanduser('~') + '/orangeandblueleague/filefairy/testing/'
