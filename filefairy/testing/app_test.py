@@ -37,6 +37,12 @@ class AppTest(App):
   def get_statsplus_id(self):
     return 'G3SUFLMK4'
 
+  def get_realtime_score_id(self):
+    return 'B3TSDSGG0'
+
+  def get_injury_bot_id(self):
+    return 'B3TSDSGG0'
+
   def get_sleep(self):
     return 2
 
