@@ -206,13 +206,14 @@ class App(object):
     def on_message_(ws, message):
       self.lock.acquire()
       obj = json.loads(message)
-      if all(k in obj for k in ['type', 'channel', 'text', 'bot_id']) and obj['type'] == 'message':
-        bot_id = obj['bot_id']
-        if bot_id == self.get_realtime_score_id() or bot_id == self.get_injury_bot_id():
-          if obj['channel'] == self.get_statsplus_id():
-            self.handle_statsplus(obj['text'])
-          if obj['channel'] == self.get_testing_id():
-            self.handle_testing(obj['text'])
+      if all(k in obj for k in ['type', 'channel', 'text']) and obj['type'] == 'message':
+        if obj['channel'] == self.get_statsplus_id():
+          if 'bot_id' in obj:
+            bi = obj['bot_id']
+            if bi == self.get_realtime_score_id() or bi == self.get_injury_bot_id():
+              self.handle_statsplus(obj['text'])
+        if obj['channel'] == self.get_testing_id():
+          self.handle_testing(obj['text'])
       self.lock.release()
 
     obj = rtm_connect()
