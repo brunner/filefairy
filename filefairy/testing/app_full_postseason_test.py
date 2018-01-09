@@ -21,15 +21,15 @@ wcoutpt = ['AL Wild Card            |  W\n' +
            '------------------------|----\n' +
            'Los Angeles Dodgers     |  0\n' +
            'Atlanta Braves          |  1',
-           'A 1 1 57 1 42 0 C\n' +
-           'B 1 2 45 0 32 1 E\n' +
-           'C 2 1 57 0 59 0 G\n' +
-           'D 2 1 47 0 54 0 G\n' +
-           'E 2 2 32 0 51 0 H\n' +
-           'F 2 2 56 0 55 0 H\n' +
-           'G 3 1 C 0 D 0 I\n' +
-           'H 3 2 E 0 F 0 I\n' +
-           'I 4 0 G 0 H 0 X\n']
+           'A 1 1 1 57 42 1 0 C\n' +
+           'B 1 1 2 45 32 0 1 E\n' +
+           'C 2 3 1 57 59 0 0 G\n' +
+           'D 2 3 1 47 54 0 0 G\n' +
+           'E 2 3 2 32 51 0 0 H\n' +
+           'F 2 3 2 56 55 0 0 H\n' +
+           'G 3 4 1 C D 0 0 I\n' +
+           'H 3 4 2 E F 0 0 I\n' +
+           'I 4 4 0 G H 0 0 X\n']
 
 dsinp1 = ['10/03/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
           '*<https://game_box_0.html|Seattle 5, Minnesota 0>*\n' +
@@ -62,15 +62,15 @@ dsoutp1 = ['AL Division Series      |  W\n' +
            '------------------------|----\n' +
            'St. Louis Cardinals     |  1\n' +
            'San Francisco Giants    |  1',
-           'A 1 1 57 1 42 0 C\n' +
-           'B 1 2 45 0 32 1 E\n' +
-           'C 2 1 57 1 59 2 G\n' +
-           'D 2 1 47 2 54 1 G\n' +
-           'E 2 2 32 1 51 1 H\n' +
-           'F 2 2 56 1 55 1 H\n' +
-           'G 3 1 C 0 D 0 I\n' +
-           'H 3 2 E 0 F 0 I\n' +
-           'I 4 0 G 0 H 0 X\n']
+           'A 1 1 1 57 42 1 0 C\n' +
+           'B 1 1 2 45 32 0 1 E\n' +
+           'C 2 3 1 57 59 1 2 G\n' +
+           'D 2 3 1 47 54 2 1 G\n' +
+           'E 2 3 2 32 51 1 1 H\n' +
+           'F 2 3 2 56 55 1 1 H\n' +
+           'G 3 4 1 C D 0 0 I\n' +
+           'H 3 4 2 E F 0 0 I\n' +
+           'I 4 4 0 G H 0 0 X\n']
 
 dsinp2 = ['10/07/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
           '*<https://game_box_0.html|Philadelphia 7, Atlanta 2>*\n' +
@@ -99,15 +99,15 @@ dsoutp2 = ['AL Division Series      |  W\n' +
            '------------------------|----\n' +
            'St. Louis Cardinals     |  2\n' +
            'San Francisco Giants    |  3',
-           'A 1 1 57 1 42 0 C\n' +
-           'B 1 2 45 0 32 1 E\n' +
-           'C 2 1 57 1 59 3 G\n' +
-           'D 2 1 47 3 54 1 G\n' +
-           'E 2 2 32 1 51 3 H\n' +
-           'F 2 2 56 2 55 3 H\n' +
-           'G 3 1 47 0 59 0 I\n' +
-           'H 3 2 55 0 51 0 I\n' +
-           'I 4 0 G 0 H 0 X\n']
+           'A 1 1 1 57 42 1 0 C\n' +
+           'B 1 1 2 45 32 0 1 E\n' +
+           'C 2 3 1 57 59 1 3 G\n' +
+           'D 2 3 1 47 54 3 1 G\n' +
+           'E 2 3 2 32 51 1 3 H\n' +
+           'F 2 3 2 56 55 2 3 H\n' +
+           'G 3 4 1 59 47 0 0 I\n' +
+           'H 3 4 2 51 55 0 0 I\n' +
+           'I 4 4 0 G H 0 0 X\n']
 
 csinp1 = ['10/11/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
           '*<https://game_box_0.html|Toronto 4, Minnesota 2>*',
@@ -124,21 +124,21 @@ csinp1 = ['10/11/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
 
 csoutp1 = ['AL Championship Series  |  W\n' +
            '------------------------|----\n' +
-           'Minnesota Twins         |  0\n' +
-           'Toronto Blue Jays       |  4\n\n' +
+           'Toronto Blue Jays       |  4\n' +
+           'Minnesota Twins         |  0\n\n' +
            'NL Championship Series  |  W\n' +
            '------------------------|----\n' +
-           'San Francisco Giants    |  2\n' +
-           'Philadelphia Phillies   |  1',
-           'A 1 1 57 1 42 0 C\n' +
-           'B 1 2 45 0 32 1 E\n' +
-           'C 2 1 57 1 59 3 G\n' +
-           'D 2 1 47 3 54 1 G\n' +
-           'E 2 2 32 1 51 3 H\n' +
-           'F 2 2 56 2 55 3 H\n' +
-           'G 3 1 47 0 59 4 I\n' +
-           'H 3 2 55 2 51 1 I\n' +
-           'I 4 0 59 0 H 0 X\n']
+           'Philadelphia Phillies   |  1\n' +
+           'San Francisco Giants    |  2',
+           'A 1 1 1 57 42 1 0 C\n' +
+           'B 1 1 2 45 32 0 1 E\n' +
+           'C 2 3 1 57 59 1 3 G\n' +
+           'D 2 3 1 47 54 3 1 G\n' +
+           'E 2 3 2 32 51 1 3 H\n' +
+           'F 2 3 2 56 55 2 3 H\n' +
+           'G 3 4 1 59 47 4 0 I\n' +
+           'H 3 4 2 51 55 1 2 I\n' +
+           'I 4 4 0 59 H 0 0 X\n']
 
 csinp2 = ['10/16/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
           '*<https://game_box_0.html|Philadelphia 6, San Francisco 1>*',
@@ -149,21 +149,21 @@ csinp2 = ['10/16/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
 
 csoutp2 = ['AL Championship Series  |  W\n' +
            '------------------------|----\n' +
-           'Minnesota Twins         |  0\n' +
-           'Toronto Blue Jays       |  4\n\n' +
+           'Toronto Blue Jays       |  4\n' +
+           'Minnesota Twins         |  0\n\n' +
            'NL Championship Series  |  W\n' +
            '------------------------|----\n' +
-           'San Francisco Giants    |  4\n' +
-           'Philadelphia Phillies   |  2',
-           'A 1 1 57 1 42 0 C\n' +
-           'B 1 2 45 0 32 1 E\n' +
-           'C 2 1 57 1 59 3 G\n' +
-           'D 2 1 47 3 54 1 G\n' +
-           'E 2 2 32 1 51 3 H\n' +
-           'F 2 2 56 2 55 3 H\n' +
-           'G 3 1 47 0 59 4 I\n' +
-           'H 3 2 55 4 51 2 I\n' +
-           'I 4 0 55 0 59 0 X\n']
+           'Philadelphia Phillies   |  2\n' +
+           'San Francisco Giants    |  4',
+           'A 1 1 1 57 42 1 0 C\n' +
+           'B 1 1 2 45 32 0 1 E\n' +
+           'C 2 3 1 57 59 1 3 G\n' +
+           'D 2 3 1 47 54 3 1 G\n' +
+           'E 2 3 2 32 51 1 3 H\n' +
+           'F 2 3 2 56 55 2 3 H\n' +
+           'G 3 4 1 59 47 4 0 I\n' +
+           'H 3 4 2 51 55 2 4 I\n' +
+           'I 4 4 0 59 55 0 0 X\n']
 
 wsinp1 = ['10/20/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
           '*<https://game_box_0.html|San Francisco 3, Toronto 1>*',
@@ -176,17 +176,17 @@ wsinp1 = ['10/20/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
 
 wsoutp1 = ['World Series            |  W\n' +
            '------------------------|----\n' +
-           'San Francisco Giants    |  3\n' +
-           'Toronto Blue Jays       |  1',
-           'A 1 1 57 1 42 0 C\n' +
-           'B 1 2 45 0 32 1 E\n' +
-           'C 2 1 57 1 59 3 G\n' +
-           'D 2 1 47 3 54 1 G\n' +
-           'E 2 2 32 1 51 3 H\n' +
-           'F 2 2 56 2 55 3 H\n' +
-           'G 3 1 47 0 59 4 I\n' +
-           'H 3 2 55 4 51 2 I\n' +
-           'I 4 0 55 3 59 1 X\n']
+           'Toronto Blue Jays       |  1\n' +
+           'San Francisco Giants    |  3',
+           'A 1 1 1 57 42 1 0 C\n' +
+           'B 1 1 2 45 32 0 1 E\n' +
+           'C 2 3 1 57 59 1 3 G\n' +
+           'D 2 3 1 47 54 3 1 G\n' +
+           'E 2 3 2 32 51 1 3 H\n' +
+           'F 2 3 2 56 55 2 3 H\n' +
+           'G 3 4 1 59 47 4 0 I\n' +
+           'H 3 4 2 51 55 2 4 I\n' +
+           'I 4 4 0 59 55 1 3 X\n']
 
 wsinp2 = ['10/25/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
           '*<https://game_box_0.html|Toronto 3, San Francisco 0>*',
@@ -197,17 +197,17 @@ wsinp2 = ['10/25/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
 
 wsoutp2 = ['World Series            |  W\n' +
            '------------------------|----\n' +
-           'San Francisco Giants    |  3\n' +
-           'Toronto Blue Jays       |  4',
-           'A 1 1 57 1 42 0 C\n' +
-           'B 1 2 45 0 32 1 E\n' +
-           'C 2 1 57 1 59 3 G\n' +
-           'D 2 1 47 3 54 1 G\n' +
-           'E 2 2 32 1 51 3 H\n' +
-           'F 2 2 56 2 55 3 H\n' +
-           'G 3 1 47 0 59 4 I\n' +
-           'H 3 2 55 4 51 2 I\n' +
-           'I 4 0 55 3 59 4 X\n']
+           'Toronto Blue Jays       |  4\n' +
+           'San Francisco Giants    |  3',
+           'A 1 1 1 57 42 1 0 C\n' +
+           'B 1 1 2 45 32 0 1 E\n' +
+           'C 2 3 1 57 59 1 3 G\n' +
+           'D 2 3 1 47 54 3 1 G\n' +
+           'E 2 3 2 32 51 1 3 H\n' +
+           'F 2 3 2 56 55 2 3 H\n' +
+           'G 3 4 1 59 47 4 0 I\n' +
+           'H 3 4 2 51 55 2 4 I\n' +
+           'I 4 4 0 59 55 4 3 X\n']
 
 
 def test():

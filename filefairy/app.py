@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import re
+import playoffs
 import subprocess
 import sys
 import threading
@@ -50,7 +51,7 @@ class App(object):
     self.injuries = []
     self.live_tables = []
     self.tick = 0
-    self.playoffs = self.read_playoffs(self.get_playoffs_in())
+    self.playoffs = playoffs.Playoffs(self.get_playoffs_in())
     self.settings = self.read_settings(self.get_settings_in())
     self.standings = self.read_standings(self.get_standings_in())
     self.keep_running = True
@@ -112,49 +113,6 @@ class App(object):
     except:
       return ''
 
-  def read_playoffs(self, playoffs_in):
-    """Read playoffs data from file.
-
-    Args:
-        playoffs_in: the file to read the playoffs data from.
-    Returns:
-        a tree of playoff series with current win totals.
-
-    """
-    p = {}
-    if os.path.isfile(playoffs_in):
-      with open(playoffs_in, 'r') as f:
-        for line in f.readlines():
-          i, s, l, t0, w0, t1, w1, j = line.split()
-          p[i] = {
-              's': int(s),
-              'l': int(l),
-              't0': int(t0) if t0.isdigit() else t0,
-              'w0': int(w0),
-              't1': int(t1) if t1.isdigit() else t1,
-              'w1': int(w1),
-              'j': j,
-          }
-    return p
-
-  def write_playoffs(self, playoffs_out, p):
-    """Write playoffs data to file.
-
-    Args:
-        standings_out: the file to write the standings data to.
-        s: the copy of the standings data.
-    Returns:
-        None
-
-    """
-    lines = []
-    for i in sorted(p.keys()):
-      k = ['s', 'l', 't0', 'w0', 't1', 'w1', 'j']
-      lines.append(' '.join([i] + [str(p[i][j]) for j in k]) + '\n')
-    if os.path.isfile(playoffs_out):
-      with open(playoffs_out, 'w') as f:
-        f.writelines(lines)
-
   def read_settings(self, settings_in):
     """Read settings data from file.
 
@@ -209,8 +167,8 @@ class App(object):
       if all(k in obj for k in ['type', 'channel', 'text']) and obj['type'] == 'message':
         if obj['channel'] == self.get_statsplus_id():
           if 'bot_id' in obj:
-            bi = obj['bot_id']
-            if bi == self.get_realtime_score_id() or bi == self.get_injury_bot_id():
+            bot_id = obj['bot_id']
+            if bot_id == self.get_realtime_score_id() or bot_id == self.get_injury_bot_id():
               self.handle_statsplus(obj['text'])
         if obj['channel'] == self.get_testing_id():
           self.handle_testing(obj['text'])
@@ -248,7 +206,7 @@ class App(object):
     if text == 'Run app shutdown.':
       self.keep_running = False
     if text == 'Run app status report.':
-      deb, txt = self.format_playoffs()
+      deb, txt = self.playoffs.format()
       files_upload(deb, txt, self.get_testing_name())
       files_upload(self.format_standings_al(), 'AL.txt', self.get_testing_name())
       files_upload(self.format_standings_nl(), 'NL.txt', self.get_testing_name())
@@ -424,31 +382,7 @@ class App(object):
 
   def add_score(self, t, w, l):
     if self.settings.get('playoffs', False):
-      p = self.playoffs
-      if w > 0:
-        for k in sorted(p.keys(), reverse=True):
-          t0, w0 = p[k]['t0'], p[k]['w0']
-          t1, w1 = p[k]['t1'], p[k]['w1']
-          if isinstance(t0, int) and isinstance(t1, int) and (t0 == t or t1 == t):
-            s = p[k]['s']
-            g = [1, 3, 4, 4][s - 1]
-            if t0 == t:
-              p[k]['w0'] = w0 + w
-            if t1 == t:
-              p[k]['w1'] = w1 + w
-            if (t0 == t and w0 + w == g) or (t1 == t and w1 + w == g):
-              j = p[k]['j']
-              if j in p:
-                if p[j]['t0'] == k:
-                  p[j]['t0'] = t
-                if p[j]['t1'] == k:
-                  p[j]['t1'] = t
-                t0, t1 = p[j]['t0'], p[j]['t1']
-                if isinstance(t0, int) and isinstance(t1, int):
-                  t1, t0 = self.get_ordered(self.standings, [t0, t1], 's')
-                p[j]['t0'] = t0
-                p[j]['t1'] = t1
-            break
+      self.playoffs.enter(t, w)
 
     if self.settings.get('standings', False):
       s = self.standings
@@ -498,9 +432,9 @@ class App(object):
     return ret
 
   def process_playoffs(self):
-    ret, txt = self.format_playoffs()
+    ret, txt = self.playoffs.format()
     files_upload(ret, txt, self.get_live_sim_discussion_name())
-    self.write_playoffs(self.get_playoffs_out(), self.playoffs)
+    self.playoffs.write(self.get_playoffs_out())
     return ret
 
   def process_standings(self):
@@ -668,60 +602,6 @@ class App(object):
           s[v].tn[k] = sorted(s[v].tn[k])[i]
         if s[v].mn[k] and s[v].tn[k]:
           s[v].tn[k] = []
-
-  def get_playoffs_output(self, pvalue, title):
-    """Populates a playoffs template with data for a series.
-
-    Args:
-        pvalue: the playoffs data for the series.
-        title: the title of the series (e.g. 'Wild Card')
-    Returns:
-        the populated playoffs template.
-
-    """
-    div = ' | '
-    top = '{ktitle:<23}{div} W\n' + \
-          '------------------------|----'
-    row = '{team:<23}{div}{w:>2}'
-
-    k = 'AL ' if pvalue['l'] == 1 else 'NL ' if pvalue['l'] == 2 else ''
-    lines = [top.format(ktitle=(k + title), div=div)]
-
-    t0, w0 = pvalue['t0'], pvalue['w0']
-    team = ' '.join([get_city(t0), get_nickname(t0)])
-    lines.append(row.format(team=team, div=div, w=w0))
-    t1, w1 = pvalue['t1'], pvalue['w1']
-    team = ' '.join([get_city(t1), get_nickname(t1)])
-    lines.append(row.format(team=team, div=div, w=w1))
-
-    return '\n'.join(lines)
-
-  def format_playoffs(self):
-    """Return a string representation of the playoff tree for a league.
-
-    Args:
-        None
-    Returns:
-        the string representation of the playoff tree.
-
-    """
-    p = self.playoffs
-
-    s = 1
-    for k in sorted(p.keys(), reverse=True):
-      t0, w0 = p[k]['t0'], p[k]['w0']
-      t1, w1 = p[k]['t1'], p[k]['w1']
-      if w0 + w1 > 0:
-        s = max(s, p[k]['s'])
-
-    keys = filter(lambda k: p[k]['s'] == s, sorted(p.keys()))
-    title = 'Wild Card' if s == 1 else \
-            'Division Series' if s == 2 else \
-            'Championship Series' if s == 3 else \
-            'World Series' if s == 4 else ''
-
-    ret = [self.get_playoffs_output(p[k], title) for k in keys]
-    return '\n\n'.join(ret), ''.join([c for c in title if c.isupper()])
 
   def get_standings_output(self, s, kgroup, group, k):
     """Populates a standings template with data for a set of teams.

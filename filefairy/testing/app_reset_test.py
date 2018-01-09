@@ -28,15 +28,15 @@ def test():
 
   p_o = os.path.join(appTest.get_path(), 'data/playoffs_over.txt')
   with open(p_o, 'w') as f:
-    f.write('A 1 1 57 0 42 0 C\n' +
-            'B 1 2 45 0 32 0 E\n' +
-            'C 2 1 A 0 59 0 G\n' +
-            'D 2 1 47 0 54 0 G\n' +
-            'E 2 2 B 0 51 0 H\n' +
-            'F 2 2 56 0 55 0 H\n' +
-            'G 3 1 C 0 D 0 I\n' +
-            'H 3 2 E 0 F 0 I\n' +
-            'I 4 0 G 0 H 0 X')
+    f.write('A 1 1 1 57 42 0 0 C\n' +
+            'B 1 1 2 45 32 0 0 E\n' +
+            'C 2 3 1 A 59 0 0 G\n' +
+            'D 2 3 1 47 54 0 0 G\n' +
+            'E 2 3 2 B 51 0 0 H\n' +
+            'F 2 3 2 56 55 0 0 H\n' +
+            'G 3 4 1 C D 0 0 I\n' +
+            'H 3 4 2 E F 0 0 I\n' +
+            'I 4 4 0 G H 0 0 X')
 
   chat_post_message('testing', 'Run app setup.')
   chat_post_message('testing', 'Run app status report.')
