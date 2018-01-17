@@ -457,8 +457,10 @@ class App(object):
     sleep = self.get_sleep()
     while self.keep_running:
       time.sleep(sleep)
-      if self.ws and not self.ws.sock.connected:
-        chat_post_message(self.get_testing_name(), 'No longer connected.')
+      if self.ws and not (self.ws.sock and self.ws.sock.connected):
+        chat_post_message(self.get_testing_name(), 'Lost websocket connection.')
+        self.handle_close()
+        self.listen()
       self.lock.acquire()
       self.update_league_file()
       if self.final_scores and int(time.time()) - self.tick > sleep:
