@@ -5,7 +5,7 @@ import threading
 import time
 import websocket
 
-from utils.slack_api.slack_api_util import rtm_connect
+from utils.slack.slack_util import rtm_connect
 from plugins.league_file.league_file_plugin import LeagueFilePlugin
 
 
