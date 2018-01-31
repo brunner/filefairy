@@ -2,11 +2,12 @@
 
 import json
 import os
+import re
+import sys
 import urllib
 import urllib2
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+sys.path.append(re.sub(r'/utils/slack', '', os.path.dirname(__file__)))
 from private.tokens import filefairy
 
 def call_(method, params):
@@ -21,5 +22,19 @@ def call_(method, params):
   return obj
 
 
+def chat_post_message(channel, text):
+  return call_('chat.postMessage', {
+      'token': filefairy,
+      'channel': channel,
+      'text': text,
+      'as_user': 'true',
+      'link_names': 'true',
+  })
+
+
 def rtm_connect():
   return call_('rtm.connect', {'token': filefairy})
+
+
+def get_testing_name():
+  return 'testing'

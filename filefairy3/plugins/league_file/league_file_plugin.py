@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 
+import copy
 import json
 import os
 import re
 import subprocess
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(__file__)))
 from private.server import user, league_file_dir
-
-
-path = '/orangeandblueleague/filefairy3/plugins/league_file/'
+from utils.subprocess.subprocess_util import check_output
 
 
 size_pattern = '(\d+)'
@@ -21,23 +20,17 @@ line_pattern = '\s'.join([size_pattern, date_pattern, name_pattern])
 
 class LeagueFilePlugin(object):
 
-  def __init__(self, infile='data.txt'):
-    self.infile = infile
-    self.setup()
-
-  def setup(self):
-    if os.path.isfile(path + self.infile):
-      with open
+  def __init__(self):
+    self.read()
 
   def on_message(self, obj):
     pass
 
   def run(self):
-    try:
-      output = subprocess.check_output(['ssh', user, 'ls -l ' + league_file_dir])
-    except:
-      output = ''
+    original_filepart = copy.deepcopy(self.filepart)
+    original_finished = copy.deepcopy(self.finished)
 
+    output = check_output(['ssh', user, 'ls -l ' + league_file_dir])
     for line in output.splitlines():
       line = re.sub(r'\s+', ' ', line)
       match = re.findall(line_pattern, line)
@@ -48,8 +41,26 @@ class LeagueFilePlugin(object):
             self.filepart = {'start': date}
           self.filepart['size'] = size
           self.filepart['end'] = date
-        elif (not len(self.finished) or self.finished[0]['end'] != end) and self.filepart:
+        elif self.filepart and '.filepart' not in output:
           self.filepart['size'] = size
           self.filepart['end'] = date
-          self.finished.insert(0, self.filepart.copy())
+          self.finished.insert(0, copy.deepcopy(self.filepart))
           self.filepart = None
+
+    if self.filepart != original_filepart or self.finished != original_finished:
+      self.write()
+
+  def read(self):
+    with open(get_data(), 'r') as f:
+      obj = json.loads(f.read())
+      self.filepart = copy.deepcopy(obj['filepart'])
+      self.finished = copy.deepcopy(obj['finished'])
+
+  def write(self):
+    with open(get_data(), 'w') as f:
+      obj = {'filepart': self.filepart, 'finished': self.finished}
+      f.write(json.dumps(obj))
+
+
+def get_data():
+  return os.path.join(os.path.dirname(__file__), 'data.txt')
