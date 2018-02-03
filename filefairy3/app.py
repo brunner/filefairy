@@ -6,6 +6,7 @@ import time
 import websocket
 
 from utils.slack.slack_util import rtm_connect
+from plugins.git.git_plugin import GitPlugin
 from plugins.league_file.league_file_plugin import LeagueFilePlugin
 
 
@@ -18,21 +19,23 @@ class App(object):
 
   def setup(self):
     self.sleep = 2
+
+    self.plugins.append(GitPlugin())
     self.plugins.append(LeagueFilePlugin())
 
   def connect(self):
-    def on_message_(ws, message):
+    def _on_message(ws, message):
       self.lock.acquire()
 
       obj = json.loads(message)
       for p in self.plugins:
-        p.on_message(obj)
+        p._on_message(obj)
 
       self.lock.release()
 
     obj = rtm_connect()
     if obj['ok'] and 'url' in obj:
-      self.ws = websocket.WebSocketApp(obj['url'], on_message=on_message_)
+      self.ws = websocket.WebSocketApp(obj['url'], on_message=_on_message)
       t = threading.Thread(target=self.ws.run_forever)
       t.daemon = True
       t.start()
@@ -46,7 +49,7 @@ class App(object):
         self.connect()
 
       for p in self.plugins:
-        p.run()
+        p._run()
 
       self.lock.release()
       time.sleep(self.sleep)

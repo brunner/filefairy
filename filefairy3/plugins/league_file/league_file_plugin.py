@@ -7,8 +7,11 @@ import re
 import subprocess
 import sys
 
+import logging
+logging.basicConfig()
+
 sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(__file__)))
-from apis.plugin.plugin_api import PluginApi
+from apis.data_plugin.data_plugin_api import DataPluginApi
 from private.server import user, league_file_dir
 from utils.subprocess.subprocess_util import check_output
 
@@ -18,16 +21,12 @@ name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 line_pattern = '\s'.join([size_pattern, date_pattern, name_pattern])
 
 
-class LeagueFilePlugin(PluginApi):
+class LeagueFilePlugin(DataPluginApi):
 
-  @staticmethod
-  def __data__():
-    return os.path.join(os.path.dirname(__file__), 'data.txt')
-
-  def __on_message__(self, obj):
+  def _on_message_internal(self, obj):
     pass
 
-  def run(self):
+  def _run_internal(self):
     original_filepart = copy.deepcopy(self.filepart)
     original_finished = copy.deepcopy(self.finished)
 
@@ -51,6 +50,10 @@ class LeagueFilePlugin(PluginApi):
 
     if self.filepart != original_filepart or self.finished != original_finished:
       self.write()
+
+  @staticmethod
+  def _data():
+    return os.path.join(os.path.dirname(__file__), 'data.txt')
 
   def read(self):
     with open(self.data, 'r') as f:

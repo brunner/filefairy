@@ -23,7 +23,7 @@ def from_channel(obj, id_):
   return 'channel' in obj and obj['channel'] == id_
 
 
-def call_(method, params):
+def _call(method, params):
   url = 'https://slack.com/api/{}'.format(method)
   obj = {'ok': False}
   try:
@@ -36,7 +36,7 @@ def call_(method, params):
 
 
 def chat_post_message(channel, text):
-  return call_('chat.postMessage', {
+  return _call('chat.postMessage', {
       'token': filefairy,
       'channel': channel,
       'text': text,
@@ -46,4 +46,4 @@ def chat_post_message(channel, text):
 
 
 def rtm_connect():
-  return call_('rtm.connect', {'token': filefairy})
+  return _call('rtm.connect', {'token': filefairy})
