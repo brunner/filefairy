@@ -9,10 +9,10 @@ import unittest
 import sys
 
 sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(__file__)))
-from utils.testing.testing_util import overwrite
+from utils.testing.testing_util import write
 
 
-data = LeagueFilePlugin.__data__()
+_data = LeagueFilePlugin._data()
 
 started = """total 321012
 -rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html
@@ -25,184 +25,88 @@ stopped = """total 321012
 -rwxrwxrwx 1 user user 328706052 Jan 29 14:55 orange_and_blue_league_baseball.tar.gz
 """
 
-with_null_data = '{"filepart": null, "finished": []}'
-
-with_null_data_after_started = '{"finished": [], "filepart": {' + \
-    '"start": "Jan 29 19:26", "end": "Jan 29 19:26", "size": "310000000"}}'
-
-with_filepart = '{"filepart": {"size": "300000000", "start": "Jan 29 15:00", ' + \
-    '"end": "Jan 29 19:23"}, "finished": []}'
-
-with_filepart_after_started = '{"finished": [], "filepart": {' + \
-    '"start": "Jan 29 15:00", "end": "Jan 29 19:26", "size": "310000000"}}'
-
-with_filepart_after_stopped = '{"finished": [{"date": "Jan 29 14:55", ' + \
-    '"start": "Jan 29 15:00", "end": "Jan 29 19:23", "size": "328706052"}], "filepart": null}'
-
-with_finished = '{"filepart": null, "finished": [{"size": "345678901", ' + \
-    '"start": "Jan 27 12:05", "end": "Jan 27 16:00", "date": "Jan 27 12:00"}]}'
-
-with_finished_after_started = '{"finished": [{"date": "Jan 27 12:00", ' + \
-    '"start": "Jan 27 12:05", "end": "Jan 27 16:00", "size": "345678901"}], ' + \
-    '"filepart": {"start": "Jan 29 19:26", "end": "Jan 29 19:26", "size": "310000000"}}'
-
-with_finished_after_stopped = '{"filepart": null, "finished": [{' + \
-    '"size": "345678901", "start": "Jan 27 12:05", "end": "Jan 27 16:00", ' + \
-    '"date": "Jan 27 12:00"}]}'
-
-with_filepart_and_finished = '{"filepart": {"size": "300000000", ' + \
-    '"start": "Jan 29 15:00", "end": "Jan 29 19:23"}, "finished": [{' + \
-    '"size": "345678901", "start": "Jan 27 12:05", "end": "Jan 27 16:00", ' + \
-    '"date": "Jan 27 12:00"}]}'
-
-with_filepart_and_finished_after_started = '{"finished": [{' + \
-    '"date": "Jan 27 12:00", "start": "Jan 27 12:05", "end": "Jan 27 16:00", ' + \
-    '"size": "345678901"}], "filepart": {"start": "Jan 29 15:00", ' + \
-    '"end": "Jan 29 19:26", "size": "310000000"}}'
-
-with_filepart_and_finished_after_stopped = '{"finished": [{' + \
-    '"date": "Jan 29 14:55", "start": "Jan 29 15:00", "end": "Jan 29 19:23", ' + \
-    '"size": "328706052"}, {"date": "Jan 27 12:00", "start": "Jan 27 12:05", ' + \
-    '"end": "Jan 27 16:00", "size": "345678901"}], "filepart": null}'
-
 
 class LeagueFilePluginTest(unittest.TestCase):
 
   @mock.patch('subprocess.check_output', return_value=started)
   def test_run__started__with_null_data(self, subprocess_check_output_mock):
-    original = overwrite(data, with_null_data)
-
+    data = {'fp': None, 'up': []}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertEqual(plugin.filepart['size'], '310000000')
-    self.assertEqual(plugin.filepart['start'], 'Jan 29 19:26')
-    self.assertEqual(plugin.filepart['end'], 'Jan 29 19:26')
-    self.assertEqual(len(plugin.finished), 0)
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_null_data_after_started)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': {'size': '310000000', 'start': 'Jan 29 19:26', 'end': 'Jan 29 19:26'}, 'up': []}
+    self.assertEqual(actual, expected)
 
   @mock.patch('subprocess.check_output', return_value=started)
   def test_run__started__with_filepart(self, subprocess_check_output_mock):
-    original = overwrite(data, with_filepart)
-
+    data = {'fp': {'size': '300000000', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:23'}, 'up': []}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertEqual(plugin.filepart['size'], '310000000')
-    self.assertEqual(plugin.filepart['start'], 'Jan 29 15:00')
-    self.assertEqual(plugin.filepart['end'], 'Jan 29 19:26')
-    self.assertEqual(len(plugin.finished), 0)
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_filepart_after_started)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': {'size': '310000000', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:26'}, 'up': [], }
+    self.assertEqual(actual, expected)
 
   @mock.patch('subprocess.check_output', return_value=started)
   def test_run__started__with_finished(self, subprocess_check_output_mock):
-    original = overwrite(data, with_finished)
-
+    data = {'fp': None, 'up': [{'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertEqual(plugin.filepart['size'], '310000000')
-    self.assertEqual(plugin.filepart['start'], 'Jan 29 19:26')
-    self.assertEqual(plugin.filepart['end'], 'Jan 29 19:26')
-    self.assertEqual(len(plugin.finished), 1)
-    self.assertEqual(plugin.finished[0]['size'], '345678901')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 12:05')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 16:00')
-    self.assertEqual(plugin.finished[0]['date'], 'Jan 27 12:00')
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_finished_after_started)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': {'size': '310000000', 'start': 'Jan 29 19:26', 'end': 'Jan 29 19:26'}, 'up': [{'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    self.assertEqual(actual, expected)
 
   @mock.patch('subprocess.check_output', return_value=started)
   def test_run__started__with_filepart_and_finished(self, subprocess_check_output_mock):
-    original = overwrite(data, with_filepart_and_finished)
-
+    data = {'fp': {'size': '300000000', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:23'}, 'up': [{'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertEqual(plugin.filepart['size'], '310000000')
-    self.assertEqual(plugin.filepart['start'], 'Jan 29 15:00')
-    self.assertEqual(plugin.filepart['end'], 'Jan 29 19:26')
-    self.assertEqual(len(plugin.finished), 1)
-    self.assertEqual(plugin.finished[0]['size'], '345678901')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 12:05')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 16:00')
-    self.assertEqual(plugin.finished[0]['date'], 'Jan 27 12:00')
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_filepart_and_finished_after_started)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': {'size': '310000000', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:26'}, 'up': [{'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    self.assertEqual(actual, expected)
 
   @mock.patch('subprocess.check_output', return_value=stopped)
   def test_run__stopped__with_null_data(self, subprocess_check_output_mock):
-    original = overwrite(data, with_null_data)
-
+    data = {'fp': None, 'up': []}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertIsNone(plugin.filepart)
-    self.assertEqual(len(plugin.finished), 0)
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_null_data)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': None, 'up': []}
+    self.assertEqual(actual, expected)
 
   @mock.patch('subprocess.check_output', return_value=stopped)
   def test_run__stopped__with_filepart(self, subprocess_check_output_mock):
-    original = overwrite(data, with_filepart)
-
+    data = {'fp': {'size': '300000000', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:23'}, 'up': []}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertIsNone(plugin.filepart)
-    self.assertEqual(len(plugin.finished), 1)
-    self.assertEqual(plugin.finished[0]['size'], '328706052')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 29 15:00')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 29 19:23')
-    self.assertEqual(plugin.finished[0]['date'], 'Jan 29 14:55')
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_filepart_after_stopped)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': None, 'up': [{'size': '328706052', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:23', 'date': 'Jan 29 14:55'}]}
+    self.assertEqual(actual, expected)
 
   @mock.patch('subprocess.check_output', return_value=stopped)
   def test_run__stopped__with_finished(self, subprocess_check_output_mock):
-    original = overwrite(data, with_finished)
-
+    data = {'fp': None, 'up': [{'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertIsNone(plugin.filepart)
-    self.assertEqual(len(plugin.finished), 1)
-    self.assertEqual(plugin.finished[0]['size'], '345678901')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 12:05')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 16:00')
-    self.assertEqual(plugin.finished[0]['date'], 'Jan 27 12:00')
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_finished_after_stopped)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': None, 'up': [{'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    self.assertEqual(actual, expected)
 
   @mock.patch('subprocess.check_output', return_value=stopped)
   def test_run__stopped__with_filepart_and_finished(self, subprocess_check_output_mock):
-    original = overwrite(data, with_filepart_and_finished)
-
+    data = {'fp': {'size': '300000000', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:23'}, 'up': [{'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    original = write(_data, data)
     plugin = LeagueFilePlugin()
-    plugin.run()
-
-    self.assertIsNone(plugin.filepart)
-    self.assertEqual(len(plugin.finished), 2)
-    self.assertEqual(plugin.finished[0]['size'], '328706052')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 29 15:00')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 29 19:23')
-    self.assertEqual(plugin.finished[0]['date'], 'Jan 29 14:55')
-    self.assertEqual(plugin.finished[1]['size'], '345678901')
-    self.assertEqual(plugin.finished[1]['start'], 'Jan 27 12:05')
-    self.assertEqual(plugin.finished[1]['end'], 'Jan 27 16:00')
-    self.assertEqual(plugin.finished[1]['date'], 'Jan 27 12:00')
-
-    changed = overwrite(data, original)
-    self.assertEqual(changed, with_filepart_and_finished_after_stopped)
+    plugin._run()
+    actual = write(_data, original)
+    expected = {'fp': None, 'up': [{'size': '328706052', 'start': 'Jan 29 15:00', 'end': 'Jan 29 19:23', 'date': 'Jan 29 14:55'}, {'size': '345678901', 'start': 'Jan 27 12:05', 'end': 'Jan 27 16:00', 'date': 'Jan 27 12:00'}]}
+    self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':

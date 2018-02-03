@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 
+import json
 
-def overwrite(fname, s):
+
+def write(fname, data):
   with open(fname, 'r+') as f:
-    original = f.read()
+    original = json.loads(f.read())
+
     f.seek(0)
-    f.write(s)
+    f.write(json.dumps(data))
     f.truncate()
+
     return original

@@ -21,24 +21,24 @@ class GitPlugin(BasePluginApi):
   def _run_internal(self):
     pass
 
-  def _call(self, cmd):
-    out = check_output(cmd)
-    chat_post_message(testing_name, out.strip('\n'))
+  def _call(self, cmd, args):
+    s = check_output(cmd).strip('\n')
+    return self._chats(s, s, args)
 
-  def add(self):
-    self._call(['git', 'add' '.'])
+  def add(self, *args):
+    return self._call(['git', 'add' '.'], args)
 
-  def commit(self):
-    self._call(['git', 'commit', '-m', 'Automated data push.'])
+  def commit(self, *args):
+    return self._call(['git', 'commit', '-m', 'Automated data push.'], args)
 
-  def pull(self):
-    self._call(['git', 'pull'])
+  def pull(self, *args):
+    return self._call(['git', 'pull'], args)
 
-  def push(self):
-    self._call(['git', 'push', 'origin', 'master'])
+  def push(self, *args):
+    return self._call(['git', 'push', 'origin', 'master'], args)
 
-  def reset(self):
-    self._call(['git', 'reset', '--hard'])
+  def reset(self, *args):
+    return self._call(['git', 'reset', '--hard'], args)
 
-  def status(self):
-    self._call(['git', 'status'])
+  def status(self, *args):
+    return self._call(['git', 'status'], args)

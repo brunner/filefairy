@@ -27,41 +27,30 @@ class LeagueFilePlugin(DataPluginApi):
     pass
 
   def _run_internal(self):
-    original_filepart = copy.deepcopy(self.filepart)
-    original_finished = copy.deepcopy(self.finished)
+    data = self.data
+    original = copy.deepcopy(data)
 
-    output = check_output(['ssh', user, 'ls -l ' + league_file_dir])
-    for line in output.splitlines():
+    out = check_output(['ssh', user, 'ls -l ' + league_file_dir])
+    for line in out.splitlines():
       line = re.sub(r'\s+', ' ', line)
       match = re.findall(line_pattern, line)
       if match:
         size, date, name = match[0]
         if '.filepart' in name:
-          if not self.filepart:
-            self.filepart = {'start': date}
-          self.filepart['size'] = size
-          self.filepart['end'] = date
-        elif self.filepart and '.filepart' not in output:
-          self.filepart['size'] = size
-          self.filepart['date'] = date
-          if not len(self.finished) or self.finished[0]['date'] != date:
-            self.finished.insert(0, copy.deepcopy(self.filepart))
-          self.filepart = None
+          if not data['fp']:
+            data['fp'] = {'start': date}
+          data['fp']['size'] = size
+          data['fp']['end'] = date
+        elif data['fp'] and '.filepart' not in out:
+          data['fp']['size'] = size
+          data['fp']['date'] = date
+          if not len(data['up']) or data['up'][0]['date'] != date:
+            data['up'].insert(0, copy.deepcopy(data['fp']))
+          data['fp'] = None
 
-    if self.filepart != original_filepart or self.finished != original_finished:
+    if data != original:
       self.write()
 
   @staticmethod
   def _data():
-    return os.path.join(os.path.dirname(__file__), 'data.txt')
-
-  def read(self):
-    with open(self.data, 'r') as f:
-      obj = json.loads(f.read())
-      self.filepart = copy.deepcopy(obj['filepart'])
-      self.finished = copy.deepcopy(obj['finished'])
-
-  def write(self):
-    with open(self.data, 'w') as f:
-      obj = {'filepart': self.filepart, 'finished': self.finished}
-      f.write(json.dumps(obj))
+    return os.path.join(os.path.dirname(__file__), 'data.json')
