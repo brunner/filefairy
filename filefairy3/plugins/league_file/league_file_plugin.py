@@ -44,8 +44,9 @@ class LeagueFilePlugin(PluginApi):
           self.filepart['end'] = date
         elif self.filepart and '.filepart' not in output:
           self.filepart['size'] = size
-          self.filepart['end'] = date
-          self.finished.insert(0, copy.deepcopy(self.filepart))
+          self.filepart['date'] = date
+          if not len(self.finished) or self.finished[0]['date'] != date:
+            self.finished.insert(0, copy.deepcopy(self.filepart))
           self.filepart = None
 
     if self.filepart != original_filepart or self.finished != original_finished:

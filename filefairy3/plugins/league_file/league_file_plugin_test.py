@@ -22,7 +22,7 @@ started = """total 321012
 
 stopped = """total 321012
 -rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html
--rwxrwxrwx 1 user user 328706052 Jan 29 19:30 orange_and_blue_league_baseball.tar.gz
+-rwxrwxrwx 1 user user 328706052 Jan 29 14:55 orange_and_blue_league_baseball.tar.gz
 """
 
 with_null_data = '{"filepart": null, "finished": []}'
@@ -36,30 +36,34 @@ with_filepart = '{"filepart": {"size": "300000000", "start": "Jan 29 15:00", ' +
 with_filepart_after_started = '{"finished": [], "filepart": {' + \
     '"start": "Jan 29 15:00", "end": "Jan 29 19:26", "size": "310000000"}}'
 
-with_filepart_after_stopped = '{"finished": [{"start": "Jan 29 15:00", ' + \
-    '"end": "Jan 29 19:30", "size": "328706052"}], "filepart": null}'
+with_filepart_after_stopped = '{"finished": [{"date": "Jan 29 14:55", ' + \
+    '"start": "Jan 29 15:00", "end": "Jan 29 19:23", "size": "328706052"}], "filepart": null}'
 
 with_finished = '{"filepart": null, "finished": [{"size": "345678901", ' + \
-    '"start": "Jan 27 08:00", "end": "Jan 27 12:00"}]}'
+    '"start": "Jan 27 12:05", "end": "Jan 27 16:00", "date": "Jan 27 12:00"}]}'
 
-with_finished_after_started = '{"finished": [{"start": "Jan 27 08:00", ' + \
-    '"end": "Jan 27 12:00", "size": "345678901"}], "filepart": {' + \
-    '"start": "Jan 29 19:26", "end": "Jan 29 19:26", "size": "310000000"}}'
+with_finished_after_started = '{"finished": [{"date": "Jan 27 12:00", ' + \
+    '"start": "Jan 27 12:05", "end": "Jan 27 16:00", "size": "345678901"}], ' + \
+    '"filepart": {"start": "Jan 29 19:26", "end": "Jan 29 19:26", "size": "310000000"}}'
 
 with_finished_after_stopped = '{"filepart": null, "finished": [{' + \
-    '"size": "345678901", "start": "Jan 27 08:00", "end": "Jan 27 12:00"}]}'
+    '"size": "345678901", "start": "Jan 27 12:05", "end": "Jan 27 16:00", ' + \
+    '"date": "Jan 27 12:00"}]}'
 
 with_filepart_and_finished = '{"filepart": {"size": "300000000", ' + \
     '"start": "Jan 29 15:00", "end": "Jan 29 19:23"}, "finished": [{' + \
-    '"size": "345678901", "start": "Jan 27 08:00", "end": "Jan 27 12:00"}]}'
+    '"size": "345678901", "start": "Jan 27 12:05", "end": "Jan 27 16:00", ' + \
+    '"date": "Jan 27 12:00"}]}'
 
 with_filepart_and_finished_after_started = '{"finished": [{' + \
-    '"start": "Jan 27 08:00", "end": "Jan 27 12:00", "size": "345678901"}], ' + \
-    '"filepart": {"start": "Jan 29 15:00", "end": "Jan 29 19:26", "size": "310000000"}}'
+    '"date": "Jan 27 12:00", "start": "Jan 27 12:05", "end": "Jan 27 16:00", ' + \
+    '"size": "345678901"}], "filepart": {"start": "Jan 29 15:00", ' + \
+    '"end": "Jan 29 19:26", "size": "310000000"}}'
 
 with_filepart_and_finished_after_stopped = '{"finished": [{' + \
-    '"start": "Jan 29 15:00", "end": "Jan 29 19:30", "size": "328706052"}, ' + \
-    '{"start": "Jan 27 08:00", "end": "Jan 27 12:00", "size": "345678901"}], "filepart": null}'
+    '"date": "Jan 29 14:55", "start": "Jan 29 15:00", "end": "Jan 29 19:23", ' + \
+    '"size": "328706052"}, {"date": "Jan 27 12:00", "start": "Jan 27 12:05", ' + \
+    '"end": "Jan 27 16:00", "size": "345678901"}], "filepart": null}'
 
 
 class LeagueFilePluginTest(unittest.TestCase):
@@ -106,8 +110,9 @@ class LeagueFilePluginTest(unittest.TestCase):
     self.assertEqual(plugin.filepart['end'], 'Jan 29 19:26')
     self.assertEqual(len(plugin.finished), 1)
     self.assertEqual(plugin.finished[0]['size'], '345678901')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 08:00')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 12:00')
+    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 12:05')
+    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 16:00')
+    self.assertEqual(plugin.finished[0]['date'], 'Jan 27 12:00')
 
     changed = overwrite(data, original)
     self.assertEqual(changed, with_finished_after_started)
@@ -124,8 +129,9 @@ class LeagueFilePluginTest(unittest.TestCase):
     self.assertEqual(plugin.filepart['end'], 'Jan 29 19:26')
     self.assertEqual(len(plugin.finished), 1)
     self.assertEqual(plugin.finished[0]['size'], '345678901')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 08:00')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 12:00')
+    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 12:05')
+    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 16:00')
+    self.assertEqual(plugin.finished[0]['date'], 'Jan 27 12:00')
 
     changed = overwrite(data, original)
     self.assertEqual(changed, with_filepart_and_finished_after_started)
@@ -154,7 +160,8 @@ class LeagueFilePluginTest(unittest.TestCase):
     self.assertEqual(len(plugin.finished), 1)
     self.assertEqual(plugin.finished[0]['size'], '328706052')
     self.assertEqual(plugin.finished[0]['start'], 'Jan 29 15:00')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 29 19:30')
+    self.assertEqual(plugin.finished[0]['end'], 'Jan 29 19:23')
+    self.assertEqual(plugin.finished[0]['date'], 'Jan 29 14:55')
 
     changed = overwrite(data, original)
     self.assertEqual(changed, with_filepart_after_stopped)
@@ -169,8 +176,9 @@ class LeagueFilePluginTest(unittest.TestCase):
     self.assertIsNone(plugin.filepart)
     self.assertEqual(len(plugin.finished), 1)
     self.assertEqual(plugin.finished[0]['size'], '345678901')
-    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 08:00')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 12:00')
+    self.assertEqual(plugin.finished[0]['start'], 'Jan 27 12:05')
+    self.assertEqual(plugin.finished[0]['end'], 'Jan 27 16:00')
+    self.assertEqual(plugin.finished[0]['date'], 'Jan 27 12:00')
 
     changed = overwrite(data, original)
     self.assertEqual(changed, with_finished_after_stopped)
@@ -186,10 +194,12 @@ class LeagueFilePluginTest(unittest.TestCase):
     self.assertEqual(len(plugin.finished), 2)
     self.assertEqual(plugin.finished[0]['size'], '328706052')
     self.assertEqual(plugin.finished[0]['start'], 'Jan 29 15:00')
-    self.assertEqual(plugin.finished[0]['end'], 'Jan 29 19:30')
+    self.assertEqual(plugin.finished[0]['end'], 'Jan 29 19:23')
+    self.assertEqual(plugin.finished[0]['date'], 'Jan 29 14:55')
     self.assertEqual(plugin.finished[1]['size'], '345678901')
-    self.assertEqual(plugin.finished[1]['start'], 'Jan 27 08:00')
-    self.assertEqual(plugin.finished[1]['end'], 'Jan 27 12:00')
+    self.assertEqual(plugin.finished[1]['start'], 'Jan 27 12:05')
+    self.assertEqual(plugin.finished[1]['end'], 'Jan 27 16:00')
+    self.assertEqual(plugin.finished[1]['date'], 'Jan 27 12:00')
 
     changed = overwrite(data, original)
     self.assertEqual(changed, with_filepart_and_finished_after_stopped)
