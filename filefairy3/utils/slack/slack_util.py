@@ -10,6 +10,19 @@ import urllib2
 sys.path.append(re.sub(r'/utils/slack', '', os.path.dirname(__file__)))
 from private.tokens import filefairy
 
+
+testing_name = 'testing'
+testing_id = 'G3SUFLMK4'
+
+
+def contains_text(obj, text):
+  return 'text' in obj and text in obj['text']
+
+
+def from_channel(obj, id_):
+  return 'channel' in obj and obj['channel'] == id_
+
+
 def call_(method, params):
   url = 'https://slack.com/api/{}'.format(method)
   obj = {'ok': False}
@@ -34,7 +47,3 @@ def chat_post_message(channel, text):
 
 def rtm_connect():
   return call_('rtm.connect', {'token': filefairy})
-
-
-def get_testing_name():
-  return 'testing'

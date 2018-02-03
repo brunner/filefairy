@@ -8,9 +8,9 @@ import subprocess
 import sys
 
 sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(__file__)))
+from apis.plugin.plugin_api import PluginApi
 from private.server import user, league_file_dir
 from utils.subprocess.subprocess_util import check_output
-
 
 size_pattern = '(\d+)'
 date_pattern = '(\w+\s\d+\s\d+:\d+)'
@@ -18,12 +18,13 @@ name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 line_pattern = '\s'.join([size_pattern, date_pattern, name_pattern])
 
 
-class LeagueFilePlugin(object):
+class LeagueFilePlugin(PluginApi):
 
-  def __init__(self):
-    self.read()
+  @staticmethod
+  def __data__():
+    return os.path.join(os.path.dirname(__file__), 'data.txt')
 
-  def on_message(self, obj):
+  def __on_message__(self, obj):
     pass
 
   def run(self):
@@ -51,16 +52,12 @@ class LeagueFilePlugin(object):
       self.write()
 
   def read(self):
-    with open(get_data(), 'r') as f:
+    with open(self.data, 'r') as f:
       obj = json.loads(f.read())
       self.filepart = copy.deepcopy(obj['filepart'])
       self.finished = copy.deepcopy(obj['finished'])
 
   def write(self):
-    with open(get_data(), 'w') as f:
+    with open(self.data, 'w') as f:
       obj = {'filepart': self.filepart, 'finished': self.finished}
       f.write(json.dumps(obj))
-
-
-def get_data():
-  return os.path.join(os.path.dirname(__file__), 'data.txt')
