@@ -5,9 +5,10 @@ import threading
 import time
 import websocket
 
-from utils.slack.slack_util import rtm_connect
+from plugins.exports.exports_plugin import ExportsPlugin
 from plugins.git.git_plugin import GitPlugin
 from plugins.league_file.league_file_plugin import LeagueFilePlugin
+from utils.slack.slack_util import rtm_connect
 
 
 class App(object):
@@ -19,6 +20,7 @@ class App(object):
     def setup(self):
         self.sleep = 120
 
+        self.plugins.append(ExportsPlugin())
         self.plugins.append(GitPlugin())
         self.plugins.append(LeagueFilePlugin())
 
