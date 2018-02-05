@@ -54,4 +54,4 @@ class ExportsPlugin(DataPluginApi):
 
     @staticmethod
     def _exports(text):
-        return re.findall(r"teams/team_(\d+)(?:[\s\S]+)(New|Old) Export", text)
+        return re.findall(r"teams/team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
