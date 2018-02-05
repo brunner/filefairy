@@ -6,9 +6,6 @@ import os
 import re
 import sys
 
-import logging
-logging.basicConfig()
-
 sys.path.append(re.sub(r'/apis/plugin', '', os.path.dirname(__file__)))
 from apis.base_plugin.base_plugin_api import BasePluginApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa

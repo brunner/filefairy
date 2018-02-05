@@ -5,9 +5,6 @@ import os
 import re
 import sys
 
-import logging
-logging.basicConfig()
-
 sys.path.append(re.sub(r'/apis/plugin', '', os.path.dirname(__file__)))
 from utils.slack.slack_util import chat_post_message, contains_text, from_channel, testing_id, testing_name  # noqa
 
