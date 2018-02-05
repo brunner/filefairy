@@ -5,7 +5,7 @@ import os
 import re
 import sys
 
-sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(__file__)))
+sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(os.path.abspath(__file__))))
 from apis.data_plugin.data_plugin_api import DataPluginApi  # noqa
 from private.server import user, league_file_dir  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa

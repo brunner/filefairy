@@ -8,7 +8,7 @@ import re
 import unittest
 import sys
 
-sys.path.append(re.sub(r'/plugins/exports', '', os.path.dirname(__file__)))
+sys.path.append(re.sub(r'/plugins/exports', '', os.path.dirname(os.path.abspath(__file__))))
 from utils.testing.testing_util import write  # noqa
 
 _data = ExportsPlugin._data()

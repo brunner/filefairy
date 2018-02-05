@@ -4,7 +4,7 @@ import os
 import re
 import sys
 
-sys.path.append(re.sub(r'/plugins/exports', '', os.path.dirname(__file__)))
+sys.path.append(re.sub(r'/plugins/exports', '', os.path.dirname(os.path.abspath(__file__))))
 from apis.data_plugin.data_plugin_api import DataPluginApi  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
