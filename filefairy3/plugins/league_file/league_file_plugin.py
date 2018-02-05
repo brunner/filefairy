@@ -10,10 +10,10 @@ from apis.data_plugin.data_plugin_api import DataPluginApi  # noqa
 from private.server import user, league_file_dir  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
-size_pattern = '(\d+)'
-date_pattern = '(\w+\s\d+\s\d+:\d+)'
-name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
-line_pattern = '\s'.join([size_pattern, date_pattern, name_pattern])
+_size_pattern = '(\d+)'
+_date_pattern = '(\w+\s\d+\s\d+:\d+)'
+_name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
+_line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 
 
 class LeagueFilePlugin(DataPluginApi):
@@ -27,7 +27,7 @@ class LeagueFilePlugin(DataPluginApi):
         out = check_output(['ssh', user, 'ls -l ' + league_file_dir])
         for line in out.splitlines():
             line = re.sub(r'\s+', ' ', line)
-            match = re.findall(line_pattern, line)
+            match = re.findall(_line_pattern, line)
             if match:
                 size, date, name = match[0]
                 if '.filepart' in name:

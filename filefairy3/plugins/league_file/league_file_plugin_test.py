@@ -13,20 +13,20 @@ from utils.testing.testing_util import write  # noqa
 
 _data = LeagueFilePlugin._data()
 
-started = """total 321012
+_started = """total 321012
 -rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html
 -rwxrwxrwx 1 user user 345678901 Jan 27 12:00 orange_and_blue_league_baseball.tar.gz
 -rwxrwxrwx 1 user user 310000000 Jan 29 19:26 orange_and_blue_league_baseball.tar.gz.filepart
 """
 
-stopped = """total 321012
+_stopped = """total 321012
 -rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html
 -rwxrwxrwx 1 user user 328706052 Jan 29 14:55 orange_and_blue_league_baseball.tar.gz
 """
 
 
 class LeagueFilePluginTest(unittest.TestCase):
-    @mock.patch('subprocess.check_output', return_value=started)
+    @mock.patch('subprocess.check_output', return_value=_started)
     def test_run__started__with_null_data(self, subprocess_check_output_mock):
         data = {'fp': None, 'up': []}
         original = write(_data, data)
@@ -43,7 +43,7 @@ class LeagueFilePluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('subprocess.check_output', return_value=started)
+    @mock.patch('subprocess.check_output', return_value=_started)
     def test_run__started__with_filepart(self, subprocess_check_output_mock):
         data = {
             'fp': {
@@ -67,7 +67,7 @@ class LeagueFilePluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('subprocess.check_output', return_value=started)
+    @mock.patch('subprocess.check_output', return_value=_started)
     def test_run__started__with_finished(self, subprocess_check_output_mock):
         data = {
             'fp':
@@ -98,7 +98,7 @@ class LeagueFilePluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('subprocess.check_output', return_value=started)
+    @mock.patch('subprocess.check_output', return_value=_started)
     def test_run__started__with_filepart_and_finished(
             self, subprocess_check_output_mock):
         data = {
@@ -133,7 +133,7 @@ class LeagueFilePluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('subprocess.check_output', return_value=stopped)
+    @mock.patch('subprocess.check_output', return_value=_stopped)
     def test_run__stopped__with_null_data(self, subprocess_check_output_mock):
         data = {'fp': None, 'up': []}
         original = write(_data, data)
@@ -143,7 +143,7 @@ class LeagueFilePluginTest(unittest.TestCase):
         expected = {'fp': None, 'up': []}
         self.assertEqual(actual, expected)
 
-    @mock.patch('subprocess.check_output', return_value=stopped)
+    @mock.patch('subprocess.check_output', return_value=_stopped)
     def test_run__stopped__with_filepart(self, subprocess_check_output_mock):
         data = {
             'fp': {
@@ -169,7 +169,7 @@ class LeagueFilePluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('subprocess.check_output', return_value=stopped)
+    @mock.patch('subprocess.check_output', return_value=_stopped)
     def test_run__stopped__with_finished(self, subprocess_check_output_mock):
         data = {
             'fp':
@@ -197,7 +197,7 @@ class LeagueFilePluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('subprocess.check_output', return_value=stopped)
+    @mock.patch('subprocess.check_output', return_value=_stopped)
     def test_run__stopped__with_filepart_and_finished(
             self, subprocess_check_output_mock):
         data = {
