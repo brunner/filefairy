@@ -9,6 +9,7 @@ import sys
 sys.path.append(re.sub(r'/apis/plugin', '', os.path.dirname(os.path.abspath(__file__))))
 from apis.base_plugin.base_plugin_api import BasePluginApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
+from utils.json.json_util import dumps
 
 
 class DataPluginApi(BasePluginApi):
@@ -29,9 +30,9 @@ class DataPluginApi(BasePluginApi):
 
     def write(self, *args):
         with open(self._data(), 'w') as f:
-            f.write(json.dumps(self.data, indent=2, sort_keys=True))
+            f.write(dumps(self.data))
             return self._chats('Write completed.', None, args)
 
     def dump(self, *args):
-        d = json.dumps(self.data, indent=2, sort_keys=True)
+        d = dumps(self.data)
         return self._chats('Dumping data.', d, args)
