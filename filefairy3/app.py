@@ -17,7 +17,7 @@ class App(object):
         self.ws = None
 
     def setup(self):
-        self.sleep = 2
+        self.sleep = 120
 
         self.plugins.append(GitPlugin())
         self.plugins.append(LeagueFilePlugin())
