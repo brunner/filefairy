@@ -8,7 +8,9 @@ import re
 import unittest
 import sys
 
-sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(
+    re.sub(r'/plugins/league_file', '',
+           os.path.dirname(os.path.abspath(__file__))))
 from utils.testing.testing_util import write  # noqa
 
 _data = LeagueFilePlugin._data()

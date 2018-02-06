@@ -5,8 +5,11 @@ import os
 import re
 import sys
 
-sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(os.path.abspath(__file__))))
-from apis.data_plugin.data_plugin_api import DataPluginApi  # noqa
+sys.path.append(
+    re.sub(r'/plugins/league_file', '',
+           os.path.dirname(os.path.abspath(__file__))))
+from apis.plugin.plugin_api import PluginApi  # noqa
+from apis.serializable.serializable_api import SerializableApi  # noqa
 from private.server import user, league_file_dir  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
@@ -16,7 +19,10 @@ _name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 
 
-class LeagueFilePlugin(DataPluginApi):
+class LeagueFilePlugin(PluginApi, SerializableApi):
+    def __init__(self):
+        super(LeagueFilePlugin, self).__init__()
+
     def _on_message_internal(self, obj):
         pass
 

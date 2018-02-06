@@ -4,14 +4,17 @@ import os
 import re
 import sys
 
-sys.path.append(re.sub(r'/plugins/exports', '', os.path.dirname(os.path.abspath(__file__))))
-from apis.data_plugin.data_plugin_api import DataPluginApi  # noqa
+sys.path.append(
+    re.sub(r'/plugins/exports', '',
+           os.path.dirname(os.path.abspath(__file__))))
+from apis.plugin.plugin_api import PluginApi  # noqa
+from apis.serializable.serializable_api import SerializableApi  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
 _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
 
-class ExportsPlugin(DataPluginApi):
+class ExportsPlugin(PluginApi, SerializableApi):
     def __init__(self):
         super(ExportsPlugin, self).__init__()
 
@@ -54,4 +57,5 @@ class ExportsPlugin(DataPluginApi):
 
     @staticmethod
     def _exports(text):
-        return re.findall(r"teams/team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
+        return re.findall(r"teams/team_(\d+)(?:[\s\S]+?)(New|Old) Export",
+                          text)

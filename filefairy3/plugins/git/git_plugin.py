@@ -4,12 +4,16 @@ import os
 import re
 import sys
 
-sys.path.append(re.sub(r'/plugins/league_file', '', os.path.dirname(os.path.abspath(__file__))))
-from apis.base_plugin.base_plugin_api import BasePluginApi  # noqa
+sys.path.append(
+    re.sub(r'/plugins/git', '', os.path.dirname(os.path.abspath(__file__))))
+from apis.plugin.plugin_api import PluginApi  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
 
-class GitPlugin(BasePluginApi):
+class GitPlugin(PluginApi):
+    def __init__(self):
+        super(GitPlugin, self).__init__()
+
     def _on_message_internal(self, obj):
         pass
 
