@@ -7,6 +7,7 @@ import sys
 sys.path.append(
     re.sub(r'/plugins/git', '', os.path.dirname(os.path.abspath(__file__))))
 from apis.plugin.plugin_api import PluginApi  # noqa
+from utils.logger.logger_util import log  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
 
@@ -20,25 +21,25 @@ class GitPlugin(PluginApi):
     def _run_internal(self):
         pass
 
-    def _call(self, cmd, args):
-        s = check_output(cmd).strip('\n')
-        return self._chats(s, s, args)
+    def _call(self, cmd, kwargs):
+        d = check_output(cmd).strip('\n')
+        return log(self._name(), **dict(kwargs, s='Call completed.', r=d))
 
-    def add(self, *args):
-        return self._call(['git', 'add' '.'], args)
+    def add(self, **kwargs):
+        return self._call(['git', 'add' '.'], kwargs)
 
-    def commit(self, *args):
+    def commit(self, **kwargs):
         return self._call(['git', 'commit', '-m', 'Automated data push.'],
-                          args)
+                          kwargs)
 
-    def pull(self, *args):
-        return self._call(['git', 'pull'], args)
+    def pull(self, **kwargs):
+        return self._call(['git', 'pull'], kwargs)
 
-    def push(self, *args):
-        return self._call(['git', 'push', 'origin', 'master'], args)
+    def push(self, **kwargs):
+        return self._call(['git', 'push', 'origin', 'master'], kwargs)
 
-    def reset(self, *args):
-        return self._call(['git', 'reset', '--hard'], args)
+    def reset(self, **kwargs):
+        return self._call(['git', 'reset', '--hard'], kwargs)
 
-    def status(self, *args):
-        return self._call(['git', 'status'], args)
+    def status(self, **kwargs):
+        return self._call(['git', 'status'], kwargs)
