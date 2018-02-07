@@ -5,7 +5,8 @@ import os
 import re
 import sys
 
-sys.path.append(re.sub(r'/utils/testing', '', os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/utils/testing', '', _path))
 from utils.json.json_util import dumps  # noqa
 
 

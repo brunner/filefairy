@@ -6,9 +6,8 @@ import os
 import re
 import sys
 
-sys.path.append(
-    re.sub(r'/apis/serializable', '', os.path.dirname(
-        os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/apis/serializable', '', _path))
 from apis.nameable.nameable_api import NameableApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
 from utils.json.json_util import dumps  # noqa

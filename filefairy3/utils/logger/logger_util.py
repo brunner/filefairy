@@ -4,8 +4,8 @@ import os
 import re
 import sys
 
-sys.path.append(
-    re.sub(r'/utils/logger', '', os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/utils/logger', '', _path))
 from utils.slack.slack_util import chat_post_message, files_upload, testing_name  # noqa
 
 

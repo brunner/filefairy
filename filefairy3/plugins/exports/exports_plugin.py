@@ -4,9 +4,8 @@ import os
 import re
 import sys
 
-sys.path.append(
-    re.sub(r'/plugins/exports', '',
-           os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
@@ -48,7 +47,7 @@ class ExportsPlugin(PluginApi, SerializableApi):
 
     @staticmethod
     def _data():
-        return os.path.join(os.path.dirname(__file__), 'data.json')
+        return os.path.join(_path, 'data.json')
 
     @staticmethod
     def _file_date(text):

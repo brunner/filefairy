@@ -5,9 +5,8 @@ import os
 import re
 import sys
 
-sys.path.append(
-    re.sub(r'/plugins/league_file', '',
-           os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/plugins/league_file', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from private.server import user, league_file_dir  # noqa
@@ -53,4 +52,4 @@ class LeagueFilePlugin(PluginApi, SerializableApi):
 
     @staticmethod
     def _data():
-        return os.path.join(os.path.dirname(__file__), 'data.json')
+        return os.path.join(_path, 'data.json')

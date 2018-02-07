@@ -5,8 +5,8 @@ import os
 import re
 import sys
 
-sys.path.append(
-    re.sub(r'/apis/plugin', '', os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/apis/plugin', '', _path))
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
 

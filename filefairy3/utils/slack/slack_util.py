@@ -7,8 +7,8 @@ import sys
 import urllib
 import urllib2
 
-sys.path.append(
-    re.sub(r'/utils/slack', '', os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/utils/slack', '', _path))
 from private.tokens import filefairy  # noqa
 
 testing_name = 'testing'

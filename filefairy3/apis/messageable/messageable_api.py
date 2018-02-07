@@ -5,9 +5,8 @@ import os
 import re
 import sys
 
-sys.path.append(
-    re.sub(r'/apis/messageable', '', os.path.dirname(
-        os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/apis/messageable', '', _path))
 from apis.nameable.nameable_api import NameableApi  # noqa
 from utils.slack.slack_util import chat_post_message, testing_id, testing_name  # noqa
 
