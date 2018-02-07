@@ -54,8 +54,9 @@ class App(MessageableApi):
         while self.keep_running:
             self.lock.acquire()
 
-            if self.ws and not self.ws.sock:
-                self.ws.close()
+            if not self.ws or not self.ws.sock:
+                if self.ws:
+                    self.ws.close()
                 self._connect()
 
             for p, plugin in self.plugins.iteritems():
@@ -93,5 +94,4 @@ if __name__ == '__main__':
     app = App()
 
     app._setup()
-    app._connect()
     app._start()
