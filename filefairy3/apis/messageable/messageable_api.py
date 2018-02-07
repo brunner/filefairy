@@ -9,7 +9,7 @@ sys.path.append(
     re.sub(r'/apis/messageable', '', os.path.dirname(
         os.path.abspath(__file__))))
 from apis.nameable.nameable_api import NameableApi  # noqa
-from utils.slack.slack_util import chat_post_message, contains_text, from_channel, testing_id, testing_name  # noqa
+from utils.slack.slack_util import chat_post_message, testing_id, testing_name  # noqa
 
 
 class MessageableApi(NameableApi):
@@ -26,13 +26,19 @@ class MessageableApi(NameableApi):
         pass
 
     def _on_message(self, obj):
-        if from_channel(obj, testing_id) and contains_text(obj, self._name()):
+        text = obj.get('text', '')
+        if obj.get('channel', '') == testing_id and self._name() in text:
             for method in dir(self):
-                if method.startswith('_'):
+                if method not in text or method.startswith('_'):
                     continue
-                if contains_text(obj, self._name() + '.' + method + '()'):
-                    item = getattr(self, method)
-                    if callable(item):
-                        return item(v='true')
+
+                item = getattr(self, method)
+                if not callable(item):
+                    continue
+
+                pattern = r'' + self._name() + '\.' + method + '\((.*)\)'
+                match = re.findall(pattern, text)
+                if match:
+                    return item(a=match[0], v='true')
 
         return self._on_message_internal(obj)

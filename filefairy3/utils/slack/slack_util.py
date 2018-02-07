@@ -15,14 +15,6 @@ testing_name = 'testing'
 testing_id = 'G3SUFLMK4'
 
 
-def contains_text(obj, text):
-    return 'text' in obj and text in obj['text']
-
-
-def from_channel(obj, id_):
-    return 'channel' in obj and obj['channel'] == id_
-
-
 def _call(method, params):
     url = 'https://slack.com/api/{}'.format(method)
     obj = {'ok': False}

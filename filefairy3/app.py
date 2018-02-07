@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import importlib
 import json
 import os
 import sys
@@ -8,9 +9,7 @@ import time
 import websocket
 
 from apis.messageable.messageable_api import MessageableApi
-from plugins.exports.exports_plugin import ExportsPlugin
-from plugins.git.git_plugin import GitPlugin
-from plugins.league_file.league_file_plugin import LeagueFilePlugin
+from utils.logger.logger_util import log
 from utils.slack.slack_util import rtm_connect
 
 
@@ -20,28 +19,26 @@ class App(MessageableApi):
 
         self.keep_running = True
         self.lock = threading.Lock()
-        self.sleep = 2
+        self.sleep = 120
         self.ws = None
 
-        self.plugins = []
+        self.plugins = {}
 
     def _on_message_internal(self, obj):
         pass
 
     def _setup(self):
-        self.plugins.append(ExportsPlugin())
-        self.plugins.append(GitPlugin())
-        self.plugins.append(LeagueFilePlugin())
+        for p in ['exports', 'git', 'league_file']:
+            self.load(a=p)
 
     def _connect(self):
         def _on_message(ws, message):
             self.lock.acquire()
 
             obj = json.loads(message)
-
             self._on_message(obj)
-            for p in self.plugins:
-                p._on_message(obj)
+            for p, plugin in self.plugins.iteritems():
+                plugin._on_message(obj)
 
             self.lock.release()
 
@@ -61,19 +58,35 @@ class App(MessageableApi):
                 self.ws.close()
                 self._connect()
 
-            for p in self.plugins:
-                p._run()
+            for p, plugin in self.plugins.iteritems():
+                plugin._run()
 
             self.lock.release()
             time.sleep(self.sleep)
 
         self.ws.close()
 
-    def reboot(self, *args):
+    def load(self, **kwargs):
+        p = kwargs.get('a', '')
+        path = 'plugins.{0}.{0}_plugin'.format(p)
+        camel = ''.join([w.capitalize() for w in p.split('_')])
+        clazz = '{}Plugin'.format(camel)
+
+        if p in self.plugins and path in sys.modules:
+            del self.plugins[p]
+            del sys.modules[path]
+            log(self._name(), **dict(kwargs, s='Removed ' + p + '.'))
+
+        plugin = getattr(importlib.import_module(path), clazz)()
+        self.plugins[p] = plugin
+        log(self._name(), **dict(kwargs, s='Loaded ' + p + '.'))
+
+    def reboot(self, **kwargs):
         os.execv(sys.executable, ['python'] + sys.argv)
 
-    def shutdown(self, *args):
+    def shutdown(self, **kwargs):
         self.keep_running = False
+        log(self._name(), **dict(kwargs, s='Shutting down.'))
 
 
 if __name__ == '__main__':
