@@ -34,11 +34,21 @@ class App(MessageableApi):
     def _connect(self):
         def _on_message(ws, message):
             self.lock.acquire()
-
             obj = json.loads(message)
-            self._on_message(obj)
+
+            try:
+                self._on_message(obj)
+            except Exception as e:
+                log(self._name(), s='Exception messaging self.', r=e, v='true')
+
             for p, plugin in self.plugins.iteritems():
-                plugin._on_message(obj)
+                try:
+                    plugin._on_message(obj)
+                except Exception as e:
+                    log(self._name(),
+                        s='Exception messaging ' + p + '.',
+                        r=e,
+                        v='true')
 
             self.lock.release()
 
@@ -60,7 +70,13 @@ class App(MessageableApi):
                 self._connect()
 
             for p, plugin in self.plugins.iteritems():
-                plugin._run()
+                try:
+                    plugin._run()
+                except Exception as e:
+                    log(self._name(),
+                        s='Exception running ' + p + '.',
+                        r=e,
+                        v='true')
 
             self.lock.release()
             time.sleep(self.sleep)
@@ -78,9 +94,12 @@ class App(MessageableApi):
             del sys.modules[path]
             log(self._name(), **dict(kwargs, s='Removed ' + p + '.'))
 
-        plugin = getattr(importlib.import_module(path), clazz)()
-        self.plugins[p] = plugin
-        log(self._name(), **dict(kwargs, s='Loaded ' + p + '.'))
+        try:
+            plugin = getattr(importlib.import_module(path), clazz)()
+            self.plugins[p] = plugin
+            log(self._name(), **dict(kwargs, s='Loaded ' + p + '.'))
+        except Exception as e:
+            log(self._name(), s='Exception loading ' + p + '.', r=e, v='true')
 
     def reboot(self, **kwargs):
         os.execv(sys.executable, ['python'] + sys.argv)
