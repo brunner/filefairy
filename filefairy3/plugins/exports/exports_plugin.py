@@ -41,6 +41,7 @@ class ExportsPlugin(PluginApi, SerializableApi):
                     data[teamid]['form'].append(status.lower())
                     while len(data[teamid]['form']) > 20:
                         data[teamid]['form'].pop(0)
+            self.file_date = file_date
             self.write()
         else:
             self.exports = self._exports(text)
