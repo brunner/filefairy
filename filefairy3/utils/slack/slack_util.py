@@ -9,7 +9,7 @@ import urllib2
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
-from private.tokens import filefairy  # noqa
+from private.tokens import brunnerj, filefairy  # noqa
 
 testing_name = 'testing'
 testing_id = 'G3SUFLMK4'
@@ -46,6 +46,18 @@ def files_upload(content, filename, channel):
             'filename': filename,
             'channels': channel,
         })
+
+
+def files_delete(file_):
+    return _call('files.delete', {'token': brunnerj, 'file': file_})
+
+
+def files_list(count, channel):
+    return _call('files.list', {
+        'token': brunnerj,
+        'count': count,
+        'channel': channel
+    })
 
 
 def rtm_connect():

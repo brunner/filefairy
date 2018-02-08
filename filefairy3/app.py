@@ -28,7 +28,7 @@ class App(MessageableApi):
         pass
 
     def _setup(self):
-        for p in ['exports', 'git', 'league_file']:
+        for p in ['eraser', 'exports', 'git', 'league_file']:
             self.load(a=p)
 
     def _connect(self):
