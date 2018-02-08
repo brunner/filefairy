@@ -62,12 +62,12 @@ class App(MessageableApi):
 
     def _start(self):
         while self.keep_running:
-            self.lock.acquire()
-
             if not self.ws or not self.ws.sock:
                 if self.ws:
                     self.ws.close()
                 self._connect()
+
+            self.lock.acquire()
 
             for p, plugin in self.plugins.iteritems():
                 try:
