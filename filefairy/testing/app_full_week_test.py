@@ -96,7 +96,7 @@ inpt = ['07/19/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         'Atlanta Braves                 48\nSt. Louis Cardinals            48\n' +
         'Tampa Bay Rays                 48\nChicago Cubs                   47\n' +
         'Chicago White Sox              46\nCleveland Indians              46\n' +
-        'Kansas City Royals             45\nPhiladelphia Phillies          45\n' +
+        'Kansas City Royals             45\nPhiladelphia phillies          45\n' +
         'Arizona Diamondbacks           43\nDetroit Tigers                 43\n' +
         'Los Angeles Angels             43\nMilwaukee Brewers              42\n' +
         'New York Yankees               42\nHouston Astros                 41\n' +

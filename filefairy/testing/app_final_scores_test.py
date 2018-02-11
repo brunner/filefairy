@@ -55,7 +55,7 @@ inpt = ['03/21/2021 MAJOR LEAGUE BASEBALL Final Scores\n' +
         '*<https://game_box_1793.html|San Francisco 2, Washington 1>*\n' +
         '*<https://game_box_1799.html|Texas 6, Houston 3>*\n' +
         '*<https://game_box_1803.html|Toronto 5, St. Louis 4>*',
-        '```MAJOR LEAGUE BASEBALL Live Table - 03/21/2021\n' +
+        '```MAJOR LEAGUE BASEBALL Live Table - 03/22/2021\n' +
         'Cincinnati Reds                49\nColorado Rockies               44\n' +
         'Los Angeles Dodgers            44\nSan Diego Padres               42\n' +
         'Minnesota Twins                42\nSt. Louis Cardinals            41\n' +

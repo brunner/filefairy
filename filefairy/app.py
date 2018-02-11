@@ -47,9 +47,8 @@ class App(object):
 
   def setup(self):
     self.file_date = self.get_file_date(self.get_page(self.file_url))
-    self.final_scores = []
+    self.sim_dates = {}
     self.injuries = []
-    self.live_tables = []
     self.tick = 0
     self.playoffs = playoffs.Playoffs(self.get_playoffs_in())
     self.settings = self.read_settings(self.get_settings_in())
@@ -215,91 +214,93 @@ class App(object):
 
   def handle_final_scores(self, text):
     text = re.sub(r'( MAJOR LEAGUE BASEBALL Final Scores|\*)', '', text)
-    if text not in self.final_scores:
-      self.final_scores.append(text)
-      self.live_tables.append('')
+    date, scores = text.split('\n', 1)
+    if date not in self.sim_dates:
+      self.sim_dates[date] = {'scores': scores}
       self.tick = int(time.time())
 
   def process_final_scores(self):
-    for i, finalScore in enumerate(self.final_scores):
-      chat_post_message(self.get_live_sim_discussion_name(), finalScore)
-      if len(self.final_scores) == len(self.live_tables):
-        for t in range(31, 61):
-          if t in [35, 36, 44, 45, 48, 49]:
-            continue
-          city = get_city(t)
-          cw = len(re.findall(r'\|' + re.escape(city), finalScore))
-          cl = len(re.findall(r', ' + re.escape(city), finalScore))
-          self.add_score(t, cw, cl)
+    dates = sorted(self.sim_dates.keys())
+    for date in dates:
+      data = self.sim_dates[date]
+      scores = data.get('scores', '')
+      table = data.get('table', '')
+      chat_post_message(self.get_live_sim_discussion_name(), date + '\n' + scores)
+      for t in range(31, 61):
+        if t in [35, 36, 44, 45, 48, 49]:
+          continue
+        city = get_city(t)
+        cw = len(re.findall(r'\|' + re.escape(city), scores))
+        cl = len(re.findall(r', ' + re.escape(city), scores))
+        self.add_score(t, cw, cl)
 
-        liveTable = self.live_tables[i]
-        for t, u in zip([35, 44, 48], [36, 45, 49]):
-          city = get_city(t)
-          cw = len(re.findall(r'\|' + re.escape(city), finalScore))
-          cl = len(re.findall(r', ' + re.escape(city), finalScore))
+      for t, u in zip([35, 44, 48], [36, 45, 49]):
+        city = get_city(t)
+        cw = len(re.findall(r'\|' + re.escape(city), scores))
+        cl = len(re.findall(r', ' + re.escape(city), scores))
 
-          ws = re.findall(r'\|' + re.escape(city) + '\s\d+,\s([^\d]+)\d', finalScore)
-          ls = re.findall(r'\|([^\d]+)\d+,\s' + re.escape(city), finalScore)
+        ws = re.findall(r'\|' + re.escape(city) + '\s\d+,\s([^\d]+)\d', scores)
+        ls = re.findall(r'\|([^\d]+)\d+,\s' + re.escape(city), scores)
 
-          tn = get_nickname(t)
-          tt = re.findall(re.escape(tn) + r'\s+(\d+)', liveTable)
-          ts = self.standings[t].w['s']
+        tn = get_nickname(t)
+        tt = re.findall(re.escape(tn) + r'\s+(\d+)', table)
+        ts = self.standings[t].w['s']
 
-          un = get_nickname(u)
-          ut = re.findall(re.escape(un) + r'\s+(\d+)', liveTable)
-          us = self.standings[u].w['s']
+        un = get_nickname(u)
+        ut = re.findall(re.escape(un) + r'\s+(\d+)', table)
+        us = self.standings[u].w['s']
 
-          # Hack for 2021 playoffs. Clean up during offseason.
-          if self.settings.get('playoffs', False):
-            if t == 35:
-              self.add_score(t, cw, cl)
-            elif u == 45:
-              self.add_score(u, cw, cl)
-            elif u == 49:
-              self.add_score(u, cw, cl)
-          elif tt and ut:
-            ct = cw + cl
-            tw, uw = int(tt[0]) - ts, int(ut[0]) - us
-            if ct != 3:
-              tl, ul = ct / 2 - tw, ct / 2 - uw
-              self.add_score(t, tw, tl)
-              self.add_score(u, uw, ul)
-            else:
-              tl, ul = 0 if tw else 1, 0 if uw else 1
-              self.add_score(t, tw, tl)
-              self.add_score(u, uw, ul)
-            if tw == uw or cw == 1 and cl == 2:
-              _ = list(set().union(ws, ls))
-              tk, uk = _ if len(_) == 2 else ('', '')
-              if ct != 3:
-                self.add_game(t, {tk: False, uk: False})
-                self.add_game(u, {tk: False, uk: False})
-              else:
-                td = ws.count(tk) + ls.count(tk) == 2
-                ud = ws.count(uk) + ls.count(uk) == 2
-                self.add_game(t, {tk: td, uk: ud})
-                self.add_game(u, {tk: td, uk: ud})
-            else:
-              tk, uk = '', ''
-              for k in ws:
-                tk = k if ws.count(k) == tw and not tk else tk
-                uk = k if ws.count(k) == uw and not uk else uk
-              for k in ls:
-                tk = k if ls.count(k) == tl and not tk else tk
-                uk = k if ls.count(k) == ul and not uk else uk
-              self.add_game(t, {tk: False})
-              self.add_game(u, {uk: False})
+        # Hack for 2021 playoffs. Clean up during offseason.
+        if self.settings.get('playoffs', False):
+          if t == 35:
+            self.add_score(t, cw, cl)
+          elif u == 45:
+            self.add_score(u, cw, cl)
+          elif u == 49:
+            self.add_score(u, cw, cl)
+        elif tt and ut:
+          ct = cw + cl
+          tw, uw = int(tt[0]) - ts, int(ut[0]) - us
+          if ct != 3:
+            tl, ul = ct / 2 - tw, ct / 2 - uw
+            self.add_score(t, tw, tl)
+            self.add_score(u, uw, ul)
           else:
+            tl, ul = 0 if tw else 1, 0 if uw else 1
+            self.add_score(t, tw, tl)
+            self.add_score(u, uw, ul)
+          if tw == uw or cw == 1 and cl == 2:
             _ = list(set().union(ws, ls))
-            sk = _[0] if len(_) == 1 else ''
-            if tt:
-              self.add_score(t, cw, cl)
-              self.add_game(t, {sk: False})
-              self.add_game(u, {'': False})
-            if ut:
-              self.add_score(u, cw, cl)
-              self.add_game(t, {'': False})
-              self.add_game(u, {sk: False})
+            tk, uk = _ if len(_) == 2 else ('', '')
+            if ct != 3:
+              self.add_game(t, {tk: False, uk: False})
+              self.add_game(u, {tk: False, uk: False})
+            else:
+              td = ws.count(tk) + ls.count(tk) == 2
+              ud = ws.count(uk) + ls.count(uk) == 2
+              self.add_game(t, {tk: td, uk: ud})
+              self.add_game(u, {tk: td, uk: ud})
+          else:
+            tk, uk = '', ''
+            for k in ws:
+              tk = k if ws.count(k) == tw and not tk else tk
+              uk = k if ws.count(k) == uw and not uk else uk
+            for k in ls:
+              tk = k if ls.count(k) == tl and not tk else tk
+              uk = k if ls.count(k) == ul and not uk else uk
+            self.add_game(t, {tk: False})
+            self.add_game(u, {uk: False})
+        else:
+          _ = list(set().union(ws, ls))
+          sk = _[0] if len(_) == 1 else ''
+          if tt:
+            self.add_score(t, cw, cl)
+            self.add_game(t, {sk: False})
+            self.add_game(u, {'': False})
+          if ut:
+            self.add_score(u, cw, cl)
+            self.add_game(t, {'': False})
+            self.add_game(u, {sk: False})
 
     for t, u in zip([35, 44, 48], [36, 45, 49]):
       if not len(self.standings[t].games):
@@ -376,8 +377,8 @@ class App(object):
               tgames[i][vk] = False
               ugames[i][vk] = False
 
-    ret = '\n'.join(self.final_scores)
-    self.final_scores, self.live_tables = [], []
+    ret = '\n'.join([date + '\n' + self.sim_dates[date]['scores'] for date in dates])
+    self.sim_dates = {}
     return ret
 
   def add_score(self, t, w, l):
@@ -395,9 +396,10 @@ class App(object):
     self.standings[t].games.append(g)
 
   def handle_live_table(self, text):
-    i = len(self.live_tables) - 1
-    self.live_tables[i] = text
-    self.tick = int(time.time())
+    text = re.sub(r'(```MAJOR LEAGUE BASEBALL Live Table - )', '', text)
+    date, table = text.split('\n', 1)
+    if date in self.sim_dates:
+      self.sim_dates[date]['table'] = table
 
   def handle_injuries(self, text):
     if text not in self.injuries:
@@ -463,7 +465,7 @@ class App(object):
         self.listen()
       self.lock.acquire()
       self.update_league_file()
-      if self.final_scores and int(time.time()) - self.tick > sleep:
+      if self.sim_dates and int(time.time()) - self.tick > sleep:
         self.process_final_scores()
         self.process_injuries()
         if self.settings.get('standings', False):
