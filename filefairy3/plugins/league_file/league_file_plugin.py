@@ -10,6 +10,7 @@ sys.path.append(re.sub(r'/plugins/league_file', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from private.server import user, league_file_dir  # noqa
+from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
 _size_pattern = '(\d+)'
@@ -21,6 +22,7 @@ _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 class LeagueFilePlugin(PluginApi, SerializableApi):
     def __init__(self):
         super(LeagueFilePlugin, self).__init__()
+        chat_post_message('testing', 'Loaded.')
 
     def _on_message_internal(self, obj):
         pass
@@ -45,6 +47,7 @@ class LeagueFilePlugin(PluginApi, SerializableApi):
                     data['fp']['date'] = date
                     if not len(data['up']) or data['up'][0]['date'] != date:
                         data['up'].insert(0, copy.deepcopy(data['fp']))
+                        chat_post_message('general', 'File is up.')
                     data['fp'] = None
 
         if data != original:

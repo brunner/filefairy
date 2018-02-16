@@ -238,4 +238,5 @@ class LeagueFilePluginTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    raise Exception('DO NOT RUN.')
     unittest.main()
