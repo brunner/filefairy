@@ -13,6 +13,8 @@ from apis.messageable.messageable_api import MessageableApi
 from utils.logger.logger_util import log
 from utils.slack.slack_util import rtm_connect
 
+_path = os.path.dirname(os.path.abspath(__file__))
+
 
 class App(MessageableApi):
     def __init__(self):
@@ -29,7 +31,9 @@ class App(MessageableApi):
         pass
 
     def _setup(self):
-        for p in ['eraser', 'exports', 'git', 'league_file']:
+        d = os.path.join(_path, 'plugins')
+        ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
+        for p in ps:
             self.install(a=p)
 
     def _try(self, p, method, **kwargs):
@@ -95,9 +99,9 @@ class App(MessageableApi):
         try:
             plugin = getattr(importlib.import_module(path), clazz)()
             self.plugins[p] = plugin
-            log(clazz, **dict(kwargs, s='Loaded.'))
+            log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception as e:
-            log(clazz, s='Exception.', r=e, v='true')
+            log(clazz, s='Exception.', r=e, v=True)
 
     def reboot(self, **kwargs):
         os.execv(sys.executable, ['python'] + sys.argv)
@@ -109,6 +113,5 @@ class App(MessageableApi):
 
 if __name__ == '__main__':
     app = App()
-
     app._setup()
     app._start()
