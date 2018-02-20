@@ -8,9 +8,8 @@ import re
 import unittest
 import sys
 
-sys.path.append(
-    re.sub(r'/plugins/exports', '',
-           os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from utils.testing.testing_util import write  # noqa
 
 _data = ExportsPlugin._data()
@@ -51,12 +50,9 @@ Atlanta Braves</a><br>
 
 
 class ExportsPluginTest(unittest.TestCase):
-    @mock.patch('urllib2.urlopen')
-    def test_run__new__with_empty_data(self, urllib2_urlopen_mock):
-        m = mock.Mock()
-        m.read.side_effect = [_before + _new, _after + _new]
-        urllib2_urlopen_mock.return_value = m
-
+    @mock.patch('exports_plugin.urlopen')
+    def test_run__new__with_empty_data(self, mock_urlopen):
+        mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {
             '31': {
                 'ai': False,
@@ -91,12 +87,9 @@ class ExportsPluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('urllib2.urlopen')
-    def test_run__old__with_empty_data(self, urllib2_urlopen_mock):
-        m = mock.Mock()
-        m.read.side_effect = [_before + _old, _after + _old]
-        urllib2_urlopen_mock.return_value = m
-
+    @mock.patch('exports_plugin.urlopen')
+    def test_run__old__with_empty_data(self, mock_urlopen):
+        mock_urlopen.side_effect = [_before + _old, _after + _old]
         data = {
             '31': {
                 'ai': False,
@@ -131,12 +124,9 @@ class ExportsPluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('urllib2.urlopen')
-    def test_run__old__with_ai_true(self, urllib2_urlopen_mock):
-        m = mock.Mock()
-        m.read.side_effect = [_before + _old, _after + _old]
-        urllib2_urlopen_mock.return_value = m
-
+    @mock.patch('exports_plugin.urlopen')
+    def test_run__old__with_ai_true(self, mock_urlopen):
+        mock_urlopen.side_effect = [_before + _old, _after + _old]
         data = {
             '31': {
                 'ai': True,
@@ -171,12 +161,9 @@ class ExportsPluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('urllib2.urlopen')
-    def test_run__new__with_long_form(self, urllib2_urlopen_mock):
-        m = mock.Mock()
-        m.read.side_effect = [_before + _new, _after + _new]
-        urllib2_urlopen_mock.return_value = m
-
+    @mock.patch('exports_plugin.urlopen')
+    def test_run__new__with_long_form(self, mock_urlopen):
+        mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {
             '31': {
                 'ai':
