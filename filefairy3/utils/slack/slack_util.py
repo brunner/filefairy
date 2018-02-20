@@ -11,9 +11,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
 from private.tokens import brunnerj, filefairy  # noqa
 
-testing_name = 'testing'
-testing_id = 'G3SUFLMK4'
-
 
 def _call(method, params):
     url = 'https://slack.com/api/{}'.format(method)

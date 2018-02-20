@@ -34,7 +34,7 @@ class App(MessageableApi):
         d = os.path.join(_path, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in ps:
-            self.install(a=p)
+            self.install(a1=p)
 
     def _try(self, p, method, **kwargs):
         if p not in self.plugins:
@@ -87,7 +87,7 @@ class App(MessageableApi):
         self.ws.close()
 
     def install(self, **kwargs):
-        p = kwargs.get('a', '')
+        p = kwargs.get('a1', '')
         path = 'plugins.{0}.{0}_plugin'.format(p)
         camel = ''.join([w.capitalize() for w in p.split('_')])
         clazz = '{}Plugin'.format(camel)
