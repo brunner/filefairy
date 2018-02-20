@@ -15,10 +15,10 @@ class EraserPlugin(PluginApi):
     def __init__(self):
         super(EraserPlugin, self).__init__()
 
-    def _on_message_internal(self, obj):
+    def _on_message_internal(self, **kwargs):
         pass
 
-    def _run_internal(self):
+    def _run_internal(self, **kwargs):
         pass
 
     def testing(self, **kwargs):

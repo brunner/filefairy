@@ -21,10 +21,10 @@ class ExportsPlugin(PluginApi, SerializableApi):
         self.file_date = self._file_date(text)
         self.exports = self._exports(text)
 
-    def _on_message_internal(self, obj):
+    def _on_message_internal(self, **kwargs):
         pass
 
-    def _run_internal(self):
+    def _run_internal(self, **kwargs):
         data = self.data
 
         text = urlopen(_url)

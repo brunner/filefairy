@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 import time
+import traceback
 import websocket
 
 from apis.messageable.messageable_api import MessageableApi
@@ -24,32 +25,37 @@ class App(MessageableApi):
 
         self.plugins = {}
 
-    def _on_message_internal(self, obj):
+    def _on_message_internal(self, **kwargs):
         pass
 
     def _setup(self):
         for p in ['eraser', 'exports', 'git', 'league_file']:
-            self.load(a=p)
+            self.install(a=p)
+
+    def _try(self, p, method, **kwargs):
+        if p not in self.plugins:
+            return
+
+        plugin = self.plugins[p]
+        item = getattr(plugin, method)
+        if not callable(item):
+            return
+
+        try:
+            item(**kwargs)
+        except Exception:
+            exc = traceback.format_exc()
+            log(plugin._name(), s='Exception.', r=exc, v='true')
+            del self.plugins[p]
 
     def _connect(self):
         def _on_message(ws, message):
             self.lock.acquire()
             obj = json.loads(message)
-
-            try:
-                self._on_message(obj)
-            except Exception as e:
-                log(self._name(), s='Exception messaging self.', r=e, v='true')
-
-            for p, plugin in self.plugins.iteritems():
-                try:
-                    plugin._on_message(obj)
-                except Exception as e:
-                    log(self._name(),
-                        s='Exception messaging ' + p + '.',
-                        r=e,
-                        v='true')
-
+            self._on_message(obj=obj)
+            ps = self.plugins.keys()
+            for p in ps:
+                self._try(p, '_on_message', obj=obj)
             self.lock.release()
 
         obj = rtm_connect()
@@ -68,22 +74,15 @@ class App(MessageableApi):
                 self._connect()
 
             self.lock.acquire()
-
-            for p, plugin in self.plugins.iteritems():
-                try:
-                    plugin._run()
-                except Exception as e:
-                    log(self._name(),
-                        s='Exception running ' + p + '.',
-                        r=e,
-                        v='true')
-
+            ps = self.plugins.keys()
+            for p in ps:
+                self._try(p, '_run')
             self.lock.release()
             time.sleep(self.sleep)
 
         self.ws.close()
 
-    def load(self, **kwargs):
+    def install(self, **kwargs):
         p = kwargs.get('a', '')
         path = 'plugins.{0}.{0}_plugin'.format(p)
         camel = ''.join([w.capitalize() for w in p.split('_')])
@@ -92,14 +91,13 @@ class App(MessageableApi):
         if p in self.plugins and path in sys.modules:
             del self.plugins[p]
             del sys.modules[path]
-            log(self._name(), **dict(kwargs, s='Removed ' + p + '.'))
 
         try:
             plugin = getattr(importlib.import_module(path), clazz)()
             self.plugins[p] = plugin
-            log(self._name(), **dict(kwargs, s='Loaded ' + p + '.'))
+            log(clazz, **dict(kwargs, s='Loaded.'))
         except Exception as e:
-            log(self._name(), s='Exception loading ' + p + '.', r=e, v='true')
+            log(clazz, s='Exception.', r=e, v='true')
 
     def reboot(self, **kwargs):
         os.execv(sys.executable, ['python'] + sys.argv)

@@ -10,8 +10,8 @@ class RunnableApi(object):
         super(RunnableApi, self).__init__()
 
     @abc.abstractmethod
-    def _run_internal(self):
+    def _run_internal(self, **kwargs):
         pass
 
-    def _run(self):
-        return self._run_internal()
+    def _run(self, **kwargs):
+        return self._run_internal(**kwargs)

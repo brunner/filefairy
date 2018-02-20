@@ -23,10 +23,11 @@ class LeagueFilePlugin(PluginApi, SerializableApi):
     def __init__(self):
         super(LeagueFilePlugin, self).__init__()
 
-    def _on_message_internal(self, obj):
+    def _on_message_internal(self, **kwargs):
         pass
 
-    def _run_internal(self):
+    def _run_internal(self, **kwargs):
+        raise Exception("")
         data = self.data
         original = copy.deepcopy(data)
 

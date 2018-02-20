@@ -21,10 +21,11 @@ class MessageableApi(NameableApi):
         return self.__class__.__name__
 
     @abc.abstractmethod
-    def _on_message_internal(self, obj):
+    def _on_message_internal(self, **kwargs):
         pass
 
-    def _on_message(self, obj):
+    def _on_message(self, **kwargs):
+        obj = kwargs.get('obj', {})
         text = obj.get('text', '')
         if obj.get('channel', '') == testing_id and self._name() in text:
             for method in dir(self):
@@ -40,4 +41,4 @@ class MessageableApi(NameableApi):
                 if match:
                     return item(a=match[0], v='true')
 
-        return self._on_message_internal(obj)
+        return self._on_message_internal(**kwargs)
