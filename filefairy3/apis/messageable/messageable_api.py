@@ -39,6 +39,6 @@ class MessageableApi(NameableApi):
                 pattern = r'' + self._name() + '\.' + method + '\((.*)\)'
                 match = re.findall(pattern, text)
                 if match:
-                    return item(a=match[0], v='true')
+                    return item(a=match[0], v=True)
 
         return self._on_message_internal(**kwargs)

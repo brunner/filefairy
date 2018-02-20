@@ -23,10 +23,10 @@ class GitPlugin(PluginApi):
 
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')
-        return log(self._name(), **dict(kwargs, s='Call completed.', r=d))
+        return log(self._name(), **dict(kwargs, r=d, s='Call completed.'))
 
     def add(self, **kwargs):
-        return self._call(['git', 'add' '.'], kwargs)
+        return self._call(['git', 'add', '.'], kwargs)
 
     def commit(self, **kwargs):
         return self._call(['git', 'commit', '-m', 'Automated data push.'],
