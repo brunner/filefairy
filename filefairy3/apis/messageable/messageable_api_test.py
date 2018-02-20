@@ -58,14 +58,14 @@ class MessageableApiTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_on_message__with_invalid_private_attr(self):
-        data = {'channel': 'G3SUFLMK4', 'text': '!FakeMessageable._bar(a,b,c)'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable._bar(a,b,c)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = {'m': 'internal', 'obj': data}
         self.assertEqual(actual, expected)
 
     def test_on_message__with_invalid_uncallable_attr(self):
-        data = {'channel': 'G3SUFLMK4', 'text': '!FakeMessageable.var(a,b,c)'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.var(a,b,c)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = {'m': 'internal', 'obj': data}
