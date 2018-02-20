@@ -27,7 +27,6 @@ class LeagueFilePlugin(PluginApi, SerializableApi):
         pass
 
     def _run_internal(self, **kwargs):
-        raise Exception("")
         data = self.data
         original = copy.deepcopy(data)
 
