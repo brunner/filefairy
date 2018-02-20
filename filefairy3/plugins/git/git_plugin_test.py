@@ -3,13 +3,7 @@
 from git_plugin import GitPlugin
 
 import mock
-import os
-import re
 import unittest
-import sys
-
-_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugins/git', '', _path))
 
 
 class GitPluginTest(unittest.TestCase):
