@@ -29,7 +29,7 @@ _stopped = """total 321012
 class LeagueFilePluginTest(unittest.TestCase):
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__started__with_null_data(self, mock_post, mock_check):
+    def test_run__with_empty_started(self, mock_post, mock_check):
         mock_check.return_value = _started
         data = {'fp': None, 'up': []}
         original = write(_data, data)
@@ -49,7 +49,7 @@ class LeagueFilePluginTest(unittest.TestCase):
 
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__started__with_filepart(self, mock_post, mock_check):
+    def test_run__with_filepart_started(self, mock_post, mock_check):
         mock_check.return_value = _started
         data = {
             'fp': {
@@ -76,7 +76,7 @@ class LeagueFilePluginTest(unittest.TestCase):
 
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__started__with_finished(self, mock_post, mock_check):
+    def test_run__with_finished_started(self, mock_post, mock_check):
         mock_check.return_value = _started
         data = {
             'fp':
@@ -110,8 +110,7 @@ class LeagueFilePluginTest(unittest.TestCase):
 
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__started__with_filepart_and_finished(self, mock_post,
-                                                      mock_check):
+    def test_run__with_both_started(self, mock_post, mock_check):
         mock_check.return_value = _started
         data = {
             'fp': {
@@ -148,7 +147,7 @@ class LeagueFilePluginTest(unittest.TestCase):
 
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__stopped__with_null_data(self, mock_post, mock_check):
+    def test_run__with_empty_stopped(self, mock_post, mock_check):
         mock_check.return_value = _stopped
         data = {'fp': None, 'up': []}
         original = write(_data, data)
@@ -161,7 +160,7 @@ class LeagueFilePluginTest(unittest.TestCase):
 
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__stopped__with_filepart(self, mock_post, mock_check):
+    def test_run__with_filepart_stopped(self, mock_post, mock_check):
         mock_check.return_value = _stopped
         data = {
             'fp': {
@@ -190,7 +189,7 @@ class LeagueFilePluginTest(unittest.TestCase):
 
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__stopped__with_finished(self, mock_post, mock_check):
+    def test_run__with_finished_stopped(self, mock_post, mock_check):
         mock_check.return_value = _stopped
         data = {
             'fp':
@@ -221,8 +220,7 @@ class LeagueFilePluginTest(unittest.TestCase):
 
     @mock.patch('league_file_plugin.check_output')
     @mock.patch('league_file_plugin.chat_post_message')
-    def test_run__stopped__with_filepart_and_finished(self, mock_post,
-                                                      mock_check):
+    def test_run__with_both_stopped(self, mock_post, mock_check):
         mock_check.return_value = _stopped
         data = {
             'fp': {

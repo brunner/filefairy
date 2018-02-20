@@ -51,7 +51,7 @@ Atlanta Braves</a><br>
 
 class ExportsPluginTest(unittest.TestCase):
     @mock.patch('exports_plugin.urlopen')
-    def test_run__new__with_empty_data(self, mock_urlopen):
+    def test_run__with_empty_new(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {
             '31': {
@@ -88,7 +88,7 @@ class ExportsPluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     @mock.patch('exports_plugin.urlopen')
-    def test_run__old__with_empty_data(self, mock_urlopen):
+    def test_run__with_empty_old(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _old, _after + _old]
         data = {
             '31': {
@@ -125,7 +125,7 @@ class ExportsPluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     @mock.patch('exports_plugin.urlopen')
-    def test_run__old__with_ai_true(self, mock_urlopen):
+    def test_run__with_ai_old(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _old, _after + _old]
         data = {
             '31': {
@@ -162,7 +162,7 @@ class ExportsPluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     @mock.patch('exports_plugin.urlopen')
-    def test_run__new__with_long_form(self, mock_urlopen):
+    def test_run__with_form_new(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {
             '31': {
