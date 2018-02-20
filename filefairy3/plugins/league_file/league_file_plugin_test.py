@@ -8,9 +8,8 @@ import re
 import unittest
 import sys
 
-sys.path.append(
-    re.sub(r'/plugins/league_file', '',
-           os.path.dirname(os.path.abspath(__file__))))
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/plugins/league_file', '', _path))
 from utils.testing.testing_util import write  # noqa
 
 _data = LeagueFilePlugin._data()
@@ -28,8 +27,10 @@ _stopped = """total 321012
 
 
 class LeagueFilePluginTest(unittest.TestCase):
-    @mock.patch('subprocess.check_output', return_value=_started)
-    def test_run__started__with_null_data(self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__started__with_null_data(self, mock_post, mock_check):
+        mock_check.return_value = _started
         data = {'fp': None, 'up': []}
         original = write(_data, data)
         plugin = LeagueFilePlugin()
@@ -44,9 +45,12 @@ class LeagueFilePluginTest(unittest.TestCase):
             'up': []
         }
         self.assertEqual(actual, expected)
+        mock_post.assert_not_called()
 
-    @mock.patch('subprocess.check_output', return_value=_started)
-    def test_run__started__with_filepart(self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__started__with_filepart(self, mock_post, mock_check):
+        mock_check.return_value = _started
         data = {
             'fp': {
                 'size': '300000000',
@@ -68,9 +72,12 @@ class LeagueFilePluginTest(unittest.TestCase):
             'up': [],
         }
         self.assertEqual(actual, expected)
+        mock_post.assert_not_called()
 
-    @mock.patch('subprocess.check_output', return_value=_started)
-    def test_run__started__with_finished(self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__started__with_finished(self, mock_post, mock_check):
+        mock_check.return_value = _started
         data = {
             'fp':
             None,
@@ -99,10 +106,13 @@ class LeagueFilePluginTest(unittest.TestCase):
             }]
         }
         self.assertEqual(actual, expected)
+        mock_post.assert_not_called()
 
-    @mock.patch('subprocess.check_output', return_value=_started)
-    def test_run__started__with_filepart_and_finished(
-            self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__started__with_filepart_and_finished(self, mock_post,
+                                                      mock_check):
+        mock_check.return_value = _started
         data = {
             'fp': {
                 'size': '300000000',
@@ -134,9 +144,12 @@ class LeagueFilePluginTest(unittest.TestCase):
             }]
         }
         self.assertEqual(actual, expected)
+        mock_post.assert_not_called()
 
-    @mock.patch('subprocess.check_output', return_value=_stopped)
-    def test_run__stopped__with_null_data(self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__stopped__with_null_data(self, mock_post, mock_check):
+        mock_check.return_value = _stopped
         data = {'fp': None, 'up': []}
         original = write(_data, data)
         plugin = LeagueFilePlugin()
@@ -144,9 +157,12 @@ class LeagueFilePluginTest(unittest.TestCase):
         actual = write(_data, original)
         expected = {'fp': None, 'up': []}
         self.assertEqual(actual, expected)
+        mock_post.assert_not_called()
 
-    @mock.patch('subprocess.check_output', return_value=_stopped)
-    def test_run__stopped__with_filepart(self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__stopped__with_filepart(self, mock_post, mock_check):
+        mock_check.return_value = _stopped
         data = {
             'fp': {
                 'size': '300000000',
@@ -170,9 +186,12 @@ class LeagueFilePluginTest(unittest.TestCase):
             }]
         }
         self.assertEqual(actual, expected)
+        mock_post.assert_called_once_with('general', 'File is up.')
 
-    @mock.patch('subprocess.check_output', return_value=_stopped)
-    def test_run__stopped__with_finished(self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__stopped__with_finished(self, mock_post, mock_check):
+        mock_check.return_value = _stopped
         data = {
             'fp':
             None,
@@ -198,10 +217,13 @@ class LeagueFilePluginTest(unittest.TestCase):
             }]
         }
         self.assertEqual(actual, expected)
+        mock_post.assert_not_called()
 
-    @mock.patch('subprocess.check_output', return_value=_stopped)
-    def test_run__stopped__with_filepart_and_finished(
-            self, subprocess_check_output_mock):
+    @mock.patch('league_file_plugin.check_output')
+    @mock.patch('league_file_plugin.chat_post_message')
+    def test_run__stopped__with_filepart_and_finished(self, mock_post,
+                                                      mock_check):
+        mock_check.return_value = _stopped
         data = {
             'fp': {
                 'size': '300000000',
@@ -235,8 +257,8 @@ class LeagueFilePluginTest(unittest.TestCase):
             }]
         }
         self.assertEqual(actual, expected)
+        mock_post.assert_called_once_with('general', 'File is up.')
 
 
 if __name__ == '__main__':
-    raise Exception('DO NOT RUN.')
     unittest.main()

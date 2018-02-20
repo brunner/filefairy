@@ -480,7 +480,6 @@ class App(object):
   def update_league_file(self):
     date = self.get_file_date(self.get_page(self.file_url))
     if date and date != self.file_date:
-      chat_post_message(self.get_general_name(), 'File is up.')
       self.file_date = date
       return True
     return False

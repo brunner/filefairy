@@ -22,7 +22,6 @@ _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 class LeagueFilePlugin(PluginApi, SerializableApi):
     def __init__(self):
         super(LeagueFilePlugin, self).__init__()
-        chat_post_message('testing', 'Loaded.')
 
     def _on_message_internal(self, obj):
         pass
