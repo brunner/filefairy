@@ -9,7 +9,7 @@ import urllib2
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
-from private.tokens import brunnerj, filefairy  # noqa
+from secrets import brunnerj, filefairy  # noqa
 
 
 def _call(method, params):

@@ -9,7 +9,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/league_file', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
-from private.server import user, league_file_dir  # noqa
+from secrets import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
@@ -30,7 +30,8 @@ class LeagueFilePlugin(PluginApi, SerializableApi):
         data = self.data
         original = copy.deepcopy(data)
 
-        out = check_output(['ssh', user, 'ls -l ' + league_file_dir])
+        ls = 'ls -l /var/www/html/StatsLab/league_file'
+        out = check_output(['ssh', 'brunnerj@' + server, ls])
         for line in out.splitlines():
             line = re.sub(r'\s+', ' ', line)
             match = re.findall(_line_pattern, line)
