@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from abc_util import abstractstatic  # noqa
+from abc_util import abstractstatic
 
 import abc
 import unittest
