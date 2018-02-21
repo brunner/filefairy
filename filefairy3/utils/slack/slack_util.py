@@ -4,21 +4,20 @@ import json
 import os
 import re
 import sys
-import urllib
-import urllib2
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
-from secrets import brunnerj, filefairy  # noqa
+from secrets import filefairy  # noqa
+from utils.urllib.urllib_util import urlopen, create_request  # noqa
 
 
 def _call(method, params):
     url = 'https://slack.com/api/{}'.format(method)
     obj = {'ok': False}
     try:
-        request = urllib2.Request(url, urllib.urlencode(params))
-        response = urllib2.urlopen(request)
-        obj = json.loads(response.read())
+        request = create_request(url, params)
+        response = urlopen(request)
+        obj = json.loads(response)
     except:
         pass
     return obj
@@ -43,18 +42,6 @@ def files_upload(content, filename, channel):
             'filename': filename,
             'channels': channel,
         })
-
-
-def files_delete(file_):
-    return _call('files.delete', {'token': brunnerj, 'file': file_})
-
-
-def files_list(count, channel):
-    return _call('files.list', {
-        'token': brunnerj,
-        'count': count,
-        'channel': channel
-    })
 
 
 def rtm_connect():
