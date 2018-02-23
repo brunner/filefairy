@@ -430,8 +430,14 @@ class App(object):
 
   def process_records(self):
     ret = self.format_records()
+    self.clear_records()
     chat_post_message(self.get_live_sim_discussion_name(), ret)
     return ret
+
+  def clear_records(self):
+    for t in self.standings:
+      self.standings[t].w['w'] = 0
+      self.standings[t].l['w'] = 0
 
   def process_playoffs(self):
     ret, txt = self.playoffs.format()
