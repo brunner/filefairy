@@ -16,3 +16,7 @@ class PluginApi(MessageableApi, RunnableApi):
 
     def __init__(self):
         super(PluginApi, self).__init__()
+
+    @abc.abstractmethod
+    def _setup(self, **kwargs):
+        pass

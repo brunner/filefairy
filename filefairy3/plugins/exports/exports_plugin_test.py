@@ -69,6 +69,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         original = write(_data, data)
         plugin = ExportsPlugin()
+        plugin._setup()
         plugin._run()
         actual = write(_data, original)
         expected = {
@@ -106,6 +107,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         original = write(_data, data)
         plugin = ExportsPlugin()
+        plugin._setup()
         plugin._run()
         actual = write(_data, original)
         expected = {
@@ -143,6 +145,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         original = write(_data, data)
         plugin = ExportsPlugin()
+        plugin._setup()
         plugin._run()
         actual = write(_data, original)
         expected = {
@@ -187,6 +190,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         original = write(_data, data)
         plugin = ExportsPlugin()
+        plugin._setup()
         plugin._run()
         actual = write(_data, original)
         expected = {

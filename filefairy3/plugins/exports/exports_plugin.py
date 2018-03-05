@@ -17,6 +17,7 @@ class ExportsPlugin(PluginApi, SerializableApi):
     def __init__(self):
         super(ExportsPlugin, self).__init__()
 
+    def _setup(self):
         text = urlopen(_url)
         self.file_date = self._file_date(text)
         self.exports = self._exports(text)

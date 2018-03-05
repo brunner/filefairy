@@ -15,6 +15,9 @@ class GitPlugin(PluginApi):
     def __init__(self):
         super(GitPlugin, self).__init__()
 
+    def _setup(self, **kwargs):
+        pass
+
     def _on_message_internal(self, **kwargs):
         pass
 
