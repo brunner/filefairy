@@ -22,10 +22,9 @@ class App(MessageableApi):
 
         self.keep_running = True
         self.lock = threading.Lock()
+        self.plugins = {}
         self.sleep = 120
         self.ws = None
-
-        self.plugins = {}
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -41,15 +40,15 @@ class App(MessageableApi):
             return
 
         plugin = self.plugins[p]
-        item = getattr(plugin, method)
-        if not callable(item):
+        item = getattr(plugin, method, None)
+        if not item or not callable(item):
             return
 
         try:
             item(**kwargs)
         except Exception:
             exc = traceback.format_exc()
-            log(plugin._name(), s='Exception.', r=exc, v='true')
+            log(plugin._name(), s='Exception.', r=exc, v=True)
             del self.plugins[p]
 
     def _connect(self):
@@ -100,8 +99,11 @@ class App(MessageableApi):
             plugin = getattr(importlib.import_module(path), clazz)()
             self.plugins[p] = plugin
             log(clazz, **dict(kwargs, s='Installed.', v=True))
-        except Exception as e:
-            log(clazz, s='Exception.', r=e, v=True)
+        except Exception:
+            exc = traceback.format_exc()
+            log(clazz, s='Exception.', r=exc, v=True)
+
+        self._try(p, '_setup')
 
     def reboot(self, **kwargs):
         os.execv(sys.executable, ['python'] + sys.argv)
