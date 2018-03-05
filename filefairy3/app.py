@@ -101,16 +101,17 @@ class App(MessageableApi):
             log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception:
             exc = traceback.format_exc()
-            log(clazz, s='Exception.', r=exc, v=True)
+            log(clazz, **dict(kwargs, s='Exception.', r=exc, v=True))
 
         self._try(p, '_setup')
 
     def reboot(self, **kwargs):
+        log(self._name(), **dict(kwargs, s='Rebooting.', v=True))
         os.execv(sys.executable, ['python'] + sys.argv)
 
     def shutdown(self, **kwargs):
+        log(self._name(), **dict(kwargs, s='Shutting down.', v=True))
         self.keep_running = False
-        log(self._name(), **dict(kwargs, s='Shutting down.'))
 
 
 if __name__ == '__main__':
