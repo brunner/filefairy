@@ -83,7 +83,8 @@ class App(MessageableApi):
             self.lock.release()
             time.sleep(self.sleep)
 
-        self.ws.close()
+        if self.ws:
+            self.ws.close()
 
     def install(self, **kwargs):
         p = kwargs.get('a1', '')

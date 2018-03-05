@@ -27,6 +27,27 @@ class FakePlugin(PluginApi):
         pass
 
 
+class FakeWebSocketApp(object):
+    def __init__(self, url, on_message=None):
+        self.url = url
+        self.on_message = on_message
+
+        self.keep_running = True
+        self.sock = True
+
+    def close(self):
+        self.keep_running = False
+
+    def send(self, message):
+        if self.on_message:
+            self.on_message(self, message)
+        self.close()
+
+    def run_forever(self):
+        while self.keep_running:
+            pass
+
+
 class AppTest(unittest.TestCase):
     def test_init(self):
         app = App()
@@ -101,6 +122,39 @@ class AppTest(unittest.TestCase):
         app._try('fake', 'var', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
+
+    @mock.patch('app.websocket.WebSocketApp')
+    @mock.patch.object(App, '_try')
+    @mock.patch('app.rtm_connect')
+    @mock.patch.object(App, '_on_message')
+    def test_connect(self, mock_message, mock_rtm, mock_try, mock_ws):
+        mock_rtm.return_value = {'ok': True, 'url': 'wss://...'}
+        mock_ws.side_effect = FakeWebSocketApp
+        app = App()
+        app.plugins['fake'] = FakePlugin()
+        app._connect()
+        app.ws.send(
+            '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
+        expected = {
+            'type': 'message',
+            'channel': 'ABC',
+            'user': 'XYZ',
+            'text': 'foo'
+        }
+        mock_message.assert_called_once_with(obj=expected)
+        mock_try.assert_called_once_with('fake', '_on_message', obj=expected)
+
+    @mock.patch.object(App, '_try')
+    @mock.patch('app.time.sleep')
+    @mock.patch('app.log')
+    @mock.patch.object(App, '_connect')
+    def test_start(self, mock_connect, mock_log, mock_sleep, mock_try):
+        app = App()
+        app.plugins['fake'] = FakePlugin()
+        mock_sleep.side_effect = lambda s: app.shutdown()
+        app._start()
+        mock_connect.assert_called_once_with()
+        mock_try.assert_called_once_with('fake', '_run')
 
     @mock.patch.object(FakePlugin, '_setup')
     @mock.patch('app.log')
