@@ -5,11 +5,16 @@ from json_util import dumps
 import unittest
 
 
+class FakeObject(object):
+    def __init__(self):
+        self.a = 1
+
+
 class JsonUtilTest(unittest.TestCase):
     def test_dumps(self):
-        data = {'c': 1, 'b': 2, 'a': 3}
+        data = {'c': 1, 'b': FakeObject(), 'a': 'foo'}
         actual = dumps(data)
-        expected = '{\n  "a": 3, \n  "b": 2, \n  "c": 1\n}'
+        expected = '{\n  "a": "foo", \n  "b": "", \n  "c": 1\n}'
         self.assertEquals(actual, expected)
 
 

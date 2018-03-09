@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import copy
 import importlib
 import json
 import os
@@ -10,19 +11,20 @@ import traceback
 import websocket
 
 from apis.messageable.messageable_api import MessageableApi
+from apis.serializable.serializable_api import SerializableApi
 from utils.logger.logger_util import log
 from utils.slack.slack_util import rtm_connect
 
 _path = os.path.dirname(os.path.abspath(__file__))
 
 
-class App(MessageableApi):
+class App(MessageableApi, SerializableApi):
     def __init__(self):
         super(App, self).__init__()
 
+        self.data = {'plugins': {}}
         self.keep_running = True
         self.lock = threading.Lock()
-        self.plugins = {}
         self.sleep = 120
         self.ws = None
 
@@ -36,10 +38,11 @@ class App(MessageableApi):
             self.install(a1=p)
 
     def _try(self, p, method, **kwargs):
-        if p not in self.plugins:
+        data = self.data
+        if p not in data['plugins'] or 'instance' not in data['plugins'][p]:
             return
 
-        plugin = self.plugins[p]
+        plugin = data['plugins'][p]['instance']
         item = getattr(plugin, method, None)
         if not item or not callable(item):
             return
@@ -49,16 +52,21 @@ class App(MessageableApi):
         except Exception:
             exc = traceback.format_exc()
             log(plugin._name(), s='Exception.', r=exc, v=True)
-            del self.plugins[p]
+            data['plugins'][p]['ok'] = False
 
     def _connect(self):
         def _on_message(ws, message):
             self.lock.acquire()
+            data = self.data
+            original = copy.deepcopy(data)
             obj = json.loads(message)
             self._on_message(obj=obj)
-            ps = self.plugins.keys()
+            ps = data['plugins'].keys()
             for p in ps:
-                self._try(p, '_on_message', obj=obj)
+                if data['plugins'][p].get('ok', False):
+                    self._try(p, '_on_message', obj=obj)
+            if data != original:
+                self.write()
             self.lock.release()
 
         obj = rtm_connect()
@@ -77,9 +85,14 @@ class App(MessageableApi):
                 self._connect()
 
             self.lock.acquire()
-            ps = self.plugins.keys()
+            data = self.data
+            original = copy.deepcopy(data)
+            ps = data['plugins'].keys()
             for p in ps:
-                self._try(p, '_run')
+                if data['plugins'][p].get('ok', False):
+                    self._try(p, '_run')
+            if data != original:
+                self.write()
             self.lock.release()
             time.sleep(self.sleep)
 
@@ -87,24 +100,31 @@ class App(MessageableApi):
             self.ws.close()
 
     def install(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
         p = kwargs.get('a1', '')
         path = 'plugins.{0}.{0}_plugin'.format(p)
         camel = ''.join([w.capitalize() for w in p.split('_')])
         clazz = '{}Plugin'.format(camel)
 
-        if p in self.plugins and path in sys.modules:
-            del self.plugins[p]
+        if p in data['plugins'] and path in sys.modules:
+            data['plugins']['ok'] = False
             del sys.modules[path]
 
         try:
             plugin = getattr(importlib.import_module(path), clazz)()
-            self.plugins[p] = plugin
+            data['plugins'][p] = {'ok': True, 'instance': plugin}
             log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception:
+            data['plugins'][p] = {'ok': False, 'instance': None}
             exc = traceback.format_exc()
             log(clazz, **dict(kwargs, s='Exception.', r=exc, v=True))
 
         self._try(p, '_setup')
+
+        if data != original:
+            self.write()
 
     def reboot(self, **kwargs):
         log(self._name(), **dict(kwargs, s='Rebooting.', v=True))
@@ -113,6 +133,10 @@ class App(MessageableApi):
     def shutdown(self, **kwargs):
         log(self._name(), **dict(kwargs, s='Shutting down.', v=True))
         self.keep_running = False
+
+    @staticmethod
+    def _data():
+        return os.path.join(_path, 'data.json')
 
 
 if __name__ == '__main__':
