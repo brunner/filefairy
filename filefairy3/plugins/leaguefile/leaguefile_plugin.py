@@ -6,7 +6,7 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugins/league_file', '', _path))
+sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from secrets import server  # noqa
@@ -19,9 +19,9 @@ _name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 
 
-class LeagueFilePlugin(PluginApi, SerializableApi):
+class LeaguefilePlugin(PluginApi, SerializableApi):
     def __init__(self):
-        super(LeagueFilePlugin, self).__init__()
+        super(LeaguefilePlugin, self).__init__()
 
     def _setup(self, **kwargs):
         data = self.data

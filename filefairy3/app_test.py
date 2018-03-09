@@ -61,7 +61,7 @@ class AppTest(unittest.TestCase):
     @mock.patch('app.App.install')
     def test_setup(self, mock_install, mock_isdir, mock_listdir):
         mock_isdir.side_effect = [True, True, True]
-        mock_listdir.return_value = ['foo', 'bar', 'ba_z']
+        mock_listdir.return_value = ['foo', 'bar', 'baz']
         app = App()
         app._setup()
         mock_listdir.assert_called_once_with(os.path.join(_path, 'plugins'))
@@ -69,7 +69,7 @@ class AppTest(unittest.TestCase):
         calls = [
             mock.call(a1='foo'),
             mock.call(a1='bar'),
-            mock.call(a1='ba_z')
+            mock.call(a1='baz')
         ]
         mock_install.assert_has_calls(calls)
 
