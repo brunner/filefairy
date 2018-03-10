@@ -6,6 +6,7 @@ import importlib
 import jinja2
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -19,15 +20,17 @@ from utils.logger.logger_util import log
 from utils.slack.slack_util import rtm_connect
 
 _path = os.path.dirname(os.path.abspath(__file__))
+_root = re.sub(r'/programs/fairylab', '', _path)
+sys.path.append(_root)
 
 
-class App(MessageableApi, RenderableApi):
+class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self):
-        super(App, self).__init__()
+        super(FairylabProgram, self).__init__()
 
         self.data = {'plugins': {}}
         self.environment = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(os.path.join(_path, 'templates')))
+            loader=jinja2.FileSystemLoader(os.path.join(_root, 'templates')))
         self.keep_running = True
         self.lock = threading.Lock()
         self.sleep = 120
@@ -39,7 +42,7 @@ class App(MessageableApi, RenderableApi):
     def _render_internal(self, **kwargs):
         date = datetime.datetime.now()
         ret = copy.deepcopy(self.data)
-        ret['title'] = 'app'
+        ret['title'] = 'home'
 
         ps = ret['plugins'].keys()
         for p in ps:
@@ -51,7 +54,7 @@ class App(MessageableApi, RenderableApi):
         return ret
 
     def _setup(self):
-        d = os.path.join(_path, 'plugins')
+        d = os.path.join(_root, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in ps:
             self.install(a1=p)
@@ -174,7 +177,7 @@ class App(MessageableApi, RenderableApi):
 
     @staticmethod
     def _html():
-        return os.path.join(_path, 'html/index.html')
+        return os.path.join(_root, 'html/index.html')
 
     @staticmethod
     def _tmpl():
@@ -182,6 +185,6 @@ class App(MessageableApi, RenderableApi):
 
 
 if __name__ == '__main__':
-    app = App()
-    app._setup()
-    app._start()
+    fairylab = FairylabProgram()
+    fairylab._setup()
+    fairylab._start()

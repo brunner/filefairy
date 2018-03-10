@@ -1,19 +1,21 @@
 #!/usr/bin/env python
 
-from app import App
-
 import datetime
 import jinja2
 import mock
 import os
+import re
 import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
+_root = re.sub(r'/programs/fairylab', '', _path)
+sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
+from programs.fairylab.fairylab_program import FairylabProgram  # noqa
 from utils.testing.testing_util import write  # noqa
 
-_data = App._data()
+_data = FairylabProgram._data()
 
 
 class FakePlugin(PluginApi):
@@ -58,123 +60,125 @@ class FakeWebSocketApp(object):
             pass
 
 
-class AppTest(unittest.TestCase):
+class FairylabProgramTest(unittest.TestCase):
     def test_init(self):
-        app = App()
-        self.assertEqual(app.data, {'plugins': {}})
-        self.assertIsNotNone(app.environment)
-        self.assertTrue(app.keep_running)
-        self.assertEqual(app.sleep, 120)
-        self.assertEqual(app.ws, None)
+        fairylab = FairylabProgram()
+        self.assertEqual(fairylab.data, {'plugins': {}})
+        self.assertIsNotNone(fairylab.environment)
+        self.assertTrue(fairylab.keep_running)
+        self.assertEqual(fairylab.sleep, 120)
+        self.assertEqual(fairylab.ws, None)
 
-    @mock.patch('app.os.listdir')
-    @mock.patch('app.os.path.isdir')
-    @mock.patch('app.App.install')
+    @mock.patch('programs.fairylab.fairylab_program.os.listdir')
+    @mock.patch('programs.fairylab.fairylab_program.os.path.isdir')
+    @mock.patch('programs.fairylab.fairylab_program.FairylabProgram.install')
     def test_setup(self, mock_install, mock_isdir, mock_listdir):
         mock_isdir.side_effect = [True, True, True]
         mock_listdir.return_value = ['foo', 'bar', 'baz']
-        app = App()
-        app._setup()
-        mock_listdir.assert_called_once_with(os.path.join(_path, 'plugins'))
+        fairylab = FairylabProgram()
+        fairylab._setup()
+        mock_listdir.assert_called_once_with(os.path.join(_root, 'plugins'))
         self.assertEqual(mock_install.call_count, 3)
         calls = [mock.call(a1='foo'), mock.call(a1='bar'), mock.call(a1='baz')]
         mock_install.assert_has_calls(calls)
 
     @mock.patch.object(FakePlugin, '_run_internal')
-    @mock.patch('app.log')
-    @mock.patch('app.datetime')
+    @mock.patch('programs.fairylab.fairylab_program.log')
+    @mock.patch('programs.fairylab.fairylab_program.datetime')
     def test_try__with_valid_input(self, mock_datetime, mock_log, mock_run):
-        app = App()
-        app.data['plugins']['fake'] = {
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        app._try('fake', '_run_internal', a=1, b=True)
+        fairylab._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
         mock_datetime.datetime.now.assert_called_once_with()
         mock_log.assert_not_called()
-        self.assertTrue(app.data['plugins']['fake']['ok'])
-        self.assertEqual(app.data['plugins']['fake']['info'], 'Description.')
+        self.assertTrue(fairylab.data['plugins']['fake']['ok'])
+        self.assertEqual(fairylab.data['plugins']['fake']['info'],
+                         'Description.')
 
     @mock.patch.object(FakePlugin, '_run_internal')
-    @mock.patch('app.log')
-    @mock.patch('app.traceback.format_exc')
-    @mock.patch('app.datetime')
+    @mock.patch('programs.fairylab.fairylab_program.log')
+    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
+    @mock.patch('programs.fairylab.fairylab_program.datetime')
     def test_try__with_thrown_exception(self, mock_datetime, mock_exc,
                                         mock_log, mock_run):
         mock_exc.return_value = 'Traceback: ...'
         mock_run.side_effect = Exception()
-        app = App()
-        app.data['plugins']['fake'] = {
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        app._try('fake', '_run_internal', a=1, b=True)
+        fairylab._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
         mock_datetime.datetime.now.assert_called_once_with()
         mock_log.assert_called_once_with(
             'FakePlugin', c='Traceback: ...', s='Exception.', v=True)
-        self.assertFalse(app.data['plugins']['fake']['ok'])
-        self.assertEqual(app.data['plugins']['fake']['info'], 'Description.')
+        self.assertFalse(fairylab.data['plugins']['fake']['ok'])
+        self.assertEqual(fairylab.data['plugins']['fake']['info'],
+                         'Description.')
 
     @mock.patch.object(FakePlugin, '_run_internal')
-    @mock.patch('app.log')
+    @mock.patch('programs.fairylab.fairylab_program.log')
     def test_try__with_invalid_plugin(self, mock_log, mock_run):
-        app = App()
-        app._try('fake', '_run_internal', a=1, b=True)
+        fairylab = FairylabProgram()
+        fairylab._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
 
     @mock.patch.object(FakePlugin, '_run_internal')
-    @mock.patch('app.log')
+    @mock.patch('programs.fairylab.fairylab_program.log')
     def test_try__with_invalid_attr(self, mock_log, mock_run):
-        app = App()
-        app.data['plugins']['fake'] = {
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        app._try('fake', 'foo', a=1, b=True)
+        fairylab._try('fake', 'foo', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
 
     @mock.patch.object(FakePlugin, '_run_internal')
-    @mock.patch('app.log')
+    @mock.patch('programs.fairylab.fairylab_program.log')
     def test_try__with_invalid_callable(self, mock_log, mock_run):
-        app = App()
-        app.data['plugins']['fake'] = {
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        app._try('fake', 'var', a=1, b=True)
+        fairylab._try('fake', 'var', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
 
-    @mock.patch('app.websocket.WebSocketApp')
-    @mock.patch.object(App, '_try')
-    @mock.patch('app.rtm_connect')
-    @mock.patch.object(App, '_on_message')
+    @mock.patch('programs.fairylab.fairylab_program.websocket.WebSocketApp')
+    @mock.patch.object(FairylabProgram, '_try')
+    @mock.patch('programs.fairylab.fairylab_program.rtm_connect')
+    @mock.patch.object(FairylabProgram, '_on_message')
     def test_connect(self, mock_message, mock_rtm, mock_try, mock_ws):
         mock_rtm.return_value = {'ok': True, 'url': 'wss://...'}
         mock_ws.side_effect = FakeWebSocketApp
         data = {'plugins': {}}
         original = write(_data, data)
-        app = App()
-        app.data['plugins']['fake'] = {
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        app._connect()
-        app.ws.send(
+        fairylab._connect()
+        fairylab.ws.send(
             '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
         expected = {
             'type': 'message',
@@ -197,24 +201,24 @@ class AppTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch.object(App, '_try')
-    @mock.patch('app.time.sleep')
-    @mock.patch('app.log')
+    @mock.patch.object(FairylabProgram, '_try')
+    @mock.patch('programs.fairylab.fairylab_program.time.sleep')
+    @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch.object(App, '_connect')
+    @mock.patch.object(FairylabProgram, '_connect')
     def test_start(self, mock_connect, mock_dump, mock_log, mock_sleep,
                    mock_try):
         data = {'plugins': {}}
         original = write(_data, data)
-        app = App()
-        app.data['plugins']['fake'] = {
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        mock_sleep.side_effect = lambda s: app.shutdown()
-        app._start()
+        mock_sleep.side_effect = lambda s: fairylab.shutdown()
+        fairylab._start()
         mock_connect.assert_called_once_with()
         mock_try.assert_called_once_with('fake', '_run')
         actual = write(_data, original)
@@ -231,8 +235,8 @@ class AppTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('app.delta')
-    @mock.patch('app.datetime')
+    @mock.patch('programs.fairylab.fairylab_program.delta')
+    @mock.patch('programs.fairylab.fairylab_program.datetime')
     def test_render(self, mock_datetime, mock_delta, mock_dump):
         then = datetime.datetime(1985, 10, 26, 0, 0, 0)
         now = datetime.datetime(1985, 10, 26, 0, 2, 30)
@@ -240,16 +244,16 @@ class AppTest(unittest.TestCase):
         mock_delta.return_value = '2m ago'
         data = {'plugins': {}}
         original = write(_data, data)
-        app = App()
-        app.data['plugins']['fake'] = {
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': then,
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        actual = app._render_internal()
+        actual = fairylab._render_internal()
         expected = {
-            'title': 'app',
+            'title': 'home',
             'plugins': {
                 'fake': {
                     'ok': True,
@@ -262,17 +266,17 @@ class AppTest(unittest.TestCase):
         write(_data, original)
 
     @mock.patch.object(FakePlugin, '_setup')
-    @mock.patch('app.log')
-    @mock.patch('app.importlib.import_module')
-    @mock.patch('app.getattr')
-    @mock.patch('app.traceback.format_exc')
+    @mock.patch('programs.fairylab.fairylab_program.log')
+    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
+    @mock.patch('programs.fairylab.fairylab_program.getattr')
+    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
     def test_install_with_valid_input(self, mock_exc, mock_getattr,
                                       mock_import, mock_log, mock_setup):
         mock_getattr.side_effect = [FakePlugin, FakePlugin._setup]
         data = {'plugins': {}}
         original = write(_data, data)
-        app = App()
-        app.install(a1='fake')
+        fairylab = FairylabProgram()
+        fairylab.install(a1='fake')
         mock_import.assert_called_once_with('plugins.fake.fake_plugin')
         mock_log.assert_called_once_with(
             'FakePlugin', a1='fake', s='Installed.', v=True)
@@ -290,24 +294,24 @@ class AppTest(unittest.TestCase):
             }
         }
         self.assertEqual(actual, expected)
-        self.assertIsNotNone(app.data['plugins']['fake']['instance'])
+        self.assertIsNotNone(fairylab.data['plugins']['fake']['instance'])
         self.assertIsInstance(
-            app.data['plugins']['fake']['instance'].environment,
+            fairylab.data['plugins']['fake']['instance'].environment,
             jinja2.Environment)
 
     @mock.patch.object(FakePlugin, '_setup')
-    @mock.patch('app.log')
-    @mock.patch('app.importlib.import_module')
-    @mock.patch('app.getattr')
-    @mock.patch('app.traceback.format_exc')
+    @mock.patch('programs.fairylab.fairylab_program.log')
+    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
+    @mock.patch('programs.fairylab.fairylab_program.getattr')
+    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
     def test_install_with_invalid_input(self, mock_exc, mock_getattr,
                                         mock_import, mock_log, mock_setup):
         mock_getattr.return_value = Exception()
         mock_exc.return_value = 'Traceback: ...'
         data = {'plugins': {}}
         original = write(_data, data)
-        app = App()
-        app.install(a1='fake')
+        fairylab = FairylabProgram()
+        fairylab.install(a1='fake')
         mock_import.assert_called_once_with('plugins.fake.fake_plugin')
         mock_log.assert_called_once_with(
             'FakePlugin',
@@ -329,23 +333,25 @@ class AppTest(unittest.TestCase):
             }
         }
         self.assertEqual(actual, expected)
-        self.assertIsNone(app.data['plugins']['fake']['instance'])
+        self.assertIsNone(fairylab.data['plugins']['fake']['instance'])
 
-    @mock.patch('app.log')
-    @mock.patch('app.os.execv')
+    @mock.patch('programs.fairylab.fairylab_program.log')
+    @mock.patch('programs.fairylab.fairylab_program.os.execv')
     def test_reboot(self, mock_execv, mock_log):
-        app = App()
-        app.reboot()
+        fairylab = FairylabProgram()
+        fairylab.reboot()
         mock_execv.assert_called_once_with(sys.executable,
                                            ['python'] + sys.argv)
-        mock_log.assert_called_once_with('App', s='Rebooting.', v=True)
+        mock_log.assert_called_once_with(
+            'FairylabProgram', s='Rebooting.', v=True)
 
-    @mock.patch('app.log')
+    @mock.patch('programs.fairylab.fairylab_program.log')
     def test_shutdown(self, mock_log):
-        app = App()
-        app.shutdown()
-        self.assertFalse(app.keep_running)
-        mock_log.assert_called_once_with('App', s='Shutting down.', v=True)
+        fairylab = FairylabProgram()
+        fairylab.shutdown()
+        self.assertFalse(fairylab.keep_running)
+        mock_log.assert_called_once_with(
+            'FairylabProgram', s='Shutting down.', v=True)
 
 
 if __name__ == '__main__':
