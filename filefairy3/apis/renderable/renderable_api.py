@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import abc
+import datetime
 import os
 import re
 import sys
@@ -34,8 +35,11 @@ class RenderableApi(SerializableApi):
 
     def _render(self, **kwargs):
         try:
+            now = datetime.datetime.now()
+            date = now.strftime('%Y-%m-%d %H:%M:%S') + ' PST'
             tmpl = self.environment.get_template(self._tmpl())
-            tmpl.stream(self._render_internal(**kwargs)).dump(self._html())
+            ts = tmpl.stream(dict(self._render_internal(**kwargs), date=date))
+            ts.dump(self._html())
         except Exception:
             exc = traceback.format_exc()
             log(self._name(), s='Exception.', c=exc, v=True)

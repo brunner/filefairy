@@ -13,15 +13,15 @@ import time
 import traceback
 import websocket
 
-from apis.messageable.messageable_api import MessageableApi
-from apis.renderable.renderable_api import RenderableApi
-from utils.ago.ago_util import delta
-from utils.logger.logger_util import log
-from utils.slack.slack_util import rtm_connect
-
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
+
+from apis.messageable.messageable_api import MessageableApi  # noqa
+from apis.renderable.renderable_api import RenderableApi  # noqa
+from utils.ago.ago_util import delta  # noqa
+from utils.logger.logger_util import log  # noqa
+from utils.slack.slack_util import rtm_connect  # noqa
 
 
 class FairylabProgram(MessageableApi, RenderableApi):
@@ -29,7 +29,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
         super(FairylabProgram, self).__init__()
         self.data = {'plugins': {}}
         _loader = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
-        self.environment = jinja2.Environment(loader=_loader)
+        self.environment = jinja2.Environment(
+            loader=_loader, trim_blocks=True, lstrip_blocks=True)
         self.keep_running = True
         self.lock = threading.Lock()
         self.sleep = 120
