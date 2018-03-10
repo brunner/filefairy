@@ -10,10 +10,8 @@ from utils.slack.slack_util import chat_post_message, files_upload  # noqa
 
 
 def log(name, **kwargs):
-    r, s, v = [kwargs.get(key, '') for key in ('r', 's', 'v')]
+    c, s, v = [kwargs.get(key, '') for key in ('c', 's', 'v')]
 
     if v:
         chat_post_message('testing', '(' + name + ') ' + s)
-        files_upload(r, name + '.log.txt', 'testing')
-
-    return r
+        files_upload(c, name + '.log.txt', 'testing')

@@ -85,7 +85,7 @@ class SerializableApiTest(unittest.TestCase):
         expected = {'a': 1, 'b': True}
         self.assertEquals(serializable.dump(), expected)
         mock_log.assert_called_once_with(serializable._name(), **{
-            'r': '{\n  "a": 1, \n  "b": true\n}',
+            'c': '{\n  "a": 1, \n  "b": true\n}',
             's': 'Dump completed.'
         })
 

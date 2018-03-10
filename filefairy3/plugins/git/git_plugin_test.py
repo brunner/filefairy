@@ -19,7 +19,7 @@ class GitPluginTest(unittest.TestCase):
         mock_check.assert_called_once_with(['git', 'add', '.'])
         mock_log.assert_called_once_with(plugin._name(), **{
             'a1': '',
-            'r': '',
+            'c': '',
             's': 'Call completed.',
             'v': True
         })
@@ -38,7 +38,7 @@ class GitPluginTest(unittest.TestCase):
         mock_log.assert_called_once_with(
             plugin._name(), **{
                 'a1': '',
-                'r': '[master 0abcd0a] Auto...\n1 files',
+                'c': '[master 0abcd0a] Auto...\n1 files',
                 's': 'Call completed.',
                 'v': True
             })
@@ -56,7 +56,7 @@ class GitPluginTest(unittest.TestCase):
         mock_log.assert_called_once_with(
             plugin._name(), **{
                 'a1': '',
-                'r': 'remote: Counting...\nUnpacking...',
+                'c': 'remote: Counting...\nUnpacking...',
                 's': 'Call completed.',
                 'v': True
             })
@@ -74,7 +74,7 @@ class GitPluginTest(unittest.TestCase):
         mock_log.assert_called_once_with(
             plugin._name(), **{
                 'a1': '',
-                'r': 'Counting...\nCompressing...',
+                'c': 'Counting...\nCompressing...',
                 's': 'Call completed.',
                 'v': True
             })
@@ -92,7 +92,7 @@ class GitPluginTest(unittest.TestCase):
         mock_log.assert_called_once_with(
             plugin._name(), **{
                 'a1': '',
-                'r': '',
+                'c': '',
                 's': 'Call completed.',
                 'v': True
             })
@@ -110,7 +110,7 @@ class GitPluginTest(unittest.TestCase):
         mock_log.assert_called_once_with(
             plugin._name(), **{
                 'a1': '',
-                'r': 'On branch master\nYour branch...',
+                'c': 'On branch master\nYour branch...',
                 's': 'Call completed.',
                 'v': True
             })

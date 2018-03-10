@@ -41,4 +41,4 @@ class SerializableApi(NameableApi):
 
     def dump(self, **kwargs):
         d = dumps(self.data)
-        return log(self._name(), **dict(kwargs, s='Dump completed.', r=d))
+        return log(self._name(), **dict(kwargs, s='Dump completed.', c=d))
