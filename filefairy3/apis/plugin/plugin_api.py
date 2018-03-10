@@ -15,8 +15,8 @@ from utils.abc.abc_util import abstractstatic  # noqa
 class PluginApi(MessageableApi, RunnableApi):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
-        super(PluginApi, self).__init__()
+    def __init__(self, **kwargs):
+        super(PluginApi, self).__init__(**kwargs)
 
     @abstractstatic
     def _info():

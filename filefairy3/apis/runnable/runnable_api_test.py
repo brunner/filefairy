@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 
-from runnable_api import RunnableApi
-
+import os
+import re
+import sys
 import unittest
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/apis/runnable', '', _path))
+from apis.runnable.runnable_api import RunnableApi  # noqa
 
 
 class FakeRunnable(RunnableApi):
-    def __init__(self):
-        super(FakeRunnable, self).__init__()
+    def __init__(self, **kwargs):
+        super(FakeRunnable, self).__init__(**kwargs)
 
     def _run_internal(self, **kwargs):
         return dict(kwargs, m='internal')

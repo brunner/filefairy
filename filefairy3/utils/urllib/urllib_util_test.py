@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 
-from urllib_util import create_request, urlopen
-
 import mock
+import os
+import re
+import sys
 import unittest
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/utils/urllib', '', _path))
+from utils.urllib.urllib_util import create_request, urlopen  # noqa
 
 
 class UrllibUtilTest(unittest.TestCase):
-    @mock.patch('urllib_util.urllib2.urlopen')
-    @mock.patch('urllib_util.urllib.urlencode')
-    @mock.patch('urllib_util.urllib2.Request')
+    @mock.patch('utils.urllib.urllib_util.urllib2.urlopen')
+    @mock.patch('utils.urllib.urllib_util.urllib.urlencode')
+    @mock.patch('utils.urllib.urllib_util.urllib2.Request')
     def test_create_request(self, mock_request, mock_urlencode, mock_urlopen):
         mock_request.return_value = 'request'
         mock_urlencode.return_value = 'a=1&b=2'
@@ -19,9 +24,9 @@ class UrllibUtilTest(unittest.TestCase):
         mock_request.assert_called_once_with('http://url', 'a=1&b=2')
         mock_urlencode.assert_called_once_with({'a': 1, 'b': 2})
 
-    @mock.patch('urllib_util.urllib2.urlopen')
-    @mock.patch('urllib_util.urllib.urlencode')
-    @mock.patch('urllib_util.urllib2.Request')
+    @mock.patch('utils.urllib.urllib_util.urllib2.urlopen')
+    @mock.patch('utils.urllib.urllib_util.urllib.urlencode')
+    @mock.patch('utils.urllib.urllib_util.urllib2.Request')
     def test_urlopen(self, mock_request, mock_urlencode, mock_urlopen):
         mock_urlopen.return_value.read.return_value = 'response'
         actual = urlopen('http://url')

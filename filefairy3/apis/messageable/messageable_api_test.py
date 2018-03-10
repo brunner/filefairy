@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 
-from messageable_api import MessageableApi
-
+import os
+import re
+import sys
 import unittest
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/apis/messageable', '', _path))
+from apis.messageable.messageable_api import MessageableApi  # noqa
 
 
 class FakeMessageable(MessageableApi):
     var = True
 
-    def __init__(self):
-        super(FakeMessageable, self).__init__()
+    def __init__(self, **kwargs):
+        super(FakeMessageable, self).__init__(**kwargs)
 
     def _on_message_internal(self, **kwargs):
         return dict(kwargs, m='internal')

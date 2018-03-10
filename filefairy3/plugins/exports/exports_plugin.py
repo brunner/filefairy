@@ -14,8 +14,8 @@ _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
 
 class ExportsPlugin(PluginApi, SerializableApi):
-    def __init__(self):
-        super(ExportsPlugin, self).__init__()
+    def __init__(self, **kwargs):
+        super(ExportsPlugin, self).__init__(**kwargs)
 
     @staticmethod
     def _info():

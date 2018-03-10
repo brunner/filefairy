@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from plugin_api import PluginApi
-
 import os
 import re
 import sys
@@ -9,13 +7,14 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/apis/plugin', '', _path))
+from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
 
 
 class FakePlugin(PluginApi):
-    def __init__(self):
-        super(FakePlugin, self).__init__()
+    def __init__(self, **kwargs):
+        super(FakePlugin, self).__init__(**kwargs)
 
     @staticmethod
     def _info():

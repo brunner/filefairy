@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from leaguefile_plugin import LeaguefilePlugin
-
 import mock
 import os
 import re
@@ -10,6 +8,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
+from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.testing.testing_util import write  # noqa
 
 _data = LeaguefilePlugin._data()
@@ -105,8 +104,8 @@ _up_stored_stopped = {
 
 
 class LeaguefilePluginTest(unittest.TestCase):
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_empty_stored(self, mock_check, mock_post):
         mock_check.return_value = _check_stored
         data = {'fp': None, 'up': []}
@@ -118,8 +117,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_empty_started(self, mock_check, mock_post):
         mock_check.return_value = _check_started_1
         data = {'fp': None, 'up': []}
@@ -131,8 +130,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_fp_started(self, mock_check, mock_post):
         mock_check.return_value = _check_started_1
         data = {'fp': _fp_stored, 'up': []}
@@ -144,8 +143,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_up_started_diff_date(self, mock_check, mock_post):
         mock_check.return_value = _check_started_1
         data = {'fp': None, 'up': [_up_stored_diff]}
@@ -160,8 +159,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_up_started_same_date(self, mock_check, mock_post):
         mock_check.return_value = _check_started_1
         data = {'fp': None, 'up': [_up_stored_started]}
@@ -173,8 +172,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_both_started(self, mock_check, mock_post):
         mock_check.return_value = _check_started_1
         data = {'fp': _fp_stored, 'up': [_up_stored_diff]}
@@ -189,8 +188,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_empty_stopped(self, mock_check, mock_post):
         mock_check.return_value = _check_stopped
         data = {'fp': None, 'up': []}
@@ -202,8 +201,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_fp_stopped(self, mock_check, mock_post):
         mock_check.return_value = _check_stopped
         data = {'fp': _fp_stored, 'up': []}
@@ -215,8 +214,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_up_stopped_diff_date(self, mock_check, mock_post):
         mock_check.return_value = _check_stopped
         data = {'fp': None, 'up': [_up_stored_diff]}
@@ -228,8 +227,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_up_stopped_same_date(self, mock_check, mock_post):
         mock_check.return_value = _check_stopped
         data = {'fp': None, 'up': [_up_stored_stopped]}
@@ -241,8 +240,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.chat_post_message')
-    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_setup__with_both_stopped(self, mock_check, mock_post):
         mock_check.return_value = _check_stopped
         data = {'fp': _fp_stored, 'up': [_up_stored_diff]}
@@ -254,8 +253,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.check_output')
-    @mock.patch('leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     def test_run__returns(self, mock_post, mock_check):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_1,
@@ -284,8 +283,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.check_output')
-    @mock.patch('leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     def test_run__with_stored_started_fp1(self, mock_post, mock_check):
         mock_check.side_effect = [_check_stored, _check_started_1]
         data = {'fp': None, 'up': []}
@@ -298,8 +297,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.check_output')
-    @mock.patch('leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     def test_run__with_stored_started_fp95(self, mock_post, mock_check):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_95
@@ -315,8 +314,8 @@ class LeaguefilePluginTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
 
-    @mock.patch('leaguefile_plugin.check_output')
-    @mock.patch('leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     def test_run__with_stored_stopped(self, mock_post, mock_check):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_95, _check_stopped

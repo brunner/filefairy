@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 
-from nameable_api import NameableApi
-
+import os
+import re
+import sys
 import unittest
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/apis/nameable', '', _path))
+from apis.nameable.nameable_api import NameableApi  # noqa
 
 
 class FakeNameable(NameableApi):
-    def __init__(self):
-        super(FakeNameable, self).__init__()
+    def __init__(self, **kwargs):
+        super(FakeNameable, self).__init__(**kwargs)
 
     def _name(self):
         return self.__class__.__name__

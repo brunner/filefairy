@@ -20,8 +20,8 @@ _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 
 
 class LeaguefilePlugin(PluginApi, SerializableApi):
-    def __init__(self):
-        super(LeaguefilePlugin, self).__init__()
+    def __init__(self, **kwargs):
+        super(LeaguefilePlugin, self).__init__(**kwargs)
 
     @staticmethod
     def _data():

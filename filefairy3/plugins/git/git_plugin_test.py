@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 
-from git_plugin import GitPlugin
-
 import mock
+import os
+import re
+import sys
 import unittest
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/plugins/git', '', _path))
+from plugins.git.git_plugin import GitPlugin  # noqa
 
 
 class GitPluginTest(unittest.TestCase):
-    @mock.patch('git_plugin.log')
-    @mock.patch('git_plugin.check_output')
+    @mock.patch('plugins.git.git_plugin.log')
+    @mock.patch('plugins.git.git_plugin.check_output')
     def test_add(self, mock_check, mock_log):
         mock_check.return_value = ''
         mock_log.return_value = ''
@@ -24,8 +29,8 @@ class GitPluginTest(unittest.TestCase):
             'v': True
         })
 
-    @mock.patch('git_plugin.log')
-    @mock.patch('git_plugin.check_output')
+    @mock.patch('plugins.git.git_plugin.log')
+    @mock.patch('plugins.git.git_plugin.check_output')
     def test_commit(self, mock_check, mock_log):
         mock_check.return_value = '[master 0abcd0a] Auto...\n1 files\n'
         mock_log.return_value = '[master 0abcd0a] Auto...\n1 files'
@@ -43,8 +48,8 @@ class GitPluginTest(unittest.TestCase):
                 'v': True
             })
 
-    @mock.patch('git_plugin.log')
-    @mock.patch('git_plugin.check_output')
+    @mock.patch('plugins.git.git_plugin.log')
+    @mock.patch('plugins.git.git_plugin.check_output')
     def test_pull(self, mock_check, mock_log):
         mock_check.return_value = 'remote: Counting...\nUnpacking...\n'
         mock_log.return_value = 'remote: Counting...\nUnpacking...'
@@ -61,8 +66,8 @@ class GitPluginTest(unittest.TestCase):
                 'v': True
             })
 
-    @mock.patch('git_plugin.log')
-    @mock.patch('git_plugin.check_output')
+    @mock.patch('plugins.git.git_plugin.log')
+    @mock.patch('plugins.git.git_plugin.check_output')
     def test_push(self, mock_check, mock_log):
         mock_check.return_value = 'Counting...\nCompressing...\n'
         mock_log.return_value = 'Counting...\nCompressing...'
@@ -79,8 +84,8 @@ class GitPluginTest(unittest.TestCase):
                 'v': True
             })
 
-    @mock.patch('git_plugin.log')
-    @mock.patch('git_plugin.check_output')
+    @mock.patch('plugins.git.git_plugin.log')
+    @mock.patch('plugins.git.git_plugin.check_output')
     def test_reset(self, mock_check, mock_log):
         mock_check.return_value = ''
         mock_log.return_value = ''
@@ -97,8 +102,8 @@ class GitPluginTest(unittest.TestCase):
                 'v': True
             })
 
-    @mock.patch('git_plugin.log')
-    @mock.patch('git_plugin.check_output')
+    @mock.patch('plugins.git.git_plugin.log')
+    @mock.patch('plugins.git.git_plugin.check_output')
     def test_status(self, mock_check, mock_log):
         mock_check.return_value = 'On branch master\nYour branch...\n'
         mock_log.return_value = 'On branch master\nYour branch...'

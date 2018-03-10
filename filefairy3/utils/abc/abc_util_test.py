@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
-from abc_util import abstractstatic
-
 import abc
+import os
+import re
+import sys
 import unittest
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/utils/abc', '', _path))
+from utils.abc.abc_util import abstractstatic  # noqa
 
 
 class Foo(object):

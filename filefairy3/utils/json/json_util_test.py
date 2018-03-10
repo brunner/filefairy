@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
-from json_util import dumps
-
+import os
+import re
+import sys
 import unittest
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/utils/json', '', _path))
+from utils.json.json_util import dumps  # noqa
 
 
 class FakeObject(object):

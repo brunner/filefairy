@@ -12,8 +12,8 @@ from utils.subprocess.subprocess_util import check_output  # noqa
 
 
 class GitPlugin(PluginApi):
-    def __init__(self):
-        super(GitPlugin, self).__init__()
+    def __init__(self, **kwargs):
+        super(GitPlugin, self).__init__(**kwargs)
 
     @staticmethod
     def _info():

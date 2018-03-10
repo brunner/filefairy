@@ -17,8 +17,8 @@ from utils.logger.logger_util import log  # noqa
 class SerializableApi(NameableApi):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
-        super(SerializableApi, self).__init__()
+    def __init__(self, **kwargs):
+        super(SerializableApi, self).__init__(**kwargs)
         self.read()
 
     def _name(self):

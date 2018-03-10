@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 
-from serializable_api import SerializableApi
-
 import mock
 import os
+import re
+import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/apis/serializable', '', _path))
+from apis.serializable.serializable_api import SerializableApi  # noqa
 
 
 class FakeSerializable(SerializableApi):
-    def __init__(self):
-        super(FakeSerializable, self).__init__()
+    def __init__(self, **kwargs):
+        super(FakeSerializable, self).__init__(**kwargs)
 
     @staticmethod
     def _data():
@@ -19,8 +21,8 @@ class FakeSerializable(SerializableApi):
 
 
 class SerializableApiTest(unittest.TestCase):
-    @mock.patch('serializable_api.log')
-    @mock.patch('serializable_api.open', create=True)
+    @mock.patch('apis.serializable.serializable_api.log')
+    @mock.patch('apis.serializable.serializable_api.open', create=True)
     def test_init(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -32,8 +34,8 @@ class SerializableApiTest(unittest.TestCase):
         })
         self.assertEquals(serializable.data, {'a': 1, 'b': True})
 
-    @mock.patch('serializable_api.log')
-    @mock.patch('serializable_api.open', create=True)
+    @mock.patch('apis.serializable.serializable_api.log')
+    @mock.patch('apis.serializable.serializable_api.open', create=True)
     def test_read(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -51,8 +53,8 @@ class SerializableApiTest(unittest.TestCase):
         })
         self.assertEquals(serializable.data, {'a': 2, 'b': False})
 
-    @mock.patch('serializable_api.log')
-    @mock.patch('serializable_api.open', create=True)
+    @mock.patch('apis.serializable.serializable_api.log')
+    @mock.patch('apis.serializable.serializable_api.open', create=True)
     def test_write(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -73,8 +75,8 @@ class SerializableApiTest(unittest.TestCase):
         })
         self.assertEquals(serializable.data, {'a': 2, 'b': False})
 
-    @mock.patch('serializable_api.log')
-    @mock.patch('serializable_api.open', create=True)
+    @mock.patch('apis.serializable.serializable_api.log')
+    @mock.patch('apis.serializable.serializable_api.open', create=True)
     def test_dump(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)

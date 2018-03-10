@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from slack_util import chat_post_message, files_upload, rtm_connect
-
 import mock
 import os
 import re
@@ -13,11 +11,12 @@ import urllib2
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
 from secrets import filefairy  # noqa
+from utils.slack.slack_util import chat_post_message, files_upload, rtm_connect  # noqa
 
 
 class SlackUtilTest(unittest.TestCase):
-    @mock.patch('slack_util.urlopen')
-    @mock.patch('slack_util.create_request')
+    @mock.patch('utils.slack.slack_util.urlopen')
+    @mock.patch('utils.slack.slack_util.create_request')
     def test_chat_post_message(self, mock_request, mock_urlopen):
         mock_request.return_value = urllib2.Request(
             'https://slack.com/api/chat.postMessage',
@@ -42,8 +41,8 @@ class SlackUtilTest(unittest.TestCase):
             })
         mock_urlopen.assert_called_once_with(mock_request.return_value)
 
-    @mock.patch('slack_util.urlopen')
-    @mock.patch('slack_util.create_request')
+    @mock.patch('utils.slack.slack_util.urlopen')
+    @mock.patch('utils.slack.slack_util.create_request')
     def test_files_upload(self, mock_request, mock_urlopen):
         mock_request.return_value = urllib2.Request(
             'https://slack.com/api/files.upload',
@@ -66,8 +65,8 @@ class SlackUtilTest(unittest.TestCase):
             })
         mock_urlopen.assert_called_once_with(mock_request.return_value)
 
-    @mock.patch('slack_util.urlopen')
-    @mock.patch('slack_util.create_request')
+    @mock.patch('utils.slack.slack_util.urlopen')
+    @mock.patch('utils.slack.slack_util.create_request')
     def test_rtm_connect(self, mock_request, mock_urlopen):
         mock_request.return_value = urllib2.Request(
             'https://slack.com/api/rtm.connect',

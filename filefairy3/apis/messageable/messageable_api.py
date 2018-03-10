@@ -13,8 +13,8 @@ from apis.nameable.nameable_api import NameableApi  # noqa
 class MessageableApi(NameableApi):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
-        super(MessageableApi, self).__init__()
+    def __init__(self, **kwargs):
+        super(MessageableApi, self).__init__(**kwargs)
 
     def _name(self):
         return self.__class__.__name__

@@ -6,7 +6,7 @@ import abc
 class RunnableApi(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super(RunnableApi, self).__init__()
 
     @abc.abstractmethod

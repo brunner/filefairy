@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from exports_plugin import ExportsPlugin
-
 import mock
 import os
 import re
@@ -10,6 +8,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
+from plugins.exports.exports_plugin import ExportsPlugin  # noqa
 from utils.testing.testing_util import write  # noqa
 
 _data = ExportsPlugin._data()
@@ -50,7 +49,7 @@ Atlanta Braves</a><br>
 
 
 class ExportsPluginTest(unittest.TestCase):
-    @mock.patch('exports_plugin.urlopen')
+    @mock.patch('plugins.exports.exports_plugin.urlopen')
     def test_run__returns(self, mock_urlopen):
         mock_urlopen.side_effect = [
             _before + _new, _before + _new, _after + _new
@@ -96,7 +95,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('exports_plugin.urlopen')
+    @mock.patch('plugins.exports.exports_plugin.urlopen')
     def test_run__with_empty_new(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {
@@ -134,7 +133,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('exports_plugin.urlopen')
+    @mock.patch('plugins.exports.exports_plugin.urlopen')
     def test_run__with_empty_old(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _old, _after + _old]
         data = {
@@ -172,7 +171,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('exports_plugin.urlopen')
+    @mock.patch('plugins.exports.exports_plugin.urlopen')
     def test_run__with_ai_old(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _old, _after + _old]
         data = {
@@ -210,7 +209,7 @@ class ExportsPluginTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    @mock.patch('exports_plugin.urlopen')
+    @mock.patch('plugins.exports.exports_plugin.urlopen')
     def test_run__with_form_new(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {
