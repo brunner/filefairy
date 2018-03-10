@@ -7,7 +7,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
-from secrets import filefairy  # noqa
+from utils.secrets.secrets_util import filefairy  # noqa
 from utils.urllib.urllib_util import urlopen, create_request  # noqa
 
 

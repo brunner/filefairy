@@ -9,7 +9,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
-from secrets import server  # noqa
+from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
