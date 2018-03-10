@@ -161,13 +161,9 @@ class FairylabProgramTest(unittest.TestCase):
         mock_run.assert_not_called()
         mock_log.assert_not_called()
 
-    @mock.patch('programs.fairylab.fairylab_program.websocket.WebSocketApp')
     @mock.patch.object(FairylabProgram, '_try')
-    @mock.patch('programs.fairylab.fairylab_program.rtm_connect')
     @mock.patch.object(FairylabProgram, '_on_message')
-    def test_connect(self, mock_message, mock_rtm, mock_try, mock_ws):
-        mock_rtm.return_value = {'ok': True, 'url': 'wss://...'}
-        mock_ws.side_effect = FakeWebSocketApp
+    def test_recv(self, mock_message, mock_try):
         data = {'plugins': {}}
         original = write(_data, data)
         fairylab = FairylabProgram()
@@ -177,8 +173,7 @@ class FairylabProgramTest(unittest.TestCase):
             'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
-        fairylab._connect()
-        fairylab.ws.send(
+        fairylab._recv(
             '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
         expected = {
             'type': 'message',
@@ -200,6 +195,25 @@ class FairylabProgramTest(unittest.TestCase):
             }
         }
         self.assertEqual(actual, expected)
+
+    @mock.patch('programs.fairylab.fairylab_program.websocket.WebSocketApp')
+    @mock.patch('programs.fairylab.fairylab_program.rtm_connect')
+    @mock.patch.object(FairylabProgram, '_recv')
+    def test_connect(self, mock_recv, mock_rtm, mock_ws):
+        mock_rtm.return_value = {'ok': True, 'url': 'wss://...'}
+        mock_ws.side_effect = FakeWebSocketApp
+        fairylab = FairylabProgram()
+        fairylab.data['plugins']['fake'] = {
+            'ok': True,
+            'date': datetime.datetime.now(),
+            'instance': FakePlugin(e=jinja2.Environment()),
+            'info': 'Description.'
+        }
+        fairylab._connect()
+        fairylab.ws.send(
+            '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
+        mock_recv.assert_called_once_with(
+            '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
 
     @mock.patch.object(FairylabProgram, '_try')
     @mock.patch('programs.fairylab.fairylab_program.time.sleep')
