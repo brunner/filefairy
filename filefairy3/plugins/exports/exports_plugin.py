@@ -18,6 +18,10 @@ class ExportsPlugin(PluginApi, SerializableApi):
         super(ExportsPlugin, self).__init__(**kwargs)
 
     @staticmethod
+    def _data():
+        return os.path.join(_path, 'data.json')
+
+    @staticmethod
     def _info():
         return 'Tracks how often each player submits exports.'
 
@@ -51,10 +55,6 @@ class ExportsPlugin(PluginApi, SerializableApi):
             return True
         else:
             self.exports = self._exports(text)
-
-    @staticmethod
-    def _data():
-        return os.path.join(_path, 'data.json')
 
     @staticmethod
     def _file_date(text):
