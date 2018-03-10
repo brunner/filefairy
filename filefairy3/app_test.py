@@ -3,6 +3,7 @@
 from app import App
 
 import datetime
+import jinja2
 import mock
 import os
 import sys
@@ -18,8 +19,9 @@ _data = App._data()
 class FakePlugin(PluginApi):
     var = True
 
-    def __init__(self):
-        super(FakePlugin, self).__init__()
+    def __init__(self, **kwargs):
+        super(FakePlugin, self).__init__(**kwargs)
+        self.environment = kwargs.get('e', None)
 
     @staticmethod
     def _info():
@@ -60,6 +62,7 @@ class AppTest(unittest.TestCase):
     def test_init(self):
         app = App()
         self.assertEqual(app.data, {'plugins': {}})
+        self.assertIsNotNone(app.environment)
         self.assertTrue(app.keep_running)
         self.assertEqual(app.sleep, 120)
         self.assertEqual(app.ws, None)
@@ -85,7 +88,7 @@ class AppTest(unittest.TestCase):
         app.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(),
+            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
         app._try('fake', '_run_internal', a=1, b=True)
@@ -107,14 +110,14 @@ class AppTest(unittest.TestCase):
         app.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(),
+            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
         app._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
         mock_datetime.datetime.now.assert_called_once_with()
         mock_log.assert_called_once_with(
-            'FakePlugin', s='Exception.', r='Traceback: ...', v=True)
+            'FakePlugin', c='Traceback: ...', s='Exception.', v=True)
         self.assertFalse(app.data['plugins']['fake']['ok'])
         self.assertEqual(app.data['plugins']['fake']['info'], 'Description.')
 
@@ -133,7 +136,7 @@ class AppTest(unittest.TestCase):
         app.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(),
+            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
         app._try('fake', 'foo', a=1, b=True)
@@ -147,7 +150,7 @@ class AppTest(unittest.TestCase):
         app.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(),
+            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
         app._try('fake', 'var', a=1, b=True)
@@ -167,7 +170,7 @@ class AppTest(unittest.TestCase):
         app.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(),
+            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
         app._connect()
@@ -197,15 +200,17 @@ class AppTest(unittest.TestCase):
     @mock.patch.object(App, '_try')
     @mock.patch('app.time.sleep')
     @mock.patch('app.log')
+    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch.object(App, '_connect')
-    def test_start(self, mock_connect, mock_log, mock_sleep, mock_try):
+    def test_start(self, mock_connect, mock_dump, mock_log, mock_sleep,
+                   mock_try):
         data = {'plugins': {}}
         original = write(_data, data)
         app = App()
         app.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(),
+            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
         mock_sleep.side_effect = lambda s: app.shutdown()
@@ -224,6 +229,37 @@ class AppTest(unittest.TestCase):
             }
         }
         self.assertEqual(actual, expected)
+
+    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
+    @mock.patch('app.delta')
+    @mock.patch('app.datetime')
+    def test_render(self, mock_datetime, mock_delta, mock_dump):
+        then = datetime.datetime(1985, 10, 26, 0, 0, 0)
+        now = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_datetime.datetime.now.return_value = now
+        mock_delta.return_value = '2m ago'
+        data = {'plugins': {}}
+        original = write(_data, data)
+        app = App()
+        app.data['plugins']['fake'] = {
+            'ok': True,
+            'date': then,
+            'instance': FakePlugin(e=jinja2.Environment()),
+            'info': 'Description.'
+        }
+        actual = app._render_internal()
+        expected = {
+            'title': 'app',
+            'plugins': {
+                'fake': {
+                    'ok': True,
+                    'date': '2m ago',
+                    'info': 'Description.'
+                }
+            }
+        }
+        self.assertEqual(actual, expected)
+        write(_data, original)
 
     @mock.patch.object(FakePlugin, '_setup')
     @mock.patch('app.log')
@@ -254,6 +290,10 @@ class AppTest(unittest.TestCase):
             }
         }
         self.assertEqual(actual, expected)
+        self.assertIsNotNone(app.data['plugins']['fake']['instance'])
+        self.assertIsInstance(
+            app.data['plugins']['fake']['instance'].environment,
+            jinja2.Environment)
 
     @mock.patch.object(FakePlugin, '_setup')
     @mock.patch('app.log')
@@ -272,8 +312,8 @@ class AppTest(unittest.TestCase):
         mock_log.assert_called_once_with(
             'FakePlugin',
             a1='fake',
+            c='Traceback: ...',
             s='Exception.',
-            r='Traceback: ...',
             v=True)
         mock_setup.assert_not_called()
         mock_exc.assert_called_once_with()
@@ -289,6 +329,7 @@ class AppTest(unittest.TestCase):
             }
         }
         self.assertEqual(actual, expected)
+        self.assertIsNone(app.data['plugins']['fake']['instance'])
 
     @mock.patch('app.log')
     @mock.patch('app.os.execv')

@@ -3,6 +3,7 @@
 import copy
 import datetime
 import importlib
+import jinja2
 import json
 import os
 import sys
@@ -12,18 +13,21 @@ import traceback
 import websocket
 
 from apis.messageable.messageable_api import MessageableApi
-from apis.serializable.serializable_api import SerializableApi
+from apis.renderable.renderable_api import RenderableApi
+from utils.ago.ago_util import delta
 from utils.logger.logger_util import log
 from utils.slack.slack_util import rtm_connect
 
 _path = os.path.dirname(os.path.abspath(__file__))
 
 
-class App(MessageableApi, SerializableApi):
+class App(MessageableApi, RenderableApi):
     def __init__(self):
         super(App, self).__init__()
 
         self.data = {'plugins': {}}
+        self.environment = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(os.path.join(_path, 'templates')))
         self.keep_running = True
         self.lock = threading.Lock()
         self.sleep = 120
@@ -31,6 +35,20 @@ class App(MessageableApi, SerializableApi):
 
     def _on_message_internal(self, **kwargs):
         pass
+
+    def _render_internal(self, **kwargs):
+        date = datetime.datetime.now()
+        ret = copy.deepcopy(self.data)
+        ret['title'] = 'app'
+
+        ps = ret['plugins'].keys()
+        for p in ps:
+            del ret['plugins'][p]['instance']
+            pdate = ret['plugins'][p]['date']
+            t = delta(pdate, date)
+            ret['plugins'][p]['date'] = t
+
+        return ret
 
     def _setup(self):
         d = os.path.join(_path, 'plugins')
@@ -53,7 +71,7 @@ class App(MessageableApi, SerializableApi):
                 data['plugins'][p]['date'] = datetime.datetime.now()
         except Exception:
             exc = traceback.format_exc()
-            log(plugin._name(), s='Exception.', r=exc, v=True)
+            log(plugin._name(), s='Exception.', c=exc, v=True)
             data['plugins'][p]['ok'] = False
             data['plugins'][p]['date'] = datetime.datetime.now()
 
@@ -96,6 +114,7 @@ class App(MessageableApi, SerializableApi):
                     self._try(p, '_run')
             if data != original:
                 self.write()
+            self._render()
             self.lock.release()
             time.sleep(self.sleep)
 
@@ -118,20 +137,21 @@ class App(MessageableApi, SerializableApi):
         date = datetime.datetime.now()
         try:
             ok = True
-            plugin = getattr(importlib.import_module(path), clazz)()
+            plugin = getattr(importlib.import_module(path), clazz)
+            instance = plugin(**dict(kwargs, e=self.environment))
             info = plugin._info()
             log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception:
             ok = False
-            plugin = None
+            instance = None
             info = ''
             exc = traceback.format_exc()
-            log(clazz, **dict(kwargs, s='Exception.', r=exc, v=True))
+            log(clazz, **dict(kwargs, s='Exception.', c=exc, v=True))
 
         data['plugins'][p] = {
             'ok': ok,
             'date': date,
-            'instance': plugin,
+            'instance': instance,
             'info': info,
         }
 
@@ -151,6 +171,14 @@ class App(MessageableApi, SerializableApi):
     @staticmethod
     def _data():
         return os.path.join(_path, 'data.json')
+
+    @staticmethod
+    def _html():
+        return os.path.join(_path, 'html/index.html')
+
+    @staticmethod
+    def _tmpl():
+        return 'app.html'
 
 
 if __name__ == '__main__':
