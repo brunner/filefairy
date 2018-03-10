@@ -23,6 +23,14 @@ class LeaguefilePlugin(PluginApi, SerializableApi):
     def __init__(self):
         super(LeaguefilePlugin, self).__init__()
 
+    @staticmethod
+    def _data():
+        return os.path.join(_path, 'data.json')
+
+    @staticmethod
+    def _info():
+        return 'Reports the progress of the league file upload.'
+
     def _setup(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
@@ -76,7 +84,3 @@ class LeaguefilePlugin(PluginApi, SerializableApi):
             match = re.findall(_line_pattern, line)
             if match:
                 yield match[0] + (fp,)
-
-    @staticmethod
-    def _data():
-        return os.path.join(_path, 'data.json')

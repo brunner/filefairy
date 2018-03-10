@@ -114,10 +114,14 @@ class App(MessageableApi, SerializableApi):
 
         try:
             plugin = getattr(importlib.import_module(path), clazz)()
-            data['plugins'][p] = {'ok': True, 'instance': plugin}
+            data['plugins'][p] = {
+                'ok': True,
+                'instance': plugin,
+                'info': plugin._info()
+            }
             log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception:
-            data['plugins'][p] = {'ok': False, 'instance': None}
+            data['plugins'][p] = {'ok': False, 'instance': None, 'info': ''}
             exc = traceback.format_exc()
             log(clazz, **dict(kwargs, s='Exception.', r=exc, v=True))
 

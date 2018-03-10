@@ -20,6 +20,10 @@ class FakePlugin(PluginApi):
     def __init__(self):
         super(FakePlugin, self).__init__()
 
+    @staticmethod
+    def _info():
+        return 'Description.'
+
     def _setup(self, **kwargs):
         pass
 
@@ -76,11 +80,16 @@ class AppTest(unittest.TestCase):
     @mock.patch('app.log')
     def test_try__with_valid_input(self, mock_log, mock_run):
         app = App()
-        app.data['plugins']['fake'] = {'ok': True, 'instance': FakePlugin()}
+        app.data['plugins']['fake'] = {
+            'ok': True,
+            'instance': FakePlugin(),
+            'info': 'Description.'
+        }
         app._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
         mock_log.assert_not_called()
         self.assertTrue(app.data['plugins']['fake']['ok'])
+        self.assertEqual(app.data['plugins']['fake']['info'], 'Description.')
 
     @mock.patch.object(FakePlugin, '_run_internal')
     @mock.patch('app.log')
@@ -89,12 +98,17 @@ class AppTest(unittest.TestCase):
         mock_exc.return_value = 'Traceback: ...'
         mock_run.side_effect = Exception()
         app = App()
-        app.data['plugins']['fake'] = {'ok': True, 'instance': FakePlugin()}
+        app.data['plugins']['fake'] = {
+            'ok': True,
+            'instance': FakePlugin(),
+            'info': 'Description.'
+        }
         app._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
         mock_log.assert_called_once_with(
             'FakePlugin', s='Exception.', r='Traceback: ...', v=True)
         self.assertFalse(app.data['plugins']['fake']['ok'])
+        self.assertEqual(app.data['plugins']['fake']['info'], 'Description.')
 
     @mock.patch.object(FakePlugin, '_run_internal')
     @mock.patch('app.log')
@@ -108,7 +122,11 @@ class AppTest(unittest.TestCase):
     @mock.patch('app.log')
     def test_try__with_invalid_attr(self, mock_log, mock_run):
         app = App()
-        app.data['plugins']['fake'] = {'ok': True, 'instance': FakePlugin()}
+        app.data['plugins']['fake'] = {
+            'ok': True,
+            'instance': FakePlugin(),
+            'info': 'Description.'
+        }
         app._try('fake', 'foo', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
@@ -117,7 +135,11 @@ class AppTest(unittest.TestCase):
     @mock.patch('app.log')
     def test_try__with_invalid_callable(self, mock_log, mock_run):
         app = App()
-        app.data['plugins']['fake'] = {'ok': True, 'instance': FakePlugin()}
+        app.data['plugins']['fake'] = {
+            'ok': True,
+            'instance': FakePlugin(),
+            'info': 'Description.'
+        }
         app._try('fake', 'var', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
@@ -132,7 +154,11 @@ class AppTest(unittest.TestCase):
         data = {'plugins': {}}
         original = write(_data, data)
         app = App()
-        app.data['plugins']['fake'] = {'ok': True, 'instance': FakePlugin()}
+        app.data['plugins']['fake'] = {
+            'ok': True,
+            'instance': FakePlugin(),
+            'info': 'Description.'
+        }
         app._connect()
         app.ws.send(
             '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
@@ -145,7 +171,15 @@ class AppTest(unittest.TestCase):
         mock_message.assert_called_once_with(obj=expected)
         mock_try.assert_called_once_with('fake', '_on_message', obj=expected)
         actual = write(_data, original)
-        expected = {'plugins': {'fake': {'ok': True, 'instance': ''}}}
+        expected = {
+            'plugins': {
+                'fake': {
+                    'ok': True,
+                    'instance': '',
+                    'info': 'Description.'
+                }
+            }
+        }
         self.assertEqual(actual, expected)
 
     @mock.patch.object(App, '_try')
@@ -156,13 +190,25 @@ class AppTest(unittest.TestCase):
         data = {'plugins': {}}
         original = write(_data, data)
         app = App()
-        app.data['plugins']['fake'] = {'ok': True, 'instance': FakePlugin()}
+        app.data['plugins']['fake'] = {
+            'ok': True,
+            'instance': FakePlugin(),
+            'info': 'Description.'
+        }
         mock_sleep.side_effect = lambda s: app.shutdown()
         app._start()
         mock_connect.assert_called_once_with()
         mock_try.assert_called_once_with('fake', '_run')
         actual = write(_data, original)
-        expected = {'plugins': {'fake': {'ok': True, 'instance': ''}}}
+        expected = {
+            'plugins': {
+                'fake': {
+                    'ok': True,
+                    'instance': '',
+                    'info': 'Description.'
+                }
+            }
+        }
         self.assertEqual(actual, expected)
 
     @mock.patch.object(FakePlugin, '_setup')
@@ -183,7 +229,15 @@ class AppTest(unittest.TestCase):
         mock_setup.assert_called_once_with()
         mock_exc.assert_not_called()
         actual = write(_data, original)
-        expected = {'plugins': {'fake': {'ok': True, 'instance': ''}}}
+        expected = {
+            'plugins': {
+                'fake': {
+                    'ok': True,
+                    'instance': '',
+                    'info': 'Description.'
+                }
+            }
+        }
         self.assertEqual(actual, expected)
 
     @mock.patch.object(FakePlugin, '_setup')
@@ -209,7 +263,15 @@ class AppTest(unittest.TestCase):
         mock_setup.assert_not_called()
         mock_exc.assert_called_once_with()
         actual = write(_data, original)
-        expected = {'plugins': {'fake': {'ok': False, 'instance': None}}}
+        expected = {
+            'plugins': {
+                'fake': {
+                    'ok': False,
+                    'instance': None,
+                    'info': ''
+                }
+            }
+        }
         self.assertEqual(actual, expected)
 
     @mock.patch('app.log')

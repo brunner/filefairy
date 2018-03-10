@@ -9,6 +9,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/apis/plugin', '', _path))
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
+from utils.abc.abc_util import abstractstatic  # noqa
 
 
 class PluginApi(MessageableApi, RunnableApi):
@@ -16,6 +17,10 @@ class PluginApi(MessageableApi, RunnableApi):
 
     def __init__(self):
         super(PluginApi, self).__init__()
+
+    @abstractstatic
+    def _info():
+        pass
 
     @abc.abstractmethod
     def _setup(self, **kwargs):

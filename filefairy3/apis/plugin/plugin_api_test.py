@@ -17,6 +17,10 @@ class FakePlugin(PluginApi):
     def __init__(self):
         super(FakePlugin, self).__init__()
 
+    @staticmethod
+    def _info():
+        return 'Description.'
+
     def _setup(self, **kwargs):
         pass
 

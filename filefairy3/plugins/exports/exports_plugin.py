@@ -17,6 +17,10 @@ class ExportsPlugin(PluginApi, SerializableApi):
     def __init__(self):
         super(ExportsPlugin, self).__init__()
 
+    @staticmethod
+    def _info():
+        return 'Tracks how often each player submits exports.'
+
     def _setup(self):
         text = urlopen(_url)
         self.file_date = self._file_date(text)
