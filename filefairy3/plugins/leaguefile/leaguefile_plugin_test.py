@@ -105,8 +105,6 @@ _up_stored_stopped = {
 
 
 class LeaguefilePluginTest(unittest.TestCase):
-    maxDiff = None
-
     @mock.patch('leaguefile_plugin.chat_post_message')
     @mock.patch('leaguefile_plugin.check_output')
     def test_setup__with_empty_stored(self, mock_check, mock_post):
