@@ -45,7 +45,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
     @staticmethod
     def _tmpl():
-        return 'app.html'
+        return 'home.html'
 
     def _on_message_internal(self, **kwargs):
         pass
