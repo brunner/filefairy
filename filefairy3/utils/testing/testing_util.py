@@ -16,6 +16,7 @@ def write(fname, data):
 
         f.seek(0)
         f.write(dumps(data))
+        f.write('\n')
         f.truncate()
 
         return original
