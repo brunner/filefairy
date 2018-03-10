@@ -258,6 +258,36 @@ class LeaguefilePluginTest(unittest.TestCase):
 
     @mock.patch('leaguefile_plugin.check_output')
     @mock.patch('leaguefile_plugin.chat_post_message')
+    def test_run__returns(self, mock_post, mock_check):
+        mock_check.side_effect = [
+            _check_stored, _check_started_1, _check_started_1,
+            _check_started_95
+        ]
+        data = {'fp': None, 'up': []}
+        original = write(_data, data)
+        plugin = LeaguefilePlugin()
+        plugin._setup()
+        ret = plugin._run()
+        self.assertTrue(ret)
+        actual = write(_data, original)
+        expected = {'fp': _fp_started_1, 'up': [_up_stored]}
+        self.assertEqual(actual, expected)
+        write(_data, actual)
+        ret = plugin._run()
+        self.assertFalse(ret)
+        actual = write(_data, original)
+        expected = {'fp': _fp_started_1, 'up': [_up_stored]}
+        self.assertEqual(actual, expected)
+        write(_data, actual)
+        ret = plugin._run()
+        self.assertTrue(ret)
+        actual = write(_data, original)
+        expected = {'fp': _fp_started_95, 'up': [_up_stored]}
+        self.assertEqual(actual, expected)
+        mock_post.assert_not_called()
+
+    @mock.patch('leaguefile_plugin.check_output')
+    @mock.patch('leaguefile_plugin.chat_post_message')
     def test_run__with_stored_started_fp1(self, mock_post, mock_check):
         mock_check.side_effect = [_check_stored, _check_started_1]
         data = {'fp': None, 'up': []}

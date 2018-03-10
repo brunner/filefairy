@@ -14,7 +14,8 @@ class GitPluginTest(unittest.TestCase):
         mock_log.return_value = ''
         data = {'a1': '', 'v': True}
         plugin = GitPlugin()
-        plugin.add(**data)
+        ret = plugin.add(**data)
+        self.assertTrue(ret)
         mock_check.assert_called_once_with(['git', 'add', '.'])
         mock_log.assert_called_once_with(plugin._name(), **{
             'a1': '',
@@ -30,7 +31,8 @@ class GitPluginTest(unittest.TestCase):
         mock_log.return_value = '[master 0abcd0a] Auto...\n1 files'
         data = {'a1': '', 'v': True}
         plugin = GitPlugin()
-        plugin.commit(**data)
+        ret = plugin.commit(**data)
+        self.assertTrue(ret)
         mock_check.assert_called_once_with(
             ['git', 'commit', '-m', 'Automated data push.'])
         mock_log.assert_called_once_with(
@@ -48,7 +50,8 @@ class GitPluginTest(unittest.TestCase):
         mock_log.return_value = 'remote: Counting...\nUnpacking...'
         data = {'a1': '', 'v': True}
         plugin = GitPlugin()
-        plugin.pull(**data)
+        ret = plugin.pull(**data)
+        self.assertTrue(ret)
         mock_check.assert_called_once_with(['git', 'pull'])
         mock_log.assert_called_once_with(
             plugin._name(), **{
@@ -65,7 +68,8 @@ class GitPluginTest(unittest.TestCase):
         mock_log.return_value = 'Counting...\nCompressing...'
         data = {'a1': '', 'v': True}
         plugin = GitPlugin()
-        plugin.push(**data)
+        ret = plugin.push(**data)
+        self.assertTrue(ret)
         mock_check.assert_called_once_with(['git', 'push', 'origin', 'master'])
         mock_log.assert_called_once_with(
             plugin._name(), **{
@@ -82,7 +86,8 @@ class GitPluginTest(unittest.TestCase):
         mock_log.return_value = ''
         data = {'a1': '', 'v': True}
         plugin = GitPlugin()
-        plugin.reset(**data)
+        ret = plugin.reset(**data)
+        self.assertTrue(ret)
         mock_check.assert_called_once_with(['git', 'reset', '--hard'])
         mock_log.assert_called_once_with(
             plugin._name(), **{
@@ -99,7 +104,8 @@ class GitPluginTest(unittest.TestCase):
         mock_log.return_value = 'On branch master\nYour branch...'
         data = {'a1': '', 'v': True}
         plugin = GitPlugin()
-        plugin.status(**data)
+        ret = plugin.status(**data)
+        self.assertTrue(ret)
         mock_check.assert_called_once_with(['git', 'status'])
         mock_log.assert_called_once_with(
             plugin._name(), **{

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import copy
+import datetime
 import importlib
 import json
 import os
@@ -48,11 +49,13 @@ class App(MessageableApi, SerializableApi):
             return
 
         try:
-            item(**kwargs)
+            if item(**kwargs):
+                data['plugins'][p]['date'] = datetime.datetime.now()
         except Exception:
             exc = traceback.format_exc()
             log(plugin._name(), s='Exception.', r=exc, v=True)
             data['plugins'][p]['ok'] = False
+            data['plugins'][p]['date'] = datetime.datetime.now()
 
     def _connect(self):
         def _on_message(ws, message):
@@ -112,18 +115,25 @@ class App(MessageableApi, SerializableApi):
             data['plugins']['ok'] = False
             del sys.modules[path]
 
+        date = datetime.datetime.now()
         try:
+            ok = True
             plugin = getattr(importlib.import_module(path), clazz)()
-            data['plugins'][p] = {
-                'ok': True,
-                'instance': plugin,
-                'info': plugin._info()
-            }
+            info = plugin._info()
             log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception:
-            data['plugins'][p] = {'ok': False, 'instance': None, 'info': ''}
+            ok = False
+            plugin = None
+            info = ''
             exc = traceback.format_exc()
             log(clazz, **dict(kwargs, s='Exception.', r=exc, v=True))
+
+        data['plugins'][p] = {
+            'ok': ok,
+            'date': date,
+            'instance': plugin,
+            'info': info,
+        }
 
         self._try(p, '_setup')
 

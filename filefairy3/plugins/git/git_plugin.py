@@ -30,7 +30,8 @@ class GitPlugin(PluginApi):
 
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')
-        return log(self._name(), **dict(kwargs, r=d, s='Call completed.'))
+        log(self._name(), **dict(kwargs, r=d, s='Call completed.'))
+        return True
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], kwargs)

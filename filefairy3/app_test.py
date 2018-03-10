@@ -2,6 +2,7 @@
 
 from app import App
 
+import datetime
 import mock
 import os
 import sys
@@ -28,10 +29,10 @@ class FakePlugin(PluginApi):
         pass
 
     def _on_message_internal(self, **kwargs):
-        pass
+        return True
 
     def _run_internal(self, **kwargs):
-        pass
+        return True
 
 
 class FakeWebSocketApp(object):
@@ -78,15 +79,18 @@ class AppTest(unittest.TestCase):
 
     @mock.patch.object(FakePlugin, '_run_internal')
     @mock.patch('app.log')
-    def test_try__with_valid_input(self, mock_log, mock_run):
+    @mock.patch('app.datetime')
+    def test_try__with_valid_input(self, mock_datetime, mock_log, mock_run):
         app = App()
         app.data['plugins']['fake'] = {
             'ok': True,
+            'date': datetime.datetime.now(),
             'instance': FakePlugin(),
             'info': 'Description.'
         }
         app._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
+        mock_datetime.datetime.now.assert_called_once_with()
         mock_log.assert_not_called()
         self.assertTrue(app.data['plugins']['fake']['ok'])
         self.assertEqual(app.data['plugins']['fake']['info'], 'Description.')
@@ -94,17 +98,21 @@ class AppTest(unittest.TestCase):
     @mock.patch.object(FakePlugin, '_run_internal')
     @mock.patch('app.log')
     @mock.patch('app.traceback.format_exc')
-    def test_try__with_thrown_exception(self, mock_exc, mock_log, mock_run):
+    @mock.patch('app.datetime')
+    def test_try__with_thrown_exception(self, mock_datetime, mock_exc,
+                                        mock_log, mock_run):
         mock_exc.return_value = 'Traceback: ...'
         mock_run.side_effect = Exception()
         app = App()
         app.data['plugins']['fake'] = {
             'ok': True,
+            'date': datetime.datetime.now(),
             'instance': FakePlugin(),
             'info': 'Description.'
         }
         app._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
+        mock_datetime.datetime.now.assert_called_once_with()
         mock_log.assert_called_once_with(
             'FakePlugin', s='Exception.', r='Traceback: ...', v=True)
         self.assertFalse(app.data['plugins']['fake']['ok'])
@@ -124,6 +132,7 @@ class AppTest(unittest.TestCase):
         app = App()
         app.data['plugins']['fake'] = {
             'ok': True,
+            'date': datetime.datetime.now(),
             'instance': FakePlugin(),
             'info': 'Description.'
         }
@@ -137,6 +146,7 @@ class AppTest(unittest.TestCase):
         app = App()
         app.data['plugins']['fake'] = {
             'ok': True,
+            'date': datetime.datetime.now(),
             'instance': FakePlugin(),
             'info': 'Description.'
         }
@@ -156,6 +166,7 @@ class AppTest(unittest.TestCase):
         app = App()
         app.data['plugins']['fake'] = {
             'ok': True,
+            'date': datetime.datetime.now(),
             'instance': FakePlugin(),
             'info': 'Description.'
         }
@@ -175,6 +186,7 @@ class AppTest(unittest.TestCase):
             'plugins': {
                 'fake': {
                     'ok': True,
+                    'date': '',
                     'instance': '',
                     'info': 'Description.'
                 }
@@ -192,6 +204,7 @@ class AppTest(unittest.TestCase):
         app = App()
         app.data['plugins']['fake'] = {
             'ok': True,
+            'date': datetime.datetime.now(),
             'instance': FakePlugin(),
             'info': 'Description.'
         }
@@ -204,6 +217,7 @@ class AppTest(unittest.TestCase):
             'plugins': {
                 'fake': {
                     'ok': True,
+                    'date': '',
                     'instance': '',
                     'info': 'Description.'
                 }
@@ -233,6 +247,7 @@ class AppTest(unittest.TestCase):
             'plugins': {
                 'fake': {
                     'ok': True,
+                    'date': '',
                     'instance': '',
                     'info': 'Description.'
                 }
@@ -267,6 +282,7 @@ class AppTest(unittest.TestCase):
             'plugins': {
                 'fake': {
                     'ok': False,
+                    'date': '',
                     'instance': None,
                     'info': ''
                 }

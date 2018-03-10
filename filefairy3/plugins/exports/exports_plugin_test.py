@@ -51,6 +51,52 @@ Atlanta Braves</a><br>
 
 class ExportsPluginTest(unittest.TestCase):
     @mock.patch('exports_plugin.urlopen')
+    def test_run__returns(self, mock_urlopen):
+        mock_urlopen.side_effect = [
+            _before + _new, _before + _new, _after + _new
+        ]
+        data = {
+            '31': {
+                'ai': False,
+                'form': [],
+                'new': 0,
+                'old': 0
+            },
+            '32': {
+                'ai': False,
+                'form': [],
+                'new': 0,
+                'old': 0
+            }
+        }
+        original = write(_data, data)
+        plugin = ExportsPlugin()
+        plugin._setup()
+        ret = plugin._run()
+        self.assertFalse(ret)
+        actual = write(_data, original)
+        self.assertEqual(actual, data)
+        write(_data, actual)
+        ret = plugin._run()
+        self.assertTrue(ret)
+        actual = write(_data, original)
+        expected = {
+            '31': {
+                'ai': False,
+                'form': ['new'],
+                'new': 1,
+                'old': 0
+            },
+            '32': {
+                'ai': False,
+                'form': ['old'],
+                'new': 0,
+                'old': 1
+            }
+        }
+        self.assertEqual(actual, expected)
+
+    @mock.patch('exports_plugin.urlopen')
     def test_run__with_empty_new(self, mock_urlopen):
         mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {

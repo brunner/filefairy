@@ -73,6 +73,7 @@ class LeaguefilePlugin(PluginApi, SerializableApi):
 
         if data != original:
             self.write()
+            return True
 
     @staticmethod
     def _check():

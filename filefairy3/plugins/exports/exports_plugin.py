@@ -48,6 +48,7 @@ class ExportsPlugin(PluginApi, SerializableApi):
                         data[teamid]['form'].pop(0)
             self.file_date = file_date
             self.write()
+            return True
         else:
             self.exports = self._exports(text)
 
