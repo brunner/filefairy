@@ -42,7 +42,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
     @staticmethod
     def _html():
-        return os.path.join(_root, 'html/index.html')
+        return 'index.html'
 
     @staticmethod
     def _tmpl():
