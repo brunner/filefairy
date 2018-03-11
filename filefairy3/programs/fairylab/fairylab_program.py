@@ -18,6 +18,7 @@ _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
 
 from apis.messageable.messageable_api import MessageableApi  # noqa
+from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.logger.logger_util import log  # noqa
@@ -53,23 +54,45 @@ class FairylabProgram(MessageableApi, RenderableApi):
         pass
 
     def _render_internal(self, **kwargs):
-        date = datetime.datetime.now()
-        ret = copy.deepcopy(self.data)
-        ret['title'] = 'home'
-        ret['breadcrumbs'] = [{'href': '', 'name': 'Home'}]
+        data = self.data
+        ret = {
+            'title':
+            'home',
+            'breadcrumbs': [{
+                'href': '',
+                'name': 'Home'
+            }],
+            'browsable': [],
+            'internal': []
+        }
 
-        ps = ret['plugins'].keys()
+        date = datetime.datetime.now()
+        ps = data['plugins'].keys()
         for p in ps:
-            pdate = ret['plugins'][p]['date']
-            t = delta(pdate, date)
-            ret['plugins'][p]['date'] = t
+            instance = self.pins.get(p, None)
+            info = ''
+            if isinstance(instance, PluginApi):
+                info = instance._info()
 
             href = ''
-            instance = self.pins.get(p, None)
-            if isinstance(instance, RenderableApi):
+            renderable = isinstance(instance, RenderableApi)
+            if renderable:
                 html = instance._html()
                 href = '/fairylab/' + re.sub('index.html', '', html)
-            ret['plugins'][p]['href'] = href
+
+            pdate = data['plugins'][p]['date']
+            plugin = {
+                'name': p,
+                'ok': data['plugins'][p]['ok'],
+                'info': info,
+                'delta': delta(pdate, date),
+                'href': href
+            }
+
+            if renderable:
+                ret['browsable'].append(plugin)
+            else:
+                ret['internal'].append(plugin)
 
         return ret
 
@@ -171,21 +194,18 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         date = datetime.datetime.now()
         try:
-            plugin = getattr(importlib.import_module(path), clazz)
-            info = plugin._info()
             ok = True
+            plugin = getattr(importlib.import_module(path), clazz)
             instance = plugin(**dict(kwargs, e=self.environment))
             log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception:
-            info = ''
             ok = False
-            exc = traceback.format_exc()
             instance = None
+            exc = traceback.format_exc()
             log(clazz, **dict(kwargs, s='Exception.', c=exc, v=True))
 
         data['plugins'][p] = {
             'date': date,
-            'info': info,
             'ok': ok,
         }
 
