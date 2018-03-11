@@ -17,7 +17,7 @@ class GitPlugin(PluginApi):
 
     @staticmethod
     def _info():
-        return 'Exposes git commands to app admins.'
+        return 'Exposes git commands to program admins.'
 
     def _setup(self, **kwargs):
         pass
