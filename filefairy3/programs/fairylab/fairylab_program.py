@@ -67,7 +67,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
             href = ''
             instance = self.pins.get(p, None)
             if isinstance(instance, RenderableApi):
-                href = '/' + re.sub('index.html', '', instance._html())
+                html = instance._html()
+                href = '/fairylab/' + re.sub('index.html', '', html)
             ret['plugins'][p]['href'] = href
 
         return ret

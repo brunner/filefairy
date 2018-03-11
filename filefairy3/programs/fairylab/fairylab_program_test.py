@@ -275,7 +275,7 @@ class FairylabProgramTest(unittest.TestCase):
                 'fake': {
                     'ok': True,
                     'date': '2m ago',
-                    'href': '/fake/',
+                    'href': '/fairylab/fake/',
                     'info': 'Description.'
                 }
             }
