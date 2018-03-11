@@ -10,7 +10,11 @@
               <p class="card-text flex-grow">{{ value.info }}</p>
             </div>
             <div class="card-footer">
-              <small class="text-muted">Last activity: {{ value.date }}</small>
+              <small class="text-muted">Last activity: {{ value.date }}
+                {%- if not value.ok -%}
+                <span class="text-danger"> (error)</span>
+                {%- endif -%}
+              </small>
             </div>
           </div>
         </div>

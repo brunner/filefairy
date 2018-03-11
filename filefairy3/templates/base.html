@@ -51,9 +51,8 @@
             <a href="breadcrumb.href">{{ breadcrumb.name }}</a>
           </li>
           {% else %}
-          <li class="breadcrumb-item active" aria-current="page">
-            {{ breadcrumb.name }}
-          </li>
+          <li class="breadcrumb-item active"
+              aria-current="page">{{ breadcrumb.name }}</li>
           {% endif %}
           {% endfor %}
         </ol>

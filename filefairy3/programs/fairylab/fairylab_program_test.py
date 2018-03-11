@@ -377,7 +377,8 @@ class FairylabProgramGoldenTest(unittest.TestCase):
     @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch.object(FairylabProgram, '_html')
     @mock.patch('programs.fairylab.fairylab_program.datetime')
-    def test_golden__canonical(self, mock_fdatetime, mock_html, mock_rdatetime):
+    def test_golden__canonical(self, mock_fdatetime, mock_html,
+                               mock_rdatetime):
         now = datetime.datetime(1985, 10, 26, 0, 3, 0)
         mock_fdatetime.datetime.now.return_value = now
         mock_rdatetime.datetime.now.return_value = now
