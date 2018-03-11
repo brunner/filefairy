@@ -46,10 +46,11 @@ class ExportsPlugin(PluginApi, SerializableApi):
         elif file_date != self.file_date:
             for teamid, status in self.exports:
                 if not data[teamid]['ai']:
-                    data[teamid][status.lower()] += 1
-                    data[teamid]['form'].append(status.lower())
+                    s = status.lower()[0]
+                    data[teamid][s] += 1
+                    data[teamid]['form'] += s
                     while len(data[teamid]['form']) > 20:
-                        data[teamid]['form'].pop(0)
+                        data[teamid]['form'] = data[teamid]['form'][1:]
             self.file_date = file_date
             self.write()
             return True

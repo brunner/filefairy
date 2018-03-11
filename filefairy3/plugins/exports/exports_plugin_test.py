@@ -57,15 +57,15 @@ class ExportsPluginTest(unittest.TestCase):
         data = {
             '31': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             },
             '32': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             }
         }
         original = write(_data, data)
@@ -82,15 +82,15 @@ class ExportsPluginTest(unittest.TestCase):
         expected = {
             '31': {
                 'ai': False,
-                'form': ['new'],
-                'new': 1,
-                'old': 0
+                'form': 'n',
+                'n': 1,
+                'o': 0
             },
             '32': {
                 'ai': False,
-                'form': ['old'],
-                'new': 0,
-                'old': 1
+                'form': 'o',
+                'n': 0,
+                'o': 1
             }
         }
         self.assertEqual(actual, expected)
@@ -101,15 +101,15 @@ class ExportsPluginTest(unittest.TestCase):
         data = {
             '31': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             },
             '32': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             }
         }
         original = write(_data, data)
@@ -120,15 +120,15 @@ class ExportsPluginTest(unittest.TestCase):
         expected = {
             '31': {
                 'ai': False,
-                'form': ['new'],
-                'new': 1,
-                'old': 0
+                'form': 'n',
+                'n': 1,
+                'o': 0
             },
             '32': {
                 'ai': False,
-                'form': ['old'],
-                'new': 0,
-                'old': 1
+                'form': 'o',
+                'n': 0,
+                'o': 1
             }
         }
         self.assertEqual(actual, expected)
@@ -139,15 +139,15 @@ class ExportsPluginTest(unittest.TestCase):
         data = {
             '31': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             },
             '32': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             }
         }
         original = write(_data, data)
@@ -158,15 +158,15 @@ class ExportsPluginTest(unittest.TestCase):
         expected = {
             '31': {
                 'ai': False,
-                'form': ['old'],
-                'new': 0,
-                'old': 1
+                'form': 'o',
+                'n': 0,
+                'o': 1
             },
             '32': {
                 'ai': False,
-                'form': ['old'],
-                'new': 0,
-                'old': 1
+                'form': 'o',
+                'n': 0,
+                'o': 1
             }
         }
         self.assertEqual(actual, expected)
@@ -177,15 +177,15 @@ class ExportsPluginTest(unittest.TestCase):
         data = {
             '31': {
                 'ai': True,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             },
             '32': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             }
         }
         original = write(_data, data)
@@ -196,15 +196,15 @@ class ExportsPluginTest(unittest.TestCase):
         expected = {
             '31': {
                 'ai': True,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             },
             '32': {
                 'ai': False,
-                'form': ['old'],
-                'new': 0,
-                'old': 1
+                'form': 'o',
+                'n': 0,
+                'o': 1
             }
         }
         self.assertEqual(actual, expected)
@@ -214,23 +214,16 @@ class ExportsPluginTest(unittest.TestCase):
         mock_urlopen.side_effect = [_before + _new, _after + _new]
         data = {
             '31': {
-                'ai':
-                False,
-                'form': [
-                    'new', 'new', 'new', 'new', 'old', 'new', 'new', 'old',
-                    'new', 'new', 'old', 'new', 'old', 'old', 'new', 'new',
-                    'old', 'new', 'new', 'new'
-                ],
-                'new':
-                14,
-                'old':
-                6
+                'ai': False,
+                'form': 'nnnonnonnonoonnonnn',
+                'n': 14,
+                'o': 6
             },
             '32': {
                 'ai': False,
-                'form': [],
-                'new': 0,
-                'old': 0
+                'form': '',
+                'n': 0,
+                'o': 0
             }
         }
         original = write(_data, data)
@@ -240,23 +233,16 @@ class ExportsPluginTest(unittest.TestCase):
         actual = write(_data, original)
         expected = {
             '31': {
-                'ai':
-                False,
-                'form': [
-                    'new', 'new', 'new', 'old', 'new', 'new', 'old', 'new',
-                    'new', 'old', 'new', 'old', 'old', 'new', 'new', 'old',
-                    'new', 'new', 'new', 'new'
-                ],
-                'new':
-                15,
-                'old':
-                6
+                'ai': False,
+                'form': 'nnnonnonnonoonnonnnn',
+                'n': 15,
+                'o': 6
             },
             '32': {
                 'ai': False,
-                'form': ['old'],
-                'new': 0,
-                'old': 1
+                'form': 'o',
+                'n': 0,
+                'o': 1
             }
         }
         self.assertEqual(actual, expected)
