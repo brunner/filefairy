@@ -2,6 +2,7 @@
 
 import datetime
 import jinja2
+import importlib
 import mock
 import os
 import re
@@ -268,7 +269,10 @@ class FairylabProgramTest(unittest.TestCase):
         actual = fairylab._render_internal()
         expected = {
             'title': 'home',
-            'breadcrumbs': [{'href': '', 'name': 'Home'}],
+            'breadcrumbs': [{
+                'href': '',
+                'name': 'Home'
+            }],
             'plugins': {
                 'fake': {
                     'ok': True,
@@ -285,8 +289,8 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install_with_valid_input(self, mock_exc, mock_getattr,
-                                      mock_import, mock_log, mock_setup):
+    def test_install__with_valid_input(self, mock_exc, mock_getattr,
+                                       mock_import, mock_log, mock_setup):
         mock_getattr.side_effect = [FakePlugin, FakePlugin._setup]
         data = {'plugins': {}}
         original = write(_data, data)
@@ -319,8 +323,8 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install_with_invalid_input(self, mock_exc, mock_getattr,
-                                        mock_import, mock_log, mock_setup):
+    def test_install__with_invalid_input(self, mock_exc, mock_getattr,
+                                         mock_import, mock_log, mock_setup):
         mock_getattr.return_value = Exception()
         mock_exc.return_value = 'Traceback: ...'
         data = {'plugins': {}}
@@ -367,6 +371,23 @@ class FairylabProgramTest(unittest.TestCase):
         self.assertFalse(fairylab.keep_running)
         mock_log.assert_called_once_with(
             'FairylabProgram', s='Shutting down.', v=True)
+
+
+class FairylabProgramGoldenTest(unittest.TestCase):
+    @mock.patch('apis.renderable.renderable_api.datetime')
+    @mock.patch.object(FairylabProgram, '_html')
+    @mock.patch('programs.fairylab.fairylab_program.datetime')
+    def test_golden__canonical(self, mock_fdatetime, mock_html, mock_rdatetime):
+        now = datetime.datetime(1985, 10, 26, 0, 3, 0)
+        mock_fdatetime.datetime.now.return_value = now
+        mock_rdatetime.datetime.now.return_value = now
+        golden = os.path.join(_path, 'goldens/canonical_golden.html')
+        mock_html.return_value = golden
+        sample = 'samples.canonical_sample'
+        data = getattr(importlib.import_module(sample), 'data')
+        fairylab = FairylabProgram()
+        fairylab.data = data
+        fairylab._render()
 
 
 if __name__ == '__main__':
