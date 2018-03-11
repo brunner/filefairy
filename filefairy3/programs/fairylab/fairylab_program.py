@@ -25,12 +25,12 @@ from utils.slack.slack_util import rtm_connect  # noqa
 
 
 class FairylabProgram(MessageableApi, RenderableApi):
-    def __init__(self):
-        super(FairylabProgram, self).__init__()
+    def __init__(self, **kwargs):
+        ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
+        env = jinja2.Environment(
+            loader=ldr, trim_blocks=True, lstrip_blocks=True)
+        super(FairylabProgram, self).__init__(**dict(kwargs, e=env))
         self.data = {'plugins': {}}
-        _loader = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
-        self.environment = jinja2.Environment(
-            loader=_loader, trim_blocks=True, lstrip_blocks=True)
         self.keep_running = True
         self.lock = threading.Lock()
         self.sleep = 120

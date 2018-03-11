@@ -51,9 +51,9 @@ class RenderableApiTest(unittest.TestCase):
         mock_datetime.datetime.now.return_value.strftime.return_value = date
         mock_stream.return_value = jinja2.environment.TemplateStream(
             lambda: iter([]))
-        _loader = jinja2.DictLoader({'foo.html': 'Hello {{ title }}'})
-        environment = jinja2.Environment(loader=_loader)
-        renderable = FakeRenderable(e=environment)
+        ldr = jinja2.DictLoader({'foo.html': 'Hello {{ title }}'})
+        env = jinja2.Environment(loader=ldr)
+        renderable = FakeRenderable(e=env)
         renderable._render()
         here = os.path.join(_root, 'html/index.html')
         there = 'brunnerj@server:/var/www/html/fairylab/index.html'
@@ -90,9 +90,9 @@ class RenderableApiTest(unittest.TestCase):
         mock_datetime.datetime.now.return_value.strftime.return_value = date
         mock_stream.return_value = jinja2.environment.TemplateStream(
             lambda: iter([]))
-        _loader = jinja2.DictLoader({'foo.html': 'Hello {{ title }}'})
-        environment = jinja2.Environment(loader=_loader)
-        renderable = FakeRenderable(e=environment)
+        ldr = jinja2.DictLoader({'foo.html': 'Hello {{ title }}'})
+        env = jinja2.Environment(loader=ldr)
+        renderable = FakeRenderable(e=env)
         renderable._render()
         here = os.path.join(_root, 'html/index.html')
         mock_check.assert_not_called()
