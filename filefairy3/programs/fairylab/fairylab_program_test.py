@@ -10,6 +10,7 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(_path)
 _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
@@ -386,8 +387,8 @@ class FairylabProgramGoldenTest(unittest.TestCase):
         mock_rdatetime.datetime.now.return_value = now
         golden = os.path.join(_path, 'goldens/canonical_golden.html')
         mock_html.return_value = golden
-        sample = '.samples.canonical_sample'
-        module = importlib.import_module(sample, package=__package__)
+        sample = 'samples.canonical_sample'
+        module = importlib.import_module(sample)
         data = getattr(module, 'data')
         fairylab = FairylabProgram()
         fairylab.data = data
