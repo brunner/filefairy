@@ -8,10 +8,13 @@ import sys
 import traceback
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/apis/renderable', '', _path))
+_root = re.sub(r'/apis/renderable', '', _path)
+sys.path.append(_root)
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
 from utils.logger.logger_util import log  # noqa
+from utils.secrets.secrets_util import server  # noqa
+from utils.subprocess.subprocess_util import check_output  # noqa
 
 
 class RenderableApi(SerializableApi):
@@ -35,11 +38,15 @@ class RenderableApi(SerializableApi):
 
     def _render(self, **kwargs):
         try:
+            html = self._html()
+            here = os.path.join(_root, 'html', html)
+            there = 'brunnerj@' + server + ':/var/www/html/fairylab/' + html
             now = datetime.datetime.now()
             date = now.strftime('%Y-%m-%d %H:%M:%S') + ' PST'
             tmpl = self.environment.get_template(self._tmpl())
             ts = tmpl.stream(dict(self._render_internal(**kwargs), date=date))
-            ts.dump(self._html())
+            ts.dump(here)
+            check_output(['scp', here, there])
         except Exception:
             exc = traceback.format_exc()
             log(self._name(), s='Exception.', c=exc, v=True)

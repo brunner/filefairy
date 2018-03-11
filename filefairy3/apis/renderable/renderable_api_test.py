@@ -23,7 +23,7 @@ class FakeRenderable(RenderableApi):
 
     @staticmethod
     def _html():
-        return os.path.join(_root, 'index.html')
+        return 'index.html'
 
     @staticmethod
     def _tmpl():
@@ -36,11 +36,14 @@ class FakeRenderable(RenderableApi):
 class RenderableApiTest(unittest.TestCase):
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('apis.serializable.serializable_api.log')
+    @mock.patch('apis.renderable.renderable_api.server', 'server')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('apis.renderable.renderable_api.datetime')
-    def test_render__with_valid_input(self, mock_datetime, mock_dump,
-                                      mock_open, mock_slog, mock_stream):
+    @mock.patch('apis.renderable.renderable_api.check_output')
+    def test_render__with_valid_input(self, mock_check, mock_datetime,
+                                      mock_dump, mock_open,
+                                      mock_slog, mock_stream):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
@@ -52,7 +55,10 @@ class RenderableApiTest(unittest.TestCase):
         environment = jinja2.Environment(loader=_loader)
         renderable = FakeRenderable(e=environment)
         renderable._render()
-        mock_dump.assert_called_once_with(os.path.join(_root, 'index.html'))
+        here = os.path.join(_root, 'html/index.html')
+        there = 'brunnerj@server:/var/www/html/fairylab/index.html'
+        mock_check.assert_called_once_with(['scp', here, there])
+        mock_dump.assert_called_once_with(here)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
         mock_slog.assert_called_once_with(renderable._name(), **{
             's': 'Read completed.',
@@ -65,14 +71,16 @@ class RenderableApiTest(unittest.TestCase):
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('apis.serializable.serializable_api.log')
+    @mock.patch('apis.renderable.renderable_api.server', 'server')
     @mock.patch('apis.renderable.renderable_api.log')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     @mock.patch('apis.renderable.renderable_api.traceback.format_exc')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('apis.renderable.renderable_api.datetime')
-    def test_render__with_thrown_exception(self, mock_datetime, mock_dump,
-                                           mock_exc, mock_open, mock_rlog,
-                                           mock_slog, mock_stream):
+    @mock.patch('apis.renderable.renderable_api.check_output')
+    def test_render__with_thrown_exception(
+            self, mock_check, mock_datetime, mock_dump, mock_exc, mock_open,
+            mock_rlog, mock_slog, mock_stream):
         mock_exc.return_value = 'Traceback: ...'
         mock_dump.side_effect = Exception()
         data = '{"a": 1, "b": true}'
@@ -86,7 +94,9 @@ class RenderableApiTest(unittest.TestCase):
         environment = jinja2.Environment(loader=_loader)
         renderable = FakeRenderable(e=environment)
         renderable._render()
-        mock_dump.assert_called_once_with(os.path.join(_root, 'index.html'))
+        here = os.path.join(_root, 'html/index.html')
+        mock_check.assert_not_called()
+        mock_dump.assert_called_once_with(here)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
         mock_rlog.assert_called_once_with(
             'FakeRenderable', c='Traceback: ...', s='Exception.', v=True)

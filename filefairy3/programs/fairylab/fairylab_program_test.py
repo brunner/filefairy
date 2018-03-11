@@ -252,7 +252,8 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('programs.fairylab.fairylab_program.delta')
     @mock.patch('programs.fairylab.fairylab_program.datetime')
-    def test_render(self, mock_datetime, mock_delta, mock_dump):
+    @mock.patch('apis.renderable.renderable_api.check_output')
+    def test_render(self, mock_check, mock_datetime, mock_delta, mock_dump):
         then = datetime.datetime(1985, 10, 26, 0, 0, 0)
         now = datetime.datetime(1985, 10, 26, 0, 2, 30)
         mock_datetime.datetime.now.return_value = now
@@ -377,15 +378,17 @@ class FairylabProgramGoldenTest(unittest.TestCase):
     @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch.object(FairylabProgram, '_html')
     @mock.patch('programs.fairylab.fairylab_program.datetime')
-    def test_golden__canonical(self, mock_fdatetime, mock_html,
+    @mock.patch('apis.renderable.renderable_api.check_output')
+    def test_golden__canonical(self, mock_check, mock_fdatetime, mock_html,
                                mock_rdatetime):
         now = datetime.datetime(1985, 10, 26, 0, 3, 0)
         mock_fdatetime.datetime.now.return_value = now
         mock_rdatetime.datetime.now.return_value = now
         golden = os.path.join(_path, 'goldens/canonical_golden.html')
         mock_html.return_value = golden
-        sample = 'samples.canonical_sample'
-        data = getattr(importlib.import_module(sample), 'data')
+        sample = '.samples.canonical_sample'
+        module = importlib.import_module(sample, package=__package__)
+        data = getattr(module, 'data')
         fairylab = FairylabProgram()
         fairylab.data = data
         fairylab._render()
