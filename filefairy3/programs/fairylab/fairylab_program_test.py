@@ -371,7 +371,7 @@ class FairylabProgramGoldenTest(unittest.TestCase):
         mock_rdatetime.datetime.now.return_value = now
         golden = os.path.join(_path, 'goldens/canonical_golden.html')
         mock_html.return_value = golden
-        sample = 'samples.canonical_sample'
+        sample = 'programs.fairylab.samples.canonical_sample'
         module = importlib.import_module(sample)
         data = getattr(module, 'data')
         fairylab = FairylabProgram()

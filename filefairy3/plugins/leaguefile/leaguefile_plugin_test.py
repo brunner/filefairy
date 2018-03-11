@@ -431,7 +431,7 @@ class LeaguefilePluginGoldenTest(unittest.TestCase):
         mock_datetime.datetime.now.return_value = now
         golden = os.path.join(_path, 'goldens/canonical_golden.html')
         mock_html.return_value = golden
-        sample = 'samples.canonical_sample'
+        sample = 'plugins.leaguefile.samples.canonical_sample'
         module = importlib.import_module(sample)
         data = getattr(module, 'data')
         ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
