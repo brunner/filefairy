@@ -14,13 +14,14 @@ sys.path.append(_path)
 _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
+from apis.renderable.renderable_api import RenderableApi  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
 from utils.testing.testing_util import write  # noqa
 
 _data = FairylabProgram._data()
 
 
-class FakePlugin(PluginApi):
+class FakePlugin(PluginApi, RenderableApi):
     var = True
 
     def __init__(self, **kwargs):
@@ -28,8 +29,20 @@ class FakePlugin(PluginApi):
         self.environment = kwargs.get('e', None)
 
     @staticmethod
+    def _data():
+        return os.path.join(_path, 'data.json')
+
+    @staticmethod
+    def _html():
+        return 'fake/index.html'
+
+    @staticmethod
     def _info():
         return 'Description.'
+
+    @staticmethod
+    def _tmpl():
+        return 'fake.html'
 
     def _setup(self, **kwargs):
         pass
@@ -39,6 +52,9 @@ class FakePlugin(PluginApi):
 
     def _run_internal(self, **kwargs):
         return True
+
+    def _render_internal(self, **kwargs):
+        return {'title': 'foo'}
 
 
 class FakeWebSocketApp(object):
@@ -259,6 +275,7 @@ class FairylabProgramTest(unittest.TestCase):
                 'fake': {
                     'ok': True,
                     'date': '2m ago',
+                    'href': '/fake/',
                     'info': 'Description.'
                 }
             }
@@ -319,15 +336,7 @@ class FairylabProgramTest(unittest.TestCase):
         mock_setup.assert_not_called()
         mock_exc.assert_called_once_with()
         actual = write(_data, original)
-        expected = {
-            'plugins': {
-                'fake': {
-                    'ok': False,
-                    'date': '',
-                    'info': ''
-                }
-            }
-        }
+        expected = {'plugins': {'fake': {'ok': False, 'date': '', 'info': ''}}}
         self.assertEqual(actual, expected)
         self.assertIsNone(fairylab.pins['fake'])
 
@@ -367,6 +376,7 @@ class FairylabProgramGoldenTest(unittest.TestCase):
         data = getattr(module, 'data')
         fairylab = FairylabProgram()
         fairylab.data = data
+        fairylab.pins['bar'] = FakePlugin()
         fairylab._render()
 
 

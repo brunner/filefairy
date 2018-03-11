@@ -64,6 +64,12 @@ class FairylabProgram(MessageableApi, RenderableApi):
             t = delta(pdate, date)
             ret['plugins'][p]['date'] = t
 
+            href = ''
+            instance = self.pins.get(p, None)
+            if isinstance(instance, RenderableApi):
+                href = '/' + re.sub('index.html', '', instance._html())
+            ret['plugins'][p]['href'] = href
+
         return ret
 
     def _setup(self):
