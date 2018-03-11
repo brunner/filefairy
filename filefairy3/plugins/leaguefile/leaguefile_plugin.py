@@ -8,7 +8,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
-from apis.serializable.serializable_api import SerializableApi  # noqa
+from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
@@ -19,7 +19,7 @@ _name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 
 
-class LeaguefilePlugin(PluginApi, SerializableApi):
+class LeaguefilePlugin(PluginApi, RenderableApi):
     def __init__(self, **kwargs):
         super(LeaguefilePlugin, self).__init__(**kwargs)
 
@@ -28,8 +28,16 @@ class LeaguefilePlugin(PluginApi, SerializableApi):
         return os.path.join(_path, 'data.json')
 
     @staticmethod
+    def _html():
+        return 'leaguefile/index.html'
+
+    @staticmethod
     def _info():
         return 'Reports the progress of the league file upload.'
+
+    @staticmethod
+    def _tmpl():
+        return 'leaguefile.html'
 
     def _setup(self, **kwargs):
         data = self.data
@@ -49,6 +57,8 @@ class LeaguefilePlugin(PluginApi, SerializableApi):
 
         if data != original:
             self.write()
+
+        self._render()
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -73,7 +83,43 @@ class LeaguefilePlugin(PluginApi, SerializableApi):
 
         if data != original:
             self.write()
+
+        if data != original or data['fp']:
+            self._render()
             return True
+
+    def _render_internal(self, **kwargs):
+        ret = copy.deepcopy(self.data)
+        ret['title'] = 'leaguefile'
+        ret['breadcrumbs'] = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Leaguefile'
+        }]
+
+        if ret['fp']:
+            fp = ret['fp']
+            fp['size'] = self._commaify(fp['size'])
+            fp['start'] = self._reverse(fp['start'])
+            fp['end'] = self._reverse(fp['end'])
+
+        for up in ret['up']:
+            del up['date']
+            up['size'] = self._commaify(up['size'])
+            up['start'] = self._reverse(up['start'])
+            up['end'] = self._reverse(up['end'])
+
+        return ret
+
+    @staticmethod
+    def _commaify(s):
+        return '{:,}'.format(int(s))
+
+    @staticmethod
+    def _reverse(s):
+        return ' '.join(s.rsplit(' ', 1)[::-1])
 
     @staticmethod
     def _check():
@@ -84,4 +130,4 @@ class LeaguefilePlugin(PluginApi, SerializableApi):
             line = re.sub(r'\s+', ' ', line)
             match = re.findall(_line_pattern, line)
             if match:
-                yield match[0] + (fp,)
+                yield match[0] + (fp, )

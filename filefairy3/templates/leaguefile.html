@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <table class="table border my-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Start</td>
+                <td scope="col">End</td>
+                <td scope="col" class="text-right">Size</td>
+              </tr>
+            </thead>
+            <tbody>
+              {% macro row(f, italic) %}
+              <tr{% if italic %} class="font-italic"{% endif %}>
+                <td scope="row">{{ f.start }}</td>
+                <td>{{ f.end }}</td>
+                <td class="text-right">{{ f.size }}</td>
+              </tr>
+              {% endmacro %}
+              {% if fp %}{{ row(fp, True) }}{% endif %}
+              {% for f in up %}{{ row(f, False) }}{% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+{% endblock %}
