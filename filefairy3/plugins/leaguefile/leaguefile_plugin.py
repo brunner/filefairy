@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import copy
+import datetime
 import os
 import re
 import sys
@@ -9,6 +10,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from utils.ago.ago_util import delta, elapsed  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
@@ -46,7 +48,12 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         data['fp'] = None
         for size, date, name, fp in self._check():
             if '.filepart' in name:
-                data['fp'] = {'start': date, 'size': size, 'end': date}
+                data['fp'] = {
+                    'start': date,
+                    'size': size,
+                    'end': date,
+                    'now': datetime.datetime.now()
+                }
             elif not len(data['up']) or data['up'][0]['date'] != date:
                 data['up'].insert(0, {
                     'date': date,
@@ -71,11 +78,14 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             if '.filepart' in name:
                 if not data['fp']:
                     data['fp'] = {'start': date}
-                data['fp']['size'] = size
-                data['fp']['end'] = date
+                if data['fp'].get('size', 0) != size:
+                    data['fp']['size'] = size
+                    data['fp']['end'] = date
+                    data['fp']['now'] = datetime.datetime.now()
             elif data['fp'] and not fp:
                 data['fp']['size'] = size
                 data['fp']['date'] = date
+                del data['fp']['now']
                 if not len(data['up']) or data['up'][0]['date'] != date:
                     data['up'].insert(0, copy.deepcopy(data['fp']))
                     if len(data['up']) > 7:
@@ -91,37 +101,52 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             return True
 
     def _render_internal(self, **kwargs):
-        ret = copy.deepcopy(self.data)
-        ret['title'] = 'leaguefile'
-        ret['breadcrumbs'] = [{
-            'href': '/fairylab/',
-            'name': 'Home'
-        }, {
-            'href': '',
-            'name': 'Leaguefile'
-        }]
+        data = self.data
+        ret = {
+            'title':
+            'leaguefile',
+            'breadcrumbs': [{
+                'href': '/fairylab/',
+                'name': 'Home'
+            }, {
+                'href': '',
+                'name': 'Leaguefile'
+            }]
+        }
 
-        if ret['fp']:
-            fp = ret['fp']
-            fp['size'] = self._commaify(fp['size'])
-            fp['start'] = self._reverse(fp['start'])
-            fp['end'] = self._reverse(fp['end'])
+        ret['fp'] = None
+        if data['fp']:
+            now = datetime.datetime.now()
+            ret['fp'] = {
+                'date': self._date(data['fp']['start']),
+                'size': self._size(data['fp']['size']),
+                'time': self._time(data['fp']['start'], data['fp']['end']),
+                'delta': delta(data['fp']['now'], now)
+            }
 
-        for up in ret['up']:
-            del up['date']
-            up['size'] = self._commaify(up['size'])
-            up['start'] = self._reverse(up['start'])
-            up['end'] = self._reverse(up['end'])
+        ret['up'] = []
+        for up in data['up']:
+            ret['up'].append({
+                'date': self._date(up['date']),
+                'size': self._size(up['size']),
+                'time': self._time(up['start'], up['end'])
+            })
 
         return ret
 
     @staticmethod
-    def _commaify(s):
+    def _date(s):
+        return s.rsplit(' ', 1)[0]
+
+    @staticmethod
+    def _size(s):
         return '{:,}'.format(int(s))
 
     @staticmethod
-    def _reverse(s):
-        return ' '.join(s.rsplit(' ', 1)[::-1])
+    def _time(s, e):
+        sdate = datetime.datetime.strptime(s, '%b %d %H:%M')
+        edate = datetime.datetime.strptime(e, '%b %d %H:%M')
+        return elapsed(sdate, edate)
 
     @staticmethod
     def _check():

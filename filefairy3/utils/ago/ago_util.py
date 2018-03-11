@@ -19,3 +19,23 @@ def delta(then, now, fmt='{} ago'):
         t = str(d) + 'd'
 
     return fmt.format(t)
+
+
+def elapsed(then, now):
+    diff = now - then
+    s, d = diff.seconds, diff.days
+
+    if s < 0 or d < 0:
+        return elapsed(now, then)
+
+    if d > 0:
+        s += 86400 * d
+
+    h, m = s / 3600, (s / 60) % 60
+    hm = []
+    if h > 0:
+        hm.append('{}h'.format(h))
+    if m > 0 or h == 0:
+        hm.append('{}m'.format(m))
+
+    return ' '.join(hm)

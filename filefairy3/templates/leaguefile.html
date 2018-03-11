@@ -1,29 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if fp %}
     <div class="container">
       <div class="row">
-        <div class="col">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-clock"></span>In Progress
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card mt-3">
+            <div class="card-body">
+              <h5 class="card-title">{{ fp.date }}</h5>
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <td scope="row">Time:</td>
+                    <td class="w-100">{{ fp.time }}</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Size:</td>
+                    <td class="w-100">{{ fp.size }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            {% if fp.delta %}
+            <div class="card-footer">
+              <small class="text-muted">Last activity: {{ fp.delta }}
+                {%- if not 's' in fp.delta -%}
+                <span class="text-danger"> (stalled?)</span>
+                {%- endif -%}
+              </small>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if up %}
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-check"></span>Completed
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
           <table class="table border mt-3">
             <thead class="thead-light">
               <tr>
-                <td scope="col">Start</td>
-                <td scope="col">End</td>
-                <td scope="col" class="text-right">Size</td>
+                <td scope="col">Date</td>
+                <td scope="col">Time</td>
+                <td scope="col">Size</td>
               </tr>
             </thead>
             <tbody>
-              {% macro row(f, italic) %}
-              <tr{% if italic %} class="font-italic"{% endif %}>
-                <td scope="row">{{ f.start }}</td>
-                <td>{{ f.end }}</td>
-                <td class="text-right">{{ f.size }}</td>
+              {% for f in up %}
+              <tr>
+                <td scope="row">{{ f.date }}</td>
+                <td>{{ f.time }}</td>
+                <td>{{ f.size }}</td>
               </tr>
-              {% endmacro %}
-              {% if fp %}{{ row(fp, True) }}{% endif %}
-              {% for f in up %}{{ row(f, False) }}{% endfor %}
+              {% endfor %}
             </tbody>
           </table>
         </div>
       </div>
     </div>
+    {% endif %}
 {% endblock %}

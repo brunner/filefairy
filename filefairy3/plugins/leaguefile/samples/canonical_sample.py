@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
+import datetime
+
 data = {
     'fp': {
         'end': 'Mar 10 19:59',
         'size': '59969530',
-        'start': 'Mar 10 19:03'
+        'start': 'Mar 10 19:03',
+        'now': datetime.datetime(1985, 10, 26, 0, 0, 0)
     },
     'up': [{
         'date': 'Mar 8 19:55',

@@ -8,6 +8,8 @@
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
         crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
   <title>Fairylab | leaguefile</title>
   <style>
@@ -31,14 +33,27 @@
     footer {
       bottom: 0;
     }
+    .alert {
+      padding: .75rem;
+    }
+    .alert .oi {
+      padding-right: .75rem;
+    }
     .breadcrumb {
       background-color: inherit;
     }
     .flex-grow {
       flex-grow: 1;
     }
+    .table, .table-sm {
+      margin-bottom: 0;
+    }
     .table .thead-light td {
       background-color: #f5f5f5;
+    }
+    .table-sm td {
+      border-top: 0;
+      padding: 0 .3rem 0 0;
     }
   </style>
 </head>
@@ -60,30 +75,65 @@
   <main role="main" class="pb-3">
     <div class="container">
       <div class="row">
-        <div class="col">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-clock"></span>In Progress
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card mt-3">
+            <div class="card-body">
+              <h5 class="card-title">Mar 10</h5>
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <td scope="row">Time:</td>
+                    <td class="w-100">6h 2m</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Size:</td>
+                    <td class="w-100">59,969,530</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">Last activity: 6h ago<span class="text-danger"> (stalled?)</span></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-check"></span>Completed
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
           <table class="table border mt-3">
             <thead class="thead-light">
               <tr>
-                <td scope="col">Start</td>
-                <td scope="col">End</td>
-                <td scope="col" class="text-right">Size</td>
+                <td scope="col">Date</td>
+                <td scope="col">Time</td>
+                <td scope="col">Size</td>
               </tr>
             </thead>
             <tbody>
-              <tr class="font-italic">
-                <td scope="row">19:03 Mar 10</td>
-                <td>19:59 Mar 10</td>
-                <td class="text-right">59,969,530</td>
+              <tr>
+                <td scope="row">Mar 8</td>
+                <td>10h 11m</td>
+                <td>358,347,534</td>
               </tr>
               <tr>
-                <td scope="row">21:00 Mar 8</td>
-                <td>07:11 Mar 9</td>
-                <td class="text-right">358,347,534</td>
-              </tr>
-              <tr>
-                <td scope="row">19:38 Mar 6</td>
-                <td>05:12 Mar 7</td>
-                <td class="text-right">356,922,996</td>
+                <td scope="row">Mar 6</td>
+                <td>9h 34m</td>
+                <td>356,922,996</td>
               </tr>
             </tbody>
           </table>
@@ -93,7 +143,7 @@
   </main>
   <footer class="border-top">
     <div class="container text-center">
-      <small class="text-muted">Last reloaded: 1985-10-26 00:03:00 PST</small>
+      <small class="text-muted">Last reloaded: 1985-10-26 06:02:30 PST</small>
     </div>
   </footer>
 

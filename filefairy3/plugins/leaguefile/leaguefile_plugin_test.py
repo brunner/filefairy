@@ -43,25 +43,29 @@ _check_stopped = """total 321012
 _fp_stored = {
     'size': '300000000',
     'start': 'Jan 27 12:05',
-    'end': 'Jan 27 16:00'
+    'end': 'Jan 27 16:00',
+    'now': ''
 }
 
 _fp_started_1 = {
     'size': '100000',
     'start': 'Jan 29 15:00',
-    'end': 'Jan 29 15:00'
+    'end': 'Jan 29 15:00',
+    'now': ''
 }
 
 _fp_started_1_ret = {
+    'date': 'Jan 29',
     'size': '100,000',
-    'start': '15:00 Jan 29',
-    'end': '15:00 Jan 29'
+    'time': '0m',
+    'delta': '30s ago'
 }
 
 _fp_started_95 = {
     'size': '310000000',
     'start': 'Jan 29 15:00',
-    'end': 'Jan 29 19:26'
+    'end': 'Jan 29 19:26',
+    'now': ''
 }
 
 _up_started_1 = {
@@ -93,9 +97,9 @@ _up_stored = {
 }
 
 _up_stored_ret = {
+    'date': 'Jan 27',
     'size': '336,724,001',
-    'start': '12:00 Jan 27',
-    'end': '12:00 Jan 27'
+    'time': '0m',
 }
 
 _up_stored_diff = {
@@ -397,7 +401,9 @@ class LeaguefilePluginTest(unittest.TestCase):
     @mock.patch('apis.renderable.renderable_api.check_output')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render(self, mock_dump, mock_lcheck, mock_rcheck):
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.delta')
+    def test_render(self, mock_delta, mock_dump, mock_lcheck, mock_rcheck):
+        mock_delta.return_value = '30s ago'
         mock_lcheck.side_effect = [_check_stored, _check_started_1]
         data = {'fp': None, 'up': []}
         original = write(_data, data)
@@ -424,11 +430,16 @@ class LeaguefilePluginTest(unittest.TestCase):
 
 class LeaguefilePluginGoldenTest(unittest.TestCase):
     @mock.patch('apis.renderable.renderable_api.datetime')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch.object(LeaguefilePlugin, '_html')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.elapsed')
     @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_golden__canonical(self, mock_check, mock_html, mock_datetime):
-        now = datetime.datetime(1985, 10, 26, 0, 3, 0)
-        mock_datetime.datetime.now.return_value = now
+    def test_golden__canonical(self, mock_check, mock_elapsed, mock_html,
+                               mock_ldatetime, mock_rdatetime):
+        mock_elapsed.side_effect = ['6h 2m', '10h 11m', '9h 34m']
+        now = datetime.datetime(1985, 10, 26, 6, 2, 30)
+        mock_ldatetime.datetime.now.return_value = now
+        mock_rdatetime.datetime.now.return_value = now
         golden = os.path.join(_path, 'goldens/canonical_golden.html')
         mock_html.return_value = golden
         sample = 'plugins.leaguefile.samples.canonical_sample'
