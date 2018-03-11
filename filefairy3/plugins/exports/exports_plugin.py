@@ -23,7 +23,7 @@ class ExportsPlugin(PluginApi, SerializableApi):
 
     @staticmethod
     def _info():
-        return 'Tracks how often each player submits exports.'
+        return 'Tracks how often each manager submits exports.'
 
     def _setup(self):
         text = urlopen(_url)
