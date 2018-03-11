@@ -31,6 +31,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
             loader=ldr, trim_blocks=True, lstrip_blocks=True)
         super(FairylabProgram, self).__init__(**dict(kwargs, e=env))
         self.data = {'plugins': {}}
+        self.pins = {}
         self.keep_running = True
         self.lock = threading.Lock()
         self.sleep = 120
@@ -59,7 +60,6 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         ps = ret['plugins'].keys()
         for p in ps:
-            del ret['plugins'][p]['instance']
             pdate = ret['plugins'][p]['date']
             t = delta(pdate, date)
             ret['plugins'][p]['date'] = t
@@ -78,10 +78,10 @@ class FairylabProgram(MessageableApi, RenderableApi):
             return
 
         plugin = data['plugins'][p]
-        if 'instance' not in plugin or not plugin.get('ok', False):
+        instance = self.pins.get(p, None)
+        if not plugin.get('ok', False) or not instance:
             return
 
-        instance = data['plugins'][p]['instance']
         item = getattr(instance, method, None)
         if not item or not callable(item):
             return
@@ -166,23 +166,23 @@ class FairylabProgram(MessageableApi, RenderableApi):
         try:
             plugin = getattr(importlib.import_module(path), clazz)
             info = plugin._info()
-            instance = plugin(**dict(kwargs, e=self.environment))
             ok = True
+            instance = plugin(**dict(kwargs, e=self.environment))
             log(clazz, **dict(kwargs, s='Installed.', v=True))
         except Exception:
             info = ''
-            instance = None
             ok = False
             exc = traceback.format_exc()
+            instance = None
             log(clazz, **dict(kwargs, s='Exception.', c=exc, v=True))
 
         data['plugins'][p] = {
             'date': date,
             'info': info,
-            'instance': instance,
             'ok': ok,
         }
 
+        self.pins[p] = instance
         self._try(p, '_setup')
 
         if data != original:

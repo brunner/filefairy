@@ -92,9 +92,9 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         fairylab._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
         mock_datetime.datetime.now.assert_called_once_with()
@@ -115,9 +115,9 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         fairylab._try('fake', '_run_internal', a=1, b=True)
         mock_run.assert_called_once_with(a=1, b=True)
         mock_datetime.datetime.now.assert_called_once_with()
@@ -142,9 +142,9 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         fairylab._try('fake', 'foo', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
@@ -156,9 +156,9 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         fairylab._try('fake', 'var', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
@@ -172,9 +172,9 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         fairylab._recv(
             '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
         expected = {
@@ -186,17 +186,7 @@ class FairylabProgramTest(unittest.TestCase):
         mock_message.assert_called_once_with(obj=expected)
         mock_try.assert_called_once_with('fake', '_on_message', obj=expected)
         actual = write(_data, original)
-        expected = {
-            'plugins': {
-                'fake': {
-                    'ok': True,
-                    'date': '',
-                    'instance': '',
-                    'info': 'Description.'
-                }
-            }
-        }
-        self.assertEqual(actual, expected)
+        self.assertEqual(actual, data)
 
     @mock.patch('programs.fairylab.fairylab_program.websocket.WebSocketApp')
     @mock.patch('programs.fairylab.fairylab_program.rtm_connect')
@@ -208,9 +198,9 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         fairylab._connect()
         fairylab.ws.send(
             '{"type":"message","channel":"ABC","user":"XYZ","text":"foo"}')
@@ -230,25 +220,15 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': datetime.datetime.now(),
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         mock_sleep.side_effect = lambda s: fairylab.shutdown()
         fairylab._start()
         mock_connect.assert_called_once_with()
         mock_try.assert_called_once_with('fake', '_run')
         actual = write(_data, original)
-        expected = {
-            'plugins': {
-                'fake': {
-                    'ok': True,
-                    'date': '',
-                    'instance': '',
-                    'info': 'Description.'
-                }
-            }
-        }
-        self.assertEqual(actual, expected)
+        self.assertEqual(actual, data)
 
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('programs.fairylab.fairylab_program.delta')
@@ -265,9 +245,9 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab.data['plugins']['fake'] = {
             'ok': True,
             'date': then,
-            'instance': FakePlugin(e=jinja2.Environment()),
             'info': 'Description.'
         }
+        fairylab.pins['fake'] = FakePlugin()
         actual = fairylab._render_internal()
         expected = {
             'title': 'home',
@@ -309,16 +289,12 @@ class FairylabProgramTest(unittest.TestCase):
                 'fake': {
                     'ok': True,
                     'date': '',
-                    'instance': '',
                     'info': 'Description.'
                 }
             }
         }
         self.assertEqual(actual, expected)
-        self.assertIsNotNone(fairylab.data['plugins']['fake']['instance'])
-        self.assertIsInstance(
-            fairylab.data['plugins']['fake']['instance'].environment,
-            jinja2.Environment)
+        self.assertIsNotNone(fairylab.pins['fake'])
 
     @mock.patch.object(FakePlugin, '_setup')
     @mock.patch('programs.fairylab.fairylab_program.log')
@@ -348,13 +324,12 @@ class FairylabProgramTest(unittest.TestCase):
                 'fake': {
                     'ok': False,
                     'date': '',
-                    'instance': None,
                     'info': ''
                 }
             }
         }
         self.assertEqual(actual, expected)
-        self.assertIsNone(fairylab.data['plugins']['fake']['instance'])
+        self.assertIsNone(fairylab.pins['fake'])
 
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.os.execv')
