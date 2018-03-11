@@ -55,6 +55,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         date = datetime.datetime.now()
         ret = copy.deepcopy(self.data)
         ret['title'] = 'home'
+        ret['breadcrumbs'] = [{'href': '', 'name': 'Home'}]
 
         ps = ret['plugins'].keys()
         for p in ps:

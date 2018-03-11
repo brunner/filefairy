@@ -268,6 +268,7 @@ class FairylabProgramTest(unittest.TestCase):
         actual = fairylab._render_internal()
         expected = {
             'title': 'home',
+            'breadcrumbs': [{'href': '', 'name': 'Home'}],
             'plugins': {
                 'fake': {
                     'ok': True,
