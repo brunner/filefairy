@@ -25,7 +25,7 @@ class ExportsPlugin(PluginApi, SerializableApi):
     def _info():
         return 'Tracks how often each manager submits exports.'
 
-    def _setup(self):
+    def _setup(self, **kwargs):
         text = urlopen(_url)
         self.file_date = self._file_date(text)
         self.exports = self._exports(text)
