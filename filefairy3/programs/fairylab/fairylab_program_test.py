@@ -16,6 +16,7 @@ sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
+from utils.jinja2.jinja2_util import env  # noqa
 from utils.testing.testing_util import write  # noqa
 
 _data = FairylabProgram._data()
@@ -97,7 +98,7 @@ class FakeWebSocketApp(object):
 
 class FairylabProgramTest(unittest.TestCase):
     def test_init(self):
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         self.assertEqual(fairylab.data, {'plugins': {}})
         self.assertTrue(fairylab.keep_running)
         self.assertEqual(fairylab.sleep, 120)
@@ -109,7 +110,7 @@ class FairylabProgramTest(unittest.TestCase):
     def test_setup(self, mock_install, mock_isdir, mock_listdir):
         mock_isdir.side_effect = [True, True, True]
         mock_listdir.return_value = ['foo', 'bar', 'baz']
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab._setup()
         mock_listdir.assert_called_once_with(os.path.join(_root, 'plugins'))
         self.assertEqual(mock_install.call_count, 3)
@@ -120,7 +121,7 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.datetime')
     def test_try__with_valid_input(self, mock_datetime, mock_log, mock_run):
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
             'date': datetime.datetime.now()
@@ -140,7 +141,7 @@ class FairylabProgramTest(unittest.TestCase):
                                         mock_log, mock_run):
         mock_exc.return_value = 'Traceback: ...'
         mock_run.side_effect = Exception()
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
             'date': datetime.datetime.now()
@@ -156,7 +157,7 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch.object(InternalPlugin, '_run_internal')
     @mock.patch('programs.fairylab.fairylab_program.log')
     def test_try__with_invalid_plugin(self, mock_log, mock_run):
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab._try('internal', '_run_internal', a=1, b=True)
         mock_run.assert_not_called()
         mock_log.assert_not_called()
@@ -164,7 +165,7 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch.object(InternalPlugin, '_run_internal')
     @mock.patch('programs.fairylab.fairylab_program.log')
     def test_try__with_invalid_attr(self, mock_log, mock_run):
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
             'date': datetime.datetime.now()
@@ -177,7 +178,7 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch.object(InternalPlugin, '_run_internal')
     @mock.patch('programs.fairylab.fairylab_program.log')
     def test_try__with_invalid_callable(self, mock_log, mock_run):
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
             'date': datetime.datetime.now()
@@ -192,7 +193,7 @@ class FairylabProgramTest(unittest.TestCase):
     def test_recv(self, mock_message, mock_try):
         data = {'plugins': {}}
         original = write(_data, data)
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
             'date': datetime.datetime.now()
@@ -218,7 +219,7 @@ class FairylabProgramTest(unittest.TestCase):
     def test_connect(self, mock_recv, mock_rtm, mock_ws):
         mock_rtm.return_value = {'ok': True, 'url': 'wss://...'}
         mock_ws.side_effect = FakeWebSocketApp
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
             'date': datetime.datetime.now()
@@ -239,7 +240,7 @@ class FairylabProgramTest(unittest.TestCase):
                    mock_try):
         data = {'plugins': {}}
         original = write(_data, data)
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
             'date': datetime.datetime.now()
@@ -263,11 +264,12 @@ class FairylabProgramTest(unittest.TestCase):
         mock_delta.return_value = '2m ago'
         data = {'plugins': {}}
         original = write(_data, data)
-        fairylab = FairylabProgram()
+        environment = env()
+        fairylab = FairylabProgram(e=environment)
         fairylab.data['plugins']['browsable'] = {'ok': True, 'date': then}
-        fairylab.pins['browsable'] = BrowsablePlugin()
+        fairylab.pins['browsable'] = BrowsablePlugin(e=environment)
         fairylab.data['plugins']['internal'] = {'ok': True, 'date': then}
-        fairylab.pins['internal'] = InternalPlugin()
+        fairylab.pins['internal'] = InternalPlugin(e=environment)
         actual = fairylab._render_internal()
         expected = {
             'title':
@@ -304,7 +306,7 @@ class FairylabProgramTest(unittest.TestCase):
         mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
         data = {'plugins': {}}
         original = write(_data, data)
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.install(a1='internal')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_log.assert_called_once_with(
@@ -334,7 +336,7 @@ class FairylabProgramTest(unittest.TestCase):
         mock_exc.return_value = 'Traceback: ...'
         data = {'plugins': {}}
         original = write(_data, data)
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.install(a1='internal')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_log.assert_called_once_with(
@@ -353,7 +355,7 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.os.execv')
     def test_reboot(self, mock_execv, mock_log):
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.reboot()
         mock_execv.assert_called_once_with(sys.executable,
                                            ['python'] + sys.argv)
@@ -362,7 +364,7 @@ class FairylabProgramTest(unittest.TestCase):
 
     @mock.patch('programs.fairylab.fairylab_program.log')
     def test_shutdown(self, mock_log):
-        fairylab = FairylabProgram()
+        fairylab = FairylabProgram(e=env())
         fairylab.shutdown()
         self.assertFalse(fairylab.keep_running)
         mock_log.assert_called_once_with(
@@ -383,10 +385,7 @@ class FairylabProgramGoldenTest(unittest.TestCase):
         sample = 'programs.fairylab.samples.canonical_sample'
         module = importlib.import_module(sample)
         mock_render.return_value = getattr(module, 'sample')
-        ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
-        env = jinja2.Environment(
-            loader=ldr, trim_blocks=True, lstrip_blocks=True)
-        fairylab = FairylabProgram(e=env)
+        fairylab = FairylabProgram(e=env())
         fairylab._render()
 
 

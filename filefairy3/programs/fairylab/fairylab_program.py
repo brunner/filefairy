@@ -21,6 +21,7 @@ from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta  # noqa
+from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import rtm_connect  # noqa
 
@@ -221,8 +222,6 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
 
 if __name__ == '__main__':
-    ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
-    env = jinja2.Environment(loader=ldr, trim_blocks=True, lstrip_blocks=True)
-    fairylab = FairylabProgram(e=env)
+    fairylab = FairylabProgram(e=env())
     fairylab._setup()
     fairylab._start()

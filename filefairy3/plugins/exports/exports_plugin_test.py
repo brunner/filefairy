@@ -9,6 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from plugins.exports.exports_plugin import ExportsPlugin  # noqa
+from utils.jinja2.jinja2_util import env  # noqa
 from utils.testing.testing_util import write  # noqa
 
 _data = ExportsPlugin._data()
@@ -69,7 +70,7 @@ class ExportsPluginTest(unittest.TestCase):
             }
         }
         original = write(_data, data)
-        plugin = ExportsPlugin()
+        plugin = ExportsPlugin(e=env())
         plugin._setup()
         ret = plugin._run()
         self.assertFalse(ret)
@@ -113,7 +114,7 @@ class ExportsPluginTest(unittest.TestCase):
             }
         }
         original = write(_data, data)
-        plugin = ExportsPlugin()
+        plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
         actual = write(_data, original)
@@ -151,7 +152,7 @@ class ExportsPluginTest(unittest.TestCase):
             }
         }
         original = write(_data, data)
-        plugin = ExportsPlugin()
+        plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
         actual = write(_data, original)
@@ -189,7 +190,7 @@ class ExportsPluginTest(unittest.TestCase):
             }
         }
         original = write(_data, data)
-        plugin = ExportsPlugin()
+        plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
         actual = write(_data, original)
@@ -227,7 +228,7 @@ class ExportsPluginTest(unittest.TestCase):
             }
         }
         original = write(_data, data)
-        plugin = ExportsPlugin()
+        plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
         actual = write(_data, original)

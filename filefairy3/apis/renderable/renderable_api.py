@@ -22,7 +22,7 @@ class RenderableApi(SerializableApi):
 
     def __init__(self, **kwargs):
         super(RenderableApi, self).__init__(**kwargs)
-        self.environment = kwargs.get('e', None)
+        self.environment = kwargs['e']
 
     @abstractstatic
     def _html():

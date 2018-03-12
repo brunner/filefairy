@@ -11,6 +11,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/apis/renderable', '', _path)
 sys.path.append(_root)
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from utils.jinja2.jinja2_util import env  # noqa
 
 
 class FakeRenderable(RenderableApi):
@@ -34,6 +35,21 @@ class FakeRenderable(RenderableApi):
 
 
 class RenderableApiTest(unittest.TestCase):
+    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    def test_init__with_valid_input(self, mock_open):
+        data = '{"a": 1, "b": true}'
+        mo = mock.mock_open(read_data=data)
+        mock_open.side_effect = [mo.return_value]
+        FakeRenderable(e=env())
+
+    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    def test_init__with_invalid_input(self, mock_open):
+        data = '{"a": 1, "b": true}'
+        mo = mock.mock_open(read_data=data)
+        mock_open.side_effect = [mo.return_value]
+        with self.assertRaises(KeyError):
+            FakeRenderable()
+
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('apis.serializable.serializable_api.log')
     @mock.patch('apis.renderable.renderable_api.server', 'server')
