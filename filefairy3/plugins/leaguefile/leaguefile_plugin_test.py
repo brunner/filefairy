@@ -15,7 +15,7 @@ _root = re.sub(r'/plugins/leaguefile', '', _path)
 sys.path.append(_root)
 from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
-from utils.testing.testing_util import write  # noqa
+from utils.test.test_util import TestUtil  # noqa
 
 _data = LeaguefilePlugin._data()
 
@@ -125,7 +125,7 @@ _up_stored_stopped = {
 }
 
 
-class LeaguefilePluginTest(unittest.TestCase):
+class LeaguefilePluginTest(TestUtil):
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
@@ -133,10 +133,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                       mock_render):
         mock_check.return_value = _check_stored
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -149,10 +149,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                        mock_render):
         mock_check.return_value = _check_started_1
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_started_1]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -164,10 +164,10 @@ class LeaguefilePluginTest(unittest.TestCase):
     def test_setup__with_fp_started(self, mock_check, mock_post, mock_render):
         mock_check.return_value = _check_started_1
         data = {'fp': _fp_stored, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_started_1]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -180,10 +180,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                               mock_render):
         mock_check.return_value = _check_started_1
         data = {'fp': None, 'up': [_up_stored_diff]}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             'fp': _fp_started_1,
             'up': [_up_started_1, _up_stored_diff]
@@ -199,10 +199,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                               mock_render):
         mock_check.return_value = _check_started_1
         data = {'fp': None, 'up': [_up_stored_started]}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_stored_started]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -215,10 +215,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                       mock_render):
         mock_check.return_value = _check_started_1
         data = {'fp': _fp_stored, 'up': [_up_stored_diff]}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             'fp': _fp_started_1,
             'up': [_up_started_1, _up_stored_diff]
@@ -234,10 +234,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                        mock_render):
         mock_check.return_value = _check_stopped
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_stopped]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -249,10 +249,10 @@ class LeaguefilePluginTest(unittest.TestCase):
     def test_setup__with_fp_stopped(self, mock_check, mock_post, mock_render):
         mock_check.return_value = _check_stopped
         data = {'fp': _fp_stored, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_stopped]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -265,10 +265,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                               mock_render):
         mock_check.return_value = _check_stopped
         data = {'fp': None, 'up': [_up_stored_diff]}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_stopped, _up_stored_diff]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -281,10 +281,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                               mock_render):
         mock_check.return_value = _check_stopped
         data = {'fp': None, 'up': [_up_stored_stopped]}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_stored_stopped]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -297,10 +297,10 @@ class LeaguefilePluginTest(unittest.TestCase):
                                       mock_render):
         mock_check.return_value = _check_stopped
         data = {'fp': _fp_stored, 'up': [_up_stored_diff]}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_stopped, _up_stored_diff]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -315,24 +315,24 @@ class LeaguefilePluginTest(unittest.TestCase):
             _check_started_95
         ]
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
         ret = plugin._run()
         self.assertTrue(ret)
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
-        write(_data, actual)
+        self.write(_data, actual)
         ret = plugin._run()
         self.assertTrue(ret)
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
-        write(_data, actual)
+        self.write(_data, actual)
         ret = plugin._run()
         self.assertTrue(ret)
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_95, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -345,11 +345,11 @@ class LeaguefilePluginTest(unittest.TestCase):
                                           mock_render):
         mock_check.side_effect = [_check_stored, _check_started_1]
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
         plugin._run()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -365,12 +365,12 @@ class LeaguefilePluginTest(unittest.TestCase):
             _check_stored, _check_started_1, _check_started_95
         ]
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
         plugin._run()
         plugin._run()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': _fp_started_95, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
@@ -386,13 +386,13 @@ class LeaguefilePluginTest(unittest.TestCase):
             _check_stored, _check_started_1, _check_started_95, _check_stopped
         ]
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
         plugin._run()
         plugin._run()
         plugin._run()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_started_stopped, _up_stored]}
         self.assertEqual(actual, expected)
         mock_post.assert_called_once_with('general', 'File is up.')
@@ -407,7 +407,7 @@ class LeaguefilePluginTest(unittest.TestCase):
         mock_delta.return_value = '30s ago'
         mock_lcheck.side_effect = [_check_stored, _check_started_95]
         data = {'fp': None, 'up': []}
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
         plugin.data = {'fp': _fp_started_95, 'up': [_up_stored]}
         actual = plugin._render_internal()
@@ -426,7 +426,7 @@ class LeaguefilePluginTest(unittest.TestCase):
             'up': [_up_stored_ret]
         }
         self.assertEqual(actual, expected)
-        write(_data, original)
+        self.write(_data, original)
 
 
 class LeaguefilePluginGoldenTest(unittest.TestCase):

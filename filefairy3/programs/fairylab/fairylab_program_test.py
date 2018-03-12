@@ -17,7 +17,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
-from utils.testing.testing_util import write  # noqa
+from utils.test.test_util import TestUtil  # noqa
 
 _data = FairylabProgram._data()
 
@@ -96,7 +96,7 @@ class FakeWebSocketApp(object):
             pass
 
 
-class FairylabProgramTest(unittest.TestCase):
+class FairylabProgramTest(TestUtil):
     def test_init(self):
         fairylab = FairylabProgram(e=env())
         self.assertEqual(fairylab.data, {'plugins': {}})
@@ -192,7 +192,7 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch.object(FairylabProgram, '_on_message')
     def test_recv(self, mock_message, mock_try):
         data = {'plugins': {}}
-        original = write(_data, data)
+        original = self.write(_data, data)
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
@@ -210,7 +210,7 @@ class FairylabProgramTest(unittest.TestCase):
         mock_message.assert_called_once_with(obj=expected)
         mock_try.assert_called_once_with(
             'internal', '_on_message', obj=expected)
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         self.assertEqual(actual, data)
 
     @mock.patch('programs.fairylab.fairylab_program.websocket.WebSocketApp')
@@ -239,7 +239,7 @@ class FairylabProgramTest(unittest.TestCase):
     def test_start(self, mock_connect, mock_dump, mock_log, mock_sleep,
                    mock_try):
         data = {'plugins': {}}
-        original = write(_data, data)
+        original = self.write(_data, data)
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
@@ -250,7 +250,7 @@ class FairylabProgramTest(unittest.TestCase):
         fairylab._start()
         mock_connect.assert_called_once_with()
         mock_try.assert_called_once_with('internal', '_run')
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         self.assertEqual(actual, data)
 
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
@@ -263,7 +263,7 @@ class FairylabProgramTest(unittest.TestCase):
         mock_datetime.datetime.now.return_value = now
         mock_delta.return_value = '2m ago'
         data = {'plugins': {}}
-        original = write(_data, data)
+        original = self.write(_data, data)
         environment = env()
         fairylab = FairylabProgram(e=environment)
         fairylab.data['plugins']['browsable'] = {'ok': True, 'date': then}
@@ -294,7 +294,7 @@ class FairylabProgramTest(unittest.TestCase):
             }],
         }
         self.assertEqual(actual, expected)
-        write(_data, original)
+        self.write(_data, original)
 
     @mock.patch.object(InternalPlugin, '_setup')
     @mock.patch('programs.fairylab.fairylab_program.log')
@@ -305,7 +305,7 @@ class FairylabProgramTest(unittest.TestCase):
                                        mock_import, mock_log, mock_setup):
         mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
         data = {'plugins': {}}
-        original = write(_data, data)
+        original = self.write(_data, data)
         fairylab = FairylabProgram(e=env())
         fairylab.install(a1='internal')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
@@ -313,7 +313,7 @@ class FairylabProgramTest(unittest.TestCase):
             'InternalPlugin', a1='internal', s='Installed.', v=True)
         mock_setup.assert_called_once_with()
         mock_exc.assert_not_called()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             'plugins': {
                 'internal': {
@@ -335,7 +335,7 @@ class FairylabProgramTest(unittest.TestCase):
         mock_getattr.return_value = Exception()
         mock_exc.return_value = 'Traceback: ...'
         data = {'plugins': {}}
-        original = write(_data, data)
+        original = self.write(_data, data)
         fairylab = FairylabProgram(e=env())
         fairylab.install(a1='internal')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
@@ -347,7 +347,7 @@ class FairylabProgramTest(unittest.TestCase):
             v=True)
         mock_setup.assert_not_called()
         mock_exc.assert_called_once_with()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {'plugins': {'internal': {'ok': False, 'date': ''}}}
         self.assertEqual(actual, expected)
         self.assertIsNone(fairylab.pins['internal'])

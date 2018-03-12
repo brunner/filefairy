@@ -10,7 +10,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from plugins.exports.exports_plugin import ExportsPlugin  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
-from utils.testing.testing_util import write  # noqa
+from utils.test.test_util import TestUtil  # noqa
 
 _data = ExportsPlugin._data()
 
@@ -49,7 +49,7 @@ Atlanta Braves</a><br>
 """
 
 
-class ExportsPluginTest(unittest.TestCase):
+class ExportsPluginTest(TestUtil):
     @mock.patch('plugins.exports.exports_plugin.urlopen')
     def test_run__returns(self, mock_urlopen):
         mock_urlopen.side_effect = [
@@ -69,17 +69,17 @@ class ExportsPluginTest(unittest.TestCase):
                 'o': 0
             }
         }
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = ExportsPlugin(e=env())
         plugin._setup()
         ret = plugin._run()
         self.assertFalse(ret)
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         self.assertEqual(actual, data)
-        write(_data, actual)
+        self.write(_data, actual)
         ret = plugin._run()
         self.assertTrue(ret)
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             '31': {
                 'ai': False,
@@ -113,11 +113,11 @@ class ExportsPluginTest(unittest.TestCase):
                 'o': 0
             }
         }
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             '31': {
                 'ai': False,
@@ -151,11 +151,11 @@ class ExportsPluginTest(unittest.TestCase):
                 'o': 0
             }
         }
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             '31': {
                 'ai': False,
@@ -189,11 +189,11 @@ class ExportsPluginTest(unittest.TestCase):
                 'o': 0
             }
         }
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             '31': {
                 'ai': True,
@@ -227,11 +227,11 @@ class ExportsPluginTest(unittest.TestCase):
                 'o': 0
             }
         }
-        original = write(_data, data)
+        original = self.write(_data, data)
         plugin = ExportsPlugin(e=env())
         plugin._setup()
         plugin._run()
-        actual = write(_data, original)
+        actual = self.write(_data, original)
         expected = {
             '31': {
                 'ai': False,
