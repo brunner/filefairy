@@ -1,14 +1,9 @@
 {% extends "base.html" %}
+{% import "common.html" as common %}
 {% block content %}
     {% if browsable %}
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="alert alert-secondary mt-3 mb-0">
-            <span class="oi oi-globe"></span>Browsable
-          </div>
-        </div>
-      </div>
+      {{ common.alert('globe', 'Browsable') }}
       <div class="row d-flex flex-wrap">
         {% for plugin in browsable %}
         <div class="col-sm-4 col-lg-3 d-flex flex-column">
@@ -34,13 +29,7 @@
     {% endif %}
     {% if internal %}
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="alert alert-secondary mt-3 mb-0">
-            <span class="oi oi-pulse"></span>Internal
-          </div>
-        </div>
-      </div>
+      {{ common.alert('pulse', 'Internal') }}
       <div class="row d-flex flex-wrap">
         {% for plugin in internal %}
         <div class="col-sm-4 col-lg-3 d-flex flex-column">

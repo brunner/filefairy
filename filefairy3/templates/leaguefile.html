@@ -1,14 +1,9 @@
 {% extends "base.html" %}
+{% import "common.html" as common %}
 {% block content %}
     {% if fp %}
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="alert alert-secondary mt-3 mb-0">
-            <span class="oi oi-clock"></span>In Progress
-          </div>
-        </div>
-      </div>
+      {{ common.alert('clock', 'In Progress') }}
       <div class="row">
         <div class="col-12">
           <div class="card mt-3">
@@ -43,13 +38,7 @@
     {% endif %}
     {% if up %}
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="alert alert-secondary mt-3 mb-0">
-            <span class="oi oi-file"></span>Completed
-          </div>
-        </div>
-      </div>
+      {{ common.alert('file', 'Completed') }}
       <div class="row">
         <div class="col-12">
           <table class="table border mt-3">

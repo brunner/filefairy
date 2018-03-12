@@ -1,0 +1,9 @@
+{% macro alert(icon, text) -%}
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-{{ icon }}"></span>{{ text }}
+          </div>
+        </div>
+      </div>
+{%- endmacro -%}
