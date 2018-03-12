@@ -24,7 +24,6 @@ _data = FairylabProgram._data()
 class BrowsablePlugin(PluginApi, RenderableApi):
     def __init__(self, **kwargs):
         super(BrowsablePlugin, self).__init__(**kwargs)
-        self.environment = kwargs.get('e', None)
 
     @staticmethod
     def _data():
@@ -100,7 +99,6 @@ class FairylabProgramTest(unittest.TestCase):
     def test_init(self):
         fairylab = FairylabProgram()
         self.assertEqual(fairylab.data, {'plugins': {}})
-        self.assertIsNotNone(fairylab.environment)
         self.assertTrue(fairylab.keep_running)
         self.assertEqual(fairylab.sleep, 120)
         self.assertEqual(fairylab.ws, None)
@@ -303,9 +301,7 @@ class FairylabProgramTest(unittest.TestCase):
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
     def test_install__with_valid_input(self, mock_exc, mock_getattr,
                                        mock_import, mock_log, mock_setup):
-        mock_getattr.side_effect = [
-            InternalPlugin, InternalPlugin._setup
-        ]
+        mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
         data = {'plugins': {}}
         original = write(_data, data)
         fairylab = FairylabProgram()
@@ -374,25 +370,23 @@ class FairylabProgramTest(unittest.TestCase):
 
 
 class FairylabProgramGoldenTest(unittest.TestCase):
-    @mock.patch('apis.renderable.renderable_api.datetime')
+    @mock.patch.object(FairylabProgram, '_render_internal')
     @mock.patch.object(FairylabProgram, '_html')
-    @mock.patch('programs.fairylab.fairylab_program.datetime')
+    @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_golden__canonical(self, mock_check, mock_fdatetime, mock_html,
-                               mock_rdatetime):
+    def test_golden__canonical(self, mock_check, mock_datetime, mock_html,
+                               mock_render):
         now = datetime.datetime(1985, 10, 26, 0, 3, 0)
-        mock_fdatetime.datetime.now.return_value = now
-        mock_rdatetime.datetime.now.return_value = now
+        mock_datetime.datetime.now.return_value = now
         golden = os.path.join(_path, 'goldens/canonical_golden.html')
         mock_html.return_value = golden
         sample = 'programs.fairylab.samples.canonical_sample'
         module = importlib.import_module(sample)
-        data = getattr(module, 'data')
-        fairylab = FairylabProgram()
-        fairylab.data = data
-        fairylab.pins['foo'] = InternalPlugin()
-        fairylab.pins['bar'] = BrowsablePlugin()
-        fairylab.pins['baz'] = InternalPlugin()
+        mock_render.return_value = getattr(module, 'sample')
+        ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
+        env = jinja2.Environment(
+            loader=ldr, trim_blocks=True, lstrip_blocks=True)
+        fairylab = FairylabProgram(e=env)
         fairylab._render()
 
 

@@ -54,18 +54,18 @@ _fp_started_1 = {
     'now': ''
 }
 
-_fp_started_1_ret = {
-    'date': 'Jan 29',
-    'size': '100,000',
-    'time': '0m',
-    'delta': '30s ago'
-}
-
 _fp_started_95 = {
     'size': '310000000',
     'start': 'Jan 29 15:00',
     'end': 'Jan 29 19:26',
     'now': ''
+}
+
+_fp_started_95_ret = {
+    'date': 'Jan 29',
+    'size': '310,000,000',
+    'time': '4h 26m',
+    'delta': '30s ago'
 }
 
 _up_started_1 = {
@@ -404,11 +404,11 @@ class LeaguefilePluginTest(unittest.TestCase):
     @mock.patch('plugins.leaguefile.leaguefile_plugin.delta')
     def test_render(self, mock_delta, mock_dump, mock_lcheck, mock_rcheck):
         mock_delta.return_value = '30s ago'
-        mock_lcheck.side_effect = [_check_stored, _check_started_1]
+        mock_lcheck.side_effect = [_check_stored, _check_started_95]
         data = {'fp': None, 'up': []}
         original = write(_data, data)
         plugin = LeaguefilePlugin()
-        plugin.data = {'fp': _fp_started_1, 'up': [_up_stored]}
+        plugin.data = {'fp': _fp_started_95, 'up': [_up_stored]}
         actual = plugin._render_internal()
         expected = {
             'title':
@@ -421,7 +421,7 @@ class LeaguefilePluginTest(unittest.TestCase):
                 'name': 'Leaguefile'
             }],
             'fp':
-            _fp_started_1_ret,
+            _fp_started_95_ret,
             'up': [_up_stored_ret]
         }
         self.assertEqual(actual, expected)
@@ -429,27 +429,23 @@ class LeaguefilePluginTest(unittest.TestCase):
 
 
 class LeaguefilePluginGoldenTest(unittest.TestCase):
-    @mock.patch('apis.renderable.renderable_api.datetime')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
+    @mock.patch.object(LeaguefilePlugin, '_render_internal')
     @mock.patch.object(LeaguefilePlugin, '_html')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.elapsed')
+    @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_golden__canonical(self, mock_check, mock_elapsed, mock_html,
-                               mock_ldatetime, mock_rdatetime):
-        mock_elapsed.side_effect = ['6h 2m', '10h 11m', '9h 34m']
+    def test_golden__canonical(self, mock_check, mock_datetime, mock_html,
+                               mock_render):
         now = datetime.datetime(1985, 10, 26, 6, 2, 30)
-        mock_ldatetime.datetime.now.return_value = now
-        mock_rdatetime.datetime.now.return_value = now
+        mock_datetime.datetime.now.return_value = now
         golden = os.path.join(_path, 'goldens/canonical_golden.html')
         mock_html.return_value = golden
         sample = 'plugins.leaguefile.samples.canonical_sample'
         module = importlib.import_module(sample)
-        data = getattr(module, 'data')
+        mock_render.return_value = getattr(module, 'sample')
         ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
         env = jinja2.Environment(
             loader=ldr, trim_blocks=True, lstrip_blocks=True)
         plugin = LeaguefilePlugin(e=env)
-        plugin.data = data
         plugin._render()
 
 

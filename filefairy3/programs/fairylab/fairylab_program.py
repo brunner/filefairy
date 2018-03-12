@@ -27,10 +27,7 @@ from utils.slack.slack_util import rtm_connect  # noqa
 
 class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self, **kwargs):
-        ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
-        env = jinja2.Environment(
-            loader=ldr, trim_blocks=True, lstrip_blocks=True)
-        super(FairylabProgram, self).__init__(**dict(kwargs, e=env))
+        super(FairylabProgram, self).__init__(**dict(kwargs))
         self.data = {'plugins': {}}
         self.pins = {}
         self.keep_running = True
@@ -56,8 +53,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
     def _render_internal(self, **kwargs):
         data = self.data
         ret = {
-            'title':
-            'home',
+            'title': 'home',
             'breadcrumbs': [{
                 'href': '',
                 'name': 'Home'
@@ -225,6 +221,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
 
 if __name__ == '__main__':
-    fairylab = FairylabProgram()
+    ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
+    env = jinja2.Environment(loader=ldr, trim_blocks=True, lstrip_blocks=True)
+    fairylab = FairylabProgram(e=env)
     fairylab._setup()
     fairylab._start()

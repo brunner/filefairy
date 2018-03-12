@@ -1,23 +1,28 @@
 #!/usr/bin/env python
 
-import datetime
-
-data = {
+sample = {
+    'title':
+    'leaguefile',
+    'breadcrumbs': [{
+        'href': '/fairylab/',
+        'name': 'Home'
+    }, {
+        'href': '',
+        'name': 'Leaguefile'
+    }],
     'fp': {
-        'end': 'Mar 10 19:59',
-        'size': '59969530',
-        'start': 'Mar 10 19:03',
-        'now': datetime.datetime(1985, 10, 26, 0, 0, 0)
+        'date': 'Mar 10',
+        'size': '59,969,530',
+        'time': '56m',
+        'delta': '12m ago'
     },
     'up': [{
-        'date': 'Mar 8 19:55',
-        'end': 'Mar 9 07:11',
-        'size': '358347534',
-        'start': 'Mar 8 21:00'
+        'date': 'Mar 8',
+        'size': '358,347,534',
+        'time': '10h 11m'
     }, {
-        'date': 'Mar 6 19:24',
-        'end': 'Mar 7 05:12',
-        'size': '356922996',
-        'start': 'Mar 6 19:38'
+        'date': 'Mar 6',
+        'size': '356,922,996',
+        'time': '9h 34m'
     }]
 }

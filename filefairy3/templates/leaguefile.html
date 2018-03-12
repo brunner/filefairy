@@ -24,10 +24,11 @@
             </div>
             {% if fp.delta %}
             <div class="card-footer">
-              <small class="text-muted">Last activity: {{ fp.delta }}
+              <small class="text-muted">
+                Last activity: {{ fp.delta }}
                 {%- if not 's' in fp.delta -%}
                 <span class="text-danger"> (stalled?)</span>
-                {%- endif -%}
+                {% endif %}
               </small>
             </div>
             {% endif %}
