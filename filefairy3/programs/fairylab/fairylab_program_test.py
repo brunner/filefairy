@@ -17,7 +17,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
-from utils.test.test_util import TestUtil  # noqa
+from utils.test.test_util import main, TestUtil  # noqa
 
 _data = FairylabProgram._data()
 
@@ -371,23 +371,5 @@ class FairylabProgramTest(TestUtil):
             'FairylabProgram', s='Shutting down.', v=True)
 
 
-class FairylabProgramGoldenTest(unittest.TestCase):
-    @mock.patch.object(FairylabProgram, '_render_internal')
-    @mock.patch.object(FairylabProgram, '_html')
-    @mock.patch('apis.renderable.renderable_api.datetime')
-    @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_golden__canonical(self, mock_check, mock_datetime, mock_html,
-                               mock_render):
-        now = datetime.datetime(1985, 10, 26, 0, 3, 0)
-        mock_datetime.datetime.now.return_value = now
-        golden = os.path.join(_path, 'goldens/canonical_golden.html')
-        mock_html.return_value = golden
-        sample = 'programs.fairylab.samples.canonical_sample'
-        module = importlib.import_module(sample)
-        mock_render.return_value = getattr(module, 'sample')
-        fairylab = FairylabProgram(e=env())
-        fairylab._render()
-
-
 if __name__ == '__main__':
-    unittest.main()
+    main(FairylabProgramTest, FairylabProgram, 'programs.fairylab', _path)

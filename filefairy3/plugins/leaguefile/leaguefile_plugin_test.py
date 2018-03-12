@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 
-import datetime
 import jinja2
-import importlib
 import mock
 import os
 import re
-import unittest
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
@@ -15,7 +12,7 @@ _root = re.sub(r'/plugins/leaguefile', '', _path)
 sys.path.append(_root)
 from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
-from utils.test.test_util import TestUtil  # noqa
+from utils.test.test_util import main, TestUtil  # noqa
 
 _data = LeaguefilePlugin._data()
 
@@ -429,23 +426,5 @@ class LeaguefilePluginTest(TestUtil):
         self.write(_data, original)
 
 
-class LeaguefilePluginGoldenTest(unittest.TestCase):
-    @mock.patch.object(LeaguefilePlugin, '_render_internal')
-    @mock.patch.object(LeaguefilePlugin, '_html')
-    @mock.patch('apis.renderable.renderable_api.datetime')
-    @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_golden__canonical(self, mock_check, mock_datetime, mock_html,
-                               mock_render):
-        now = datetime.datetime(1985, 10, 26, 6, 2, 30)
-        mock_datetime.datetime.now.return_value = now
-        golden = os.path.join(_path, 'goldens/canonical_golden.html')
-        mock_html.return_value = golden
-        sample = 'plugins.leaguefile.samples.canonical_sample'
-        module = importlib.import_module(sample)
-        mock_render.return_value = getattr(module, 'sample')
-        plugin = LeaguefilePlugin(e=env())
-        plugin._render()
-
-
 if __name__ == '__main__':
-    unittest.main()
+    main(LeaguefilePluginTest, LeaguefilePlugin, 'plugins.leaguefile', _path)
