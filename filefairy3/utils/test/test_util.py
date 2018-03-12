@@ -46,7 +46,7 @@ def _gen_golden(case, _cls, _pkg, _pth):
     return test_golden
 
 
-def main(_tst, _cls, _pkg, _pth):
+def main(_tst, _cls, _pkg, _pth, _main):
     if issubclass(_cls, RenderableApi):
         d = os.path.join(_pth, 'samples')
         cs = filter(lambda x: x.endswith('_sample.py'), os.listdir(d))
@@ -55,4 +55,5 @@ def main(_tst, _cls, _pkg, _pth):
             test_golden = _gen_golden(case, _cls, _pkg, _pth)
             setattr(_tst, 'test_golden__{}'.format(case), test_golden)
 
-    unittest.main()
+    if _main:
+        unittest.main()

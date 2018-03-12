@@ -369,5 +369,7 @@ class FairylabProgramTest(TestUtil):
             'FairylabProgram', s='Shutting down.', v=True)
 
 
-if __name__ == '__main__':
-    main(FairylabProgramTest, FairylabProgram, 'programs.fairylab', _path)
+if __name__ in ['__main__', 'programs.fairylab.fairylab_program_test']:
+    _main = __name__ == '__main__'
+    _pkg = 'programs.fairylab'
+    main(FairylabProgramTest, FairylabProgram, _pkg, _path, _main)

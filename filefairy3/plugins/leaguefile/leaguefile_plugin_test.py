@@ -426,5 +426,7 @@ class LeaguefilePluginTest(TestUtil):
         self.write(_data, original)
 
 
-if __name__ == '__main__':
-    main(LeaguefilePluginTest, LeaguefilePlugin, 'plugins.leaguefile', _path)
+if __name__ in ['__main__', 'plugins.leaguefile.leaguefile_plugin_test']:
+    _main = __name__ == '__main__'
+    _pkg = 'plugins.leaguefile'
+    main(LeaguefilePluginTest, LeaguefilePlugin, _pkg, _path, _main)
