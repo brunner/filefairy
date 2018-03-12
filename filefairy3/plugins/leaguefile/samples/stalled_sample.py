@@ -13,8 +13,8 @@ sample = {
     'fp': {
         'date': 'Mar 10',
         'size': '59,969,530',
-        'time': '56m',
-        'delta': '30s ago'
+        'time': '1h 8m',
+        'delta': '12m ago'
     },
     'up': [{
         'date': 'Mar 8',

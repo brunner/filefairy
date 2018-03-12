@@ -10,13 +10,12 @@ sample = {
         'href': '',
         'name': 'Leaguefile'
     }],
-    'fp': {
-        'date': 'Mar 10',
-        'size': '59,969,530',
-        'time': '56m',
-        'delta': '30s ago'
-    },
+    'fp': None,
     'up': [{
+        'date': 'Mar 10',
+        'size': '359,969,530',
+        'time': '4h 56m',
+    }, {
         'date': 'Mar 8',
         'size': '358,347,534',
         'time': '10h 11m'
