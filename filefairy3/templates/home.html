@@ -17,7 +17,9 @@
             <div class="card-footer">
               <small class="text-muted">Last activity: {{ plugin.delta }}
                 {%- if not plugin.ok -%}
-                <span class="text-danger"> (failed?)</span>
+                <span class="text-danger"> (failed)</span>
+                {%- elif 's' in plugin.delta -%}
+                <span class="text-success"> (new)</span>
                 {%- endif -%}
               </small>
             </div>
@@ -41,7 +43,9 @@
             <div class="card-footer">
               <small class="text-muted">Last activity: {{ plugin.delta }}
                 {%- if not plugin.ok -%}
-                <span class="text-danger"> (failed?)</span>
+                <span class="text-danger"> (failed)</span>
+                {%- elif 's' in plugin.delta -%}
+                <span class="text-success"> (new)</span>
                 {%- endif -%}
               </small>
             </div>
