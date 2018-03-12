@@ -2,12 +2,10 @@
 
 import datetime
 import jinja2
-import importlib
 import mock
 import os
 import re
 import sys
-import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
