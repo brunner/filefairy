@@ -175,7 +175,6 @@ class App(object):
 
     obj = rtm_connect()
     if obj['ok'] and 'url' in obj:
-      chat_post_message('testing', 'Started listening.')
       self.ws = websocket.WebSocketApp(obj['url'], on_message=on_message_)
 
       t = threading.Thread(target=self.ws.run_forever)
@@ -430,7 +429,6 @@ class App(object):
 
   def process_records(self):
     ret = self.format_records()
-    self.clear_records()
     chat_post_message(self.get_live_sim_discussion_name(), ret)
     return ret
 
@@ -457,20 +455,18 @@ class App(object):
     self.lock.acquire()
     if self.ws:
       self.ws.close()
-      chat_post_message('testing', 'Done listening.')
     self.lock.release()
 
   def watch(self):
-    chat_post_message('testing', 'Started watching.')
     sleep = self.get_sleep()
     while self.keep_running:
       time.sleep(sleep)
       if self.ws and not self.ws.sock:
-        chat_post_message(self.get_testing_name(), 'Lost websocket connection.')
         self.handle_close()
         self.listen()
       self.lock.acquire()
-      self.update_league_file()
+      if self.update_league_file():
+        self.clear_records()
       if self.sim_dates and int(time.time()) - self.tick > sleep:
         self.process_final_scores()
         self.process_injuries()
@@ -480,7 +476,6 @@ class App(object):
         if self.settings.get('playoffs', False):
           self.process_playoffs()
       self.lock.release()
-    chat_post_message('testing', 'Done watching.')
     self.handle_close()
 
   def update_league_file(self):
