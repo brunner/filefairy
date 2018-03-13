@@ -18,6 +18,7 @@ class SlackUtilTest(unittest.TestCase):
     @mock.patch('utils.slack.slack_util.urlopen')
     @mock.patch('utils.slack.slack_util.create_request')
     def test_chat_post_message(self, mock_request, mock_urlopen):
+        attachments = [{'fallback': 'a', 'title': 'b', 'text': 'c'}]
         mock_request.return_value = urllib2.Request(
             'https://slack.com/api/chat.postMessage',
             urllib.urlencode({
@@ -25,10 +26,11 @@ class SlackUtilTest(unittest.TestCase):
                 'channel': 'channel',
                 'text': 'foo',
                 'as_user': 'true',
+                'attachments': attachments,
                 'link_names': 'true',
             }))
         mock_urlopen.return_value = '{"ok":true,"message":{"text":"foo"}}'
-        actual = chat_post_message('channel', 'foo')
+        actual = chat_post_message('channel', 'foo', attachments=attachments)
         expected = {'ok': True, 'message': {'text': 'foo'}}
         self.assertEquals(actual, expected)
         mock_request.assert_called_once_with(
@@ -37,6 +39,7 @@ class SlackUtilTest(unittest.TestCase):
                 'channel': 'channel',
                 'text': 'foo',
                 'as_user': 'true',
+                'attachments': attachments,
                 'link_names': 'true',
             })
         mock_urlopen.assert_called_once_with(mock_request.return_value)

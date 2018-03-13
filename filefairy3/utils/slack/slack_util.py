@@ -23,14 +23,15 @@ def _call(method, params):
     return obj
 
 
-def chat_post_message(channel, text):
+def chat_post_message(channel, text, attachments=[]):
     return _call(
         'chat.postMessage', {
             'token': filefairy,
             'channel': channel,
             'text': text,
             'as_user': 'true',
-            'link_names': 'true',
+            'attachments': attachments,
+            'link_names': 'true'
         })
 
 

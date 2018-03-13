@@ -14,6 +14,7 @@ from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
+_attachments = LeaguefilePlugin._attachments()
 _data = LeaguefilePlugin._data()
 
 _check_stored = """total 321012
@@ -332,7 +333,8 @@ class LeaguefilePluginTest(TestUtil):
         actual = self.write(_data, original)
         expected = {'fp': _fp_started_95, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
-        mock_post.assert_not_called()
+        mock_post.assert_called_once_with(
+            'fairylab', 'File upload started.', attachments=_attachments)
         mock_render.assert_has_calls([mock.call(), mock.call(), mock.call()])
 
     @mock.patch.object(LeaguefilePlugin, '_render')
@@ -349,7 +351,8 @@ class LeaguefilePluginTest(TestUtil):
         actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
-        mock_post.assert_not_called()
+        mock_post.assert_called_once_with(
+            'fairylab', 'File upload started.', attachments=_attachments)
         calls = [mock.call(), mock.call()]
         mock_render.assert_has_calls(calls)
 
@@ -370,7 +373,8 @@ class LeaguefilePluginTest(TestUtil):
         actual = self.write(_data, original)
         expected = {'fp': _fp_started_95, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
-        mock_post.assert_not_called()
+        mock_post.assert_called_once_with(
+            'fairylab', 'File upload started.', attachments=_attachments)
         calls = [mock.call(), mock.call(), mock.call()]
         mock_render.assert_has_calls(calls)
 
@@ -392,7 +396,12 @@ class LeaguefilePluginTest(TestUtil):
         actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_started_stopped, _up_stored]}
         self.assertEqual(actual, expected)
-        mock_post.assert_called_once_with('general', 'File is up.')
+        calls = [
+            mock.call(
+                'fairylab', 'File upload started.', attachments=_attachments),
+            mock.call('general', 'File is up.')
+        ]
+        mock_post.assert_has_calls(calls)
         calls = [mock.call(), mock.call(), mock.call(), mock.call()]
         mock_render.assert_has_calls(calls)
 

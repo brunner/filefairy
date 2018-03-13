@@ -11,6 +11,7 @@ sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta, elapsed  # noqa
+from utils.jinja2.jinja2_util import env  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
@@ -77,6 +78,10 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         for size, date, name, fp in self._check():
             if '.filepart' in name:
                 if not data['fp']:
+                    chat_post_message(
+                        'fairylab',
+                        'File upload started.',
+                        attachments=self._attachments())
                     data['fp'] = {'start': date}
                 if data['fp'].get('size', 0) != size:
                     data['fp']['size'] = size
@@ -158,3 +163,16 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             match = re.findall(_line_pattern, line)
             if match:
                 yield match[0] + (fp, )
+
+    @staticmethod
+    def _attachments():
+        info = LeaguefilePlugin._info()
+        title = 'Fairylab | leaguefile'
+        link = 'http://orangeandblueleaguebaseball.com/fairylab/' + re.sub(
+            'index.html', '', LeaguefilePlugin._html())
+        return [{
+            'fallback': info,
+            'title': title,
+            'title_link': link,
+            'text': info
+        }]
