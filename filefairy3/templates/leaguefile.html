@@ -23,8 +23,8 @@
               </table>
             </div>
             {% if fp.delta %}
-            <div class="card-footer">
-              <small class="text-muted">
+            <div class="card-footer text-muted text-truncate">
+              <small>
                 Last activity: {{ fp.delta }}
                 {%- if 's' in fp.delta -%}
                 <span class="text-success"> (ongoing)</span>

@@ -6,7 +6,7 @@
       {{ common.alert('globe', 'Browsable') }}
       <div class="row d-flex flex-wrap">
         {% for plugin in browsable %}
-        <div class="col-sm-4 col-lg-3 d-flex flex-column">
+        <div class="col-sm-6 col-md-4 col-lg-3 d-flex flex-column">
           <div class="card d-flex flex-column flex-grow mt-3">
             <div class="card-body d-flex flex-column">
               <h5 class="card-title">
@@ -14,8 +14,8 @@
               </h5>
               <p class="card-text flex-grow">{{ plugin.info }}</p>
             </div>
-            <div class="card-footer">
-              <small class="text-muted">Last activity: {{ plugin.delta }}
+            <div class="card-footer text-muted text-truncate">
+              <small>Last activity: {{ plugin.delta }}
                 {%- if not plugin.ok -%}
                 <span class="text-danger"> (failed)</span>
                 {%- elif 's' in plugin.delta -%}
@@ -34,14 +34,14 @@
       {{ common.alert('pulse', 'Internal') }}
       <div class="row d-flex flex-wrap">
         {% for plugin in internal %}
-        <div class="col-sm-4 col-lg-3 d-flex flex-column">
+        <div class="col-sm-6 col-md-4 col-lg-3 d-flex flex-column">
           <div class="card d-flex flex-column flex-grow mt-3">
             <div class="card-body d-flex flex-column">
               <h5 class="card-title">{{ plugin.name }}</h5>
               <p class="card-text flex-grow">{{ plugin.info }}</p>
             </div>
-            <div class="card-footer">
-              <small class="text-muted">Last activity: {{ plugin.delta }}
+            <div class="card-footer text-muted text-truncate">
+              <small>Last activity: {{ plugin.delta }}
                 {%- if not plugin.ok -%}
                 <span class="text-danger"> (failed)</span>
                 {%- elif 's' in plugin.delta -%}
