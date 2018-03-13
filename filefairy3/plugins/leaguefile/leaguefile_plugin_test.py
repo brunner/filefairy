@@ -14,7 +14,6 @@ from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
-_attachments = LeaguefilePlugin._attachments()
 _data = LeaguefilePlugin._data()
 
 _check_stored = """total 321012
@@ -333,6 +332,7 @@ class LeaguefilePluginTest(TestUtil):
         actual = self.write(_data, original)
         expected = {'fp': _fp_started_95, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
+        _attachments = plugin._attachments()
         mock_post.assert_called_once_with(
             'fairylab', 'File upload started.', attachments=_attachments)
         mock_render.assert_has_calls([mock.call(), mock.call(), mock.call()])
@@ -351,6 +351,7 @@ class LeaguefilePluginTest(TestUtil):
         actual = self.write(_data, original)
         expected = {'fp': _fp_started_1, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
+        _attachments = plugin._attachments()
         mock_post.assert_called_once_with(
             'fairylab', 'File upload started.', attachments=_attachments)
         calls = [mock.call(), mock.call()]
@@ -373,6 +374,7 @@ class LeaguefilePluginTest(TestUtil):
         actual = self.write(_data, original)
         expected = {'fp': _fp_started_95, 'up': [_up_stored]}
         self.assertEqual(actual, expected)
+        _attachments = plugin._attachments()
         mock_post.assert_called_once_with(
             'fairylab', 'File upload started.', attachments=_attachments)
         calls = [mock.call(), mock.call(), mock.call()]
@@ -395,6 +397,7 @@ class LeaguefilePluginTest(TestUtil):
         plugin._run()
         actual = self.write(_data, original)
         expected = {'fp': None, 'up': [_up_started_stopped, _up_stored]}
+        _attachments = plugin._attachments()
         self.assertEqual(actual, expected)
         calls = [
             mock.call(
@@ -418,8 +421,6 @@ class LeaguefilePluginTest(TestUtil):
         plugin.data = {'fp': _fp_started_95, 'up': [_up_stored]}
         actual = plugin._render_internal()
         expected = {
-            'title':
-            'leaguefile',
             'breadcrumbs': [{
                 'href': '/fairylab/',
                 'name': 'Home'

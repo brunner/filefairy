@@ -45,6 +45,10 @@ class FairylabProgram(MessageableApi, RenderableApi):
         return 'index.html'
 
     @staticmethod
+    def _title():
+        return 'home'
+
+    @staticmethod
     def _tmpl():
         return 'home.html'
 
@@ -54,7 +58,6 @@ class FairylabProgram(MessageableApi, RenderableApi):
     def _render_internal(self, **kwargs):
         data = self.data
         ret = {
-            'title': 'home',
             'breadcrumbs': [{
                 'href': '',
                 'name': 'Home'

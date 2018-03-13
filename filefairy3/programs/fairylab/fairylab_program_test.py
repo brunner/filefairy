@@ -37,6 +37,10 @@ class BrowsablePlugin(PluginApi, RenderableApi):
         return 'Description of browsable.'
 
     @staticmethod
+    def _title():
+        return 'foo'
+
+    @staticmethod
     def _tmpl():
         return 'browsable.html'
 
@@ -50,7 +54,7 @@ class BrowsablePlugin(PluginApi, RenderableApi):
         return True
 
     def _render_internal(self, **kwargs):
-        return {'title': 'foo'}
+        return {}
 
 
 class InternalPlugin(PluginApi):
@@ -270,8 +274,6 @@ class FairylabProgramTest(TestUtil):
         fairylab.pins['internal'] = InternalPlugin(e=environment)
         actual = fairylab._render_internal()
         expected = {
-            'title':
-            'home',
             'breadcrumbs': [{
                 'href': '',
                 'name': 'Home'

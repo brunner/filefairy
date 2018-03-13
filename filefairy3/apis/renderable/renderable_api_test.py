@@ -27,11 +27,15 @@ class FakeRenderable(RenderableApi):
         return 'index.html'
 
     @staticmethod
+    def _title():
+        return 'foo'
+
+    @staticmethod
     def _tmpl():
         return 'foo.html'
 
     def _render_internal(self, **kwargs):
-        return {'title': 'foo'}
+        return {}
 
 
 class RenderableApiTest(unittest.TestCase):

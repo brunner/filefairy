@@ -29,6 +29,10 @@ class RenderableApi(SerializableApi):
         pass
 
     @abstractstatic
+    def _title():
+        pass
+
+    @abstractstatic
     def _tmpl():
         pass
 
@@ -38,13 +42,15 @@ class RenderableApi(SerializableApi):
 
     def _render(self, **kwargs):
         try:
+            title = self._title()
             html = self._html()
             here = os.path.join(_root, 'html', html)
             there = 'brunnerj@' + server + ':/var/www/html/fairylab/' + html
             now = datetime.datetime.now()
             date = now.strftime('%Y-%m-%d %H:%M:%S') + ' PST'
             tmpl = self.environment.get_template(self._tmpl())
-            ts = tmpl.stream(dict(self._render_internal(**kwargs), date=date))
+            ret = self._render_internal(**kwargs)
+            ts = tmpl.stream(dict(ret, title=title, date=date))
             ts.dump(here)
             check_output(['scp', here, there])
         except Exception:

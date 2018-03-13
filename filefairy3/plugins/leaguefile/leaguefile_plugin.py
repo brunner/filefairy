@@ -39,6 +39,10 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         return 'Reports the progress of the file upload.'
 
     @staticmethod
+    def _title():
+        return 'leaguefile'
+
+    @staticmethod
     def _tmpl():
         return 'leaguefile.html'
 
@@ -108,8 +112,6 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
     def _render_internal(self, **kwargs):
         data = self.data
         ret = {
-            'title':
-            'leaguefile',
             'breadcrumbs': [{
                 'href': '/fairylab/',
                 'name': 'Home'
@@ -163,16 +165,3 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             match = re.findall(_line_pattern, line)
             if match:
                 yield match[0] + (fp, )
-
-    @staticmethod
-    def _attachments():
-        info = LeaguefilePlugin._info()
-        title = 'Fairylab | leaguefile'
-        link = 'http://orangeandblueleaguebaseball.com/fairylab/' + re.sub(
-            'index.html', '', LeaguefilePlugin._html())
-        return [{
-            'fallback': info,
-            'title': title,
-            'title_link': link,
-            'text': info
-        }]
