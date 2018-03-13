@@ -36,7 +36,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
 
     @staticmethod
     def _info():
-        return 'Reports the progress of the league file upload.'
+        return 'Reports the progress of the file upload.'
 
     @staticmethod
     def _tmpl():
