@@ -17,7 +17,8 @@ from utils.json.json_util import dumps  # noqa
 
 
 class TestUtil(unittest.TestCase):
-    def write(self, fname, data):
+    @staticmethod
+    def write(fname, data):
         with open(fname, 'r+') as f:
             original = json.loads(f.read())
             f.seek(0)
