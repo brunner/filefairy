@@ -14,6 +14,7 @@ sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
+from utils.component.component_util import card  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
@@ -337,22 +338,20 @@ class FairylabProgramTest(TestUtil):
                 'href': '',
                 'name': 'Home'
             }],
-            'browsable': [{
-                'name': 'browsable',
-                'ok': True,
-                'new': True,
-                'delta': '2m ago',
-                'href': '/fairylab/browsable/',
-                'info': 'Description of browsable.'
-            }],
-            'internal': [{
-                'name': 'internal',
-                'ok': True,
-                'new': False,
-                'delta': '2h ago',
-                'href': '',
-                'info': 'Description of internal.'
-            }],
+            'browsable': [
+                card(
+                    href='/fairylab/browsable/',
+                    title='browsable',
+                    new=True,
+                    info='Description of browsable.',
+                    ts='2m ago')
+            ],
+            'internal': [
+                card(
+                    title='internal',
+                    info='Description of internal.',
+                    ts='2h ago')
+            ],
         }
         self.assertEqual(actual, expected)
         self.write(_data, original)

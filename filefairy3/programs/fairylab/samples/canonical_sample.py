@@ -8,47 +8,59 @@ sample = {
         'name': 'Home'
     }],
     'browsable': [{
-        'name': 'bar',
-        'ok': True,
-        'new': False,
-        'delta': '10m ago',
         'href': '/fairylab/bar/',
-        'info': 'Description of bar.'
-    }, {
-        'name': 'baz',
-        'ok': False,
+        'title': 'bar',
         'new': False,
-        'delta': '1h ago',
-        'href': '/fairylab/baz/',
-        'info': 'Description of baz.'
+        'info': 'Description of bar.',
+        'table': [],
+        'ts': '10m ago',
+        'success': '',
+        'danger': ''
     }, {
-        'name': 'foo',
-        'ok': True,
-        'new': True,
-        'delta': '2m ago',
+        'href': '/fairylab/baz/',
+        'title': 'baz',
+        'new': False,
+        'info': 'Description of baz.',
+        'table': [],
+        'ts': '1h ago',
+        'success': '',
+        'danger': 'failed'
+    }, {
         'href': '/fairylab/foo/',
-        'info': 'Description of foo.'
+        'title': 'foo',
+        'new': True,
+        'info': 'Description of foo.',
+        'table': [],
+        'ts': '2m ago',
+        'success': '',
+        'danger': ''
     }],
     'internal': [{
-        'name': 'quux',
-        'ok': False,
-        'new': False,
-        'delta': '15m ago',
         'href': '',
-        'info': 'Description of quux.'
+        'title': 'quux',
+        'new': False,
+        'info': 'Description of quux.',
+        'table': [],
+        'ts': '15m ago',
+        'success': '',
+        'danger': 'failed'
     }, {
-        'name': 'quuz',
-        'ok': True,
-        'new': False,
-        'delta': '30s ago',
         'href': '',
-        'info': 'Description of quuz.'
+        'title': 'quuz',
+        'new': False,
+        'info': 'Description of quuz.',
+        'table': [],
+        'ts': '30s ago',
+        'success': 'just now',
+        'danger': ''
     }, {
-        'name': 'qux',
-        'ok': True,
-        'new': False,
-        'delta': '2d ago',
         'href': '',
-        'info': 'Description of qux.'
+        'title': 'qux',
+        'new': False,
+        'info': 'Description of qux.',
+        'table': [],
+        'ts': '2d ago',
+        'success': '',
+        'danger': ''
     }],
 }

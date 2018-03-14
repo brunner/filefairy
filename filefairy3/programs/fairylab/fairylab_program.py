@@ -20,6 +20,7 @@ from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta  # noqa
+from utils.component.component_util import card  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import chat_post_message, rtm_connect  # noqa
@@ -79,24 +80,26 @@ class FairylabProgram(MessageableApi, RenderableApi):
                 href = '/fairylab/' + re.sub('index.html', '', html)
 
             pdate = data['plugins'][p]['date']
-            pdelta = delta(pdate, date)
+            ts = delta(pdate, date)
 
-            if 'm' not in pdelta and 's' not in pdelta:
+            if 'm' not in ts and 's' not in ts:
                 data['plugins'][p]['new'] = False
 
-            plugin = {
-                'name': p,
-                'ok': data['plugins'][p]['ok'],
-                'new': data['plugins'][p]['new'],
-                'info': info,
-                'delta': pdelta,
-                'href': href
-            }
+            success = 'just now' if 's' in ts else ''
+            danger = 'error' if not data['plugins'][p]['ok'] else ''
+            c = card(
+                href=href,
+                title=p,
+                new=data['plugins'][p]['new'],
+                info=info,
+                ts=ts,
+                success=success,
+                danger=danger)
 
             if renderable:
-                ret['browsable'].append(plugin)
+                ret['browsable'].append(c)
             else:
-                ret['internal'].append(plugin)
+                ret['internal'].append(c)
 
         return ret
 

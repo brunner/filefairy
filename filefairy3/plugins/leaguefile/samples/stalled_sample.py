@@ -11,10 +11,20 @@ sample = {
         'name': 'Leaguefile'
     }],
     'fp': {
-        'date': 'Mar 10',
-        'size': '59,969,530',
-        'time': '1h 8m',
-        'delta': '12m ago'
+        'href': '',
+        'title': 'Mar 10',
+        'new': False,
+        'info': '',
+        'table': [{
+            'key': 'Time',
+            'value': '1h 8m'
+        }, {
+            'key': 'Size',
+            'value': '59,969,530'
+        }],
+        'ts': '12m ago',
+        'success': '',
+        'danger': 'stalled'
     },
     'up': [{
         'date': 'Mar 8',

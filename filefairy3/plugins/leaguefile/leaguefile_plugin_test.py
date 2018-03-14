@@ -11,6 +11,7 @@ sys.path.append(_path)
 _root = re.sub(r'/plugins/leaguefile', '', _path)
 sys.path.append(_root)
 from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
+from utils.component.component_util import card  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
@@ -57,13 +58,6 @@ _fp_started_95 = {
     'start': 'Jan 29 15:00',
     'end': 'Jan 29 19:26',
     'now': ''
-}
-
-_fp_started_95_ret = {
-    'date': 'Jan 29',
-    'size': '310,000,000',
-    'time': '4h 26m',
-    'delta': '30s ago'
 }
 
 _up_started_1 = {
@@ -429,7 +423,16 @@ class LeaguefilePluginTest(TestUtil):
                 'name': 'Leaguefile'
             }],
             'fp':
-            _fp_started_95_ret,
+            card(
+                title='Jan 29',
+                table=[{
+                    'key': 'Time',
+                    'value': '4h 26m'
+                }, {
+                    'key': 'Size',
+                    'value': '310,000,000'
+                }],
+                ts='30s ago'),
             'up': [_up_stored_ret]
         }
         self.assertEqual(actual, expected)

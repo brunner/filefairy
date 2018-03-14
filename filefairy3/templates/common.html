@@ -7,3 +7,46 @@
         </div>
       </div>
 {%- endmacro -%}
+
+{% macro card(data) -%}
+          <div class="card d-flex flex-column flex-grow mt-3">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">
+                {% if data.href %}
+                <a href="{{ data.href }}">{{ data.title }}</a>
+                {% else %}
+                <span>{{ data.title }}</span>
+                {% endif %}
+                {% if data.new %}
+                <span class="badge badge-secondary float-right">New</span>
+                {% endif %}
+              </h5>
+              {% if data.info %}
+              <p class="card-text flex-grow">{{ data.info }}</p>
+              {% endif %}
+              {% if data.table %}
+              <table class="table table-sm">
+                <tbody>
+                  {% for row in data.table %}
+                  <tr>
+                    <td scope="row">{{ row.key + ': ' }}</td>
+                    <td class="w-100">{{ row.value }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+            {% if data.ts %}
+            <div class="card-footer text-muted text-truncate">
+              <small>Last activity: {{ data.ts }}
+                {%- if data.success -%}
+                <span class="text-success"> ({{ data.success }})</span>
+                {%- elif data.danger -%}
+                <span class="text-danger"> ({{ data.danger }})</span>
+                {%- endif -%}
+              </small>
+            </div>
+            {% endif %}
+          </div>
+{%- endmacro -%}

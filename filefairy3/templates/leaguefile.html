@@ -6,35 +6,7 @@
       {{ common.alert('clock', 'In Progress') }}
       <div class="row">
         <div class="col-12">
-          <div class="card mt-3">
-            <div class="card-body">
-              <h5 class="card-title">{{ fp.date }}</h5>
-              <table class="table table-sm">
-                <tbody>
-                  <tr>
-                    <td scope="row">Time:</td>
-                    <td class="w-100">{{ fp.time }}</td>
-                  </tr>
-                  <tr>
-                    <td scope="row">Size:</td>
-                    <td class="w-100">{{ fp.size }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            {% if fp.delta %}
-            <div class="card-footer text-muted text-truncate">
-              <small>
-                Last activity: {{ fp.delta }}
-                {%- if 's' in fp.delta -%}
-                <span class="text-success"> (ongoing)</span>
-                {%- else -%}
-                <span class="text-danger"> (stalled?)</span>
-                {% endif %}
-              </small>
-            </div>
-            {% endif %}
-          </div>
+          {{ common.card(fp) }}
         </div>
       </div>
     </div>
