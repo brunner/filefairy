@@ -130,6 +130,10 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         if data['fp']:
             now = datetime.datetime.now()
             time = self._time(data['fp']['start'], data['fp']['end'])
+            ts = delta(data['fp']['now'], now)
+
+            success = 'ongoing' if 's' in ts else ''
+            danger = 'stalled' if 's' not in ts else ''
             ret['fp'] = card(
                 title=self._date(data['fp']['start']),
                 table=[{
@@ -139,7 +143,9 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                     'key': 'Size',
                     'value': self._size(data['fp']['size'])
                 }],
-                ts=delta(data['fp']['now'], now))
+                ts=ts,
+                success=success,
+                danger=danger)
 
         body = []
         for up in data['up']:

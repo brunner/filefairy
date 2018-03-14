@@ -426,7 +426,8 @@ class LeaguefilePluginTest(TestUtil):
                     'key': 'Size',
                     'value': '310,000,000'
                 }],
-                ts='30s ago'),
+                ts='30s ago',
+                success='ongoing'),
             'up':
             table(
                 head=['Date', 'Time', 'Size'],
