@@ -12,6 +12,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta, elapsed  # noqa
 from utils.component.component_util import card, table  # noqa
+from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
@@ -55,15 +56,18 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         data = self.data
         original = copy.deepcopy(data)
 
-        data['fp'] = None
         for size, date, name, fp in self._check():
+            if not fp:
+                data['fp'] = None
+
             if '.filepart' in name:
-                data['fp'] = {
-                    'start': date,
-                    'size': size,
-                    'end': date,
-                    'now': datetime.datetime.now()
-                }
+                if not data['fp']:
+                    data['fp'] = {
+                        'start': date,
+                        'size': size,
+                        'end': date,
+                        'now': encode_datetime(datetime.datetime.now())
+                    }
             elif not len(data['up']) or data['up'][0]['date'] != date:
                 data['up'].insert(0, {
                     'date': date,
@@ -95,7 +99,8 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                 if data['fp'].get('size', 0) != size:
                     data['fp']['size'] = size
                     data['fp']['end'] = date
-                    data['fp']['now'] = datetime.datetime.now()
+                    data['fp']['now'] = encode_datetime(
+                        datetime.datetime.now())
             elif data['fp'] and not fp:
                 data['fp']['size'] = size
                 data['fp']['date'] = date
@@ -130,7 +135,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         if data['fp']:
             now = datetime.datetime.now()
             time = self._time(data['fp']['start'], data['fp']['end'])
-            ts = delta(data['fp']['now'], now)
+            ts = delta(decode_datetime(data['fp']['now']), now)
 
             success = 'ongoing' if 's' in ts else ''
             danger = 'stalled' if 's' not in ts else ''

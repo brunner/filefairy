@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import jinja2
 import mock
 import os
@@ -43,21 +44,21 @@ _fp_stored = {
     'size': '300000000',
     'start': 'Jan 27 12:05',
     'end': 'Jan 27 16:00',
-    'now': ''
+    'now': '2018-01-27T16:00:00'
 }
 
 _fp_started_1 = {
     'size': '100000',
     'start': 'Jan 29 15:00',
     'end': 'Jan 29 15:00',
-    'now': ''
+    'now': '2018-01-29T15:00:00'
 }
 
 _fp_started_95 = {
     'size': '310000000',
     'start': 'Jan 29 15:00',
     'end': 'Jan 29 19:26',
-    'now': ''
+    'now': '2018-01-29T19:26:00'
 }
 
 _up_started_1 = {
@@ -111,6 +112,8 @@ _up_stored_stopped = {
 
 
 class LeaguefilePluginTest(TestUtil):
+    maxDiff = None
+
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
@@ -129,10 +132,13 @@ class LeaguefilePluginTest(TestUtil):
 
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_setup__with_empty_started(self, mock_check, mock_post,
-                                       mock_render):
+    def test_setup__with_empty_started(self, mock_check, mock_datetime,
+                                       mock_post, mock_render):
         mock_check.return_value = _check_started_1
+        mock_datetime.datetime.now.return_value = datetime.datetime(
+            2018, 1, 29, 15, 0, 0)
         data = {'fp': None, 'up': []}
         original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
@@ -153,17 +159,20 @@ class LeaguefilePluginTest(TestUtil):
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
         actual = self.write(_data, original)
-        expected = {'fp': _fp_started_1, 'up': [_up_started_1]}
+        expected = {'fp': _fp_stored, 'up': [_up_started_1]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
         mock_render.assert_called_once_with()
 
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_setup__with_up_started_diff_date(self, mock_check, mock_post,
-                                              mock_render):
+    def test_setup__with_up_started_diff_date(self, mock_check, mock_datetime,
+                                              mock_post, mock_render):
         mock_check.return_value = _check_started_1
+        mock_datetime.datetime.now.return_value = datetime.datetime(
+            2018, 1, 29, 15, 0, 0)
         data = {'fp': None, 'up': [_up_stored_diff]}
         original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
@@ -179,10 +188,13 @@ class LeaguefilePluginTest(TestUtil):
 
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_setup__with_up_started_same_date(self, mock_check, mock_post,
-                                              mock_render):
+    def test_setup__with_up_started_same_date(self, mock_check, mock_datetime,
+                                              mock_post, mock_render):
         mock_check.return_value = _check_started_1
+        mock_datetime.datetime.now.return_value = datetime.datetime(
+            2018, 1, 29, 15, 0, 0)
         data = {'fp': None, 'up': [_up_stored_started]}
         original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
@@ -204,10 +216,7 @@ class LeaguefilePluginTest(TestUtil):
         plugin = LeaguefilePlugin(e=env())
         plugin._setup()
         actual = self.write(_data, original)
-        expected = {
-            'fp': _fp_started_1,
-            'up': [_up_started_1, _up_stored_diff]
-        }
+        expected = {'fp': _fp_stored, 'up': [_up_started_1, _up_stored_diff]}
         self.assertEqual(actual, expected)
         mock_post.assert_not_called()
         mock_render.assert_called_once_with()
@@ -293,11 +302,16 @@ class LeaguefilePluginTest(TestUtil):
 
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_run__returns(self, mock_check, mock_post, mock_render):
+    def test_run__returns(self, mock_check, mock_datetime, mock_post, mock_render):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_1,
             _check_started_95
+        ]
+        mock_datetime.datetime.now.side_effect = [
+            datetime.datetime(2018, 1, 29, 15, 0, 0),
+            datetime.datetime(2018, 1, 29, 19, 26, 0)
         ]
         data = {'fp': None, 'up': []}
         original = self.write(_data, data)
@@ -327,10 +341,13 @@ class LeaguefilePluginTest(TestUtil):
 
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_run__with_stored_started_fp1(self, mock_check, mock_post,
-                                          mock_render):
+    def test_run__with_stored_started_fp1(self, mock_check, mock_datetime,
+                                          mock_post, mock_render):
         mock_check.side_effect = [_check_stored, _check_started_1]
+        mock_datetime.datetime.now.return_value = datetime.datetime(
+            2018, 1, 29, 15, 0, 0)
         data = {'fp': None, 'up': []}
         original = self.write(_data, data)
         plugin = LeaguefilePlugin(e=env())
@@ -347,11 +364,16 @@ class LeaguefilePluginTest(TestUtil):
 
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_run__with_stored_started_fp95(self, mock_check, mock_post,
-                                           mock_render):
+    def test_run__with_stored_started_fp95(self, mock_check, mock_datetime,
+                                           mock_post, mock_render):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_95
+        ]
+        mock_datetime.datetime.now.side_effect = [
+            datetime.datetime(2018, 1, 29, 15, 0, 0),
+            datetime.datetime(2018, 1, 29, 19, 26, 0)
         ]
         data = {'fp': None, 'up': []}
         original = self.write(_data, data)
@@ -370,11 +392,16 @@ class LeaguefilePluginTest(TestUtil):
 
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_run__with_stored_stopped(self, mock_check, mock_post,
-                                      mock_render):
+    def test_run__with_stored_stopped(self, mock_check, mock_datetime,
+                                      mock_post, mock_render):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_95, _check_stopped
+        ]
+        mock_datetime.datetime.now.side_effect = [
+            datetime.datetime(2018, 1, 29, 15, 0, 0),
+            datetime.datetime(2018, 1, 29, 19, 26, 0)
         ]
         data = {'fp': None, 'up': []}
         original = self.write(_data, data)
