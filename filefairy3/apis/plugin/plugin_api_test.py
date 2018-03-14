@@ -19,6 +19,10 @@ class FakePlugin(PluginApi):
     def __init__(self, **kwargs):
         super(FakePlugin, self).__init__(**kwargs)
 
+    @property
+    def enabled(self):
+        return True
+
     @staticmethod
     def _info():
         return 'Description.'
@@ -36,6 +40,10 @@ class FakePlugin(PluginApi):
 class FakeRenderable(PluginApi, RenderableApi):
     def __init__(self, **kwargs):
         super(FakeRenderable, self).__init__(**kwargs)
+
+    @property
+    def enabled(self):
+        return True
 
     @staticmethod
     def _data():
@@ -71,6 +79,10 @@ class FakeRenderable(PluginApi, RenderableApi):
 
 
 class PluginApiTest(unittest.TestCase):
+    def test_enabled(self):
+        plugin = FakePlugin()
+        self.assertTrue(plugin.enabled)
+
     def test_inheritance(self):
         plugin = FakePlugin()
         self.assertTrue(isinstance(plugin, MessageableApi))
@@ -84,10 +96,14 @@ class PluginApiTest(unittest.TestCase):
         plugin = FakeRenderable(e=env())
         actual = plugin._attachments()
         expected = [{
-            'fallback': 'Description.',
-            'title': 'Fairylab | foo',
-            'title_link': 'http://orangeandblueleaguebaseball.com/fairylab/foo/',
-            'text': 'Description.'
+            'fallback':
+            'Description.',
+            'title':
+            'Fairylab | foo',
+            'title_link':
+            'http://orangeandblueleaguebaseball.com/fairylab/foo/',
+            'text':
+            'Description.'
         }]
         self.assertEqual(actual, expected)
 

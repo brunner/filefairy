@@ -15,6 +15,10 @@ class GitPlugin(PluginApi):
     def __init__(self, **kwargs):
         super(GitPlugin, self).__init__(**kwargs)
 
+    @property
+    def enabled(self):
+        return True
+
     @staticmethod
     def _info():
         return 'Exposes git commands to admins.'

@@ -19,6 +19,10 @@ class PluginApi(MessageableApi, RunnableApi):
     def __init__(self, **kwargs):
         super(PluginApi, self).__init__(**kwargs)
 
+    @abc.abstractproperty
+    def enabled(self):
+        pass
+
     @abstractstatic
     def _info():
         pass

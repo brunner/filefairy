@@ -3,7 +3,6 @@
 import copy
 import datetime
 import importlib
-import jinja2
 import json
 import os
 import re
@@ -23,13 +22,12 @@ from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
-from utils.slack.slack_util import rtm_connect  # noqa
+from utils.slack.slack_util import chat_post_message, rtm_connect  # noqa
 
 
 class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self, **kwargs):
         super(FairylabProgram, self).__init__(**dict(kwargs))
-        self.data = {'plugins': {}}
         self.pins = {}
         self.keep_running = True
         self.lock = threading.Lock()
@@ -67,7 +65,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         }
 
         date = datetime.datetime.now()
-        ps = data['plugins'].keys()
+        ps = sorted(data['plugins'].keys())
         for p in ps:
             instance = self.pins.get(p, None)
             info = ''
@@ -81,11 +79,17 @@ class FairylabProgram(MessageableApi, RenderableApi):
                 href = '/fairylab/' + re.sub('index.html', '', html)
 
             pdate = data['plugins'][p]['date']
+            pdelta = delta(pdate, date)
+
+            if 'm' not in pdelta and 's' not in pdelta:
+                data['plugins'][p]['new'] = False
+
             plugin = {
                 'name': p,
                 'ok': data['plugins'][p]['ok'],
+                'new': data['plugins'][p]['new'],
                 'info': info,
-                'delta': delta(pdate, date),
+                'delta': pdelta,
                 'href': href
             }
 
@@ -188,8 +192,13 @@ class FairylabProgram(MessageableApi, RenderableApi):
         camel = ''.join([w.capitalize() for w in p.split('_')])
         clazz = '{}Plugin'.format(camel)
 
-        if p in data['plugins'] and path in sys.modules:
+        new = False
+        if p in data['plugins']:
             del data['plugins'][p]
+        else:
+            new = True
+
+        if path in sys.modules:
             del sys.modules[path]
 
         date = datetime.datetime.now()
@@ -197,20 +206,32 @@ class FairylabProgram(MessageableApi, RenderableApi):
             ok = True
             plugin = getattr(importlib.import_module(path), clazz)
             instance = plugin(**dict(kwargs, e=self.environment))
-            log(clazz, **dict(kwargs, s='Installed.', v=True))
+            enabled = instance.enabled
         except Exception:
             ok = False
             instance = None
+            enabled = False
             exc = traceback.format_exc()
             log(clazz, **dict(kwargs, s='Exception.', c=exc, v=True))
 
-        data['plugins'][p] = {
-            'date': date,
-            'ok': ok,
-        }
+        if enabled:
+            log(clazz, **dict(kwargs, s='Installed.', v=True))
+            if new and isinstance(instance, RenderableApi):
+                chat_post_message(
+                    'testing',
+                    'Deployed new feature.',
+                    attachments=instance._attachments())
+        elif instance:
+            log(clazz, **dict(kwargs, s='Disabled.', v=True))
 
-        self.pins[p] = instance
-        self._try(p, '_setup')
+        if enabled or not ok:
+            data['plugins'][p] = {
+                'date': date,
+                'ok': ok,
+                'new': new,
+            }
+            self.pins[p] = instance
+            self._try(p, '_setup')
 
         if data != original:
             self.write()

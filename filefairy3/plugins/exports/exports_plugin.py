@@ -17,6 +17,10 @@ class ExportsPlugin(PluginApi, SerializableApi):
     def __init__(self, **kwargs):
         super(ExportsPlugin, self).__init__(**kwargs)
 
+    @property
+    def enabled(self):
+        return True
+
     @staticmethod
     def _data():
         return os.path.join(_path, 'data.json')

@@ -26,6 +26,10 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
     def __init__(self, **kwargs):
         super(LeaguefilePlugin, self).__init__(**kwargs)
 
+    @property
+    def enabled(self):
+        return True
+
     @staticmethod
     def _data():
         return os.path.join(_path, 'data.json')
