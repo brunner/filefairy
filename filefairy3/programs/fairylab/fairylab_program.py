@@ -22,6 +22,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card  # noqa
+from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import rtm_connect  # noqa
@@ -30,7 +31,6 @@ from utils.slack.slack_util import rtm_connect  # noqa
 class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self, **kwargs):
         super(FairylabProgram, self).__init__(**dict(kwargs))
-        self.data = {'plugins': {}}
         self.pins = {}
         self.keep_running = True
         self.lock = threading.Lock()
@@ -81,7 +81,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
                 href = instance._href()
 
             pdate = data['plugins'][p]['date']
-            ts = delta(pdate, date)
+            ts = delta(decode_datetime(pdate), date)
 
             success = 'just now' if 's' in ts else ''
             danger = 'error' if not data['plugins'][p]['ok'] else ''
@@ -122,12 +122,14 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         try:
             if item(**kwargs):
-                data['plugins'][p]['date'] = datetime.datetime.now()
+                data['plugins'][p]['date'] = encode_datetime(
+                    datetime.datetime.now())
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
             data['plugins'][p]['ok'] = False
-            data['plugins'][p]['date'] = datetime.datetime.now()
+            data['plugins'][p]['date'] = encode_datetime(
+                datetime.datetime.now())
 
     def _recv(self, message):
         self.lock.acquire()
@@ -197,7 +199,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         if path in sys.modules:
             del sys.modules[path]
 
-        date = datetime.datetime.now()
+        date = encode_datetime(datetime.datetime.now())
         try:
             ok = True
             plugin = getattr(importlib.import_module(path), clazz)

@@ -158,7 +158,7 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'date': datetime.datetime.now()
+            'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._try('internal', '_run_internal', a=1, b=True)
@@ -178,7 +178,7 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'date': datetime.datetime.now()
+            'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._try('internal', '_run_internal', a=1, b=True)
@@ -202,7 +202,7 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'date': datetime.datetime.now()
+            'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._try('internal', 'foo', a=1, b=True)
@@ -215,7 +215,7 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'date': datetime.datetime.now()
+            'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._try('internal', 'var', a=1, b=True)
@@ -230,7 +230,7 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'date': datetime.datetime.now()
+            'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._recv(
@@ -256,7 +256,7 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'date': datetime.datetime.now()
+            'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._connect()
@@ -277,7 +277,7 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'date': datetime.datetime.now()
+            'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin()
         mock_sleep.side_effect = lambda s: fairylab.shutdown()
@@ -300,9 +300,15 @@ class FairylabProgramTest(TestUtil):
         original = self.write(_data, data)
         environment = env()
         fairylab = FairylabProgram(e=environment)
-        fairylab.data['plugins']['browsable'] = {'ok': True, 'date': then}
+        fairylab.data['plugins']['browsable'] = {
+            'ok': True,
+            'date': '1985-10-26T00:02:30'
+        }
         fairylab.pins['browsable'] = BrowsablePlugin(e=environment)
-        fairylab.data['plugins']['internal'] = {'ok': True, 'date': then}
+        fairylab.data['plugins']['internal'] = {
+            'ok': True,
+            'date': '1985-10-26T00:02:30'
+        }
         fairylab.pins['internal'] = InternalPlugin(e=environment)
         actual = fairylab._render_internal()
         expected = [('html/fairylab/index.html', '', 'home.html', {
@@ -332,8 +338,12 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install__with_valid_input(self, mock_exc, mock_getattr,
-                                       mock_import, mock_log, mock_setup):
+    @mock.patch('programs.fairylab.fairylab_program.datetime')
+    def test_install__with_valid_input(self, mock_datetime, mock_exc,
+                                       mock_getattr, mock_import, mock_log,
+                                       mock_setup):
+        mock_datetime.datetime.now.return_value = datetime.datetime(
+            1985, 10, 26, 0, 2, 30)
         mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
         data = {'plugins': {}}
         original = self.write(_data, data)
@@ -349,7 +359,7 @@ class FairylabProgramTest(TestUtil):
             'plugins': {
                 'internal': {
                     'ok': True,
-                    'date': '',
+                    'date': '1985-10-26T00:02:30',
                 }
             }
         }
