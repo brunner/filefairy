@@ -11,7 +11,7 @@ sys.path.append(re.sub(r'/utils/ago', '', _path))
 from utils.ago.ago_util import delta, elapsed  # noqa
 
 
-class JsonUtilTest(unittest.TestCase):
+class AgoUtilTest(unittest.TestCase):
     def test_delta__seconds_ago(self):
         then = datetime.datetime(1985, 10, 26, 0, 0, 0)
         now = datetime.datetime(1985, 10, 26, 0, 0, 30)
