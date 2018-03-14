@@ -22,7 +22,7 @@ class ComponentUtilTest(unittest.TestCase):
             'success': '',
             'danger': ''
         }
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
     def test_card__home(self):
         actual = card(
@@ -40,7 +40,7 @@ class ComponentUtilTest(unittest.TestCase):
             'success': 'just now',
             'danger': ''
         }
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
     def test_card__leaguefile(self):
         table = [{
@@ -61,12 +61,12 @@ class ComponentUtilTest(unittest.TestCase):
             'success': '',
             'danger': 'stalled'
         }
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
     def test_table__default(self):
         actual = table()
         expected = {'head': [], 'body': []}
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
     def test_table__leaguefile(self):
         actual = table(
@@ -76,7 +76,7 @@ class ComponentUtilTest(unittest.TestCase):
             'head': ['Date', 'Time', 'Size'],
             'body': [['Jan 1', '5h 0m', '300,000,000']]
         }
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':

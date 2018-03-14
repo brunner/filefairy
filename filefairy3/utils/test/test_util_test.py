@@ -44,7 +44,7 @@ class TestUtilTest(unittest.TestCase):
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
         actual = FakeRenderableTest.write('data.json', {'a': 2, 'b': False})
-        self.assertEquals(actual, {'a': 1, 'b': True})
+        self.assertEqual(actual, {'a': 1, 'b': True})
         handle = mo()
         calls = [mock.call('{\n  "a": 2, \n  "b": false\n}'), mock.call('\n')]
         handle.write.assert_has_calls(calls)

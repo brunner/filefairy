@@ -17,7 +17,7 @@ class UrllibUtilTest(unittest.TestCase):
         mock_check.return_value = 'ret'
         actual = check_output(['cmd', 'foo', 'bar'])
         expected = 'ret'
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
         mock_check.assert_called_once_with(
             ['cmd', 'foo', 'bar'], stderr=mock.ANY)
 

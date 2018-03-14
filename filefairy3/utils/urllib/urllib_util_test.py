@@ -20,7 +20,7 @@ class UrllibUtilTest(unittest.TestCase):
         mock_urlencode.return_value = 'a=1&b=2'
         actual = create_request('http://url', {'a': 1, 'b': 2})
         expected = 'request'
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
         mock_request.assert_called_once_with('http://url', 'a=1&b=2')
         mock_urlencode.assert_called_once_with({'a': 1, 'b': 2})
 
@@ -31,7 +31,7 @@ class UrllibUtilTest(unittest.TestCase):
         mock_urlopen.return_value.read.return_value = 'response'
         actual = urlopen('http://url')
         expected = 'response'
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
         mock_urlopen.assert_called_once_with('http://url')
 
 

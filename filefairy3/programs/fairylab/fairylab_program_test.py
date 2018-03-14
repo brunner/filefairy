@@ -137,8 +137,6 @@ class FakeWebSocketApp(object):
 
 
 class FairylabProgramTest(TestUtil):
-    maxDiff = None
-
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     def test_init(self, mock_open):
         data = '{"plugins": {}}'

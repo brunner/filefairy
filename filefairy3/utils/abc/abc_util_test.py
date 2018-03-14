@@ -33,7 +33,7 @@ class Bar(Foo):
 
 class AbcUtilTest(unittest.TestCase):
     def test_abstractstatic(self):
-        self.assertEquals(Bar._data(), 'Bar')
+        self.assertEqual(Bar._data(), 'Bar')
 
 
 if __name__ == '__main__':

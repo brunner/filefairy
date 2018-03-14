@@ -112,8 +112,6 @@ _up_stored_stopped = {
 
 
 class LeaguefilePluginTest(TestUtil):
-    maxDiff = None
-
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')

@@ -20,7 +20,7 @@ class JsonUtilTest(unittest.TestCase):
         data = {'c': 1, 'b': FakeObject(), 'a': 'foo'}
         actual = dumps(data)
         expected = '{\n  "a": "foo", \n  "b": "", \n  "c": 1\n}'
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':

@@ -32,7 +32,7 @@ class SerializableApiTest(unittest.TestCase):
         mock_log.assert_called_once_with(serializable._name(), **{
             's': 'Read completed.',
         })
-        self.assertEquals(serializable.data, {'a': 1, 'b': True})
+        self.assertEqual(serializable.data, {'a': 1, 'b': True})
 
     @mock.patch('apis.serializable.serializable_api.log')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
@@ -51,7 +51,7 @@ class SerializableApiTest(unittest.TestCase):
         mock_log.assert_called_once_with(serializable._name(), **{
             's': 'Read completed.',
         })
-        self.assertEquals(serializable.data, {'a': 2, 'b': False})
+        self.assertEqual(serializable.data, {'a': 2, 'b': False})
 
     @mock.patch('apis.serializable.serializable_api.log')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
@@ -73,7 +73,7 @@ class SerializableApiTest(unittest.TestCase):
         mock_log.assert_called_once_with(serializable._name(), **{
             's': 'Write completed.'
         })
-        self.assertEquals(serializable.data, {'a': 2, 'b': False})
+        self.assertEqual(serializable.data, {'a': 2, 'b': False})
 
     @mock.patch('apis.serializable.serializable_api.log')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
@@ -85,7 +85,7 @@ class SerializableApiTest(unittest.TestCase):
         mock_log.reset_mock()
         mock_log.return_value = {'a': 1, 'b': True}
         expected = {'a': 1, 'b': True}
-        self.assertEquals(serializable.dump(), expected)
+        self.assertEqual(serializable.dump(), expected)
         mock_log.assert_called_once_with(serializable._name(), **{
             'c': '{\n  "a": 1, \n  "b": true\n}',
             's': 'Dump completed.'

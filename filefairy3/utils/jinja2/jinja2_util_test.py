@@ -16,8 +16,8 @@ class JsonUtilTest(unittest.TestCase):
         environment = env()
         templates = os.path.join(_root, 'templates')
         self.assertEqual(environment.loader.searchpath, [templates])
-        self.assertEquals(environment.trim_blocks, True)
-        self.assertEquals(environment.lstrip_blocks, True)
+        self.assertEqual(environment.trim_blocks, True)
+        self.assertEqual(environment.lstrip_blocks, True)
 
 
 if __name__ == '__main__':

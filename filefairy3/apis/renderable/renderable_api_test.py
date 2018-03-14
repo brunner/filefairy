@@ -87,7 +87,7 @@ class RenderableApiTest(unittest.TestCase):
             'date': '1985-10-26 00:02:30 PST',
             'title': 'foo'
         })
-        self.assertEquals(renderable.data, {'a': 1, 'b': True})
+        self.assertEqual(renderable.data, {'a': 1, 'b': True})
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('apis.serializable.serializable_api.log')
@@ -127,7 +127,7 @@ class RenderableApiTest(unittest.TestCase):
             'date': '1985-10-26 00:02:30 PST',
             'title': 'foo'
         })
-        self.assertEquals(renderable.data, {'a': 1, 'b': True})
+        self.assertEqual(renderable.data, {'a': 1, 'b': True})
 
 
 if __name__ == '__main__':

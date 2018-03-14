@@ -32,7 +32,7 @@ class SlackUtilTest(unittest.TestCase):
         mock_urlopen.return_value = '{"ok":true,"message":{"text":"foo"}}'
         actual = chat_post_message('channel', 'foo', attachments=attachments)
         expected = {'ok': True, 'message': {'text': 'foo'}}
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
         mock_request.assert_called_once_with(
             'https://slack.com/api/chat.postMessage', {
                 'token': filefairy,
@@ -58,7 +58,7 @@ class SlackUtilTest(unittest.TestCase):
         mock_urlopen.return_value = '{"ok":true,"file":{"preview":"content"}}'
         actual = files_upload('content', 'filename.txt', 'channel')
         expected = {'ok': True, 'file': {'preview': 'content'}}
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
         mock_request.assert_called_once_with(
             'https://slack.com/api/files.upload', {
                 'token': filefairy,
@@ -79,7 +79,7 @@ class SlackUtilTest(unittest.TestCase):
         mock_urlopen.return_value = '{"ok":true,"url":"wss://..."}'
         actual = rtm_connect()
         expected = {'ok': True, 'url': 'wss://...'}
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
         mock_request.assert_called_once_with(
             'https://slack.com/api/rtm.connect', {
                 'token': filefairy

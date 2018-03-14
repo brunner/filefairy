@@ -15,13 +15,13 @@ class DatetimeUtilTest(unittest.TestCase):
     def test_decode(self):
         actual = decode_datetime('2018-03-13T22:43:13.337756')
         expected = datetime.datetime(2018, 3, 13, 22, 43, 13, 337756)
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
     def test_encode(self):
         actual = encode_datetime(
             datetime.datetime(2018, 3, 13, 22, 43, 13, 337756))
         expected = '2018-03-13T22:43:13.337756'
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':
