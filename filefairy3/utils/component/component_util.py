@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 def card(href='', title='', info='', table=[], ts='', success='', danger=''):
