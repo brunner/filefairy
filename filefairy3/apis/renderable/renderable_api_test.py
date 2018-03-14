@@ -24,28 +24,19 @@ class FakeRenderable(RenderableApi):
         return os.path.join(_path, 'data.json')
 
     @staticmethod
+    def _html():
+        return 'index.html'
+
+    @staticmethod
     def _title():
         return 'foo'
 
+    @staticmethod
+    def _tmpl():
+        return 'foo.html'
+
     def _render_internal(self, **kwargs):
-        ret = [('foo/index.html', '', 'foo.html', self._foo(**kwargs)),
-               ('foo/sub/index.html', 'sub', 'sub.html', self._sub(**kwargs))]
-
-        for i in range(5):
-            html = 'foo/dyn/dyn_{}.html'.format(i)
-            r = (html, 'dyn ' + i, 'dyn.html', self._fill_dynfoo(**kwargs))
-            ret.append(r)
-
-        return ret
-
-    def _fill_foo(self, **kwargs):
-        return {'a': 1, 'b': True}
-
-    def _fill_sub(self, **kwargs):
-        return {'m': 2, 'n': 'bar'}
-
-    def _fill_dyn(self, key, **kwargs):
-        return {'z': key % 2 == 0}
+        return {}
 
 
 class RenderableApiTest(unittest.TestCase):
@@ -72,8 +63,8 @@ class RenderableApiTest(unittest.TestCase):
     @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
     def test_render__with_valid_input(self, mock_check, mock_datetime,
-                                      mock_dump, mock_open, mock_slog,
-                                      mock_stream):
+                                      mock_dump, mock_open,
+                                      mock_slog, mock_stream):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
@@ -108,9 +99,9 @@ class RenderableApiTest(unittest.TestCase):
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_render__with_thrown_exception(self, mock_check, mock_datetime,
-                                           mock_dump, mock_exc, mock_open,
-                                           mock_rlog, mock_slog, mock_stream):
+    def test_render__with_thrown_exception(
+            self, mock_check, mock_datetime, mock_dump, mock_exc, mock_open,
+            mock_rlog, mock_slog, mock_stream):
         mock_exc.return_value = 'Traceback: ...'
         mock_dump.side_effect = Exception()
         data = '{"a": 1, "b": true}'
