@@ -84,9 +84,9 @@ class AgoUtilTest(unittest.TestCase):
 
     def test_elapsed__hours_ago(self):
         then = datetime.datetime(1985, 10, 26, 0, 0, 0)
-        now = datetime.datetime(1985, 10, 26, 6, 2, 30)
+        now = datetime.datetime(1985, 10, 26, 6, 0, 30)
         actual = elapsed(then, now)
-        expected = '6h 2m'
+        expected = '6h 0m'
         self.assertEquals(actual, expected)
 
     def test_elapsed__days_ago(self):
@@ -111,10 +111,10 @@ class AgoUtilTest(unittest.TestCase):
         self.assertEquals(actual, expected)
 
     def test_elapsed__in_hours(self):
-        then = datetime.datetime(1985, 10, 26, 6, 2, 30)
+        then = datetime.datetime(1985, 10, 26, 6, 0, 30)
         now = datetime.datetime(1985, 10, 26, 0, 0, 0)
         actual = elapsed(then, now)
-        expected = '6h 2m'
+        expected = '6h 0m'
         self.assertEquals(actual, expected)
 
     def test_elapsed__in_days(self):

@@ -35,7 +35,6 @@ def elapsed(then, now):
     hm = []
     if h > 0:
         hm.append('{}h'.format(h))
-    if m > 0 or h == 0:
-        hm.append('{}m'.format(m))
+    hm.append('{}m'.format(m))
 
     return ' '.join(hm)
