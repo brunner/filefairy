@@ -411,9 +411,9 @@ class FairylabProgramTest(TestUtil):
         mock_setup.assert_not_called()
         mock_exc.assert_called_once_with()
         actual = self.write(_data, original)
-        expected = {'plugins': {'internal': {'ok': False, 'date': ''}}}
+        expected = {'plugins': {}}
         self.assertEqual(actual, expected)
-        self.assertIsNone(fairylab.pins['internal'])
+        self.assertNotIn('internal', fairylab.pins)
 
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.os.execv')

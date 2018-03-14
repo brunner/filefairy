@@ -215,7 +215,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         elif instance:
             log(clazz, **dict(kwargs, s='Disabled.', v=True))
 
-        if enabled or not ok:
+        if enabled:
             data['plugins'][p] = {
                 'date': date,
                 'ok': ok,
