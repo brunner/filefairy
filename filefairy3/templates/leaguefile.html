@@ -16,24 +16,7 @@
       {{ common.alert('task', 'Completed') }}
       <div class="row">
         <div class="col-12">
-          <table class="table border mt-3">
-            <thead class="thead-light">
-              <tr>
-                <td scope="col">Date</td>
-                <td scope="col">Time</td>
-                <td scope="col">Size</td>
-              </tr>
-            </thead>
-            <tbody>
-              {% for f in up %}
-              <tr>
-                <td scope="row">{{ f.date }}</td>
-                <td>{{ f.time }}</td>
-                <td>{{ f.size }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          {{ common.table(up) }}
         </div>
       </div>
     </div>

@@ -25,13 +25,9 @@ sample = {
         'success': '',
         'danger': 'stalled'
     },
-    'up': [{
-        'date': 'Mar 8',
-        'size': '358,347,534',
-        'time': '10h 11m'
-    }, {
-        'date': 'Mar 6',
-        'size': '356,922,996',
-        'time': '9h 34m'
-    }]
+    'up': {
+        'head': ['Date', 'Time', 'Size'],
+        'body': [['Mar 8', '10h 11m', '358,347,534'],
+                 ['Mar 6', '9h 34m', '356,922,996']]
+    }
 }

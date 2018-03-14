@@ -47,3 +47,32 @@
             {% endif %}
           </div>
 {%- endmacro -%}
+
+{% macro table(data) -%}
+          <table class="table border mt-3">
+            {% if data.head %}
+            <thead class="thead-light">
+              <tr>
+                {% for cell in data.head %}
+                <td scope="col">{{ cell }}</td>
+                {% endfor %}
+              </tr>
+            </thead>
+            {% endif %}
+            {% if data.body %}
+            <tbody>
+              {% for row in data.body %}
+              <tr>
+                {% for cell in row %}
+                {% if loop.first %}
+                <td scope="row">{{ cell }}</td>
+                {% else %}
+                <td>{{ cell }}</td>
+                {% endif %}
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+            {% endif %}
+          </table>
+{%- endmacro -%}

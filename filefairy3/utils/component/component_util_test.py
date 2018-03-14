@@ -7,7 +7,7 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/component', '', _path))
-from utils.component.component_util import card  # noqa
+from utils.component.component_util import card, table  # noqa
 
 
 class ComponentUtilTest(unittest.TestCase):
@@ -60,6 +60,21 @@ class ComponentUtilTest(unittest.TestCase):
             'ts': '4m ago',
             'success': '',
             'danger': 'stalled'
+        }
+        self.assertEquals(actual, expected)
+
+    def test_table__default(self):
+        actual = table()
+        expected = {'head': [], 'body': []}
+        self.assertEquals(actual, expected)
+
+    def test_table__leaguefile(self):
+        actual = table(
+            head=['Date', 'Time', 'Size'],
+            body=[['Jan 1', '5h 0m', '300,000,000']])
+        expected = {
+            'head': ['Date', 'Time', 'Size'],
+            'body': [['Jan 1', '5h 0m', '300,000,000']]
         }
         self.assertEquals(actual, expected)
 

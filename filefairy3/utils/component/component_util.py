@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 
 
-def card(href='',
-         title='',
-         info='',
-         table=[],
-         ts='',
-         success='',
-         danger=''):
+def card(href='', title='', info='', table=[], ts='', success='', danger=''):
     return {
         'href': href,
         'title': title,
@@ -17,3 +11,7 @@ def card(href='',
         'success': success,
         'danger': danger
     }
+
+
+def table(head=[], body=[]):
+    return {'head': head, 'body': body}

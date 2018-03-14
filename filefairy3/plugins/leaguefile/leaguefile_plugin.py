@@ -11,7 +11,7 @@ sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta, elapsed  # noqa
-from utils.component.component_util import card  # noqa
+from utils.component.component_util import card, table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
@@ -141,13 +141,14 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                 }],
                 ts=delta(data['fp']['now'], now))
 
-        ret['up'] = []
+        body = []
         for up in data['up']:
-            ret['up'].append({
-                'date': self._date(up['date']),
-                'size': self._size(up['size']),
-                'time': self._time(up['start'], up['end'])
-            })
+            body.append([
+                self._date(up['date']),
+                self._time(up['start'], up['end']),
+                self._size(up['size'])
+            ])
+        ret['up'] = table(head=['Date', 'Time', 'Size'], body=body)
 
         return ret
 
