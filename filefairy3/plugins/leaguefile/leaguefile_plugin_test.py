@@ -303,7 +303,8 @@ class LeaguefilePluginTest(TestUtil):
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
-    def test_run__returns(self, mock_check, mock_datetime, mock_post, mock_render):
+    def test_run__returns(self, mock_check, mock_datetime, mock_post,
+                          mock_render):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_1,
             _check_started_95
@@ -434,7 +435,8 @@ class LeaguefilePluginTest(TestUtil):
         plugin = LeaguefilePlugin(e=env())
         plugin.data = {'fp': _fp_started_95, 'up': [_up_stored]}
         actual = plugin._render_internal()
-        expected = {
+        html = 'html/fairylab/leaguefile/index.html'
+        expected = [(html, '', 'leaguefile.html', {
             'breadcrumbs': [{
                 'href': '/fairylab/',
                 'name': 'Home'
@@ -458,7 +460,7 @@ class LeaguefilePluginTest(TestUtil):
             table(
                 head=['Date', 'Time', 'Size'],
                 body=[['Jan 27', '0m', '336,724,001']])
-        }
+        })]
         self.assertEqual(actual, expected)
         self.write(_data, original)
 
@@ -466,4 +468,5 @@ class LeaguefilePluginTest(TestUtil):
 if __name__ in ['__main__', 'plugins.leaguefile.leaguefile_plugin_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugins.leaguefile'
-    main(LeaguefilePluginTest, LeaguefilePlugin, _pkg, _path, _main)
+    _pth = 'plugins/leaguefile'
+    main(LeaguefilePluginTest, LeaguefilePlugin, _pkg, _pth, _main)

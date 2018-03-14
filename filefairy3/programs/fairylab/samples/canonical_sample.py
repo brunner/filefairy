@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-sample = {
+subtitle = ''
+
+tmpl = 'home.html'
+
+context = {
     'title':
     'home',
     'breadcrumbs': [{

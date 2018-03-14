@@ -51,8 +51,8 @@ class FakeRenderable(PluginApi, RenderableApi):
         return os.path.join(_path, 'data.json')
 
     @staticmethod
-    def _html():
-        return 'foo/index.html'
+    def _href():
+        return '/fairylab/foo/'
 
     @staticmethod
     def _info():

@@ -42,21 +42,21 @@ class FairylabProgram(MessageableApi, RenderableApi):
         return os.path.join(_path, 'data.json')
 
     @staticmethod
-    def _html():
-        return 'index.html'
+    def _href():
+        return '/fairylab/'
 
     @staticmethod
     def _title():
         return 'home'
 
-    @staticmethod
-    def _tmpl():
-        return 'home.html'
-
     def _on_message_internal(self, **kwargs):
         pass
 
     def _render_internal(self, **kwargs):
+        _home = self._home(**kwargs)
+        return [('html/fairylab/index.html', '', 'home.html', _home)]
+
+    def _home(self, **kwargs):
         data = self.data
         ret = {
             'breadcrumbs': [{
@@ -78,8 +78,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
             href = ''
             renderable = isinstance(instance, RenderableApi)
             if renderable:
-                html = instance._html()
-                href = '/fairylab/' + re.sub('index.html', '', html)
+                href = instance._href()
 
             pdate = data['plugins'][p]['date']
             ts = delta(pdate, date)

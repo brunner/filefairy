@@ -38,8 +38,8 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         return os.path.join(_path, 'data.json')
 
     @staticmethod
-    def _html():
-        return 'leaguefile/index.html'
+    def _href():
+        return '/fairylab/leaguefile/'
 
     @staticmethod
     def _info():
@@ -48,10 +48,6 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
     @staticmethod
     def _title():
         return 'leaguefile'
-
-    @staticmethod
-    def _tmpl():
-        return 'leaguefile.html'
 
     def _setup(self, **kwargs):
         data = self.data
@@ -121,6 +117,11 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             return True
 
     def _render_internal(self, **kwargs):
+        html = 'html/fairylab/leaguefile/index.html'
+        _home = self._home(**kwargs)
+        return [(html, '', 'leaguefile.html', _home)]
+
+    def _home(self, **kwargs):
         data = self.data
         ret = {
             'breadcrumbs': [{

@@ -26,7 +26,7 @@ class RenderableApi(SerializableApi):
         self.environment = kwargs['e']
 
     @abstractstatic
-    def _html():
+    def _href():
         pass
 
     @abstractstatic
@@ -34,26 +34,24 @@ class RenderableApi(SerializableApi):
         pass
 
     @abstractstatic
-    def _tmpl():
-        pass
-
-    @abc.abstractmethod
-    def _render_internal(self, **kwargs):
+    def _render_internal():
         pass
 
     def _render(self, **kwargs):
-        try:
-            title = self._title()
-            html = self._html()
-            here = os.path.join(_root, 'html', html)
-            there = 'brunnerj@' + server + ':/var/www/html/fairylab/' + html
-            now = datetime.datetime.now()
-            date = now.strftime('%Y-%m-%d %H:%M:%S') + ' PST'
-            tmpl = self.environment.get_template(self._tmpl())
-            ret = self._render_internal(**kwargs)
-            ts = tmpl.stream(dict(ret, title=title, date=date))
-            ts.dump(here)
-            check_output(['scp', here, there])
-        except Exception:
-            exc = traceback.format_exc()
-            log(self._name(), s='Exception.', c=exc, v=True)
+        now = datetime.datetime.now()
+        date = now.strftime('%Y-%m-%d %H:%M:%S') + ' PST'
+
+        _title = self._title()
+        for html, subtitle, tmpl, context in self._render_internal():
+            try:
+                subtitle = ' » ' + subtitle if subtitle else ''
+                title = _title + subtitle
+                tmpl = self.environment.get_template(tmpl)
+                ts = tmpl.stream(dict(context, title=title, date=date))
+                here = os.path.join(_root, html)
+                there = 'brunnerj@' + server + ':/var/www/' + html
+                ts.dump(here)
+                check_output(['scp', here, there])
+            except Exception:
+                exc = traceback.format_exc()
+                log(self._name(), s='Exception.', c=exc, v=True)

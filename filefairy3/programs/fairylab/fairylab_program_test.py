@@ -35,8 +35,8 @@ class BrowsablePlugin(PluginApi, RenderableApi):
         return os.path.join(_path, 'data.json')
 
     @staticmethod
-    def _html():
-        return 'browsable/index.html'
+    def _href():
+        return '/fairylab/browsable/'
 
     @staticmethod
     def _info():
@@ -45,10 +45,6 @@ class BrowsablePlugin(PluginApi, RenderableApi):
     @staticmethod
     def _title():
         return 'foo'
-
-    @staticmethod
-    def _tmpl():
-        return 'browsable.html'
 
     def _setup(self, **kwargs):
         pass
@@ -60,7 +56,8 @@ class BrowsablePlugin(PluginApi, RenderableApi):
         return True
 
     def _render_internal(self, **kwargs):
-        return {}
+        return [('html/fairylab/browsable/index.html', '', 'browsable.html',
+                 {})]
 
 
 class InternalPlugin(PluginApi):
@@ -76,10 +73,6 @@ class InternalPlugin(PluginApi):
     @staticmethod
     def _info():
         return 'Description of internal.'
-
-    @staticmethod
-    def _title():
-        return 'foo'
 
     def _setup(self, **kwargs):
         pass
@@ -102,10 +95,6 @@ class DisabledPlugin(PluginApi):
     @staticmethod
     def _info():
         return 'Description of disabled.'
-
-    @staticmethod
-    def _title():
-        return 'foo'
 
     def _setup(self, **kwargs):
         pass
@@ -316,7 +305,7 @@ class FairylabProgramTest(TestUtil):
         fairylab.data['plugins']['internal'] = {'ok': True, 'date': then}
         fairylab.pins['internal'] = InternalPlugin(e=environment)
         actual = fairylab._render_internal()
-        expected = {
+        expected = [('html/fairylab/index.html', '', 'home.html', {
             'breadcrumbs': [{
                 'href': '',
                 'name': 'Home'
@@ -334,7 +323,7 @@ class FairylabProgramTest(TestUtil):
                     info='Description of internal.',
                     ts='2h ago')
             ],
-        }
+        })]
         self.assertEqual(actual, expected)
         self.write(_data, original)
 
@@ -436,4 +425,5 @@ class FairylabProgramTest(TestUtil):
 if __name__ in ['__main__', 'programs.fairylab.fairylab_program_test']:
     _main = __name__ == '__main__'
     _pkg = 'programs.fairylab'
-    main(FairylabProgramTest, FairylabProgram, _pkg, _path, _main)
+    _pth = 'programs/fairylab'
+    main(FairylabProgramTest, FairylabProgram, _pkg, _pth, _main)

@@ -38,8 +38,7 @@ class PluginApi(MessageableApi, RunnableApi):
 
         info = self._info()
         title = 'Fairylab | ' + self._title()
-        pth = re.sub('index.html', '', self._html())
-        link = 'http://orangeandblueleaguebaseball.com/fairylab/' + pth
+        link = 'http://orangeandblueleaguebaseball.com' + self._href()
         return [{
             'fallback': info,
             'title': title,
