@@ -10,7 +10,6 @@ sample = {
     'browsable': [{
         'href': '/fairylab/bar/',
         'title': 'bar',
-        'new': False,
         'info': 'Description of bar.',
         'table': [],
         'ts': '10m ago',
@@ -19,7 +18,6 @@ sample = {
     }, {
         'href': '/fairylab/baz/',
         'title': 'baz',
-        'new': False,
         'info': 'Description of baz.',
         'table': [],
         'ts': '1h ago',
@@ -28,7 +26,6 @@ sample = {
     }, {
         'href': '/fairylab/foo/',
         'title': 'foo',
-        'new': True,
         'info': 'Description of foo.',
         'table': [],
         'ts': '2m ago',
@@ -38,7 +35,6 @@ sample = {
     'internal': [{
         'href': '',
         'title': 'quux',
-        'new': False,
         'info': 'Description of quux.',
         'table': [],
         'ts': '15m ago',
@@ -47,7 +43,6 @@ sample = {
     }, {
         'href': '',
         'title': 'quuz',
-        'new': False,
         'info': 'Description of quuz.',
         'table': [],
         'ts': '30s ago',
@@ -56,7 +51,6 @@ sample = {
     }, {
         'href': '',
         'title': 'qux',
-        'new': False,
         'info': 'Description of qux.',
         'table': [],
         'ts': '2d ago',

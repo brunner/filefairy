@@ -3,7 +3,6 @@
 
 def card(href='',
          title='',
-         new=False,
          info='',
          table=[],
          ts='',
@@ -12,7 +11,6 @@ def card(href='',
     return {
         'href': href,
         'title': title,
-        'new': new,
         'info': info,
         'table': table,
         'ts': ts,

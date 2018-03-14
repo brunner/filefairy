@@ -16,7 +16,6 @@ class ComponentUtilTest(unittest.TestCase):
         expected = {
             'href': '',
             'title': '',
-            'new': False,
             'info': '',
             'table': [],
             'ts': '',
@@ -35,7 +34,6 @@ class ComponentUtilTest(unittest.TestCase):
         expected = {
             'href': '/fairylab/foo/',
             'title': 'foo',
-            'new': False,
             'info': 'Description of foo.',
             'table': [],
             'ts': '0s ago',
@@ -57,7 +55,6 @@ class ComponentUtilTest(unittest.TestCase):
         expected = {
             'href': '',
             'title': 'Jan 1',
-            'new': False,
             'info': '',
             'table': table,
             'ts': '4m ago',

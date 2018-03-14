@@ -23,12 +23,13 @@ from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
-from utils.slack.slack_util import chat_post_message, rtm_connect  # noqa
+from utils.slack.slack_util import rtm_connect  # noqa
 
 
 class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self, **kwargs):
         super(FairylabProgram, self).__init__(**dict(kwargs))
+        self.data = {'plugins': {}}
         self.pins = {}
         self.keep_running = True
         self.lock = threading.Lock()
@@ -82,15 +83,11 @@ class FairylabProgram(MessageableApi, RenderableApi):
             pdate = data['plugins'][p]['date']
             ts = delta(pdate, date)
 
-            if 'm' not in ts and 's' not in ts:
-                data['plugins'][p]['new'] = False
-
             success = 'just now' if 's' in ts else ''
             danger = 'error' if not data['plugins'][p]['ok'] else ''
             c = card(
                 href=href,
                 title=p,
-                new=data['plugins'][p]['new'],
                 info=info,
                 ts=ts,
                 success=success,
@@ -195,12 +192,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
         camel = ''.join([w.capitalize() for w in p.split('_')])
         clazz = '{}Plugin'.format(camel)
 
-        new = False
         if p in data['plugins']:
             del data['plugins'][p]
-        else:
-            new = True
-
         if path in sys.modules:
             del sys.modules[path]
 
@@ -219,11 +212,6 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         if enabled:
             log(clazz, **dict(kwargs, s='Installed.', v=True))
-            if new and isinstance(instance, RenderableApi):
-                chat_post_message(
-                    'testing',
-                    'Deployed new feature.',
-                    attachments=instance._attachments())
         elif instance:
             log(clazz, **dict(kwargs, s='Disabled.', v=True))
 
@@ -231,7 +219,6 @@ class FairylabProgram(MessageableApi, RenderableApi):
             data['plugins'][p] = {
                 'date': date,
                 'ok': ok,
-                'new': new,
             }
             self.pins[p] = instance
             self._try(p, '_setup')

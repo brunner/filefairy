@@ -120,7 +120,6 @@ class FakeWebSocketApp(object):
     def __init__(self, url, on_message=None):
         self.url = url
         self.on_message = on_message
-
         self.keep_running = True
         self.sock = True
 
@@ -171,7 +170,6 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'new': False,
             'date': datetime.datetime.now()
         }
         fairylab.pins['internal'] = InternalPlugin()
@@ -192,7 +190,6 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'new': False,
             'date': datetime.datetime.now()
         }
         fairylab.pins['internal'] = InternalPlugin()
@@ -217,7 +214,6 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'new': False,
             'date': datetime.datetime.now()
         }
         fairylab.pins['internal'] = InternalPlugin()
@@ -231,7 +227,6 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'new': False,
             'date': datetime.datetime.now()
         }
         fairylab.pins['internal'] = InternalPlugin()
@@ -247,7 +242,6 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'new': False,
             'date': datetime.datetime.now()
         }
         fairylab.pins['internal'] = InternalPlugin()
@@ -274,7 +268,6 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'new': False,
             'date': datetime.datetime.now()
         }
         fairylab.pins['internal'] = InternalPlugin()
@@ -296,7 +289,6 @@ class FairylabProgramTest(TestUtil):
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
-            'new': False,
             'date': datetime.datetime.now()
         }
         fairylab.pins['internal'] = InternalPlugin()
@@ -320,17 +312,9 @@ class FairylabProgramTest(TestUtil):
         original = self.write(_data, data)
         environment = env()
         fairylab = FairylabProgram(e=environment)
-        fairylab.data['plugins']['browsable'] = {
-            'ok': True,
-            'new': True,
-            'date': then
-        }
+        fairylab.data['plugins']['browsable'] = {'ok': True, 'date': then}
         fairylab.pins['browsable'] = BrowsablePlugin(e=environment)
-        fairylab.data['plugins']['internal'] = {
-            'ok': True,
-            'new': True,
-            'date': then
-        }
+        fairylab.data['plugins']['internal'] = {'ok': True, 'date': then}
         fairylab.pins['internal'] = InternalPlugin(e=environment)
         actual = fairylab._render_internal()
         expected = {
@@ -342,7 +326,6 @@ class FairylabProgramTest(TestUtil):
                 card(
                     href='/fairylab/browsable/',
                     title='browsable',
-                    new=True,
                     info='Description of browsable.',
                     ts='2m ago')
             ],
@@ -357,14 +340,12 @@ class FairylabProgramTest(TestUtil):
         self.write(_data, original)
 
     @mock.patch.object(InternalPlugin, '_setup')
-    @mock.patch('programs.fairylab.fairylab_program.chat_post_message')
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
     def test_install__with_valid_input(self, mock_exc, mock_getattr,
-                                       mock_import, mock_log, mock_post,
-                                       mock_setup):
+                                       mock_import, mock_log, mock_setup):
         mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
         data = {'plugins': {}}
         original = self.write(_data, data)
@@ -373,7 +354,6 @@ class FairylabProgramTest(TestUtil):
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_log.assert_called_once_with(
             'InternalPlugin', a1='internal', s='Installed.', v=True)
-        mock_post.assert_not_called()
         mock_setup.assert_called_once_with()
         mock_exc.assert_not_called()
         actual = self.write(_data, original)
@@ -381,174 +361,19 @@ class FairylabProgramTest(TestUtil):
             'plugins': {
                 'internal': {
                     'ok': True,
-                    'new': True,
                     'date': '',
                 }
             }
         }
         self.assertEqual(actual, expected)
         self.assertIsNotNone(fairylab.pins['internal'])
-
-    @mock.patch.object(InternalPlugin, '_setup')
-    @mock.patch('programs.fairylab.fairylab_program.chat_post_message')
-    @mock.patch('programs.fairylab.fairylab_program.log')
-    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab_program.getattr')
-    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install__with_new_internal_plugin(self, mock_exc, mock_getattr,
-                                               mock_import, mock_log,
-                                               mock_post, mock_setup):
-        mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
-        data = {'plugins': {}}
-        original = self.write(_data, data)
-        fairylab = FairylabProgram(e=env())
-        fairylab.install(a1='internal')
-        self.assertIsNotNone(fairylab.pins['internal'])
-        mock_import.assert_called_once_with('plugins.internal.internal_plugin')
-        mock_log.assert_called_once_with(
-            'InternalPlugin', a1='internal', s='Installed.', v=True)
-        mock_post.assert_not_called()
-        mock_setup.assert_called_once_with()
-        mock_exc.assert_not_called()
-        actual = self.write(_data, original)
-        expected = {
-            'plugins': {
-                'internal': {
-                    'ok': True,
-                    'new': True,
-                    'date': '',
-                }
-            }
-        }
-        self.assertEqual(actual, expected)
-
-    @mock.patch.object(BrowsablePlugin, '_setup')
-    @mock.patch('programs.fairylab.fairylab_program.chat_post_message')
-    @mock.patch('programs.fairylab.fairylab_program.log')
-    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab_program.getattr')
-    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install__with_new_browsable_plugin(self, mock_exc, mock_getattr,
-                                                mock_import, mock_log,
-                                                mock_post, mock_setup):
-        mock_getattr.side_effect = [BrowsablePlugin, BrowsablePlugin._setup]
-        data = {'plugins': {}}
-        original = self.write(_data, data)
-        fairylab = FairylabProgram(e=env())
-        fairylab.install(a1='browsable')
-        self.assertIsNotNone(fairylab.pins['browsable'])
-        mock_import.assert_called_once_with(
-            'plugins.browsable.browsable_plugin')
-        mock_log.assert_called_once_with(
-            'BrowsablePlugin', a1='browsable', s='Installed.', v=True)
-        mock_post.assert_called_once_with(
-            'testing',
-            'Deployed new feature.',
-            attachments=fairylab.pins['browsable']._attachments())
-        mock_setup.assert_called_once_with()
-        mock_exc.assert_not_called()
-        actual = self.write(_data, original)
-        expected = {
-            'plugins': {
-                'browsable': {
-                    'ok': True,
-                    'new': True,
-                    'date': '',
-                }
-            }
-        }
-        self.assertEqual(actual, expected)
-
-    @mock.patch.object(InternalPlugin, '_setup')
-    @mock.patch('programs.fairylab.fairylab_program.chat_post_message')
-    @mock.patch('programs.fairylab.fairylab_program.log')
-    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab_program.getattr')
-    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install__with_old_internal_plugin(self, mock_exc, mock_getattr,
-                                               mock_import, mock_log,
-                                               mock_post, mock_setup):
-        mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
-        data = {
-            'plugins': {
-                'internal': {
-                    'ok': True,
-                    'new': False,
-                    'date': ''
-                }
-            }
-        }
-        original = self.write(_data, data)
-        fairylab = FairylabProgram(e=env())
-        fairylab.install(a1='internal')
-        self.assertIsNotNone(fairylab.pins['internal'])
-        mock_import.assert_called_once_with('plugins.internal.internal_plugin')
-        mock_log.assert_called_once_with(
-            'InternalPlugin', a1='internal', s='Installed.', v=True)
-        mock_post.assert_not_called()
-        mock_setup.assert_called_once_with()
-        mock_exc.assert_not_called()
-        actual = self.write(_data, original)
-        expected = {
-            'plugins': {
-                'internal': {
-                    'ok': True,
-                    'new': False,
-                    'date': '',
-                }
-            }
-        }
-        self.assertEqual(actual, expected)
-
-    @mock.patch.object(BrowsablePlugin, '_setup')
-    @mock.patch('programs.fairylab.fairylab_program.chat_post_message')
-    @mock.patch('programs.fairylab.fairylab_program.log')
-    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab_program.getattr')
-    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install__with_old_browsable_plugin(self, mock_exc, mock_getattr,
-                                                mock_import, mock_log,
-                                                mock_post, mock_setup):
-        mock_getattr.side_effect = [BrowsablePlugin, BrowsablePlugin._setup]
-        data = {
-            'plugins': {
-                'browsable': {
-                    'ok': True,
-                    'new': False,
-                    'date': ''
-                }
-            }
-        }
-        original = self.write(_data, data)
-        fairylab = FairylabProgram(e=env())
-        fairylab.install(a1='browsable')
-        self.assertIsNotNone(fairylab.pins['browsable'])
-        mock_import.assert_called_once_with(
-            'plugins.browsable.browsable_plugin')
-        mock_log.assert_called_once_with(
-            'BrowsablePlugin', a1='browsable', s='Installed.', v=True)
-        mock_post.assert_not_called()
-        mock_setup.assert_called_once_with()
-        mock_exc.assert_not_called()
-        actual = self.write(_data, original)
-        expected = {
-            'plugins': {
-                'browsable': {
-                    'ok': True,
-                    'new': False,
-                    'date': '',
-                }
-            }
-        }
-        self.assertEqual(actual, expected)
 
     @mock.patch.object(DisabledPlugin, '_setup')
-    @mock.patch('programs.fairylab.fairylab_program.chat_post_message')
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     def test_install__with_disabled_plugin(self, mock_getattr, mock_import,
-                                           mock_log, mock_post, mock_setup):
+                                           mock_log, mock_setup):
         mock_getattr.return_value = DisabledPlugin
         data = {'plugins': {}}
         original = self.write(_data, data)
@@ -557,7 +382,6 @@ class FairylabProgramTest(TestUtil):
         mock_import.assert_called_once_with('plugins.disabled.disabled_plugin')
         mock_log.assert_called_once_with(
             'DisabledPlugin', a1='disabled', s='Disabled.', v=True)
-        mock_post.assert_not_called()
         mock_setup.assert_not_called()
         actual = self.write(_data, original)
         expected = {'plugins': {}}
@@ -565,14 +389,12 @@ class FairylabProgramTest(TestUtil):
         self.assertNotIn('disabled', fairylab.pins)
 
     @mock.patch.object(InternalPlugin, '_setup')
-    @mock.patch('programs.fairylab.fairylab_program.chat_post_message')
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
     def test_install__with_thrown_exception(self, mock_exc, mock_getattr,
-                                            mock_import, mock_log, mock_post,
-                                            mock_setup):
+                                            mock_import, mock_log, mock_setup):
         mock_getattr.return_value = Exception()
         mock_exc.return_value = 'Traceback: ...'
         data = {'plugins': {}}
@@ -586,19 +408,10 @@ class FairylabProgramTest(TestUtil):
             c='Traceback: ...',
             s='Exception.',
             v=True)
-        mock_post.assert_not_called()
         mock_setup.assert_not_called()
         mock_exc.assert_called_once_with()
         actual = self.write(_data, original)
-        expected = {
-            'plugins': {
-                'internal': {
-                    'ok': False,
-                    'new': True,
-                    'date': ''
-                }
-            }
-        }
+        expected = {'plugins': {'internal': {'ok': False, 'date': ''}}}
         self.assertEqual(actual, expected)
         self.assertIsNone(fairylab.pins['internal'])
 

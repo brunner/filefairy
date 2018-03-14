@@ -13,7 +13,6 @@ sample = {
     'fp': {
         'href': '',
         'title': 'Mar 10',
-        'new': False,
         'info': '',
         'table': [{
             'key': 'Time',
