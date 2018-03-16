@@ -101,8 +101,8 @@ class RecapPlugin(PluginApi, RenderableApi):
                         pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                         fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                             '{S}', suffix(pdate.day))
-                        ret.append({'head': [fdate], 'body': []})
-                    ret[len(ret) - 1]['body'].append(
+                        ret.insert(0, {'head': [fdate], 'body': []})
+                    ret[0]['body'].append(
                         [self._strip_team_links(line)])
         return ret
 
@@ -110,7 +110,6 @@ class RecapPlugin(PluginApi, RenderableApi):
     def _content(fname, split):
         with codecs.open(fname, 'r', encoding='utf-8', errors='replace') as f:
             contents = strip_accents(f.read())
-            print contents, split
             if split:
                 parts = contents.split(split)
                 if len(parts) == 2 and parts[1]:

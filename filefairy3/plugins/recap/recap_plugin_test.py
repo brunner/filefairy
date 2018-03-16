@@ -28,8 +28,8 @@ _injuries = """20220101\t<a href="../teams/team_31.html">Team X</a>: LF <a href=
 _news = """20220101\t<a href="../teams/team_33.html">Team Z</a>: <a href="../players/player_00002.html">Mike Player</a> goes 5-5 against the <a href="../teams/team_31.html">Team X</a>, with 2 2B, 2 RBI and 2 R.
 """
 
-_transactions = """20220102\t<a href="../teams/team_32.html">Team Y</a>: Signed <a href="../players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.
-20220101\t<a href="../teams/team_33.html">Team Z</a> traded 20-year-old first baseman <a href="../players/player_00004.html">Ben Player</a> to the <a href="../teams/team_31.html">Team X</a> getting 30-year-old starting pitcher <a href="../players/player_00005">Chris Player</a> in return.
+_transactions = """20220101\t<a href="../teams/team_33.html">Team Z</a> traded 20-year-old first baseman <a href="../players/player_00004.html">Ben Player</a> to the <a href="../teams/team_31.html">Team X</a> getting 30-year-old starting pitcher <a href="../players/player_00005">Chris Player</a> in return.
+20220102\t<a href="../teams/team_32.html">Team Y</a>: Signed <a href="../players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.
 """
 
 _after = """20220101\t<a href="../teams/team_31.html">Team Z</a> or <a href="../players/player_000003.html">Kyle Player</a> did something.
@@ -84,7 +84,8 @@ class RecapPluginTest(TestUtil):
 """
         self.assertEqual(actual, expected)
         actual = RecapPlugin._strip_team_links(_transactions)
-        expected = """20220101\tTeam Y: Signed <a href="../players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.
+        expected = """20220101\tTeam Z traded 20-year-old first baseman <a href="../players/player_00004.html">Ben Player</a> to the Team X getting 30-year-old starting pitcher <a href="../players/player_00005">Chris Player</a> in return.
+20220102\tTeam Y: Signed <a href="../players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.
 """
         self.assertEqual(actual, expected)
         actual = RecapPlugin._strip_team_links(_after)
