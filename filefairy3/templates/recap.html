@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% import "common.html" as common %}
+{% block content %}
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="navbar navbar-light bg-light mt-3 p-0">
+            <form class="w-100">
+              <input class="form-control mr-sm-2" type="search"
+                     placeholder="Filter" aria-label="Filter">
+            </form>
+          </nav>
+        </div>
+      </div>
+    </div>
+    {% if injuries %}
+    <div class="container">
+      {{ common.alert('pulse', 'Injuries') }}
+      <div class="row">
+        <div class="col-12">
+          {% for table in injuries %}
+          {{ common.table(table) }}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if news %}
+    <div class="container">
+      {{ common.alert('rss', 'News') }}
+      <div class="row">
+        <div class="col-12">
+          {% for table in news %}
+          {{ common.table(table) }}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if transactions %}
+    <div class="container">
+      {{ common.alert('loop-circular', 'Transactions') }}
+      <div class="row">
+        <div class="col-12">
+          {% for table in transactions %}
+          {{ common.table(table) }}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block script %}
+  <script>
+    var filter = '';
+    $('.form-control').on('change keyup paste mouseup', function(e) {
+      var val = $(this).val();
+      if (val != filter) {
+        filter = val;
+        $('tbody td').each(function(e) {
+          if ($(this).text().indexOf(filter) != -1) {
+            $(this).removeClass('d-none');
+          } else {
+            $(this).addClass('d-none');
+          }
+        });
+        $('table').each(function(e) {
+          if ($(this).find('tbody td:not(.d-none)').length != 0) {
+            $(this).removeClass('d-none');
+          } else {
+            $(this).addClass('d-none');
+          }
+        });
+      }
+    });
+  </script>
+{% endblock %}
