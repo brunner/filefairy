@@ -3,6 +3,7 @@
 
 import abc
 import datetime
+import errno
 import os
 import re
 import sys
@@ -50,8 +51,19 @@ class RenderableApi(SerializableApi):
                 ts = tmpl.stream(dict(context, title=title, date=date))
                 here = os.path.join(_root, html)
                 there = 'brunnerj@' + server + ':/var/www/' + html
+                self._mkdir_p(here.rsplit('/', 1)[0])
                 ts.dump(here)
                 check_output(['scp', here, there])
             except Exception:
                 exc = traceback.format_exc()
                 log(self._name(), s='Exception.', c=exc, v=True)
+
+    @staticmethod
+    def _mkdir_p(path):
+        try:
+            os.makedirs(path)
+        except OSError as exc:
+            if exc.errno == errno.EEXIST and os.path.isdir(path):
+                pass
+            else:
+                raise
