@@ -104,8 +104,8 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                 del data['fp']['now']
                 if not len(data['up']) or data['up'][0]['date'] != date:
                     data['up'].insert(0, copy.deepcopy(data['fp']))
-                    if len(data['up']) > 7:
-                        data['up'] = data['up'][:7]
+                    if len(data['up']) > 10:
+                        data['up'] = data['up'][:10]
                     chat_post_message('general', 'File is up.')
                 data['fp'] = None
 
