@@ -102,8 +102,8 @@ class RecapPlugin(PluginApi, RenderableApi):
                         fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                             '{S}', suffix(pdate.day))
                         ret.insert(0, {'head': [fdate], 'body': []})
-                    ret[0]['body'].append(
-                        [self._strip_team_links(line)])
+                    body = self._rewrite_players(self._strip_teams(line))
+                    ret[0]['body'].append([body])
         return ret
 
     @staticmethod
@@ -119,9 +119,15 @@ class RecapPlugin(PluginApi, RenderableApi):
         return ''
 
     @staticmethod
-    def _strip_team_links(text):
+    def _strip_teams(text):
         return re.sub(r'(<a href="../teams/team_\d{2}.html">)([^<]+)(</a>)',
                       r'\2', text)
+
+    @staticmethod
+    def _rewrite_players(text):
+        return re.sub('<a href="../players/player',
+                      '<a href="/StatsLab/reports/news/html/players/player',
+                      text)
 
     def _update(self, key, fname):
         if os.path.isfile(fname):

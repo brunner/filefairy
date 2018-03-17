@@ -10,6 +10,6 @@ def strip_accents(text):
     except (TypeError, NameError):
         pass
     text = unicodedata.normalize('NFD', text)
-    text = text.encode('ascii', 'ignore')
+    text = text.encode('ascii', 'replace')
     text = text.decode("utf-8")
     return str(text)

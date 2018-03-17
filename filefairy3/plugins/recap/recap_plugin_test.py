@@ -32,13 +32,11 @@ _transactions = """20220101\t<a href="../teams/team_33.html">Team Z</a> traded 2
 20220102\t<a href="../teams/team_32.html">Team Y</a>: Signed <a href="../players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.
 """
 
-_after = """20220101\t<a href="../teams/team_31.html">Team Z</a> or <a href="../players/player_000003.html">Kyle Player</a> did something.
+_after = """20220101\t<a href="../teams/team_33.html">Team Z</a> or <a href="../players/player_000003.html">Kyle Player</a> did something.
 """
 
 
 class RecapPluginTest(TestUtil):
-    maxDiff = None
-
     @mock.patch('plugins.recap.recap_plugin.codecs.open')
     def test_content__empty_split(self, mock_open):
         data = _before + _injuries + _after
@@ -69,27 +67,51 @@ class RecapPluginTest(TestUtil):
         mock_open.assert_called_once_with(
             'foo.txt', 'r', encoding='utf-8', errors='replace')
 
-    def test_strip_links(self):
-        actual = RecapPlugin._strip_team_links(_before)
+    def test_strip_teams(self):
+        actual = RecapPlugin._strip_teams(_before)
         expected = """20220101\tTeam X or <a href="../players/player_00000.html">David Player</a> did something.
 """
         self.assertEqual(actual, expected)
-        actual = RecapPlugin._strip_team_links(_injuries)
+        actual = RecapPlugin._strip_teams(_injuries)
         expected = """20220101\tTeam X: LF <a href="../players/player_00000.html">David Player</a> was injured while A.  The Diagnosis: B.
 20220101\tTeam Y: SS <a href="../players/player_00001.html">Jesús Player</a> was injured while C.  The Diagnosis: D.
 """
         self.assertEqual(actual, expected)
-        actual = RecapPlugin._strip_team_links(_news)
+        actual = RecapPlugin._strip_teams(_news)
         expected = """20220101\tTeam Z: <a href="../players/player_00002.html">Mike Player</a> goes 5-5 against the Team X, with 2 2B, 2 RBI and 2 R.
 """
         self.assertEqual(actual, expected)
-        actual = RecapPlugin._strip_team_links(_transactions)
+        actual = RecapPlugin._strip_teams(_transactions)
         expected = """20220101\tTeam Z traded 20-year-old first baseman <a href="../players/player_00004.html">Ben Player</a> to the Team X getting 30-year-old starting pitcher <a href="../players/player_00005">Chris Player</a> in return.
 20220102\tTeam Y: Signed <a href="../players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.
 """
         self.assertEqual(actual, expected)
-        actual = RecapPlugin._strip_team_links(_after)
+        actual = RecapPlugin._strip_teams(_after)
         expected = """20220101\tTeam Z or <a href="../players/player_000003.html">Kyle Player</a> did something.
+"""
+        self.assertEqual(actual, expected)
+
+    def test_rewrite_players(self):
+        actual = RecapPlugin._rewrite_players(_before)
+        expected = """20220101\t<a href="../teams/team_31.html">Team X</a> or <a href="/StatsLab/reports/news/html/players/player_00000.html">David Player</a> did something.
+"""
+        self.assertEqual(actual, expected)
+        actual = RecapPlugin._rewrite_players(_injuries)
+        expected = """20220101\t<a href="../teams/team_31.html">Team X</a>: LF <a href="/StatsLab/reports/news/html/players/player_00000.html">David Player</a> was injured while A.  The Diagnosis: B.
+20220101\t<a href="../teams/team_32.html">Team Y</a>: SS <a href="/StatsLab/reports/news/html/players/player_00001.html">Jesús Player</a> was injured while C.  The Diagnosis: D.
+"""
+        self.assertEqual(actual, expected)
+        actual = RecapPlugin._rewrite_players(_news)
+        expected = """20220101\t<a href="../teams/team_33.html">Team Z</a>: <a href="/StatsLab/reports/news/html/players/player_00002.html">Mike Player</a> goes 5-5 against the <a href="../teams/team_31.html">Team X</a>, with 2 2B, 2 RBI and 2 R.
+"""
+        self.assertEqual(actual, expected)
+        actual = RecapPlugin._rewrite_players(_transactions)
+        expected = """20220101\t<a href="../teams/team_33.html">Team Z</a> traded 20-year-old first baseman <a href="/StatsLab/reports/news/html/players/player_00004.html">Ben Player</a> to the <a href="../teams/team_31.html">Team X</a> getting 30-year-old starting pitcher <a href="/StatsLab/reports/news/html/players/player_00005">Chris Player</a> in return.
+20220102\t<a href="../teams/team_32.html">Team Y</a>: Signed <a href="/StatsLab/reports/news/html/players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.
+"""
+        self.assertEqual(actual, expected)
+        actual = RecapPlugin._rewrite_players(_after)
+        expected = """20220101\t<a href="../teams/team_33.html">Team Z</a> or <a href="/StatsLab/reports/news/html/players/player_000003.html">Kyle Player</a> did something.
 """
         self.assertEqual(actual, expected)
 
@@ -333,28 +355,28 @@ class RecapPluginTest(TestUtil):
                 table(
                     head=['Saturday, January 1st, 2022'],
                     body=[[
-                        'Team X: LF <a href="../players/player_00000.html">David Player</a> was injured while A.  The Diagnosis: B.'
+                        'Team X: LF <a href="/StatsLab/reports/news/html/players/player_00000.html">David Player</a> was injured while A.  The Diagnosis: B.'
                     ], [
-                        'Team Y: SS <a href="../players/player_00001.html">Jesus Player</a> was injured while C.  The Diagnosis: D.'
+                        'Team Y: SS <a href="/StatsLab/reports/news/html/players/player_00001.html">Jesu?s Player</a> was injured while C.  The Diagnosis: D.'
                     ]])
             ],
             'news': [
                 table(
                     head=['Saturday, January 1st, 2022'],
                     body=[[
-                        'Team Z: <a href="../players/player_00002.html">Mike Player</a> goes 5-5 against the Team X, with 2 2B, 2 RBI and 2 R.'
+                        'Team Z: <a href="/StatsLab/reports/news/html/players/player_00002.html">Mike Player</a> goes 5-5 against the Team X, with 2 2B, 2 RBI and 2 R.'
                     ]])
             ],
             'transactions': [
                 table(
                     head=['Sunday, January 2nd, 2022'],
                     body=[[
-                        'Team Y: Signed <a href="../players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.'
+                        'Team Y: Signed <a href="/StatsLab/reports/news/html/players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.'
                     ]]),
                 table(
                     head=['Saturday, January 1st, 2022'],
                     body=[[
-                        'Team Z traded 20-year-old first baseman <a href="../players/player_00004.html">Ben Player</a> to the Team X getting 30-year-old starting pitcher <a href="../players/player_00005">Chris Player</a> in return.'
+                        'Team Z traded 20-year-old first baseman <a href="/StatsLab/reports/news/html/players/player_00004.html">Ben Player</a> to the Team X getting 30-year-old starting pitcher <a href="/StatsLab/reports/news/html/players/player_00005">Chris Player</a> in return.'
                     ]])
             ]
         })]

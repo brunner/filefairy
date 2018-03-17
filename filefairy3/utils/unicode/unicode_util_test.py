@@ -14,7 +14,10 @@ from utils.unicode.unicode_util import strip_accents  # noqa
 class UnicodeUtilTest(unittest.TestCase):
     def test_strip_accents(self):
         actual = strip_accents('Jesús')
-        expected = 'Jesus'
+        expected = 'Jesu?s'
+        self.assertEqual(actual, expected)
+        actual = strip_accents('Jes�s')
+        expected = 'Jes?s'
         self.assertEqual(actual, expected)
 
 
