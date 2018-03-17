@@ -12,7 +12,7 @@ sys.path.append(re.sub(r'/utils/subprocess', '', _path))
 from utils.subprocess.subprocess_util import check_output  # noqa
 
 
-class UrllibUtilTest(unittest.TestCase):
+class SubprocessUtilTest(unittest.TestCase):
     @mock.patch('utils.subprocess.subprocess_util.subprocess.check_output')
     def test_create_request(self, mock_check):
         mock_check.return_value = 'ret'
