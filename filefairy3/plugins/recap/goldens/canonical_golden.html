@@ -32,7 +32,7 @@
     footer {
       bottom: 0;
     }
-    .alert {
+    .alert, .form-control {
       padding: .75rem;
     }
     .alert .oi {
@@ -221,11 +221,11 @@
   <script>
     var filter = '';
     $('.form-control').on('change keyup paste mouseup', function(e) {
-      var val = $(this).val();
+      var val = $(this).val().toLowerCase();
       if (val != filter) {
         filter = val;
         $('tbody td').each(function(e) {
-          if ($(this).text().indexOf(filter) != -1) {
+          if ($(this).text().toLowerCase().indexOf(filter) != -1) {
             $(this).removeClass('d-none');
           } else {
             $(this).addClass('d-none');
