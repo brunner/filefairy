@@ -15,6 +15,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
+from utils.slack.slack_util import chat_post_message  # noqa
 from utils.unicode.unicode_util import strip_accents  # noqa
 
 _leagues = os.path.join(_root, 'file/news/txt/leagues')
@@ -41,7 +42,7 @@ class RecapPlugin(PluginApi, RenderableApi):
 
     @staticmethod
     def _info():
-        return 'Collects news from around the league.'
+        return 'Displays news from around the league.'
 
     @staticmethod
     def _title():
@@ -64,6 +65,10 @@ class RecapPlugin(PluginApi, RenderableApi):
         if data != original:
             self.write()
             self._render()
+            chat_post_message(
+                'fairylab',
+                'League news updated.',
+                attachments=self._attachments())
             return True
 
     def _render_internal(self, **kwargs):

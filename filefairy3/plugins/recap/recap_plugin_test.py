@@ -161,7 +161,9 @@ class RecapPluginTest(TestUtil):
         mock_content.assert_not_called()
 
     @mock.patch.object(RecapPlugin, '_update')
-    def test_run__without_change(self, mock_update):
+    @mock.patch.object(RecapPlugin, '_render')
+    @mock.patch('plugins.recap.recap_plugin.chat_post_message')
+    def test_run__without_change(self, mock_post, mock_render, mock_update):
         data = {
             'injuries': {
                 'hash': '1ab',
@@ -182,9 +184,13 @@ class RecapPluginTest(TestUtil):
         self.assertFalse(ret)
         actual = self.write(_data, original)
         self.assertEqual(actual, data)
+        mock_post.assert_not_called()
+        mock_render.assert_not_called()
 
     @mock.patch.object(RecapPlugin, '_update')
-    def test_run__with_injuries_change(self, mock_update):
+    @mock.patch.object(RecapPlugin, '_render')
+    @mock.patch('plugins.recap.recap_plugin.chat_post_message')
+    def test_run__with_injuries_change(self, mock_post, mock_render, mock_update):
         injuries = strip_accents(_injuries)
         data = {
             'injuries': {
@@ -227,9 +233,15 @@ class RecapPluginTest(TestUtil):
             }
         }
         self.assertEqual(actual, expected)
+        _attachments = plugin._attachments()
+        mock_post.assert_called_once_with(
+            'fairylab', 'League news updated.', attachments=_attachments)
+        mock_render.assert_called_once_with()
 
     @mock.patch.object(RecapPlugin, '_update')
-    def test_run__with_news_change(self, mock_update):
+    @mock.patch.object(RecapPlugin, '_render')
+    @mock.patch('plugins.recap.recap_plugin.chat_post_message')
+    def test_run__with_news_change(self, mock_post, mock_render, mock_update):
         news = strip_accents(_news)
         data = {
             'injuries': {
@@ -272,9 +284,15 @@ class RecapPluginTest(TestUtil):
             }
         }
         self.assertEqual(actual, expected)
+        _attachments = plugin._attachments()
+        mock_post.assert_called_once_with(
+            'fairylab', 'League news updated.', attachments=_attachments)
+        mock_render.assert_called_once_with()
 
     @mock.patch.object(RecapPlugin, '_update')
-    def test_run__with_transactions_change(self, mock_update):
+    @mock.patch.object(RecapPlugin, '_render')
+    @mock.patch('plugins.recap.recap_plugin.chat_post_message')
+    def test_run__with_transactions_change(self, mock_post, mock_render, mock_update):
         transactions = strip_accents(_transactions)
         data = {
             'injuries': {
@@ -320,6 +338,10 @@ class RecapPluginTest(TestUtil):
             }
         }
         self.assertEqual(actual, expected)
+        _attachments = plugin._attachments()
+        mock_post.assert_called_once_with(
+            'fairylab', 'League news updated.', attachments=_attachments)
+        mock_render.assert_called_once_with()
 
     def test_render(self):
         injuries = strip_accents(_injuries)
