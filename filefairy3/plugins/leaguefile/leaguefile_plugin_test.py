@@ -299,12 +299,14 @@ class LeaguefilePluginTest(TestUtil):
         mock_post.assert_not_called()
         mock_render.assert_called_once_with()
 
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_run__returns(self, mock_check, mock_datetime, mock_post,
-                          mock_render):
+                          mock_render, mock_thread, mock_wget):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_1,
             _check_started_95
@@ -338,13 +340,17 @@ class LeaguefilePluginTest(TestUtil):
         mock_post.assert_called_once_with(
             'fairylab', 'File upload started.', attachments=_attachments)
         mock_render.assert_has_calls([mock.call(), mock.call(), mock.call()])
+        mock_thread.assert_not_called()
 
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_run__with_stored_started_fp1(self, mock_check, mock_datetime,
-                                          mock_post, mock_render):
+                                          mock_post, mock_render, mock_thread,
+                                          mock_wget):
         mock_check.side_effect = [_check_stored, _check_started_1]
         mock_datetime.datetime.now.return_value = datetime.datetime(
             2018, 1, 29, 15, 0, 0)
@@ -361,13 +367,17 @@ class LeaguefilePluginTest(TestUtil):
             'fairylab', 'File upload started.', attachments=_attachments)
         calls = [mock.call(), mock.call()]
         mock_render.assert_has_calls(calls)
+        mock_thread.assert_not_called()
 
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_run__with_stored_started_fp95(self, mock_check, mock_datetime,
-                                           mock_post, mock_render):
+                                           mock_post, mock_render,
+                                           mock_thread, mock_wget):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_95
         ]
@@ -389,13 +399,17 @@ class LeaguefilePluginTest(TestUtil):
             'fairylab', 'File upload started.', attachments=_attachments)
         calls = [mock.call(), mock.call(), mock.call()]
         mock_render.assert_has_calls(calls)
+        mock_thread.assert_not_called()
 
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.datetime')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_run__with_stored_stopped(self, mock_check, mock_datetime,
-                                      mock_post, mock_render):
+                                      mock_post, mock_render, mock_thread,
+                                      mock_wget):
         mock_check.side_effect = [
             _check_stored, _check_started_1, _check_started_95, _check_stopped
         ]
@@ -422,6 +436,9 @@ class LeaguefilePluginTest(TestUtil):
         mock_post.assert_has_calls(calls)
         calls = [mock.call(), mock.call(), mock.call(), mock.call()]
         mock_render.assert_has_calls(calls)
+        mock_thread.assert_called_once_with(target=mock_wget)
+        self.assertTrue(mock_thread.return_value.daemon)
+        mock_thread.return_value.start.assert_called_once_with()
 
     @mock.patch('apis.renderable.renderable_api.check_output')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
