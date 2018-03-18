@@ -141,14 +141,22 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.os.listdir')
     @mock.patch('programs.fairylab.fairylab_program.os.path.isdir')
     @mock.patch('programs.fairylab.fairylab_program.FairylabProgram.install')
-    def test_setup(self, mock_install, mock_isdir, mock_listdir):
+    @mock.patch('programs.fairylab.fairylab_program.datetime')
+    def test_setup(self, mock_datetime, mock_install, mock_isdir,
+                   mock_listdir):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_datetime.datetime.now.return_value = date
         mock_isdir.side_effect = [True, True, True]
         mock_listdir.return_value = ['foo', 'bar', 'baz']
         fairylab = FairylabProgram(e=env())
         fairylab._setup()
         mock_listdir.assert_called_once_with(os.path.join(_root, 'plugins'))
         self.assertEqual(mock_install.call_count, 3)
-        calls = [mock.call(a1='foo'), mock.call(a1='bar'), mock.call(a1='baz')]
+        calls = [
+            mock.call(a1='foo', date=date),
+            mock.call(a1='bar', date=date),
+            mock.call(a1='baz', date=date)
+        ]
         mock_install.assert_has_calls(calls)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
@@ -342,8 +350,39 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
+    def test_install__with_valid_input(self, mock_exc,
+                                       mock_getattr, mock_import, mock_log,
+                                       mock_setup):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
+        data = {'plugins': {}}
+        original = self.write(_data, data)
+        fairylab = FairylabProgram(e=env())
+        fairylab.install(a1='internal', date=date)
+        mock_import.assert_called_once_with('plugins.internal.internal_plugin')
+        mock_log.assert_called_once_with(
+            'InternalPlugin', a1='internal', date=date, s='Installed.', v=True)
+        mock_setup.assert_called_once_with(date=date)
+        mock_exc.assert_not_called()
+        actual = self.write(_data, original)
+        expected = {
+            'plugins': {
+                'internal': {
+                    'ok': True,
+                    'date': '1985-10-26T00:02:30',
+                }
+            }
+        }
+        self.assertEqual(actual, expected)
+        self.assertIsNotNone(fairylab.pins['internal'])
+
+    @mock.patch.object(InternalPlugin, '_setup')
+    @mock.patch('programs.fairylab.fairylab_program.log')
+    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
+    @mock.patch('programs.fairylab.fairylab_program.getattr')
+    @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
     @mock.patch('programs.fairylab.fairylab_program.datetime')
-    def test_install__with_valid_input(self, mock_datetime, mock_exc,
+    def test_install__without_date(self, mock_datetime, mock_exc,
                                        mock_getattr, mock_import, mock_log,
                                        mock_setup):
         date = datetime.datetime(1985, 10, 26, 0, 2, 30)

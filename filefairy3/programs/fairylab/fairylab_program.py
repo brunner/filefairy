@@ -104,7 +104,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
         d = os.path.join(_root, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in ps:
-            self.install(a1=p)
+            date = datetime.datetime.now()
+            self.install(a1=p, date=date)
 
     def _try(self, p, method, **kwargs):
         data = self.data
@@ -199,7 +200,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         if path in sys.modules:
             del sys.modules[path]
 
-        date = datetime.datetime.now()
+        date = kwargs.get('date', datetime.datetime.now())
         encoded_date = encode_datetime(date)
         try:
             ok = True
