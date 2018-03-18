@@ -38,6 +38,13 @@ _after = """20220101\t<a href="../teams/team_33.html">Team Z</a> or <a href="../
 
 
 class RecapPluginTest(TestUtil):
+    @mock.patch.object(RecapPlugin, '_render')
+    def test_setup(self, mock_render):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        plugin = RecapPlugin(e=env())
+        plugin._setup(date=date)
+        mock_render.assert_called_once_with(date=date)
+
     @mock.patch('plugins.recap.recap_plugin.codecs.open')
     def test_content__empty_split(self, mock_open):
         data = _before + _injuries + _after

@@ -49,7 +49,7 @@ class RecapPlugin(PluginApi, RenderableApi):
         return 'recap'
 
     def _setup(self, **kwargs):
-        self._render()
+        self._render(**kwargs)
 
     def _on_message_internal(self, **kwargs):
         pass
