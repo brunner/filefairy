@@ -64,7 +64,7 @@ class RecapPlugin(PluginApi, RenderableApi):
 
         if data != original:
             self.write()
-            self._render()
+            self._render(**kwargs)
             chat_post_message(
                 'fairylab',
                 'League news updated.',

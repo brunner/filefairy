@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
 import mock
 import os
 import re
@@ -164,6 +165,7 @@ class RecapPluginTest(TestUtil):
     @mock.patch.object(RecapPlugin, '_render')
     @mock.patch('plugins.recap.recap_plugin.chat_post_message')
     def test_run__without_change(self, mock_post, mock_render, mock_update):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         data = {
             'injuries': {
                 'hash': '1ab',
@@ -180,7 +182,7 @@ class RecapPluginTest(TestUtil):
         }
         original = self.write(_data, data)
         plugin = RecapPlugin(e=env())
-        ret = plugin._run()
+        ret = plugin._run(date=date)
         self.assertFalse(ret)
         actual = self.write(_data, original)
         self.assertEqual(actual, data)
@@ -190,7 +192,9 @@ class RecapPluginTest(TestUtil):
     @mock.patch.object(RecapPlugin, '_update')
     @mock.patch.object(RecapPlugin, '_render')
     @mock.patch('plugins.recap.recap_plugin.chat_post_message')
-    def test_run__with_injuries_change(self, mock_post, mock_render, mock_update):
+    def test_run__with_injuries_change(self, mock_post, mock_render,
+                                       mock_update):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         injuries = strip_accents(_injuries)
         data = {
             'injuries': {
@@ -215,7 +219,7 @@ class RecapPluginTest(TestUtil):
 
         mock_update.side_effect = update_injuries
 
-        ret = plugin._run()
+        ret = plugin._run(date=date)
         self.assertTrue(ret)
         actual = self.write(_data, original)
         expected = {
@@ -236,12 +240,13 @@ class RecapPluginTest(TestUtil):
         _attachments = plugin._attachments()
         mock_post.assert_called_once_with(
             'fairylab', 'League news updated.', attachments=_attachments)
-        mock_render.assert_called_once_with()
+        mock_render.assert_called_once_with(date=date)
 
     @mock.patch.object(RecapPlugin, '_update')
     @mock.patch.object(RecapPlugin, '_render')
     @mock.patch('plugins.recap.recap_plugin.chat_post_message')
     def test_run__with_news_change(self, mock_post, mock_render, mock_update):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         news = strip_accents(_news)
         data = {
             'injuries': {
@@ -266,7 +271,7 @@ class RecapPluginTest(TestUtil):
 
         mock_update.side_effect = update_news
 
-        ret = plugin._run()
+        ret = plugin._run(date=date)
         self.assertTrue(ret)
         actual = self.write(_data, original)
         expected = {
@@ -287,12 +292,14 @@ class RecapPluginTest(TestUtil):
         _attachments = plugin._attachments()
         mock_post.assert_called_once_with(
             'fairylab', 'League news updated.', attachments=_attachments)
-        mock_render.assert_called_once_with()
+        mock_render.assert_called_once_with(date=date)
 
     @mock.patch.object(RecapPlugin, '_update')
     @mock.patch.object(RecapPlugin, '_render')
     @mock.patch('plugins.recap.recap_plugin.chat_post_message')
-    def test_run__with_transactions_change(self, mock_post, mock_render, mock_update):
+    def test_run__with_transactions_change(self, mock_post, mock_render,
+                                           mock_update):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         transactions = strip_accents(_transactions)
         data = {
             'injuries': {
@@ -320,7 +327,7 @@ class RecapPluginTest(TestUtil):
 
         mock_update.side_effect = update_transactions
 
-        ret = plugin._run()
+        ret = plugin._run(date=date)
         self.assertTrue(ret)
         actual = self.write(_data, original)
         expected = {
@@ -341,7 +348,7 @@ class RecapPluginTest(TestUtil):
         _attachments = plugin._attachments()
         mock_post.assert_called_once_with(
             'fairylab', 'League news updated.', attachments=_attachments)
-        mock_render.assert_called_once_with()
+        mock_render.assert_called_once_with(date=date)
 
     def test_render(self):
         injuries = strip_accents(_injuries)
