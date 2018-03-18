@@ -155,6 +155,8 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch('programs.fairylab.fairylab_program.datetime')
     def test_try__with_valid_input(self, mock_datetime, mock_log, mock_run):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_datetime.datetime.now.return_value = date
         fairylab = FairylabProgram(e=env())
         fairylab.data['plugins']['internal'] = {
             'ok': True,
@@ -162,8 +164,7 @@ class FairylabProgramTest(TestUtil):
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._try('internal', '_run_internal', a=1, b=True)
-        mock_run.assert_called_once_with(a=1, b=True)
-        mock_datetime.datetime.now.assert_called_once_with()
+        mock_run.assert_called_once_with(a=1, b=True, date=date)
         mock_log.assert_not_called()
         self.assertTrue(fairylab.data['plugins']['internal']['ok'])
 
@@ -173,6 +174,8 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.datetime')
     def test_try__with_thrown_exception(self, mock_datetime, mock_exc,
                                         mock_log, mock_run):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_datetime.datetime.now.return_value = date
         mock_exc.return_value = 'Traceback: ...'
         mock_run.side_effect = Exception()
         fairylab = FairylabProgram(e=env())
@@ -182,8 +185,7 @@ class FairylabProgramTest(TestUtil):
         }
         fairylab.pins['internal'] = InternalPlugin()
         fairylab._try('internal', '_run_internal', a=1, b=True)
-        mock_run.assert_called_once_with(a=1, b=True)
-        mock_datetime.datetime.now.assert_called_once_with()
+        mock_run.assert_called_once_with(a=1, b=True, date=date)
         mock_log.assert_called_once_with(
             'InternalPlugin', c='Traceback: ...', s='Exception.', v=True)
         self.assertFalse(fairylab.data['plugins']['internal']['ok'])
@@ -269,9 +271,12 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.time.sleep')
     @mock.patch('programs.fairylab.fairylab_program.log')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
+    @mock.patch('programs.fairylab.fairylab_program.datetime')
     @mock.patch.object(FairylabProgram, '_connect')
-    def test_start(self, mock_connect, mock_dump, mock_log, mock_sleep,
-                   mock_try):
+    def test_start(self, mock_connect, mock_datetime, mock_dump, mock_log,
+                   mock_sleep, mock_try):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_datetime.datetime.now.return_value = date
         data = {'plugins': {}}
         original = self.write(_data, data)
         fairylab = FairylabProgram(e=env())
@@ -283,7 +288,7 @@ class FairylabProgramTest(TestUtil):
         mock_sleep.side_effect = lambda s: fairylab.shutdown()
         fairylab._start()
         mock_connect.assert_called_once_with()
-        mock_try.assert_called_once_with('internal', '_run')
+        mock_try.assert_called_once_with('internal', '_run', date=date)
         actual = self.write(_data, original)
         self.assertEqual(actual, data)
 
@@ -292,9 +297,8 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
     def test_render(self, mock_check, mock_datetime, mock_delta, mock_dump):
-        then = datetime.datetime(1985, 10, 26, 0, 0, 0)
-        now = datetime.datetime(1985, 10, 26, 0, 2, 30)
-        mock_datetime.datetime.now.return_value = now
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_datetime.datetime.now.return_value = date
         mock_delta.side_effect = ['2m ago', '2h ago']
         data = {'plugins': {}}
         original = self.write(_data, data)
@@ -310,7 +314,7 @@ class FairylabProgramTest(TestUtil):
             'date': '1985-10-26T00:02:30'
         }
         fairylab.pins['internal'] = InternalPlugin(e=environment)
-        actual = fairylab._render_internal()
+        actual = fairylab._render_internal(date=date)
         expected = [('html/fairylab/index.html', '', 'home.html', {
             'breadcrumbs': [{
                 'href': '',
@@ -342,8 +346,8 @@ class FairylabProgramTest(TestUtil):
     def test_install__with_valid_input(self, mock_datetime, mock_exc,
                                        mock_getattr, mock_import, mock_log,
                                        mock_setup):
-        mock_datetime.datetime.now.return_value = datetime.datetime(
-            1985, 10, 26, 0, 2, 30)
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        mock_datetime.datetime.now.return_value = date
         mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
         data = {'plugins': {}}
         original = self.write(_data, data)
@@ -352,7 +356,7 @@ class FairylabProgramTest(TestUtil):
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_log.assert_called_once_with(
             'InternalPlugin', a1='internal', s='Installed.', v=True)
-        mock_setup.assert_called_once_with()
+        mock_setup.assert_called_once_with(date=date)
         mock_exc.assert_not_called()
         actual = self.write(_data, original)
         expected = {

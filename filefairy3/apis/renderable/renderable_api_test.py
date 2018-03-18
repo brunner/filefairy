@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
 import jinja2
 import mock
 import os
@@ -45,7 +46,7 @@ class FakeRenderable(RenderableApi):
         return ret
 
     def _foo(self, **kwargs):
-        return {'a': 1, 'b': True}
+        return {'a': 1, 'b': True, 'd': kwargs['date']}
 
     def _sub(self, **kwargs):
         return {'m': 2, 'n': 'bar'}
@@ -75,17 +76,13 @@ class RenderableApiTest(unittest.TestCase):
     @mock.patch('apis.renderable.renderable_api.server', 'server')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
     @mock.patch('apis.renderable.renderable_api.log')
-    def test_render__with_valid_input(self, mock_rlog, mock_check,
-                                      mock_datetime, mock_dump, mock_open,
-                                      mock_slog, mock_stream):
+    def test_render__with_valid_input(self, mock_rlog, mock_check, mock_dump,
+                                      mock_open, mock_slog, mock_stream):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
-        date = '1985-10-26 00:02:30'
-        mock_datetime.datetime.now.return_value.strftime.return_value = date
         mock_stream.return_value = jinja2.environment.TemplateStream(
             lambda: iter([]))
         ldr = jinja2.DictLoader({
@@ -96,9 +93,10 @@ class RenderableApiTest(unittest.TestCase):
             'dyn.html':
             '{{ title }}: Hello {{ z }} -- {{ date }}'
         })
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         env = jinja2.Environment(loader=ldr)
         renderable = FakeRenderable(e=env)
-        renderable._render()
+        renderable._render(date=date)
         there = 'brunnerj@server:/var/www'
         foo = '/html/fairylab/foo/index.html'
         sub = '/html/fairylab/foo/sub/index.html'
@@ -128,7 +126,8 @@ class RenderableApiTest(unittest.TestCase):
                 'date': '1985-10-26 00:02:30 PST',
                 'title': 'foo',
                 'a': 1,
-                'b': True
+                'b': True,
+                'd': date
             }),
             mock.call({
                 'date': '1985-10-26 00:02:30 PST',
@@ -163,18 +162,15 @@ class RenderableApiTest(unittest.TestCase):
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     @mock.patch('apis.renderable.renderable_api.traceback.format_exc')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_render__with_thrown_exception(self, mock_check, mock_datetime,
-                                           mock_dump, mock_exc, mock_open,
-                                           mock_rlog, mock_slog, mock_stream):
+    def test_render__with_thrown_exception(self, mock_check, mock_dump,
+                                           mock_exc, mock_open, mock_rlog,
+                                           mock_slog, mock_stream):
         mock_exc.return_value = 'Traceback: ...'
         mock_dump.side_effect = Exception()
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
-        date = '1985-10-26 00:02:30'
-        mock_datetime.datetime.now.return_value.strftime.return_value = date
         mock_stream.return_value = jinja2.environment.TemplateStream(
             lambda: iter([]))
         ldr = jinja2.DictLoader({
@@ -185,9 +181,10 @@ class RenderableApiTest(unittest.TestCase):
             'dyn.html':
             '{{ title }}: Hello {{ z }} -- {{ date }}'
         })
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         env = jinja2.Environment(loader=ldr)
         renderable = FakeRenderable(e=env)
-        renderable._render()
+        renderable._render(date=date)
         foo = '/html/fairylab/foo/index.html'
         sub = '/html/fairylab/foo/sub/index.html'
         dyn = '/html/fairylab/foo/dyn/dyn_{}.html'
@@ -222,7 +219,8 @@ class RenderableApiTest(unittest.TestCase):
                 'date': '1985-10-26 00:02:30 PST',
                 'title': 'foo',
                 'a': 1,
-                'b': True
+                'b': True,
+                'd': date
             }),
             mock.call({
                 'date': '1985-10-26 00:02:30 PST',

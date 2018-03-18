@@ -65,7 +65,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                         'start': date,
                         'size': size,
                         'end': date,
-                        'now': encode_datetime(datetime.datetime.now())
+                        'now': encode_datetime(kwargs['date'])
                     }
             elif not len(data['up']) or data['up'][0]['date'] != date:
                 data['up'].insert(0, {
@@ -78,7 +78,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         if data != original:
             self.write()
 
-        self._render()
+        self._render(**kwargs)
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -98,8 +98,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                 if data['fp'].get('size', 0) != size:
                     data['fp']['size'] = size
                     data['fp']['end'] = date
-                    data['fp']['now'] = encode_datetime(
-                        datetime.datetime.now())
+                    data['fp']['now'] = encode_datetime(kwargs['date'])
             elif data['fp'] and not fp:
                 data['fp']['size'] = size
                 data['fp']['date'] = date
@@ -118,7 +117,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             self.write()
 
         if data != original or data['fp']:
-            self._render()
+            self._render(**kwargs)
             return True
 
     def _render_internal(self, **kwargs):
@@ -140,9 +139,8 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
 
         ret['fp'] = None
         if data['fp']:
-            now = datetime.datetime.now()
             time = self._time(data['fp']['start'], data['fp']['end'])
-            ts = delta(decode_datetime(data['fp']['now']), now)
+            ts = delta(decode_datetime(data['fp']['now']), kwargs['date'])
 
             success = 'ongoing' if 's' in ts else ''
             danger = 'stalled' if 's' not in ts else ''

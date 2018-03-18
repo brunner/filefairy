@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import abc
-import datetime
 import errno
 import os
 import re
@@ -39,11 +38,10 @@ class RenderableApi(SerializableApi):
         pass
 
     def _render(self, **kwargs):
-        now = datetime.datetime.now()
-        date = now.strftime('%Y-%m-%d %H:%M:%S') + ' PST'
+        date = kwargs['date'].strftime('%Y-%m-%d %H:%M:%S') + ' PST'
 
         _title = self._title()
-        for html, subtitle, tmpl, context in self._render_internal():
+        for html, subtitle, tmpl, context in self._render_internal(**kwargs):
             try:
                 subtitle = ' » ' + subtitle if subtitle else ''
                 title = _title + subtitle

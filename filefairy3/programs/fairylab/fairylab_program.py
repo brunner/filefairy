@@ -67,7 +67,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
             'internal': []
         }
 
-        date = datetime.datetime.now()
+        date = kwargs['date']
         ps = sorted(data['plugins'].keys())
         for p in ps:
             instance = self.pins.get(p, None)
@@ -120,16 +120,15 @@ class FairylabProgram(MessageableApi, RenderableApi):
         if not item or not callable(item):
             return
 
+        date = kwargs.get('date', datetime.datetime.now())
         try:
-            if item(**kwargs):
-                data['plugins'][p]['date'] = encode_datetime(
-                    datetime.datetime.now())
+            if item(**dict(kwargs, date=date)):
+                data['plugins'][p]['date'] = encode_datetime(date)
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
             data['plugins'][p]['ok'] = False
-            data['plugins'][p]['date'] = encode_datetime(
-                datetime.datetime.now())
+            data['plugins'][p]['date'] = encode_datetime(date)
 
     def _recv(self, message):
         self.lock.acquire()
@@ -170,14 +169,15 @@ class FairylabProgram(MessageableApi, RenderableApi):
             data = self.data
             original = copy.deepcopy(data)
 
+            date = datetime.datetime.now()
             ps = data['plugins'].keys()
             for p in ps:
-                self._try(p, '_run')
+                self._try(p, '_run', date=date)
 
             if data != original:
                 self.write()
 
-            self._render()
+            self._render(date=date)
             self.lock.release()
 
             time.sleep(self.sleep)
@@ -199,7 +199,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
         if path in sys.modules:
             del sys.modules[path]
 
-        date = encode_datetime(datetime.datetime.now())
+        date = datetime.datetime.now()
+        encoded_date = encode_datetime(date)
         try:
             ok = True
             plugin = getattr(importlib.import_module(path), clazz)
@@ -219,11 +220,11 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         if enabled:
             data['plugins'][p] = {
-                'date': date,
+                'date': encoded_date,
                 'ok': ok,
             }
             self.pins[p] = instance
-            self._try(p, '_setup')
+            self._try(p, '_setup', date=date)
 
         if data != original:
             self.write()

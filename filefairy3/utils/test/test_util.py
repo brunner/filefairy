@@ -32,11 +32,9 @@ class TestUtil(unittest.TestCase):
 
 def _gen_golden(case, _cls, _pkg, _pth):
     @mock.patch.object(_cls, '_render_internal')
-    @mock.patch('apis.renderable.renderable_api.datetime')
     @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_golden(self, mock_check, mock_datetime, mock_render):
-        now = datetime.datetime(1985, 10, 26, 6, 2, 30)
-        mock_datetime.datetime.now.return_value = now
+    def test_golden(self, mock_check, mock_render):
+        date = datetime.datetime(1985, 10, 26, 6, 2, 30)
         golden = os.path.join(_pth, 'goldens/{}_golden.html'.format(case))
         sample = '{}.samples.{}_sample'.format(_pkg, case)
         module = importlib.import_module(sample)
@@ -45,7 +43,7 @@ def _gen_golden(case, _cls, _pkg, _pth):
         ]
         mock_render.return_value = [(golden, subtitle, tmpl, context)]
         plugin = _cls(e=env())
-        plugin._render()
+        plugin._render(date=date)
 
     return test_golden
 
