@@ -101,10 +101,10 @@ class FairylabProgram(MessageableApi, RenderableApi):
         return ret
 
     def _setup(self):
+        date = datetime.datetime.now()
         d = os.path.join(_root, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in ps:
-            date = datetime.datetime.now()
             self.install(a1=p, date=date)
 
     def _try(self, p, method, **kwargs):
