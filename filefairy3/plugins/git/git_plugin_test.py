@@ -76,7 +76,7 @@ class GitPluginTest(unittest.TestCase):
         plugin = GitPlugin()
         ret = plugin.push(**data)
         self.assertTrue(ret)
-        mock_check.assert_called_once_with(['git', 'push', 'origin', 'master'])
+        mock_check.assert_called_once_with(['git', 'push'])
         mock_log.assert_called_once_with(
             plugin._name(), **{
                 'a1': '',

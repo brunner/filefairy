@@ -49,7 +49,7 @@ class GitPlugin(PluginApi):
         return self._call(['git', 'pull'], kwargs)
 
     def push(self, **kwargs):
-        return self._call(['git', 'push', 'origin', 'master'], kwargs)
+        return self._call(['git', 'push'], kwargs)
 
     def reset(self, **kwargs):
         return self._call(['git', 'reset', '--hard'], kwargs)
