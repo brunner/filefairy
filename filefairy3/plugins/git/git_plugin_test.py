@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
 import mock
 import os
 import re
@@ -13,6 +14,40 @@ from plugins.git.git_plugin import GitPlugin  # noqa
 
 
 class GitPluginTest(unittest.TestCase):
+    def test_setup(self):
+        date = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        plugin = GitPlugin()
+        plugin._setup(date=date)
+        self.assertEqual(plugin.day, 26)
+
+    @mock.patch.object(GitPlugin, 'push')
+    @mock.patch.object(GitPlugin, 'commit')
+    @mock.patch.object(GitPlugin, 'add')
+    def test_run__with_different_day(self, mock_add, mock_commit, mock_push):
+        then = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        now = datetime.datetime(1985, 10, 27, 0, 0, 0)
+        plugin = GitPlugin()
+        plugin._setup(date=then)
+        plugin._run_internal(date=now)
+        self.assertEqual(plugin.day, 27)
+        mock_add.assert_called_once_with(date=now)
+        mock_commit.assert_called_once_with(date=now)
+        mock_push.assert_called_once_with(date=now)
+
+    @mock.patch.object(GitPlugin, 'push')
+    @mock.patch.object(GitPlugin, 'commit')
+    @mock.patch.object(GitPlugin, 'add')
+    def test_run__with_same_day(self, mock_add, mock_commit, mock_push):
+        then = datetime.datetime(1985, 10, 26, 0, 2, 30)
+        now = datetime.datetime(1985, 10, 26, 12, 0, 0)
+        plugin = GitPlugin()
+        plugin._setup(date=then)
+        plugin._run_internal(date=now)
+        self.assertEqual(plugin.day, 26)
+        mock_add.assert_not_called()
+        mock_commit.assert_not_called()
+        mock_push.assert_not_called()
+
     @mock.patch('plugins.git.git_plugin.log')
     @mock.patch('plugins.git.git_plugin.check_output')
     def test_add(self, mock_check, mock_log):

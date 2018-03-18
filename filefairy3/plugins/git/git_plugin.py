@@ -25,13 +25,18 @@ class GitPlugin(PluginApi):
         return 'Exposes git commands to admins.'
 
     def _setup(self, **kwargs):
-        pass
+        self.day = kwargs['date'].day
 
     def _on_message_internal(self, **kwargs):
         pass
 
     def _run_internal(self, **kwargs):
-        pass
+        day = kwargs['date'].day
+        if self.day != day:
+            self.add(**kwargs)
+            self.commit(**kwargs)
+            self.push(**kwargs)
+            self.day = day
 
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')
