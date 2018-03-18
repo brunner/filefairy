@@ -350,9 +350,8 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
-    def test_install__with_valid_input(self, mock_exc,
-                                       mock_getattr, mock_import, mock_log,
-                                       mock_setup):
+    def test_install__with_valid_input(self, mock_exc, mock_getattr,
+                                       mock_import, mock_log, mock_setup):
         date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
         data = {'plugins': {}}
@@ -382,9 +381,8 @@ class FairylabProgramTest(TestUtil):
     @mock.patch('programs.fairylab.fairylab_program.getattr')
     @mock.patch('programs.fairylab.fairylab_program.traceback.format_exc')
     @mock.patch('programs.fairylab.fairylab_program.datetime')
-    def test_install__without_date(self, mock_datetime, mock_exc,
-                                       mock_getattr, mock_import, mock_log,
-                                       mock_setup):
+    def test_install__without_date(self, mock_datetime, mock_exc, mock_getattr,
+                                   mock_import, mock_log, mock_setup):
         date = datetime.datetime(1985, 10, 26, 0, 2, 30)
         mock_datetime.datetime.now.return_value = date
         mock_getattr.side_effect = [InternalPlugin, InternalPlugin._setup]
