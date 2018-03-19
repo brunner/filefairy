@@ -24,6 +24,23 @@ def _call(method, params):
     return obj
 
 
+def channels_history(channel, oldest):
+    return _call('channels.history', {
+        'token': filefairy,
+        'channel': channel,
+        'count': 1000,
+        'oldest': oldest
+    })
+
+
+def channels_list():
+    return _call('channels.list', {
+        'token': filefairy,
+        'exclude_members': True,
+        'exclude_archived': True
+    })
+
+
 def chat_post_message(channel, text, attachments=[]):
     return _call(
         'chat.postMessage', {
@@ -48,3 +65,7 @@ def files_upload(content, filename, channel):
 
 def rtm_connect():
     return _call('rtm.connect', {'token': filefairy})
+
+
+def users_list():
+    return _call('users.list', {'token': filefairy})

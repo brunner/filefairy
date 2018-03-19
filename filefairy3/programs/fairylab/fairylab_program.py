@@ -70,6 +70,9 @@ class FairylabProgram(MessageableApi, RenderableApi):
         date = kwargs['date']
         ps = sorted(data['plugins'].keys())
         for p in ps:
+            if p == 'snacks':
+                continue
+
             instance = self.pins.get(p, None)
             info = ''
             if isinstance(instance, PluginApi):
