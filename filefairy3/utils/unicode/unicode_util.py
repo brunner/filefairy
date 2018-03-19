@@ -4,12 +4,12 @@
 import unicodedata
 
 
-def strip_accents(text):
+def deunicode(text, errors='replace'):
     try:
         text = unicode(text, 'utf-8')
     except (TypeError, NameError):
         pass
     text = unicodedata.normalize('NFD', text)
-    text = text.encode('ascii', 'replace')
+    text = text.encode('ascii', errors)
     text = text.decode("utf-8")
     return str(text)

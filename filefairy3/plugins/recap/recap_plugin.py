@@ -16,7 +16,7 @@ from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
-from utils.unicode.unicode_util import strip_accents  # noqa
+from utils.unicode.unicode_util import deunicode  # noqa
 
 _leagues = os.path.join(_root, 'file/news/txt/leagues')
 _injuries = os.path.join(_leagues, 'league_100_injuries.txt')
@@ -114,7 +114,7 @@ class RecapPlugin(PluginApi, RenderableApi):
     @staticmethod
     def _content(fname, split):
         with codecs.open(fname, 'r', encoding='utf-8', errors='replace') as f:
-            contents = strip_accents(f.read())
+            contents = deunicode(f.read())
             if split:
                 parts = contents.split(split)
                 if len(parts) == 2 and parts[1]:

@@ -15,7 +15,7 @@ from plugins.recap.recap_plugin import RecapPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
-from utils.unicode.unicode_util import strip_accents  # noqa
+from utils.unicode.unicode_util import deunicode  # noqa
 
 _data = RecapPlugin._data()
 
@@ -51,7 +51,7 @@ class RecapPluginTest(TestUtil):
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
         actual = RecapPlugin._content('foo.txt', '')
-        self.assertEqual(actual, strip_accents(data))
+        self.assertEqual(actual, deunicode(data))
         mock_open.assert_called_once_with(
             'foo.txt', 'r', encoding='utf-8', errors='replace')
 
@@ -60,7 +60,7 @@ class RecapPluginTest(TestUtil):
         data = _before + _injuries + _after
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
-        actual = RecapPlugin._content('foo.txt', strip_accents(_injuries))
+        actual = RecapPlugin._content('foo.txt', deunicode(_injuries))
         self.assertEqual(actual, _after)
         mock_open.assert_called_once_with(
             'foo.txt', 'r', encoding='utf-8', errors='replace')
@@ -70,8 +70,8 @@ class RecapPluginTest(TestUtil):
         data = _before + _injuries
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
-        actual = RecapPlugin._content('foo.txt', strip_accents(_injuries))
-        self.assertEqual(actual, strip_accents(data))
+        actual = RecapPlugin._content('foo.txt', deunicode(_injuries))
+        self.assertEqual(actual, deunicode(data))
         mock_open.assert_called_once_with(
             'foo.txt', 'r', encoding='utf-8', errors='replace')
 
@@ -202,7 +202,7 @@ class RecapPluginTest(TestUtil):
     def test_run__with_injuries_change(self, mock_post, mock_render,
                                        mock_update):
         date = datetime.datetime(1985, 10, 26, 0, 2, 30)
-        injuries = strip_accents(_injuries)
+        injuries = deunicode(_injuries)
         data = {
             'injuries': {
                 'hash': '1ab',
@@ -254,7 +254,7 @@ class RecapPluginTest(TestUtil):
     @mock.patch('plugins.recap.recap_plugin.chat_post_message')
     def test_run__with_news_change(self, mock_post, mock_render, mock_update):
         date = datetime.datetime(1985, 10, 26, 0, 2, 30)
-        news = strip_accents(_news)
+        news = deunicode(_news)
         data = {
             'injuries': {
                 'hash': '1ab',
@@ -307,7 +307,7 @@ class RecapPluginTest(TestUtil):
     def test_run__with_transactions_change(self, mock_post, mock_render,
                                            mock_update):
         date = datetime.datetime(1985, 10, 26, 0, 2, 30)
-        transactions = strip_accents(_transactions)
+        transactions = deunicode(_transactions)
         data = {
             'injuries': {
                 'hash': '1ab',
@@ -358,9 +358,9 @@ class RecapPluginTest(TestUtil):
         mock_render.assert_called_once_with(date=date)
 
     def test_render(self):
-        injuries = strip_accents(_injuries)
-        news = strip_accents(_news)
-        transactions = strip_accents(_transactions)
+        injuries = deunicode(_injuries)
+        news = deunicode(_news)
+        transactions = deunicode(_transactions)
         data = {
             'injuries': {
                 'hash': '1ab',
