@@ -24,8 +24,7 @@ class TestUtil(unittest.TestCase):
         with open(fname, 'r+') as f:
             original = json.loads(f.read())
             f.seek(0)
-            f.write(dumps(data))
-            f.write('\n')
+            f.write(dumps(data) + '\n')
             f.truncate()
             return original
 

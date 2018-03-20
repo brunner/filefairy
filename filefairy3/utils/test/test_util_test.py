@@ -47,7 +47,7 @@ class TestUtilTest(unittest.TestCase):
         actual = FakeRenderableTest.write('data.json', {'a': 2, 'b': False})
         self.assertEqual(actual, {'a': 1, 'b': True})
         handle = mo()
-        calls = [mock.call('{\n  "a": 2, \n  "b": false\n}'), mock.call('\n')]
+        calls = [mock.call('{\n  "a": 2, \n  "b": false\n}\n')]
         handle.write.assert_has_calls(calls)
 
     @mock.patch('utils.test.test_util.os.listdir')

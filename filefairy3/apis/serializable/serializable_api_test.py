@@ -69,7 +69,7 @@ class SerializableApiTest(unittest.TestCase):
         serializable.write()
         mock_open.assert_called_once_with(serializable._data(), 'w')
         handle = mo()
-        calls = [mock.call('{\n  "a": 2, \n  "b": false\n}'), mock.call('\n')]
+        calls = [mock.call('{\n  "a": 2, \n  "b": false\n}\n')]
         handle.write.assert_has_calls(calls)
         mock_log.assert_called_once_with(serializable._name(), **{
             's': 'Write completed.'

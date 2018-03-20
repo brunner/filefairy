@@ -54,7 +54,7 @@ class ExportsPlugin(PluginApi, SerializableApi):
                     s = status.lower()[0]
                     data[teamid][s] += 1
                     data[teamid]['form'] += s
-                    while len(data[teamid]['form']) > 20:
+                    while len(data[teamid]['form']) > 10:
                         data[teamid]['form'] = data[teamid]['form'][1:]
             self.file_date = file_date
             self.write()

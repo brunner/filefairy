@@ -36,8 +36,7 @@ class SerializableApi(NameableApi):
 
     def write(self, **kwargs):
         with open(self._data(), 'w') as f:
-            f.write(dumps(self.data))
-            f.write('\n')
+            f.write(dumps(self.data) + '\n')
             log(self._name(), **dict(kwargs, s='Write completed.'))
 
     def dump(self, **kwargs):
