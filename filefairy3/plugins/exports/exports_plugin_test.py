@@ -36,7 +36,6 @@ class ExportsPluginTest(TestUtil):
             'apis.serializable.serializable_api.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
-
         patch_urlopen = mock.patch('plugins.exports.exports_plugin.urlopen')
         self.addCleanup(patch_urlopen.stop)
         self.mock_urlopen = patch_urlopen.start()
@@ -45,7 +44,6 @@ class ExportsPluginTest(TestUtil):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-
         self.mock_urlopen.return_value = URLOPEN
 
     def reset_mocks(self):
@@ -98,7 +96,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertFalse(ret)
 
         mock_file_date.assert_called_once_with(URLOPEN)
@@ -118,7 +116,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(read, file_date='', exports=EXPORTS_OLD)
         plugin.file_date = ''
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertFalse(ret)
 
         mock_file_date.assert_called_once_with(URLOPEN)
@@ -138,7 +136,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_NEW)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertTrue(ret)
 
         write = {'31': TEAM_NEW, '32': TEAM_OLD}
@@ -159,7 +157,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_TRUNCATED) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_NEW)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertTrue(ret)
 
         write = {'31': TEAM_NEW_TRUNCATED, '32': TEAM_OLD_TRUNCATED}
@@ -180,7 +178,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertFalse(ret)
 
         mock_file_date.assert_called_once_with(URLOPEN)
