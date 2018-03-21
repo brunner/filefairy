@@ -98,7 +98,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertFalse(ret)
 
         mock_file_date.assert_called_once_with(URLOPEN)
@@ -118,7 +118,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(read, file_date='', exports=EXPORTS_OLD)
         plugin.file_date = ''
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertFalse(ret)
 
         mock_file_date.assert_called_once_with(URLOPEN)
@@ -138,7 +138,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_NEW)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertTrue(ret)
 
         write = {'31': TEAM_NEW, '32': TEAM_OLD}
@@ -159,7 +159,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_TRUNCATED) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_NEW)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertTrue(ret)
 
         write = {'31': TEAM_NEW_TRUNCATED, '32': TEAM_OLD_TRUNCATED}
@@ -180,7 +180,7 @@ class ExportsPluginTest(TestUtil):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
-        ret = plugin._run()
+        ret = plugin._run_internal()
         self.assertFalse(ret)
 
         mock_file_date.assert_called_once_with(URLOPEN)
