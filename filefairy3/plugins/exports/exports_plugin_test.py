@@ -36,7 +36,6 @@ class ExportsPluginTest(TestUtil):
             'apis.serializable.serializable_api.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
-
         patch_urlopen = mock.patch('plugins.exports.exports_plugin.urlopen')
         self.addCleanup(patch_urlopen.stop)
         self.mock_urlopen = patch_urlopen.start()
@@ -45,7 +44,6 @@ class ExportsPluginTest(TestUtil):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-
         self.mock_urlopen.return_value = URLOPEN
 
     def reset_mocks(self):
