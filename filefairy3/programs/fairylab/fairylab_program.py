@@ -247,11 +247,14 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         p = kwargs.get('a1', '')
         path = self._plugin_path(p)
+        clazz = self._plugin_clazz(p)
 
-        if p in data['plugins']:
+        if p in data['plugins'] and path in sys.modules:
             del data['plugins'][p]
-        if path in sys.modules:
             del sys.modules[path]
+            log(clazz, **dict(kwargs, s='Uninstalled.'))
+        else:
+            log(clazz, **dict(kwargs, s='Not found.'))
 
         if data != original:
             self.write()
