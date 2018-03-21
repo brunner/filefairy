@@ -49,60 +49,6 @@ class FairylabProgram(MessageableApi, RenderableApi):
     def _title():
         return 'home'
 
-    def _on_message_internal(self, **kwargs):
-        pass
-
-    def _render_internal(self, **kwargs):
-        _home = self._home(**kwargs)
-        return [('html/fairylab/index.html', '', 'home.html', _home)]
-
-    def _home(self, **kwargs):
-        data = self.data
-        ret = {
-            'breadcrumbs': [{
-                'href': '',
-                'name': 'Home'
-            }],
-            'browsable': [],
-            'internal': []
-        }
-
-        date = kwargs['date']
-        ps = sorted(data['plugins'].keys())
-        for p in ps:
-            if p == 'snacks':
-                continue
-
-            instance = self.pins.get(p, None)
-            info = ''
-            if isinstance(instance, PluginApi):
-                info = instance._info()
-
-            href = ''
-            renderable = isinstance(instance, RenderableApi)
-            if renderable:
-                href = instance._href()
-
-            pdate = data['plugins'][p]['date']
-            ts = delta(decode_datetime(pdate), date)
-
-            success = 'just now' if 's' in ts else ''
-            danger = 'error' if not data['plugins'][p]['ok'] else ''
-            c = card(
-                href=href,
-                title=p,
-                info=info,
-                ts=ts,
-                success=success,
-                danger=danger)
-
-            if renderable:
-                ret['browsable'].append(c)
-            else:
-                ret['internal'].append(c)
-
-        return ret
-
     def _setup(self):
         date = datetime.datetime.now()
         d = os.path.join(_root, 'plugins')
@@ -110,21 +56,40 @@ class FairylabProgram(MessageableApi, RenderableApi):
         for p in ps:
             self.install(a1=p, date=date)
 
+    def _on_message_internal(self, **kwargs):
+        pass
+
+    def _render_internal(self, **kwargs):
+        _home = self._home(**kwargs)
+        return [('html/fairylab/index.html', '', 'home.html', _home)]
+
+    @staticmethod
+    def _plugin_path(p):
+        return 'plugins.{0}.{0}_plugin'.format(p)
+
+    @staticmethod
+    def _plugin_clazz(p):
+        camel = ''.join([w.capitalize() for w in p.split('_')])
+        return '{}Plugin'.format(camel)
+
+    def _plugin(self, p):
+        return self.data['plugins'].get(p, {})
+
     def _try(self, p, method, **kwargs):
         data = self.data
         if p not in data['plugins']:
             return
 
-        plugin = data['plugins'][p]
+        plugin = self._plugin(p)
         instance = self.pins.get(p, None)
-        if not plugin.get('ok', False) or not instance:
+        if not plugin.get('ok') or not instance:
             return
 
         item = getattr(instance, method, None)
         if not item or not callable(item):
             return
 
-        date = kwargs.get('date', datetime.datetime.now())
+        date = kwargs.get('date') or datetime.datetime.now()
         try:
             if item(**dict(kwargs, date=date)):
                 data['plugins'][p]['date'] = encode_datetime(date)
@@ -189,21 +154,64 @@ class FairylabProgram(MessageableApi, RenderableApi):
         if self.ws:
             self.ws.close()
 
+    def _home(self, **kwargs):
+        data = self.data
+        ret = {
+            'breadcrumbs': [{
+                'href': '',
+                'name': 'Home'
+            }],
+            'browsable': [],
+            'internal': []
+        }
+
+        date = kwargs['date']
+        ps = sorted(data['plugins'].keys())
+        for p in ps:
+            if p == 'snacks':
+                continue
+
+            plugin = self._plugin(p)
+            instance = self.pins.get(p, None)
+            info = ''
+            if isinstance(instance, PluginApi):
+                info = instance._info()
+
+            href = ''
+            renderable = isinstance(instance, RenderableApi)
+            if renderable:
+                href = instance._href()
+
+            pdate = plugin.get('date', datetime.datetime.now())
+            ts = delta(decode_datetime(pdate), date)
+
+            success = 'just now' if 's' in ts else ''
+            danger = 'error' if not plugin.get('ok') else ''
+            c = card(
+                href=href,
+                title=p,
+                info=info,
+                ts=ts,
+                success=success,
+                danger=danger)
+
+            if renderable:
+                ret['browsable'].append(c)
+            else:
+                ret['internal'].append(c)
+
+        return ret
+
     def install(self, **kwargs):
+        self.uninstall(**kwargs)
         data = self.data
         original = copy.deepcopy(data)
 
         p = kwargs.get('a1', '')
-        path = 'plugins.{0}.{0}_plugin'.format(p)
-        camel = ''.join([w.capitalize() for w in p.split('_')])
-        clazz = '{}Plugin'.format(camel)
+        path = self._plugin_path(p)
+        clazz = self._plugin_clazz(p)
 
-        if p in data['plugins']:
-            del data['plugins'][p]
-        if path in sys.modules:
-            del sys.modules[path]
-
-        date = kwargs.get('date', datetime.datetime.now())
+        date = kwargs.get('date') or datetime.datetime.now()
         encoded_date = encode_datetime(date)
         try:
             ok = True
@@ -229,6 +237,21 @@ class FairylabProgram(MessageableApi, RenderableApi):
             }
             self.pins[p] = instance
             self._try(p, '_setup', date=date)
+
+        if data != original:
+            self.write()
+
+    def uninstall(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        p = kwargs.get('a1', '')
+        path = self._plugin_path(p)
+
+        if p in data['plugins']:
+            del data['plugins'][p]
+        if path in sys.modules:
+            del sys.modules[path]
 
         if data != original:
             self.write()

@@ -38,6 +38,9 @@ _after = """20220101\t<a href="../teams/team_33.html">Team Z</a> or <a href="../
 
 
 class RecapPluginTest(TestUtil):
+    def init_mocks(self, data):
+        pass
+
     @mock.patch.object(RecapPlugin, '_render')
     def test_setup(self, mock_render):
         date = datetime.datetime(1985, 10, 26, 0, 2, 30)
@@ -424,4 +427,4 @@ if __name__ in ['__main__', 'plugins.recap.recap_plugin_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugins.recap'
     _pth = 'plugins/recap'
-    main(RecapPluginTest, RecapPlugin, _pkg, _pth, _main)
+    main(RecapPluginTest, RecapPlugin, _pkg, _pth, {}, _main)

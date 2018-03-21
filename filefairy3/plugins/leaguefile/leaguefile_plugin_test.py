@@ -113,6 +113,9 @@ _up_stored_stopped = {
 
 
 class LeaguefilePluginTest(TestUtil):
+    def init_mocks(self, data):
+        pass
+
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.chat_post_message')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
@@ -489,4 +492,4 @@ if __name__ in ['__main__', 'plugins.leaguefile.leaguefile_plugin_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugins.leaguefile'
     _pth = 'plugins/leaguefile'
-    main(LeaguefilePluginTest, LeaguefilePlugin, _pkg, _pth, _main)
+    main(LeaguefilePluginTest, LeaguefilePlugin, _pkg, _pth, {}, _main)

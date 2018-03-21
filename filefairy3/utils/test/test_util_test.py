@@ -54,7 +54,7 @@ class TestUtilTest(unittest.TestCase):
     def test_main(self, mock_listdir):
         mock_listdir.return_value = ['foo_sample.py', 'bar_sample.py']
         main(FakeRenderableTest, FakeRenderable, 'path.to.fake',
-             os.path.join(_root, 'path/to/fake'), False)
+             os.path.join(_root, 'path/to/fake'), {}, False)
         self.assertTrue(hasattr(FakeRenderableTest, 'test_golden__foo'))
         self.assertTrue(hasattr(FakeRenderableTest, 'test_golden__bar'))
 

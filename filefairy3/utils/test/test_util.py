@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import abc
 import datetime
 import importlib
 import json
@@ -19,6 +20,10 @@ from utils.json.json_util import dumps  # noqa
 
 
 class TestUtil(unittest.TestCase):
+    @abc.abstractmethod
+    def init_mocks(self):
+        pass
+
     @staticmethod
     def write(fname, data):
         with open(fname, 'r+') as f:
@@ -29,10 +34,11 @@ class TestUtil(unittest.TestCase):
             return original
 
 
-def _gen_golden(case, _cls, _pkg, _pth):
+def _gen_golden(case, _cls, _pkg, _pth, _read):
     @mock.patch.object(_cls, '_render_internal')
     @mock.patch('apis.renderable.renderable_api.check_output')
     def test_golden(self, mock_check, mock_render):
+        self.init_mocks(_read)
         date = datetime.datetime(1985, 10, 26, 6, 2, 30)
         golden = os.path.join(_pth, 'goldens/{}_golden.html'.format(case))
         sample = '{}.samples.{}_sample'.format(_pkg, case)
@@ -47,13 +53,13 @@ def _gen_golden(case, _cls, _pkg, _pth):
     return test_golden
 
 
-def main(_tst, _cls, _pkg, _pth, _main):
+def main(_tst, _cls, _pkg, _pth, _read, _main):
     if issubclass(_cls, RenderableApi):
         d = os.path.join(_root, _pth, 'samples')
         cs = filter(lambda x: x.endswith('_sample.py'), os.listdir(d))
         for c in cs:
             case = re.sub('_sample.py', '', c)
-            test_golden = _gen_golden(case, _cls, _pkg, _pth)
+            test_golden = _gen_golden(case, _cls, _pkg, _pth, _read)
             setattr(_tst, 'test_golden__{}'.format(case), test_golden)
 
     if _main:
