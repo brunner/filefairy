@@ -607,7 +607,8 @@ class FairylabProgramTest(TestUtil):
         mock_getattr.assert_called_once_with(module, 'InternalPlugin')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_try.assert_called_once_with('internal', '_setup', date=THEN)
-        mock_uninstall.assert_called_once_with(a1='internal', date=THEN)
+        mock_uninstall.assert_called_once_with(
+            a1='internal', date=THEN, v=False)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_datetime.datetime.now.assert_not_called()
@@ -625,14 +626,14 @@ class FairylabProgramTest(TestUtil):
 
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.install(a1='internal')
+        program.install(a1='internal', v=True)
 
         write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'InternalPlugin')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_try.assert_called_once_with('internal', '_setup', date=THEN)
-        mock_uninstall.assert_called_once_with(a1='internal')
+        mock_uninstall.assert_called_once_with(a1='internal', v=False)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_datetime.datetime.now.assert_called_once_with()
@@ -656,7 +657,8 @@ class FairylabProgramTest(TestUtil):
         mock_getattr.assert_called_once_with(module, 'InternalPlugin')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_try.assert_not_called()
-        mock_uninstall.assert_called_once_with(a1='internal', date=THEN)
+        mock_uninstall.assert_called_once_with(
+            a1='internal', date=THEN, v=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
@@ -685,7 +687,8 @@ class FairylabProgramTest(TestUtil):
         mock_getattr.assert_called_once_with(module, 'DisabledPlugin')
         mock_import.assert_called_once_with('plugins.disabled.disabled_plugin')
         mock_try.assert_not_called()
-        mock_uninstall.assert_called_once_with(a1='disabled', date=THEN)
+        mock_uninstall.assert_called_once_with(
+            a1='disabled', date=THEN, v=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()

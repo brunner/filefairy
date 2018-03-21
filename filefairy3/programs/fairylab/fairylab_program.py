@@ -203,7 +203,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         return ret
 
     def install(self, **kwargs):
-        self.uninstall(**kwargs)
+        self.uninstall(**dict(kwargs, v=False))
         data = self.data
         original = copy.deepcopy(data)
 
