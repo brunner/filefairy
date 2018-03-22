@@ -164,7 +164,8 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                 self._time(up['start'], up['end']),
                 self._size(up['size'])
             ])
-        ret['up'] = table(head=['Date', 'Time', 'Size'], body=body)
+        ret['up'] = table(
+            cols=['', '', ''], head=['Date', 'Time', 'Size'], body=body)
 
         return ret
 

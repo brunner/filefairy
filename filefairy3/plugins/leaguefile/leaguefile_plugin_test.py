@@ -481,6 +481,7 @@ class LeaguefilePluginTest(TestUtil):
                 success='ongoing'),
             'up':
             table(
+                cols=['', '', ''],
                 head=['Date', 'Time', 'Size'],
                 body=[['Jan 27', '0m', '336,724,001']])
         })]

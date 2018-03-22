@@ -2,30 +2,35 @@
 # -*- coding: utf-8 -*-
 
 import copy
+import datetime
 import mock
 import os
 import re
-import unittest
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from plugins.exports.exports_plugin import ExportsPlugin  # noqa
+from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.test.test_util import TestUtil  # noqa
+from utils.test.test_util import main, TestUtil  # noqa
 
 DATA = ExportsPlugin._data()
 EXPORTS_NEW = [('31', 'New'), ('32', 'Old')]
 EXPORTS_OLD = [('31', 'Old'), ('32', 'Old')]
 FILE_DATE_NEW = 'Sunday February 4, 2018 20:42:30 EST'
 FILE_DATE_OLD = 'Friday February 2, 2018 19:53:16 EST'
-TEAM_CANONICAL = {'ai': False, 'form': '', 'n': 0, 'o': 0}
-TEAM_TRUNCATED = {'ai': False, 'form': 'nonnnonnno', 'n': 15, 'o': 5}
-TEAM_NEW = {'ai': False, 'form': 'n', 'n': 1, 'o': 0}
-TEAM_NEW_TRUNCATED = {'ai': False, 'form': 'onnnonnnon', 'n': 16, 'o': 5}
-TEAM_OLD = {'ai': False, 'form': 'o', 'n': 0, 'o': 1}
-TEAM_OLD_TRUNCATED = {'ai': False, 'form': 'onnnonnnoo', 'n': 15, 'o': 6}
+HOME = {'breadcrumbs': [], 'table': {}}
+INDEX = 'html/fairylab/exports/index.html'
+NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
+TEAM_CANONICAL = {'ai': False, 'form': '', 'streak': ''}
+TEAM_TRUNCATED = {'ai': False, 'form': 'nonnnonnno', 'streak': '1o'}
+TEAM_NEW = {'ai': False, 'form': 'n', 'streak': '1n'}
+TEAM_NEW_TRUNCATED = {'ai': False, 'form': 'onnnonnnon', 'streak': '1n'}
+TEAM_OLD = {'ai': False, 'form': 'o', 'streak': '1o'}
+TEAM_OLD_TRUNCATED = {'ai': False, 'form': 'onnnonnnoo', 'streak': '2o'}
+THEN = datetime.datetime(1985, 10, 26, 0, 0, 0)
 URL = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 URLOPEN = '<html><head><title>Export Tracker - StatsLab for ...'
 
@@ -87,9 +92,11 @@ class ExportsPluginTest(TestUtil):
         self.assertEqual(plugin.file_date, FILE_DATE_OLD)
         self.assertEqual(plugin.exports, EXPORTS_OLD)
 
+    @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_file_date')
     @mock.patch.object(ExportsPlugin, '_exports')
-    def test_run__empty_file_date(self, mock_exports, mock_file_date):
+    def test_run__empty_file_date(self, mock_exports, mock_file_date,
+                                  mock_render):
         mock_file_date.return_value = ''
         mock_exports.return_value = []
 
@@ -101,15 +108,18 @@ class ExportsPluginTest(TestUtil):
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_not_called()
+        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
         self.assertEqual(plugin.file_date, FILE_DATE_OLD)
         self.assertEqual(plugin.exports, EXPORTS_OLD)
 
+    @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_file_date')
     @mock.patch.object(ExportsPlugin, '_exports')
-    def test_run__empty_self_file_date(self, mock_exports, mock_file_date):
+    def test_run__empty_self_file_date(self, mock_exports, mock_file_date,
+                                       mock_render):
         mock_file_date.return_value = FILE_DATE_OLD
         mock_exports.return_value = []
 
@@ -121,15 +131,18 @@ class ExportsPluginTest(TestUtil):
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_not_called()
+        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
         self.assertEqual(plugin.file_date, FILE_DATE_OLD)
         self.assertEqual(plugin.exports, EXPORTS_OLD)
 
+    @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_file_date')
     @mock.patch.object(ExportsPlugin, '_exports')
-    def test_run__new_file_date_canonical(self, mock_exports, mock_file_date):
+    def test_run__new_file_date_canonical(self, mock_exports, mock_file_date,
+                                          mock_render):
         mock_file_date.return_value = FILE_DATE_NEW
         mock_exports.return_value = EXPORTS_NEW
 
@@ -142,15 +155,18 @@ class ExportsPluginTest(TestUtil):
         write = {'31': TEAM_NEW, '32': TEAM_OLD}
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_not_called()
+        mock_render.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(URL)
         self.assertEqual(plugin.file_date, FILE_DATE_NEW)
         self.assertEqual(plugin.exports, EXPORTS_NEW)
 
+    @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_file_date')
     @mock.patch.object(ExportsPlugin, '_exports')
-    def test_run__new_file_date_truncated(self, mock_exports, mock_file_date):
+    def test_run__new_file_date_truncated(self, mock_exports, mock_file_date,
+                                          mock_render):
         mock_file_date.return_value = FILE_DATE_NEW
         mock_exports.return_value = EXPORTS_NEW
 
@@ -163,15 +179,18 @@ class ExportsPluginTest(TestUtil):
         write = {'31': TEAM_NEW_TRUNCATED, '32': TEAM_OLD_TRUNCATED}
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_not_called()
+        mock_render.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(URL)
         self.assertEqual(plugin.file_date, FILE_DATE_NEW)
         self.assertEqual(plugin.exports, EXPORTS_NEW)
 
+    @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_file_date')
     @mock.patch.object(ExportsPlugin, '_exports')
-    def test_run__old_file_date(self, mock_exports, mock_file_date):
+    def test_run__old_file_date(self, mock_exports, mock_file_date,
+                                mock_render):
         mock_file_date.return_value = FILE_DATE_OLD
         mock_exports.return_value = EXPORTS_NEW
 
@@ -183,11 +202,29 @@ class ExportsPluginTest(TestUtil):
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_called_once_with(URLOPEN)
+        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
         self.assertEqual(plugin.file_date, FILE_DATE_OLD)
         self.assertEqual(plugin.exports, EXPORTS_NEW)
+
+    @mock.patch.object(ExportsPlugin, '_home')
+    def test_render(self, mock_home):
+        mock_home.return_value = HOME
+
+        read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
+        plugin = self.create_plugin(
+            read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
+        ret = plugin._render_internal(date=NOW)
+        self.assertEqual(ret, [(INDEX, '', 'exports.html', HOME)])
+
+        mock_home.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.assertEqual(plugin.file_date, FILE_DATE_OLD)
+        self.assertEqual(plugin.exports, EXPORTS_OLD)
 
     def test_file_date__with_valid_input(self):
         text = '<td>League File Updated: Sunday May 4, 2018 20:42:30 EST</td>'
@@ -216,6 +253,56 @@ class ExportsPluginTest(TestUtil):
         expected = []
         self.assertEqual(actual, expected)
 
+    @mock.patch('plugins.exports.exports_plugin.full_name')
+    def test_sorted(self, mock_name):
+        mock_name.side_effect = ['Arizona Diamondbacks', 'Atlanta Braves']
 
-if __name__ == '__main__':
-    unittest.main()
+        read = {'31': TEAM_NEW_TRUNCATED, '32': TEAM_OLD_TRUNCATED}
+        plugin = self.create_plugin(
+            read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
+
+        actual = plugin._sorted('31')
+        expected = [-1, -0.7, -7, -float(1) / 3, 'Arizona Diamondbacks']
+        mock_name.assert_called_once_with('31')
+        self.assertEqual(actual, expected)
+
+        mock_name.reset_mock()
+
+        actual = plugin._sorted('32')
+        expected = [2, -0.6, -6, -0.25, 'Atlanta Braves']
+        mock_name.assert_called_once_with('32')
+        self.assertEqual(actual, expected)
+
+    @mock.patch.object(ExportsPlugin, '_sorted')
+    def test_home(self, mock_sorted):
+        mock_sorted.side_effect = [[
+            -1, -0.7, -7, -float(1) / 3, 'Arizona Diamondbacks'
+        ], [2, -0.6, -6, -0.25, 'Atlanta Braves']]
+
+        read = {'31': TEAM_NEW_TRUNCATED, '32': TEAM_OLD_TRUNCATED}
+        plugin = self.create_plugin(
+            read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
+        ret = plugin._home(date=THEN)
+        expected = {
+            'breadcrumbs': [{
+                'href': '/fairylab/',
+                'name': 'Home'
+            }, {
+                'href': '',
+                'name': 'Exports'
+            }],
+            'table':
+            table(
+                cols=['', 'text-center', 'text-center'],
+                head=['Team', 'Streak', 'Last 10'],
+                body=[['Atlanta Braves', '-2', '6 - 4'],
+                      ['Arizona Diamondbacks', '+1', '7 - 3']])
+        }
+        self.assertEqual(ret, expected)
+
+
+if __name__ in ['__main__', 'plugins.exports.exports_plugin_test']:
+    _main = __name__ == '__main__'
+    _pkg = 'plugins.exports'
+    _pth = 'plugins/exports'
+    main(ExportsPluginTest, ExportsPlugin, _pkg, _pth, {}, _main)

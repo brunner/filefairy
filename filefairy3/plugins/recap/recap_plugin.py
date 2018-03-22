@@ -106,7 +106,11 @@ class RecapPlugin(PluginApi, RenderableApi):
                         pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                         fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                             '{S}', suffix(pdate.day))
-                        ret.insert(0, {'head': [fdate], 'body': []})
+                        ret.insert(0, {
+                            'cols': [''],
+                            'head': [fdate],
+                            'body': []
+                        })
                     body = self._rewrite_players(self._strip_teams(line))
                     ret[0]['body'].append([body])
         return ret

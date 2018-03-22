@@ -49,12 +49,17 @@
 {%- endmacro -%}
 
 {% macro table(data) -%}
+          {%- set col_class = [] -%}
+          {%- for col in data.cols -%}
+          {%- set c = ' class="' + col + '"' if col else '' -%}
+          {%- do col_class.append(c) -%}
+          {%- endfor -%}
           <table class="table border mt-3">
             {% if data.head %}
             <thead class="thead-light">
               <tr>
                 {% for cell in data.head %}
-                <td scope="col">{{ cell }}</td>
+                <td scope="col"{{ col_class[loop.index0] | safe }}>{{ cell }}</td>
                 {% endfor %}
               </tr>
             </thead>
@@ -65,9 +70,9 @@
               <tr>
                 {% for cell in row %}
                 {% if loop.first %}
-                <td scope="row">{{ cell }}</td>
+                <td scope="row"{{ col_class[loop.index0] | safe }}>{{ cell }}</td>
                 {% else %}
-                <td>{{ cell }}</td>
+                <td{{ col_class[loop.index0] | safe }}>{{ cell }}</td>
                 {% endif %}
                 {% endfor %}
               </tr>

@@ -66,14 +66,16 @@ class ComponentUtilTest(unittest.TestCase):
 
     def test_table__default(self):
         actual = table()
-        expected = {'head': [], 'body': []}
+        expected = {'cols': [], 'head': [], 'body': []}
         self.assertEqual(actual, expected)
 
     def test_table__leaguefile(self):
         actual = table(
+            cols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=[['Jan 1', '5h 0m', '300,000,000']])
         expected = {
+            'cols': ['', '', ''],
             'head': ['Date', 'Time', 'Size'],
             'body': [['Jan 1', '5h 0m', '300,000,000']]
         }

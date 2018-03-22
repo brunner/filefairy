@@ -11,4 +11,6 @@ _root = re.sub(r'/utils/jinja2', '', _path)
 
 def env():
     ldr = jinja2.FileSystemLoader(os.path.join(_root, 'templates'))
-    return jinja2.Environment(loader=ldr, trim_blocks=True, lstrip_blocks=True)
+    ext = ['jinja2.ext.do']
+    return jinja2.Environment(
+        loader=ldr, extensions=ext, trim_blocks=True, lstrip_blocks=True)

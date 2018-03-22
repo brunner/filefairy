@@ -392,6 +392,7 @@ class RecapPluginTest(TestUtil):
             }],
             'injuries': [
                 table(
+                    cols=[''],
                     head=['Saturday, January 1st, 2022'],
                     body=[[
                         'Team X: LF <a href="/StatsLab/reports/news/html/players/player_00000.html">David Player</a> was injured while A.  The Diagnosis: B.'
@@ -401,6 +402,7 @@ class RecapPluginTest(TestUtil):
             ],
             'news': [
                 table(
+                    cols=[''],
                     head=['Saturday, January 1st, 2022'],
                     body=[[
                         'Team Z: <a href="/StatsLab/reports/news/html/players/player_00002.html">Mike Player</a> goes 5-5 against the Team X, with 2 2B, 2 RBI and 2 R.'
@@ -408,11 +410,13 @@ class RecapPluginTest(TestUtil):
             ],
             'transactions': [
                 table(
+                    cols=[''],
                     head=['Sunday, January 2nd, 2022'],
                     body=[[
                         'Team Y: Signed <a href="/StatsLab/reports/news/html/players/player_00003.html">Kyle Player</a> to a minor league contract with a signing bonus of $1,000,000.'
                     ]]),
                 table(
+                    cols=[''],
                     head=['Saturday, January 1st, 2022'],
                     body=[[
                         'Team Z traded 20-year-old first baseman <a href="/StatsLab/reports/news/html/players/player_00004.html">Ben Player</a> to the Team X getting 30-year-old starting pitcher <a href="/StatsLab/reports/news/html/players/player_00005">Chris Player</a> in return.'
