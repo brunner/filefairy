@@ -44,6 +44,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         text = urlopen(_url)
         self.file_date = self._file_date(text)
         self.exports = self._exports(text)
+        self._render(**kwargs)
 
     def _on_message_internal(self, **kwargs):
         pass

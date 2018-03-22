@@ -74,9 +74,10 @@ class ExportsPluginTest(TestUtil):
 
         return plugin
 
+    @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_file_date')
     @mock.patch.object(ExportsPlugin, '_exports')
-    def test_setup(self, mock_exports, mock_file_date):
+    def test_setup(self, mock_exports, mock_file_date, mock_render):
         mock_file_date.return_value = FILE_DATE_OLD
         mock_exports.return_value = EXPORTS_OLD
 
@@ -86,6 +87,7 @@ class ExportsPluginTest(TestUtil):
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_called_once_with(URLOPEN)
+        mock_render.assert_called_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
