@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-import jinja2
 import mock
 import os
 import re
