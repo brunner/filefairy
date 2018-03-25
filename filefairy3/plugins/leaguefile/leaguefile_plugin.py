@@ -120,10 +120,37 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             self._render(**kwargs)
             return True
 
+        return False
+
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/leaguefile/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'leaguefile.html', _home)]
+
+    @staticmethod
+    def _date(s):
+        return s.rsplit(' ', 1)[0]
+
+    @staticmethod
+    def _size(s):
+        return '{:,}'.format(int(s))
+
+    @staticmethod
+    def _time(s, e):
+        sdate = datetime.datetime.strptime(s, '%b %d %H:%M')
+        edate = datetime.datetime.strptime(e, '%b %d %H:%M')
+        return elapsed(sdate, edate)
+
+    @staticmethod
+    def _check():
+        ls = 'ls -l /var/www/html/StatsLab/league_file'
+        out = check_output(['ssh', 'brunnerj@' + server, ls])
+        fp = '.filepart' in out
+        for line in out.splitlines():
+            line = re.sub(r'\s+', ' ', line)
+            match = re.findall(_line_pattern, line)
+            if match:
+                yield match[0] + (fp, )
 
     def _home(self, **kwargs):
         data = self.data
@@ -168,28 +195,3 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             cols=['', '', ''], head=['Date', 'Time', 'Size'], body=body)
 
         return ret
-
-    @staticmethod
-    def _date(s):
-        return s.rsplit(' ', 1)[0]
-
-    @staticmethod
-    def _size(s):
-        return '{:,}'.format(int(s))
-
-    @staticmethod
-    def _time(s, e):
-        sdate = datetime.datetime.strptime(s, '%b %d %H:%M')
-        edate = datetime.datetime.strptime(e, '%b %d %H:%M')
-        return elapsed(sdate, edate)
-
-    @staticmethod
-    def _check():
-        ls = 'ls -l /var/www/html/StatsLab/league_file'
-        out = check_output(['ssh', 'brunnerj@' + server, ls])
-        fp = '.filepart' in out
-        for line in out.splitlines():
-            line = re.sub(r'\s+', ' ', line)
-            match = re.findall(_line_pattern, line)
-            if match:
-                yield match[0] + (fp, )
