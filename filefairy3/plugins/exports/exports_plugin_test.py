@@ -33,6 +33,13 @@ TEAM_OLD_TRUNCATED = {'ai': False, 'form': 'onnnonnnoo', 'streak': '2o'}
 THEN = datetime.datetime(1985, 10, 26, 0, 0, 0)
 URL = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 URLOPEN = '<html><head><title>Export Tracker - StatsLab for ...'
+BREADCRUMBS = [{
+    'href': '/fairylab/',
+    'name': 'Home'
+}, {
+    'href': '',
+    'name': 'Exports'
+}]
 
 
 class ExportsPluginTest(TestUtil):
@@ -285,21 +292,12 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
         ret = plugin._home(date=THEN)
-        expected = {
-            'breadcrumbs': [{
-                'href': '/fairylab/',
-                'name': 'Home'
-            }, {
-                'href': '',
-                'name': 'Exports'
-            }],
-            'table':
-            table(
-                cols=['', 'text-center', 'text-center'],
-                head=['Team', 'Streak', 'Last 10'],
-                body=[['Atlanta Braves', '-2', '6 - 4'],
-                      ['Arizona Diamondbacks', '+1', '7 - 3']])
-        }
+        _table = table(
+            cols=['', 'text-center', 'text-center'],
+            head=['Team', 'Streak', 'Last 10'],
+            body=[['Atlanta Braves', '-2', '6 - 4'],
+                  ['Arizona Diamondbacks', '+1', '7 - 3']])
+        expected = {'breadcrumbs': BREADCRUMBS, 'table': _table}
         self.assertEqual(ret, expected)
 
 

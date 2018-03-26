@@ -146,6 +146,7 @@ PLUGIN_CANONICAL_ERROR = {'date': NOW_ENCODED, 'ok': False}
 PLUGIN_CANONICAL_THEN = {'date': THEN_ENCODED, 'ok': True}
 PLUGIN_CANONICAL_NOW = {'date': NOW_ENCODED, 'ok': True}
 TRACEBACK = 'Traceback: ...'
+BREADCRUMBS = [{'href': '', 'name': 'Home'}]
 
 
 def set_date_now(program, *args, **kwargs):
@@ -523,24 +524,17 @@ class FairylabProgramTest(TestUtil):
         }
         program = self.create_program(read, pins=PINS_BOTH)
         ret = program._home(date=NOW)
+        browsable = card(
+            href='/fairylab/browsable/',
+            title='browsable',
+            info='Description of browsable.',
+            ts='2m ago')
+        internal = card(
+            title='internal', info='Description of internal.', ts='2h ago')
         expected = {
-            'breadcrumbs': [{
-                'href': '',
-                'name': 'Home'
-            }],
-            'browsable': [
-                card(
-                    href='/fairylab/browsable/',
-                    title='browsable',
-                    info='Description of browsable.',
-                    ts='2m ago')
-            ],
-            'internal': [
-                card(
-                    title='internal',
-                    info='Description of internal.',
-                    ts='2h ago')
-            ],
+            'breadcrumbs': BREADCRUMBS,
+            'browsable': [browsable],
+            'internal': [internal],
         }
         self.assertEqual(ret, expected)
 
@@ -551,19 +545,15 @@ class FairylabProgramTest(TestUtil):
         read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         program = self.create_program(read, pins=PINS_INTERNAL)
         ret = program._home(date=THEN)
+        internal = card(
+            title='internal',
+            info='Description of internal.',
+            ts='0s ago',
+            success='just now')
         expected = {
-            'breadcrumbs': [{
-                'href': '',
-                'name': 'Home'
-            }],
+            'breadcrumbs': BREADCRUMBS,
             'browsable': [],
-            'internal': [
-                card(
-                    title='internal',
-                    info='Description of internal.',
-                    ts='0s ago',
-                    success='just now')
-            ],
+            'internal': [internal],
         }
         self.assertEqual(ret, expected)
 
@@ -574,19 +564,15 @@ class FairylabProgramTest(TestUtil):
         read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_ERROR)}}
         program = self.create_program(read, pins=PINS_INTERNAL)
         ret = program._home(date=NOW)
+        internal = card(
+            title='internal',
+            info='Description of internal.',
+            ts='2m ago',
+            danger='error')
         expected = {
-            'breadcrumbs': [{
-                'href': '',
-                'name': 'Home'
-            }],
+            'breadcrumbs': BREADCRUMBS,
             'browsable': [],
-            'internal': [
-                card(
-                    title='internal',
-                    info='Description of internal.',
-                    ts='2m ago',
-                    danger='error')
-            ],
+            'internal': [internal],
         }
         self.assertEqual(ret, expected)
 

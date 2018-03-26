@@ -62,6 +62,13 @@ LS_WITHOUT_FILEPART = """total 321012
 -rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html
 -rwxrwxrwx 1 user user 328706052 Jan 29 15:55 orange_and_blue_league_baseball.tar.gz
 """
+BREADCRUMBS = [{
+    'href': '/fairylab/',
+    'name': 'Home'
+}, {
+    'href': '',
+    'name': 'Leaguefile'
+}]
 
 
 class LeaguefilePluginTest(TestUtil):
@@ -332,70 +339,38 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
         ret = plugin._home(date=NOW)
-        expected = {
-            'breadcrumbs': [{
-                'href': '/fairylab/',
-                'name': 'Home'
-            }, {
-                'href': '',
-                'name': 'Leaguefile'
-            }],
-            'fp':
-            None,
-            'up':
-            table(cols=['', '', ''], head=['Date', 'Time', 'Size'], body=[])
-        }
+        up = table(cols=['', '', ''], head=['Date', 'Time', 'Size'], body=[])
+        expected = {'breadcrumbs': BREADCRUMBS, 'fp': None, 'up': up}
         self.assertEqual(ret, expected)
 
     def test_home__with_filepart(self):
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
         ret = plugin._home(date=NOW)
-        expected = {
-            'breadcrumbs': [{
-                'href': '/fairylab/',
-                'name': 'Home'
+        fp = card(
+            title='Jan 29',
+            table=[{
+                'key': 'Time',
+                'value': '0m'
             }, {
-                'href': '',
-                'name': 'Leaguefile'
+                'key': 'Size',
+                'value': '100,000'
             }],
-            'fp':
-            card(
-                title='Jan 29',
-                table=[{
-                    'key': 'Time',
-                    'value': '0m'
-                }, {
-                    'key': 'Size',
-                    'value': '100,000'
-                }],
-                ts='0s ago',
-                success='ongoing'),
-            'up':
-            table(cols=['', '', ''], head=['Date', 'Time', 'Size'], body=[])
-        }
+            ts='0s ago',
+            success='ongoing')
+        up = table(cols=['', '', ''], head=['Date', 'Time', 'Size'], body=[])
+        expected = {'breadcrumbs': BREADCRUMBS, 'fp': fp, 'up': up}
         self.assertEqual(ret, expected)
 
     def test_home__with_up(self):
         read = {'fp': None, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
         ret = plugin._home(date=NOW)
-        expected = {
-            'breadcrumbs': [{
-                'href': '/fairylab/',
-                'name': 'Home'
-            }, {
-                'href': '',
-                'name': 'Leaguefile'
-            }],
-            'fp':
-            None,
-            'up':
-            table(
-                cols=['', '', ''],
-                head=['Date', 'Time', 'Size'],
-                body=[['Jan 27', '0m', '345,678,901']])
-        }
+        up = table(
+            cols=['', '', ''],
+            head=['Date', 'Time', 'Size'],
+            body=[['Jan 27', '0m', '345,678,901']])
+        expected = {'breadcrumbs': BREADCRUMBS, 'fp': None, 'up': up}
         self.assertEqual(ret, expected)
 
 

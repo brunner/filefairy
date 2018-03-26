@@ -49,6 +49,16 @@ class RecapPlugin(PluginApi, RenderableApi):
         return 'recap'
 
     def _setup(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        self._update('injuries', _injuries)
+        self._update('news', _news)
+        self._update('transactions', _transactions)
+
+        if data != original:
+            self.write()
+
         self._render(**kwargs)
 
     def _on_message_internal(self, **kwargs):
@@ -76,6 +86,29 @@ class RecapPlugin(PluginApi, RenderableApi):
         _home = self._home(**kwargs)
         return [(html, '', 'recap.html', _home)]
 
+    @staticmethod
+    def _content(fname, split):
+        with codecs.open(fname, 'r', encoding='utf-8', errors='replace') as f:
+            contents = deunicode(f.read())
+            if split:
+                parts = contents.rsplit(split, 1)
+                if len(parts) == 2:
+                    return parts[1].strip() if parts[1] else split
+            return contents
+
+        return ''
+
+    @staticmethod
+    def _strip_teams(text):
+        return re.sub(r'(<a href="../teams/team_\d{2}.html">)([^<]+)(</a>)',
+                      r'\2', text)
+
+    @staticmethod
+    def _rewrite_players(text):
+        return re.sub('<a href="../players/player',
+                      '<a href="/StatsLab/reports/news/html/players/player',
+                      text)
+
     def _home(self, **kwargs):
         ret = {
             'breadcrumbs': [{
@@ -86,18 +119,18 @@ class RecapPlugin(PluginApi, RenderableApi):
                 'name': 'Recap'
             }]
         }
-        ret['injuries'] = self._table('injuries')
-        ret['news'] = self._table('news')
-        ret['transactions'] = self._table('transactions')
+        ret['injuries'] = self._tables('injuries')
+        ret['news'] = self._tables('news')
+        ret['transactions'] = self._tables('transactions')
         return ret
 
-    def _table(self, key):
+    def _tables(self, key):
         data = self.data
         ret = []
         if data[key]:
             cdate = ''
             content = data[key].get('content', '')
-            match = re.findall('(\d{8})\t([^\n]+)\n', content)
+            match = re.findall('(\d{8})\t([^\n]+)\n', content.strip() + '\n')
             for m in match:
                 if m:
                     date, line = m
@@ -115,33 +148,10 @@ class RecapPlugin(PluginApi, RenderableApi):
                     ret[0]['body'].append([body])
         return ret
 
-    @staticmethod
-    def _content(fname, split):
-        with codecs.open(fname, 'r', encoding='utf-8', errors='replace') as f:
-            contents = deunicode(f.read())
-            if split:
-                parts = contents.split(split)
-                if len(parts) == 2 and parts[1]:
-                    return parts[1]
-            return contents
-
-        return ''
-
-    @staticmethod
-    def _strip_teams(text):
-        return re.sub(r'(<a href="../teams/team_\d{2}.html">)([^<]+)(</a>)',
-                      r'\2', text)
-
-    @staticmethod
-    def _rewrite_players(text):
-        return re.sub('<a href="../players/player',
-                      '<a href="/StatsLab/reports/news/html/players/player',
-                      text)
-
     def _update(self, key, fname):
         if os.path.isfile(fname):
             _hash = hash_file(fname)
             if not self.data[key]['hash'] or _hash != self.data[key]['hash']:
                 split = self.data[key]['content']
                 _content = self._content(fname, split)
-                self.data[key] = {'hash': _hash, 'content': _content}
+                self.data[key] = {'content': _content, 'hash': _hash}
