@@ -25,7 +25,7 @@ class SlackUtilTest(unittest.TestCase):
                 'token': filefairy,
                 'channel': 'channel',
                 'count': 1000,
-                'oldest': 0,
+                'latest': 0,
             }))
         mock_urlopen.return_value = '{"ok":true,"latest":"12000000"}'
         actual = channels_history('channel', 0)
@@ -36,7 +36,7 @@ class SlackUtilTest(unittest.TestCase):
                 'token': filefairy,
                 'channel': 'channel',
                 'count': 1000,
-                'oldest': 0,
+                'latest': 0,
             })
         mock_urlopen.assert_called_once_with(mock_request.return_value)
 
