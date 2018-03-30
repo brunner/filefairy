@@ -24,12 +24,12 @@ def _call(method, params):
     return obj
 
 
-def channels_history(channel, oldest):
+def channels_history(channel, latest):
     return _call('channels.history', {
         'token': filefairy,
         'channel': channel,
         'count': 1000,
-        'oldest': oldest
+        'latest': latest,
     })
 
 
