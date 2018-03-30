@@ -1,17 +1,235 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
+import mock
 import os
 import re
 import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugins/snacks', '', _path))
+sys.path.append(_path)
+_root = re.sub(r'/plugins/snacks', '', _path)
+sys.path.append(_root)
 from plugins.snacks.snacks_plugin import SnacksPlugin  # noqa
+from utils.nltk.nltk_util import cfd  # noqa
 
-_data = SnacksPlugin._data()
+COLLECT = 'collect'
+DATA = SnacksPlugin._data()
+NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
+THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
 
 
 class SnacksPluginTest(unittest.TestCase):
-    pass
+    def setUp(self):
+        patch_open = mock.patch(
+            'apis.serializable.serializable_api.open', create=True)
+        self.addCleanup(patch_open.stop)
+        self.mock_open = patch_open.start()
+
+        patch_cfd = mock.patch('plugins.snacks.snacks_plugin.cfd')
+        self.addCleanup(patch_cfd.stop)
+        self.mock_cfd = patch_cfd.start()
+
+        patch_chat = mock.patch(
+            'plugins.snacks.snacks_plugin.chat_post_message')
+        self.addCleanup(patch_chat.stop)
+        self.mock_chat = patch_chat.start()
+
+        patch_collect = mock.patch('plugins.snacks.snacks_plugin.collect')
+        self.addCleanup(patch_collect.stop)
+        self.mock_collect = patch_collect.start()
+
+    def init_mocks(self):
+        mo = mock.mock_open(read_data='{}')
+        self.mock_handle = mo()
+        self.mock_open.side_effect = [mo.return_value]
+        self.mock_collect.return_value = COLLECT
+
+    def reset_mocks(self):
+        self.mock_open.reset_mock()
+        self.mock_handle.write.reset_mock()
+        self.mock_cfd.reset_mock()
+        self.mock_chat.reset_mock()
+        self.mock_collect.reset_mock()
+
+    def create_plugin(self):
+        self.init_mocks()
+        plugin = SnacksPlugin()
+
+        self.mock_open.assert_called_once_with(DATA, 'r')
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.assertEqual(plugin.cfd, {})
+
+        self.reset_mocks()
+        self.init_mocks()
+
+        return plugin
+
+    @mock.patch.object(SnacksPlugin, '_fnames')
+    @mock.patch.object(SnacksPlugin, 'corpus')
+    def test_setup(self, mock_corpus, mock_fnames):
+        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
+        mock_fnames.return_value = fnames
+
+        plugin = self.create_plugin()
+        plugin._setup(date=THEN)
+
+        mock_corpus.assert_called_once_with()
+        mock_fnames.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_called_once_with(4, *fnames)
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.assertEqual(plugin.day, 26)
+
+    @mock.patch('plugins.snacks.snacks_plugin.discuss')
+    def test_on_message__with_discuss_text(self, mock_discuss):
+        mock_discuss.return_value = 'response'
+
+        obj = {'channel': 'G3SUFLMK4', 'text': '<@U3ULC7DBP> discuss topic'}
+        plugin = self.create_plugin()
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertTrue(ret)
+
+        mock_discuss.assert_called_once_with('topic', {}, 4, 10, 20)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_called_once_with('testing', 'response')
+        self.mock_collect.assert_not_called()
+
+    def test_on_message__with_invalid_channel(self):
+        obj = {'channel': 'C1234', 'text': '<@U3ULC7DBP> discuss topic'}
+        plugin = self.create_plugin()
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertFalse(ret)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+
+    def test_on_message__with_invalid_text(self):
+        obj = {'channel': 'G3SUFLMK4', 'text': 'invalid'}
+        plugin = self.create_plugin()
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertFalse(ret)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+
+    @mock.patch.object(SnacksPlugin, '_fnames')
+    @mock.patch.object(SnacksPlugin, 'corpus')
+    def test_run__with_different_day(self, mock_corpus, mock_fnames):
+        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
+        mock_fnames.return_value = fnames
+
+        plugin = self.create_plugin()
+        plugin._setup(date=THEN)
+
+        mock_corpus.reset_mock()
+        mock_fnames.reset_mock()
+        self.reset_mocks()
+
+        plugin._run_internal(date=NOW)
+
+        mock_corpus.assert_called_once_with()
+        mock_fnames.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_called_once_with(4, *fnames)
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.assertEqual(plugin.day, 27)
+
+    @mock.patch.object(SnacksPlugin, '_fnames')
+    @mock.patch.object(SnacksPlugin, 'corpus')
+    def test_run__with_same_day(self, mock_corpus, mock_fnames):
+        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
+        mock_fnames.return_value = fnames
+
+        plugin = self.create_plugin()
+        plugin._setup(date=THEN)
+
+        mock_corpus.reset_mock()
+        mock_fnames.reset_mock()
+        self.reset_mocks()
+
+        plugin._run_internal(date=THEN)
+
+        mock_corpus.assert_not_called()
+        mock_fnames.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.assertEqual(plugin.day, 26)
+
+    @mock.patch('plugins.snacks.snacks_plugin.os.listdir')
+    def test_fnames(self, mock_listdir):
+        mock_listdir.return_value = ['C1234.txt', 'C5678.txt']
+
+        actual = SnacksPlugin._fnames()
+        expected = [
+            os.path.join(_root, 'corpus', 'C1234.txt'),
+            os.path.join(_root, 'corpus', 'C5678.txt')
+        ]
+        self.assertEqual(actual, expected)
+
+    @mock.patch('plugins.snacks.snacks_plugin.users_list')
+    def test_members(self, mock_users):
+        mock_users.return_value = {
+            'ok': True,
+            'members': [{
+                'id': 'U1234',
+                'name': 'user'
+            }]
+        }
+
+        actual = SnacksPlugin._members()
+        expected = {'U1234': 'user'}
+        self.assertEqual(actual, expected)
+
+    @mock.patch('plugins.snacks.snacks_plugin.open', create=True)
+    @mock.patch.object(SnacksPlugin, '_members')
+    @mock.patch('plugins.snacks.snacks_plugin.channels_list')
+    def test_corpus(self, mock_channels, mock_members, mock_open):
+        mock_channels.return_value = {
+            'ok': True,
+            'channels': [{
+                'id': 'C1234'
+            }]
+        }
+        mock_members.return_value = {}
+        mo = mock.mock_open(read_data='')
+        mock_handle = mo()
+        mock_open.side_effect = [mo.return_value]
+
+        plugin = self.create_plugin()
+        plugin.corpus()
+
+        mock_channels.assert_called_once_with()
+        mock_members.assert_called_once_with()
+        mock_open.assert_called_once_with(
+            os.path.join(_root, 'corpus', 'C1234.txt'), 'w')
+        mock_handle.write.assert_called_once_with(COLLECT)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_called_once_with('C1234', {})
+
+
+if __name__ == '__main__':
+    unittest.main()
