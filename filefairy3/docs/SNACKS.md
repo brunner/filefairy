@@ -11,35 +11,35 @@ interactions that can be performed.
 
 Need some help making a choice?
 
-![Example](images/snacks_choose_mets?raw=true "Mets or Nationals")
-
-![Example](images/snacks_choose_shade?raw=true "Shade or Goodboyes")
-
 ```
 @filefairy choose <foo> or <bar>
 ```
+
+![Example](images/snacks_choose_mets.png?raw=true)
+
+![Example](images/snacks_choose_shade.png?raw=true)
 
 ### Discuss
 
 Want a nonsensical opinion on a topic?
 
-![Example](images/snacks_discuss_bunting?raw=true "Bunting")
-
-![Example](images/snacks_discuss_cardinals?raw=true "Cardinals")
-
 ```
 @filefairy discuss <foo>
 ```
+
+![Example](images/snacks_discuss_bunting.png?raw=true)
+
+![Example](images/snacks_discuss_cardinals.png?raw=true)
 
 ### Snack Me
 
 Hungry?
 
-![Example](images/snacks_snack_me?raw=true "Snack Me")
-
 ```
 @filefairy snack me
 ```
+
+![Example](images/snacks_snack_me.png?raw=true)
 
 ## FAQ
 
