@@ -47,7 +47,7 @@ Answers to the questions you didn't know you had.
 
 ### I'm trying to spam an interaction. Why am I not getting a response?
 
-Users can only interact with the feature only once every ten seconds. Let it
+Users can only interact with the feature only once every twenty seconds. Let it
 breathe, okay?
 
 ### How does the discuss interaction work?

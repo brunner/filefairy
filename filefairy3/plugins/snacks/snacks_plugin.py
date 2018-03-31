@@ -84,7 +84,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
         if user not in data['members']:
             data['members'][user] = {'latest': ts}
         else:
-            ok = float(ts) - float(data['members'][user]['latest']) > 10
+            ok = float(ts) - float(data['members'][user]['latest']) > 20
 
         ret = False
         if ok:
