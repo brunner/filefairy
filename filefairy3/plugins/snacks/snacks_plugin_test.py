@@ -17,8 +17,8 @@ from utils.json.json_util import dumps  # noqa
 
 COLLECT = 'collect'
 DATA = SnacksPlugin._data()
-MEMBERS_THEN = {'U1234': {'latest': '100.123', 'stars': 0}}
-MEMBERS_NOW = {'U1234': {'latest': '1000.789', 'stars': 0}}
+MEMBERS_THEN = {'U1234': {'latest': '100.123'}}
+MEMBERS_NOW = {'U1234': {'latest': '1000.789'}}
 NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
 THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
 
