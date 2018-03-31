@@ -29,7 +29,7 @@ Want a nonsensical opinion on a topic?
 
 ![Example](images/snacks_discuss_bunting.png?raw=true)
 
-![Example](images/snacks_discuss_cardinals.png?raw=true)
+![Example](images/snacks_discuss_loyola.png?raw=true)
 
 ### Snack Me
 
@@ -74,4 +74,5 @@ occurs roughly ~1.5% of the time.
 
 ### What do I win if I have the most stars?
 
-Nothing, because stars aren't saved. Not everything has to be a competition...
+Nothing, because stars aren't saved. Not everything has to be a competition,
+alright?
