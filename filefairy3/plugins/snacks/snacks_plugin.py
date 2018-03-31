@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import copy
 import os
 import random
 import re
@@ -66,35 +67,54 @@ class SnacksPlugin(PluginApi, SerializableApi):
 
     def _on_message_internal(self, **kwargs):
         obj = kwargs['obj']
-        if obj.get('channel') != 'G3SUFLMK4':
+        user = obj.get('user')
+        ts = obj.get('ts')
+        if obj.get('channel') != 'G3SUFLMK4' or not user or not ts:
             return False
+
+        data = self.data
+        original = copy.deepcopy(data)
 
         channel = obj.get('channel', '')
         text = obj.get('text', '')
-        ts = obj.get('ts', '')
 
-        match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
-        if match:
-            cfd = self.__dict__.get('cfd', {})
-            response = discuss(match[0], cfd, 4, 10, 20)
-            chat_post_message(channel, response)
-            return True
+        ok = True
+        if user not in data['members']:
+            data['members'][user] = {'latest': ts, 'stars': 0}
+        else:
+            ok = float(ts) - float(data['members'][user]['latest']) >= 60
 
-        if text == '<@U3ULC7DBP> snack me':
-            for snack in self._snacks():
-                reactions_add(snack, channel, ts)
-            return True
+        ret = False
+        if ok:
+            match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
+            if match:
+                cfd = self.__dict__.get('cfd', {})
+                response = discuss(match[0], cfd, 4, 10, 20)
+                chat_post_message(channel, response)
+                ret = True
 
-        match = re.findall('^<@U3ULC7DBP> choose (.+) or (.+)$', text)
-        if match:
-            statement = random.choice(_chooselist)
-            choice = random.choice(match[0])
-            response = re.sub('^([a-zA-Z])', lambda x: x.groups()[0].upper(),
-                              statement.format(choice), 1)
-            chat_post_message(channel, response)
-            return True
+            if text == '<@U3ULC7DBP> snack me':
+                for snack in self._snacks():
+                    reactions_add(snack, channel, ts)
+                ret = True
 
-        return False
+            match = re.findall('^<@U3ULC7DBP> choose (.+) or (.+)$', text)
+            if match:
+                statement = random.choice(_chooselist)
+                choice = random.choice(match[0])
+                response = re.sub('^([a-zA-Z])',
+                                  lambda x: x.groups()[0].upper(),
+                                  statement.format(choice), 1)
+                chat_post_message(channel, response)
+                ret = True
+
+        if ret:
+            data['members'][user]['latest'] = ts
+
+        if data != original:
+            self.write()
+
+        return ret
 
     def _run_internal(self, **kwargs):
         day = kwargs['date'].day
