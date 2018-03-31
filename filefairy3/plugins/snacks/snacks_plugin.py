@@ -15,6 +15,7 @@ from apis.serializable.serializable_api import SerializableApi  # noqa
 from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd, discuss  # noqa
 from utils.slack.slack_util import channels_list, chat_post_message, reactions_add, users_list  # noqa
+from utils.unicode.unicode_util import deunicode  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
 
@@ -78,7 +79,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
         original = copy.deepcopy(data)
 
         channel = obj.get('channel', '')
-        text = obj.get('text', '')
+        text = deunicode(obj.get('text', ''), errors='ignore')
 
         ok = True
         if user not in data['members']:
