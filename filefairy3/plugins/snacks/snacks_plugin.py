@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import random
 import re
 import sys
 
@@ -12,13 +13,27 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd, discuss  # noqa
-from utils.slack.slack_util import channels_list, chat_post_message, users_list  # noqa
+from utils.slack.slack_util import channels_list, chat_post_message, reactions_add, users_list  # noqa
+
+_snacklist = [
+    "green_apple", "apple", "pear", "tangerine", "lemon", "banana",
+    "watermelon", "grapes", "strawberry", "melon", "cherries", "peach",
+    "pineapple", "tomato", "eggplant", "hot_pepper", "corn", "sweet_potato",
+    "honey_pot", "bread", "cheese_wedge", "poultry_leg", "meat_on_bone",
+    "fried_shrimp", "egg", "hamburger", "fries", "hotdog", "pizza",
+    "spaghetti", "taco", "burrito", "ramen", "stew", "fish_cake", "sushi",
+    "bento", "curry", "rice_ball", "rice", "rice_cracker", "oden", "dango",
+    "shaved_ice", "ice_cream", "icecream", "cake", "birthday", "custard",
+    "candy", "lollipop", "chocolate_bar", "popcorn", "doughnut", "cookie",
+    "beer", "beers", "wine_glass", "cocktail", "tropical_drink", "champagne",
+    "sake", "tea", "coffee", "baby_bottle", "fork_and_knife",
+    "knife_fork_plate"
+]
 
 
 class SnacksPlugin(PluginApi, SerializableApi):
     def __init__(self, **kwargs):
         super(SnacksPlugin, self).__init__(**kwargs)
-        self.cfd = {}
 
     @property
     def enabled(self):
@@ -33,22 +48,28 @@ class SnacksPlugin(PluginApi, SerializableApi):
         return 'Feeds the masses bread and circuses.'
 
     def _setup(self, **kwargs):
-        self.day = kwargs['date'].day
-
-        self.corpus()
         self.cfd = cfd(4, *self._fnames())
+        self.day = kwargs['date'].day
 
     def _on_message_internal(self, **kwargs):
         obj = kwargs['obj']
         if obj.get('channel') != 'G3SUFLMK4':
             return False
 
+        channel = obj.get('channel', '')
         text = obj.get('text', '')
+        ts = obj.get('ts', '')
 
         match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
         if match:
-            response = discuss(match[0], self.cfd, 4, 10, 20)
+            cfd = self.__dict__.get('cfd', {})
+            response = discuss(match[0], cfd, 4, 10, 20)
             chat_post_message('testing', response)
+            return True
+
+        if text == '<@U3ULC7DBP> snack me':
+            for snack in self._snacks():
+                reactions_add(snack, channel, ts)
             return True
 
         return False
@@ -73,6 +94,13 @@ class SnacksPlugin(PluginApi, SerializableApi):
             for member in users['members']:
                 members[member['id']] = member['name']
         return members
+
+    @staticmethod
+    def _snacks():
+        snacks = [random.choice(_snacklist) for _ in range(2)]
+        if snacks[0] == snacks[1]:
+            snacks[1] = 'star'
+        return snacks
 
     def corpus(self):
         channels = channels_list()

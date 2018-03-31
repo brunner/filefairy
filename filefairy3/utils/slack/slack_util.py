@@ -63,6 +63,16 @@ def files_upload(content, filename, channel):
         })
 
 
+def reactions_add(name, channel, timestamp):
+    return _call(
+        'reactions.add', {
+            'token': filefairy,
+            'name': name,
+            'channel': channel,
+            'timestamp': timestamp,
+        })
+
+
 def rtm_connect():
     return _call('rtm.connect', {'token': filefairy})
 

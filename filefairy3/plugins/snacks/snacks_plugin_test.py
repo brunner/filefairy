@@ -12,7 +12,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
-from plugins.snacks.snacks_plugin import SnacksPlugin  # noqa
+from plugins.snacks.snacks_plugin import _snacklist, SnacksPlugin  # noqa
 from utils.nltk.nltk_util import cfd  # noqa
 
 COLLECT = 'collect'
@@ -41,6 +41,11 @@ class SnacksPluginTest(unittest.TestCase):
         self.addCleanup(patch_collect.stop)
         self.mock_collect = patch_collect.start()
 
+        patch_reactions = mock.patch(
+            'plugins.snacks.snacks_plugin.reactions_add')
+        self.addCleanup(patch_reactions.stop)
+        self.mock_reactions = patch_reactions.start()
+
     def init_mocks(self):
         mo = mock.mock_open(read_data='{}')
         self.mock_handle = mo()
@@ -53,6 +58,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.reset_mock()
         self.mock_chat.reset_mock()
         self.mock_collect.reset_mock()
+        self.mock_reactions.reset_mock()
 
     def create_plugin(self):
         self.init_mocks()
@@ -63,7 +69,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
-        self.assertEqual(plugin.cfd, {})
+        self.mock_reactions.assert_not_called()
 
         self.reset_mocks()
         self.init_mocks()
@@ -79,20 +85,25 @@ class SnacksPluginTest(unittest.TestCase):
         plugin = self.create_plugin()
         plugin._setup(date=THEN)
 
-        mock_corpus.assert_called_once_with()
+        mock_corpus.assert_not_called()
         mock_fnames.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_called_once_with(4, *fnames)
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.day, 26)
 
     @mock.patch('plugins.snacks.snacks_plugin.discuss')
     def test_on_message__with_discuss_text(self, mock_discuss):
         mock_discuss.return_value = 'response'
 
-        obj = {'channel': 'G3SUFLMK4', 'text': '<@U3ULC7DBP> discuss topic'}
+        obj = {
+            'channel': 'G3SUFLMK4',
+            'text': '<@U3ULC7DBP> discuss topic',
+            'ts': '1000'
+        }
         plugin = self.create_plugin()
         ret = plugin._on_message_internal(obj=obj)
         self.assertTrue(ret)
@@ -103,9 +114,39 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('testing', 'response')
         self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    @mock.patch.object(SnacksPlugin, '_snacks')
+    def test_on_message__with_snack_me_text(self, mock_snacks):
+        mock_snacks.return_value = ['a', 'b']
+
+        obj = {
+            'channel': 'G3SUFLMK4',
+            'text': '<@U3ULC7DBP> snack me',
+            'ts': '1000'
+        }
+        plugin = self.create_plugin()
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertTrue(ret)
+
+        mock_snacks.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        calls = [
+            mock.call('a', 'G3SUFLMK4', '1000'),
+            mock.call('b', 'G3SUFLMK4', '1000')
+        ]
+        self.mock_reactions.assert_has_calls(calls)
 
     def test_on_message__with_invalid_channel(self):
-        obj = {'channel': 'C1234', 'text': '<@U3ULC7DBP> discuss topic'}
+        obj = {
+            'channel': 'C1234',
+            'text': '<@U3ULC7DBP> discuss topic',
+            'ts': '1000'
+        }
         plugin = self.create_plugin()
         ret = plugin._on_message_internal(obj=obj)
         self.assertFalse(ret)
@@ -115,9 +156,10 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     def test_on_message__with_invalid_text(self):
-        obj = {'channel': 'G3SUFLMK4', 'text': 'invalid'}
+        obj = {'channel': 'G3SUFLMK4', 'text': 'invalid', 'ts': '1000'}
         plugin = self.create_plugin()
         ret = plugin._on_message_internal(obj=obj)
         self.assertFalse(ret)
@@ -127,6 +169,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     @mock.patch.object(SnacksPlugin, '_fnames')
     @mock.patch.object(SnacksPlugin, 'corpus')
@@ -150,6 +193,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.assert_called_once_with(4, *fnames)
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.day, 27)
 
     @mock.patch.object(SnacksPlugin, '_fnames')
@@ -174,6 +218,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.day, 26)
 
     @mock.patch('plugins.snacks.snacks_plugin.os.listdir')
@@ -200,6 +245,28 @@ class SnacksPluginTest(unittest.TestCase):
         actual = SnacksPlugin._members()
         expected = {'U1234': 'user'}
         self.assertEqual(actual, expected)
+
+    @mock.patch('plugins.snacks.snacks_plugin.random.choice')
+    def test_snacks__with_different_values(self, mock_random):
+        mock_random.side_effect = ['a', 'b']
+
+        actual = SnacksPlugin._snacks()
+        expected = ['a', 'b']
+        self.assertEqual(actual, expected)
+
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        mock_random.assert_has_calls(calls)
+
+    @mock.patch('plugins.snacks.snacks_plugin.random.choice')
+    def test_snacks__with_same_value(self, mock_random):
+        mock_random.side_effect = ['a', 'a']
+
+        actual = SnacksPlugin._snacks()
+        expected = ['a', 'star']
+        self.assertEqual(actual, expected)
+        
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        mock_random.assert_has_calls(calls)
 
     @mock.patch('plugins.snacks.snacks_plugin.open', create=True)
     @mock.patch.object(SnacksPlugin, '_members')
@@ -229,6 +296,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_called_once_with('C1234', {})
+        self.mock_reactions.assert_not_called()
 
 
 if __name__ == '__main__':

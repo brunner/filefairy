@@ -12,7 +12,8 @@ import urllib2
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
 from utils.secrets.secrets_util import filefairy  # noqa
-from utils.slack.slack_util import channels_history, channels_list, chat_post_message, files_upload, rtm_connect, users_list  # noqa
+from utils.slack.slack_util import channels_history, channels_list, chat_post_message  # noqa
+from utils.slack.slack_util import files_upload, reactions_add, rtm_connect, users_list  # noqa
 
 
 class SlackUtilTest(unittest.TestCase):
@@ -112,6 +113,30 @@ class SlackUtilTest(unittest.TestCase):
                 'content': 'content',
                 'filename': 'filename.txt',
                 'channels': 'channel',
+            })
+        mock_urlopen.assert_called_once_with(mock_request.return_value)
+
+    @mock.patch('utils.slack.slack_util.urlopen')
+    @mock.patch('utils.slack.slack_util.create_request')
+    def test_reactions_add(self, mock_request, mock_urlopen):
+        mock_request.return_value = urllib2.Request(
+            'https://slack.com/api/reactions.add',
+            urllib.urlencode({
+                'token': filefairy,
+                'name': 'name',
+                'channel': 'C1234',
+                'timestamp': 'timestamp',
+            }))
+        mock_urlopen.return_value = '{"ok":true}'
+        actual = reactions_add('name', 'C1234', 'timestamp')
+        expected = {'ok': True}
+        self.assertEqual(actual, expected)
+        mock_request.assert_called_once_with(
+            'https://slack.com/api/reactions.add', {
+                'token': filefairy,
+                'name': 'name',
+                'channel': 'C1234',
+                'timestamp': 'timestamp',
             })
         mock_urlopen.assert_called_once_with(mock_request.return_value)
 
