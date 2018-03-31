@@ -20,22 +20,18 @@ def _cond_samples(grams):
         yield tuple([t.lower() for t in gram[:n]]), gram[n]
 
 
-def _emote(tokens):
+def _fix(tokens):
     i = 0
     modified = []
-    pattern = '^:[^:]+:$'
+    pattern = '^<\#\w+\|\w+>$|^:[^:]+:$|^<@\w+>$'
 
-    while i < len(tokens) - 2:
-        for j in [3, 2, 1]:
+    while i < len(tokens):
+        for j in range(min(4, len(tokens) - i), 0, -1):
             s = ''.join(tokens[i:i + j])
             if re.findall(pattern, s) or j == 1:
                 i += j - 1
                 modified.append(s)
                 break
-        i += 1
-
-    while i < len(tokens):
-        modified.append(tokens[i])
         i += 1
 
     return modified
@@ -45,7 +41,7 @@ def cfd(n, *fnames):
     tokens = []
     for fname in fnames:
         with open(fname, 'r') as f:
-            tokens += _emote(word_tokenize(f.read()))
+            tokens += _fix(word_tokenize(f.read()))
 
     grams = []
     for i in range(2, n + 1):
@@ -90,6 +86,7 @@ def discuss(topic, cfd, n, length, truncate):
     text = detokenizer.detokenize(seed)
     text = re.sub('(\s+)(\.+)(\s*)', r'\2\3', text)
     text = re.sub('(\.+)\.([^.\s])', r'\1. \2', text)
+    text = re.sub('(\s+)([@#])(\s*)', r' \2 ', text)
     text = re.sub('(\s*)([.?!:,])(\s+)', r'\2 ', text)
     text = re.sub('^([a-z])', _capitalize, text)
     text = re.sub('([.?!]) ([a-z])', _capitalize, text)

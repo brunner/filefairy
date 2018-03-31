@@ -84,7 +84,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
         if user not in data['members']:
             data['members'][user] = {'latest': ts}
         else:
-            ok = float(ts) - float(data['members'][user]['latest']) >= 60
+            ok = float(ts) - float(data['members'][user]['latest']) > 10
 
         ret = False
         if ok:
@@ -101,7 +101,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
                 cfd = self.__dict__.get('cfd', {})
-                response = discuss(match[0], cfd, 4, 10, 20)
+                response = discuss(match[0], cfd, 4, 6, 30)
                 chat_post_message(channel, response)
                 ret = True
 

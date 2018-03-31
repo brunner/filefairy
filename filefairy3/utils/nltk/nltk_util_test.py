@@ -9,7 +9,7 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/nltk', '', _path))
-from utils.nltk.nltk_util import _capitalize, _cond_samples, _emote, cfd, discuss  # noqa
+from utils.nltk.nltk_util import _capitalize, _cond_samples, _fix, cfd, discuss  # noqa
 
 
 class NltkUtilTest(unittest.TestCase):
@@ -32,10 +32,22 @@ class NltkUtilTest(unittest.TestCase):
         ), 'C')])
         self.assertItemsEqual(actual, expected)
 
-    def test_emote(self):
+    def test_fix__channel(self):
+        tokens = ['before', '<', '#', 'C1234|channel', '>', 'after']
+        actual = _fix(tokens)
+        expected = ['before', '<#C1234|channel>', 'after']
+        self.assertEqual(actual, expected)
+
+    def test_fix__fix(self):
         tokens = ['before', ':+1', ':', 'middle', ':', 'v', ':', 'after']
-        actual = _emote(tokens)
+        actual = _fix(tokens)
         expected = ['before', ':+1:', 'middle', ':v:', 'after']
+        self.assertEqual(actual, expected)
+
+    def test_fix__user(self):
+        tokens = ['before', '<', '@', 'U1234', '>', 'after']
+        actual = _fix(tokens)
+        expected = ['before', '<@U1234>', 'after']
         self.assertEqual(actual, expected)
 
     @mock.patch('utils.nltk.nltk_util.open', create=True)

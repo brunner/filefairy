@@ -20,21 +20,8 @@ _subtypes = [
 
 def _rewrite(text, members):
     text = re.sub('(<https?://[^>]+>)|(<![^>]+>)|([()])', '', text)
-
-    match = re.findall('<@([^>]+)>', text)
-    for user in match:
-        name = members[user] if user in members else ''
-        text = text.replace('<@' + user + '>', '@' + name)
-
-    match = re.findall('<#([^\|]+)\|([^>]+)>', text)
-    for m in match:
-        _id, channel = m
-        s = '<#' + _id + '|' + channel + '>'
-        text = text.replace(s, '#' + channel)
-
     text = deunicode(text, errors='ignore')
     text = _h.unescape(text).strip(' \t\n\r')
-
     return text
 
 

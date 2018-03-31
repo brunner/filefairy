@@ -114,7 +114,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.assertTrue(ret)
 
         write = {'members': MEMBERS_NOW}
-        mock_discuss.assert_called_once_with('topic', {}, 4, 10, 20)
+        mock_discuss.assert_called_once_with('topic', {}, 4, 6, 30)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -218,7 +218,7 @@ class SnacksPluginTest(unittest.TestCase):
         obj = {
             'channel': 'G3SUFLMK4',
             'text': '<@U3ULC7DBP> discuss topic',
-            'ts': '150.456',
+            'ts': '105.456',
             'user': 'U1234',
         }
         read = {'members': MEMBERS_THEN}

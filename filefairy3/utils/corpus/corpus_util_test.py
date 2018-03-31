@@ -63,16 +63,6 @@ class CorpusUtilTest(unittest.TestCase):
         expected = 'foo bar baz'
         self.assertEqual(actual, expected)
 
-    def test_rewrite__with_user_mention(self):
-        actual = _rewrite('<@U1234> foo', _members)
-        expected = '@user foo'
-        self.assertEqual(actual, expected)
-
-    def test_rewrite__with_channel_mention(self):
-        actual = _rewrite('<#C5678|channel> foo', _members)
-        expected = '#channel foo'
-        self.assertEqual(actual, expected)
-
     def test_rewrite__with_unicode(self):
         actual = _rewrite('(╯°□°）╯︵ ┻━┻ foo', _members)
         expected = 'foo'
