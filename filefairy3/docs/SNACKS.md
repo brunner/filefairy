@@ -74,4 +74,5 @@ occurs roughly ~1.5% of the time.
 
 ### What do I win if I have the most stars?
 
-Nothing, because stars aren't saved. Not everything has to be a competition...
+Nothing, because stars aren't saved. Not everything has to be a competition,
+alright?
