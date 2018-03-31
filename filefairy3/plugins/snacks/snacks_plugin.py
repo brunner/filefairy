@@ -16,7 +16,7 @@ from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd, discuss  # noqa
 from utils.slack.slack_util import channels_list, chat_post_message, reactions_add, users_list  # noqa
 
-_channels = ['G3SUFLMK4']
+_channels = ['C9YE6NQG0', 'G3SUFLMK4']
 
 _chooselist = [
     '{}. Did you even need to ask?',

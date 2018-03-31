@@ -103,7 +103,7 @@ class SnacksPluginTest(unittest.TestCase):
         mock_discuss.return_value = 'response'
 
         obj = {
-            'channel': 'G3SUFLMK4',
+            'channel': 'C9YE6NQG0',
             'text': '<@U3ULC7DBP> discuss topic',
             'ts': '1000.789',
             'user': 'U1234',
@@ -118,7 +118,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_called_once_with('G3SUFLMK4', 'response')
+        self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
@@ -127,7 +127,7 @@ class SnacksPluginTest(unittest.TestCase):
         mock_snacks.return_value = ['a', 'b']
 
         obj = {
-            'channel': 'G3SUFLMK4',
+            'channel': 'C9YE6NQG0',
             'text': '<@U3ULC7DBP> snack me',
             'ts': '1000.789',
             'user': 'U1234',
@@ -145,8 +145,8 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
         calls = [
-            mock.call('a', 'G3SUFLMK4', '1000.789'),
-            mock.call('b', 'G3SUFLMK4', '1000.789')
+            mock.call('a', 'C9YE6NQG0', '1000.789'),
+            mock.call('b', 'C9YE6NQG0', '1000.789')
         ]
         self.mock_reactions.assert_has_calls(calls)
 
@@ -155,7 +155,7 @@ class SnacksPluginTest(unittest.TestCase):
         mock_random.side_effect = ['{}. Did you even need to ask?', 'a']
 
         obj = {
-            'channel': 'G3SUFLMK4',
+            'channel': 'C9YE6NQG0',
             'text': '<@U3ULC7DBP> choose a or b',
             'ts': '1000.789',
             'user': 'U1234',
@@ -171,7 +171,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_called_once_with('G3SUFLMK4',
+        self.mock_chat.assert_called_once_with('C9YE6NQG0',
                                                'A. Did you even need to ask?')
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
@@ -197,7 +197,7 @@ class SnacksPluginTest(unittest.TestCase):
 
     def test_on_message__with_invalid_text(self):
         obj = {
-            'channel': 'G3SUFLMK4',
+            'channel': 'C9YE6NQG0',
             'text': 'invalid',
             'ts': '1000.789',
             'user': 'U1234',
@@ -216,7 +216,7 @@ class SnacksPluginTest(unittest.TestCase):
 
     def test_on_message__with_invalid_timestamp(self):
         obj = {
-            'channel': 'G3SUFLMK4',
+            'channel': 'C9YE6NQG0',
             'text': '<@U3ULC7DBP> discuss topic',
             'ts': '105.456',
             'user': 'U1234',
