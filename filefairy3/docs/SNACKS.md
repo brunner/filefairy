@@ -29,7 +29,7 @@ Want a nonsensical opinion on a topic?
 
 ![Example](images/snacks_discuss_bunting.png?raw=true)
 
-![Example](images/snacks_discuss_cardinals.png?raw=true)
+![Example](images/snacks_discuss_loyola.png?raw=true)
 
 ### Snack Me
 
