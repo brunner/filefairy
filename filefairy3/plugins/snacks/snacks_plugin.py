@@ -16,6 +16,21 @@ from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd, discuss  # noqa
 from utils.slack.slack_util import channels_list, chat_post_message, reactions_add, users_list  # noqa
 
+_channels = ['G3SUFLMK4']
+
+_chooselist = [
+    '{}. Did you even need to ask?',
+    'Definitely {}.',
+    'It\'s {}, any day of the week.',
+    'Easy, I prefer {}.',
+    'I suppose {}, if I had to pick one.',
+    'It\'s not ideal, but I\'ll go with {}.',
+    '{}... I guess?',
+    'That\'s a tough one. Maybe {}?',
+    'Neither seems like a good option to me.',
+    'Why not both?',
+]
+
 _snacklist = [
     'green_apple', 'apple', 'pear', 'tangerine', 'lemon', 'banana',
     'watermelon', 'grapes', 'strawberry', 'melon', 'cherries', 'peach',
@@ -29,19 +44,6 @@ _snacklist = [
     'beer', 'beers', 'wine_glass', 'cocktail', 'tropical_drink', 'champagne',
     'sake', 'tea', 'coffee', 'baby_bottle', 'fork_and_knife',
     'knife_fork_plate'
-]
-
-_chooselist = [
-    '{}. Did you even need to ask?',
-    'Definitely {}.',
-    'It\'s {}, any day of the week.',
-    'Easy, I prefer {}.',
-    'I suppose {}, if I had to pick one.',
-    'It\'s not ideal, but I\'ll go with {}.',
-    '{}... I guess?',
-    'That\'s a tough one. Maybe {}?',
-    'Neither seems like a good option to me.',
-    'Why not both?',
 ]
 
 
@@ -69,7 +71,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
         obj = kwargs['obj']
         user = obj.get('user')
         ts = obj.get('ts')
-        if obj.get('channel') != 'G3SUFLMK4' or not user or not ts:
+        if obj.get('channel') not in _channels or not user or not ts:
             return False
 
         data = self.data
@@ -86,6 +88,16 @@ class SnacksPlugin(PluginApi, SerializableApi):
 
         ret = False
         if ok:
+            match = re.findall('^<@U3ULC7DBP> choose (.+) or (.+)$', text)
+            if match:
+                statement = random.choice(_chooselist)
+                choice = random.choice(match[0])
+                response = re.sub('^([a-zA-Z])',
+                                  lambda x: x.groups()[0].upper(),
+                                  statement.format(choice), 1)
+                chat_post_message(channel, response)
+                ret = True
+
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
                 cfd = self.__dict__.get('cfd', {})
@@ -96,16 +108,6 @@ class SnacksPlugin(PluginApi, SerializableApi):
             if text == '<@U3ULC7DBP> snack me':
                 for snack in self._snacks():
                     reactions_add(snack, channel, ts)
-                ret = True
-
-            match = re.findall('^<@U3ULC7DBP> choose (.+) or (.+)$', text)
-            if match:
-                statement = random.choice(_chooselist)
-                choice = random.choice(match[0])
-                response = re.sub('^([a-zA-Z])',
-                                  lambda x: x.groups()[0].upper(),
-                                  statement.format(choice), 1)
-                chat_post_message(channel, response)
                 ret = True
 
         if ret:
