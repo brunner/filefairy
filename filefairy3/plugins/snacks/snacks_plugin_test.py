@@ -12,7 +12,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
-from plugins.snacks.snacks_plugin import _snacklist, SnacksPlugin  # noqa
+from plugins.snacks.snacks_plugin import _chooselist, _snacklist, SnacksPlugin  # noqa
 from utils.nltk.nltk_util import cfd  # noqa
 
 COLLECT = 'collect'
@@ -112,7 +112,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_called_once_with('testing', 'response')
+        self.mock_chat.assert_called_once_with('G3SUFLMK4', 'response')
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
@@ -140,6 +140,29 @@ class SnacksPluginTest(unittest.TestCase):
             mock.call('b', 'G3SUFLMK4', '1000')
         ]
         self.mock_reactions.assert_has_calls(calls)
+
+    @mock.patch('plugins.snacks.snacks_plugin.random.choice')
+    def test_on_message__with_choose_text(self, mock_random):
+        mock_random.side_effect = ['{}. Did you even need to ask?', 'a']
+
+        obj = {
+            'channel': 'G3SUFLMK4',
+            'text': '<@U3ULC7DBP> choose a or b',
+            'ts': '1000'
+        }
+        plugin = self.create_plugin()
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertTrue(ret)
+
+        calls = [mock.call(_chooselist), mock.call(('a', 'b'))]
+        mock_random.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_called_once_with('G3SUFLMK4',
+                                               'A. Did you even need to ask?')
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     def test_on_message__with_invalid_channel(self):
         obj = {
@@ -264,7 +287,7 @@ class SnacksPluginTest(unittest.TestCase):
         actual = SnacksPlugin._snacks()
         expected = ['a', 'star']
         self.assertEqual(actual, expected)
-        
+
         calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 

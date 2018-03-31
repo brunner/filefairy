@@ -16,18 +16,31 @@ from utils.nltk.nltk_util import cfd, discuss  # noqa
 from utils.slack.slack_util import channels_list, chat_post_message, reactions_add, users_list  # noqa
 
 _snacklist = [
-    "green_apple", "apple", "pear", "tangerine", "lemon", "banana",
-    "watermelon", "grapes", "strawberry", "melon", "cherries", "peach",
-    "pineapple", "tomato", "eggplant", "hot_pepper", "corn", "sweet_potato",
-    "honey_pot", "bread", "cheese_wedge", "poultry_leg", "meat_on_bone",
-    "fried_shrimp", "egg", "hamburger", "fries", "hotdog", "pizza",
-    "spaghetti", "taco", "burrito", "ramen", "stew", "fish_cake", "sushi",
-    "bento", "curry", "rice_ball", "rice", "rice_cracker", "oden", "dango",
-    "shaved_ice", "ice_cream", "icecream", "cake", "birthday", "custard",
-    "candy", "lollipop", "chocolate_bar", "popcorn", "doughnut", "cookie",
-    "beer", "beers", "wine_glass", "cocktail", "tropical_drink", "champagne",
-    "sake", "tea", "coffee", "baby_bottle", "fork_and_knife",
-    "knife_fork_plate"
+    'green_apple', 'apple', 'pear', 'tangerine', 'lemon', 'banana',
+    'watermelon', 'grapes', 'strawberry', 'melon', 'cherries', 'peach',
+    'pineapple', 'tomato', 'eggplant', 'hot_pepper', 'corn', 'sweet_potato',
+    'honey_pot', 'bread', 'cheese_wedge', 'poultry_leg', 'meat_on_bone',
+    'fried_shrimp', 'egg', 'hamburger', 'fries', 'hotdog', 'pizza',
+    'spaghetti', 'taco', 'burrito', 'ramen', 'stew', 'fish_cake', 'sushi',
+    'bento', 'curry', 'rice_ball', 'rice', 'rice_cracker', 'oden', 'dango',
+    'shaved_ice', 'ice_cream', 'icecream', 'cake', 'birthday', 'custard',
+    'candy', 'lollipop', 'chocolate_bar', 'popcorn', 'doughnut', 'cookie',
+    'beer', 'beers', 'wine_glass', 'cocktail', 'tropical_drink', 'champagne',
+    'sake', 'tea', 'coffee', 'baby_bottle', 'fork_and_knife',
+    'knife_fork_plate'
+]
+
+_chooselist = [
+    '{}. Did you even need to ask?',
+    'Definitely {}.',
+    'It\'s {}, any day of the week.',
+    'Easy, I prefer {}.',
+    'I suppose {}, if I had to pick one.',
+    'It\'s not ideal, but I\'ll go with {}.',
+    '{}... I guess?',
+    'That\'s a tough one. Maybe {}?',
+    'Neither seems like a good option to me.',
+    'Why not both?',
 ]
 
 
@@ -64,12 +77,21 @@ class SnacksPlugin(PluginApi, SerializableApi):
         if match:
             cfd = self.__dict__.get('cfd', {})
             response = discuss(match[0], cfd, 4, 10, 20)
-            chat_post_message('testing', response)
+            chat_post_message(channel, response)
             return True
 
         if text == '<@U3ULC7DBP> snack me':
             for snack in self._snacks():
                 reactions_add(snack, channel, ts)
+            return True
+
+        match = re.findall('^<@U3ULC7DBP> choose (.+) or (.+)$', text)
+        if match:
+            statement = random.choice(_chooselist)
+            choice = random.choice(match[0])
+            response = re.sub('^([a-zA-Z])', lambda x: x.groups()[0].upper(),
+                              statement.format(choice), 1)
+            chat_post_message(channel, response)
             return True
 
         return False
