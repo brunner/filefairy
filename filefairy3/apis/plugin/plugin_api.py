@@ -11,6 +11,7 @@ sys.path.append(re.sub(r'/apis/plugin', '', _path))
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
 
 
@@ -19,6 +20,7 @@ class PluginApi(MessageableApi, RunnableApi):
 
     def __init__(self, **kwargs):
         super(PluginApi, self).__init__(**kwargs)
+        self.activity = [ActivityEnum.NONE, ActivityEnum.NONE]
 
     @abc.abstractproperty
     def enabled(self):
@@ -29,7 +31,7 @@ class PluginApi(MessageableApi, RunnableApi):
         pass
 
     @abc.abstractmethod
-    def _setup(self, **kwargs):
+    def _setup_internal(self, **kwargs):
         pass
 
     def _attachments(self):
@@ -45,3 +47,12 @@ class PluginApi(MessageableApi, RunnableApi):
             'title_link': link,
             'text': info
         }]
+
+    def _notify(self, **kwargs):
+        activity = kwargs.get('activity', ActivityEnum.NONE)
+        self.activity[1] = activity
+        return ActivityEnum.NONE
+
+    def _setup(self, **kwargs):
+        self._setup_internal(**kwargs)
+        return ActivityEnum.NONE

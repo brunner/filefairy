@@ -12,6 +12,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta, elapsed  # noqa
 from utils.component.component_util import card, table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
@@ -51,7 +52,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
     def _title():
         return 'leaguefile'
 
-    def _setup(self, **kwargs):
+    def _setup_internal(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
@@ -81,7 +82,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     def _on_message_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
         data = self.data
@@ -118,9 +119,9 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
 
         if data != original or data['fp']:
             self._render(**kwargs)
-            return True
+            return ActivityEnum.BASE
 
-        return False
+        return ActivityEnum.NONE
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/leaguefile/index.html'

@@ -11,6 +11,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from plugins.exports.exports_plugin import ExportsPlugin  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
@@ -90,7 +91,7 @@ class ExportsPluginTest(TestUtil):
 
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(read)
-        plugin._setup()
+        plugin._setup_internal()
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_called_once_with(URLOPEN)
@@ -100,6 +101,16 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_called_once_with(URL)
         self.assertEqual(plugin.file_date, FILE_DATE_OLD)
         self.assertEqual(plugin.exports, EXPORTS_OLD)
+
+    def test_on_message(self):
+        read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
+        plugin = self.create_plugin(read)
+        ret = plugin._on_message_internal()
+        self.assertEqual(ret, ActivityEnum.NONE)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
 
     @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_file_date')
@@ -113,7 +124,7 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
         ret = plugin._run_internal()
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_not_called()
@@ -136,7 +147,7 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(read, file_date='', exports=EXPORTS_OLD)
         plugin.file_date = ''
         ret = plugin._run_internal()
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_not_called()
@@ -159,7 +170,7 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_NEW)
         ret = plugin._run_internal()
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = {'31': TEAM_NEW, '32': TEAM_OLD}
         mock_file_date.assert_called_once_with(URLOPEN)
@@ -183,7 +194,7 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_NEW)
         ret = plugin._run_internal()
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = {'31': TEAM_NEW_TRUNCATED, '32': TEAM_OLD_TRUNCATED}
         mock_file_date.assert_called_once_with(URLOPEN)
@@ -207,7 +218,7 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(
             read, file_date=FILE_DATE_OLD, exports=EXPORTS_OLD)
         ret = plugin._run_internal()
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         mock_file_date.assert_called_once_with(URLOPEN)
         mock_exports.assert_called_once_with(URLOPEN)
