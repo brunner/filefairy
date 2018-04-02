@@ -11,6 +11,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/leaguefile', '', _path)
 sys.path.append(_root)
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.component.component_util import card, table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
@@ -113,7 +114,7 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        plugin._setup(date=NOW)
+        plugin._setup_internal(date=NOW)
 
         write = {'fp': FILEPART, 'up': [UP_THEN]}
         mock_check.assert_called_once_with()
@@ -129,7 +130,7 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': FILEPART, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        plugin._setup(date=NOW)
+        plugin._setup_internal(date=NOW)
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
@@ -144,7 +145,7 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': None, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        plugin._setup(date=NOW)
+        plugin._setup_internal(date=NOW)
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
@@ -159,7 +160,7 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
-        plugin._setup(date=NOW)
+        plugin._setup_internal(date=NOW)
 
         write = {'fp': None, 'up': [UP_NOW]}
         mock_check.assert_called_once_with()
@@ -175,13 +176,23 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': FILEPART, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        plugin._setup(date=NOW)
+        plugin._setup_internal(date=NOW)
 
         write = {'fp': None, 'up': [UP_NOW, UP_THEN]}
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+
+    def test_on_message(self):
+        read = {'fp': None, 'up': []}
+        plugin = self.create_plugin(read)
+        ret = plugin._on_message_internal()
+        self.assertEqual(ret, ActivityEnum.NONE)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
     @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
@@ -195,7 +206,7 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=NOW)
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = {'fp': FILEPART, 'up': []}
         mock_check.assert_called_once_with()
@@ -219,7 +230,7 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': FILEPART, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=NOW)
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
@@ -239,7 +250,7 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': None, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=NOW)
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         mock_check.assert_called_once_with()
         mock_render.assert_not_called()
@@ -259,7 +270,7 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=NOW)
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = {'fp': None, 'up': [UP_FILEPART]}
         mock_check.assert_called_once_with()

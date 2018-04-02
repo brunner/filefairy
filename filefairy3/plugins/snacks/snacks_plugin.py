@@ -12,6 +12,7 @@ _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd, discuss  # noqa
 from utils.slack.slack_util import channels_list, chat_post_message, reactions_add, users_list  # noqa
@@ -64,7 +65,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
     def _info():
         return 'Feeds the masses bread and circuses.'
 
-    def _setup(self, **kwargs):
+    def _setup_internal(self, **kwargs):
         self.cfd = cfd(4, *self._fnames())
         self.day = kwargs['date'].day
 
@@ -73,7 +74,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
         user = obj.get('user')
         ts = obj.get('ts')
         if obj.get('channel') not in _channels or not user or not ts:
-            return False
+            return ActivityEnum.NONE
 
         data = self.data
         original = copy.deepcopy(data)
@@ -87,7 +88,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
         else:
             ok = float(ts) - float(data['members'][user]['latest']) > 20
 
-        ret = False
+        ret = ActivityEnum.NONE
         if ok:
             match = re.findall('^<@U3ULC7DBP> choose (.+) or (.+)$', text)
             if match:
@@ -97,19 +98,19 @@ class SnacksPlugin(PluginApi, SerializableApi):
                                   lambda x: x.groups()[0].upper(),
                                   statement.format(choice), 1)
                 chat_post_message(channel, response)
-                ret = True
+                ret = ActivityEnum.BASE
 
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
                 cfd = self.__dict__.get('cfd', {})
                 response = discuss(match[0], cfd, 4, 6, 30)
                 chat_post_message(channel, response)
-                ret = True
+                ret = ActivityEnum.BASE
 
             if text == '<@U3ULC7DBP> snack me':
                 for snack in self._snacks():
                     reactions_add(snack, channel, ts)
-                ret = True
+                ret = ActivityEnum.BASE
 
         if ret:
             data['members'][user]['latest'] = ts
@@ -122,9 +123,11 @@ class SnacksPlugin(PluginApi, SerializableApi):
     def _run_internal(self, **kwargs):
         day = kwargs['date'].day
         if self.day != day:
-            self.corpus()
+            self._corpus()
             self.cfd = cfd(4, *self._fnames())
             self.day = day
+
+        return ActivityEnum.NONE
 
     @staticmethod
     def _fnames():
@@ -147,7 +150,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
             snacks[1] = 'star'
         return snacks
 
-    def corpus(self):
+    def _corpus(self):
         channels = channels_list()
         if not channels['ok']:
             return

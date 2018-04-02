@@ -12,6 +12,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.snacks.snacks_plugin import _chooselist, _snacklist, SnacksPlugin  # noqa
 from utils.json.json_util import dumps  # noqa
 
@@ -79,14 +80,14 @@ class SnacksPluginTest(unittest.TestCase):
         return plugin
 
     @mock.patch.object(SnacksPlugin, '_fnames')
-    @mock.patch.object(SnacksPlugin, 'corpus')
+    @mock.patch.object(SnacksPlugin, '_corpus')
     def test_setup(self, mock_corpus, mock_fnames):
         fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
         mock_fnames.return_value = fnames
 
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        plugin._setup(date=THEN)
+        plugin._setup_internal(date=THEN)
 
         mock_corpus.assert_not_called()
         mock_fnames.assert_called_once_with()
@@ -111,7 +112,7 @@ class SnacksPluginTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = {'members': MEMBERS_NOW}
         mock_discuss.assert_called_once_with('topic', {}, 4, 6, 30)
@@ -135,7 +136,7 @@ class SnacksPluginTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = {'members': MEMBERS_NOW}
         mock_snacks.assert_called_once_with()
@@ -163,7 +164,7 @@ class SnacksPluginTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = {'members': MEMBERS_NOW}
         calls = [mock.call(_chooselist), mock.call(('a', 'b'))]
@@ -186,7 +187,7 @@ class SnacksPluginTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -205,7 +206,7 @@ class SnacksPluginTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -224,7 +225,7 @@ class SnacksPluginTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -234,7 +235,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(SnacksPlugin, '_fnames')
-    @mock.patch.object(SnacksPlugin, 'corpus')
+    @mock.patch.object(SnacksPlugin, '_corpus')
     def test_run__with_different_day(self, mock_corpus, mock_fnames):
         fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
         mock_fnames.return_value = fnames
@@ -247,7 +248,8 @@ class SnacksPluginTest(unittest.TestCase):
         mock_fnames.reset_mock()
         self.reset_mocks()
 
-        plugin._run_internal(date=NOW)
+        ret = plugin._run_internal(date=NOW)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         mock_corpus.assert_called_once_with()
         mock_fnames.assert_called_once_with()
@@ -260,7 +262,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.assertEqual(plugin.day, 27)
 
     @mock.patch.object(SnacksPlugin, '_fnames')
-    @mock.patch.object(SnacksPlugin, 'corpus')
+    @mock.patch.object(SnacksPlugin, '_corpus')
     def test_run__with_same_day(self, mock_corpus, mock_fnames):
         fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
         mock_fnames.return_value = fnames
@@ -273,7 +275,8 @@ class SnacksPluginTest(unittest.TestCase):
         mock_fnames.reset_mock()
         self.reset_mocks()
 
-        plugin._run_internal(date=THEN)
+        ret = plugin._run_internal(date=THEN)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         mock_corpus.assert_not_called()
         mock_fnames.assert_not_called()
@@ -349,7 +352,7 @@ class SnacksPluginTest(unittest.TestCase):
 
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        plugin.corpus()
+        plugin._corpus()
 
         mock_channels.assert_called_once_with()
         mock_members.assert_called_once_with()

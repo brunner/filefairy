@@ -8,6 +8,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/git', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 
@@ -24,11 +25,11 @@ class GitPlugin(PluginApi):
     def _info():
         return 'Exposes git commands to admins.'
 
-    def _setup(self, **kwargs):
+    def _setup_internal(self, **kwargs):
         self.day = kwargs['date'].day
 
     def _on_message_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
         day = kwargs['date'].day
@@ -38,10 +39,12 @@ class GitPlugin(PluginApi):
             self.push(**kwargs)
             self.day = day
 
+        return ActivityEnum.NONE
+
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')
         log(self._name(), **dict(kwargs, c=d, s='Call completed.'))
-        return True
+        return ActivityEnum.BASE
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], kwargs)

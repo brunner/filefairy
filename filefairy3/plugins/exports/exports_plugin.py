@@ -9,6 +9,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
 from utils.team.team_util import full_name  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
@@ -40,14 +41,14 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _info():
         return 'Tracks how often each manager exports.'
 
-    def _setup(self, **kwargs):
+    def _setup_internal(self, **kwargs):
         text = urlopen(_url)
         self.file_date = self._file_date(text)
         self.exports = self._exports(text)
         self._render(**kwargs)
 
     def _on_message_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
         data = self.data
@@ -74,9 +75,11 @@ class ExportsPlugin(PluginApi, RenderableApi):
             self.file_date = file_date
             self.write()
             self._render(**kwargs)
-            return True
+            return ActivityEnum.BASE
         else:
             self.exports = self._exports(text)
+
+        return ActivityEnum.NONE
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/exports/index.html'

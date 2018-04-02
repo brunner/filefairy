@@ -13,6 +13,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 
 
@@ -28,14 +29,14 @@ class FakePlugin(PluginApi):
     def _info():
         return 'Description.'
 
-    def _setup(self, **kwargs):
-        pass
+    def _setup_internal(self, **kwargs):
+        return ActivityEnum.NONE
 
     def _on_message_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
 
 class FakeRenderable(PluginApi, RenderableApi):
@@ -66,28 +67,27 @@ class FakeRenderable(PluginApi, RenderableApi):
     def _tmpl():
         return 'foo.html'
 
-    def _setup(self, **kwargs):
-        pass
+    def _setup_internal(self, **kwargs):
+        return ActivityEnum.NONE
 
     def _on_message_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
     def _render_internal(self, **kwargs):
         return {}
 
 
 class PluginApiTest(unittest.TestCase):
-    def test_enabled(self):
+    def test_init(self):
         plugin = FakePlugin()
         self.assertTrue(plugin.enabled)
-
-    def test_inheritance(self):
-        plugin = FakePlugin()
         self.assertTrue(isinstance(plugin, MessageableApi))
         self.assertTrue(isinstance(plugin, RunnableApi))
+        activity = [ActivityEnum.NONE, ActivityEnum.NONE]
+        self.assertEqual(plugin.activity, activity)
 
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     def test_attachments__with_valid_input(self, mock_open):
@@ -113,6 +113,21 @@ class PluginApiTest(unittest.TestCase):
         actual = plugin._attachments()
         expected = []
         self.assertEqual(actual, expected)
+
+    def test_notify(self):
+        plugin = FakePlugin()
+        ret = plugin._notify(activity=ActivityEnum.EXPORT)
+        self.assertEqual(ret, ActivityEnum.NONE)
+        activity = [ActivityEnum.NONE, ActivityEnum.EXPORT]
+        self.assertEqual(plugin.activity, activity)
+
+    @mock.patch.object(FakePlugin, '_setup_internal')
+    def test_setup(self, mock_setup):
+        plugin = FakePlugin()
+        ret = plugin._setup()
+        self.assertEqual(ret, ActivityEnum.NONE)
+
+        mock_setup.assert_called_once_with()
 
 
 if __name__ == '__main__':

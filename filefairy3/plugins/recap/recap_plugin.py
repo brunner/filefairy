@@ -13,6 +13,7 @@ _root = re.sub(r'/plugins/recap', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
@@ -48,7 +49,7 @@ class RecapPlugin(PluginApi, RenderableApi):
     def _title():
         return 'recap'
 
-    def _setup(self, **kwargs):
+    def _setup_internal(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
@@ -62,7 +63,7 @@ class RecapPlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     def _on_message_internal(self, **kwargs):
-        pass
+        return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
         data = self.data
@@ -79,7 +80,9 @@ class RecapPlugin(PluginApi, RenderableApi):
                 'fairylab',
                 'League news updated.',
                 attachments=self._attachments())
-            return True
+            return ActivityEnum.BASE
+
+        return ActivityEnum.NONE
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/recap/index.html'

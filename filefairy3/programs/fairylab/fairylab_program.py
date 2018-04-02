@@ -20,6 +20,7 @@ sys.path.append(_root)
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
@@ -90,14 +91,21 @@ class FairylabProgram(MessageableApi, RenderableApi):
             return
 
         date = kwargs.get('date') or datetime.datetime.now()
+        ret = ActivityEnum.NONE
         try:
-            if item(**dict(kwargs, date=date)):
-                data['plugins'][p]['date'] = encode_datetime(date)
+            ret = item(**dict(kwargs, date=date))
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
             data['plugins'][p]['ok'] = False
             data['plugins'][p]['date'] = encode_datetime(date)
+
+        if ret != ActivityEnum.NONE:
+            data['plugins'][p]['date'] = encode_datetime(date)
+            if ret != ActivityEnum.BASE:
+                ps = filter(lambda q: p != q, data['plugins'].keys())
+                for p in ps:
+                    self._try(p, '_notify', **dict(kwargs, activity=ret))
 
     def _recv(self, message):
         self.lock.acquire()

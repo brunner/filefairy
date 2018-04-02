@@ -11,6 +11,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/recap', '', _path)
 sys.path.append(_root)
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.recap.recap_plugin import RecapPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
@@ -146,7 +147,7 @@ class RecapPluginTest(TestUtil):
 
         mock_update.side_effect = fake_update
 
-        plugin._setup(date=NOW)
+        plugin._setup_internal(date=NOW)
 
         write = UPDATE_MAP
         mock_render.assert_called_once_with(date=NOW)
@@ -161,10 +162,21 @@ class RecapPluginTest(TestUtil):
         keys = ['injuries', 'news', 'transactions']
         read = {k: {'content': '', 'hash': ''} for k in keys}
         plugin = self.create_plugin(read)
-        plugin._setup(date=NOW)
+        plugin._setup_internal(date=NOW)
 
         mock_render.assert_called_once_with(date=NOW)
         mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    def test_on_message(self):
+        keys = ['injuries', 'news', 'transactions']
+        read = {k: {'content': '', 'hash': ''} for k in keys}
+        plugin = self.create_plugin(read)
+        ret = plugin._on_message_internal()
+        self.assertEqual(ret, ActivityEnum.NONE)
+
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -183,7 +195,7 @@ class RecapPluginTest(TestUtil):
         mock_update.side_effect = fake_update
 
         ret = plugin._run_internal(date=NOW)
-        self.assertTrue(ret)
+        self.assertEqual(ret, ActivityEnum.BASE)
 
         write = UPDATE_MAP
         mock_render.assert_called_once_with(date=NOW)
@@ -202,7 +214,7 @@ class RecapPluginTest(TestUtil):
         read = {k: {'content': '', 'hash': ''} for k in keys}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=NOW)
-        self.assertFalse(ret)
+        self.assertEqual(ret, ActivityEnum.NONE)
 
         mock_render.assert_not_called()
         mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])

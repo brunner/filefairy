@@ -15,6 +15,7 @@ _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from enums.activity.activity_enum import ActivityEnum  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
 from utils.component.component_util import card  # noqa
 from utils.json.json_util import dumps  # noqa
@@ -46,14 +47,14 @@ class BrowsablePlugin(PluginApi, RenderableApi):
     def _title():
         return 'foo'
 
-    def _setup(self, **kwargs):
-        pass
+    def _setup_internal(self, **kwargs):
+        return ActivityEnum.NONE
 
     def _on_message_internal(self, **kwargs):
-        return True
+        return ActivityEnum.BASE
 
     def _run_internal(self, **kwargs):
-        return True
+        return ActivityEnum.BASE
 
     def _render_internal(self, **kwargs):
         return [('html/fairylab/browsable/index.html', '', 'browse.html', {})]
@@ -73,14 +74,14 @@ class InternalPlugin(PluginApi):
     def _info():
         return 'Description of internal.'
 
-    def _setup(self, **kwargs):
-        pass
+    def _setup_internal(self, **kwargs):
+        return ActivityEnum.NONE
 
     def _on_message_internal(self, **kwargs):
-        return True
+        return ActivityEnum.BASE
 
     def _run_internal(self, **kwargs):
-        return True
+        return ActivityEnum.BASE
 
 
 class DisabledPlugin(PluginApi):
@@ -95,14 +96,14 @@ class DisabledPlugin(PluginApi):
     def _info():
         return 'Description of disabled.'
 
-    def _setup(self, **kwargs):
-        pass
+    def _setup_internal(self, **kwargs):
+        return ActivityEnum.NONE
 
     def _on_message_internal(self, **kwargs):
-        return True
+        return ActivityEnum.BASE
 
     def _run_internal(self, **kwargs):
-        return True
+        return ActivityEnum.BASE
 
 
 class FakeWebSocketApp(object):
@@ -276,112 +277,208 @@ class FairylabProgramTest(TestUtil):
         self.assertEqual(actual, expected)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
-    def test_try__with_valid_input(self, mock_run):
-        mock_run.return_value = True
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_valid_input(self, mock_bnotify, mock_inotify, mock_run):
+        mock_bnotify.return_value = ActivityEnum.NONE
+        mock_run.return_value = ActivityEnum.BASE
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', '_run_internal', date=NOW)
 
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
         mock_run.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
-    def test_try__with_no_change(self, mock_run):
-        mock_run.return_value = False
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_activity(self, mock_bnotify, mock_inotify, mock_run):
+        mock_bnotify.return_value = ActivityEnum.NONE
+        mock_run.return_value = ActivityEnum.EXPORT
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', '_run_internal', date=NOW)
 
+        mock_bnotify.assert_called_once_with(activity=ActivityEnum.EXPORT, date=NOW)
+        mock_inotify.assert_not_called()
         mock_run.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
+
+    @mock.patch.object(InternalPlugin, '_run_internal')
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_no_change(self, mock_bnotify, mock_inotify, mock_run):
+        mock_bnotify.return_value = ActivityEnum.NONE
+        mock_run.return_value = ActivityEnum.NONE
+
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
+        program._try('internal', '_run_internal', date=NOW)
+
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
+        mock_run.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
-    def test_try__without_date(self, mock_run):
-        mock_run.return_value = True
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__without_date(self, mock_bnotify, mock_inotify, mock_run):
+        mock_bnotify.return_value = ActivityEnum.NONE
+        mock_run.return_value = ActivityEnum.BASE
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', '_run_internal')
 
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
         mock_run.assert_called_once_with(date=THEN)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
-    def test_try__with_thrown_exception(self, mock_run):
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_thrown_exception(self, mock_bnotify, mock_inotify,
+                                        mock_run):
+        mock_bnotify.return_value = ActivityEnum.NONE
         mock_run.side_effect = Exception()
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', '_run_internal', date=NOW)
 
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
         mock_run.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_called_once_with(
             'InternalPlugin', c='Traceback: ...', s='Exception.', v=True)
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_ERROR)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
-    def test_try__with_plugin_error(self, mock_run):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_ERROR)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_plugin_error(self, mock_bnotify, mock_inotify,
+                                    mock_run):
+        mock_bnotify.return_value = ActivityEnum.NONE
+        
+        plugins = {
+            'browsable': copy.deepcopy(PLUGIN_CANONICAL_THEN),
+            'internal': copy.deepcopy(PLUGIN_CANONICAL_ERROR)
+        }
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', '_run_internal', date=NOW)
 
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
         mock_run.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_ERROR)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
-    def test_try__with_plugin_not_found(self, mock_run):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_plugin_not_found(self, mock_bnotify, mock_inotify,
+                                        mock_run):
+        mock_bnotify.return_value = ActivityEnum.NONE
+        
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('foo', '_run_internal', date=NOW)
 
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
         mock_run.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
-    def test_try__with_item_not_found(self):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_item_not_found(self, mock_bnotify, mock_inotify):
+        mock_bnotify.return_value = ActivityEnum.NONE
+
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', '_foo', date=NOW)
 
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
-    def test_try__with_item_not_callable(self):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_item_not_callable(self, mock_bnotify, mock_inotify):
+        mock_bnotify.return_value = ActivityEnum.NONE
+        
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', 'var', date=NOW)
 
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(FairylabProgram, '_try')
