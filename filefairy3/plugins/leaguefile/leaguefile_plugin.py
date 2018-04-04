@@ -52,34 +52,8 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
     def _title():
         return 'leaguefile'
 
-    def _setup_internal(self, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        for size, date, name, fp in self._check():
-            if not fp:
-                data['fp'] = None
-
-            if '.filepart' in name:
-                if not data['fp']:
-                    data['fp'] = {
-                        'start': date,
-                        'size': size,
-                        'end': date,
-                        'now': encode_datetime(kwargs['date'])
-                    }
-            elif not len(data['up']) or data['up'][0]['date'] != date:
-                data['up'].insert(0, {
-                    'date': date,
-                    'start': date,
-                    'size': size,
-                    'end': date
-                })
-
-        if data != original:
-            self.write()
-
-        self._render(**kwargs)
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -127,6 +101,35 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         html = 'html/fairylab/leaguefile/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'leaguefile.html', _home)]
+
+    def _setup_internal(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        for size, date, name, fp in self._check():
+            if not fp:
+                data['fp'] = None
+
+            if '.filepart' in name:
+                if not data['fp']:
+                    data['fp'] = {
+                        'start': date,
+                        'size': size,
+                        'end': date,
+                        'now': encode_datetime(kwargs['date'])
+                    }
+            elif not len(data['up']) or data['up'][0]['date'] != date:
+                data['up'].insert(0, {
+                    'date': date,
+                    'start': date,
+                    'size': size,
+                    'end': date
+                })
+
+        if data != original:
+            self.write()
+
+        self._render(**kwargs)
 
     @staticmethod
     def _date(s):

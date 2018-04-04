@@ -134,38 +134,12 @@ class RecapPluginTest(TestUtil):
 
         return plugin
 
-    @mock.patch.object(RecapPlugin, '_update')
-    @mock.patch.object(RecapPlugin, '_render')
-    def test_setup__with_valid_input(self, mock_render, mock_update):
+    def test_notify(self):
         keys = ['injuries', 'news', 'transactions']
         read = {k: {'content': '', 'hash': ''} for k in keys}
         plugin = self.create_plugin(read)
+        plugin._notify_internal()
 
-        def fake_update(*args, **kwargs):
-            key = args[0]
-            plugin.data[key] = UPDATE_MAP.get(key)
-
-        mock_update.side_effect = fake_update
-
-        plugin._setup_internal(date=NOW)
-
-        write = UPDATE_MAP
-        mock_render.assert_called_once_with(date=NOW)
-        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-
-    @mock.patch.object(RecapPlugin, '_update')
-    @mock.patch.object(RecapPlugin, '_render')
-    def test_setup__with_no_change(self, mock_render, mock_update):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
-
-        mock_render.assert_called_once_with(date=NOW)
-        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -233,6 +207,42 @@ class RecapPluginTest(TestUtil):
         self.assertEqual(ret, [(INDEX, '', 'recap.html', HOME)])
 
         mock_home.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(RecapPlugin, '_update')
+    @mock.patch.object(RecapPlugin, '_render')
+    def test_setup__with_valid_input(self, mock_render, mock_update):
+        keys = ['injuries', 'news', 'transactions']
+        read = {k: {'content': '', 'hash': ''} for k in keys}
+        plugin = self.create_plugin(read)
+
+        def fake_update(*args, **kwargs):
+            key = args[0]
+            plugin.data[key] = UPDATE_MAP.get(key)
+
+        mock_update.side_effect = fake_update
+
+        plugin._setup_internal(date=NOW)
+
+        write = UPDATE_MAP
+        mock_render.assert_called_once_with(date=NOW)
+        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(RecapPlugin, '_update')
+    @mock.patch.object(RecapPlugin, '_render')
+    def test_setup__with_no_change(self, mock_render, mock_update):
+        keys = ['injuries', 'news', 'transactions']
+        read = {k: {'content': '', 'hash': ''} for k in keys}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal(date=NOW)
+
+        mock_render.assert_called_once_with(date=NOW)
+        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()

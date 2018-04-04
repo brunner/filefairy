@@ -43,13 +43,12 @@ class GitPluginTest(unittest.TestCase):
 
         return plugin
 
-    def test_setup(self):
+    def test_notify(self):
         plugin = self.create_plugin()
-        plugin._setup_internal(date=THEN)
+        plugin._notify_internal()
 
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
-        self.assertEqual(plugin.day, 26)
 
     def test_on_message(self):
         plugin = self.create_plugin()
@@ -85,6 +84,14 @@ class GitPluginTest(unittest.TestCase):
         mock_add.assert_not_called()
         mock_commit.assert_not_called()
         mock_push.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+        self.assertEqual(plugin.day, 26)
+
+    def test_setup(self):
+        plugin = self.create_plugin()
+        plugin._setup_internal(date=THEN)
+
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
         self.assertEqual(plugin.day, 26)

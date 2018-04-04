@@ -79,25 +79,17 @@ class SnacksPluginTest(unittest.TestCase):
 
         return plugin
 
-    @mock.patch.object(SnacksPlugin, '_fnames')
-    @mock.patch.object(SnacksPlugin, '_corpus')
-    def test_setup(self, mock_corpus, mock_fnames):
-        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
-        mock_fnames.return_value = fnames
-
+    def test_notify(self):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=THEN)
+        plugin._notify_internal()
 
-        mock_corpus.assert_not_called()
-        mock_fnames.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_cfd.assert_called_once_with(4, *fnames)
+        self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.day, 26)
 
     @mock.patch('plugins.snacks.snacks_plugin.discuss')
     def test_on_message__with_discuss_text(self, mock_discuss):
@@ -283,6 +275,26 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+        self.assertEqual(plugin.day, 26)
+
+    @mock.patch.object(SnacksPlugin, '_fnames')
+    @mock.patch.object(SnacksPlugin, '_corpus')
+    def test_setup(self, mock_corpus, mock_fnames):
+        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
+        mock_fnames.return_value = fnames
+
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal(date=THEN)
+
+        mock_corpus.assert_not_called()
+        mock_fnames.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_called_once_with(4, *fnames)
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()

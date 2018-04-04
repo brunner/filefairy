@@ -29,14 +29,17 @@ class FakePlugin(PluginApi):
     def _info():
         return 'Description.'
 
-    def _setup_internal(self, **kwargs):
-        return ActivityEnum.NONE
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
         return ActivityEnum.NONE
+
+    def _setup_internal(self, **kwargs):
+        pass
 
 
 class FakeRenderable(PluginApi, RenderableApi):
@@ -67,8 +70,8 @@ class FakeRenderable(PluginApi, RenderableApi):
     def _tmpl():
         return 'foo.html'
 
-    def _setup_internal(self, **kwargs):
-        return ActivityEnum.NONE
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -79,6 +82,9 @@ class FakeRenderable(PluginApi, RenderableApi):
     def _render_internal(self, **kwargs):
         return {}
 
+    def _setup_internal(self, **kwargs):
+        pass
+
 
 class PluginApiTest(unittest.TestCase):
     def test_init(self):
@@ -86,8 +92,6 @@ class PluginApiTest(unittest.TestCase):
         self.assertTrue(plugin.enabled)
         self.assertTrue(isinstance(plugin, MessageableApi))
         self.assertTrue(isinstance(plugin, RunnableApi))
-        activity = [ActivityEnum.NONE, ActivityEnum.NONE]
-        self.assertEqual(plugin.activity, activity)
 
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     def test_attachments__with_valid_input(self, mock_open):
@@ -116,10 +120,8 @@ class PluginApiTest(unittest.TestCase):
 
     def test_notify(self):
         plugin = FakePlugin()
-        ret = plugin._notify(activity=ActivityEnum.EXPORT)
+        ret = plugin._notify()
         self.assertEqual(ret, ActivityEnum.NONE)
-        activity = [ActivityEnum.NONE, ActivityEnum.EXPORT]
-        self.assertEqual(plugin.activity, activity)
 
     @mock.patch.object(FakePlugin, '_setup_internal')
     def test_setup(self, mock_setup):

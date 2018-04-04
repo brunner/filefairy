@@ -107,82 +107,13 @@ class LeaguefilePluginTest(TestUtil):
 
         return plugin
 
-    @mock.patch.object(LeaguefilePlugin, '_render')
-    @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_setup__with_valid_input(self, mock_check, mock_render):
-        mock_check.return_value = iter([CHECK_FILEPART, CHECK_UP_TRUE])
-
+    def test_notify(self):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
+        plugin._notify_internal()
 
-        write = {'fp': FILEPART, 'up': [UP_THEN]}
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-
-    @mock.patch.object(LeaguefilePlugin, '_render')
-    @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_setup__with_no_filepart_change(self, mock_check, mock_render):
-        mock_check.return_value = iter([CHECK_FILEPART, CHECK_UP_TRUE])
-
-        read = {'fp': FILEPART, 'up': [UP_THEN]}
-        plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
-
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-
-    @mock.patch.object(LeaguefilePlugin, '_render')
-    @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_setup__with_no_up_change(self, mock_check, mock_render):
-        mock_check.return_value = iter([CHECK_UP_TRUE])
-
-        read = {'fp': None, 'up': [UP_THEN]}
-        plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
-
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-
-    @mock.patch.object(LeaguefilePlugin, '_render')
-    @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_setup__with_empty_filepart(self, mock_check, mock_render):
-        mock_check.return_value = iter([CHECK_UP_FALSE])
-
-        read = {'fp': FILEPART, 'up': []}
-        plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
-
-        write = {'fp': None, 'up': [UP_NOW]}
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-
-    @mock.patch.object(LeaguefilePlugin, '_render')
-    @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_setup__with_new_up(self, mock_check, mock_render):
-        mock_check.return_value = iter([CHECK_UP_FALSE])
-
-        read = {'fp': FILEPART, 'up': [UP_THEN]}
-        plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
-
-        write = {'fp': None, 'up': [UP_NOW, UP_THEN]}
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
 
     def test_on_message(self):
@@ -293,6 +224,84 @@ class LeaguefilePluginTest(TestUtil):
         mock_home.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(LeaguefilePlugin, '_render')
+    @mock.patch.object(LeaguefilePlugin, '_check')
+    def test_setup__with_valid_input(self, mock_check, mock_render):
+        mock_check.return_value = iter([CHECK_FILEPART, CHECK_UP_TRUE])
+
+        read = {'fp': None, 'up': []}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal(date=NOW)
+
+        write = {'fp': FILEPART, 'up': [UP_THEN]}
+        mock_check.assert_called_once_with()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(LeaguefilePlugin, '_render')
+    @mock.patch.object(LeaguefilePlugin, '_check')
+    def test_setup__with_no_filepart_change(self, mock_check, mock_render):
+        mock_check.return_value = iter([CHECK_FILEPART, CHECK_UP_TRUE])
+
+        read = {'fp': FILEPART, 'up': [UP_THEN]}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal(date=NOW)
+
+        mock_check.assert_called_once_with()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(LeaguefilePlugin, '_render')
+    @mock.patch.object(LeaguefilePlugin, '_check')
+    def test_setup__with_no_up_change(self, mock_check, mock_render):
+        mock_check.return_value = iter([CHECK_UP_TRUE])
+
+        read = {'fp': None, 'up': [UP_THEN]}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal(date=NOW)
+
+        mock_check.assert_called_once_with()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(LeaguefilePlugin, '_render')
+    @mock.patch.object(LeaguefilePlugin, '_check')
+    def test_setup__with_empty_filepart(self, mock_check, mock_render):
+        mock_check.return_value = iter([CHECK_UP_FALSE])
+
+        read = {'fp': FILEPART, 'up': []}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal(date=NOW)
+
+        write = {'fp': None, 'up': [UP_NOW]}
+        mock_check.assert_called_once_with()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(LeaguefilePlugin, '_render')
+    @mock.patch.object(LeaguefilePlugin, '_check')
+    def test_setup__with_new_up(self, mock_check, mock_render):
+        mock_check.return_value = iter([CHECK_UP_FALSE])
+
+        read = {'fp': FILEPART, 'up': [UP_THEN]}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal(date=NOW)
+
+        write = {'fp': None, 'up': [UP_NOW, UP_THEN]}
+        mock_check.assert_called_once_with()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
 
     def test_date(self):

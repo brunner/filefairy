@@ -20,7 +20,6 @@ class PluginApi(MessageableApi, RunnableApi):
 
     def __init__(self, **kwargs):
         super(PluginApi, self).__init__(**kwargs)
-        self.activity = [ActivityEnum.NONE, ActivityEnum.NONE]
 
     @abc.abstractproperty
     def enabled(self):
@@ -28,6 +27,10 @@ class PluginApi(MessageableApi, RunnableApi):
 
     @abstractstatic
     def _info():
+        pass
+
+    @abc.abstractmethod
+    def _notify_internal(self, **kwargs):
         pass
 
     @abc.abstractmethod
@@ -49,8 +52,7 @@ class PluginApi(MessageableApi, RunnableApi):
         }]
 
     def _notify(self, **kwargs):
-        activity = kwargs.get('activity', ActivityEnum.NONE)
-        self.activity[1] = activity
+        self._notify_internal(**kwargs)
         return ActivityEnum.NONE
 
     def _setup(self, **kwargs):

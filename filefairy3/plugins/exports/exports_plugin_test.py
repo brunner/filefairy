@@ -82,25 +82,14 @@ class ExportsPluginTest(TestUtil):
 
         return plugin
 
-    @mock.patch.object(ExportsPlugin, '_render')
-    @mock.patch.object(ExportsPlugin, '_file_date')
-    @mock.patch.object(ExportsPlugin, '_exports')
-    def test_setup(self, mock_exports, mock_file_date, mock_render):
-        mock_file_date.return_value = FILE_DATE_OLD
-        mock_exports.return_value = EXPORTS_OLD
-
+    def test_notify(self):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
         plugin = self.create_plugin(read)
-        plugin._setup_internal()
+        plugin._notify_internal()
 
-        mock_file_date.assert_called_once_with(URLOPEN)
-        mock_exports.assert_called_once_with(URLOPEN)
-        mock_render.assert_called_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_urlopen.assert_called_once_with(URL)
-        self.assertEqual(plugin.file_date, FILE_DATE_OLD)
-        self.assertEqual(plugin.exports, EXPORTS_OLD)
+        self.mock_urlopen.assert_not_called()
 
     def test_on_message(self):
         read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
@@ -243,6 +232,26 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.assertEqual(plugin.file_date, FILE_DATE_OLD)
+        self.assertEqual(plugin.exports, EXPORTS_OLD)
+
+    @mock.patch.object(ExportsPlugin, '_render')
+    @mock.patch.object(ExportsPlugin, '_file_date')
+    @mock.patch.object(ExportsPlugin, '_exports')
+    def test_setup(self, mock_exports, mock_file_date, mock_render):
+        mock_file_date.return_value = FILE_DATE_OLD
+        mock_exports.return_value = EXPORTS_OLD
+
+        read = {k: copy.deepcopy(TEAM_CANONICAL) for k in ['31', '32']}
+        plugin = self.create_plugin(read)
+        plugin._setup_internal()
+
+        mock_file_date.assert_called_once_with(URLOPEN)
+        mock_exports.assert_called_once_with(URLOPEN)
+        mock_render.assert_called_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_called_once_with(URL)
         self.assertEqual(plugin.file_date, FILE_DATE_OLD)
         self.assertEqual(plugin.exports, EXPORTS_OLD)
 

@@ -41,11 +41,8 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _info():
         return 'Tracks how often each manager exports.'
 
-    def _setup_internal(self, **kwargs):
-        text = urlopen(_url)
-        self.file_date = self._file_date(text)
-        self.exports = self._exports(text)
-        self._render(**kwargs)
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -85,6 +82,12 @@ class ExportsPlugin(PluginApi, RenderableApi):
         html = 'html/fairylab/exports/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'exports.html', _home)]
+
+    def _setup_internal(self, **kwargs):
+        text = urlopen(_url)
+        self.file_date = self._file_date(text)
+        self.exports = self._exports(text)
+        self._render(**kwargs)
 
     @staticmethod
     def _file_date(text):
