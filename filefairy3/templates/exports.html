@@ -2,7 +2,15 @@
 {% import "common.html" as common %}
 {% block content %}
     <div class="container">
-      {{ common.alert('cloud-upload', 'Tracker') }}
+      {{ common.alert('cloudy', 'Live Tracker') }}
+      <div class="row">
+        <div class="col-12">
+          {{ common.card(live) }}
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      {{ common.alert('spreadsheet', 'Standings') }}
       {% for table in standings %}
       <div class="row">
         <div class="col-12">

@@ -10,7 +10,9 @@ sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
-from utils.component.component_util import table  # noqa
+from utils.ago.ago_util import delta  # noqa
+from utils.component.component_util import card, table  # noqa
+from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
 from utils.team.team_util import abbreviation, divisions  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
@@ -51,6 +53,15 @@ class ExportsPlugin(PluginApi, RenderableApi):
             self._lock()
         elif self.locked and activity in _unlock_activities:
             self._unlock()
+        else:
+            return
+
+        self.data['date'] = encode_datetime(kwargs['date'])
+
+        if self.locked:
+            self._render(**kwargs)
+
+        self.write()
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -72,7 +83,9 @@ class ExportsPlugin(PluginApi, RenderableApi):
             ret = ActivityEnum.EXPORT
 
         if ret != ActivityEnum.NONE:
+            self.data['date'] = encode_datetime(kwargs['date'])
             self._render(**kwargs)
+            self.write()
 
         return ret
 
@@ -106,6 +119,17 @@ class ExportsPlugin(PluginApi, RenderableApi):
             }],
             'standings': []
         }
+
+        n, t = self._new()
+        old = self._old()
+        tab = [{'key': 'Rate', 'value': '{:.0f} %'.format(float(100) * n / t)}]
+        if old:
+            tab.append({'key': 'Old', 'value': old})
+        ts = delta(decode_datetime(data['date']), kwargs['date'])
+        danger = 'simming' if self.locked else ''
+        ret['live'] = card(
+            title='{0} / {1}'.format(n, t), table=tab, ts=ts, danger=danger)
+
         for division, teamids in divisions():
             body = []
             for teamid in sorted(teamids, key=self._sorted):
@@ -116,10 +140,11 @@ class ExportsPlugin(PluginApi, RenderableApi):
                     l = '{0} - {1}'.format(n, o)
                     s = self._streak(teamid)
                     body.append([abbreviation(teamid), l, s])
-            ret['standings'].append(table(
-                cols=['', 'text-center w-25', 'text-center w-25'],
-                head=[division, 'Last 10', 'Streak'],
-                body=body))
+            ret['standings'].append(
+                table(
+                    cols=['', 'text-center w-25', 'text-center w-25'],
+                    head=[division, 'Last 10', 'Streak'],
+                    body=body))
 
         return ret
 
@@ -134,7 +159,21 @@ class ExportsPlugin(PluginApi, RenderableApi):
                 while len(data['form'][teamid]) > 10:
                     data['form'][teamid] = data['form'][teamid][1:]
 
-        self.write()
+    def _old(self):
+        old = []
+        for teamid, status in self.exports:
+            if teamid not in self.data['ai'] and status == 'Old':
+                old.append(abbreviation(teamid))
+        return ', '.join(old)
+
+    def _new(self):
+        n, t = 0, 0
+        for teamid, status in self.exports:
+            if teamid not in self.data['ai']:
+                t += 1
+                if status == 'New':
+                    n += 1
+        return (n, t)
 
     def _sorted(self, teamid):
         ret = []

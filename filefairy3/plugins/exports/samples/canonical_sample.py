@@ -25,6 +25,27 @@ context = {
         'href': '',
         'name': 'Exports'
     }],
+    'live': {
+        'href':
+        '',
+        'title':
+        '16 / 30',
+        'info':
+        '',
+        'table': [{
+            'key': 'Rate',
+            'value': '53 %'
+        }, {
+            'key': 'Old',
+            'value': 'BAL, BOS, NYY, TB, TOR, KC, LAA, OAK, MIA, PHI, PIT, ARI, COL, SF'
+        }],
+        'ts':
+        '30s ago',
+        'success':
+        '',
+        'danger':
+        'simming'
+    },
     'standings': [{
         'cols': ['', 'text-center w-25', 'text-center w-25'],
         'head': ['AL East', 'Last 10', 'Streak'],
