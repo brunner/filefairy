@@ -3,15 +3,10 @@
 
 import hashlib
 
-_bufsize = 65536
-
 
 def hash_file(fname):
     h = hashlib.sha256()
-    with open(fname, 'rb') as f:
-        while True:
-            data = f.read(_bufsize)
-            if not data:
-                break
-            h.update(data)
+    with open(fname, 'rb', buffering=0) as f:
+        for b in iter(lambda: f.read(128 * 1024), b''):
+            h.update(b)
     return h.hexdigest()
