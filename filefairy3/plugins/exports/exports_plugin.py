@@ -183,19 +183,27 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _sorted(self, teamid):
         ret = []
         n, o = self._form(teamid)
+        s = self._streak_internal(teamid)
         ret.append(-(float(n) / ((n + o) or 1)))
         ret.append(-n)
+        ret.append(-s)
         ret.append(-(float(1) / o if o else 2))
         ret.append(abbreviation(teamid))
         return ret
 
     def _streak(self, teamid):
+        n = self._streak_internal(teamid)
+        if n:
+            s = 'W' if n > 0 else 'L'
+            return s + str(abs(n))
+        return '-'
+
+    def _streak_internal(self, teamid):
         match = re.findall('([n]+|[o]+)$', self.data['form'].get(teamid, ''))
         if match:
             n = len(match[0])
-            s = 'W' if 'n' in match[0] else 'L'
-            return s + str(n)
-        return '-'
+            return n if 'n' in match[0] else -n
+        return 0
 
     def _unlock(self):
         self.locked = False
