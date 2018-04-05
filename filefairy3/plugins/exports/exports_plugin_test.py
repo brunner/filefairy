@@ -57,6 +57,10 @@ class ExportsPluginTest(TestUtil):
         patch_urlopen = mock.patch('plugins.exports.exports_plugin.urlopen')
         self.addCleanup(patch_urlopen.stop)
         self.mock_urlopen = patch_urlopen.start()
+        patch_chat = mock.patch(
+            'plugins.exports.exports_plugin.chat_post_message')
+        self.addCleanup(patch_chat.stop)
+        self.mock_chat = patch_chat.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
@@ -68,6 +72,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
         self.mock_urlopen.reset_mock()
+        self.mock_chat.reset_mock()
 
     def create_plugin(self, data, exports=[], locked=False):
         self.init_mocks(data)
@@ -75,6 +80,7 @@ class ExportsPluginTest(TestUtil):
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
         self.assertEqual(plugin.data, data)
         self.assertEqual(plugin.locked, False)
 
@@ -104,6 +110,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
@@ -132,6 +139,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_with(dumps(write) + '\n')
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
@@ -149,6 +157,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
@@ -166,6 +175,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
@@ -183,6 +193,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
@@ -207,6 +218,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     def test_on_message(self):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
@@ -218,6 +230,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_lock')
@@ -237,6 +250,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_OLD)
 
     @mock.patch.object(ExportsPlugin, '_render')
@@ -258,6 +272,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_NEW)
 
     @mock.patch.object(ExportsPlugin, '_render')
@@ -286,6 +301,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
 
     @mock.patch.object(ExportsPlugin, '_home')
@@ -302,6 +318,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_OLD)
 
     @mock.patch.object(ExportsPlugin, '_render')
@@ -319,6 +336,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_OLD)
 
     def test_exports__with_valid_input(self):
@@ -377,6 +395,14 @@ class ExportsPluginTest(TestUtil):
         }
         self.assertEqual(ret, expected)
 
+        mock_divisions.assert_called_once_with()
+        calls = [mock.call(k) for k in ['33', '34', '35', '40', '42', '44']]
+        mock_sorted.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
+
     @mock.patch.object(ExportsPlugin, '_sorted')
     @mock.patch('plugins.exports.exports_plugin.divisions')
     def test_home__with_old(self, mock_divisions, mock_sorted):
@@ -419,6 +445,14 @@ class ExportsPluginTest(TestUtil):
         }
         self.assertEqual(ret, expected)
 
+        mock_divisions.assert_called_once_with()
+        calls = [mock.call(k) for k in ['33', '34', '35', '40', '42', '44']]
+        mock_sorted.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
+
     @mock.patch.object(ExportsPlugin, '_sorted')
     @mock.patch('plugins.exports.exports_plugin.divisions')
     def test_home__with_lock(self, mock_divisions, mock_sorted):
@@ -430,7 +464,8 @@ class ExportsPluginTest(TestUtil):
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME, locked=True)
+        plugin = self.create_plugin(
+            read, exports=EXPORTS_OLD_HOME, locked=True)
         ret = plugin._home(date=THEN)
         l = card(
             title='4 / 6',
@@ -462,6 +497,14 @@ class ExportsPluginTest(TestUtil):
         }
         self.assertEqual(ret, expected)
 
+        mock_divisions.assert_called_once_with()
+        calls = [mock.call(k) for k in ['33', '34', '35', '40', '42', '44']]
+        mock_sorted.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
+
     def test_lock(self):
         form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
@@ -476,6 +519,10 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_called_once_with(
+            'testing',
+            'Exports tracker locked.',
+            attachments=plugin._attachments())
         self.assertEqual(plugin.data['form'], form)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
         self.assertEqual(plugin.locked, True)
@@ -539,6 +586,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
         self.assertEqual(plugin.locked, False)
 

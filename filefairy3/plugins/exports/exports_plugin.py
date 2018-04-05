@@ -13,6 +13,7 @@ from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card, table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
+from utils.slack.slack_util import chat_post_message  # noqa
 from utils.team.team_util import abbreviation, divisions  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
@@ -150,6 +151,10 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
     def _lock(self):
         self.locked = True
+        chat_post_message(
+            'testing',
+            'Exports tracker locked.',
+            attachments=self._attachments())
 
         data = self.data
         for teamid, status in self.exports:
