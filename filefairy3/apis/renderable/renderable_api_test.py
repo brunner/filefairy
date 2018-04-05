@@ -83,8 +83,7 @@ class RenderableApiTest(unittest.TestCase):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
-        mock_stream.return_value = jinja2.environment.TemplateStream(
-            lambda: iter([]))
+        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
         ldr = jinja2.DictLoader({
             'foo.html':
             '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
@@ -171,8 +170,7 @@ class RenderableApiTest(unittest.TestCase):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
-        mock_stream.return_value = jinja2.environment.TemplateStream(
-            lambda: iter([]))
+        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
         ldr = jinja2.DictLoader({
             'foo.html':
             '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
