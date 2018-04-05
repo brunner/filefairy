@@ -9,5 +9,6 @@ class ActivityEnum(Enum):
     BASE = 1
     EXPORT = 2
     SIM = 3
-    FILE = 4
-    DOWNLOAD = 5
+    UPLOAD = 4
+    FILE = 5
+    DOWNLOAD = 6

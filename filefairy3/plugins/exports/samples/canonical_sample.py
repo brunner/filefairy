@@ -5,6 +5,16 @@ subtitle = ''
 
 tmpl = 'exports.html'
 
+_t33 = ['BAL', '6-4', 'W1']
+_t34 = ['BOS', '10 - 0', 'W10']
+_t35 = ['CWS', '9 - 1', 'L1']
+_t38 = ['CLE', '8 - 2', 'W2']
+_t40 = ['DET', '10 - 0', 'W10']
+_t43 = ['KC', '9 - 1', 'W5']
+_t47 = ['MIN', '10 - 0', 'W10']
+_t48 = ['NYY', '10 - 0', 'W10']
+_t57 = ['TB', '10 - 0', 'W10']
+_t59 = ['TOR', '9 - 1', 'W4']
 context = {
     'title':
     'exports',
@@ -15,14 +25,34 @@ context = {
         'href': '',
         'name': 'Exports'
     }],
-    'table': {
-        'cols': ['', 'text-center', 'text-center'],
-        'head': ['Team', 'Streak', 'Last 10'],
-        'body': [['Atlanta Braves', '+19',
-                  '10 - 0'], ['Boston Red Sox', '+19',
-                              '10 - 0'], ['Cincinnati Reds', '+19', '10 - 0'],
-                 ['Chicago Cubs', '+9',
-                  '9 - 1'], ['Chicago White Sox', '+8',
-                             '9 - 1'], ['Baltimore Orioles', '-2', '3 - 7']]
-    }
+    'live': {
+        'href':
+        '',
+        'title':
+        '16 / 30',
+        'info':
+        '',
+        'table': [{
+            'key': 'Rate',
+            'value': '53 %'
+        }, {
+            'key': 'Old',
+            'value': 'BAL, BOS, NYY, TB, TOR, KC, LAA, OAK, MIA, PHI, PIT, ARI, COL, SF'
+        }],
+        'ts':
+        '30s ago',
+        'success':
+        '',
+        'danger':
+        'simming'
+    },
+    'standings': [{
+        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'head': ['AL East', 'Last 10', 'Streak'],
+        'body': [_t34, _t48, _t57, _t59, _t33]
+    }, {
+        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'head': ['AL Central', 'Last 10', 'Streak'],
+        'body': [_t40, _t47, _t43, _t35, _t38]
+    }]
 }

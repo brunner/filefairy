@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 {% block content %}
-    {% if table %}
     <div class="container">
-      {{ common.alert('cloud-upload', 'Tracker') }}
+      {{ common.alert('cloudy', 'Live Tracker') }}
+      <div class="row">
+        <div class="col-12">
+          {{ common.card(live) }}
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      {{ common.alert('spreadsheet', 'Standings') }}
+      {% for table in standings %}
       <div class="row">
         <div class="col-12">
           {{ common.table(table) }}
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endif %}
 {% endblock %}

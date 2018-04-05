@@ -47,8 +47,8 @@ class BrowsablePlugin(PluginApi, RenderableApi):
     def _title():
         return 'foo'
 
-    def _setup_internal(self, **kwargs):
-        return ActivityEnum.NONE
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.BASE
@@ -58,6 +58,9 @@ class BrowsablePlugin(PluginApi, RenderableApi):
 
     def _render_internal(self, **kwargs):
         return [('html/fairylab/browsable/index.html', '', 'browse.html', {})]
+
+    def _setup_internal(self, **kwargs):
+        pass
 
 
 class InternalPlugin(PluginApi):
@@ -74,14 +77,17 @@ class InternalPlugin(PluginApi):
     def _info():
         return 'Description of internal.'
 
-    def _setup_internal(self, **kwargs):
-        return ActivityEnum.NONE
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.BASE
 
     def _run_internal(self, **kwargs):
         return ActivityEnum.BASE
+
+    def _setup_internal(self, **kwargs):
+        pass
 
 
 class DisabledPlugin(PluginApi):
@@ -96,14 +102,17 @@ class DisabledPlugin(PluginApi):
     def _info():
         return 'Description of disabled.'
 
-    def _setup_internal(self, **kwargs):
-        return ActivityEnum.NONE
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.BASE
 
     def _run_internal(self, **kwargs):
         return ActivityEnum.BASE
+
+    def _setup_internal(self, **kwargs):
+        pass
 
 
 class FakeWebSocketApp(object):

@@ -65,9 +65,8 @@ class SnacksPlugin(PluginApi, SerializableApi):
     def _info():
         return 'Feeds the masses bread and circuses.'
 
-    def _setup_internal(self, **kwargs):
-        self.cfd = cfd(4, *self._fnames())
-        self.day = kwargs['date'].day
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         obj = kwargs['obj']
@@ -128,6 +127,10 @@ class SnacksPlugin(PluginApi, SerializableApi):
             self.day = day
 
         return ActivityEnum.NONE
+
+    def _setup_internal(self, **kwargs):
+        self.cfd = cfd(4, *self._fnames())
+        self.day = kwargs['date'].day
 
     @staticmethod
     def _fnames():

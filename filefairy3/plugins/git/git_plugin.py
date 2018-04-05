@@ -25,8 +25,8 @@ class GitPlugin(PluginApi):
     def _info():
         return 'Exposes git commands to admins.'
 
-    def _setup_internal(self, **kwargs):
-        self.day = kwargs['date'].day
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -40,6 +40,9 @@ class GitPlugin(PluginApi):
             self.day = day
 
         return ActivityEnum.NONE
+
+    def _setup_internal(self, **kwargs):
+        self.day = kwargs['date'].day
 
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')

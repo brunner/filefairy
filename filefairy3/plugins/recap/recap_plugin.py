@@ -49,18 +49,8 @@ class RecapPlugin(PluginApi, RenderableApi):
     def _title():
         return 'recap'
 
-    def _setup_internal(self, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        self._update('injuries', _injuries)
-        self._update('news', _news)
-        self._update('transactions', _transactions)
-
-        if data != original:
-            self.write()
-
-        self._render(**kwargs)
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -83,6 +73,19 @@ class RecapPlugin(PluginApi, RenderableApi):
             return ActivityEnum.BASE
 
         return ActivityEnum.NONE
+
+    def _setup_internal(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        self._update('injuries', _injuries)
+        self._update('news', _news)
+        self._update('transactions', _transactions)
+
+        if data != original:
+            self.write()
+
+        self._render(**kwargs)
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/recap/index.html'
