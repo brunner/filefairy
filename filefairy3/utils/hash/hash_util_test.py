@@ -21,7 +21,7 @@ class HashUtilTest(unittest.TestCase):
         actual = hash_file('foo.txt')
         expected = '25f94a2a5c7fbaf499c665bc73d67c1c87e496da8985131633ee0a95819db2e8'
         self.assertEqual(actual, expected)
-        mock_open.assert_called_once_with('foo.txt', 'rb', buffering=0)
+        mock_open.assert_called_once_with('foo.txt', 'rb')
 
 
 if __name__ == '__main__':
