@@ -566,14 +566,14 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
 
         actual = plugin._sorted('31')
-        expected = [-0.7, -7, -float(1) / 3, 'ARI']
+        expected = [-0.7, -7, -1, -float(1) / 3, 'ARI']
         mock_name.assert_called_once_with('31')
         self.assertEqual(actual, expected)
 
         mock_name.reset_mock()
 
         actual = plugin._sorted('32')
-        expected = [-0.6, -6, -0.25, 'ATL']
+        expected = [-0.6, -6, 2, -0.25, 'ATL']
         mock_name.assert_called_once_with('32')
         self.assertEqual(actual, expected)
 
