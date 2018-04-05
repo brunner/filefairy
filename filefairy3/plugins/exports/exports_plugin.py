@@ -152,7 +152,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _lock(self):
         self.locked = True
         chat_post_message(
-            'testing',
+            'fairylab',
             'Exports tracker locked.',
             attachments=self._attachments())
 
