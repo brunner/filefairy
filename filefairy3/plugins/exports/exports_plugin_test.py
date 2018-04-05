@@ -293,21 +293,31 @@ class ExportsPluginTest(TestUtil):
         self.assertEqual(actual, expected)
 
     @mock.patch.object(ExportsPlugin, '_sorted')
-    def test_home(self, mock_sorted):
-        t31 = [-0.7, -7, -float(1) / 3, 'Arizona Diamondbacks']
-        t32 = [-0.6, -6, -0.25, 'Atlanta Braves']
-        mock_sorted.side_effect = [t31, t32]
+    @mock.patch('plugins.exports.exports_plugin.divisions')
+    def test_home(self, mock_divisions, mock_sorted):
+        mock_divisions.return_value = [('AL East', ['33', '34']),
+                                       ('AL Central', ['35', '40']),
+                                       ('AL West', ['42', '44'])]
+        mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
 
-        form = {'31': FORM_NEW_TRUNCATED, '32': FORM_OLD_TRUNCATED}
+        keys = ['33', '34', '35', '40', '42', '44']
+        form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'form': form}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
         ret = plugin._home(date=THEN)
-        _table = table(
-            cols=['', 'text-center', 'text-center'],
-            head=['Team', 'Last 10', 'Streak'],
-            body=[['Atlanta Braves', '6 - 4', 'L2'],
-                  ['Arizona Diamondbacks', '7 - 3', 'W1']])
-        expected = {'breadcrumbs': BREADCRUMBS, 'table': _table}
+        e = table(
+            cols=['', 'text-center w-25', 'text-center w-25'],
+            head=['AL East', 'Last 10', 'Streak'],
+            body=[['BAL', '1 - 0', 'W1'], ['BOS', '1 - 0', 'W1']])
+        c = table(
+            cols=['', 'text-center w-25', 'text-center w-25'],
+            head=['AL Central', 'Last 10', 'Streak'],
+            body=[['CWS', '1 - 0', 'W1'], ['DET', '1 - 0', 'W1']])
+        w = table(
+            cols=['', 'text-center w-25', 'text-center w-25'],
+            head=['AL West', 'Last 10', 'Streak'],
+            body=[['HOU', '1 - 0', 'W1'], ['LAA', '1 - 0', 'W1']])
+        expected = {'breadcrumbs': BREADCRUMBS, 'standings': [e, c, w]}
         self.assertEqual(ret, expected)
 
     def test_lock(self):
@@ -342,23 +352,23 @@ class ExportsPluginTest(TestUtil):
         expected = 'L2'
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.exports.exports_plugin.full_name')
+    @mock.patch('plugins.exports.exports_plugin.abbreviation')
     def test_sorted(self, mock_name):
-        mock_name.side_effect = ['Arizona Diamondbacks', 'Atlanta Braves']
+        mock_name.side_effect = ['ARI', 'ATL']
 
         form = {'31': FORM_NEW_TRUNCATED, '32': FORM_OLD_TRUNCATED}
         read = {'ai': [], 'form': form}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
 
         actual = plugin._sorted('31')
-        expected = [-0.7, -7, -float(1) / 3, 'Arizona Diamondbacks']
+        expected = [-0.7, -7, -float(1) / 3, 'ARI']
         mock_name.assert_called_once_with('31')
         self.assertEqual(actual, expected)
 
         mock_name.reset_mock()
 
         actual = plugin._sorted('32')
-        expected = [-0.6, -6, -0.25, 'Atlanta Braves']
+        expected = [-0.6, -6, -0.25, 'ATL']
         mock_name.assert_called_once_with('32')
         self.assertEqual(actual, expected)
 

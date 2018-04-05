@@ -5,6 +5,16 @@ subtitle = ''
 
 tmpl = 'exports.html'
 
+_t33 = ['BAL', '6-4', 'W1']
+_t34 = ['BOS', '10 - 0', 'W10']
+_t35 = ['CWS', '9 - 1', 'L1']
+_t38 = ['CLE', '8 - 2', 'W2']
+_t40 = ['DET', '10 - 0', 'W10']
+_t43 = ['KC', '9 - 1', 'W5']
+_t47 = ['MIN', '10 - 0', 'W10']
+_t48 = ['NYY', '10 - 0', 'W10']
+_t57 = ['TB', '10 - 0', 'W10']
+_t59 = ['TOR', '9 - 1', 'W4']
 context = {
     'title':
     'exports',
@@ -15,14 +25,13 @@ context = {
         'href': '',
         'name': 'Exports'
     }],
-    'table': {
-        'cols': ['', 'text-center', 'text-center'],
-        'head': ['Team', 'Last 10', 'Streak'],
-        'body': [['Atlanta Braves', '10 - 0',
-                  'W10'], ['Boston Red Sox', '10 - 0',
-                           'W10'], ['Cincinnati Reds', '10 - 0',
-                                    'W10'], ['Chicago Cubs', '9 - 1', 'W9'],
-                 ['Colorado Rockies', '9 - 1',
-                  'W8'], ['Baltimore Orioles', '3 - 7', 'L2']]
-    }
+    'standings': [{
+        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'head': ['AL East', 'Last 10', 'Streak'],
+        'body': [_t34, _t48, _t57, _t59, _t33]
+    }, {
+        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'head': ['AL Central', 'Last 10', 'Streak'],
+        'body': [_t40, _t47, _t43, _t35, _t38]
+    }]
 }

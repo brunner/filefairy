@@ -11,7 +11,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
-from utils.team.team_util import full_name  # noqa
+from utils.team.team_util import abbreviation, divisions  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
@@ -103,21 +103,23 @@ class ExportsPlugin(PluginApi, RenderableApi):
             }, {
                 'href': '',
                 'name': 'Exports'
-            }]
+            }],
+            'standings': []
         }
-        body = []
-        for teamid in sorted(data['form'], key=self._sorted):
-            if teamid in data['ai']:
-                body.append([full_name(teamid), '-', '-'])
-            else:
-                n, o = self._form(teamid)
-                l = '{0} - {1}'.format(n, o)
-                s = self._streak(teamid)
-                body.append([full_name(teamid), l, s])
-        ret['table'] = table(
-            cols=['', 'text-center', 'text-center'],
-            head=['Team', 'Last 10', 'Streak'],
-            body=body)
+        for division, teamids in divisions():
+            body = []
+            for teamid in sorted(teamids, key=self._sorted):
+                if teamid in data['ai']:
+                    body.append([abbreviation(teamid), '-', '-'])
+                else:
+                    n, o = self._form(teamid)
+                    l = '{0} - {1}'.format(n, o)
+                    s = self._streak(teamid)
+                    body.append([abbreviation(teamid), l, s])
+            ret['standings'].append(table(
+                cols=['', 'text-center w-25', 'text-center w-25'],
+                head=[division, 'Last 10', 'Streak'],
+                body=body))
 
         return ret
 
@@ -140,7 +142,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         ret.append(-(float(n) / ((n + o) or 1)))
         ret.append(-n)
         ret.append(-(float(1) / o if o else 2))
-        ret.append(full_name(teamid))
+        ret.append(abbreviation(teamid))
         return ret
 
     def _streak(self, teamid):
