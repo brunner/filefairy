@@ -26,31 +26,30 @@ context = {
         'name': 'Exports'
     }],
     'live': {
-        'href':
-        '',
-        'title':
-        '16 / 30',
-        'info':
-        '',
-        'table': [{
-            'key': 'Rate',
-            'value': '53 %'
-        }, {
-            'key': 'Old',
-            'value': 'BAL, BOS, NYY, TB, TOR, KC, LAA, OAK, MIA, PHI, PIT, ARI, COL, SF'
-        }],
-        'ts':
-        '30s ago',
-        'success':
-        '',
-        'danger':
-        ''
+        'href': '',
+        'title': '16 / 30',
+        'info': '',
+        'table': {
+            'clazz':
+            'table-sm',
+            'cols': ['', 'w-100'],
+            'head': [],
+            'body': [['Rate: ', '53 %'], [
+                'Old: ',
+                'BAL, BOS, NYY, TB, TOR, KC, LAA, OAK, MIA, PHI, PIT, ARI, COL, SF'
+            ]],
+        },
+        'ts': '30s ago',
+        'success': '',
+        'danger': ''
     },
     'standings': [{
+        'clazz': 'border mt-3',
         'cols': ['', 'text-center w-25', 'text-center w-25'],
         'head': ['AL East', 'Last 10', 'Streak'],
         'body': [_t34, _t48, _t57, _t59, _t33]
     }, {
+        'clazz': 'border mt-3',
         'cols': ['', 'text-center w-25', 'text-center w-25'],
         'head': ['AL Central', 'Last 10', 'Streak'],
         'body': [_t40, _t47, _t43, _t35, _t38]

@@ -3,11 +3,11 @@
 {% block content %}
     {% if browsable %}
     <div class="container">
-      {{ common.alert('globe', 'Browsable') }}
+      {{ common.alert('globe', 'Browsable')|indent(6) }}
       <div class="row d-flex flex-wrap">
         {% for card in browsable %}
         <div class="col-sm-6 col-md-4 col-lg-3 d-flex flex-column">
-          {{ common.card(card) }}
+          {{ common.card(card)|indent(10) }}
         </div>
         {% endfor %}
       </div>
@@ -15,11 +15,11 @@
     {% endif %}
     {% if internal %}
     <div class="container">
-      {{ common.alert('shield', 'Internal') }}
+      {{ common.alert('shield', 'Internal')|indent(6) }}
       <div class="row d-flex flex-wrap">
         {% for card in internal %}
         <div class="col-sm-6 col-md-4 col-lg-3 d-flex flex-column">
-          {{ common.card(card) }}
+          {{ common.card(card)|indent(10) }}
         </div>
         {% endfor %}
       </div>

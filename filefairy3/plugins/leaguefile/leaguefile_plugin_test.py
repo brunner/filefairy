@@ -369,13 +369,10 @@ class LeaguefilePluginTest(TestUtil):
         ret = plugin._home(date=NOW)
         fp = card(
             title='Jan 29',
-            table=[{
-                'key': 'Time',
-                'value': '0m'
-            }, {
-                'key': 'Size',
-                'value': '100,000'
-            }],
+            table=table(
+                clazz='table-sm',
+                cols=['', 'w-100'],
+                body=[['Time: ', '0m'], ['Size: ', '100,000']]),
             ts='0s ago',
             success='ongoing')
         up = table(cols=['', '', ''], head=['Date', 'Time', 'Size'], body=[])

@@ -14,5 +14,5 @@ def card(href='', title='', info='', table=[], ts='', success='', danger=''):
     }
 
 
-def table(cols=[], head=[], body=[]):
-    return {'cols': cols, 'head': head, 'body': body}
+def table(clazz='border mt-3', cols=[], head=[], body=[]):
+    return {'clazz': clazz, 'cols': cols, 'head': head, 'body': body}

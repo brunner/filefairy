@@ -15,11 +15,11 @@
     </div>
     {% if injuries %}
     <div class="container">
-      {{ common.alert('pulse', 'Injuries') }}
+      {{ common.alert('pulse', 'Injuries')|indent(6) }}
       <div class="row">
         <div class="col-12">
           {% for table in injuries %}
-          {{ common.table(table) }}
+          {{ common.table(table)|indent(10) }}
           {% endfor %}
         </div>
       </div>
@@ -27,11 +27,11 @@
     {% endif %}
     {% if news %}
     <div class="container">
-      {{ common.alert('rss', 'News') }}
+      {{ common.alert('rss', 'News')|indent(6) }}
       <div class="row">
         <div class="col-12">
           {% for table in news %}
-          {{ common.table(table) }}
+          {{ common.table(table)|indent(10) }}
           {% endfor %}
         </div>
       </div>
@@ -39,11 +39,11 @@
     {% endif %}
     {% if transactions %}
     <div class="container">
-      {{ common.alert('loop-circular', 'Transactions') }}
+      {{ common.alert('loop-circular', 'Transactions')|indent(6) }}
       <div class="row">
         <div class="col-12">
           {% for table in transactions %}
-          {{ common.table(table) }}
+          {{ common.table(table)|indent(10) }}
           {% endfor %}
         </div>
       </div>

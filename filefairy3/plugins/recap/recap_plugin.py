@@ -146,6 +146,7 @@ class RecapPlugin(PluginApi, RenderableApi):
                         fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                             '{S}', suffix(pdate.day))
                         ret.insert(0, {
+                            'clazz': 'border mt-3',
                             'cols': [''],
                             'head': [fdate],
                             'body': []

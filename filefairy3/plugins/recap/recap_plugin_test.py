@@ -33,6 +33,7 @@ INJ_HASH = '965572a66c'
 INJ_UPDATE = {'content': INJ_CONTENT, 'hash': INJ_HASH}
 INJ_CALL = mock.call('injuries', _injuries)
 INJ_TABLE = table(
+    clazz='border mt-3',
     cols=[''],
     head=['Wednesday, August 17th, 2022'],
     body=[[
@@ -45,6 +46,7 @@ NEWS_HASH = '2b9934d013'
 NEWS_UPDATE = {'content': NEWS_CONTENT, 'hash': NEWS_HASH}
 NEWS_CALL = mock.call('news', _news)
 NEWS_TABLE = table(
+    clazz='border mt-3',
     cols=[''],
     head=['Thursday, August 18th, 2022'],
     body=[[
@@ -57,6 +59,7 @@ TRANS_HASH = 'a17f312e8e'
 TRANS_UPDATE = {'content': TRANS_CONTENT, 'hash': TRANS_HASH}
 TRANS_CALL = mock.call('transactions', _transactions)
 TRANS_TABLE = table(
+    clazz='border mt-3',
     cols=[''],
     head=['Monday, August 15th, 2022'],
     body=[[
@@ -374,6 +377,7 @@ class RecapPluginTest(TestUtil):
         expected = [INJ_TABLE]
         self.assertEqual(actual, expected)
 
+    maxDiff = None
     def test_tables__news(self):
         keys = ['injuries', 'news', 'transactions']
         read = {k: AFTER_MAP.get(k) for k in keys}

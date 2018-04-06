@@ -177,13 +177,11 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             danger = 'stalled' if 's' not in ts else ''
             ret['fp'] = card(
                 title=self._date(data['fp']['start']),
-                table=[{
-                    'key': 'Time',
-                    'value': time
-                }, {
-                    'key': 'Size',
-                    'value': self._size(data['fp']['size'])
-                }],
+                table=table(
+                    clazz='table-sm',
+                    cols=['', 'w-100'],
+                    body=[['Time: ', time],
+                          ['Size: ', self._size(data['fp']['size'])]]),
                 ts=ts,
                 success=success,
                 danger=danger)

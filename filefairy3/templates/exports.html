@@ -2,19 +2,19 @@
 {% import "common.html" as common %}
 {% block content %}
     <div class="container">
-      {{ common.alert('cloudy', 'Tracker') }}
+      {{ common.alert('cloudy', 'Tracker')|indent(6) }}
       <div class="row">
         <div class="col-12">
-          {{ common.card(live) }}
+          {{ common.card(live)|indent(10) }}
         </div>
       </div>
     </div>
     <div class="container">
-      {{ common.alert('target', 'Recorded') }}
+      {{ common.alert('target', 'Recorded')|indent(6) }}
       {% for table in standings %}
       <div class="row">
         <div class="col-12">
-          {{ common.table(table) }}
+          {{ common.table(table)|indent(10) }}
         </div>
       </div>
       {% endfor %}
