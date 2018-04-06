@@ -111,7 +111,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
                     reactions_add(snack, channel, ts)
                 ret = ActivityEnum.BASE
 
-        if ret:
+        if ret != ActivityEnum.NONE:
             data['members'][user]['latest'] = ts
 
         if data != original:
