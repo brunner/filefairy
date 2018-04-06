@@ -85,9 +85,9 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
         if ret != ActivityEnum.NONE:
             self.data['date'] = encode_datetime(kwargs['date'])
-            self._render(**kwargs)
             self.write()
 
+        self._render(**kwargs)
         return ret
 
     def _render_internal(self, **kwargs):
@@ -127,9 +127,8 @@ class ExportsPlugin(PluginApi, RenderableApi):
         if old:
             tab.append({'key': 'Old', 'value': old})
         ts = delta(decode_datetime(data['date']), kwargs['date'])
-        danger = 'simming' if self.locked else ''
         ret['live'] = card(
-            title='{0} / {1}'.format(n, t), table=tab, ts=ts, danger=danger)
+            title='{0} / {1}'.format(n, t), table=tab, ts=ts)
 
         for division, teamids in divisions():
             body = []
@@ -153,7 +152,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         self.locked = True
         chat_post_message(
             'testing',
-            'Exports tracker locked.',
+            'Tracker locked and exports recorded.',
             attachments=self._attachments())
 
         data = self.data

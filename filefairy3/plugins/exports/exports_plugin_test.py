@@ -246,7 +246,7 @@ class ExportsPluginTest(TestUtil):
 
         mock_exports.assert_called_once_with(URLOPEN)
         mock_lock.assert_not_called()
-        mock_render.assert_not_called()
+        mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
@@ -476,8 +476,7 @@ class ExportsPluginTest(TestUtil):
                 'key': 'Old',
                 'value': 'HOU, LAA'
             }],
-            ts='0s ago',
-            danger='simming')
+            ts='0s ago')
         e = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL East', 'Last 10', 'Streak'],
@@ -521,7 +520,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with(
             'testing',
-            'Exports tracker locked.',
+            'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
         self.assertEqual(plugin.data['form'], form)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)

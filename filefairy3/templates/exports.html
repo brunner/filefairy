@@ -2,7 +2,7 @@
 {% import "common.html" as common %}
 {% block content %}
     <div class="container">
-      {{ common.alert('cloudy', 'Live Tracker') }}
+      {{ common.alert('cloudy', 'Tracker') }}
       <div class="row">
         <div class="col-12">
           {{ common.card(live) }}
@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="container">
-      {{ common.alert('spreadsheet', 'Standings') }}
+      {{ common.alert('target', 'Recorded') }}
       {% for table in standings %}
       <div class="row">
         <div class="col-12">

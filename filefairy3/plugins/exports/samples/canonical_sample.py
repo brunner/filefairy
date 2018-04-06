@@ -44,7 +44,7 @@ context = {
         'success':
         '',
         'danger':
-        'simming'
+        ''
     },
     'standings': [{
         'cols': ['', 'text-center w-25', 'text-center w-25'],
