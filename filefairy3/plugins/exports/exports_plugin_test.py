@@ -520,7 +520,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with(
             'fairylab',
-            'Exports tracker locked.',
+            'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
         self.assertEqual(plugin.data['form'], form)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
