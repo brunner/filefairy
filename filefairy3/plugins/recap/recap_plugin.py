@@ -14,6 +14,7 @@ sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
+from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
@@ -145,13 +146,10 @@ class RecapPlugin(PluginApi, RenderableApi):
                         pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                         fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                             '{S}', suffix(pdate.day))
-                        ret.insert(0, {
-                            'clazz': 'border mt-3',
-                            'cols': [''],
-                            'head': [fdate],
-                            'body': []
-                        })
+                        ret.insert(0, table(cols=[''], head=[fdate]))
                     body = self._rewrite_players(self._strip_teams(line))
+                    if ret[0]['body'] is None:
+                        ret[0]['body'] = []
                     ret[0]['body'].append([body])
         return ret
 

@@ -377,7 +377,6 @@ class RecapPluginTest(TestUtil):
         expected = [INJ_TABLE]
         self.assertEqual(actual, expected)
 
-    maxDiff = None
     def test_tables__news(self):
         keys = ['injuries', 'news', 'transactions']
         read = {k: AFTER_MAP.get(k) for k in keys}

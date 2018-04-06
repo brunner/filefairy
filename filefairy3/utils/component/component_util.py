@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-def card(href='', title='', info='', table=[], ts='', success='', danger=''):
+def card(href='', title='', info='', table=None, ts='', success='', danger=''):
     return {
         'href': href,
         'title': title,
@@ -14,5 +14,5 @@ def card(href='', title='', info='', table=[], ts='', success='', danger=''):
     }
 
 
-def table(clazz='border mt-3', cols=[], head=[], body=[]):
+def table(clazz='border mt-3', cols=None, head=None, body=None):
     return {'clazz': clazz, 'cols': cols, 'head': head, 'body': body}

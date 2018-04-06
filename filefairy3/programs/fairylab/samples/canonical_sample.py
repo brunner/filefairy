@@ -16,7 +16,7 @@ context = {
         'href': '/fairylab/bar/',
         'title': 'bar',
         'info': 'Description of bar.',
-        'table': [],
+        'table': None,
         'ts': '10m ago',
         'success': '',
         'danger': ''
@@ -24,7 +24,7 @@ context = {
         'href': '/fairylab/baz/',
         'title': 'baz',
         'info': 'Description of baz.',
-        'table': [],
+        'table': None,
         'ts': '1h ago',
         'success': '',
         'danger': 'failed'
@@ -32,7 +32,7 @@ context = {
         'href': '/fairylab/foo/',
         'title': 'foo',
         'info': 'Description of foo.',
-        'table': [],
+        'table': None,
         'ts': '2m ago',
         'success': '',
         'danger': ''
@@ -41,7 +41,7 @@ context = {
         'href': '',
         'title': 'quux',
         'info': 'Description of quux.',
-        'table': [],
+        'table': None,
         'ts': '15m ago',
         'success': '',
         'danger': 'failed'
@@ -49,7 +49,7 @@ context = {
         'href': '',
         'title': 'quuz',
         'info': 'Description of quuz.',
-        'table': [],
+        'table': None,
         'ts': '30s ago',
         'success': 'just now',
         'danger': ''
@@ -57,7 +57,7 @@ context = {
         'href': '',
         'title': 'qux',
         'info': 'Description of qux.',
-        'table': [],
+        'table': None,
         'ts': '2d ago',
         'success': '',
         'danger': ''
