@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+def _secondary(t):
+    return '<span class="text-secondary">' + t + '</span>'
+
+
+def _success(t):
+    return '<span class="text-success border px-1">' + t + '</span>'
+
+
 subtitle = ''
 
 tmpl = 'exports.html'
@@ -26,22 +35,56 @@ context = {
         'name': 'Exports'
     }],
     'live': {
-        'href': '',
-        'title': '16 / 30',
-        'info': '',
+        'href':
+        '',
+        'title':
+        '53%',
+        'info':
+        'Upcoming sim contains ' +
+        ', '.join([_success('16 new'), '14 old',
+                   _secondary('0 ai')]) + '.',
         'table': {
             'clazz':
             'table-sm',
-            'cols': ['', 'w-100'],
+            'cols': [
+                '', 'text-center', 'text-center', 'text-center', 'text-center',
+                'text-center'
+            ],
             'head': [],
-            'body': [['Rate: ', '53 %'], [
-                'Old: ',
-                'BAL, BOS, NYY, TB, TOR, KC, LAA, OAK, MIA, PHI, PIT, ARI, COL, SF'
-            ]],
+            'body':
+            [['AL East', 'BAL', 'BOS', 'NYY', 'TB',
+              'TOR'], [
+                  'AL Central',
+                  _success('CWS'), 'CLE',
+                  _success('DET'), 'KC',
+                  _success('MIN')
+              ], [
+                  'AL West', 'HOU',
+                  _success('LAA'), 'OAK',
+                  _success('SEA'),
+                  _success('TEX')
+              ], [
+                  'NL East',
+                  _success('ATL'), 'MIA',
+                  _success('NYM'), 'PHI',
+                  _success('WAS')
+              ], [
+                  'NL Central',
+                  _success('CHC'),
+                  _success('CIN'),
+                  _success('MIL'), 'PIT',
+                  _success('STL')
+              ],
+             ['NL West', 'ARI', 'COL',
+              _success('LAD'),
+              _success('SD'), 'SF']]
         },
-        'ts': '30s ago',
-        'success': '',
-        'danger': ''
+        'ts':
+        '30s ago',
+        'success':
+        '',
+        'danger':
+        ''
     },
     'standings': [{
         'clazz': 'border mt-3',
