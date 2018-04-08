@@ -26,7 +26,6 @@ _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 class ExportsPlugin(PluginApi, RenderableApi):
     def __init__(self, **kwargs):
         super(ExportsPlugin, self).__init__(**kwargs)
-        self.locked = False
 
     @property
     def enabled(self):
@@ -50,16 +49,16 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
     def _notify_internal(self, **kwargs):
         activity = kwargs['activity']
-        if not self.locked and activity in _lock_activities:
+        data = self.data
+        if not data['locked'] and activity in _lock_activities:
             self._lock()
-        elif self.locked and activity in _unlock_activities:
+        elif data['locked'] and activity in _unlock_activities:
             self._unlock()
         else:
             return
 
-        self.data['date'] = encode_datetime(kwargs['date'])
-
-        if self.locked:
+        data['date'] = encode_datetime(kwargs['date'])
+        if data['locked']:
             self._render(**kwargs)
 
         self.write()
@@ -68,7 +67,8 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
-        if self.locked:
+        data = self.data
+        if data['locked']:
             return ActivityEnum.NONE
 
         text = urlopen(_url)
@@ -84,7 +84,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
             ret = ActivityEnum.EXPORT
 
         if ret != ActivityEnum.NONE:
-            self.data['date'] = encode_datetime(kwargs['date'])
+            data['date'] = encode_datetime(kwargs['date'])
             self.write()
 
         self._render(**kwargs)
@@ -135,7 +135,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
             self._success(str(n) + ' new'), str(t - n) + ' old',
             self._secondary(str(len(data['ai'])) + ' ai')
         ])
-        status = 'Ongoing' if self.locked else 'Upcoming'
+        status = 'Ongoing' if data['locked'] else 'Upcoming'
         info = '{0} sim contains {1}.'.format(status, breakdown)
         ts = delta(decode_datetime(data['date']), kwargs['date'])
         ret['live'] = card(title=title, info=info, table=self._table(), ts=ts)
@@ -159,13 +159,13 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return ret
 
     def _lock(self):
-        self.locked = True
+        data = self.data
+        data['locked'] = True
         chat_post_message(
             'fairylab',
             'Tracker locked and exports recorded.',
             attachments=self._attachments())
 
-        data = self.data
         for teamid, status in self.exports:
             if teamid not in data['ai']:
                 s = status.lower()[0]
@@ -222,4 +222,4 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return table(clazz='table-sm', cols=cols, body=body)
 
     def _unlock(self):
-        self.locked = False
+        self.data['locked'] = False

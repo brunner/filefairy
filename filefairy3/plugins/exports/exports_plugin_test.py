@@ -78,7 +78,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.reset_mock()
         self.mock_chat.reset_mock()
 
-    def create_plugin(self, data, exports=[], locked=False):
+    def create_plugin(self, data, exports=[]):
         self.init_mocks(data)
         plugin = ExportsPlugin(e=env())
 
@@ -86,15 +86,12 @@ class ExportsPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.assertEqual(plugin.data, data)
-        self.assertEqual(plugin.locked, False)
 
         self.reset_mocks()
         self.init_mocks(data)
 
         if exports:
             plugin.exports = exports
-        if locked:
-            plugin.locked = locked
 
         return plugin
 
@@ -104,7 +101,7 @@ class ExportsPluginTest(TestUtil):
     def test_notify__with_unlocked_none(self, mock_lock, mock_render,
                                         mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
         plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
 
@@ -122,20 +119,20 @@ class ExportsPluginTest(TestUtil):
     def test_notify__with_unlocked_sim(self, mock_lock, mock_render,
                                        mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
 
         form = {k: copy.deepcopy(FORM_NEW) for k in ['31', '32', '33']}
 
         def fake_lock(*args, **kwargs):
-            plugin.locked = True
             plugin.data['form'] = form
+            plugin.data['locked'] = True
 
         mock_lock.side_effect = fake_lock
 
         plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form}
+        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_lock.assert_called_once_with()
         mock_render.assert_called_once_with(
             activity=ActivityEnum.SIM, date=NOW)
@@ -151,7 +148,7 @@ class ExportsPluginTest(TestUtil):
     def test_notify__with_unlocked_file(self, mock_lock, mock_render,
                                         mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
         plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
 
@@ -169,8 +166,8 @@ class ExportsPluginTest(TestUtil):
     def test_notify__with_locked_none(self, mock_lock, mock_render,
                                       mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
-        plugin = self.create_plugin(read, locked=True)
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        plugin = self.create_plugin(read)
         plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
 
         mock_lock.assert_not_called()
@@ -187,8 +184,8 @@ class ExportsPluginTest(TestUtil):
     def test_notify__with_locked_sim(self, mock_lock, mock_render,
                                      mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
-        plugin = self.create_plugin(read, locked=True)
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        plugin = self.create_plugin(read)
         plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
 
         mock_lock.assert_not_called()
@@ -205,17 +202,17 @@ class ExportsPluginTest(TestUtil):
     def test_notify__with_locked_file(self, mock_lock, mock_render,
                                       mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
-        plugin = self.create_plugin(read, locked=True)
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        plugin = self.create_plugin(read)
 
         def fake_unlock(*args, **kwargs):
-            plugin.locked = False
+            plugin.data['locked'] = False
 
         mock_unlock.side_effect = fake_unlock
 
         plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form}
+        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
         mock_unlock.assert_called_once_with()
@@ -226,7 +223,7 @@ class ExportsPluginTest(TestUtil):
 
     def test_on_message(self):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal()
         self.assertEqual(ret, ActivityEnum.NONE)
@@ -243,7 +240,7 @@ class ExportsPluginTest(TestUtil):
         mock_exports.return_value = EXPORTS_OLD
 
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
         ret = plugin._run_internal(date=NOW)
         self.assertEqual(ret, ActivityEnum.NONE)
@@ -264,12 +261,12 @@ class ExportsPluginTest(TestUtil):
         mock_exports.return_value = EXPORTS_NEW
 
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
         ret = plugin._run_internal(date=NOW)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form}
+        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_exports.assert_called_once_with(URLOPEN)
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(date=NOW)
@@ -287,18 +284,18 @@ class ExportsPluginTest(TestUtil):
         mock_exports.return_value = EXPORTS_LOCK
 
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_NEW)
 
         def fake_lock(*args, **kwargs):
-            plugin.locked = True
+            plugin.data['locked'] = True
 
         mock_lock.side_effect = fake_lock
 
         ret = plugin._run_internal(date=NOW)
         self.assertEqual(ret, ActivityEnum.EXPORT)
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form}
+        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_exports.assert_called_once_with(URLOPEN)
         mock_lock.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
@@ -313,7 +310,7 @@ class ExportsPluginTest(TestUtil):
         mock_home.return_value = HOME
 
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
         ret = plugin._render_internal(date=NOW)
         self.assertEqual(ret, [(INDEX, '', 'exports.html', HOME)])
@@ -331,7 +328,7 @@ class ExportsPluginTest(TestUtil):
         mock_exports.return_value = EXPORTS_OLD
 
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
         plugin._setup_internal()
 
@@ -382,7 +379,7 @@ class ExportsPluginTest(TestUtil):
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_NEW_HOME)
         ret = plugin._home(date=THEN)
         l = card(title='100%', info=INFO_NEW, table=TABLE, ts='0s ago')
@@ -425,7 +422,7 @@ class ExportsPluginTest(TestUtil):
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
         ret = plugin._home(date=THEN)
         l = card(title='67%', info=INFO_OLD, table=TABLE, ts='0s ago')
@@ -468,9 +465,9 @@ class ExportsPluginTest(TestUtil):
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(
-            read, exports=EXPORTS_OLD_HOME, locked=True)
+            read, exports=EXPORTS_OLD_HOME)
         ret = plugin._home(date=THEN)
         l = card(title='67%', info=INFO_LOCK, table=TABLE, ts='0s ago')
         e = table(
@@ -502,7 +499,7 @@ class ExportsPluginTest(TestUtil):
 
     def test_lock(self):
         form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
         plugin._lock()
 
@@ -519,12 +516,12 @@ class ExportsPluginTest(TestUtil):
             'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
         self.assertEqual(plugin.data['form'], form)
+        self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
-        self.assertEqual(plugin.locked, True)
 
     def test_new(self):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_NEW)
 
         actual = plugin._new()
@@ -533,7 +530,7 @@ class ExportsPluginTest(TestUtil):
 
     def test_streak(self):
         form = {'31': FORM_NEW_TRUNCATED, '32': FORM_OLD_TRUNCATED}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
 
         actual = plugin._streak('31')
@@ -548,7 +545,7 @@ class ExportsPluginTest(TestUtil):
         mock_name.side_effect = ['ARI', 'ATL']
 
         form = {'31': FORM_NEW_TRUNCATED, '32': FORM_OLD_TRUNCATED}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
 
         actual = plugin._sorted('31')
@@ -571,7 +568,7 @@ class ExportsPluginTest(TestUtil):
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
         actual = plugin._table()
         cols = ['', 'text-center', 'text-center']
@@ -589,8 +586,8 @@ class ExportsPluginTest(TestUtil):
 
     def test_unlock(self):
         form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
-        plugin = self.create_plugin(read, exports=EXPORTS_LOCK, locked=True)
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
         plugin._unlock()
 
         self.mock_open.assert_not_called()
@@ -598,7 +595,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
-        self.assertEqual(plugin.locked, False)
+        self.assertFalse(plugin.data['locked'])
 
 
 if __name__ in ['__main__', 'plugins.exports.exports_plugin_test']:
