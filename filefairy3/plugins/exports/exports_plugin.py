@@ -58,9 +58,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
             return
 
         data['date'] = encode_datetime(kwargs['date'])
-        if data['locked']:
-            self._render(**kwargs)
-
+        self._render(**kwargs)
         self.write()
 
     def _on_message_internal(self, **kwargs):
