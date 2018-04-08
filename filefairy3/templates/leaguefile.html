@@ -3,20 +3,20 @@
 {% block content %}
     {% if fp %}
     <div class="container">
-      {{ common.alert('clock', 'In Progress') }}
+      {{ common.alert('clock', 'In Progress')|indent(6) }}
       <div class="row">
         <div class="col-12">
-          {{ common.card(fp) }}
+          {{ common.card(fp)|indent(10) }}
         </div>
       </div>
     </div>
     {% endif %}
     {% if up %}
     <div class="container">
-      {{ common.alert('task', 'Completed') }}
+      {{ common.alert('task', 'Completed')|indent(6) }}
       <div class="row">
         <div class="col-12">
-          {{ common.table(up) }}
+          {{ common.table(up)|indent(10) }}
         </div>
       </div>
     </div>

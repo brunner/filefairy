@@ -18,7 +18,7 @@ class ComponentUtilTest(unittest.TestCase):
             'href': '',
             'title': '',
             'info': '',
-            'table': [],
+            'table': None,
             'ts': '',
             'success': '',
             'danger': ''
@@ -36,7 +36,7 @@ class ComponentUtilTest(unittest.TestCase):
             'href': '/fairylab/foo/',
             'title': 'foo',
             'info': 'Description of foo.',
-            'table': [],
+            'table': None,
             'ts': '0s ago',
             'success': 'just now',
             'danger': ''
@@ -66,15 +66,22 @@ class ComponentUtilTest(unittest.TestCase):
 
     def test_table__default(self):
         actual = table()
-        expected = {'cols': [], 'head': [], 'body': []}
+        expected = {
+            'clazz': 'border mt-3',
+            'cols': None,
+            'head': None,
+            'body': None
+        }
         self.assertEqual(actual, expected)
 
     def test_table__leaguefile(self):
         actual = table(
+            clazz='table-sm',
             cols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=[['Jan 1', '5h 0m', '300,000,000']])
         expected = {
+            'clazz': 'table-sm',
             'cols': ['', '', ''],
             'head': ['Date', 'Time', 'Size'],
             'body': [['Jan 1', '5h 0m', '300,000,000']]

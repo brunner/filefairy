@@ -17,6 +17,7 @@ context = {
     }],
     'fp': {},
     'up': {
+        'clazz': 'border mt-3',
         'cols': ['', '', ''],
         'head': ['Date', 'Time', 'Size'],
         'body': [['Mar 10', '4h 56m', '359,969,530'],

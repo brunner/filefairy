@@ -62,6 +62,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         data = self.data
         original = copy.deepcopy(data)
 
+        ret = ActivityEnum.NONE
         for size, date, name, fp in self._check():
             if '.filepart' in name:
                 if not data['fp']:
@@ -70,6 +71,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                         'File upload started.',
                         attachments=self._attachments())
                     data['fp'] = {'start': date}
+                    ret = ActivityEnum.UPLOAD
                 if data['fp'].get('size', 0) != size:
                     data['fp']['size'] = size
                     data['fp']['end'] = date
@@ -86,6 +88,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                     t = threading.Thread(target=wget_file)
                     t.daemon = True
                     t.start()
+                    ret = ActivityEnum.FILE
                 data['fp'] = None
 
         if data != original:
@@ -93,9 +96,10 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
 
         if data != original or data['fp']:
             self._render(**kwargs)
-            return ActivityEnum.BASE
+            if ret == ActivityEnum.NONE:
+                ret = ActivityEnum.BASE
 
-        return ActivityEnum.NONE
+        return ret
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/leaguefile/index.html'
@@ -177,13 +181,11 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             danger = 'stalled' if 's' not in ts else ''
             ret['fp'] = card(
                 title=self._date(data['fp']['start']),
-                table=[{
-                    'key': 'Time',
-                    'value': time
-                }, {
-                    'key': 'Size',
-                    'value': self._size(data['fp']['size'])
-                }],
+                table=table(
+                    clazz='table-sm',
+                    cols=['', 'w-100'],
+                    body=[['Time: ', time],
+                          ['Size: ', self._size(data['fp']['size'])]]),
                 ts=ts,
                 success=success,
                 danger=danger)

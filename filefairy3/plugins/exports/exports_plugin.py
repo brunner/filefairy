@@ -85,9 +85,9 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
         if ret != ActivityEnum.NONE:
             self.data['date'] = encode_datetime(kwargs['date'])
-            self._render(**kwargs)
             self.write()
 
+        self._render(**kwargs)
         return ret
 
     def _render_internal(self, **kwargs):
@@ -103,6 +103,14 @@ class ExportsPlugin(PluginApi, RenderableApi):
     @staticmethod
     def _exports(text):
         return re.findall(r"team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
+
+    @staticmethod
+    def _secondary(text):
+        return '<span class="text-secondary">{}</span>'.format(text)
+
+    @staticmethod
+    def _success(text):
+        return '<span class="text-success border px-1">{}</span>'.format(text)
 
     def _form(self, teamid):
         form = self.data['form'][teamid]
@@ -122,14 +130,15 @@ class ExportsPlugin(PluginApi, RenderableApi):
         }
 
         n, t = self._new()
-        old = self._old()
-        tab = [{'key': 'Rate', 'value': '{:.0f} %'.format(float(100) * n / t)}]
-        if old:
-            tab.append({'key': 'Old', 'value': old})
+        title = '{:.0f}%'.format(float(100) * n / t)
+        breakdown = ', '.join([
+            self._success(str(n) + ' new'), str(t - n) + ' old',
+            self._secondary(str(len(data['ai'])) + ' ai')
+        ])
+        status = 'Ongoing' if self.locked else 'Upcoming'
+        info = '{0} sim contains {1}.'.format(status, breakdown)
         ts = delta(decode_datetime(data['date']), kwargs['date'])
-        danger = 'simming' if self.locked else ''
-        ret['live'] = card(
-            title='{0} / {1}'.format(n, t), table=tab, ts=ts, danger=danger)
+        ret['live'] = card(title=title, info=info, table=self._table(), ts=ts)
 
         for division, teamids in divisions():
             body = []
@@ -153,7 +162,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         self.locked = True
         chat_post_message(
             'fairylab',
-            'Exports tracker locked.',
+            'Tracker locked and exports recorded.',
             attachments=self._attachments())
 
         data = self.data
@@ -163,13 +172,6 @@ class ExportsPlugin(PluginApi, RenderableApi):
                 data['form'][teamid] += s
                 while len(data['form'][teamid]) > 10:
                     data['form'][teamid] = data['form'][teamid][1:]
-
-    def _old(self):
-        old = []
-        for teamid, status in self.exports:
-            if teamid not in self.data['ai'] and status == 'Old':
-                old.append(abbreviation(teamid))
-        return ', '.join(old)
 
     def _new(self):
         n, t = 0, 0
@@ -203,7 +205,21 @@ class ExportsPlugin(PluginApi, RenderableApi):
         if match:
             n = len(match[0])
             return n if 'n' in match[0] else -n
-        return 0
+
+    def _table(self):
+        div = divisions()
+        size = len(self.exports) / len(div)
+        cols = [''] + ['text-center'] * size
+        body = map(lambda t: [t[0]], div)
+        for i, export in enumerate(self.exports):
+            teamid, status = export
+            text = abbreviation(teamid)
+            if teamid in self.data['ai']:
+                text = self._secondary(text)
+            if status == 'New':
+                text = self._success(text)
+            body[i / size].append(text)
+        return table(clazz='table-sm', cols=cols, body=body)
 
     def _unlock(self):
         self.locked = False

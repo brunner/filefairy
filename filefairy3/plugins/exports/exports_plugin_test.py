@@ -35,6 +35,10 @@ FORM_NEW = 'n'
 FORM_NEW_TRUNCATED = 'onnnonnnon'
 FORM_OLD = 'o'
 FORM_OLD_TRUNCATED = 'onnnonnnoo'
+INFO_LOCK = 'Ongoing sim contains <span class="text-success border px-1">4 new</span>, 2 old, <span class="text-secondary">0 ai</span>.'
+INFO_NEW = 'Upcoming sim contains <span class="text-success border px-1">6 new</span>, 0 old, <span class="text-secondary">0 ai</span>.'
+INFO_OLD = 'Upcoming sim contains <span class="text-success border px-1">4 new</span>, 2 old, <span class="text-secondary">0 ai</span>.'
+TABLE = table(body=[['AL East', 'BAL', 'BOS']])
 THEN = datetime.datetime(1985, 10, 26, 0, 0, 0)
 THEN_ENCODED = '1985-10-26T00:00:00'
 URL = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
@@ -246,7 +250,7 @@ class ExportsPluginTest(TestUtil):
 
         mock_exports.assert_called_once_with(URLOPEN)
         mock_lock.assert_not_called()
-        mock_render.assert_not_called()
+        mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(URL)
@@ -354,28 +358,34 @@ class ExportsPluginTest(TestUtil):
         expected = []
         self.assertEqual(actual, expected)
 
-    maxDiff = None
+    def test_secondary(self):
+        text = 'ATL'
+        actual = ExportsPlugin._secondary(text)
+        expected = '<span class="text-secondary">ATL</span>'
+        self.assertEqual(actual, expected)
 
+    def test_success(self):
+        text = 'ATL'
+        actual = ExportsPlugin._success(text)
+        expected = '<span class="text-success border px-1">ATL</span>'
+        self.assertEqual(actual, expected)
+
+    @mock.patch.object(ExportsPlugin, '_table')
     @mock.patch.object(ExportsPlugin, '_sorted')
     @mock.patch('plugins.exports.exports_plugin.divisions')
-    def test_home__without_old(self, mock_divisions, mock_sorted):
+    def test_home__without_old(self, mock_divisions, mock_sorted, mock_table):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
+        mock_table.return_value = TABLE
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
         plugin = self.create_plugin(read, exports=EXPORTS_NEW_HOME)
         ret = plugin._home(date=THEN)
-        l = card(
-            title='6 / 6',
-            table=[{
-                'key': 'Rate',
-                'value': '100 %'
-            }],
-            ts='0s ago')
+        l = card(title='100%', info=INFO_NEW, table=TABLE, ts='0s ago')
         e = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL East', 'Last 10', 'Streak'],
@@ -403,29 +413,22 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    @mock.patch.object(ExportsPlugin, '_table')
     @mock.patch.object(ExportsPlugin, '_sorted')
     @mock.patch('plugins.exports.exports_plugin.divisions')
-    def test_home__with_old(self, mock_divisions, mock_sorted):
+    def test_home__with_old(self, mock_divisions, mock_sorted, mock_table):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
+        mock_table.return_value = TABLE
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
         ret = plugin._home(date=THEN)
-        l = card(
-            title='4 / 6',
-            table=[{
-                'key': 'Rate',
-                'value': '67 %'
-            }, {
-                'key': 'Old',
-                'value': 'HOU, LAA'
-            }],
-            ts='0s ago')
+        l = card(title='67%', info=INFO_OLD, table=TABLE, ts='0s ago')
         e = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL East', 'Last 10', 'Streak'],
@@ -453,13 +456,15 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    @mock.patch.object(ExportsPlugin, '_table')
     @mock.patch.object(ExportsPlugin, '_sorted')
     @mock.patch('plugins.exports.exports_plugin.divisions')
-    def test_home__with_lock(self, mock_divisions, mock_sorted):
+    def test_home__with_lock(self, mock_divisions, mock_sorted, mock_table):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
+        mock_table.return_value = TABLE
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
@@ -467,17 +472,7 @@ class ExportsPluginTest(TestUtil):
         plugin = self.create_plugin(
             read, exports=EXPORTS_OLD_HOME, locked=True)
         ret = plugin._home(date=THEN)
-        l = card(
-            title='4 / 6',
-            table=[{
-                'key': 'Rate',
-                'value': '67 %'
-            }, {
-                'key': 'Old',
-                'value': 'HOU, LAA'
-            }],
-            ts='0s ago',
-            danger='simming')
+        l = card(title='67%', info=INFO_LOCK, table=TABLE, ts='0s ago')
         e = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL East', 'Last 10', 'Streak'],
@@ -521,20 +516,11 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with(
             'fairylab',
-            'Exports tracker locked.',
+            'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
         self.assertEqual(plugin.data['form'], form)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
         self.assertEqual(plugin.locked, True)
-
-    def test_old(self):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
-        plugin = self.create_plugin(read, exports=EXPORTS_NEW)
-
-        actual = plugin._old()
-        expected = 'ATL, BAL'
-        self.assertEqual(actual, expected)
 
     def test_new(self):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
@@ -575,6 +561,30 @@ class ExportsPluginTest(TestUtil):
         actual = plugin._sorted('32')
         expected = [-0.6, -6, 2, -0.25, 'ATL']
         mock_name.assert_called_once_with('32')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('plugins.exports.exports_plugin.divisions')
+    def test_table(self, mock_divisions):
+        mock_divisions.return_value = [('AL East', ['33', '34']),
+                                       ('AL Central', ['35', '40']),
+                                       ('AL West', ['42', '44'])]
+
+        keys = ['33', '34', '35', '40', '42', '44']
+        form = {k: copy.deepcopy(FORM_NEW) for k in keys}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form}
+        plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
+        actual = plugin._table()
+        cols = ['', 'text-center', 'text-center']
+        body = [[
+            'AL East',
+            ExportsPlugin._success('BAL'),
+            ExportsPlugin._success('BOS')
+        ], [
+            'AL Central',
+            ExportsPlugin._success('CWS'),
+            ExportsPlugin._success('DET')
+        ], ['AL West', 'HOU', 'LAA']]
+        expected = table(clazz='table-sm', cols=cols, body=body)
         self.assertEqual(actual, expected)
 
     def test_unlock(self):

@@ -16,12 +16,14 @@ context = {
         'name': 'Recap'
     }],
     'injuries': [{
+        'clazz': 'border mt-3',
         'cols': [''],
         'head': ['Monday, July 4th, 2022'],
         'body': [[
             'Pittsburgh Pirates: <a href="../players/player_35155.html">John Barbato</a> diagnosed with a sore forearm, is day-to-day for 5 days.'
         ]]
     }, {
+        'clazz': 'border mt-3',
         'cols': [''],
         'head': ['Sunday, July 3th, 2022'],
         'body': [[
@@ -39,6 +41,7 @@ context = {
         ]]
     }],
     'news': [{
+        'clazz': 'border mt-3',
         'cols': [''],
         'head': ['Monday, July 4th, 2022'],
         'body': [[
@@ -48,6 +51,7 @@ context = {
         ]]
     }],
     'transactions': [{
+        'clazz': 'border mt-3',
         'cols': [''],
         'head': ['Monday, July 4th, 2022'],
         'body': [[

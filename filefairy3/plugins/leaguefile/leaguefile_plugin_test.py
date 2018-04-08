@@ -137,7 +137,7 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        self.assertEqual(ret, ActivityEnum.UPLOAD)
 
         write = {'fp': FILEPART, 'up': []}
         mock_check.assert_called_once_with()
@@ -201,7 +201,7 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        self.assertEqual(ret, ActivityEnum.FILE)
 
         write = {'fp': None, 'up': [UP_FILEPART]}
         mock_check.assert_called_once_with()
@@ -369,13 +369,10 @@ class LeaguefilePluginTest(TestUtil):
         ret = plugin._home(date=NOW)
         fp = card(
             title='Jan 29',
-            table=[{
-                'key': 'Time',
-                'value': '0m'
-            }, {
-                'key': 'Size',
-                'value': '100,000'
-            }],
+            table=table(
+                clazz='table-sm',
+                cols=['', 'w-100'],
+                body=[['Time: ', '0m'], ['Size: ', '100,000']]),
             ts='0s ago',
             success='ongoing')
         up = table(cols=['', '', ''], head=['Date', 'Time', 'Size'], body=[])
