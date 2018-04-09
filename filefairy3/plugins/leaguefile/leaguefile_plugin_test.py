@@ -126,12 +126,9 @@ class LeaguefilePluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_run__with_valid_input(self, mock_check, mock_render, mock_thread,
-                                   mock_wget):
+    def test_run__with_valid_input(self, mock_check, mock_render):
         mock_check.return_value = iter([CHECK_FILEPART, CHECK_UP_TRUE])
 
         read = {'fp': None, 'up': []}
@@ -142,7 +139,6 @@ class LeaguefilePluginTest(TestUtil):
         write = {'fp': FILEPART, 'up': []}
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
-        mock_thread.assert_not_called()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_with(
@@ -150,12 +146,9 @@ class LeaguefilePluginTest(TestUtil):
             'File upload started.',
             attachments=plugin._attachments())
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_run__with_no_filepart_change(self, mock_check, mock_render,
-                                          mock_thread, mock_wget):
+    def test_run__with_no_filepart_change(self, mock_check, mock_render):
         mock_check.return_value = iter([CHECK_FILEPART, CHECK_UP_TRUE])
 
         read = {'fp': FILEPART, 'up': [UP_THEN]}
@@ -165,17 +158,13 @@ class LeaguefilePluginTest(TestUtil):
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
-        mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_run__with_no_up_change(self, mock_check, mock_render, mock_thread,
-                                    mock_wget):
+    def test_run__with_no_up_change(self, mock_check, mock_render):
         mock_check.return_value = iter([CHECK_UP_FALSE])
 
         read = {'fp': None, 'up': [UP_THEN]}
@@ -185,17 +174,13 @@ class LeaguefilePluginTest(TestUtil):
 
         mock_check.assert_called_once_with()
         mock_render.assert_not_called()
-        mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.wget_file')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
     @mock.patch.object(LeaguefilePlugin, '_render')
     @mock.patch.object(LeaguefilePlugin, '_check')
-    def test_run__with_empty_filepart(self, mock_check, mock_render,
-                                      mock_thread, mock_wget):
+    def test_run__with_empty_filepart(self, mock_check, mock_render):
         mock_check.return_value = iter([CHECK_UP_FALSE])
 
         read = {'fp': FILEPART, 'up': []}
@@ -206,8 +191,6 @@ class LeaguefilePluginTest(TestUtil):
         write = {'fp': None, 'up': [UP_FILEPART]}
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
-        mock_thread.assert_called_once_with(target=mock_wget)
-        mock_thread.return_value.start.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_with('general', 'File is up.')

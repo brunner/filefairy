@@ -6,6 +6,7 @@ import copy
 import os
 import re
 import sys
+import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugins/download', '', _path)
@@ -13,6 +14,7 @@ sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
+from utils.file.file_util import wget_file  # noqa
 from utils.hash.hash_util import hash_file  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
 
@@ -34,16 +36,32 @@ class DownloadPlugin(PluginApi, SerializableApi):
         return 'Manages file download and data extraction.'
 
     def _notify_internal(self, **kwargs):
-        pass
+        activity = kwargs['activity']
+        if activity == ActivityEnum.FILE:
+            t = threading.Thread(target=self._download)
+            t.daemon = True
+            t.start()
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
+        if self.data['downloaded']:
+            self.data['downloaded'] = False
+            self.write()
+            return ActivityEnum.DOWNLOAD
+
         return ActivityEnum.NONE
 
     def _setup_internal(self, **kwargs):
         pass
+
+    def _download(self):
+        wget_file()
+        self._leagues()
+
+        self.data['downloaded'] = True
+        self.write()
 
     def _leagues(self):
         data = self.data

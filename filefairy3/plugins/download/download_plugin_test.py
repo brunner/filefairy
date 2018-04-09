@@ -59,20 +59,37 @@ class DownloadPluginTest(unittest.TestCase):
 
         return plugin
 
-    def test_notify(self):
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
+    @mock.patch.object(DownloadPlugin, '_download')
+    def test_notify__with_file(self, mock_download, mock_thread):
         keys = ['injuries', 'news', 'transactions']
         leagues = {key: OLD_HASH for key in keys}
-        read = {'leagues': leagues}
+        read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
-        plugin._notify_internal()
+        plugin._notify_internal(activity=ActivityEnum.FILE)
 
+        mock_thread.assert_called_once_with(target=mock_download)
+        mock_thread.return_value.start.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
+    @mock.patch.object(DownloadPlugin, '_download')
+    def test_notify__with_none(self, mock_download, mock_thread):
+        keys = ['injuries', 'news', 'transactions']
+        leagues = {key: OLD_HASH for key in keys}
+        read = {'downloaded': False, 'leagues': leagues}
+        plugin = self.create_plugin(read)
+        plugin._notify_internal(activity=ActivityEnum.NONE)
+
+        mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
     def test_on_message(self):
         keys = ['injuries', 'news', 'transactions']
         leagues = {key: OLD_HASH for key in keys}
-        read = {'leagues': leagues}
+        read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal()
         self.assertEqual(ret, ActivityEnum.NONE)
@@ -80,10 +97,22 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    def test_run(self):
+    def test_run__with_downloaded_true(self):
         keys = ['injuries', 'news', 'transactions']
         leagues = {key: OLD_HASH for key in keys}
-        read = {'leagues': leagues}
+        read = {'downloaded': True, 'leagues': leagues}
+        plugin = self.create_plugin(read)
+        ret = plugin._run_internal(date=THEN)
+        self.assertEqual(ret, ActivityEnum.DOWNLOAD)
+
+        write = {'downloaded': False, 'leagues': leagues}
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    def test_run__with_downloaded_false(self):
+        keys = ['injuries', 'news', 'transactions']
+        leagues = {key: OLD_HASH for key in keys}
+        read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal(date=THEN)
         self.assertEqual(ret, ActivityEnum.NONE)
@@ -94,12 +123,27 @@ class DownloadPluginTest(unittest.TestCase):
     def test_setup(self):
         keys = ['injuries', 'news', 'transactions']
         leagues = {key: OLD_HASH for key in keys}
-        read = {'leagues': leagues}
+        read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
         plugin._setup_internal()
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(DownloadPlugin, '_leagues')
+    @mock.patch('plugins.download.download_plugin.wget_file')
+    def test_download(self, mock_file, mock_leagues):
+        keys = ['injuries', 'news', 'transactions']
+        leagues = {key: OLD_HASH for key in keys}
+        read = {'downloaded': False, 'leagues': leagues}
+        plugin = self.create_plugin(read)
+        plugin._download()
+
+        write = {'downloaded': True, 'leagues': leagues}
+        mock_file.assert_called_once_with()
+        mock_leagues.assert_called_once_with()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(DownloadPlugin, '_leagues_internal')
     @mock.patch('plugins.download.download_plugin.os.path.isfile')
@@ -165,7 +209,7 @@ class DownloadPluginTest(unittest.TestCase):
         fname = 'file/news/txt/leagues/league_100_injuries.txt'
         keys = ['injuries', 'news', 'transactions']
         leagues = {key: OLD_HASH for key in keys}
-        read = {'leagues': leagues}
+        read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
         plugin._leagues_internal('injuries', OLD_HASH, dname, fname)
 
@@ -195,7 +239,7 @@ class DownloadPluginTest(unittest.TestCase):
         fname = 'file/news/txt/leagues/league_100_news.txt'
         keys = ['injuries', 'news', 'transactions']
         leagues = {key: OLD_HASH for key in keys}
-        read = {'leagues': leagues}
+        read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
         plugin._leagues_internal('news', OLD_HASH, dname, fname)
 
@@ -226,7 +270,7 @@ class DownloadPluginTest(unittest.TestCase):
         fname = 'file/transactions/txt/leagues/league_100_transactions.txt'
         keys = ['injuries', 'news', 'transactions']
         leagues = {key: OLD_HASH for key in keys}
-        read = {'leagues': leagues}
+        read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
         plugin._leagues_internal('transactions', OLD_HASH, dname, fname)
 

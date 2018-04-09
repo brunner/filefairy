@@ -113,8 +113,8 @@ class RecapPluginTest(TestUtil):
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
-    def init_mocks(self, data):
-        mo = mock.mock_open(read_data=dumps(data))
+    def init_mocks(self, read):
+        mo = mock.mock_open(read_data=dumps(read))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
 
@@ -123,34 +123,45 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.reset_mock()
         self.mock_chat.reset_mock()
 
-    def create_plugin(self, data):
-        self.init_mocks(data)
+    def create_plugin(self):
+        self.init_mocks({})
         plugin = RecapPlugin(e=env())
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
-        self.assertEqual(plugin.data, data)
+        self.assertEqual(plugin.data, {})
 
         self.reset_mocks()
-        self.init_mocks(data)
+        self.init_mocks({})
 
         return plugin
 
-    def test_notify(self):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
-        plugin._notify_internal()
+    @mock.patch.object(RecapPlugin, '_render')
+    def test_notify__with_download(self, mock_render):
+        plugin = self.create_plugin()
+        plugin._notify_internal(activity=ActivityEnum.DOWNLOAD)
 
+        mock_render.assert_called_once_with(activity=ActivityEnum.DOWNLOAD)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_called_once_with(
+            'fairylab',
+            'League news updated.',
+            attachments=plugin._attachments())
+
+    @mock.patch.object(RecapPlugin, '_render')
+    def test_notify__with_none(self, mock_render):
+        plugin = self.create_plugin()
+        plugin._notify_internal(activity=ActivityEnum.NONE)
+
+        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
     def test_on_message(self):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin()
         ret = plugin._on_message_internal()
         self.assertEqual(ret, ActivityEnum.NONE)
 
@@ -158,43 +169,11 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch.object(RecapPlugin, '_update')
-    @mock.patch.object(RecapPlugin, '_render')
-    def test_run__with_valid_input(self, mock_render, mock_update):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
-
-        def fake_update(*args, **kwargs):
-            key = args[0]
-            plugin.data[key] = UPDATE_MAP.get(key)
-
-        mock_update.side_effect = fake_update
-
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.BASE)
-
-        write = UPDATE_MAP
-        mock_render.assert_called_once_with(date=NOW)
-        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_once_with(
-            'fairylab',
-            'League news updated.',
-            attachments=plugin._attachments())
-
-    @mock.patch.object(RecapPlugin, '_update')
-    @mock.patch.object(RecapPlugin, '_render')
-    def test_run__with_no_change(self, mock_render, mock_update):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=NOW)
+    def test_run(self):
+        plugin = self.create_plugin()
+        ret = plugin._run_internal()
         self.assertEqual(ret, ActivityEnum.NONE)
 
-        mock_render.assert_not_called()
-        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -203,9 +182,7 @@ class RecapPluginTest(TestUtil):
     def test_render(self, mock_home):
         mock_home.return_value = HOME
 
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin()
         ret = plugin._render_internal(date=NOW)
         self.assertEqual(ret, [(INDEX, '', 'recap.html', HOME)])
 
@@ -214,119 +191,15 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch.object(RecapPlugin, '_update')
     @mock.patch.object(RecapPlugin, '_render')
-    def test_setup__with_valid_input(self, mock_render, mock_update):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
-
-        def fake_update(*args, **kwargs):
-            key = args[0]
-            plugin.data[key] = UPDATE_MAP.get(key)
-
-        mock_update.side_effect = fake_update
-
-        plugin._setup_internal(date=NOW)
-
-        write = UPDATE_MAP
-        mock_render.assert_called_once_with(date=NOW)
-        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-
-    @mock.patch.object(RecapPlugin, '_update')
-    @mock.patch.object(RecapPlugin, '_render')
-    def test_setup__with_no_change(self, mock_render, mock_update):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
+    def test_setup(self, mock_render):
+        plugin = self.create_plugin()
         plugin._setup_internal(date=NOW)
 
         mock_render.assert_called_once_with(date=NOW)
-        mock_update.assert_has_calls([INJ_CALL, NEWS_CALL, TRANS_CALL])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
-
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
-    def test_content__with_injuries(self, mock_open):
-        data = '\n'.join([INJ_BEFORE, INJ_CONTENT, INJ_AFTER])
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-
-        actual = RecapPlugin._content('injuries.txt', INJ_CONTENT)
-        expected = INJ_AFTER.strip()
-        self.assertEqual(actual, expected)
-
-        mock_open.assert_called_once_with(
-            'injuries.txt', 'r', encoding='utf-8', errors='replace')
-
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
-    def test_content__with_news(self, mock_open):
-        data = '\n'.join([NEWS_BEFORE, NEWS_CONTENT, NEWS_AFTER])
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-
-        actual = RecapPlugin._content('news.txt', NEWS_CONTENT)
-        expected = NEWS_AFTER.strip()
-        self.assertEqual(actual, expected)
-
-        mock_open.assert_called_once_with(
-            'news.txt', 'r', encoding='utf-8', errors='replace')
-
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
-    def test_content__with_transactions(self, mock_open):
-        data = '\n'.join([TRANS_BEFORE, TRANS_CONTENT, TRANS_AFTER])
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-
-        actual = RecapPlugin._content('transactions.txt', TRANS_CONTENT)
-        expected = TRANS_AFTER.strip()
-        self.assertEqual(actual, expected)
-
-        mock_open.assert_called_once_with(
-            'transactions.txt', 'r', encoding='utf-8', errors='replace')
-
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
-    def test_content__with_empty_split(self, mock_open):
-        data = '\n'.join([INJ_BEFORE, INJ_CONTENT, INJ_AFTER])
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-
-        actual = RecapPlugin._content('injuries.txt', '')
-        expected = data
-        self.assertEqual(actual, expected)
-
-        mock_open.assert_called_once_with(
-            'injuries.txt', 'r', encoding='utf-8', errors='replace')
-
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
-    def test_content__with_invalid_split(self, mock_open):
-        data = '\n'.join([INJ_BEFORE, INJ_CONTENT, INJ_AFTER])
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-
-        actual = RecapPlugin._content('injuries.txt', 'foobar')
-        expected = data
-        self.assertEqual(actual, expected)
-
-        mock_open.assert_called_once_with(
-            'injuries.txt', 'r', encoding='utf-8', errors='replace')
-
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
-    def test_content__with_end_split(self, mock_open):
-        data = '\n'.join([INJ_BEFORE, INJ_CONTENT])
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-
-        actual = RecapPlugin._content('injuries.txt', INJ_CONTENT)
-        expected = INJ_CONTENT
-        self.assertEqual(actual, expected)
-
-        mock_open.assert_called_once_with(
-            'injuries.txt', 'r', encoding='utf-8', errors='replace')
 
     def test_strip_teams(self):
         actual = RecapPlugin._strip_teams(LINE)
@@ -340,10 +213,7 @@ class RecapPluginTest(TestUtil):
 
     @mock.patch.object(RecapPlugin, '_tables')
     def test_home(self, mock_tables):
-
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: {'content': '', 'hash': ''} for k in keys}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin()
 
         def fake_tables(*args, **kwargs):
             key = args[0]
@@ -369,91 +239,53 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    def test_tables__injuries(self):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: AFTER_MAP.get(k) for k in keys}
-        plugin = self.create_plugin(read)
+    @mock.patch('plugins.recap.recap_plugin.open', create=True)
+    def test_tables__injuries(self, mock_open):
+        mo = mock.mock_open(read_data=INJ_AFTER)
+        mock_open.side_effect = [mo.return_value]
+
+        plugin = self.create_plugin()
         actual = plugin._tables('injuries')
         expected = [INJ_TABLE]
         self.assertEqual(actual, expected)
 
-    def test_tables__news(self):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: AFTER_MAP.get(k) for k in keys}
-        plugin = self.create_plugin(read)
+        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        mock_open.assert_called_once_with(dpath.format('injuries'), 'r')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch('plugins.recap.recap_plugin.open', create=True)
+    def test_tables__news(self, mock_open):
+        mo = mock.mock_open(read_data=NEWS_AFTER)
+        mock_open.side_effect = [mo.return_value]
+
+        plugin = self.create_plugin()
         actual = plugin._tables('news')
         expected = [NEWS_TABLE]
         self.assertEqual(actual, expected)
 
-    def test_tables__transactions(self):
-        keys = ['injuries', 'news', 'transactions']
-        read = {k: AFTER_MAP.get(k) for k in keys}
-        plugin = self.create_plugin(read)
+        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        mock_open.assert_called_once_with(dpath.format('news'), 'r')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch('plugins.recap.recap_plugin.open', create=True)
+    def test_tables__transactions(self, mock_open):
+        mo = mock.mock_open(read_data=TRANS_AFTER)
+        mock_open.side_effect = [mo.return_value]
+
+        plugin = self.create_plugin()
         actual = plugin._tables('transactions')
         expected = [TRANS_TABLE]
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.recap.recap_plugin.os.path.isfile')
-    @mock.patch('plugins.recap.recap_plugin.hash_file')
-    @mock.patch.object(RecapPlugin, '_content')
-    def test_update__empty_data(self, mock_content, mock_hash, mock_isfile):
-        mock_content.return_value = 'newcontent'
-        mock_hash.return_value = 'newhash'
-        mock_isfile.return_value = True
-
-        read = {'injuries': {'content': '', 'hash': ''}}
-        plugin = self.create_plugin(read)
-        plugin._update('injuries', 'injuries.txt')
-
-        mock_content.assert_called_once_with('injuries.txt', '')
-        mock_hash.assert_called_once_with('injuries.txt')
-        mock_isfile.assert_called_once_with('injuries.txt')
+        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        mock_open.assert_called_once_with(dpath.format('transactions'), 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
-        data = {'injuries': {'content': 'newcontent', 'hash': 'newhash'}}
-        self.assertEqual(plugin.data, data)
-
-    @mock.patch('plugins.recap.recap_plugin.os.path.isfile')
-    @mock.patch('plugins.recap.recap_plugin.hash_file')
-    @mock.patch.object(RecapPlugin, '_content')
-    def test_update__new_hash(self, mock_content, mock_hash, mock_isfile):
-        mock_content.return_value = 'newcontent'
-        mock_hash.return_value = 'newhash'
-        mock_isfile.return_value = True
-
-        read = {'injuries': {'content': 'oldcontent', 'hash': 'oldhash'}}
-        plugin = self.create_plugin(read)
-        plugin._update('injuries', 'injuries.txt')
-
-        mock_content.assert_called_once_with('injuries.txt', 'oldcontent')
-        mock_hash.assert_called_once_with('injuries.txt')
-        mock_isfile.assert_called_once_with('injuries.txt')
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        data = {'injuries': {'content': 'newcontent', 'hash': 'newhash'}}
-        self.assertEqual(plugin.data, data)
-
-    @mock.patch('plugins.recap.recap_plugin.os.path.isfile')
-    @mock.patch('plugins.recap.recap_plugin.hash_file')
-    @mock.patch.object(RecapPlugin, '_content')
-    def test_update__old_hash(self, mock_content, mock_hash, mock_isfile):
-        mock_content.return_value = 'newcontent'
-        mock_hash.return_value = 'oldhash'
-        mock_isfile.return_value = True
-
-        read = {'injuries': {'content': 'oldcontent', 'hash': 'oldhash'}}
-        plugin = self.create_plugin(read)
-        plugin._update('injuries', 'injuries.txt')
-
-        mock_content.assert_not_called()
-        mock_hash.assert_called_once_with('injuries.txt')
-        mock_isfile.assert_called_once_with('injuries.txt')
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.assertEqual(plugin.data, read)
 
 
 if __name__ in ['__main__', 'plugins.recap.recap_plugin_test']:

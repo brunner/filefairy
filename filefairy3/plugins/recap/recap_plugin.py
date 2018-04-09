@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import codecs
-import copy
 import datetime
 import os
 import re
@@ -19,11 +17,6 @@ from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
-
-_leagues = os.path.join(_root, 'file/news/txt/leagues')
-_injuries = os.path.join(_leagues, 'league_100_injuries.txt')
-_news = os.path.join(_leagues, 'league_100_news.txt')
-_transactions = os.path.join(_leagues, 'league_100_transactions.txt')
 
 
 class RecapPlugin(PluginApi, RenderableApi):
@@ -51,59 +44,27 @@ class RecapPlugin(PluginApi, RenderableApi):
         return 'recap'
 
     def _notify_internal(self, **kwargs):
-        pass
-
-    def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
-
-    def _run_internal(self, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        self._update('injuries', _injuries)
-        self._update('news', _news)
-        self._update('transactions', _transactions)
-
-        if data != original:
-            self.write()
+        activity = kwargs['activity']
+        if activity == ActivityEnum.DOWNLOAD:
             self._render(**kwargs)
             chat_post_message(
                 'fairylab',
                 'League news updated.',
                 attachments=self._attachments())
-            return ActivityEnum.BASE
 
+    def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
 
-    def _setup_internal(self, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        self._update('injuries', _injuries)
-        self._update('news', _news)
-        self._update('transactions', _transactions)
-
-        if data != original:
-            self.write()
-
-        self._render(**kwargs)
+    def _run_internal(self, **kwargs):
+        return ActivityEnum.NONE
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/recap/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'recap.html', _home)]
 
-    @staticmethod
-    def _content(fname, split):
-        with codecs.open(fname, 'r', encoding='utf-8', errors='replace') as f:
-            contents = deunicode(f.read())
-            if split:
-                parts = contents.rsplit(split, 1)
-                if len(parts) == 2:
-                    return parts[1].strip() if parts[1] else split
-            return contents
-
-        return ''
+    def _setup_internal(self, **kwargs):
+        self._render(**kwargs)
 
     @staticmethod
     def _strip_teams(text):
@@ -126,37 +87,31 @@ class RecapPlugin(PluginApi, RenderableApi):
                 'name': 'Recap'
             }]
         }
-        ret['injuries'] = self._tables('injuries')
-        ret['news'] = self._tables('news')
-        ret['transactions'] = self._tables('transactions')
+        for key in ['injuries', 'news', 'transactions']:
+            ret[key] = self._tables(key)
         return ret
 
     def _tables(self, key):
-        data = self.data
-        ret = []
-        if data[key]:
-            cdate = ''
-            content = data[key].get('content', '')
-            match = re.findall('(\d{8})\t([^\n]+)\n', content.strip() + '\n')
-            for m in match:
-                if m:
-                    date, line = m
-                    if date != cdate:
-                        cdate = date
-                        pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
-                        fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
-                            '{S}', suffix(pdate.day))
-                        ret.insert(0, table(cols=[''], head=[fdate]))
-                    body = self._rewrite_players(self._strip_teams(line))
-                    if ret[0]['body'] is None:
-                        ret[0]['body'] = []
-                    ret[0]['body'].append([body])
-        return ret
+        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        dname = dpath.format(key)
+        with open(dname, 'r') as f:
+            content = f.read()
 
-    def _update(self, key, fname):
-        if os.path.isfile(fname):
-            _hash = hash_file(fname)
-            if not self.data[key]['hash'] or _hash != self.data[key]['hash']:
-                split = self.data[key]['content']
-                _content = self._content(fname, split)
-                self.data[key] = {'content': _content, 'hash': _hash}
+        ret = []
+
+        cdate = ''
+        match = re.findall('(\d{8})\t([^\n]+)\n', content.strip() + '\n')
+        for m in match:
+            if m:
+                date, line = m
+                if date != cdate:
+                    cdate = date
+                    pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
+                    fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
+                        '{S}', suffix(pdate.day))
+                    ret.insert(0, table(cols=[''], head=[fdate]))
+                body = self._rewrite_players(self._strip_teams(line))
+                if ret[0]['body'] is None:
+                    ret[0]['body'] = []
+                ret[0]['body'].append([body])
+        return ret
