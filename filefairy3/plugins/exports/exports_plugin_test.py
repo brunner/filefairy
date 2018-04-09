@@ -214,7 +214,8 @@ class ExportsPluginTest(TestUtil):
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_lock.assert_not_called()
-        mock_render.assert_not_called()
+        mock_render.assert_called_once_with(
+            activity=ActivityEnum.FILE, date=NOW)
         mock_unlock.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -466,8 +467,7 @@ class ExportsPluginTest(TestUtil):
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
-        plugin = self.create_plugin(
-            read, exports=EXPORTS_OLD_HOME)
+        plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
         ret = plugin._home(date=THEN)
         l = card(title='67%', info=INFO_LOCK, table=TABLE, ts='0s ago')
         e = table(
