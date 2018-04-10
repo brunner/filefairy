@@ -13,12 +13,12 @@
       {{ common.alert('target', 'Recorded')|indent(6) }}
       <div class="row">
         {% set n = standings|length() // 2 %}
-        <div class="col-sm-6">
+        <div class="col-md-6">
           {% for table in standings[:n] %}
           {{ common.table(table)|indent(10) }}
           {% endfor %}
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6">
           {% for table in standings[n:] %}
           {{ common.table(table)|indent(10) }}
           {% endfor %}
