@@ -193,7 +193,14 @@ class LeaguefilePluginTest(TestUtil):
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_with('general', 'File is up.')
+        calls = [
+            mock.call('general', 'File is up.'),
+            mock.call(
+                'fairylab',
+                'File upload completed.',
+                attachments=plugin._attachments())
+        ]
+        self.mock_chat.assert_has_calls(calls)
 
     @mock.patch.object(LeaguefilePlugin, '_home')
     def test_render(self, mock_home):
