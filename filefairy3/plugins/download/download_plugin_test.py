@@ -59,7 +59,7 @@ class DownloadPluginTest(unittest.TestCase):
 
         return plugin
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
+    @mock.patch('plugins.download.download_plugin.threading.Thread')
     @mock.patch.object(DownloadPlugin, '_download')
     def test_notify__with_file(self, mock_download, mock_thread):
         keys = ['injuries', 'news', 'transactions']
@@ -73,7 +73,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.threading.Thread')
+    @mock.patch('plugins.download.download_plugin.threading.Thread')
     @mock.patch.object(DownloadPlugin, '_download')
     def test_notify__with_none(self, mock_download, mock_thread):
         keys = ['injuries', 'news', 'transactions']
@@ -193,7 +193,7 @@ class DownloadPluginTest(unittest.TestCase):
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     @mock.patch('plugins.download.download_plugin.hash_file')
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
+    @mock.patch('plugins.download.download_plugin.codecs.open')
     def test_leagues_internal__injuries(self, mock_copen, mock_hash,
                                         mock_open):
         cdata = '\n'.join([INJ_BEFORE, INJ_CONTENT, INJ_AFTER])
@@ -224,7 +224,7 @@ class DownloadPluginTest(unittest.TestCase):
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     @mock.patch('plugins.download.download_plugin.hash_file')
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
+    @mock.patch('plugins.download.download_plugin.codecs.open')
     def test_leagues_internal__news(self, mock_copen, mock_hash, mock_open):
         cdata = '\n'.join([NEWS_BEFORE, NEWS_CONTENT, NEWS_AFTER])
         cmo = mock.mock_open(read_data=cdata)
@@ -254,7 +254,7 @@ class DownloadPluginTest(unittest.TestCase):
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     @mock.patch('plugins.download.download_plugin.hash_file')
-    @mock.patch('plugins.recap.recap_plugin.codecs.open')
+    @mock.patch('plugins.download.download_plugin.codecs.open')
     def test_leagues_internal__transactions(self, mock_copen, mock_hash,
                                             mock_open):
         cdata = '\n'.join([TRANS_BEFORE, TRANS_CONTENT, TRANS_AFTER])
