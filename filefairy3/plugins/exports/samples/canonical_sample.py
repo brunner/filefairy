@@ -2,6 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
+def _team(logo, body):
+    img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
+          'reports/news/html/images/team_logos/{}_40.png" ' + \
+          'width="24" height="24" border="0" class="d-inline-block">'
+    span = '<span class="d-inline-block align-middle pl-3">{}</span>'
+    body[0] = img.format(logo) + span.format(body[0])
+    return body
+
+
 def _secondary(t):
     return '<span class="text-secondary">' + t + '</span>'
 
@@ -14,36 +23,36 @@ subtitle = ''
 
 tmpl = 'exports.html'
 
-_t31 = ['ARI', '5 - 5', 'W1']
-_t32 = ['ATL', '10 - 0', 'W10']
-_t33 = ['BAL', '6 - 4', 'W1']
-_t34 = ['BOS', '10 - 0', 'W10']
-_t35 = ['CWS', '9 - 1', 'L1']
-_t36 = ['CHC', '8 - 2', 'L1']
-_t37 = ['CIN', '10 - 0', 'W10']
-_t38 = ['CLE', '8 - 2', 'W2']
-_t39 = ['COL', '10 - 0', 'W10']
-_t40 = ['DET', '10 - 0', 'W10']
-_t41 = ['MIA', '4 - 6', 'W1']
-_t42 = ['HOU', '10 - 0', 'W10']
-_t43 = ['KC', '9 - 1', 'W5']
-_t44 = ['LAA', '7 - 3', 'L1']
-_t45 = ['LAD', '5 - 5', 'W2']
-_t46 = ['MIL', '10 - 0', 'W10']
-_t47 = ['MIN', '10 - 0', 'W10']
-_t48 = ['NYY', '10 - 0', 'W10']
-_t49 = ['NYM', '8 - 2', 'L1']
-_t50 = ['OAK', '7 - 3', 'L3']
-_t51 = ['PHI', '3 - 7', 'L5']
-_t52 = ['PIT', '6 - 4', 'L1']
-_t53 = ['SD', '9 - 1', 'W8']
-_t54 = ['SEA', '10 - 0', 'W10']
-_t55 = ['SF', '2 - 8', 'L4']
-_t56 = ['STL', '10 - 0', 'W10']
-_t57 = ['TB', '10 - 0', 'W10']
-_t58 = ['TEX', '9 - 1', 'W9']
-_t59 = ['TOR', '9 - 1', 'W4']
-_t60 = ['WAS', '5 - 5', 'L1']
+_t31 = _team('arizona_diamondbacks', ['ARI', '5 - 5', 'W1'])
+_t32 = _team('atlanta_braves', ['ATL', '10 - 0', 'W10'])
+_t33 = _team('baltimore_orioles', ['BAL', '6 - 4', 'W1'])
+_t34 = _team('boston_red_sox', ['BOS', '10 - 0', 'W10'])
+_t35 = _team('chicago_white_sox', ['CWS', '9 - 1', 'L1'])
+_t36 = _team('chicago_cubs', ['CHC', '8 - 2', 'L1'])
+_t37 = _team('cincinnati_reds', ['CIN', '10 - 0', 'W10'])
+_t38 = _team('cleveland_indians', ['CLE', '8 - 2', 'W2'])
+_t39 = _team('colorado_rockies', ['COL', '10 - 0', 'W10'])
+_t40 = _team('detroit_tigers', ['DET', '10 - 0', 'W10'])
+_t41 = _team('miami_marlins', ['MIA', '4 - 6', 'W1'])
+_t42 = _team('houston_astros', ['HOU', '10 - 0', 'W10'])
+_t43 = _team('kansas_city_royals', ['KC', '9 - 1', 'W5'])
+_t44 = _team('los_angeles_angels', ['LAA', '7 - 3', 'L1'])
+_t45 = _team('los_angeles_dodgers', ['LAD', '5 - 5', 'W2'])
+_t46 = _team('milwaukee_brewers', ['MIL', '10 - 0', 'W10'])
+_t47 = _team('minnesota_twins', ['MIN', '10 - 0', 'W10'])
+_t48 = _team('new_york_yankees', ['NYY', '10 - 0', 'W10'])
+_t49 = _team('new_york_mets', ['NYM', '8 - 2', 'L1'])
+_t50 = _team('oakland_athletics', ['OAK', '7 - 3', 'L3'])
+_t51 = _team('philadelphia_phillies', ['PHI', '3 - 7', 'L5'])
+_t52 = _team('pittsburgh_pirates', ['PIT', '6 - 4', 'L1'])
+_t53 = _team('san_diego_padres', ['SD', '9 - 1', 'W8'])
+_t54 = _team('seattle_mariners', ['SEA', '10 - 0', 'W10'])
+_t55 = _team('san_francisco_giants', ['SF', '2 - 8', 'L4'])
+_t56 = _team('st_louis_cardinals', ['STL', '10 - 0', 'W10'])
+_t57 = _team('tampa_bay_rays', ['TB', '10 - 0', 'W10'])
+_t58 = _team('texas_rangers', ['TEX', '9 - 1', 'W9'])
+_t59 = _team('toronto_blue_jays', ['TOR', '9 - 1', 'W4'])
+_t60 = _team('washington_nationals', ['WAS', '5 - 5', 'L1'])
 
 context = {
     'title':

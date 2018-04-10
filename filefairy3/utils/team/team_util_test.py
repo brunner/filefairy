@@ -9,7 +9,7 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/team', '', _path)
 sys.path.append(_root)
-from utils.team.team_util import abbreviation, divisions  # noqa
+from utils.team.team_util import _img_24, abbreviation, divisions, logo_24  # noqa
 
 
 class TeamUtilTest(unittest.TestCase):
@@ -56,6 +56,39 @@ class TeamUtilTest(unittest.TestCase):
             ('NL West', ('31', '39', '45', '53', '55')),
         ]
         self.assertEqual(actual, expected)
+
+    def test_logo_24(self):
+        self.assertEqual(logo_24('31'), _img_24.format('arizona_diamondbacks'))
+        self.assertEqual(logo_24('32'), _img_24.format('atlanta_braves'))
+        self.assertEqual(logo_24('33'), _img_24.format('baltimore_orioles'))
+        self.assertEqual(logo_24('34'), _img_24.format('boston_red_sox'))
+        self.assertEqual(logo_24('35'), _img_24.format('chicago_white_sox'))
+        self.assertEqual(logo_24('36'), _img_24.format('chicago_cubs'))
+        self.assertEqual(logo_24('37'), _img_24.format('cincinnati_reds'))
+        self.assertEqual(logo_24('38'), _img_24.format('cleveland_indians'))
+        self.assertEqual(logo_24('39'), _img_24.format('colorado_rockies'))
+        self.assertEqual(logo_24('40'), _img_24.format('detroit_tigers'))
+        self.assertEqual(logo_24('41'), _img_24.format('miami_marlins'))
+        self.assertEqual(logo_24('42'), _img_24.format('houston_astros'))
+        self.assertEqual(logo_24('43'), _img_24.format('kansas_city_royals'))
+        self.assertEqual(logo_24('44'), _img_24.format('los_angeles_angels'))
+        self.assertEqual(logo_24('45'), _img_24.format('los_angeles_dodgers'))
+        self.assertEqual(logo_24('46'), _img_24.format('milwaukee_brewers'))
+        self.assertEqual(logo_24('47'), _img_24.format('minnesota_twins'))
+        self.assertEqual(logo_24('48'), _img_24.format('new_york_yankees'))
+        self.assertEqual(logo_24('49'), _img_24.format('new_york_mets'))
+        self.assertEqual(logo_24('50'), _img_24.format('oakland_athletics'))
+        self.assertEqual(
+            logo_24('51'), _img_24.format('philadelphia_phillies'))
+        self.assertEqual(logo_24('52'), _img_24.format('pittsburgh_pirates'))
+        self.assertEqual(logo_24('53'), _img_24.format('san_diego_padres'))
+        self.assertEqual(logo_24('54'), _img_24.format('seattle_mariners'))
+        self.assertEqual(logo_24('55'), _img_24.format('san_francisco_giants'))
+        self.assertEqual(logo_24('56'), _img_24.format('st_louis_cardinals'))
+        self.assertEqual(logo_24('57'), _img_24.format('tampa_bay_rays'))
+        self.assertEqual(logo_24('58'), _img_24.format('texas_rangers'))
+        self.assertEqual(logo_24('59'), _img_24.format('toronto_blue_jays'))
+        self.assertEqual(logo_24('60'), _img_24.format('washington_nationals'))
 
 
 if __name__ == '__main__':
