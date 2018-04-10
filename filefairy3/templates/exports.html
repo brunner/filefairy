@@ -11,12 +11,18 @@
     </div>
     <div class="container">
       {{ common.alert('target', 'Recorded')|indent(6) }}
-      {% for table in standings %}
       <div class="row">
-        <div class="col-12">
+        {% set n = standings|length() // 2 %}
+        <div class="col-sm-6">
+          {% for table in standings[:n] %}
           {{ common.table(table)|indent(10) }}
+          {% endfor %}
+        </div>
+        <div class="col-sm-6">
+          {% for table in standings[n:] %}
+          {{ common.table(table)|indent(10) }}
+          {% endfor %}
         </div>
       </div>
-      {% endfor %}
     </div>
 {% endblock %}
