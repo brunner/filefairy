@@ -14,7 +14,7 @@ from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card, table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
-from utils.team.team_util import abbreviation, divisions  # noqa
+from utils.team.team_util import abbreviation, divisions, logo_24  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
@@ -103,12 +103,19 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return re.findall(r"team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
 
     @staticmethod
+    def _middle(text):
+        s = '<span class="d-inline-block align-middle pl-3">{}</span>'
+        return s.format(text)
+
+    @staticmethod
     def _secondary(text):
-        return '<span class="text-secondary">{}</span>'.format(text)
+        s = '<span class="text-secondary">{}</span>'
+        return s.format(text)
 
     @staticmethod
     def _success(text):
-        return '<span class="text-success border px-1">{}</span>'.format(text)
+        s = '<span class="text-success border px-1">{}</span>'
+        return s.format(text)
 
     def _form(self, teamid):
         form = self.data['form'][teamid]
@@ -141,13 +148,14 @@ class ExportsPlugin(PluginApi, RenderableApi):
         for division, teamids in divisions():
             body = []
             for teamid in sorted(teamids, key=self._sorted):
+                t = logo_24(teamid) + self._middle(abbreviation(teamid))
                 if teamid in data['ai']:
-                    body.append([abbreviation(teamid), '-', '-'])
+                    l, s = '-', '-'
                 else:
                     n, o = self._form(teamid)
                     l = '{0} - {1}'.format(n, o)
                     s = self._streak(teamid)
-                    body.append([abbreviation(teamid), l, s])
+                body.append([t, l, s])
             ret['standings'].append(
                 table(
                     cols=['', 'text-center w-25', 'text-center w-25'],

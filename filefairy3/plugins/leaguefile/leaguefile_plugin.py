@@ -83,6 +83,10 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                     if len(data['up']) > 10:
                         data['up'] = data['up'][:10]
                     chat_post_message('general', 'File is up.')
+                    chat_post_message(
+                        'fairylab',
+                        'File upload completed.',
+                        attachments=self._attachments())
                     ret = ActivityEnum.FILE
                 data['fp'] = None
 
