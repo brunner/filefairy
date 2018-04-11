@@ -490,7 +490,8 @@ class ExportsPluginTest(TestUtil):
         w = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo_24('42') + plugin._middle('HOU'), '1 - 0', 'W1'], [logo_24('44') + plugin._middle('LAA'), '1 - 0', 'W1']])
+            body=[[logo_24('42') + plugin._middle('HOU'), '1 - 0', 'W1'],
+                  [logo_24('44') + plugin._middle('LAA'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
