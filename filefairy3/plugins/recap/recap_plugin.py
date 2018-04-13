@@ -51,6 +51,8 @@ class RecapPlugin(PluginApi, RenderableApi):
                 'fairylab',
                 'League news updated.',
                 attachments=self._attachments())
+            return True
+        return False
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE

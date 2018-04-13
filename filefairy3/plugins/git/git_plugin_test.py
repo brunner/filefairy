@@ -45,7 +45,8 @@ class GitPluginTest(unittest.TestCase):
 
     def test_notify(self):
         plugin = self.create_plugin()
-        plugin._notify_internal()
+        ret = plugin._notify_internal()
+        self.assertFalse(ret)
 
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()

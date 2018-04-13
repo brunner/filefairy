@@ -26,7 +26,7 @@ class GitPlugin(PluginApi):
         return 'Exposes git commands to admins.'
 
     def _notify_internal(self, **kwargs):
-        pass
+        return False
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE

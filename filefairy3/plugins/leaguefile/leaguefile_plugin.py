@@ -51,7 +51,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         return 'leaguefile'
 
     def _notify_internal(self, **kwargs):
-        pass
+        return False
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE

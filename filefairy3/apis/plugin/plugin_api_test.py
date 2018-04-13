@@ -30,7 +30,7 @@ class FakePlugin(PluginApi):
         return 'Description.'
 
     def _notify_internal(self, **kwargs):
-        pass
+        return kwargs['ret']
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -118,9 +118,14 @@ class PluginApiTest(unittest.TestCase):
         expected = []
         self.assertEqual(actual, expected)
 
-    def test_notify(self):
+    def test_notify__with_true(self):
         plugin = FakePlugin()
-        ret = plugin._notify()
+        ret = plugin._notify(ret=True)
+        self.assertEqual(ret, ActivityEnum.BASE)
+
+    def test_notify__with_false(self):
+        plugin = FakePlugin()
+        ret = plugin._notify(ret=False)
         self.assertEqual(ret, ActivityEnum.NONE)
 
     @mock.patch.object(FakePlugin, '_setup_internal')

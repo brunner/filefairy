@@ -41,6 +41,8 @@ class DownloadPlugin(PluginApi, SerializableApi):
             t = threading.Thread(target=self._download)
             t.daemon = True
             t.start()
+            return True
+        return False
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE

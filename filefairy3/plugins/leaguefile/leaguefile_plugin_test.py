@@ -110,7 +110,8 @@ class LeaguefilePluginTest(TestUtil):
     def test_notify(self):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        plugin._notify_internal()
+        ret = plugin._notify_internal()
+        self.assertFalse(ret)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

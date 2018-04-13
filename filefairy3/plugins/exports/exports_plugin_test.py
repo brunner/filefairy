@@ -104,7 +104,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
+        ret = plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
+        self.assertFalse(ret)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -131,7 +132,8 @@ class ExportsPluginTest(TestUtil):
 
         mock_lock.side_effect = fake_lock
 
-        plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
+        ret = plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
+        self.assertTrue(ret)
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_lock.assert_called_once_with()
@@ -151,7 +153,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
+        ret = plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
+        self.assertFalse(ret)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -169,7 +172,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
+        ret = plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
+        self.assertFalse(ret)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -187,7 +191,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
+        ret = plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
+        self.assertFalse(ret)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -211,7 +216,8 @@ class ExportsPluginTest(TestUtil):
 
         mock_unlock.side_effect = fake_unlock
 
-        plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
+        ret = plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
+        self.assertTrue(ret)
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_lock.assert_not_called()

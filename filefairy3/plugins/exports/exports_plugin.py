@@ -55,11 +55,12 @@ class ExportsPlugin(PluginApi, RenderableApi):
         elif data['locked'] and activity in _unlock_activities:
             self._unlock()
         else:
-            return
+            return False
 
         data['date'] = encode_datetime(kwargs['date'])
         self._render(**kwargs)
         self.write()
+        return True
 
     def _on_message_internal(self, **kwargs):
         return ActivityEnum.NONE

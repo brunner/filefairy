@@ -66,7 +66,8 @@ class DownloadPluginTest(unittest.TestCase):
         leagues = {key: OLD_HASH for key in keys}
         read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
-        plugin._notify_internal(activity=ActivityEnum.FILE)
+        ret = plugin._notify_internal(activity=ActivityEnum.FILE)
+        self.assertTrue(ret)
 
         mock_thread.assert_called_once_with(target=mock_download)
         mock_thread.return_value.start.assert_called_once_with()
@@ -80,7 +81,8 @@ class DownloadPluginTest(unittest.TestCase):
         leagues = {key: OLD_HASH for key in keys}
         read = {'downloaded': False, 'leagues': leagues}
         plugin = self.create_plugin(read)
-        plugin._notify_internal(activity=ActivityEnum.NONE)
+        ret = plugin._notify_internal(activity=ActivityEnum.NONE)
+        self.assertFalse(ret)
 
         mock_thread.assert_not_called()
         self.mock_open.assert_not_called()

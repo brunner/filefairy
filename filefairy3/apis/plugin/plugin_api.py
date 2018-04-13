@@ -52,8 +52,8 @@ class PluginApi(MessageableApi, RunnableApi):
         }]
 
     def _notify(self, **kwargs):
-        self._notify_internal(**kwargs)
-        return ActivityEnum.NONE
+        ret = self._notify_internal(**kwargs)
+        return ActivityEnum.BASE if ret else ActivityEnum.NONE
 
     def _setup(self, **kwargs):
         self._setup_internal(**kwargs)

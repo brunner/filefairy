@@ -66,7 +66,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
         return 'Feeds the masses bread and circuses.'
 
     def _notify_internal(self, **kwargs):
-        pass
+        return False
 
     def _on_message_internal(self, **kwargs):
         obj = kwargs['obj']

@@ -140,7 +140,8 @@ class RecapPluginTest(TestUtil):
     @mock.patch.object(RecapPlugin, '_render')
     def test_notify__with_download(self, mock_render):
         plugin = self.create_plugin()
-        plugin._notify_internal(activity=ActivityEnum.DOWNLOAD)
+        ret = plugin._notify_internal(activity=ActivityEnum.DOWNLOAD)
+        self.assertTrue(ret)
 
         mock_render.assert_called_once_with(activity=ActivityEnum.DOWNLOAD)
         self.mock_open.assert_not_called()
@@ -153,7 +154,8 @@ class RecapPluginTest(TestUtil):
     @mock.patch.object(RecapPlugin, '_render')
     def test_notify__with_none(self, mock_render):
         plugin = self.create_plugin()
-        plugin._notify_internal(activity=ActivityEnum.NONE)
+        ret = plugin._notify_internal(activity=ActivityEnum.NONE)
+        self.assertFalse(ret)
 
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()
