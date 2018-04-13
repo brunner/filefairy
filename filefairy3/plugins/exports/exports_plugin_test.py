@@ -15,7 +15,7 @@ from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import card, table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import logo_24  # noqa
+from utils.team.team_util import logo  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
 DATA = ExportsPlugin._data()
@@ -394,18 +394,18 @@ class ExportsPluginTest(TestUtil):
         e = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo_24('33') + plugin._middle('BAL'), '1 - 0', 'W1'],
-                  [logo_24('34') + plugin._middle('BOS'), '1 - 0', 'W1']])
+            body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
+                  [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
         c = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo_24('35') + plugin._middle('CWS'), '1 - 0', 'W1'],
-                  [logo_24('40') + plugin._middle('DET'), '1 - 0', 'W1']])
+            body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
+                  [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
         w = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo_24('42') + plugin._middle('HOU'), '1 - 0', 'W1'],
-                  [logo_24('44') + plugin._middle('LAA'), '1 - 0', 'W1']])
+            body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
+                  [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -440,18 +440,18 @@ class ExportsPluginTest(TestUtil):
         e = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo_24('33') + plugin._middle('BAL'), '1 - 0', 'W1'],
-                  [logo_24('34') + plugin._middle('BOS'), '1 - 0', 'W1']])
+            body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
+                  [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
         c = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo_24('35') + plugin._middle('CWS'), '1 - 0', 'W1'],
-                  [logo_24('40') + plugin._middle('DET'), '1 - 0', 'W1']])
+            body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
+                  [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
         w = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo_24('42') + plugin._middle('HOU'), '1 - 0', 'W1'],
-                  [logo_24('44') + plugin._middle('LAA'), '1 - 0', 'W1']])
+            body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
+                  [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -486,18 +486,18 @@ class ExportsPluginTest(TestUtil):
         e = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo_24('33') + plugin._middle('BAL'), '1 - 0', 'W1'],
-                  [logo_24('34') + plugin._middle('BOS'), '1 - 0', 'W1']])
+            body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
+                  [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
         c = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo_24('35') + plugin._middle('CWS'), '1 - 0', 'W1'],
-                  [logo_24('40') + plugin._middle('DET'), '1 - 0', 'W1']])
+            body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
+                  [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
         w = table(
             cols=['', 'text-center w-25', 'text-center w-25'],
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo_24('42') + plugin._middle('HOU'), '1 - 0', 'W1'],
-                  [logo_24('44') + plugin._middle('LAA'), '1 - 0', 'W1']])
+            body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
+                  [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,

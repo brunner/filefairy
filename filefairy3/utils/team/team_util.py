@@ -1,84 +1,63 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-\
 
-_abbreviations = {
-    '31': 'ARI',
-    '32': 'ATL',
-    '33': 'BAL',
-    '34': 'BOS',
-    '35': 'CWS',
-    '36': 'CHC',
-    '37': 'CIN',
-    '38': 'CLE',
-    '39': 'COL',
-    '40': 'DET',
-    '41': 'MIA',
-    '42': 'HOU',
-    '43': 'KC',
-    '44': 'LAA',
-    '45': 'LAD',
-    '46': 'MIL',
-    '47': 'MIN',
-    '48': 'NYY',
-    '49': 'NYM',
-    '50': 'OAK',
-    '51': 'PHI',
-    '52': 'PIT',
-    '53': 'SD',
-    '54': 'SEA',
-    '55': 'SF',
-    '56': 'STL',
-    '57': 'TB',
-    '58': 'TEX',
-    '59': 'TOR',
-    '60': 'WAS',
+_logo = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
+        'reports/news/html/images/team_logos/{}_40.png" ' + \
+        'width="24" height="24" border="0" class="d-inline-block">'
+
+
+def _team(abbreviation, hometown, nickname):
+    return {
+        'abbreviation': abbreviation,
+        'hometown': hometown,
+        'nickname': nickname,
+    }
+
+
+_teams = {
+    '31': _team('ARI', 'Arizona', 'Diamondbacks'),
+    '32': _team('ATL', 'Atlanta', 'Braves'),
+    '33': _team('BAL', 'Baltimore', 'Orioles'),
+    '34': _team('BOS', 'Boston', 'Red Sox'),
+    '35': _team('CWS', 'Chicago', 'White Sox'),
+    '36': _team('CHC', 'Chicago', 'Cubs'),
+    '37': _team('CIN', 'Cincinnati', 'Reds'),
+    '38': _team('CLE', 'Cleveland', 'Indians'),
+    '39': _team('COL', 'Colorado', 'Rockies'),
+    '40': _team('DET', 'Detroit', 'Tigers'),
+    '41': _team('MIA', 'Miami', 'Marlins'),
+    '42': _team('HOU', 'Houston', 'Astros'),
+    '43': _team('KC', 'Kansas City', 'Royals'),
+    '44': _team('LAA', 'Los Angeles', 'Angels'),
+    '45': _team('LAD', 'Los Angeles', 'Dodgers'),
+    '46': _team('MIL', 'Milwaukee', 'Brewers'),
+    '47': _team('MIN', 'Minnesota', 'Twins'),
+    '48': _team('NYY', 'New York', 'Yankees'),
+    '49': _team('NYM', 'New York', 'Mets'),
+    '50': _team('OAK', 'Oakland', 'Athletics'),
+    '51': _team('PHI', 'Philadelphia', 'Phillies'),
+    '52': _team('PIT', 'Pittsburgh', 'Pirates'),
+    '53': _team('SD', 'San Diego', 'Padres'),
+    '54': _team('SEA', 'Seattle', 'Mariners'),
+    '55': _team('SF', 'San Francisco', 'Giants'),
+    '56': _team('STL', 'St. Louis', 'Cardinals'),
+    '57': _team('TB', 'Tampa Bay', 'Rays'),
+    '58': _team('TEX', 'Texas', 'Rangers'),
+    '59': _team('TOR', 'Toronto', 'Blue Jays'),
+    '60': _team('WAS', 'Washington', 'Nationals'),
 }
 
 
 def abbreviation(teamid):
-    return _abbreviations.get(teamid, '')
+    return _teams.get(teamid, {}).get('abbreviation', '')
 
 
-_full_names = {
-    '31': 'arizona_diamondbacks',
-    '32': 'atlanta_braves',
-    '33': 'baltimore_orioles',
-    '34': 'boston_red_sox',
-    '35': 'chicago_white_sox',
-    '36': 'chicago_cubs',
-    '37': 'cincinnati_reds',
-    '38': 'cleveland_indians',
-    '39': 'colorado_rockies',
-    '40': 'detroit_tigers',
-    '41': 'miami_marlins',
-    '42': 'houston_astros',
-    '43': 'kansas_city_royals',
-    '44': 'los_angeles_angels',
-    '45': 'los_angeles_dodgers',
-    '46': 'milwaukee_brewers',
-    '47': 'minnesota_twins',
-    '48': 'new_york_yankees',
-    '49': 'new_york_mets',
-    '50': 'oakland_athletics',
-    '51': 'philadelphia_phillies',
-    '52': 'pittsburgh_pirates',
-    '53': 'san_diego_padres',
-    '54': 'seattle_mariners',
-    '55': 'san_francisco_giants',
-    '56': 'st_louis_cardinals',
-    '57': 'tampa_bay_rays',
-    '58': 'texas_rangers',
-    '59': 'toronto_blue_jays',
-    '60': 'washington_nationals',
-}
-
-_img_24 = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
-       'reports/news/html/images/team_logos/{}_40.png" ' + \
-       'width="24" height="24" border="0" class="d-inline-block">'
+def hometown(teamid):
+    return _teams.get(teamid, {}).get('hometown', '')
 
 
-def logo_24(teamid):
-    return _img_24.format(_full_names.get(teamid, ''))
+def nickname(teamid):
+    return _teams.get(teamid, {}).get('nickname', '')
 
 
 def divisions():
@@ -90,3 +69,9 @@ def divisions():
         ('NL Central', ('36', '37', '46', '52', '56')),
         ('NL West', ('31', '39', '45', '53', '55')),
     ]
+
+
+def logo(teamid):
+    path = hometown(teamid) + ' ' + nickname(teamid)
+    path = path.replace('.', '').replace(' ', '_').lower()
+    return _logo.format(path)
