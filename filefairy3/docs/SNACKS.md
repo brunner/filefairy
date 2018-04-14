@@ -31,6 +31,16 @@ Want a nonsensical opinion on a topic?
 
 ![Example](images/snacks_discuss_loyola.png?raw=true)
 
+### Say
+
+Looking for an echo chamber?
+
+```
+@filefairy say <foo>
+```
+
+![Example](images/snacks_say.png?raw=true)
+
 ### Snack Me
 
 Hungry?
