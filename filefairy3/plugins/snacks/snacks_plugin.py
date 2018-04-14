@@ -89,10 +89,10 @@ class SnacksPlugin(PluginApi, SerializableApi):
 
         ret = ActivityEnum.NONE
         if ok:
-            match = re.findall('^<@U3ULC7DBP> choose (.+) or (.+)$', text)
+            match = re.findall('^<@U3ULC7DBP> choose (.+)$', text)
             if match:
                 statement = random.choice(_chooselist)
-                choice = random.choice(match[0])
+                choice = random.choice(match[0].split(' or '))
                 response = re.sub('^([a-zA-Z])',
                                   lambda x: x.groups()[0].upper(),
                                   statement.format(choice), 1)
@@ -104,6 +104,11 @@ class SnacksPlugin(PluginApi, SerializableApi):
                 cfd = self.__dict__.get('cfd', {})
                 response = discuss(match[0], cfd, 4, 6, 30)
                 chat_post_message(channel, response)
+                ret = ActivityEnum.BASE
+
+            match = re.findall('^<@U3ULC7DBP> say (.+)$', text)
+            if match:
+                chat_post_message(channel, match[0])
                 ret = ActivityEnum.BASE
 
             if text == '<@U3ULC7DBP> snack me':

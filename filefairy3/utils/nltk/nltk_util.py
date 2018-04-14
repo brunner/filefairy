@@ -50,7 +50,7 @@ def cfd(n, *fnames):
 
 
 def discuss(topic, cfd, n, length, truncate):
-    seed = topic.split(' ')
+    seed = word_tokenize(topic)
     original = list(seed)
     while len(seed) < length or seed[-1] not in ['.', '?', '!']:
         if len(seed) >= truncate:
