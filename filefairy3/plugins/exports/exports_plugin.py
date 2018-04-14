@@ -212,6 +212,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         if match:
             n = len(match[0])
             return n if 'n' in match[0] else -n
+        return 0
 
     def _table(self):
         div = divisions()
