@@ -138,7 +138,8 @@ class ExportsPlugin(PluginApi, RenderableApi):
         n, t = self._new()
         title = '{:.0f}%'.format(float(100) * n / t)
         breakdown = ', '.join([
-            self._success(str(n) + ' new'), str(t - n) + ' old',
+            self._success(str(n) + ' new'),
+            str(t - n) + ' old',
             self._secondary(str(len(data['ai'])) + ' ai')
         ])
         status = 'Ongoing' if data['locked'] else 'Upcoming'
@@ -174,11 +175,20 @@ class ExportsPlugin(PluginApi, RenderableApi):
             attachments=self._attachments())
 
         for teamid, status in self.exports:
-            if teamid not in data['ai']:
-                s = status.lower()[0]
-                data['form'][teamid] += s
-                while len(data['form'][teamid]) > 10:
-                    data['form'][teamid] = data['form'][teamid][1:]
+            s = status.lower()[0]
+            if teamid in data['ai']:
+                if s == 'n':
+                    data['ai'].remove(teamid)
+                else:
+                    continue
+
+            data['form'][teamid] += s
+            while len(data['form'][teamid]) > 10:
+                data['form'][teamid] = data['form'][teamid][1:]
+
+            if 'n' not in data['form'][teamid]:
+                data['ai'].append(teamid)
+                data['form'][teamid] = ''
 
     def _new(self):
         n, t = 0, 0

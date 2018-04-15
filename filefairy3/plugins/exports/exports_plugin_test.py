@@ -32,6 +32,9 @@ NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
 NOW_ENCODED = '1985-10-26T00:02:30'
 FORM_CANONICAL = ''
 FORM_TRUNCATED = 'nonnnonnno'
+FORM_ALIVE = 'ooooooooon'
+FORM_DEAD = 'nooooooooo'
+FORM_EMPTY = ''
 FORM_NEW = 'n'
 FORM_NEW_TRUNCATED = 'onnnonnnon'
 FORM_OLD = 'o'
@@ -79,7 +82,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.reset_mock()
         self.mock_chat.reset_mock()
 
-    def create_plugin(self, data, exports=[]):
+    def create_plugin(self, data, exports=None):
         self.init_mocks(data)
         plugin = ExportsPlugin(e=env())
 
@@ -513,7 +516,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    def test_lock(self):
+    def test_lock__with_truncation(self):
         form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
@@ -531,6 +534,50 @@ class ExportsPluginTest(TestUtil):
             'fairylab',
             'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
+        self.assertEqual(plugin.data['ai'], [])
+        self.assertEqual(plugin.data['form'], form)
+        self.assertTrue(plugin.data['locked'], True)
+        self.assertEqual(plugin.exports, EXPORTS_LOCK)
+
+    def test_lock__with_ai_added(self):
+        form = {k: copy.deepcopy(FORM_DEAD) for k in ['31', '32', '33']}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
+        plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
+        plugin._lock()
+
+        form = {'31': FORM_ALIVE, '32': FORM_EMPTY, '33': FORM_ALIVE}
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_called_once_with(
+            'fairylab',
+            'Tracker locked and exports recorded.',
+            attachments=plugin._attachments())
+        self.assertEqual(plugin.data['ai'], ['32'])
+        self.assertEqual(plugin.data['form'], form)
+        self.assertTrue(plugin.data['locked'], True)
+        self.assertEqual(plugin.exports, EXPORTS_LOCK)
+
+    def test_lock__with_ai_removed(self):
+        form = {k: copy.deepcopy(FORM_EMPTY) for k in ['31', '32', '33']}
+        read = {
+            'ai': ['31', '32', '33'],
+            'date': THEN_ENCODED,
+            'form': form,
+            'locked': False
+        }
+        plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
+        plugin._lock()
+
+        form = {'31': FORM_NEW, '32': FORM_EMPTY, '33': FORM_NEW}
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_called_once_with(
+            'fairylab',
+            'Tracker locked and exports recorded.',
+            attachments=plugin._attachments())
+        self.assertEqual(plugin.data['ai'], ['32'])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
