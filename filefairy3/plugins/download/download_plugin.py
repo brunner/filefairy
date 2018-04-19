@@ -68,8 +68,9 @@ class DownloadPlugin(PluginApi, SerializableApi):
         self.write()
 
     def _leagues(self):
-        dpath = os.path.join(_root, 'download/leagues/{}.txt')
-        fpath = os.path.join(_root, 'file/news/txt/leagues/league_100_{}.txt')
+        _leagues = 'download/news/txt/leagues'
+        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
+        fpath = os.path.join(_root, _leagues, 'league_100_{}.txt')
         for key in ['injuries', 'news', 'transactions']:
             dname = dpath.format(key)
             fname = fpath.format(key)
@@ -81,8 +82,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
         then = decode_datetime(self.data['then'])
         now = decode_datetime(self.data['now'])
 
-        with codecs.open(
-                fname, 'r', encoding='utf-8', errors='replace') as ff:
+        with codecs.open(fname, 'r', encoding='utf-8', errors='replace') as ff:
             content = deunicode(ff.read())
 
         with open(dname, 'w') as df:

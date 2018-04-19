@@ -169,11 +169,12 @@ class DownloadPluginTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues()
 
-        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        _leagues = 'download/news/txt/leagues'
+        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         dinjuries = dpath.format('injuries')
         dnews = dpath.format('news')
         dtransactions = dpath.format('transactions')
-        fpath = os.path.join(_root, 'file/news/txt/leagues/league_100_{}.txt')
+        fpath = os.path.join(_root, _leagues, 'league_100_{}.txt')
         finjuries = fpath.format('injuries')
         fnews = fpath.format('news')
         ftransactions = fpath.format('transactions')
@@ -205,8 +206,8 @@ class DownloadPluginTest(unittest.TestCase):
         mock_handle = mo()
         mock_open.side_effect = [mo.return_value]
 
-        dname = 'download/injuries.txt'
-        fname = 'file/news/txt/leagues/league_100_injuries.txt'
+        dname = 'extract/injuries.txt'
+        fname = 'download/news/txt/leagues/league_100_injuries.txt'
         read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
         plugin._leagues_internal('injuries', dname, fname)
@@ -230,8 +231,8 @@ class DownloadPluginTest(unittest.TestCase):
         mock_handle = mo()
         mock_open.side_effect = [mo.return_value]
 
-        dname = 'download/news.txt'
-        fname = 'file/news/txt/leagues/league_100_news.txt'
+        dname = 'extract/news.txt'
+        fname = 'download/news/txt/leagues/league_100_news.txt'
         read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
         plugin._leagues_internal('news', dname, fname)
@@ -255,8 +256,8 @@ class DownloadPluginTest(unittest.TestCase):
         mock_handle = mo()
         mock_open.side_effect = [mo.return_value]
 
-        dname = 'download/transactions.txt'
-        fname = 'file/transactions/txt/leagues/league_100_transactions.txt'
+        dname = 'extract/transactions.txt'
+        fname = 'download/transactions/txt/leagues/league_100_transactions.txt'
         read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
         plugin._leagues_internal('transactions', dname, fname)
