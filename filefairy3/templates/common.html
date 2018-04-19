@@ -39,6 +39,48 @@
 </div>
 {%- endmacro -%}
 
+{% macro form() -%}
+<div class="row">
+  <div class="col-12">
+    <nav class="navbar navbar-light bg-light mt-3 p-0">
+      <form class="w-100">
+        <input class="form-control mr-sm-2" type="search"
+               placeholder="Filter" aria-label="Filter">
+      </form>
+    </nav>
+  </div>
+</div>
+{%- endmacro -%}
+
+{% macro form_js(ids) -%}
+<script>
+  var filter = '';
+  $('.form-control').on('change keyup paste mouseup', function(e) {
+    var val = $(this).val().toLowerCase();
+    if (val != filter) {
+      filter = val;
+      $.each({{ ids }}, function(i, v) {
+        row = $(v)
+        $('tbody td', row).each(function(e) {
+          if ($(this).text().toLowerCase().indexOf(filter) != -1) {
+            $(this).removeClass('d-none');
+          } else {
+            $(this).addClass('d-none');
+          }
+        });
+        $('table', row).each(function(e) {
+          if ($(this).find('tbody td:not(.d-none)').length != 0) {
+            $(this).removeClass('d-none');
+          } else {
+            $(this).addClass('d-none');
+          }
+        });
+      })
+    }
+  });
+</script>
+{%- endmacro -%}
+
 {% macro table(data) -%}
 
 {%- set col_class = [] -%}
