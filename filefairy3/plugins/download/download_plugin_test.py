@@ -17,6 +17,12 @@ from plugins.download.download_plugin import DownloadPlugin  # noqa
 from utils.json.json_util import dumps  # noqa
 
 DATA = DownloadPlugin._data()
+BOX_NON_MLB = '<html>\n<head>\n<title>ABL Box Scores, Adelaide Bite at ' + \
+              'Melbourne Aces, 10/30/2022</title>'
+BOX_MLB_NOW = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners at ' + \
+              'Los Angeles Dodgers, 08/16/2022</title>'
+BOX_MLB_THEN = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners ' + \
+               'at Los Angeles Dodgers, 08/15/2022</title>'
 INJ_NOW = '20220817\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
           '</a>: <a href=\"../players/player_1.html\">Zack Weiss</a> ' + \
           'diagnosed with a strained hamstring, will miss 4 weeks.\n' + \
@@ -149,16 +155,83 @@ class DownloadPluginTest(unittest.TestCase):
 
     @mock.patch.object(DownloadPlugin, '_leagues')
     @mock.patch('plugins.download.download_plugin.wget_file')
-    def test_download(self, mock_file, mock_leagues):
+    @mock.patch.object(DownloadPlugin, '_boxes')
+    def test_download(self, mock_boxes, mock_file, mock_leagues):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
         plugin._download()
 
         write = {'downloaded': True, 'now': NOW_ENCODED, 'then': NOW_ENCODED}
+        mock_boxes.assert_called_once_with()
         mock_file.assert_called_once_with()
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch('plugins.download.download_plugin.os.listdir')
+    @mock.patch('plugins.download.download_plugin.os.path.isfile')
+    @mock.patch.object(DownloadPlugin, '_boxes_internal')
+    def test_boxes(self, mock_boxes, mock_isfile, mock_listdir):
+        mock_isfile.return_value = True
+        mock_listdir.return_value = ['game_box_123.html', 'game_box_456.html']
+
+        read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
+        plugin = self.create_plugin(read)
+        plugin._boxes()
+
+        boxes = 'download/news/html/box_scores'
+        dpath = os.path.join(_root, 'extract/box_scores/game_box_{}.html')
+        d123 = dpath.format('123')
+        d456 = dpath.format('456')
+        fpath = os.path.join(_root, boxes, 'game_box_{}.html')
+        f123 = fpath.format('123')
+        f456 = fpath.format('456')
+        mock_isfile.assert_has_calls([mock.call(f123), mock.call(f456)])
+        calls = [
+            mock.call('game_box_123.html', d123, f123),
+            mock.call('game_box_456.html', d456, f456)
+        ]
+        mock_boxes.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('plugins.download.download_plugin.open', create=True)
+    def test_boxes_internal__mlb_then(self, mock_open):
+        mo = mock.mock_open(read_data=BOX_MLB_THEN)
+        mock_handle = mo()
+        mock_open.side_effect = [mo.return_value, mo.return_value]
+
+        box = 'game_box_12345.html'
+        dname = 'extract/box_scores/game_box_12345.html'
+        fname = 'download/news/html/box_scores/game_box_12345.html'
+        read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
+        plugin = self.create_plugin(read)
+        plugin._boxes_internal(box, dname, fname)
+
+        mock_open.assert_called_once_with(fname, 'r')
+        mock_handle.write.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['now'], THEN_ENCODED)
+
+    @mock.patch('plugins.download.download_plugin.open', create=True)
+    def test_boxes_internal__non_mlb(self, mock_open):
+        mo = mock.mock_open(read_data=BOX_NON_MLB)
+        mock_handle = mo()
+        mock_open.side_effect = [mo.return_value, mo.return_value]
+
+        box = 'game_box_12345.html'
+        dname = 'extract/box_scores/game_box_12345.html'
+        fname = 'download/news/html/box_scores/game_box_12345.html'
+        read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
+        plugin = self.create_plugin(read)
+        plugin._boxes_internal(box, dname, fname)
+
+        mock_open.assert_called_once_with(fname, 'r')
+        mock_handle.write.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['now'], THEN_ENCODED)
 
     @mock.patch.object(DownloadPlugin, '_leagues_internal')
     @mock.patch('plugins.download.download_plugin.os.path.isfile')
@@ -169,12 +242,12 @@ class DownloadPluginTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues()
 
-        _leagues = 'download/news/txt/leagues'
+        leagues = 'download/news/txt/leagues'
         dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         dinjuries = dpath.format('injuries')
         dnews = dpath.format('news')
         dtransactions = dpath.format('transactions')
-        fpath = os.path.join(_root, _leagues, 'league_100_{}.txt')
+        fpath = os.path.join(_root, leagues, 'league_100_{}.txt')
         finjuries = fpath.format('injuries')
         fnews = fpath.format('news')
         ftransactions = fpath.format('transactions')

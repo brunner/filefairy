@@ -62,15 +62,44 @@ class DownloadPlugin(PluginApi, SerializableApi):
         wget_file()
         self.data['then'] = self.data['now']
 
+        self._boxes()
         self._leagues()
 
         self.data['downloaded'] = True
         self.write()
 
+    def _boxes(self):
+        boxes = 'download/news/html/box_scores'
+        for box in os.listdir(os.path.join(_root, boxes)):
+            dname = os.path.join(_root, 'extract/box_scores', box)
+            fname = os.path.join(_root, boxes, box)
+            if not os.path.isfile(fname):
+                continue
+            self._boxes_internal(box, dname, fname)
+
+    def _boxes_internal(self, box, dname, fname):
+        then = decode_datetime(self.data['then'])
+        now = decode_datetime(self.data['now'])
+
+        with open(fname, 'r') as ff:
+            content = ff.read()
+
+        pattern = 'MLB Box Scores[^\d]+(\d{2}\/\d{2}\/\d{4})'
+        match = re.findall(pattern, content)
+        if match:
+            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+            if date >= then:
+                with open(dname, 'w') as df:
+                    df.write(content)
+            if date >= now:
+                now = date + datetime.timedelta(days=1)
+
+        self.data['now'] = encode_datetime(now)
+
     def _leagues(self):
-        _leagues = 'download/news/txt/leagues'
+        leagues = 'download/news/txt/leagues'
         dpath = os.path.join(_root, 'extract/leagues/{}.txt')
-        fpath = os.path.join(_root, _leagues, 'league_100_{}.txt')
+        fpath = os.path.join(_root, leagues, 'league_100_{}.txt')
         for key in ['injuries', 'news', 'transactions']:
             dname = dpath.format(key)
             fname = fpath.format(key)
