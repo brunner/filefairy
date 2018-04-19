@@ -94,7 +94,7 @@ class RecapPlugin(PluginApi, RenderableApi):
         return ret
 
     def _tables(self, key):
-        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         dname = dpath.format(key)
         with open(dname, 'r') as f:
             content = f.read()

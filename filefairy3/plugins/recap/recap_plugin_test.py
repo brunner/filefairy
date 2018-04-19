@@ -251,7 +251,7 @@ class RecapPluginTest(TestUtil):
         expected = [INJ_TABLE]
         self.assertEqual(actual, expected)
 
-        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         mock_open.assert_called_once_with(dpath.format('injuries'), 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -267,7 +267,7 @@ class RecapPluginTest(TestUtil):
         expected = [NEWS_TABLE]
         self.assertEqual(actual, expected)
 
-        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         mock_open.assert_called_once_with(dpath.format('news'), 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -283,7 +283,7 @@ class RecapPluginTest(TestUtil):
         expected = [TRANS_TABLE]
         self.assertEqual(actual, expected)
 
-        dpath = os.path.join(_root, 'download/leagues/{}.txt')
+        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         mock_open.assert_called_once_with(dpath.format('transactions'), 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
