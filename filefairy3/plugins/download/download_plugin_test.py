@@ -18,11 +18,12 @@ from utils.json.json_util import dumps  # noqa
 
 DATA = DownloadPlugin._data()
 BOX_NON_MLB = '<html>\n<head>\n<title>ABL Box Scores, Adelaide Bite at ' + \
-              'Melbourne Aces, 10/30/2022</title>'
+              'Melbourne Aces, 08/16/2022</title>'
 BOX_MLB_NOW = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners at ' + \
               'Los Angeles Dodgers, 08/16/2022</title>'
 BOX_MLB_THEN = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners ' + \
                'at Los Angeles Dodgers, 08/15/2022</title>'
+LOG = '[%T] Top of the 1st...'
 INJ_NOW = '20220817\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
           '</a>: <a href=\"../players/player_1.html\">Zack Weiss</a> ' + \
           'diagnosed with a strained hamstring, will miss 4 weeks.\n' + \
@@ -155,14 +156,14 @@ class DownloadPluginTest(unittest.TestCase):
 
     @mock.patch.object(DownloadPlugin, '_leagues')
     @mock.patch('plugins.download.download_plugin.wget_file')
-    @mock.patch.object(DownloadPlugin, '_boxes')
-    def test_download(self, mock_boxes, mock_file, mock_leagues):
+    @mock.patch.object(DownloadPlugin, '_games')
+    def test_download(self, mock_games, mock_file, mock_leagues):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
         plugin._download()
 
         write = {'downloaded': True, 'now': NOW_ENCODED, 'then': NOW_ENCODED}
-        mock_boxes.assert_called_once_with()
+        mock_games.assert_called_once_with()
         mock_file.assert_called_once_with()
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
@@ -170,65 +171,120 @@ class DownloadPluginTest(unittest.TestCase):
 
     @mock.patch('plugins.download.download_plugin.os.listdir')
     @mock.patch('plugins.download.download_plugin.os.path.isfile')
-    @mock.patch.object(DownloadPlugin, '_boxes_internal')
-    def test_boxes(self, mock_boxes, mock_isfile, mock_listdir):
+    @mock.patch.object(DownloadPlugin, '_games_internal')
+    def test_games(self, mock_games, mock_isfile, mock_listdir):
         mock_isfile.return_value = True
         mock_listdir.return_value = ['game_box_123.html', 'game_box_456.html']
 
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        plugin._boxes()
+        plugin._games()
 
         boxes = 'download/news/html/box_scores'
-        dpath = os.path.join(_root, 'extract/box_scores/game_box_{}.html')
-        d123 = dpath.format('123')
-        d456 = dpath.format('456')
-        fpath = os.path.join(_root, boxes, 'game_box_{}.html')
-        f123 = fpath.format('123')
-        f456 = fpath.format('456')
-        mock_isfile.assert_has_calls([mock.call(f123), mock.call(f456)])
+        bdpath = os.path.join(_root, 'extract/box_scores/game_box_{}.html')
+        bd123 = bdpath.format('123')
+        bd456 = bdpath.format('456')
+        bfpath = os.path.join(_root, boxes, 'game_box_{}.html')
+        bf123 = bfpath.format('123')
+        bf456 = bfpath.format('456')
+        leagues = 'download/news/txt/leagues'
+        ldpath = os.path.join(_root, 'extract/game_logs/log_{}.txt')
+        ld123 = ldpath.format('123')
+        ld456 = ldpath.format('456')
+        lfpath = os.path.join(_root, leagues, 'log_{}.txt')
+        lf123 = lfpath.format('123')
+        lf456 = lfpath.format('456')
         calls = [
-            mock.call('game_box_123.html', d123, f123),
-            mock.call('game_box_456.html', d456, f456)
+            mock.call(bf123),
+            mock.call(lf123),
+            mock.call(bf456),
+            mock.call(lf456)
         ]
-        mock_boxes.assert_has_calls(calls)
+        mock_isfile.assert_has_calls(calls)
+        calls = [
+            mock.call(bd123, bf123, ld123, lf123),
+            mock.call(bd456, bf456, ld456, lf456)
+        ]
+        mock_games.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
-    def test_boxes_internal__mlb_then(self, mock_open):
-        mo = mock.mock_open(read_data=BOX_MLB_THEN)
-        mock_handle = mo()
-        mock_open.side_effect = [mo.return_value, mo.return_value]
+    def test_games_internal__mlb_now(self, mock_open):
+        bmo = mock.mock_open(read_data=BOX_MLB_NOW)
+        mock_bhandle = bmo()
+        lmo = mock.mock_open(read_data=LOG)
+        mock_lhandle = lmo()
+        mock_open.side_effect = [
+            bmo.return_value, lmo.return_value, bmo.return_value,
+            lmo.return_value
+        ]
 
-        box = 'game_box_12345.html'
-        dname = 'extract/box_scores/game_box_12345.html'
-        fname = 'download/news/html/box_scores/game_box_12345.html'
+        bdname = 'extract/box_scores/game_box_12345.html'
+        bfname = 'download/news/html/box_scores/game_box_12345.html'
+        ldname = 'extract/game_logs/log_12345.txt'
+        lfname = 'download/news/txt/leagues/log_12345.txt'
         read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        plugin._boxes_internal(box, dname, fname)
+        plugin._games_internal(bdname, bfname, ldname, lfname)
 
-        mock_open.assert_called_once_with(fname, 'r')
-        mock_handle.write.assert_not_called()
+        calls = [
+            mock.call(bfname, 'r'),
+            mock.call(lfname, 'r'),
+            mock.call(bdname, 'w'),
+            mock.call(ldname, 'w')
+        ]
+        mock_open.assert_has_calls(calls)
+        mock_bhandle.write.assert_called_once_with(BOX_MLB_NOW)
+        mock_lhandle.write.assert_called_once_with(LOG)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['now'], NOW_ENCODED)
+
+    @mock.patch('plugins.download.download_plugin.open', create=True)
+    def test_games_internal__mlb_then(self, mock_open):
+        bmo = mock.mock_open(read_data=BOX_MLB_THEN)
+        mock_bhandle = bmo()
+        lmo = mock.mock_open(read_data=LOG)
+        mock_lhandle = lmo()
+        mock_open.side_effect = [bmo.return_value, lmo.return_value]
+
+        bdname = 'extract/box_scores/game_box_12345.html'
+        bfname = 'download/news/html/box_scores/game_box_12345.html'
+        ldname = 'extract/game_logs/log_12345.txt'
+        lfname = 'download/news/txt/leagues/log_12345.txt'
+        read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
+        plugin = self.create_plugin(read)
+        plugin._games_internal(bdname, bfname, ldname, lfname)
+
+        calls = [mock.call(bfname, 'r'), mock.call(lfname, 'r')]
+        mock_open.assert_has_calls(calls)
+        mock_bhandle.write.assert_not_called()
+        mock_lhandle.write.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], THEN_ENCODED)
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
-    def test_boxes_internal__non_mlb(self, mock_open):
-        mo = mock.mock_open(read_data=BOX_NON_MLB)
-        mock_handle = mo()
-        mock_open.side_effect = [mo.return_value, mo.return_value]
+    def test_games_internal__non_mlb(self, mock_open):
+        bmo = mock.mock_open(read_data=BOX_NON_MLB)
+        mock_bhandle = bmo()
+        lmo = mock.mock_open(read_data=LOG)
+        mock_lhandle = lmo()
+        mock_open.side_effect = [bmo.return_value, lmo.return_value]
 
-        box = 'game_box_12345.html'
-        dname = 'extract/box_scores/game_box_12345.html'
-        fname = 'download/news/html/box_scores/game_box_12345.html'
+        bdname = 'extract/box_scores/game_box_12345.html'
+        bfname = 'download/news/html/box_scores/game_box_12345.html'
+        ldname = 'extract/game_logs/log_12345.txt'
+        lfname = 'download/news/txt/leagues/log_12345.txt'
         read = {'downloaded': False, 'now': THEN_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        plugin._boxes_internal(box, dname, fname)
+        plugin._games_internal(bdname, bfname, ldname, lfname)
 
-        mock_open.assert_called_once_with(fname, 'r')
-        mock_handle.write.assert_not_called()
+        calls = [mock.call(bfname, 'r'), mock.call(lfname, 'r')]
+        mock_open.assert_has_calls(calls)
+        mock_bhandle.write.assert_not_called()
+        mock_lhandle.write.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], THEN_ENCODED)

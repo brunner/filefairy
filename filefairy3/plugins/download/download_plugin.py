@@ -62,35 +62,43 @@ class DownloadPlugin(PluginApi, SerializableApi):
         wget_file()
         self.data['then'] = self.data['now']
 
-        self._boxes()
+        self._games()
         self._leagues()
 
         self.data['downloaded'] = True
         self.write()
 
-    def _boxes(self):
+    def _games(self):
         boxes = 'download/news/html/box_scores'
+        leagues = 'download/news/txt/leagues'
         for box in os.listdir(os.path.join(_root, boxes)):
-            dname = os.path.join(_root, 'extract/box_scores', box)
-            fname = os.path.join(_root, boxes, box)
-            if not os.path.isfile(fname):
+            bdname = os.path.join(_root, 'extract/box_scores', box)
+            bfname = os.path.join(_root, boxes, box)
+            log = box.replace('game_box', 'log').replace('html', 'txt')
+            ldname = os.path.join(_root, 'extract/game_logs', log)
+            lfname = os.path.join(_root, leagues, log)
+            if not os.path.isfile(bfname) or not os.path.isfile(lfname):
                 continue
-            self._boxes_internal(box, dname, fname)
+            self._games_internal(bdname, bfname, ldname, lfname)
 
-    def _boxes_internal(self, box, dname, fname):
+    def _games_internal(self, bdname, bfname, ldname, lfname):
         then = decode_datetime(self.data['then'])
         now = decode_datetime(self.data['now'])
 
-        with open(fname, 'r') as ff:
-            content = ff.read()
+        with open(bfname, 'r') as bff:
+            bcontent = bff.read()
+        with open(lfname, 'r') as lff:
+            lcontent = lff.read()
 
         pattern = 'MLB Box Scores[^\d]+(\d{2}\/\d{2}\/\d{4})'
-        match = re.findall(pattern, content)
+        match = re.findall(pattern, bcontent)
         if match:
             date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
             if date >= then:
-                with open(dname, 'w') as df:
-                    df.write(content)
+                with open(bdname, 'w') as bdf:
+                    bdf.write(bcontent)
+                with open(ldname, 'w') as ldf:
+                    ldf.write(lcontent)
             if date >= now:
                 now = date + datetime.timedelta(days=1)
 
