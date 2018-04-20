@@ -2,6 +2,7 @@
 {% import "common.html" as common %}
 {% block content %}
     <div class="container">
+      {{ common.alert('magnifying-glass', 'Filter')|indent(6) }}
       {{ common.form()|indent(6) }}
     </div>
     {% if injuries %}
