@@ -8,7 +8,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
-from utils.secrets.secrets_util import filefairy  # noqa
+from utils.secrets.secrets_util import brunnerj, filefairy  # noqa
 from utils.urllib.urllib_util import urlopen, create_request  # noqa
 
 
@@ -26,7 +26,7 @@ def _call(method, params):
 
 def channels_kick(channel, user):
     return _call('channels.kick', {
-        'token': filefairy,
+        'token': brunnerj,
         'channel': channel,
         'user': user,
     })

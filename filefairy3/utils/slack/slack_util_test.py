@@ -11,7 +11,7 @@ import urllib2
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
-from utils.secrets.secrets_util import filefairy  # noqa
+from utils.secrets.secrets_util import brunnerj, filefairy  # noqa
 from utils.slack.slack_util import channels_kick, channels_history, channels_list, chat_post_message  # noqa
 from utils.slack.slack_util import files_upload, reactions_add, rtm_connect, users_list  # noqa
 
@@ -23,7 +23,7 @@ class SlackUtilTest(unittest.TestCase):
         mock_request.return_value = urllib2.Request(
             'https://slack.com/api/channels.kick',
             urllib.urlencode({
-                'token': filefairy,
+                'token': brunnerj,
                 'channel': 'channel',
                 'user': 'U1234',
             }))
@@ -33,7 +33,7 @@ class SlackUtilTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_request.assert_called_once_with(
             'https://slack.com/api/channels.kick', {
-                'token': filefairy,
+                'token': brunnerj,
                 'channel': 'channel',
                 'user': 'U1234',
             })
