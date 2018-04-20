@@ -105,7 +105,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
     @staticmethod
     def _middle(text):
-        s = '<span class="d-inline-block align-middle pl-3">{}</span>'
+        s = '<span class="d-inline-block align-middle px-2">{}</span>'
         return s.format(text)
 
     @staticmethod

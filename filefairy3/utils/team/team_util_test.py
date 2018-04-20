@@ -124,7 +124,7 @@ class TeamUtilTest(unittest.TestCase):
     def test_logo(self):
         _logo = '<img src="https://orangeandblueleaguebaseball.com/' + \
                 'StatsLab/reports/news/html/images/team_logos/{}_40.png" ' + \
-                'width="24" height="24" border="0" class="d-inline-block">'
+                'width="20" height="20" border="0" class="d-inline-block">'
 
         self.assertEqual(logo('31'), _logo.format('arizona_diamondbacks'))
         self.assertEqual(logo('32'), _logo.format('atlanta_braves'))

@@ -5,8 +5,8 @@
 def _team(logo, body):
     img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
           'reports/news/html/images/team_logos/{}_40.png" ' + \
-          'width="24" height="24" border="0" class="d-inline-block">'
-    span = '<span class="d-inline-block align-middle pl-3">{}</span>'
+          'width="20" height="20" border="0" class="d-inline-block">'
+    span = '<span class="d-inline-block align-middle px-2">{}</span>'
     body[0] = img.format(logo) + span.format(body[0])
     return body
 
