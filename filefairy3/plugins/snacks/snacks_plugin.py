@@ -106,9 +106,9 @@ class SnacksPlugin(PluginApi, SerializableApi):
                 chat_post_message(channel, response)
                 ret = ActivityEnum.BASE
 
-            match = re.findall('^<@U3ULC7DBP> kick @(.+)$', text)
-            if match and match[0] in self.ids:
-                channels_kick(channel, self.ids[match[0]])
+            match = re.findall('^<@U3ULC7DBP> kick <@(.+)>$', text)
+            if match and match[0] in self.names:
+                channels_kick(channel, match[0])
                 ret = ActivityEnum.BASE
 
             match = re.findall('^<@U3ULC7DBP> say (.+)$', text)
@@ -135,7 +135,6 @@ class SnacksPlugin(PluginApi, SerializableApi):
             self._corpus()
             self.cfd = cfd(4, *self._fnames())
             self.day = day
-            self.ids = self._ids()
             self.names = self._names()
 
         return ActivityEnum.NONE
@@ -143,22 +142,12 @@ class SnacksPlugin(PluginApi, SerializableApi):
     def _setup_internal(self, **kwargs):
         self.cfd = cfd(4, *self._fnames())
         self.day = kwargs['date'].day
-        self.ids = self._ids()
         self.names = self._names()
 
     @staticmethod
     def _fnames():
         d = os.path.join(_root, 'corpus')
         return [os.path.join(d, c) for c in os.listdir(d)]
-
-    @staticmethod
-    def _ids():
-        users = users_list()
-        members = {}
-        if users['ok']:
-            for member in users['members']:
-                members[member['name']] = member['id']
-        return members
 
     @staticmethod
     def _names():

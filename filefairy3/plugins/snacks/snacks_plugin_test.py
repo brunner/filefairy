@@ -145,6 +145,28 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
+    @mock.patch('plugins.snacks.snacks_plugin.channels_kick')
+    def test_on_message__with_kick_text(self, mock_kick):
+        obj = {
+            'channel': 'C9YE6NQG0',
+            'text': '<@U3ULC7DBP> kick <@U5678>',
+            'ts': '1000.789',
+            'user': 'U1234',
+        }
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read, {'U5678': 'user'})
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertEqual(ret, ActivityEnum.BASE)
+
+        write = {'members': MEMBERS_NOW}
+        mock_kick.assert_called_once_with('C9YE6NQG0', 'U5678')
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
     def test_on_message__with_say_text(self):
         obj = {
             'channel': 'C9YE6NQG0',
@@ -251,10 +273,10 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(SnacksPlugin, '_names')
-    @mock.patch.object(SnacksPlugin, '_ids')
     @mock.patch.object(SnacksPlugin, '_fnames')
     @mock.patch.object(SnacksPlugin, '_corpus')
-    def test_run__with_different_day(self, mock_corpus, mock_fnames, mock_ids, mock_names):
+    def test_run__with_different_day(self, mock_corpus, mock_fnames,
+                                     mock_names):
         fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
         mock_fnames.return_value = fnames
 
@@ -264,7 +286,6 @@ class SnacksPluginTest(unittest.TestCase):
 
         mock_corpus.reset_mock()
         mock_fnames.reset_mock()
-        mock_ids.reset_mock()
         mock_names.reset_mock()
         self.reset_mocks()
 
@@ -273,7 +294,6 @@ class SnacksPluginTest(unittest.TestCase):
 
         mock_corpus.assert_called_once_with()
         mock_fnames.assert_called_once_with()
-        mock_ids.assert_called_once_with()
         mock_names.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -284,10 +304,10 @@ class SnacksPluginTest(unittest.TestCase):
         self.assertEqual(plugin.day, 27)
 
     @mock.patch.object(SnacksPlugin, '_names')
-    @mock.patch.object(SnacksPlugin, '_ids')
     @mock.patch.object(SnacksPlugin, '_fnames')
     @mock.patch.object(SnacksPlugin, '_corpus')
-    def test_run__with_same_day(self, mock_corpus, mock_fnames, mock_ids, mock_names):
+    def test_run__with_same_day(self, mock_corpus, mock_fnames,
+                                mock_names):
         fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
         mock_fnames.return_value = fnames
 
@@ -297,7 +317,6 @@ class SnacksPluginTest(unittest.TestCase):
 
         mock_corpus.reset_mock()
         mock_fnames.reset_mock()
-        mock_ids.reset_mock()
         mock_names.reset_mock()
         self.reset_mocks()
 
@@ -306,7 +325,6 @@ class SnacksPluginTest(unittest.TestCase):
 
         mock_corpus.assert_not_called()
         mock_fnames.assert_not_called()
-        mock_ids.assert_not_called()
         mock_names.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -317,10 +335,9 @@ class SnacksPluginTest(unittest.TestCase):
         self.assertEqual(plugin.day, 26)
 
     @mock.patch.object(SnacksPlugin, '_names')
-    @mock.patch.object(SnacksPlugin, '_ids')
     @mock.patch.object(SnacksPlugin, '_fnames')
     @mock.patch.object(SnacksPlugin, '_corpus')
-    def test_setup(self, mock_corpus, mock_fnames, mock_ids, mock_names):
+    def test_setup(self, mock_corpus, mock_fnames, mock_names):
         fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
         mock_fnames.return_value = fnames
 
@@ -330,7 +347,6 @@ class SnacksPluginTest(unittest.TestCase):
 
         mock_corpus.assert_not_called()
         mock_fnames.assert_called_once_with()
-        mock_ids.assert_called_once_with()
         mock_names.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -349,20 +365,6 @@ class SnacksPluginTest(unittest.TestCase):
             os.path.join(_root, 'corpus', 'C1234.txt'),
             os.path.join(_root, 'corpus', 'C5678.txt')
         ]
-        self.assertEqual(actual, expected)
-
-    @mock.patch('plugins.snacks.snacks_plugin.users_list')
-    def test_ids(self, mock_users):
-        mock_users.return_value = {
-            'ok': True,
-            'members': [{
-                'id': 'U1234',
-                'name': 'user'
-            }]
-        }
-
-        actual = SnacksPlugin._ids()
-        expected = {'user': 'U1234'}
         self.assertEqual(actual, expected)
 
     @mock.patch('plugins.snacks.snacks_plugin.users_list')
