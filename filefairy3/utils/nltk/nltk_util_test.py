@@ -38,7 +38,7 @@ class NltkUtilTest(unittest.TestCase):
         expected = ['before', '<#C1234|channel>', 'after']
         self.assertEqual(actual, expected)
 
-    def test_fix__fix(self):
+    def test_fix__emoji(self):
         tokens = ['before', ':+1', ':', 'middle', ':', 'v', ':', 'after']
         actual = _fix(tokens)
         expected = ['before', ':+1:', 'middle', ':v:', 'after']
@@ -93,6 +93,56 @@ class NltkUtilTest(unittest.TestCase):
 
         calls = [mock.call('a.txt', 'r'), mock.call('b.txt', 'r')]
         mock_open.assert_has_calls(calls)
+
+    @mock.patch('utils.nltk.nltk_util.random.randint')
+    @mock.patch('utils.nltk.nltk_util.open', create=True)
+    def test_discuss__channel(self, mock_open, mock_randint):
+        data_a = 'The quick brown <#C1234|channel> jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+        mock_randint.return_value = 0
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = discuss('<#C1234|channel>', c, 3, 5, 10)
+        expected = '<#C1234|channel> jumps over the quick brown ' + \
+                   '<#C1234|channel> jumps over the...'
+        self.assertEqual(actual, expected)
+
+    @mock.patch('utils.nltk.nltk_util.random.randint')
+    @mock.patch('utils.nltk.nltk_util.open', create=True)
+    def test_discuss__emoji(self, mock_open, mock_randint):
+        data_a = 'The quick brown :+1: jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+        mock_randint.return_value = 0
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = discuss(':+1:', c, 3, 5, 10)
+        expected = ':+1: jumps over the quick brown :+1: jumps over the...'
+        self.assertEqual(actual, expected)
+
+    @mock.patch('utils.nltk.nltk_util.random.randint')
+    @mock.patch('utils.nltk.nltk_util.open', create=True)
+    def test_discuss__user(self, mock_open, mock_randint):
+        data_a = 'The quick brown <@U1234> jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+        mock_randint.return_value = 0
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = discuss('<@U1234>', c, 3, 5, 10)
+        expected = '<@U1234> jumps over the quick brown <@U1234> jumps ' + \
+                   'over the...'
+        self.assertEqual(actual, expected)
 
     @mock.patch('utils.nltk.nltk_util.random.randint')
     @mock.patch('utils.nltk.nltk_util.open', create=True)
