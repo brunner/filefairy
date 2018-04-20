@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
+  <title>Fairylab | statsplus</title>
+  <style>
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+    body {
+      margin: 60px 0;
+    }
+    header, footer {
+      position: absolute;
+      width: 100%;
+      height: 60px;
+      line-height: 60px;
+      background-color: #f5f5f5;
+    }
+    header {
+      top: 0;
+    }
+    footer {
+      bottom: 0;
+    }
+    .alert, .form-control {
+      padding: .75rem;
+    }
+    .alert .oi {
+      line-height: 24px;
+      padding-right: .75rem;
+    }
+    .breadcrumb {
+      background-color: inherit;
+    }
+    .flex-grow {
+      flex-grow: 1;
+    }
+    .table, .table-sm {
+      margin-bottom: 0;
+    }
+    .table .thead-light td {
+      background-color: #f5f5f5;
+    }
+    .table-sm td {
+      border-top: 0;
+      padding: 0 .3rem 0 0;
+    }
+    .table .td-sm {
+      padding: .75rem .25rem;
+    }
+    .w-20 {
+      width: 20%;
+    }
+    .w-55p {
+      width: 55px;
+    }
+    .w-85p {
+      width: 85px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="border-bottom">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb m-0 p-0">
+          <li class="breadcrumb-item">
+            <a href="/fairylab/">Home</a>
+          </li>
+          <li class="breadcrumb-item active"
+              aria-current="page">Statsplus</li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+  <main role="main" class="pb-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-monitor text-secondary"></span>Live
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" colspan="5" class="text-center">American League</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_yankees_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-2</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/boston_red_sox_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/tampa_bay_rays_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/toronto_blue_jays_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">2-4</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/baltimore_orioles_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">0-6</span></td>
+              </tr>
+              <tr>
+                <td scope="row" class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/detroit_tigers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/kansas_city_royals_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/minnesota_twins_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_white_sox_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">3-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cleveland_indians_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">1-4</span></td>
+              </tr>
+              <tr>
+                <td scope="row" class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/houston_astros_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">5-2</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/oakland_athletics_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_angels_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">3-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/texas_rangers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">3-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/seattle_mariners_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">2-5</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" colspan="5" class="text-center">National League</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/atlanta_braves_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">5-1</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_mets_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">5-1</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/philadelphia_phillies_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">5-2</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/miami_marlins_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">2-5</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/washington_nationals_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">1-6</span></td>
+              </tr>
+              <tr>
+                <td scope="row" class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/st_louis_cardinals_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">6-0</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cincinnati_reds_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">3-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_cubs_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">3-4</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/milwaukee_brewers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">2-4</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/pittsburgh_pirates_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">1-5</span></td>
+              </tr>
+              <tr>
+                <td scope="row" class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_dodgers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-2</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_diego_padres_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-2</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/arizona_diamondbacks_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">4-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/colorado_rockies_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">2-3</span></td>
+                <td class="td-sm text-center w-20"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_francisco_giants_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">2-5</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-magnifying-glass text-secondary"></span>Filter
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <nav class="navbar navbar-light bg-light mt-3 p-0">
+            <form class="w-100">
+              <input class="form-control mr-sm-2" type="search"
+                     placeholder="Filter" aria-label="Filter">
+            </form>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-layers text-secondary"></span>Final Scores
+          </div>
+        </div>
+      </div>
+      <div class="row" id="scores">
+        <div class="col-12">
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Sunday, October 9th, 2022</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2998.html">Arizona 4, Los Angeles 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3003.html">Atlanta 2, Los Angeles 1</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2996.html">Cincinnati 7, Milwaukee 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3002.html">Detroit 11, Chicago 4</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2993.html">Houston 7, Seattle 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2991.html">Kansas City 8, Cleveland 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_14721.html">Miami 6, Chicago 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3001.html">New York 1, San Francisco 0</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3000.html">New York 5, Baltimore 3</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2992.html">Philadelphia 3, Washington 1</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2999.html">San Diego 8, Colorado 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2990.html">St. Louis 5, Pittsburgh 4</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2997.html">Tampa Bay 12, Boston 9</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2994.html">Texas 5, Oakland 3</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2995.html">Toronto 8, Minnesota 2</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Saturday, October 8th, 2022</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2979.html">Atlanta 10, Los Angeles 5</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2984.html">Boston 10, Tampa Bay 5</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2975.html">Chicago 10, Miami 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2977.html">Chicago 5, Detroit 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2983.html">Cincinnati 8, Milwaukee 0</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2989.html">Cleveland 3, Kansas City 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2976.html">Houston 6, Seattle 3</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2978.html">Los Angeles 5, Arizona 1</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2981.html">Minnesota 10, Toronto 7</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2987.html">New York 5, Baltimore 4</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2982.html">Philadelphia 3, Washington 2</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2986.html">San Diego 6, Colorado 5</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2985.html">San Francisco 5, New York 4</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2988.html">St. Louis 4, Pittsburgh 1</a></td>
+              </tr>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2980.html">Texas 9, Oakland 1</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-pulse text-secondary"></span>Injuries
+          </div>
+        </div>
+      </div>
+      <div class="row" id="injuries">
+        <div class="col-12">
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Sunday, October 9th, 2022</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">RF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_36649.html">Elier Hernandez</a> was injured while running the bases (Cleveland @ Kansas City)</td>
+              </tr>
+              <tr>
+                <td scope="row">RF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_34118.html">Gregory Polanco</a> was injured on a defensive play (Milwaukee @ Cincinnati)</td>
+              </tr>
+              <tr>
+                <td scope="row">SS <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_30016.html">Austin Bodrato</a> was injured while running the bases (Milwaukee @ Cincinnati)</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Saturday, October 8th, 2022</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">3B <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_33777.html">Kaleb Cowart</a> was injured in a collision at a base (Cleveland @ Kansas City)</td>
+              </tr>
+              <tr>
+                <td scope="row">LF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_29996.html">Keon Broxton</a> was injured while throwing the ball (Houston @ Seattle)</td>
+              </tr>
+              <tr>
+                <td scope="row">LF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_26747.html">Desmond Lindsay</a> was injured on a defensive play (New York @ Baltimore)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-bolt text-secondary"></span>Highlights
+          </div>
+        </div>
+      </div>
+      <div class="row" id="highlights">
+        <div class="col-12">
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Saturday, October 8th, 2022</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row"><a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_38868.html">Connor Harrell</a> ties the BOS regular season game record for runs with 4 (Boston @ Tampa Bay)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-compass text-secondary"></span>Forecast
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">AL East</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/boston_red_sox_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Boston</span></td>
+                <td class="text-right w-55p">99</td>
+                <td class="text-right w-55p">63</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_yankees_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">New York</span></td>
+                <td class="text-right w-55p">88</td>
+                <td class="text-right w-55p">74</td>
+                <td class="text-right w-55p">11</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/toronto_blue_jays_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Toronto</span></td>
+                <td class="text-right w-55p">73</td>
+                <td class="text-right w-55p">89</td>
+                <td class="text-right w-55p">26</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/baltimore_orioles_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Baltimore</span></td>
+                <td class="text-right w-55p">70</td>
+                <td class="text-right w-55p">92</td>
+                <td class="text-right w-55p">29</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/tampa_bay_rays_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Tampa Bay</span></td>
+                <td class="text-right w-55p">65</td>
+                <td class="text-right w-55p">97</td>
+                <td class="text-right w-55p">34</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">AL Central</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/minnesota_twins_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Minnesota</span></td>
+                <td class="text-right w-55p">88</td>
+                <td class="text-right w-55p">74</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/detroit_tigers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Detroit</span></td>
+                <td class="text-right w-55p">86</td>
+                <td class="text-right w-55p">76</td>
+                <td class="text-right w-55p">2</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_white_sox_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Chicago</span></td>
+                <td class="text-right w-55p">82</td>
+                <td class="text-right w-55p">80</td>
+                <td class="text-right w-55p">6</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cleveland_indians_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Cleveland</span></td>
+                <td class="text-right w-55p">76</td>
+                <td class="text-right w-55p">86</td>
+                <td class="text-right w-55p">12</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/kansas_city_royals_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Kansas City</span></td>
+                <td class="text-right w-55p">76</td>
+                <td class="text-right w-55p">86</td>
+                <td class="text-right w-55p">12</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">AL West</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/seattle_mariners_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Seattle</span></td>
+                <td class="text-right w-55p">98</td>
+                <td class="text-right w-55p">64</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/houston_astros_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Houston</span></td>
+                <td class="text-right w-55p">85</td>
+                <td class="text-right w-55p">77</td>
+                <td class="text-right w-55p">13</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/oakland_athletics_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Oakland</span></td>
+                <td class="text-right w-55p">75</td>
+                <td class="text-right w-55p">87</td>
+                <td class="text-right w-55p">23</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_angels_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Los Angeles</span></td>
+                <td class="text-right w-55p">70</td>
+                <td class="text-right w-55p">92</td>
+                <td class="text-right w-55p">28</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/texas_rangers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Texas</span></td>
+                <td class="text-right w-55p">67</td>
+                <td class="text-right w-55p">95</td>
+                <td class="text-right w-55p">31</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">AL Wild Card</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_yankees_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">New York</span></td>
+                <td class="text-right w-55p">88</td>
+                <td class="text-right w-55p">74</td>
+                <td class="text-right w-55p">+2</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/detroit_tigers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Detroit</span></td>
+                <td class="text-right w-55p">86</td>
+                <td class="text-right w-55p">76</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/houston_astros_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Houston</span></td>
+                <td class="text-right w-55p">85</td>
+                <td class="text-right w-55p">77</td>
+                <td class="text-right w-55p">1</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_white_sox_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Chicago</span></td>
+                <td class="text-right w-55p">82</td>
+                <td class="text-right w-55p">80</td>
+                <td class="text-right w-55p">4</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">NL East</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_mets_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">New York</span></td>
+                <td class="text-right w-55p">95</td>
+                <td class="text-right w-55p">67</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/miami_marlins_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Miami</span></td>
+                <td class="text-right w-55p">84</td>
+                <td class="text-right w-55p">78</td>
+                <td class="text-right w-55p">11</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/atlanta_braves_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Atlanta</span></td>
+                <td class="text-right w-55p">77</td>
+                <td class="text-right w-55p">85</td>
+                <td class="text-right w-55p">18</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/philadelphia_phillies_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Philadelphia</span></td>
+                <td class="text-right w-55p">75</td>
+                <td class="text-right w-55p">87</td>
+                <td class="text-right w-55p">20</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/washington_nationals_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Washington</span></td>
+                <td class="text-right w-55p">73</td>
+                <td class="text-right w-55p">89</td>
+                <td class="text-right w-55p">22</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">NL Central</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cincinnati_reds_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Cincinnati</span></td>
+                <td class="text-right w-55p">111</td>
+                <td class="text-right w-55p">51</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/st_louis_cardinals_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">St. Louis</span></td>
+                <td class="text-right w-55p">89</td>
+                <td class="text-right w-55p">73</td>
+                <td class="text-right w-55p">22</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/milwaukee_brewers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Milwaukee</span></td>
+                <td class="text-right w-55p">77</td>
+                <td class="text-right w-55p">85</td>
+                <td class="text-right w-55p">34</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_cubs_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Chicago</span></td>
+                <td class="text-right w-55p">71</td>
+                <td class="text-right w-55p">91</td>
+                <td class="text-right w-55p">40</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/pittsburgh_pirates_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Pittsburgh</span></td>
+                <td class="text-right w-55p">53</td>
+                <td class="text-right w-55p">109</td>
+                <td class="text-right w-55p">58</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">NL West</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_diego_padres_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">San Diego</span></td>
+                <td class="text-right w-55p">104</td>
+                <td class="text-right w-55p">58</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_dodgers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Los Angeles</span></td>
+                <td class="text-right w-55p">97</td>
+                <td class="text-right w-55p">65</td>
+                <td class="text-right w-55p">7</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/colorado_rockies_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Colorado</span></td>
+                <td class="text-right w-55p">88</td>
+                <td class="text-right w-55p">74</td>
+                <td class="text-right w-55p">16</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/arizona_diamondbacks_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Arizona</span></td>
+                <td class="text-right w-55p">76</td>
+                <td class="text-right w-55p">86</td>
+                <td class="text-right w-55p">28</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_francisco_giants_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">San Francisco</span></td>
+                <td class="text-right w-55p">62</td>
+                <td class="text-right w-55p">100</td>
+                <td class="text-right w-55p">42</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col" class="text-truncate">NL Wild Card</td>
+                <td scope="col" class="text-right w-55p">W</td>
+                <td scope="col" class="text-right w-55p">L</td>
+                <td scope="col" class="text-right w-55p">GB</td>
+                <td scope="col" class="text-right w-55p">M#</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_dodgers_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Los Angeles</span></td>
+                <td class="text-right w-55p">97</td>
+                <td class="text-right w-55p">65</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/st_louis_cardinals_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">St. Louis</span></td>
+                <td class="text-right w-55p">89</td>
+                <td class="text-right w-55p">73</td>
+                <td class="text-right w-55p">-</td>
+                <td class="text-right w-55p">X</td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/colorado_rockies_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Colorado</span></td>
+                <td class="text-right w-55p">88</td>
+                <td class="text-right w-55p">74</td>
+                <td class="text-right w-55p">1</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+              <tr>
+                <td scope="row" class="text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/miami_marlins_40.png" width="20" height="20" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2">Miami</span></td>
+                <td class="text-right w-55p">84</td>
+                <td class="text-right w-55p">78</td>
+                <td class="text-right w-55p">5</td>
+                <td class="text-right w-55p"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="border-top">
+    <div class="container text-center">
+      <small class="text-muted">Last reloaded: 1985-10-26 06:02:30 PST</small>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+          integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+          integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+          crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+          integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+          crossorigin="anonymous"></script>
+  <script>
+    var filter = '';
+    $('.form-control').on('change keyup paste mouseup', function(e) {
+      var val = $(this).val().toLowerCase();
+      if (val != filter) {
+        filter = val;
+        $.each(['#scores', '#injuries', '#highlights'], function(i, v) {
+          row = $(v)
+          $('tbody td', row).each(function(e) {
+            if ($(this).text().toLowerCase().indexOf(filter) != -1) {
+              $(this).removeClass('d-none');
+            } else {
+              $(this).addClass('d-none');
+            }
+          });
+          $('table', row).each(function(e) {
+            if ($(this).find('tbody td:not(.d-none)').length != 0) {
+              $(this).removeClass('d-none');
+            } else {
+              $(this).addClass('d-none');
+            }
+          });
+        })
+      }
+    });
+  </script>
+</body>
+
+</html>
