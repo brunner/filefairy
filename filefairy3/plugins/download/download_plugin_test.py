@@ -169,10 +169,11 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
+    @mock.patch('plugins.download.download_plugin.recreate')
     @mock.patch('plugins.download.download_plugin.os.listdir')
     @mock.patch('plugins.download.download_plugin.os.path.isfile')
     @mock.patch.object(DownloadPlugin, '_games_internal')
-    def test_games(self, mock_games, mock_isfile, mock_listdir):
+    def test_games(self, mock_games, mock_isfile, mock_listdir, mock_recreate):
         mock_isfile.return_value = True
         mock_listdir.return_value = ['game_box_123.html', 'game_box_456.html']
 
@@ -180,15 +181,17 @@ class DownloadPluginTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._games()
 
+        box_scores = os.path.join(_root, 'extract/box_scores')
+        game_logs = os.path.join(_root, 'extract/game_logs')
         boxes = 'download/news/html/box_scores'
-        bdpath = os.path.join(_root, 'extract/box_scores/game_box_{}.html')
+        bdpath = os.path.join(box_scores, 'game_box_{}.html')
         bd123 = bdpath.format('123')
         bd456 = bdpath.format('456')
         bfpath = os.path.join(_root, boxes, 'game_box_{}.html')
         bf123 = bfpath.format('123')
         bf456 = bfpath.format('456')
         leagues = 'download/news/txt/leagues'
-        ldpath = os.path.join(_root, 'extract/game_logs/log_{}.txt')
+        ldpath = os.path.join(game_logs, 'log_{}.txt')
         ld123 = ldpath.format('123')
         ld456 = ldpath.format('456')
         lfpath = os.path.join(_root, leagues, 'log_{}.txt')
@@ -206,6 +209,8 @@ class DownloadPluginTest(unittest.TestCase):
             mock.call(bd456, bf456, ld456, lf456)
         ]
         mock_games.assert_has_calls(calls)
+        calls = [mock.call(box_scores), mock.call(game_logs)]
+        mock_recreate.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 

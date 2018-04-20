@@ -15,9 +15,13 @@ _name = 'orange_and_blue_league_baseball.tar.gz'
 _url = 'https://www.orangeandblueleaguebaseball.com/StatsLab/league_file/' + _name
 
 
+def recreate(dirname):
+    check_output(['rm', '-rf', dirname])
+    check_output(['mkdir', dirname])
+
+
 def wget_file():
-    check_output(['rm', '-rf', _download])
-    check_output(['mkdir', _download])
+    recreate(_download)
 
     cwd = os.getcwd()
     os.chdir(_download)

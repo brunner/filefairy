@@ -15,7 +15,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
-from utils.file.file_util import wget_file  # noqa
+from utils.file.file_util import recreate, wget_file  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
 
 
@@ -69,13 +69,18 @@ class DownloadPlugin(PluginApi, SerializableApi):
         self.write()
 
     def _games(self):
+        box_scores = os.path.join(_root, 'extract/box_scores')
+        game_logs = os.path.join(_root, 'extract/game_logs')
+        recreate(box_scores)
+        recreate(game_logs)
+
         boxes = 'download/news/html/box_scores'
         leagues = 'download/news/txt/leagues'
         for box in os.listdir(os.path.join(_root, boxes)):
-            bdname = os.path.join(_root, 'extract/box_scores', box)
+            bdname = os.path.join(box_scores, box)
             bfname = os.path.join(_root, boxes, box)
             log = box.replace('game_box', 'log').replace('html', 'txt')
-            ldname = os.path.join(_root, 'extract/game_logs', log)
+            ldname = os.path.join(game_logs, log)
             lfname = os.path.join(_root, leagues, log)
             if not os.path.isfile(bfname) or not os.path.isfile(lfname):
                 continue
