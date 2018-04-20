@@ -24,6 +24,14 @@ def _call(method, params):
     return obj
 
 
+def channels_kick(channel, user):
+    return _call('channels.kick', {
+        'token': filefairy,
+        'channel': channel,
+        'user': user,
+    })
+
+
 def channels_history(channel, latest):
     return _call('channels.history', {
         'token': filefairy,

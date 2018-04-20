@@ -15,7 +15,7 @@ from apis.serializable.serializable_api import SerializableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd, discuss  # noqa
-from utils.slack.slack_util import channels_list, chat_post_message, reactions_add, users_list  # noqa
+from utils.slack.slack_util import channels_kick, channels_list, chat_post_message, reactions_add, users_list  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
@@ -106,6 +106,11 @@ class SnacksPlugin(PluginApi, SerializableApi):
                 chat_post_message(channel, response)
                 ret = ActivityEnum.BASE
 
+            match = re.findall('^<@U3ULC7DBP> kick @(.+)$', text)
+            if match and match[0] in self.ids:
+                channels_kick(channel, self.ids[match[0]])
+                ret = ActivityEnum.BASE
+
             match = re.findall('^<@U3ULC7DBP> say (.+)$', text)
             if match:
                 chat_post_message(channel, match[0])
@@ -130,12 +135,16 @@ class SnacksPlugin(PluginApi, SerializableApi):
             self._corpus()
             self.cfd = cfd(4, *self._fnames())
             self.day = day
+            self.ids = self._ids()
+            self.names = self._names()
 
         return ActivityEnum.NONE
 
     def _setup_internal(self, **kwargs):
         self.cfd = cfd(4, *self._fnames())
         self.day = kwargs['date'].day
+        self.ids = self._ids()
+        self.names = self._names()
 
     @staticmethod
     def _fnames():
@@ -143,7 +152,16 @@ class SnacksPlugin(PluginApi, SerializableApi):
         return [os.path.join(d, c) for c in os.listdir(d)]
 
     @staticmethod
-    def _members():
+    def _ids():
+        users = users_list()
+        members = {}
+        if users['ok']:
+            for member in users['members']:
+                members[member['name']] = member['id']
+        return members
+
+    @staticmethod
+    def _names():
         users = users_list()
         members = {}
         if users['ok']:
@@ -165,7 +183,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
 
         for c in channels['channels']:
             channelid = c['id']
-            collected = collect(channelid, self._members())
+            collected = collect(channelid, self.names)
             fname = os.path.join(_root, 'corpus', channelid + '.txt')
             with open(fname, 'w') as f:
                 f.write(collected)
