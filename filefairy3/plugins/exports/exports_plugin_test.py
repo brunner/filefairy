@@ -54,6 +54,8 @@ BREADCRUMBS = [{
     'href': '',
     'name': 'Exports'
 }]
+TABLE_COLS = [''] + [' class="text-center"'] * 2
+STANDINGS_COLS = ['', ' class="text-center w-25"', ' class="text-center w-25"']
 
 
 class ExportsPluginTest(TestUtil):
@@ -395,17 +397,20 @@ class ExportsPluginTest(TestUtil):
         ret = plugin._home(date=THEN)
         l = card(title='100%', info=INFO_NEW, table=TABLE, ts='0s ago')
         e = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
             body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
                   [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
         c = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
             body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
                   [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
         w = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
             body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
                   [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
@@ -441,17 +446,20 @@ class ExportsPluginTest(TestUtil):
         ret = plugin._home(date=THEN)
         l = card(title='67%', info=INFO_OLD, table=TABLE, ts='0s ago')
         e = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
             body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
                   [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
         c = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
             body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
                   [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
         w = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
             body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
                   [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
@@ -487,17 +495,20 @@ class ExportsPluginTest(TestUtil):
         ret = plugin._home(date=THEN)
         l = card(title='67%', info=INFO_LOCK, table=TABLE, ts='0s ago')
         e = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
             body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
                   [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
         c = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
             body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
                   [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
         w = table(
-            cols=['', 'text-center w-25', 'text-center w-25'],
+            hcols=STANDINGS_COLS,
+            bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
             body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
                   [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
@@ -634,7 +645,6 @@ class ExportsPluginTest(TestUtil):
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
         actual = plugin._table()
-        cols = ['', 'text-center', 'text-center']
         body = [[
             'AL East',
             ExportsPlugin._success('BAL'),
@@ -644,7 +654,8 @@ class ExportsPluginTest(TestUtil):
             ExportsPlugin._success('CWS'),
             ExportsPlugin._success('DET')
         ], ['AL West', 'HOU', 'LAA']]
-        expected = table(clazz='table-sm', cols=cols, body=body)
+        expected = table(
+            clazz='table-sm', hcols=TABLE_COLS, bcols=TABLE_COLS, body=body)
         self.assertEqual(actual, expected)
 
     def test_unlock(self):

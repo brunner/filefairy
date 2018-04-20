@@ -158,9 +158,13 @@ class ExportsPlugin(PluginApi, RenderableApi):
                     l = '{0} - {1}'.format(n, o)
                     s = self._streak(teamid)
                 body.append([t, l, s])
+            cols = [
+                '', ' class="text-center w-25"', ' class="text-center w-25"'
+            ]
             ret['standings'].append(
                 table(
-                    cols=['', 'text-center w-25', 'text-center w-25'],
+                    hcols=cols,
+                    bcols=cols,
                     head=[division, 'Last 10', 'Streak'],
                     body=body))
 
@@ -227,7 +231,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _table(self):
         div = divisions()
         size = len(self.exports) / len(div)
-        cols = [''] + ['text-center'] * size
+        cols = [''] + [' class="text-center"'] * size
         body = map(lambda t: [t[0]], div)
         for i, export in enumerate(self.exports):
             teamid, status = export
@@ -237,7 +241,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
             if status == 'New':
                 text = self._success(text)
             body[i / size].append(text)
-        return table(clazz='table-sm', cols=cols, body=body)
+        return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 
     def _unlock(self):
         self.data['locked'] = False

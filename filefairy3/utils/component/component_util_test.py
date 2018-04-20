@@ -68,7 +68,8 @@ class ComponentUtilTest(unittest.TestCase):
         actual = table()
         expected = {
             'clazz': 'border mt-3',
-            'cols': None,
+            'hcols': None,
+            'bcols': None,
             'head': None,
             'body': None
         }
@@ -77,12 +78,14 @@ class ComponentUtilTest(unittest.TestCase):
     def test_table__leaguefile(self):
         actual = table(
             clazz='table-sm',
-            cols=['', '', ''],
+            hcols=['', '', ''],
+            bcols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=[['Jan 1', '5h 0m', '300,000,000']])
         expected = {
             'clazz': 'table-sm',
-            'cols': ['', '', ''],
+            'hcols': ['', '', ''],
+            'bcols': ['', '', ''],
             'head': ['Date', 'Time', 'Size'],
             'body': [['Jan 1', '5h 0m', '300,000,000']]
         }

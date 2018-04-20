@@ -54,6 +54,9 @@ _t58 = _team('texas_rangers', ['Texas', '9 - 1', 'W9'])
 _t59 = _team('toronto_blue_jays', ['Toronto', '9 - 1', 'W4'])
 _t60 = _team('washington_nationals', ['Washington', '5 - 5', 'L1'])
 
+TABLE_COLS = [''] + [' class="text-center"']*5
+STANDINGS_COLS = ['', ' class="text-center w-25"', ' class="text-center w-25"']
+
 context = {
     'title':
     'exports',
@@ -76,10 +79,10 @@ context = {
         'table': {
             'clazz':
             'table-sm',
-            'cols': [
-                '', 'text-center', 'text-center', 'text-center', 'text-center',
-                'text-center'
-            ],
+            'hcols':
+            TABLE_COLS,
+            'bcols':
+            TABLE_COLS,
             'head': [],
             'body':
             [['AL East', 'BAL', 'BOS', 'NYY', 'TB',
@@ -118,32 +121,38 @@ context = {
     },
     'standings': [{
         'clazz': 'border mt-3',
-        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'hcols': STANDINGS_COLS,
+        'bcols': STANDINGS_COLS,
         'head': ['AL East', 'Last 10', 'Streak'],
         'body': [_t34, _t48, _t57, _t59, _t33]
     }, {
         'clazz': 'border mt-3',
-        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'hcols': STANDINGS_COLS,
+        'bcols': STANDINGS_COLS,
         'head': ['AL Central', 'Last 10', 'Streak'],
         'body': [_t40, _t47, _t43, _t35, _t38]
     }, {
         'clazz': 'border mt-3',
-        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'hcols': STANDINGS_COLS,
+        'bcols': STANDINGS_COLS,
         'head': ['AL West', 'Last 10', 'Streak'],
         'body': [_t42, _t54, _t58, _t44, _t50]
     }, {
         'clazz': 'border mt-3',
-        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'hcols': STANDINGS_COLS,
+        'bcols': STANDINGS_COLS,
         'head': ['NL East', 'Last 10', 'Streak'],
         'body': [_t32, _t49, _t60, _t41, _t51]
     }, {
         'clazz': 'border mt-3',
-        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'hcols': STANDINGS_COLS,
+        'bcols': STANDINGS_COLS,
         'head': ['NL Central', 'Last 10', 'Streak'],
         'body': [_t37, _t46, _t56, _t36, _t52]
     }, {
         'clazz': 'border mt-3',
-        'cols': ['', 'text-center w-25', 'text-center w-25'],
+        'hcols': STANDINGS_COLS,
+        'bcols': STANDINGS_COLS,
         'head': ['NL West', 'Last 10', 'Streak'],
         'body': [_t39, _t53, _t45, _t31, _t55]
     }]

@@ -178,11 +178,13 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
 
             success = 'ongoing' if 's' in ts else ''
             danger = 'stalled' if 's' not in ts else ''
+            cols = ['', ' class="w-100"']
             ret['fp'] = card(
                 title=self._date(data['fp']['start']),
                 table=table(
                     clazz='table-sm',
-                    cols=['', 'w-100'],
+                    hcols=cols,
+                    bcols=cols,
                     body=[['Time: ', time],
                           ['Size: ', self._size(data['fp']['size'])]]),
                 ts=ts,
@@ -197,6 +199,9 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                 self._size(up['size'])
             ])
         ret['up'] = table(
-            cols=['', '', ''], head=['Date', 'Time', 'Size'], body=body)
+            hcols=['', '', ''],
+            bcols=['', '', ''],
+            head=['Date', 'Time', 'Size'],
+            body=body)
 
         return ret

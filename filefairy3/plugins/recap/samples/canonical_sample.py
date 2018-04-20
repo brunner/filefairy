@@ -17,14 +17,16 @@ context = {
     }],
     'injuries': [{
         'clazz': 'border mt-3',
-        'cols': [''],
+        'hcols': [''],
+        'bcols': [''],
         'head': ['Monday, July 4th, 2022'],
         'body': [[
             'Pittsburgh Pirates: <a href="../players/player_35155.html">John Barbato</a> diagnosed with a sore forearm, is day-to-day for 5 days.'
         ]]
     }, {
         'clazz': 'border mt-3',
-        'cols': [''],
+        'hcols': [''],
+        'bcols': [''],
         'head': ['Sunday, July 3th, 2022'],
         'body': [[
             'Los Angeles Angels: SP <a href="../players/player_37318.html">Ty Blach</a> was injured while pitching.  The Diagnosis: back stiffness. This is a day-to-day injury expected to last 5 days.'
@@ -42,7 +44,8 @@ context = {
     }],
     'news': [{
         'clazz': 'border mt-3',
-        'cols': [''],
+        'hcols': [''],
+        'bcols': [''],
         'head': ['Monday, July 4th, 2022'],
         'body': [[
             '1B <a href="../players/player_33892.html">Viosergy Rosa</a> of the Chicago White Sox honored: Wins the MLB AL Player of the Week Award.'
@@ -52,7 +55,8 @@ context = {
     }],
     'transactions': [{
         'clazz': 'border mt-3',
-        'cols': [''],
+        'hcols': [''],
+        'bcols': [''],
         'head': ['Monday, July 4th, 2022'],
         'body': [[
             'San Diego Padres: Signed <a href="../players/player_56862.html">Antonio Marquis</a> to a minor league contract with a signing bonus of $180,000.'

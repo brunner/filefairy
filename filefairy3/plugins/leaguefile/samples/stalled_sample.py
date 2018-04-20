@@ -21,7 +21,8 @@ context = {
         'info': '',
         'table': {
             'clazz': 'table-sm',
-            'cols': ['', 'w-100'],
+            'hcols': ['', ' class="w-100"'],
+            'bcols': ['', ' class="w-100"'],
             'head': [],
             'body': [['Time: ', '1h 8m'], ['Size: ', '59,969,530']]
         },
@@ -32,7 +33,8 @@ context = {
     'up': {
         'clazz':
         'border mt-3',
-        'cols': ['', '', ''],
+        'hcols': ['', '', ''],
+        'bcols': ['', '', ''],
         'head': ['Date', 'Time', 'Size'],
         'body': [['Mar 8', '10h 11m', '358,347,534'],
                  ['Mar 6', '9h 34m', '356,922,996']]
