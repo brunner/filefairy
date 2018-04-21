@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import copy
 import os
 import re
 import sys
@@ -38,10 +39,30 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         return 'statsplus'
 
     def _notify_internal(self, **kwargs):
-        pass
+        activity = kwargs['activity']
+        if activity == ActivityEnum.FILE:
+            self.data['finished'] = True
+            self.write()
+        return False
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        obj = kwargs['obj']
+        bot_id = obj.get('bot_id')
+        channel = obj.get('channel')
+        if bot_id != 'B7KJ3362Y' or channel != 'C7JSGHW8G':
+            return ActivityEnum.NONE
+
+        data = self.data
+        original = copy.deepcopy(data)
+
+        if self.data['finished']:
+            self.data['finished'] = False
+            self._clear()
+
+        if data != original:
+            self.write()
+
+        return ActivityEnum.BASE
 
     def _run_internal(self, **kwargs):
         return ActivityEnum.NONE
@@ -52,3 +73,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     def _setup_internal(self, **kwargs):
         pass
+
+    def _clear(self):
+        for teamid in self.data['live']:
+            self.data['live'][teamid] = '0-0'
