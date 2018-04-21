@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import copy
+import datetime
 import os
 import re
 import sys
@@ -12,6 +13,7 @@ sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
+from utils.datetime.datetime_util import encode_datetime  # noqa
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -40,7 +42,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     def _notify_internal(self, **kwargs):
         activity = kwargs['activity']
-        if activity == ActivityEnum.FILE:
+        if activity == ActivityEnum.DOWNLOAD:
             self.data['finished'] = True
             self.write()
         return False
@@ -59,12 +61,21 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             self.data['finished'] = False
             self._clear()
 
+        text = obj.get('text', '')
+
+        if 'MAJOR LEAGUE BASEBALL Final Scores' in text:
+            self._scores(text)
+
         if data != original:
             self.write()
 
         return ActivityEnum.BASE
 
     def _run_internal(self, **kwargs):
+        if self.data['updated']:
+            self.data['updated'] = False
+            self.write()
+
         return ActivityEnum.NONE
 
     def _render_internal(self, **kwargs):
@@ -75,5 +86,11 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         pass
 
     def _clear(self):
-        for teamid in self.data['live']:
-            self.data['live'][teamid] = '0-0'
+        self.data['scores'] = {}
+
+    def _scores(self, text):
+        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
+        if match:
+            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+            self.data['scores'][encode_datetime(date)] = text
+            self.data['updated'] = True

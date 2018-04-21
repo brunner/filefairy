@@ -17,8 +17,10 @@ from utils.json.json_util import dumps  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
 DATA = StatsplusPlugin._data()
-LIVE_EMPTY = '0-0'
-LIVE_FINISHED = '3-3'
+DATE_ENCODED = '2022-10-28T00:00:00'
+SCORES = '10/28/2022 MAJOR LEAGUE BASEBALL Final Scores\n*<a href=\"' + \
+         'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/' + \
+         'html/box_scores/game_box_25041.html\">Los Angeles 5, Seattle 3</a>*'
 
 
 class StatsplusPluginTest(TestUtil):
@@ -49,20 +51,18 @@ class StatsplusPluginTest(TestUtil):
 
         return plugin
 
-    def test_notify__with_file(self):
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': False, 'live': live}
+    def test_notify__with_download(self):
+        read = {'finished': False, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.FILE)
+        ret = plugin._notify_internal(activity=ActivityEnum.DOWNLOAD)
         self.assertFalse(ret)
 
-        write = {'finished': True, 'live': live}
+        write = {'finished': True, 'scores': {}, 'updated': False}
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_notify__with_none(self):
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': False, 'live': live}
+        read = {'finished': False, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
         ret = plugin._notify_internal(activity=ActivityEnum.NONE)
         self.assertFalse(ret)
@@ -79,13 +79,12 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': True, 'live': live}
+        read = {'finished': True, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        write = {'finished': False, 'live': live}
+        write = {'finished': False, 'scores': {}, 'updated': False}
         mock_clear.assert_called_once_with()
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -99,13 +98,30 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': False, 'live': live}
+        read = {'finished': False, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
         mock_clear.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_scores')
+    def test_on_message__with_scores(self, mock_scores):
+        obj = {
+            'channel': 'C7JSGHW8G',
+            'text': SCORES,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = {'finished': False, 'scores': {}, 'updated': False}
+        plugin = self.create_plugin(read)
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertEqual(ret, ActivityEnum.BASE)
+
+        mock_scores.assert_called_once_with(SCORES)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -117,8 +133,7 @@ class StatsplusPluginTest(TestUtil):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': True, 'live': live}
+        read = {'finished': True, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.NONE)
@@ -136,8 +151,7 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': True, 'live': live}
+        read = {'finished': True, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.NONE)
@@ -146,9 +160,18 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    def test_run(self):
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': False, 'live': live}
+    def test_run__with_updated_true(self):
+        read = {'finished': False, 'scores': {}, 'updated': True}
+        plugin = self.create_plugin(read)
+        ret = plugin._run_internal()
+        self.assertEqual(ret, ActivityEnum.NONE)
+
+        write = {'finished': False, 'scores': {}, 'updated': False}
+        self.mock_open.assert_called_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    def test_run__with_updated_false(self):
+        read = {'finished': False, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
         ret = plugin._run_internal()
         self.assertEqual(ret, ActivityEnum.NONE)
@@ -157,13 +180,37 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_setup(self):
-        live = {t: LIVE_EMPTY for t in range(31, 61)}
-        read = {'finished': False, 'live': live}
+        read = {'finished': False, 'scores': {}, 'updated': False}
         plugin = self.create_plugin(read)
         plugin._setup_internal()
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+
+    def test_clear(self):
+        read = {
+            'finished': False,
+            'scores': {
+                DATE_ENCODED: SCORES
+            },
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        plugin._clear()
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['scores'], {})
+
+    def test_scores(self):
+        read = {'finished': False, 'scores': {}, 'updated': False}
+        plugin = self.create_plugin(read)
+        plugin._scores(SCORES)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['scores'], {DATE_ENCODED: SCORES})
+        self.assertTrue(plugin.data['updated'])
 
 
 if __name__ in ['__main__', 'plugins.statsplus.statsplus_plugin_test']:
