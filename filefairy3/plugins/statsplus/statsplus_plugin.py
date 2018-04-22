@@ -19,6 +19,7 @@ from utils.team.team_util import divisions, hometown, ilogo  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box'
+_player = 'players/player'
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -67,9 +68,17 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             self._clear()
 
         text = obj.get('text', '')
-
-        if 'MAJOR LEAGUE BASEBALL Final Scores\n' in text:
+        pattern = '\d{2}\/\d{2}\/\d{4} MAJOR LEAGUE BASEBALL Final Scores\n'
+        if re.findall(pattern, text):
             self._final_scores(text)
+
+        pattern = '\d{2}\/\d{2}\/\d{4} Rain delay'
+        if re.findall(pattern, text):
+            self._injuries(text)
+
+        pattern = '\d{2}\/\d{2}\/\d{4} \w+ <([^|]+)\|([^<]+)> was injured'
+        if re.findall(pattern, text):
+            self._injuries(text)
 
         if data != original:
             self.write()
@@ -104,11 +113,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     @staticmethod
     def _link(text):
-        match = re.findall('^<([^|]+)\|([^<]+)>$', text)
-        if match:
-            link, content = match[0]
-            return '<a href="{0}">{1}</a>'.format(link, content)
-        return ''
+        return re.sub(r'<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', text)
 
     def _clear(self):
         self.data['scores'] = {}
@@ -122,6 +127,21 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             self.data['scores'][encode_datetime(date)] = score
             self.data['updated'] = True
 
+    def _injuries(self, text):
+        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
+        if match:
+            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+            encoded_date = encode_datetime(date)
+            if encoded_date not in self.data['injuries']:
+                self.data['injuries'][encoded_date] = []
+
+            pattern = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
+            match = re.findall(pattern, text)
+            for m in match:
+                injury = m.replace(_html + _player, '{0}{1}')
+                self.data['injuries'][encoded_date].append(injury)
+                self.data['updated'] = True
+
     def _home(self, **kwargs):
         data = self.data
         ret = {
@@ -132,7 +152,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
                 'href': '',
                 'name': 'Statsplus'
             }],
-            'scores': []
+            'scores': [],
+            'injuries': []
         }
 
         status = data['status']
@@ -141,6 +162,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
         for date in sorted(data['scores'].keys(), reverse=True):
             ret['scores'].append(self._scores_table(date))
+
+        for date in sorted(data['injuries'].keys(), reverse=True):
+            ret['injuries'].append(self._injuries_table(date))
 
         return ret
 
@@ -186,4 +210,15 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         for line in self.data['scores'][date].splitlines():
             text = line.format(_html, _game_box)
             body.append([self._link(text)])
+        return table(hcols=[''], bcols=[''], head=[fdate], body=body)
+
+    def _injuries_table(self, date):
+        pdate = decode_datetime(date)
+        fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
+            '{S}', suffix(pdate.day))
+        body = []
+        for line in self.data['injuries'][date]:
+            text = line.format(_html, _player)
+            link = self._link(text)
+            body.append([link])
         return table(hcols=[''], bcols=[''], head=[fdate], body=body)
