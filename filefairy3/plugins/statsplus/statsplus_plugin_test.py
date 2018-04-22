@@ -16,7 +16,7 @@ from plugins.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import ilogo  # noqa
+from utils.team.team_util import hometowns, ilogo  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
@@ -53,6 +53,12 @@ SEASON_SCORES = '<{0}{1}2998.html|Arizona 4, Los Angeles 2>\n' + \
                 '<{0}{1}2997.html|Tampa Bay 12, Boston 9>\n' + \
                 '<{0}{1}2994.html|Texas 5, Oakland 3>\n' + \
                 '<{0}{1}2995.html|Toronto 8, Minnesota 2>'
+HOMETOWNS = ['Arizona', 'Los Angeles', 'Atlanta', 'Los Angeles', 'Cincinnati',
+             'Milwaukee', 'Detroit', 'Chicago', 'Houston', 'Seattle',
+             'Kansas City', 'Cleveland', 'Miami', 'Chicago', 'New York',
+             'San Francisco', 'New York', 'Baltimore', 'Philadelphia',
+             'Washington', 'San Diego', 'Colorado', 'St. Louis', 'Pittsburgh',
+             'Tampa Bay', 'Boston', 'Texas', 'Oakland', 'Toronto', 'Minnesota']
 SEASON_SCORES_TEXT = SEASON_SCORES.replace('<', '*<').replace('>', '>*')
 INJURIES_DATE = '10/09/2022 '
 INJURIES_DELAY = '10/09/2022 Rain delay of 19 minutes in the 2nd inning. '
@@ -445,6 +451,11 @@ class StatsplusPluginTest(TestUtil):
             body=[])
         self.assertEqual(actual, expected)
 
+    def test_rewrite(self):
+        actual = StatsplusPlugin._rewrite('<link|Arizona 4, Los Angeles 2>')
+        expected = '<a href="link">Arizona Diamondbacks 4, Los Angeles 2</a>'
+        self.assertEqual(actual, expected)
+
     def test_final_scores(self):
         read = {
             'finished': False,
@@ -595,7 +606,13 @@ class StatsplusPluginTest(TestUtil):
         expected = ilogo('42', '1-0')
         self.assertEqual(actual, expected)
 
-    def test_scores_table(self):
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    def test_scores_table(self, mock_nickname):
+        mock_nickname.return_value = ''
+
         read = {
             'finished': False,
             'injuries': {},
@@ -615,7 +632,15 @@ class StatsplusPluginTest(TestUtil):
             body=SCORES_TABLE_BODY)
         self.assertEqual(actual, expected)
 
-    def test_injuries_table(self):
+        calls = [mock.call(h, hometown=True) for h in HOMETOWNS]
+        mock_nickname.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    def test_injuries_table(self, mock_nickname):
+        mock_nickname.return_value = ''
+
         read = {
             'finished': False,
             'injuries': {
@@ -634,6 +659,11 @@ class StatsplusPluginTest(TestUtil):
             head=['Sunday, October 9th, 2022'],
             body=INJURIES_TABLE_BODY)
         self.assertEqual(actual, expected)
+
+        calls = [mock.call(h, hometown=True) for h in ['Seattle', 'Boston']]
+        mock_nickname.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
 
 
 if __name__ in ['__main__', 'plugins.statsplus.statsplus_plugin_test']:

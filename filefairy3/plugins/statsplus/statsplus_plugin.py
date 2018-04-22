@@ -15,8 +15,9 @@ from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
-from utils.team.team_util import divisions, hometown, ilogo  # noqa
+from utils.team.team_util import hometown, nickname, divisions, hometowns, ilogo  # noqa
 
+_hometowns = hometowns()
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
 _player = 'players/player_'
@@ -103,6 +104,14 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     @staticmethod
+    def hometown_repl(matchobj):
+        _hometown = matchobj.group(0)
+        _nickname = nickname(_hometown, hometown=True)
+        if _nickname:
+            return _hometown + ' ' + _nickname
+        return _hometown
+
+    @staticmethod
     def _live_tables_header(title):
         return table(
             clazz='table-fixed border border-bottom-0 mt-3',
@@ -112,8 +121,10 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             body=[])
 
     @staticmethod
-    def _link(text):
-        return re.sub(r'<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', text)
+    def _rewrite(text):
+        linked = re.sub(r'<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', text)
+        pattern = '|'.join(_hometowns)
+        return re.sub(pattern, StatsplusPlugin.hometown_repl, linked)
 
     def _clear(self):
         self.data['scores'] = {}
@@ -209,7 +220,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         body = []
         for line in self.data['scores'][date].splitlines():
             text = line.format(_html, _game_box)
-            body.append([self._link(text)])
+            body.append([self._rewrite(text)])
         return table(hcols=[''], bcols=[''], head=[fdate], body=body)
 
     def _injuries_table(self, date):
@@ -219,6 +230,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         body = []
         for line in self.data['injuries'][date]:
             text = line.format(_html, _player)
-            link = self._link(text)
+            link = self._rewrite(text)
             body.append([link])
         return table(hcols=[''], bcols=[''], head=[fdate], body=body)
