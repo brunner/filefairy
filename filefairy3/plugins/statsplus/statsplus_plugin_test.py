@@ -23,16 +23,19 @@ _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box'
 
 DATA = StatsplusPlugin._data()
-DATE_ENCODED = '2022-10-09T00:00:00'
+NOW_ENCODED = '2022-10-10T00:00:00'
+THEN_ENCODED = '2022-10-09T00:00:00'
 HOME = {'breadcrumbs': [], 'live': []}
 INDEX = 'html/fairylab/statsplus/index.html'
 LIVE_TABLE_HEADER = table(head=['American League'])
 LIVE_TABLE_SEASON = table(body=[['BAL 1-0', 'BOS 0-1']])
-SCORES_TABLE = table(body=[['Baltimore 1, Boston 0']])
+SCORES_TABLE_NOW = table(head='2022-10-10', body=[['Baltimore 1, Boston 0']])
+SCORES_TABLE_THEN = table(head='2022-10-09', body=[['Baltimore 1, Boston 0']])
 NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
 AL = [('AL East', ['33']), ('AL Central', ['35']), ('AL West', ['42'])]
 NL = [('NL East', ['32']), ('NL Central', ['36']), ('NL West', ['31'])]
-FINAL_SCORES = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
+FINAL_SCORES_THEN = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
+FINAL_SCORES_NOW = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
 SEASON_SCORES = '*<{0}{1}_2998.html|Arizona 4, Los Angeles 2>*\n' + \
                 '*<{0}{1}_3003.html|Atlanta 2, Los Angeles 1>*\n' + \
                 '*<{0}{1}_2996.html|Cincinnati 7, Milwaukee 2>*\n' + \
@@ -199,7 +202,7 @@ class StatsplusPluginTest(TestUtil):
         scores = SEASON_SCORES.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': FINAL_SCORES + scores,
+            'text': FINAL_SCORES_THEN + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -214,7 +217,7 @@ class StatsplusPluginTest(TestUtil):
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        mock_final_scores.assert_called_once_with(FINAL_SCORES + scores)
+        mock_final_scores.assert_called_once_with(FINAL_SCORES_THEN + scores)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -338,7 +341,7 @@ class StatsplusPluginTest(TestUtil):
         read = {
             'finished': False,
             'scores': {
-                DATE_ENCODED: SEASON_SCORES
+                THEN_ENCODED: SEASON_SCORES
             },
             'status': 'season',
             'updated': False
@@ -368,24 +371,25 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        text = FINAL_SCORES + SEASON_SCORES.format(_html, _game_box)
+        text = FINAL_SCORES_THEN + SEASON_SCORES.format(_html, _game_box)
         plugin._final_scores(text)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['scores'], {DATE_ENCODED: SEASON_SCORES})
+        self.assertEqual(plugin.data['scores'], {THEN_ENCODED: SEASON_SCORES})
         self.assertTrue(plugin.data['updated'])
 
     @mock.patch.object(StatsplusPlugin, '_scores_table')
     @mock.patch.object(StatsplusPlugin, '_live_tables_season')
     def test_home__with_season(self, mock_live, mock_scores):
         mock_live.return_value = [LIVE_TABLE_SEASON]
-        mock_scores.return_value = SCORES_TABLE
+        mock_scores.side_effect = [SCORES_TABLE_NOW, SCORES_TABLE_THEN]
 
         read = {
             'finished': False,
             'scores': {
-                DATE_ENCODED: SEASON_SCORES
+                THEN_ENCODED: SEASON_SCORES,
+                NOW_ENCODED: SEASON_SCORES
             },
             'status': 'season',
             'updated': False
@@ -395,12 +399,13 @@ class StatsplusPluginTest(TestUtil):
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': [LIVE_TABLE_SEASON],
-            'scores': [SCORES_TABLE]
+            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_THEN]
         }
         self.assertEqual(ret, expected)
 
         mock_live.assert_called_once_with()
-        mock_scores.assert_called_once_with(DATE_ENCODED)
+        calls = [mock.call(NOW_ENCODED), mock.call(THEN_ENCODED)]
+        mock_scores.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -461,7 +466,7 @@ class StatsplusPluginTest(TestUtil):
         read = {
             'finished': False,
             'scores': {
-                DATE_ENCODED: SEASON_SCORES
+                THEN_ENCODED: SEASON_SCORES
             },
             'status': 'season',
             'updated': False
@@ -482,14 +487,14 @@ class StatsplusPluginTest(TestUtil):
         read = {
             'finished': False,
             'scores': {
-                DATE_ENCODED: SEASON_SCORES
+                THEN_ENCODED: SEASON_SCORES
             },
             'status': 'season',
             'updated': False
         }
         plugin = self.create_plugin(read)
 
-        actual = plugin._scores_table(DATE_ENCODED)
+        actual = plugin._scores_table(THEN_ENCODED)
         expected = table(
             hcols=[''],
             bcols=[''],

@@ -138,7 +138,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         if status == 'season':
             ret['live'] = self._live_tables_season()
 
-        for date in data['scores']:
+        for date in sorted(data['scores'].keys(), reverse=True):
             ret['scores'].append(self._scores_table(date))
 
         return ret
