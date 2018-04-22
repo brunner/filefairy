@@ -81,6 +81,10 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         if re.findall(pattern, text):
             self._injuries(text)
 
+        pattern = '\d{2}\/\d{2}\/\d{4} <([^|]+)\|([^<]+)> (?:sets|ties)'
+        if re.findall(pattern, text):
+            self._highlights(text)
+
         if data != original:
             self.write()
 
@@ -153,6 +157,21 @@ class StatsplusPlugin(PluginApi, RenderableApi):
                 self.data['injuries'][encoded_date].append(injury)
                 self.data['updated'] = True
 
+    def _highlights(self, text):
+        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
+        if match:
+            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+            encoded_date = encode_datetime(date)
+            if encoded_date not in self.data['highlights']:
+                self.data['highlights'][encoded_date] = []
+
+            pattern = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
+            match = re.findall(pattern, text)
+            for m in match:
+                highlights = m.replace(_html + _player, '{0}{1}')
+                self.data['highlights'][encoded_date].append(highlights)
+                self.data['updated'] = True
+
     def _home(self, **kwargs):
         data = self.data
         ret = {
@@ -164,7 +183,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
                 'name': 'Statsplus'
             }],
             'scores': [],
-            'injuries': []
+            'injuries': [],
+            'highlights': []
         }
 
         status = data['status']
@@ -176,6 +196,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
         for date in sorted(data['injuries'].keys(), reverse=True):
             ret['injuries'].append(self._injuries_table(date))
+
+        for date in sorted(data['highlights'].keys(), reverse=True):
+            ret['highlights'].append(self._highlights_table(date))
 
         return ret
 
@@ -229,6 +252,17 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             '{S}', suffix(pdate.day))
         body = []
         for line in self.data['injuries'][date]:
+            text = line.format(_html, _player)
+            link = self._rewrite(text)
+            body.append([link])
+        return table(hcols=[''], bcols=[''], head=[fdate], body=body)
+
+    def _highlights_table(self, date):
+        pdate = decode_datetime(date)
+        fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
+            '{S}', suffix(pdate.day))
+        body = []
+        for line in self.data['highlights'][date]:
             text = line.format(_html, _player)
             link = self._rewrite(text)
             body.append([link])
