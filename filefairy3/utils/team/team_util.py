@@ -66,13 +66,24 @@ def divisions():
         ('NL West', ('31', '39', '45', '53', '55')),
     ]
 
-_img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
+_aimg = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
         'reports/news/html/images/team_logos/{0}_40.png" width="20" ' + \
         'height="20" border="0" class="position-absolute {1}-8p top-14p">'
-_span = '<span class="d-block text-truncate align-middle p{0}-24p">{1}</span>'
+_aspan = '<span class="d-block text-truncate align-middle p{0}-24p">{1}</span>'
 
 
-def logo(teamid, text, side):
+def alogo(teamid, text, side):
     path = hometown(teamid) + ' ' + nickname(teamid)
     fname = path.replace('.', '').replace(' ', '_').lower()
-    return _img.format(fname, side) + _span.format(side[0], text)
+    return _aimg.format(fname, side) + _aspan.format(side[0], text)
+
+_iimg = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
+        'reports/news/html/images/team_logos/{}_40.png" ' + \
+        'width="20" height="20" border="0" class="d-inline-block">'
+_ispan = '<span class="d-inline-block align-middle px-2">{}</span>'
+
+
+def ilogo(teamid, text):
+    path = hometown(teamid) + ' ' + nickname(teamid)
+    fname = path.replace('.', '').replace(' ', '_').lower()
+    return _iimg.format(fname) + _ispan.format(text)

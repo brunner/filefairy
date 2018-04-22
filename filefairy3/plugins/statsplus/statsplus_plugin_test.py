@@ -16,7 +16,7 @@ from plugins.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import logo  # noqa
+from utils.team.team_util import ilogo  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
 _game_box = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/' + \
@@ -432,13 +432,13 @@ class StatsplusPluginTest(TestUtil):
         plugin = self.create_plugin(read)
 
         actual = plugin._scores_season('33')
-        expected = logo('33', '0-1', 'left')
+        expected = ilogo('33', '0-1')
         self.assertEqual(actual, expected)
         actual = plugin._scores_season('35')
-        expected = logo('35', '0-2', 'left')
+        expected = ilogo('35', '0-2')
         self.assertEqual(actual, expected)
         actual = plugin._scores_season('42')
-        expected = logo('42', '1-0', 'left')
+        expected = ilogo('42', '1-0')
         self.assertEqual(actual, expected)
 
 

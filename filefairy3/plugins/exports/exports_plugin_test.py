@@ -15,7 +15,7 @@ from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import card, table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import logo  # noqa
+from utils.team.team_util import alogo  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
 DATA = ExportsPlugin._data()
@@ -400,20 +400,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [logo('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [alogo('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [logo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [alogo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [logo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [alogo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -449,20 +449,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [logo('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [alogo('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [logo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [alogo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [logo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [alogo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -498,20 +498,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [logo('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [alogo('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [logo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [alogo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [logo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
+            body=[[alogo('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [alogo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,

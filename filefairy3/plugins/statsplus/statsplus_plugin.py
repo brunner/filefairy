@@ -15,7 +15,7 @@ from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import encode_datetime  # noqa
-from utils.team.team_util import divisions, hometown, logo  # noqa
+from utils.team.team_util import divisions, hometown, ilogo  # noqa
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -159,4 +159,4 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             score = self.data['scores'][date]
             w += len(re.findall(r'\|' + re.escape(ht), score))
             l += len(re.findall(r', ' + re.escape(ht), score))
-        return logo(teamid, '{0}-{1}'.format(w, l), 'left')
+        return ilogo(teamid, '{0}-{1}'.format(w, l))

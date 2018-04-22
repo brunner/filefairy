@@ -9,7 +9,7 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/team', '', _path)
 sys.path.append(_root)
-from utils.team.team_util import _img, _span, abbreviation, hometown, nickname, divisions, logo  # noqa
+from utils.team.team_util import _aimg, _aspan, _iimg, _ispan, abbreviation, hometown, nickname, divisions, alogo, ilogo  # noqa
 
 
 class TeamUtilTest(unittest.TestCase):
@@ -122,9 +122,15 @@ class TeamUtilTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_logo(self):
-        actual = logo('31', 'Arizona', 'left')
-        img = _img.format('arizona_diamondbacks', 'left')
-        span = _span.format('l', 'Arizona')
+        actual = alogo('31', 'Arizona', 'left')
+        img = _aimg.format('arizona_diamondbacks', 'left')
+        span = _aspan.format('l', 'Arizona')
+        expected = img + span
+        self.assertEqual(actual, expected)
+
+        actual = ilogo('31', 'Arizona')
+        img = _iimg.format('arizona_diamondbacks')
+        span = _ispan.format('Arizona')
         expected = img + span
         self.assertEqual(actual, expected)
 
