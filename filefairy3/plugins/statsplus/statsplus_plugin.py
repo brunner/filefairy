@@ -27,7 +27,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     @property
     def enabled(self):
-        return True
+        return False
 
     @staticmethod
     def _data():
