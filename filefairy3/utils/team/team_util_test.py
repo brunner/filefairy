@@ -9,7 +9,7 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/team', '', _path)
 sys.path.append(_root)
-from utils.team.team_util import abbreviation, hometown, nickname, divisions, logo  # noqa
+from utils.team.team_util import _img, _span, abbreviation, hometown, nickname, divisions, logo  # noqa
 
 
 class TeamUtilTest(unittest.TestCase):
@@ -122,41 +122,11 @@ class TeamUtilTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_logo(self):
-        _logo = '<img src="https://orangeandblueleaguebaseball.com/' + \
-                'StatsLab/reports/news/html/images/team_logos/{}_40.png" ' + \
-                'width="20" height="20" border="0" class="d-inline-block">'
-
-        self.assertEqual(logo('31'), _logo.format('arizona_diamondbacks'))
-        self.assertEqual(logo('32'), _logo.format('atlanta_braves'))
-        self.assertEqual(logo('33'), _logo.format('baltimore_orioles'))
-        self.assertEqual(logo('34'), _logo.format('boston_red_sox'))
-        self.assertEqual(logo('35'), _logo.format('chicago_white_sox'))
-        self.assertEqual(logo('36'), _logo.format('chicago_cubs'))
-        self.assertEqual(logo('37'), _logo.format('cincinnati_reds'))
-        self.assertEqual(logo('38'), _logo.format('cleveland_indians'))
-        self.assertEqual(logo('39'), _logo.format('colorado_rockies'))
-        self.assertEqual(logo('40'), _logo.format('detroit_tigers'))
-        self.assertEqual(logo('41'), _logo.format('miami_marlins'))
-        self.assertEqual(logo('42'), _logo.format('houston_astros'))
-        self.assertEqual(logo('43'), _logo.format('kansas_city_royals'))
-        self.assertEqual(logo('44'), _logo.format('los_angeles_angels'))
-        self.assertEqual(logo('45'), _logo.format('los_angeles_dodgers'))
-        self.assertEqual(logo('46'), _logo.format('milwaukee_brewers'))
-        self.assertEqual(logo('47'), _logo.format('minnesota_twins'))
-        self.assertEqual(logo('48'), _logo.format('new_york_yankees'))
-        self.assertEqual(logo('49'), _logo.format('new_york_mets'))
-        self.assertEqual(logo('50'), _logo.format('oakland_athletics'))
-        self.assertEqual(
-            logo('51'), _logo.format('philadelphia_phillies'))
-        self.assertEqual(logo('52'), _logo.format('pittsburgh_pirates'))
-        self.assertEqual(logo('53'), _logo.format('san_diego_padres'))
-        self.assertEqual(logo('54'), _logo.format('seattle_mariners'))
-        self.assertEqual(logo('55'), _logo.format('san_francisco_giants'))
-        self.assertEqual(logo('56'), _logo.format('st_louis_cardinals'))
-        self.assertEqual(logo('57'), _logo.format('tampa_bay_rays'))
-        self.assertEqual(logo('58'), _logo.format('texas_rangers'))
-        self.assertEqual(logo('59'), _logo.format('toronto_blue_jays'))
-        self.assertEqual(logo('60'), _logo.format('washington_nationals'))
+        actual = logo('31', 'Arizona', 'left')
+        img = _img.format('arizona_diamondbacks', 'left')
+        span = _span.format('l', 'Arizona')
+        expected = img + span
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':

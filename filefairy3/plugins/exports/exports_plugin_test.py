@@ -400,20 +400,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
-                  [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
+            body=[[logo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [logo('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
-                  [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
+            body=[[logo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [logo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
-                  [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
+            body=[[logo('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [logo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -449,20 +449,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
-                  [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
+            body=[[logo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [logo('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
-                  [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
+            body=[[logo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [logo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
-                  [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
+            body=[[logo('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [logo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -498,20 +498,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo('33') + plugin._middle('Baltimore'), '1 - 0', 'W1'],
-                  [logo('34') + plugin._middle('Boston'), '1 - 0', 'W1']])
+            body=[[logo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [logo('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo('35') + plugin._middle('Chicago'), '1 - 0', 'W1'],
-                  [logo('40') + plugin._middle('Detroit'), '1 - 0', 'W1']])
+            body=[[logo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [logo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo('42') + plugin._middle('Houston'), '1 - 0', 'W1'],
-                  [logo('44') + plugin._middle('Los Angeles'), '1 - 0', 'W1']])
+            body=[[logo('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [logo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,

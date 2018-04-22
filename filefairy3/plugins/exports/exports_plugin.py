@@ -104,11 +104,6 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return re.findall(r"team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
 
     @staticmethod
-    def _middle(text):
-        s = '<span class="d-inline-block align-middle px-2">{}</span>'
-        return s.format(text)
-
-    @staticmethod
     def _secondary(text):
         s = '<span class="text-secondary">{}</span>'
         return s.format(text)
@@ -150,7 +145,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         for division, teamids in divisions():
             body = []
             for teamid in sorted(teamids, key=self._sorted):
-                t = logo(teamid) + self._middle(hometown(teamid))
+                t = logo(teamid, hometown(teamid), 'left')
                 if teamid in data['ai']:
                     l, s = '-', '-'
                 else:

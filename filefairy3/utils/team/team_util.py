@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-\
 
-_logo = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
-        'reports/news/html/images/team_logos/{}_40.png" ' + \
-        'width="20" height="20" border="0" class="d-inline-block">'
-
 
 def _team(abbreviation, hometown, nickname):
     return {
@@ -70,8 +66,13 @@ def divisions():
         ('NL West', ('31', '39', '45', '53', '55')),
     ]
 
+_img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
+        'reports/news/html/images/team_logos/{0}_40.png" width="20" ' + \
+        'height="20" border="0" class="position-absolute {1}-8p top-14p">'
+_span = '<span class="d-block text-truncate align-middle p{0}-24p">{1}</span>'
 
-def logo(teamid):
+
+def logo(teamid, text, side):
     path = hometown(teamid) + ' ' + nickname(teamid)
-    path = path.replace('.', '').replace(' ', '_').lower()
-    return _logo.format(path)
+    fname = path.replace('.', '').replace(' ', '_').lower()
+    return _img.format(fname, side) + _span.format(side[0], text)
