@@ -18,8 +18,8 @@ from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffi
 from utils.team.team_util import divisions, hometown, ilogo  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
-_game_box = 'box_scores/game_box'
-_player = 'players/player'
+_game_box = 'box_scores/game_box_'
+_player = 'players/player_'
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):

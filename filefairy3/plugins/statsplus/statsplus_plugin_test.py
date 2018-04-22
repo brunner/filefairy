@@ -20,8 +20,8 @@ from utils.team.team_util import ilogo  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
-_game_box = 'box_scores/game_box'
-_player = 'players/player'
+_game_box = 'box_scores/game_box_'
+_player = 'players/player_'
 
 DATA = StatsplusPlugin._data()
 NOW_ENCODED = '2022-10-10T00:00:00'
@@ -38,25 +38,25 @@ AL = [('AL East', ['33']), ('AL Central', ['35']), ('AL West', ['42'])]
 NL = [('NL East', ['32']), ('NL Central', ['36']), ('NL West', ['31'])]
 FINAL_SCORES_THEN = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
 FINAL_SCORES_NOW = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
-SEASON_SCORES = '<{0}{1}_2998.html|Arizona 4, Los Angeles 2>\n' + \
-                '<{0}{1}_3003.html|Atlanta 2, Los Angeles 1>\n' + \
-                '<{0}{1}_2996.html|Cincinnati 7, Milwaukee 2>\n' + \
-                '<{0}{1}_3002.html|Detroit 11, Chicago 4>\n' + \
-                '<{0}{1}_2993.html|Houston 7, Seattle 2>\n' + \
-                '<{0}{1}_2991.html|Kansas City 8, Cleveland 2>\n' + \
-                '<{0}{1}_14721.html|Miami 6, Chicago 2>\n' + \
-                '<{0}{1}_3001.html|New York 1, San Francisco 0>\n' + \
-                '<{0}{1}_3000.html|New York 5, Baltimore 3>\n' + \
-                '<{0}{1}_2992.html|Philadelphia 3, Washington 1>\n' + \
-                '<{0}{1}_2999.html|San Diego 8, Colorado 2>\n' + \
-                '<{0}{1}_2990.html|St. Louis 5, Pittsburgh 4>\n' + \
-                '<{0}{1}_2997.html|Tampa Bay 12, Boston 9>\n' + \
-                '<{0}{1}_2994.html|Texas 5, Oakland 3>\n' + \
-                '<{0}{1}_2995.html|Toronto 8, Minnesota 2>'
+SEASON_SCORES = '<{0}{1}2998.html|Arizona 4, Los Angeles 2>\n' + \
+                '<{0}{1}3003.html|Atlanta 2, Los Angeles 1>\n' + \
+                '<{0}{1}2996.html|Cincinnati 7, Milwaukee 2>\n' + \
+                '<{0}{1}3002.html|Detroit 11, Chicago 4>\n' + \
+                '<{0}{1}2993.html|Houston 7, Seattle 2>\n' + \
+                '<{0}{1}2991.html|Kansas City 8, Cleveland 2>\n' + \
+                '<{0}{1}14721.html|Miami 6, Chicago 2>\n' + \
+                '<{0}{1}3001.html|New York 1, San Francisco 0>\n' + \
+                '<{0}{1}3000.html|New York 5, Baltimore 3>\n' + \
+                '<{0}{1}2992.html|Philadelphia 3, Washington 1>\n' + \
+                '<{0}{1}2999.html|San Diego 8, Colorado 2>\n' + \
+                '<{0}{1}2990.html|St. Louis 5, Pittsburgh 4>\n' + \
+                '<{0}{1}2997.html|Tampa Bay 12, Boston 9>\n' + \
+                '<{0}{1}2994.html|Texas 5, Oakland 3>\n' + \
+                '<{0}{1}2995.html|Toronto 8, Minnesota 2>'
 SEASON_SCORES_TEXT = SEASON_SCORES.replace('<', '*<').replace('>', '>*')
 INJURIES_DATE = '10/09/2022 '
 INJURIES_DELAY = '10/09/2022 Rain delay of 19 minutes in the 2nd inning. '
-INJURIES_TEXT = 'SP <{0}{1}_37102.html|Jairo Labourt> was injured while ' + \
+INJURIES_TEXT = 'SP <{0}{1}37102.html|Jairo Labourt> was injured while ' + \
                 'pitching (Seattle @ Boston)'
 BREADCRUMBS = [{
     'href': '/fairylab/',
@@ -72,21 +72,21 @@ def game_box(s):
 
 
 SCORES_TABLE_BODY = [[
-    game_box('<a href="{0}{1}_2998.html">Arizona 4, Los Angeles 2</a>')
-], [game_box('<a href="{0}{1}_3003.html">Atlanta 2, Los Angeles 1</a>')], [
-    game_box('<a href="{0}{1}_2996.html">Cincinnati 7, Milwaukee 2</a>')
-], [game_box('<a href="{0}{1}_3002.html">Detroit 11, Chicago 4</a>')], [
-    game_box('<a href="{0}{1}_2993.html">Houston 7, Seattle 2</a>')
-], [game_box('<a href="{0}{1}_2991.html">Kansas City 8, Cleveland 2</a>')], [
-    game_box('<a href="{0}{1}_14721.html">Miami 6, Chicago 2</a>')
-], [game_box('<a href="{0}{1}_3001.html">New York 1, San Francisco 0</a>')], [
-    game_box('<a href="{0}{1}_3000.html">New York 5, Baltimore 3</a>')
-], [game_box('<a href="{0}{1}_2992.html">Philadelphia 3, Washington 1</a>')], [
-    game_box('<a href="{0}{1}_2999.html">San Diego 8, Colorado 2</a>')
-], [game_box('<a href="{0}{1}_2990.html">St. Louis 5, Pittsburgh 4</a>')], [
-    game_box('<a href="{0}{1}_2997.html">Tampa Bay 12, Boston 9</a>')
-], [game_box('<a href="{0}{1}_2994.html">Texas 5, Oakland 3</a>')], [
-    game_box('<a href="{0}{1}_2995.html">Toronto 8, Minnesota 2</a>')
+    game_box('<a href="{0}{1}2998.html">Arizona 4, Los Angeles 2</a>')
+], [game_box('<a href="{0}{1}3003.html">Atlanta 2, Los Angeles 1</a>')], [
+    game_box('<a href="{0}{1}2996.html">Cincinnati 7, Milwaukee 2</a>')
+], [game_box('<a href="{0}{1}3002.html">Detroit 11, Chicago 4</a>')], [
+    game_box('<a href="{0}{1}2993.html">Houston 7, Seattle 2</a>')
+], [game_box('<a href="{0}{1}2991.html">Kansas City 8, Cleveland 2</a>')], [
+    game_box('<a href="{0}{1}14721.html">Miami 6, Chicago 2</a>')
+], [game_box('<a href="{0}{1}3001.html">New York 1, San Francisco 0</a>')], [
+    game_box('<a href="{0}{1}3000.html">New York 5, Baltimore 3</a>')
+], [game_box('<a href="{0}{1}2992.html">Philadelphia 3, Washington 1</a>')], [
+    game_box('<a href="{0}{1}2999.html">San Diego 8, Colorado 2</a>')
+], [game_box('<a href="{0}{1}2990.html">St. Louis 5, Pittsburgh 4</a>')], [
+    game_box('<a href="{0}{1}2997.html">Tampa Bay 12, Boston 9</a>')
+], [game_box('<a href="{0}{1}2994.html">Texas 5, Oakland 3</a>')], [
+    game_box('<a href="{0}{1}2995.html">Toronto 8, Minnesota 2</a>')
 ]]
 
 
@@ -95,7 +95,7 @@ def player(s):
 
 
 INJURIES_TABLE_BODY = [[
-    player('SP <a href="{0}{1}_37102.html">Jairo Labourt</a> was injured while ' +
+    player('SP <a href="{0}{1}37102.html">Jairo Labourt</a> was injured while ' +
            'pitching (Seattle @ Boston)')
 ]]
 
