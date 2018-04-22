@@ -36,21 +36,22 @@ AL = [('AL East', ['33']), ('AL Central', ['35']), ('AL West', ['42'])]
 NL = [('NL East', ['32']), ('NL Central', ['36']), ('NL West', ['31'])]
 FINAL_SCORES_THEN = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
 FINAL_SCORES_NOW = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
-SEASON_SCORES = '*<{0}{1}_2998.html|Arizona 4, Los Angeles 2>*\n' + \
-                '*<{0}{1}_3003.html|Atlanta 2, Los Angeles 1>*\n' + \
-                '*<{0}{1}_2996.html|Cincinnati 7, Milwaukee 2>*\n' + \
-                '*<{0}{1}_3002.html|Detroit 11, Chicago 4>*\n' + \
-                '*<{0}{1}_2993.html|Houston 7, Seattle 2>*\n' + \
-                '*<{0}{1}_2991.html|Kansas City 8, Cleveland 2>*\n' + \
-                '*<{0}{1}_14721.html|Miami 6, Chicago 2>*\n' + \
-                '*<{0}{1}_3001.html|New York 1, San Francisco 0>*\n' + \
-                '*<{0}{1}_3000.html|New York 5, Baltimore 3>*\n' + \
-                '*<{0}{1}_2992.html|Philadelphia 3, Washington 1>*\n' + \
-                '*<{0}{1}_2999.html|San Diego 8, Colorado 2>*\n' + \
-                '*<{0}{1}_2990.html|St. Louis 5, Pittsburgh 4>*\n' + \
-                '*<{0}{1}_2997.html|Tampa Bay 12, Boston 9>*\n' + \
-                '*<{0}{1}_2994.html|Texas 5, Oakland 3>*\n' + \
-                '*<{0}{1}_2995.html|Toronto 8, Minnesota 2>*'
+SEASON_SCORES = '<{0}{1}_2998.html|Arizona 4, Los Angeles 2>\n' + \
+                '<{0}{1}_3003.html|Atlanta 2, Los Angeles 1>\n' + \
+                '<{0}{1}_2996.html|Cincinnati 7, Milwaukee 2>\n' + \
+                '<{0}{1}_3002.html|Detroit 11, Chicago 4>\n' + \
+                '<{0}{1}_2993.html|Houston 7, Seattle 2>\n' + \
+                '<{0}{1}_2991.html|Kansas City 8, Cleveland 2>\n' + \
+                '<{0}{1}_14721.html|Miami 6, Chicago 2>\n' + \
+                '<{0}{1}_3001.html|New York 1, San Francisco 0>\n' + \
+                '<{0}{1}_3000.html|New York 5, Baltimore 3>\n' + \
+                '<{0}{1}_2992.html|Philadelphia 3, Washington 1>\n' + \
+                '<{0}{1}_2999.html|San Diego 8, Colorado 2>\n' + \
+                '<{0}{1}_2990.html|St. Louis 5, Pittsburgh 4>\n' + \
+                '<{0}{1}_2997.html|Tampa Bay 12, Boston 9>\n' + \
+                '<{0}{1}_2994.html|Texas 5, Oakland 3>\n' + \
+                '<{0}{1}_2995.html|Toronto 8, Minnesota 2>'
+SEASON_SCORES_TEXT = SEASON_SCORES.replace('<', '*<').replace('>', '>*')
 
 
 def game_box(s):
@@ -199,7 +200,7 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_final_scores')
     def test_on_message__with_final_scores(self, mock_final_scores):
-        scores = SEASON_SCORES.format(_html, _game_box)
+        scores = SEASON_SCORES_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
             'text': FINAL_SCORES_THEN + scores,
@@ -371,7 +372,7 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        text = FINAL_SCORES_THEN + SEASON_SCORES.format(_html, _game_box)
+        text = FINAL_SCORES_THEN + SEASON_SCORES_TEXT.format(_html, _game_box)
         plugin._final_scores(text)
 
         self.mock_open.assert_not_called()

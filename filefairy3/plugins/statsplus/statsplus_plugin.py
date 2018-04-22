@@ -117,7 +117,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
         if match:
             date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
-            score = text.split('\n', 1)[1].replace(_html + _game_box, '{0}{1}')
+            part = text.split('\n', 1)[1]
+            score = part.replace(_html + _game_box, '{0}{1}').replace('*', '')
             self.data['scores'][encode_datetime(date)] = score
             self.data['updated'] = True
 
@@ -183,6 +184,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             '{S}', suffix(pdate.day))
         body = []
         for line in self.data['scores'][date].splitlines():
-            text = line.format(_html, _game_box).replace('*', '')
+            text = line.format(_html, _game_box)
             body.append([self._link(text)])
         return table(hcols=[''], bcols=[''], head=[fdate], body=body)
