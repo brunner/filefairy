@@ -14,8 +14,11 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
-from utils.datetime.datetime_util import encode_datetime  # noqa
+from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
 from utils.team.team_util import divisions, hometown, ilogo  # noqa
+
+_html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
+_game_box = 'box_scores/game_box'
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -24,7 +27,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     @property
     def enabled(self):
-        return False
+        return True
 
     @staticmethod
     def _data():
@@ -65,7 +68,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
         text = obj.get('text', '')
 
-        if 'MAJOR LEAGUE BASEBALL Final Scores' in text:
+        if 'MAJOR LEAGUE BASEBALL Final Scores\n' in text:
             self._final_scores(text)
 
         if data != original:
@@ -99,6 +102,14 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             head=[title],
             body=[])
 
+    @staticmethod
+    def _link(text):
+        match = re.findall('^<([^|]+)\|([^<]+)>$', text)
+        if match:
+            link, content = match[0]
+            return '<a href="{0}">{1}</a>'.format(link, content)
+        return ''
+
     def _clear(self):
         self.data['scores'] = {}
 
@@ -106,7 +117,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
         if match:
             date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
-            self.data['scores'][encode_datetime(date)] = text
+            score = text.split('\n', 1)[1].replace(_html + _game_box, '{0}{1}')
+            self.data['scores'][encode_datetime(date)] = score
             self.data['updated'] = True
 
     def _home(self, **kwargs):
@@ -118,12 +130,16 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             }, {
                 'href': '',
                 'name': 'Statsplus'
-            }]
+            }],
+            'scores': []
         }
 
         status = data['status']
         if status == 'season':
             ret['live'] = self._live_tables_season()
+
+        for date in data['scores']:
+            ret['scores'].append(self._scores_table(date))
 
         return ret
 
@@ -160,3 +176,13 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             w += len(re.findall(r'\|' + re.escape(ht), score))
             l += len(re.findall(r', ' + re.escape(ht), score))
         return ilogo(teamid, '{0}-{1}'.format(w, l))
+
+    def _scores_table(self, date):
+        pdate = decode_datetime(date)
+        fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
+            '{S}', suffix(pdate.day))
+        body = []
+        for line in self.data['scores'][date].splitlines():
+            text = line.format(_html, _game_box).replace('*', '')
+            body.append([self._link(text)])
+        return table(hcols=[''], bcols=[''], head=[fdate], body=body)

@@ -19,34 +19,58 @@ from utils.json.json_util import dumps  # noqa
 from utils.team.team_util import ilogo  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
-_game_box = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/' + \
-            'news/html/box_scores/game_box'
+_html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
+_game_box = 'box_scores/game_box'
 
 DATA = StatsplusPlugin._data()
 DATE_ENCODED = '2022-10-09T00:00:00'
 HOME = {'breadcrumbs': [], 'live': []}
 INDEX = 'html/fairylab/statsplus/index.html'
-LIVE_TABLES_HEADER = [table(head=['American League'])]
-LIVE_TABLES_SEASON = [table(body=['BAL 1-0', 'BOS 0-1'])]
+LIVE_TABLE_HEADER = table(head=['American League'])
+LIVE_TABLE_SEASON = table(body=[['BAL 1-0', 'BOS 0-1']])
+SCORES_TABLE = table(body=[['Baltimore 1, Boston 0']])
 NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
 AL = [('AL East', ['33']), ('AL Central', ['35']), ('AL West', ['42'])]
 NL = [('NL East', ['32']), ('NL Central', ['36']), ('NL West', ['31'])]
-SEASON_SCORES = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n' + \
-                '*<{}_2998.html|Arizona 4, Los Angeles 2>*\n' + \
-                '*<{}_3003.html|Atlanta 2, Los Angeles 1>*\n' + \
-                '*<{}_2996.html|Cincinnati 7, Milwaukee 2>*\n' + \
-                '*<{}_3002.html|Detroit 11, Chicago 4>*\n' + \
-                '*<{}_2993.html|Houston 7, Seattle 2>*\n' + \
-                '*<{}_2991.html|Kansas City 8, Cleveland 2>*\n' + \
-                '*<{}_14721.html|Miami 6, Chicago 2>*\n' + \
-                '*<{}_3001.html|New York 1, San Francisco 0>*\n' + \
-                '*<{}_3000.html|New York 5, Baltimore 3>*\n' + \
-                '*<{}_2992.html|Philadelphia 3, Washington 1>*\n' + \
-                '*<{}_2999.html|San Diego 8, Colorado 2>*\n' + \
-                '*<{}_2990.html|St. Louis 5, Pittsburgh 4>*\n' + \
-                '*<{}_2997.html|Tampa Bay 12, Boston 9>*\n' + \
-                '*<{}_2994.html|Texas 5, Oakland 3>*\n' + \
-                '*<{}_2995.html|Toronto 8, Minnesota 2>*'.format(_game_box)
+FINAL_SCORES = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
+SEASON_SCORES = '*<{0}{1}_2998.html|Arizona 4, Los Angeles 2>*\n' + \
+                '*<{0}{1}_3003.html|Atlanta 2, Los Angeles 1>*\n' + \
+                '*<{0}{1}_2996.html|Cincinnati 7, Milwaukee 2>*\n' + \
+                '*<{0}{1}_3002.html|Detroit 11, Chicago 4>*\n' + \
+                '*<{0}{1}_2993.html|Houston 7, Seattle 2>*\n' + \
+                '*<{0}{1}_2991.html|Kansas City 8, Cleveland 2>*\n' + \
+                '*<{0}{1}_14721.html|Miami 6, Chicago 2>*\n' + \
+                '*<{0}{1}_3001.html|New York 1, San Francisco 0>*\n' + \
+                '*<{0}{1}_3000.html|New York 5, Baltimore 3>*\n' + \
+                '*<{0}{1}_2992.html|Philadelphia 3, Washington 1>*\n' + \
+                '*<{0}{1}_2999.html|San Diego 8, Colorado 2>*\n' + \
+                '*<{0}{1}_2990.html|St. Louis 5, Pittsburgh 4>*\n' + \
+                '*<{0}{1}_2997.html|Tampa Bay 12, Boston 9>*\n' + \
+                '*<{0}{1}_2994.html|Texas 5, Oakland 3>*\n' + \
+                '*<{0}{1}_2995.html|Toronto 8, Minnesota 2>*'
+
+
+def game_box(s):
+    return s.format(_html, _game_box)
+
+
+SCORES_TABLE_BODY = [[
+    game_box('<a href="{0}{1}_2998.html">Arizona 4, Los Angeles 2</a>')
+], [game_box('<a href="{0}{1}_3003.html">Atlanta 2, Los Angeles 1</a>')], [
+    game_box('<a href="{0}{1}_2996.html">Cincinnati 7, Milwaukee 2</a>')
+], [game_box('<a href="{0}{1}_3002.html">Detroit 11, Chicago 4</a>')], [
+    game_box('<a href="{0}{1}_2993.html">Houston 7, Seattle 2</a>')
+], [game_box('<a href="{0}{1}_2991.html">Kansas City 8, Cleveland 2</a>')], [
+    game_box('<a href="{0}{1}_14721.html">Miami 6, Chicago 2</a>')
+], [game_box('<a href="{0}{1}_3001.html">New York 1, San Francisco 0</a>')], [
+    game_box('<a href="{0}{1}_3000.html">New York 5, Baltimore 3</a>')
+], [game_box('<a href="{0}{1}_2992.html">Philadelphia 3, Washington 1</a>')], [
+    game_box('<a href="{0}{1}_2999.html">San Diego 8, Colorado 2</a>')
+], [game_box('<a href="{0}{1}_2990.html">St. Louis 5, Pittsburgh 4</a>')], [
+    game_box('<a href="{0}{1}_2997.html">Tampa Bay 12, Boston 9</a>')
+], [game_box('<a href="{0}{1}_2994.html">Texas 5, Oakland 3</a>')], [
+    game_box('<a href="{0}{1}_2995.html">Toronto 8, Minnesota 2</a>')
+]]
 BREADCRUMBS = [{
     'href': '/fairylab/',
     'name': 'Home'
@@ -172,9 +196,10 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_final_scores')
     def test_on_message__with_final_scores(self, mock_final_scores):
+        scores = SEASON_SCORES.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': SEASON_SCORES,
+            'text': FINAL_SCORES + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -189,7 +214,7 @@ class StatsplusPluginTest(TestUtil):
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        mock_final_scores.assert_called_once_with(SEASON_SCORES)
+        mock_final_scores.assert_called_once_with(FINAL_SCORES + scores)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -343,29 +368,39 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        plugin._final_scores(SEASON_SCORES)
+        text = FINAL_SCORES + SEASON_SCORES.format(_html, _game_box)
+        plugin._final_scores(text)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['scores'], {DATE_ENCODED: SEASON_SCORES})
         self.assertTrue(plugin.data['updated'])
 
+    @mock.patch.object(StatsplusPlugin, '_scores_table')
     @mock.patch.object(StatsplusPlugin, '_live_tables_season')
-    def test_home__with_season(self, mock_live):
-        mock_live.return_value = LIVE_TABLES_SEASON
+    def test_home__with_season(self, mock_live, mock_scores):
+        mock_live.return_value = [LIVE_TABLE_SEASON]
+        mock_scores.return_value = SCORES_TABLE
 
         read = {
             'finished': False,
-            'scores': {},
+            'scores': {
+                DATE_ENCODED: SEASON_SCORES
+            },
             'status': 'season',
             'updated': False
         }
         plugin = self.create_plugin(read)
         ret = plugin._home(date=NOW)
-        expected = {'breadcrumbs': BREADCRUMBS, 'live': LIVE_TABLES_SEASON}
+        expected = {
+            'breadcrumbs': BREADCRUMBS,
+            'live': [LIVE_TABLE_SEASON],
+            'scores': [SCORES_TABLE]
+        }
         self.assertEqual(ret, expected)
 
         mock_live.assert_called_once_with()
+        mock_scores.assert_called_once_with(DATE_ENCODED)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -375,8 +410,8 @@ class StatsplusPluginTest(TestUtil):
     def test_live_tables_season(self, mock_divisions, mock_header,
                                 mock_internal):
         mock_divisions.return_value = AL + NL
-        mock_header.return_value = LIVE_TABLES_HEADER
-        mock_internal.return_value = LIVE_TABLES_SEASON
+        mock_header.return_value = [LIVE_TABLE_HEADER]
+        mock_internal.return_value = [LIVE_TABLE_SEASON]
 
         read = {
             'finished': False,
@@ -386,7 +421,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_tables_season()
-        expected = [LIVE_TABLES_HEADER, LIVE_TABLES_SEASON] * 2
+        expected = [[LIVE_TABLE_HEADER], [LIVE_TABLE_SEASON]] * 2
         self.assertEqual(actual, expected)
 
         mock_divisions.assert_called_once_with()
@@ -425,7 +460,9 @@ class StatsplusPluginTest(TestUtil):
     def test_scores_season(self):
         read = {
             'finished': False,
-            'scores': {DATE_ENCODED: SEASON_SCORES},
+            'scores': {
+                DATE_ENCODED: SEASON_SCORES
+            },
             'status': 'season',
             'updated': False
         }
@@ -439,6 +476,25 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(actual, expected)
         actual = plugin._scores_season('42')
         expected = ilogo('42', '1-0')
+        self.assertEqual(actual, expected)
+
+    def test_scores_table(self):
+        read = {
+            'finished': False,
+            'scores': {
+                DATE_ENCODED: SEASON_SCORES
+            },
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+
+        actual = plugin._scores_table(DATE_ENCODED)
+        expected = table(
+            hcols=[''],
+            bcols=[''],
+            head=['Sunday, October 9th, 2022'],
+            body=SCORES_TABLE_BODY)
         self.assertEqual(actual, expected)
 
 
