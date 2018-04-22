@@ -1,36 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import re
+import sys
 
-def _team(logo, body, side):
-    img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
-          'reports/news/html/images/team_logos/{0}_40.png" ' + \
-          'width="20" height="20" border="0" ' + \
-          'class="position-absolute {1}-8p top-14p">'
-    span = '<span class="d-block text-truncate align-middle p{0}-24p">{1}' + \
-           '</span>'
-    return img.format(logo, side) + span.format(side[0], body)
-
-
-def _team_left(logo, body):
-    return _team(logo, body, 'left')
-
-
-def _team_right(logo, body):
-    return _team(logo, body, 'right')
-
+_path = os.path.dirname(os.path.abspath(__file__))
+_root = re.sub(r'/plugins/statsplus/samples', '', _path)
+sys.path.append(_root)
+from utils.team.team_util import logo  # noqa
 
 subtitle = ''
 
 tmpl = 'statsplus.html'
 
-_lal = [
-    _team_left('boston_red_sox', 'Boston'), '1', '4',
-    _team_right('seattle_mariners', 'Seattle', )
-]
+_lal = [logo('34', 'Boston', 'left'), '1', '4', logo('54', 'Seattle', 'right')]
 _lnl = [
-    _team_left('los_angeles_dodgers', 'Los Angeles'), '4', '2',
-    _team_right('san_diego_padres', 'San Diego')
+    logo('45', 'Los Angeles', 'left'), '4', '2',
+    logo('53', 'San Diego', 'right')
 ]
 
 context = {

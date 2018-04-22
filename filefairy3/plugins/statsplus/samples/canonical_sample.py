@@ -1,99 +1,89 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import re
+import sys
 
-def _team(logo, body, side):
-    img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
-          'reports/news/html/images/team_logos/{0}_40.png" ' + \
-          'width="20" height="20" border="0" ' + \
-          'class="position-absolute {1}-8p top-14p">'
-    span = '<span class="d-block text-truncate align-middle p{0}-24p">{1}' + \
-           '</span>'
-    return img.format(logo, side) + span.format(side[0], body)
-
-
-def _team_left(logo, body):
-    return _team(logo, body, 'left')
-
+_path = os.path.dirname(os.path.abspath(__file__))
+_root = re.sub(r'/plugins/statsplus/samples', '', _path)
+sys.path.append(_root)
+from utils.team.team_util import logo  # noqa
 
 subtitle = ''
 
 tmpl = 'statsplus.html'
 
-_l31 = _team_left('arizona_diamondbacks', '4-3')
-_l32 = _team_left('atlanta_braves', '5-1')
-_l33 = _team_left('baltimore_orioles', '0-6')
-_l34 = _team_left('boston_red_sox', '4-3')
-_l35 = _team_left('chicago_white_sox', '3-3')
-_l36 = _team_left('chicago_cubs', '3-4')
-_l37 = _team_left('cincinnati_reds', '3-3')
-_l38 = _team_left('cleveland_indians', '1-4')
-_l39 = _team_left('colorado_rockies', '2-3')
-_l40 = _team_left('detroit_tigers', '4-3')
-_l41 = _team_left('miami_marlins', '2-5')
-_l42 = _team_left('houston_astros', '5-2')
-_l43 = _team_left('kansas_city_royals', '4-3')
-_l44 = _team_left('los_angeles_angels', '3-3')
-_l45 = _team_left('los_angeles_dodgers', '4-2')
-_l46 = _team_left('milwaukee_brewers', '2-4')
-_l47 = _team_left('minnesota_twins', '4-3')
-_l48 = _team_left('new_york_yankees', '4-2')
-_l49 = _team_left('new_york_mets', '5-1')
-_l50 = _team_left('oakland_athletics', '4-3')
-_l51 = _team_left('philadelphia_phillies', '5-2')
-_l52 = _team_left('pittsburgh_pirates', '1-5')
-_l53 = _team_left('san_diego_padres', '4-2')
-_l54 = _team_left('seattle_mariners', '2-5')
-_l55 = _team_left('san_francisco_giants', '2-5')
-_l56 = _team_left('st_louis_cardinals', '6-0')
-_l57 = _team_left('tampa_bay_rays', '4-3')
-_l58 = _team_left('texas_rangers', '3-3')
-_l59 = _team_left('toronto_blue_jays', '2-4')
-_l60 = _team_left('washington_nationals', '1-6')
+_l31 = logo('31', '4-3', 'left')
+_l32 = logo('32', '5-1', 'left')
+_l33 = logo('33', '0-6', 'left')
+_l34 = logo('34', '4-3', 'left')
+_l35 = logo('35', '3-3', 'left')
+_l36 = logo('36', '3-4', 'left')
+_l37 = logo('37', '3-3', 'left')
+_l38 = logo('38', '1-4', 'left')
+_l39 = logo('39', '2-3', 'left')
+_l40 = logo('40', '4-3', 'left')
+_l41 = logo('41', '2-5', 'left')
+_l42 = logo('42', '5-2', 'left')
+_l43 = logo('43', '4-3', 'left')
+_l44 = logo('44', '3-3', 'left')
+_l45 = logo('45', '4-2', 'left')
+_l46 = logo('46', '2-4', 'left')
+_l47 = logo('47', '4-3', 'left')
+_l48 = logo('48', '4-2', 'left')
+_l49 = logo('49', '5-1', 'left')
+_l50 = logo('50', '4-3', 'left')
+_l51 = logo('51', '5-2', 'left')
+_l52 = logo('52', '1-5', 'left')
+_l53 = logo('53', '4-2', 'left')
+_l54 = logo('54', '2-5', 'left')
+_l55 = logo('55', '2-5', 'left')
+_l56 = logo('56', '6-0', 'left')
+_l57 = logo('57', '4-3', 'left')
+_l58 = logo('58', '3-3', 'left')
+_l59 = logo('59', '2-4', 'left')
+_l60 = logo('60', '1-6', 'left')
 
-_s31 = [_team_left('arizona_diamondbacks', 'Arizona'), '76', '86', '28', '']
-_s32 = [_team_left('atlanta_braves', 'Atlanta'), '77', '85', '18', '']
-_s33 = [_team_left('baltimore_orioles', 'Baltimore'), '70', '92', '29', '']
-_s34 = [_team_left('boston_red_sox', 'Boston'), '99', '63', '-', 'X']
-_s35 = [_team_left('chicago_white_sox', 'Chicago'), '82', '80', '6', '']
-_s36 = [_team_left('chicago_cubs', 'Chicago'), '71', '91', '40', '']
-_s37 = [_team_left('cincinnati_reds', 'Cincinnati'), '111', '51', '-', 'X']
-_s38 = [_team_left('cleveland_indians', 'Cleveland'), '76', '86', '12', '']
-_s39 = [_team_left('colorado_rockies', 'Colorado'), '88', '74', '16', '']
-_s40 = [_team_left('detroit_tigers', 'Detroit'), '86', '76', '2', '']
-_s41 = [_team_left('miami_marlins', 'Miami'), '84', '78', '11', '']
-_s42 = [_team_left('houston_astros', 'Houston'), '85', '77', '13', '']
-_s43 = [_team_left('kansas_city_royals', 'Kansas City'), '76', '86', '12', '']
-_s44 = [_team_left('los_angeles_angels', 'Los Angeles'), '70', '92', '28', '']
-_s45 = [_team_left('los_angeles_dodgers', 'Los Angeles'), '97', '65', '7', '']
-_s46 = [_team_left('milwaukee_brewers', 'Milwaukee'), '77', '85', '34', '']
-_s47 = [_team_left('minnesota_twins', 'Minnesota'), '88', '74', '-', 'X']
-_s48 = [_team_left('new_york_yankees', 'New York'), '88', '74', '11', '']
-_s49 = [_team_left('new_york_mets', 'New York'), '95', '67', '-', 'X']
-_s50 = [_team_left('oakland_athletics', 'Oakland'), '75', '87', '23', '']
-_s51 = [
-    _team_left('philadelphia_phillies', 'Philadelphia'), '75', '87', '20', ''
-]
-_s52 = [_team_left('pittsburgh_pirates', 'Pittsburgh'), '53', '109', '58', '']
-_s53 = [_team_left('san_diego_padres', 'San Diego'), '104', '58', '-', 'X']
-_s54 = [_team_left('seattle_mariners', 'Seattle'), '98', '64', '-', 'X']
-_s55 = [
-    _team_left('san_francisco_giants', 'San Francisco'), '62', '100', '42', ''
-]
-_s56 = [_team_left('st_louis_cardinals', 'St. Louis'), '89', '73', '22', '']
-_s57 = [_team_left('tampa_bay_rays', 'Tampa Bay'), '65', '97', '34', '']
-_s58 = [_team_left('texas_rangers', 'Texas'), '67', '95', '31', '']
-_s59 = [_team_left('toronto_blue_jays', 'Toronto'), '73', '89', '26', '']
-_s60 = [_team_left('washington_nationals', 'Washington'), '73', '89', '22', '']
+_s31 = [logo('31', 'Arizona', 'left'), '76', '86', '28', '']
+_s32 = [logo('32', 'Atlanta', 'left'), '77', '85', '18', '']
+_s33 = [logo('33', 'Baltimore', 'left'), '70', '92', '29', '']
+_s34 = [logo('34', 'Boston', 'left'), '99', '63', '-', 'X']
+_s35 = [logo('35', 'Chicago', 'left'), '82', '80', '6', '']
+_s36 = [logo('36', 'Chicago', 'left'), '71', '91', '40', '']
+_s37 = [logo('37', 'Cincinnati', 'left'), '111', '51', '-', 'X']
+_s38 = [logo('38', 'Cleveland', 'left'), '76', '86', '12', '']
+_s39 = [logo('39', 'Colorado', 'left'), '88', '74', '16', '']
+_s40 = [logo('40', 'Detroit', 'left'), '86', '76', '2', '']
+_s41 = [logo('41', 'Miami', 'left'), '84', '78', '11', '']
+_s42 = [logo('42', 'Houston', 'left'), '85', '77', '13', '']
+_s43 = [logo('43', 'Kansas City', 'left'), '76', '86', '12', '']
+_s44 = [logo('44', 'Los Angeles', 'left'), '70', '92', '28', '']
+_s45 = [logo('45', 'Los Angeles', 'left'), '97', '65', '7', '']
+_s46 = [logo('46', 'Milwaukee', 'left'), '77', '85', '34', '']
+_s47 = [logo('47', 'Minnesota', 'left'), '88', '74', '-', 'X']
+_s48 = [logo('48', 'New York', 'left'), '88', '74', '11', '']
+_s49 = [logo('49', 'New York', 'left'), '95', '67', '-', 'X']
+_s50 = [logo('50', 'Oakland', 'left'), '75', '87', '23', '']
+_s51 = [logo('51', 'Philadelphia', 'left'), '75', '87', '20', '']
+_s52 = [logo('52', 'Pittsburgh', 'left'), '53', '109', '58', '']
+_s53 = [logo('53', 'San Diego', 'left'), '104', '58', '-', 'X']
+_s54 = [logo('54', 'Seattle', 'left'), '98', '64', '-', 'X']
+_s55 = [logo('55', 'San Francisco', 'left'), '62', '100', '42', '']
+_s56 = [logo('56', 'St. Louis', 'left'), '89', '73', '22', '']
+_s57 = [logo('57', 'Tampa Bay', 'left'), '65', '97', '34', '']
+_s58 = [logo('58', 'Texas', 'left'), '67', '95', '31', '']
+_s59 = [logo('59', 'Toronto', 'left'), '73', '89', '26', '']
+_s60 = [logo('60', 'Washington', 'left'), '73', '89', '22', '']
 
-_w35 = [_team_left('chicago_white_sox', 'Chicago'), '82', '80', '4', '']
-_w39 = [_team_left('colorado_rockies', 'Colorado'), '88', '74', '1', '']
-_w40 = [_team_left('detroit_tigers', 'Detroit'), '86', '76', '-', 'X']
-_w41 = [_team_left('miami_marlins', 'Miami'), '84', '78', '5', '']
-_w42 = [_team_left('houston_astros', 'Houston'), '85', '77', '1', '']
-_w45 = [_team_left('los_angeles_dodgers', 'Los Angeles'), '97', '65', '-', 'X']
-_w48 = [_team_left('new_york_yankees', 'New York'), '88', '74', '+2', 'X']
-_w56 = [_team_left('st_louis_cardinals', 'St. Louis'), '89', '73', '-', 'X']
+_w35 = [logo('35', 'Chicago', 'left'), '82', '80', '4', '']
+_w39 = [logo('39', 'Colorado', 'left'), '88', '74', '1', '']
+_w40 = [logo('40', 'Detroit', 'left'), '86', '76', '-', 'X']
+_w41 = [logo('41', 'Miami', 'left'), '84', '78', '5', '']
+_w42 = [logo('42', 'Houston', 'left'), '85', '77', '1', '']
+_w45 = [logo('45', 'Los Angeles', 'left'), '97', '65', '-', 'X']
+_w48 = [logo('48', 'New York', 'left'), '88', '74', '+2', 'X']
+_w56 = [logo('56', 'St. Louis', 'left'), '89', '73', '-', 'X']
 
 LIVE_BCOL = ' class="td-sm position-relative text-center w-20"'
 FORE_COLS = [
