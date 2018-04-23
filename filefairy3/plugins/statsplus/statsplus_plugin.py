@@ -13,6 +13,7 @@ sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
+from utils.box.box_util import clarify  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
@@ -109,7 +110,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     @staticmethod
-    def hometown_repl(matchobj):
+    def _hometown_repl(matchobj):
         _hometown = matchobj.group(0)
         _nickname = nickname(_hometown, hometown=True)
         if _nickname:
@@ -131,10 +132,21 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         return ilogo(teamid, t)
 
     @staticmethod
-    def _rewrite(text):
-        linked = re.sub(r'<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', text)
+    def _rewrite(date, text):
         pattern = '|'.join(_hometowns)
-        return re.sub(pattern, StatsplusPlugin.hometown_repl, linked)
+        text = re.sub(pattern, StatsplusPlugin._hometown_repl, text)
+
+        match = re.findall('<([^|]+)\|([^<]+)>', text)
+        if match:
+            link, content = match[0]
+            chlany = ['Chicago', 'Los Angeles', 'New York']
+            if any(ht in content for ht in chlany):
+                ddate = decode_datetime(date)
+                content = clarify(ddate, link, content)
+            repl = '<a href="{0}">{1}</a>'.format(link, content)
+            text = re.sub('<[^|]+\|[^<]+>', repl, text)
+
+        return text
 
     def _clear(self):
         self.data['scores'] = {}
@@ -243,27 +255,27 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     def _scores_table(self, date):
         lines = self.data['scores'][date].splitlines()
-        body = self._table_body(lines, _game_box)
+        body = self._table_body(date, lines, _game_box)
         head = self._table_head(date)
         return table(hcols=[''], bcols=[''], head=head, body=body)
 
     def _injuries_table(self, date):
         lines = self.data['injuries'][date]
-        body = self._table_body(lines, _player)
+        body = self._table_body(date, lines, _player)
         head = self._table_head(date)
         return table(hcols=[''], bcols=[''], head=head, body=body)
 
     def _highlights_table(self, date):
         lines = self.data['highlights'][date]
-        body = self._table_body(lines, _player)
+        body = self._table_body(date, lines, _player)
         head = self._table_head(date)
         return table(hcols=[''], bcols=[''], head=head, body=body)
 
-    def _table_body(self, lines, path):
+    def _table_body(self, date, lines, path):
         body = []
         for line in lines:
             text = line.format(_html, path)
-            link = self._rewrite(text)
+            link = self._rewrite(date, text)
             body.append([link])
         return body
 
