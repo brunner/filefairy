@@ -242,33 +242,32 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         return '{0}-{1}'.format(hw, hl)
 
     def _scores_table(self, date):
-        pdate = decode_datetime(date)
-        fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
-            '{S}', suffix(pdate.day))
-        body = []
-        for line in self.data['scores'][date].splitlines():
-            text = line.format(_html, _game_box)
-            body.append([self._rewrite(text)])
-        return table(hcols=[''], bcols=[''], head=[fdate], body=body)
+        lines = self.data['scores'][date].splitlines()
+        body = self._table_body(lines, _game_box)
+        head = self._table_head(date)
+        return table(hcols=[''], bcols=[''], head=head, body=body)
 
     def _injuries_table(self, date):
-        pdate = decode_datetime(date)
-        fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
-            '{S}', suffix(pdate.day))
-        body = []
-        for line in self.data['injuries'][date]:
-            text = line.format(_html, _player)
-            link = self._rewrite(text)
-            body.append([link])
-        return table(hcols=[''], bcols=[''], head=[fdate], body=body)
+        lines = self.data['injuries'][date]
+        body = self._table_body(lines, _player)
+        head = self._table_head(date)
+        return table(hcols=[''], bcols=[''], head=head, body=body)
 
     def _highlights_table(self, date):
-        pdate = decode_datetime(date)
-        fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
-            '{S}', suffix(pdate.day))
+        lines = self.data['highlights'][date]
+        body = self._table_body(lines, _player)
+        head = self._table_head(date)
+        return table(hcols=[''], bcols=[''], head=head, body=body)
+
+    def _table_body(self, lines, path):
         body = []
-        for line in self.data['highlights'][date]:
-            text = line.format(_html, _player)
+        for line in lines:
+            text = line.format(_html, path)
             link = self._rewrite(text)
             body.append([link])
-        return table(hcols=[''], bcols=[''], head=[fdate], body=body)
+        return body
+
+    def _table_head(self, date):
+        ddate = decode_datetime(date)
+        fdate = ddate.strftime('%A, %B %-d{S}, %Y')
+        return [fdate.replace('{S}', suffix(ddate.day))]
