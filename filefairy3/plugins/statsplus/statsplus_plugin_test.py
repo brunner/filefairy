@@ -35,8 +35,10 @@ LIVE_TABLE_SEASON = table(body=[['BAL 1-0', 'BOS 0-1']])
 SCORES_TABLE_NOW = table(head='2022-10-10', body=[['Baltimore 1, Boston 0']])
 SCORES_TABLE_THEN = table(head='2022-10-09', body=[['Baltimore 1, Boston 0']])
 NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
-AL = [('AL East', ['33']), ('AL Central', ['35']), ('AL West', ['42'])]
-NL = [('NL East', ['32']), ('NL Central', ['36']), ('NL West', ['31'])]
+AL = [('AL East', ['33', '34', '48']), ('AL Central', ['35', '38', '40']),
+      ('AL West', ['42', '44', '50'])]
+NL = [('NL East', ['32', '41', '49']), ('NL Central', ['36', '37', '46']),
+      ('NL West', ['31', '39', '45'])]
 FINAL_SCORES_THEN = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
 FINAL_SCORES_NOW = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
 SEASON_SCORES = '<{0}{1}2998.html|Arizona 4, Los Angeles 2>\n' + \
@@ -505,6 +507,13 @@ class StatsplusPluginTest(TestUtil):
             body=[])
         self.assertEqual(actual, expected)
 
+    @mock.patch('plugins.statsplus.statsplus_plugin.ilogo')
+    def test_logo(self, mock_ilogo):
+        mock_ilogo.return_value = 'ilogo'
+        self.assertEqual(StatsplusPlugin._logo(('31', '0-1')), 'ilogo')
+
+        mock_ilogo.assert_called_once_with('31', '0-1')
+
     def test_rewrite(self):
         actual = StatsplusPlugin._rewrite('<link|Arizona 4, Los Angeles 2>')
         expected = '<a href="link">Arizona Diamondbacks 4, Los Angeles 2</a>'
@@ -662,10 +671,11 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_scores_season')
-    def test_live_tables_season_internal(self, mock_scores):
-        score = 'BAL 1-0'
-        mock_scores.return_value = score
+    @mock.patch.object(StatsplusPlugin, '_record')
+    @mock.patch.object(StatsplusPlugin, '_logo')
+    def test_live_tables_season_internal(self, mock_logo, mock_record):
+        mock_logo.return_value = 'logo'
+        mock_record.side_effect = ['2-0', '0-2', '1-1'] * 3
 
         read = {
             'finished': False,
@@ -682,15 +692,37 @@ class StatsplusPluginTest(TestUtil):
             hcols=[],
             bcols=[' class="td-sm position-relative text-center w-20"'] * 5,
             head=[],
-            body=[[score], [score], [score]])
+            body=[['logo', 'logo', 'logo'], ['logo', 'logo', 'logo'],
+                  ['logo', 'logo', 'logo']])
         self.assertEqual(actual, expected)
-
-        calls = [mock.call('33'), mock.call('35'), mock.call('42')]
-        mock_scores.assert_has_calls(calls)
+        calls = [
+            mock.call(('33', '2-0')),
+            mock.call(('48', '1-1')),
+            mock.call(('34', '0-2')),
+            mock.call(('35', '2-0')),
+            mock.call(('40', '1-1')),
+            mock.call(('38', '0-2')),
+            mock.call(('42', '2-0')),
+            mock.call(('50', '1-1')),
+            mock.call(('44', '0-2'))
+        ]
+        mock_logo.assert_has_calls(calls)
+        calls = [
+            mock.call('33'),
+            mock.call('34'),
+            mock.call('48'),
+            mock.call('35'),
+            mock.call('38'),
+            mock.call('40'),
+            mock.call('42'),
+            mock.call('44'),
+            mock.call('50')
+        ]
+        mock_record.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    def test_scores_season(self):
+    def test_record(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -702,16 +734,9 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-
-        actual = plugin._scores_season('33')
-        expected = ilogo('33', '0-1')
-        self.assertEqual(actual, expected)
-        actual = plugin._scores_season('35')
-        expected = ilogo('35', '0-2')
-        self.assertEqual(actual, expected)
-        actual = plugin._scores_season('42')
-        expected = ilogo('42', '1-0')
-        self.assertEqual(actual, expected)
+        self.assertEqual(plugin._record('33'), '0-1')
+        self.assertEqual(plugin._record('35'), '0-2')
+        self.assertEqual(plugin._record('42'), '1-0')
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

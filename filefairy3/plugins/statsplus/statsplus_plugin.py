@@ -15,6 +15,7 @@ from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
+from utils.standings.standings_util import sort  # noqa
 from utils.team.team_util import hometown, nickname, divisions, hometowns, ilogo  # noqa
 
 _hometowns = hometowns()
@@ -125,6 +126,11 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             body=[])
 
     @staticmethod
+    def _logo(team_tuple):
+        teamid, t = team_tuple
+        return ilogo(teamid, t)
+
+    @staticmethod
     def _rewrite(text):
         linked = re.sub(r'<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', text)
         pattern = '|'.join(_hometowns)
@@ -216,9 +222,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
     def _live_tables_season_internal(self, league):
         body = []
         for division in league:
-            inner = []
-            for teamid in division[1]:
-                inner.append(self._scores_season(teamid))
+            group = [(teamid, self._record(teamid)) for teamid in division[1]]
+            inner = [self._logo(team_tuple) for team_tuple in sort(group)]
             body.append(inner)
         return table(
             clazz='table-fixed border',
@@ -227,14 +232,14 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             head=[],
             body=body)
 
-    def _scores_season(self, teamid):
+    def _record(self, teamid):
         ht = hometown(teamid)
-        w, l = 0, 0
+        hw, hl = 0, 0
         for date in self.data['scores']:
             score = self.data['scores'][date]
-            w += len(re.findall(r'\|' + re.escape(ht), score))
-            l += len(re.findall(r', ' + re.escape(ht), score))
-        return ilogo(teamid, '{0}-{1}'.format(w, l))
+            hw += len(re.findall(r'\|' + re.escape(ht), score))
+            hl += len(re.findall(r', ' + re.escape(ht), score))
+        return '{0}-{1}'.format(hw, hl)
 
     def _scores_table(self, date):
         pdate = decode_datetime(date)
