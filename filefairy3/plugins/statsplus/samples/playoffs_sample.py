@@ -8,16 +8,19 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugins/statsplus/samples', '', _path)
 sys.path.append(_root)
-from utils.team.team_util import logo  # noqa
+from utils.team.team_util import alogo  # noqa
 
 subtitle = ''
 
 tmpl = 'statsplus.html'
 
-_lal = [logo('34', 'Boston', 'left'), '1', '4', logo('54', 'Seattle', 'right')]
+_lal = [
+    alogo('34', 'Boston', 'left'), '1', '4',
+    alogo('54', 'Seattle', 'right')
+]
 _lnl = [
-    logo('45', 'Los Angeles', 'left'), '4', '2',
-    logo('53', 'San Diego', 'right')
+    alogo('45', 'Los Angeles', 'left'), '4', '2',
+    alogo('53', 'San Diego', 'right')
 ]
 
 context = {

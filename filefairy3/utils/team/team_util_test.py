@@ -9,7 +9,9 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/team', '', _path)
 sys.path.append(_root)
-from utils.team.team_util import _img, _span, abbreviation, hometown, nickname, divisions, logo  # noqa
+from utils.team.team_util import _aimg, _aspan, _iimg, _ispan  # noqa
+from utils.team.team_util import abbreviation, hometown, nickname  # noqa
+from utils.team.team_util import divisions, hometowns, alogo, ilogo  # noqa
 
 
 class TeamUtilTest(unittest.TestCase):
@@ -109,6 +111,34 @@ class TeamUtilTest(unittest.TestCase):
         self.assertEqual(nickname('59'), 'Blue Jays')
         self.assertEqual(nickname('60'), 'Nationals')
 
+        self.assertEqual(nickname('Arizona', hometown=True), 'Diamondbacks')
+        self.assertEqual(nickname('Atlanta', hometown=True), 'Braves')
+        self.assertEqual(nickname('Baltimore', hometown=True), 'Orioles')
+        self.assertEqual(nickname('Boston', hometown=True), 'Red Sox')
+        self.assertEqual(nickname('Chicago', hometown=True), '')
+        self.assertEqual(nickname('Cincinnati', hometown=True), 'Reds')
+        self.assertEqual(nickname('Cleveland', hometown=True), 'Indians')
+        self.assertEqual(nickname('Colorado', hometown=True), 'Rockies')
+        self.assertEqual(nickname('Detroit', hometown=True), 'Tigers')
+        self.assertEqual(nickname('Miami', hometown=True), 'Marlins')
+        self.assertEqual(nickname('Houston', hometown=True), 'Astros')
+        self.assertEqual(nickname('Kansas City', hometown=True), 'Royals')
+        self.assertEqual(nickname('Los Angeles', hometown=True), '')
+        self.assertEqual(nickname('Milwaukee', hometown=True), 'Brewers')
+        self.assertEqual(nickname('Minnesota', hometown=True), 'Twins')
+        self.assertEqual(nickname('New York', hometown=True), '')
+        self.assertEqual(nickname('Oakland', hometown=True), 'Athletics')
+        self.assertEqual(nickname('Philadelphia', hometown=True), 'Phillies')
+        self.assertEqual(nickname('Pittsburgh', hometown=True), 'Pirates')
+        self.assertEqual(nickname('San Diego', hometown=True), 'Padres')
+        self.assertEqual(nickname('Seattle', hometown=True), 'Mariners')
+        self.assertEqual(nickname('San Francisco', hometown=True), 'Giants')
+        self.assertEqual(nickname('St. Louis', hometown=True), 'Cardinals')
+        self.assertEqual(nickname('Tampa Bay', hometown=True), 'Rays')
+        self.assertEqual(nickname('Texas', hometown=True), 'Rangers')
+        self.assertEqual(nickname('Toronto', hometown=True), 'Blue Jays')
+        self.assertEqual(nickname('Washington', hometown=True), 'Nationals')
+
     def test_divisions(self):
         actual = divisions()
         expected = [
@@ -121,10 +151,28 @@ class TeamUtilTest(unittest.TestCase):
         ]
         self.assertEqual(actual, expected)
 
+    def test_hometowns(self):
+        actual = sorted(hometowns())
+        expected = [
+            'Arizona', 'Atlanta', 'Baltimore', 'Boston', 'Chicago',
+            'Cincinnati', 'Cleveland', 'Colorado', 'Detroit', 'Houston',
+            'Kansas City', 'Los Angeles', 'Miami', 'Milwaukee', 'Minnesota',
+            'New York', 'Oakland', 'Philadelphia', 'Pittsburgh', 'San Diego',
+            'San Francisco', 'Seattle', 'St. Louis', 'Tampa Bay', 'Texas',
+            'Toronto', 'Washington'
+        ]
+        self.assertEqual(actual, expected)
+
     def test_logo(self):
-        actual = logo('31', 'Arizona', 'left')
-        img = _img.format('arizona_diamondbacks', 'left')
-        span = _span.format('l', 'Arizona')
+        actual = alogo('31', 'Arizona', 'left')
+        img = _aimg.format('arizona_diamondbacks', 'left')
+        span = _aspan.format('l', 'Arizona')
+        expected = img + span
+        self.assertEqual(actual, expected)
+
+        actual = ilogo('31', 'Arizona')
+        img = _iimg.format('arizona_diamondbacks')
+        span = _ispan.format('Arizona')
         expected = img + span
         self.assertEqual(actual, expected)
 

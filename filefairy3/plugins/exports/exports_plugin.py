@@ -14,7 +14,7 @@ from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card, table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
-from utils.team.team_util import abbreviation, hometown, divisions, logo  # noqa
+from utils.team.team_util import abbreviation, hometown, divisions, alogo  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
@@ -145,7 +145,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         for division, teamids in divisions():
             body = []
             for teamid in sorted(teamids, key=self._sorted):
-                t = logo(teamid, hometown(teamid), 'left')
+                t = alogo(teamid, hometown(teamid), 'left')
                 if teamid in data['ai']:
                     l, s = '-', '-'
                 else:

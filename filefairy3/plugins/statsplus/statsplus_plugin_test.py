@@ -16,37 +16,63 @@ from plugins.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import logo  # noqa
+from utils.team.team_util import hometowns, ilogo  # noqa
 from utils.test.test_util import main, TestUtil  # noqa
 
-_game_box = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/' + \
-            'news/html/box_scores/game_box'
+_html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
+_game_box = 'box_scores/game_box_'
+_player = 'players/player_'
 
 DATA = StatsplusPlugin._data()
-DATE_ENCODED = '2022-10-09T00:00:00'
+NOW_ENCODED = '2022-10-10T00:00:00'
+THEN_ENCODED = '2022-10-09T00:00:00'
 HOME = {'breadcrumbs': [], 'live': []}
 INDEX = 'html/fairylab/statsplus/index.html'
-LIVE_TABLES_HEADER = [table(head=['American League'])]
-LIVE_TABLES_SEASON = [table(body=['BAL 1-0', 'BOS 0-1'])]
+HIGHLIGHTS_TABLE_SEASON = table(body=[['Player set the record.']])
+INJURIES_TABLE_SEASON = table(body=[['Player was injured.']])
+LIVE_TABLE_HEADER = table(head=['American League'])
+LIVE_TABLE_SEASON = table(body=[['BAL 1-0', 'BOS 0-1']])
+SCORES_TABLE_NOW = table(head='2022-10-10', body=[['Baltimore 1, Boston 0']])
+SCORES_TABLE_THEN = table(head='2022-10-09', body=[['Baltimore 1, Boston 0']])
 NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
-AL = [('AL East', ['33']), ('AL Central', ['35']), ('AL West', ['42'])]
-NL = [('NL East', ['32']), ('NL Central', ['36']), ('NL West', ['31'])]
-SEASON_SCORES = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n' + \
-                '*<{}_2998.html|Arizona 4, Los Angeles 2>*\n' + \
-                '*<{}_3003.html|Atlanta 2, Los Angeles 1>*\n' + \
-                '*<{}_2996.html|Cincinnati 7, Milwaukee 2>*\n' + \
-                '*<{}_3002.html|Detroit 11, Chicago 4>*\n' + \
-                '*<{}_2993.html|Houston 7, Seattle 2>*\n' + \
-                '*<{}_2991.html|Kansas City 8, Cleveland 2>*\n' + \
-                '*<{}_14721.html|Miami 6, Chicago 2>*\n' + \
-                '*<{}_3001.html|New York 1, San Francisco 0>*\n' + \
-                '*<{}_3000.html|New York 5, Baltimore 3>*\n' + \
-                '*<{}_2992.html|Philadelphia 3, Washington 1>*\n' + \
-                '*<{}_2999.html|San Diego 8, Colorado 2>*\n' + \
-                '*<{}_2990.html|St. Louis 5, Pittsburgh 4>*\n' + \
-                '*<{}_2997.html|Tampa Bay 12, Boston 9>*\n' + \
-                '*<{}_2994.html|Texas 5, Oakland 3>*\n' + \
-                '*<{}_2995.html|Toronto 8, Minnesota 2>*'.format(_game_box)
+AL = [('AL East', ['33', '34', '48']), ('AL Central', ['35', '38', '40']),
+      ('AL West', ['42', '44', '50'])]
+NL = [('NL East', ['32', '41', '49']), ('NL Central', ['36', '37', '46']),
+      ('NL West', ['31', '39', '45'])]
+FINAL_SCORES_THEN = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
+FINAL_SCORES_NOW = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
+SEASON_SCORES = '<{0}{1}2998.html|Arizona 4, Los Angeles 2>\n' + \
+                '<{0}{1}3003.html|Atlanta 2, Los Angeles 1>\n' + \
+                '<{0}{1}2996.html|Cincinnati 7, Milwaukee 2>\n' + \
+                '<{0}{1}3002.html|Detroit 11, Chicago 4>\n' + \
+                '<{0}{1}2993.html|Houston 7, Seattle 2>\n' + \
+                '<{0}{1}2991.html|Kansas City 8, Cleveland 2>\n' + \
+                '<{0}{1}14721.html|Miami 6, Chicago 2>\n' + \
+                '<{0}{1}3001.html|New York 1, San Francisco 0>\n' + \
+                '<{0}{1}3000.html|New York 5, Baltimore 3>\n' + \
+                '<{0}{1}2992.html|Philadelphia 3, Washington 1>\n' + \
+                '<{0}{1}2999.html|San Diego 8, Colorado 2>\n' + \
+                '<{0}{1}2990.html|St. Louis 5, Pittsburgh 4>\n' + \
+                '<{0}{1}2997.html|Tampa Bay 12, Boston 9>\n' + \
+                '<{0}{1}2994.html|Texas 5, Oakland 3>\n' + \
+                '<{0}{1}2995.html|Toronto 8, Minnesota 2>'
+HOMETOWNS = [
+    'Arizona', 'Los Angeles', 'Atlanta', 'Los Angeles', 'Cincinnati',
+    'Milwaukee', 'Detroit', 'Chicago', 'Houston', 'Seattle', 'Kansas City',
+    'Cleveland', 'Miami', 'Chicago', 'New York', 'San Francisco', 'New York',
+    'Baltimore', 'Philadelphia', 'Washington', 'San Diego', 'Colorado',
+    'St. Louis', 'Pittsburgh', 'Tampa Bay', 'Boston', 'Texas', 'Oakland',
+    'Toronto', 'Minnesota'
+]
+SEASON_SCORES_TEXT = SEASON_SCORES.replace('<', '*<').replace('>', '>*')
+INJURIES_DATE = '10/09/2022 '
+INJURIES_DELAY = '10/09/2022 Rain delay of 19 minutes in the 2nd inning. '
+INJURIES_TEXT = 'SP <{0}{1}37102.html|Jairo Labourt> was injured while ' + \
+                'pitching (Seattle @ Boston)'
+HIGHLIGHTS_DATE = '10/09/2022 '
+HIGHLIGHTS_TEXT = '<{0}{1}38868.html|Connor Harrell> ties the ' + \
+                  'BOS regular season game record for runs with 4 (Boston ' + \
+                  '@ Tampa Bay)'
 BREADCRUMBS = [{
     'href': '/fairylab/',
     'name': 'Home'
@@ -54,6 +80,43 @@ BREADCRUMBS = [{
     'href': '',
     'name': 'Statsplus'
 }]
+
+
+def game_box(s):
+    return s.format(_html, _game_box)
+
+
+SCORES_TABLE_BODY = [[
+    game_box('<a href="{0}{1}2998.html">Arizona 4, Los Angeles 2</a>')
+], [game_box('<a href="{0}{1}3003.html">Atlanta 2, Los Angeles 1</a>')], [
+    game_box('<a href="{0}{1}2996.html">Cincinnati 7, Milwaukee 2</a>')
+], [game_box('<a href="{0}{1}3002.html">Detroit 11, Chicago 4</a>')], [
+    game_box('<a href="{0}{1}2993.html">Houston 7, Seattle 2</a>')
+], [game_box('<a href="{0}{1}2991.html">Kansas City 8, Cleveland 2</a>')], [
+    game_box('<a href="{0}{1}14721.html">Miami 6, Chicago 2</a>')
+], [game_box('<a href="{0}{1}3001.html">New York 1, San Francisco 0</a>')], [
+    game_box('<a href="{0}{1}3000.html">New York 5, Baltimore 3</a>')
+], [game_box('<a href="{0}{1}2992.html">Philadelphia 3, Washington 1</a>')], [
+    game_box('<a href="{0}{1}2999.html">San Diego 8, Colorado 2</a>')
+], [game_box('<a href="{0}{1}2990.html">St. Louis 5, Pittsburgh 4</a>')], [
+    game_box('<a href="{0}{1}2997.html">Tampa Bay 12, Boston 9</a>')
+], [game_box('<a href="{0}{1}2994.html">Texas 5, Oakland 3</a>')], [
+    game_box('<a href="{0}{1}2995.html">Toronto 8, Minnesota 2</a>')
+]]
+
+
+def player(s):
+    return s.format(_html, _player)
+
+
+INJURIES_TABLE_BODY = [[
+    player('SP <a href="{0}{1}37102.html">Jairo Labourt</a> was injured while '
+           'pitching (Seattle @ Boston)')
+]]
+HIGHLIGHTS_TABLE_BODY = [[
+    player('<a href="{0}{1}38868.html">Connor Harrell</a> ties the BOS '
+           'regular season game record for runs with 4 (Boston @ Tampa Bay)')
+]]
 
 
 class StatsplusPluginTest(TestUtil):
@@ -87,6 +150,8 @@ class StatsplusPluginTest(TestUtil):
     def test_notify__with_download(self):
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -97,6 +162,8 @@ class StatsplusPluginTest(TestUtil):
 
         write = {
             'finished': True,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -107,6 +174,8 @@ class StatsplusPluginTest(TestUtil):
     def test_notify__with_none(self):
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -129,6 +198,8 @@ class StatsplusPluginTest(TestUtil):
         }
         read = {
             'finished': True,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -139,6 +210,8 @@ class StatsplusPluginTest(TestUtil):
 
         write = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -158,6 +231,8 @@ class StatsplusPluginTest(TestUtil):
         }
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -172,15 +247,18 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_final_scores')
     def test_on_message__with_final_scores(self, mock_final_scores):
+        scores = SEASON_SCORES_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': SEASON_SCORES,
+            'text': FINAL_SCORES_THEN + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -189,7 +267,85 @@ class StatsplusPluginTest(TestUtil):
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        mock_final_scores.assert_called_once_with(SEASON_SCORES)
+        mock_final_scores.assert_called_once_with(FINAL_SCORES_THEN + scores)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_injuries')
+    def test_on_message__with_delay(self, mock_injuries):
+        injuries = INJURIES_TEXT.format(_html, _player)
+        obj = {
+            'channel': 'C7JSGHW8G',
+            'text': INJURIES_DELAY + injuries,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertEqual(ret, ActivityEnum.BASE)
+
+        mock_injuries.assert_called_once_with(INJURIES_DELAY + injuries)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_injuries')
+    def test_on_message__with_injuries(self, mock_injuries):
+        injuries = INJURIES_TEXT.format(_html, _player)
+        obj = {
+            'channel': 'C7JSGHW8G',
+            'text': INJURIES_DATE + injuries,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertEqual(ret, ActivityEnum.BASE)
+
+        mock_injuries.assert_called_once_with(INJURIES_DATE + injuries)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_highlights')
+    def test_on_message__with_highlights(self, mock_highlights):
+        highlights = HIGHLIGHTS_TEXT.format(_html, _player)
+        obj = {
+            'channel': 'C7JSGHW8G',
+            'text': HIGHLIGHTS_DATE + highlights,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        ret = plugin._on_message_internal(obj=obj)
+        self.assertEqual(ret, ActivityEnum.BASE)
+
+        mock_highlights.assert_called_once_with(HIGHLIGHTS_DATE + highlights)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -203,6 +359,8 @@ class StatsplusPluginTest(TestUtil):
         }
         read = {
             'finished': True,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -226,6 +384,8 @@ class StatsplusPluginTest(TestUtil):
         }
         read = {
             'finished': True,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -242,6 +402,8 @@ class StatsplusPluginTest(TestUtil):
     def test_run__with_updated_true(self, mock_render):
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': True
@@ -252,6 +414,8 @@ class StatsplusPluginTest(TestUtil):
 
         write = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -264,6 +428,8 @@ class StatsplusPluginTest(TestUtil):
     def test_run__with_updated_false(self, mock_render):
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -282,6 +448,8 @@ class StatsplusPluginTest(TestUtil):
 
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -298,6 +466,8 @@ class StatsplusPluginTest(TestUtil):
     def test_setup(self, mock_render):
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -312,8 +482,10 @@ class StatsplusPluginTest(TestUtil):
     def test_clear(self):
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {
-                DATE_ENCODED: SEASON_SCORES
+                THEN_ENCODED: SEASON_SCORES
             },
             'status': 'season',
             'updated': False
@@ -335,37 +507,138 @@ class StatsplusPluginTest(TestUtil):
             body=[])
         self.assertEqual(actual, expected)
 
+    @mock.patch('plugins.statsplus.statsplus_plugin.ilogo')
+    def test_logo(self, mock_ilogo):
+        mock_ilogo.return_value = 'ilogo'
+        self.assertEqual(StatsplusPlugin._logo(('31', '0-1')), 'ilogo')
+
+        mock_ilogo.assert_called_once_with('31', '0-1')
+
+    def test_rewrite(self):
+        actual = StatsplusPlugin._rewrite('<link|Arizona 4, Los Angeles 2>')
+        expected = '<a href="link">Arizona Diamondbacks 4, Los Angeles 2</a>'
+        self.assertEqual(actual, expected)
+
     def test_final_scores(self):
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
         }
         plugin = self.create_plugin(read)
-        plugin._final_scores(SEASON_SCORES)
+        text = FINAL_SCORES_THEN + SEASON_SCORES_TEXT.format(_html, _game_box)
+        plugin._final_scores(text)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['scores'], {DATE_ENCODED: SEASON_SCORES})
+        self.assertEqual(plugin.data['scores'], {THEN_ENCODED: SEASON_SCORES})
         self.assertTrue(plugin.data['updated'])
 
+    def test_injuries__with_delay(self):
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        text = INJURIES_DELAY + INJURIES_TEXT.format(_html, _player)
+        plugin._injuries(text)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['injuries'], {
+            THEN_ENCODED: [INJURIES_TEXT]
+        })
+        self.assertTrue(plugin.data['updated'])
+
+    def test_injuries__with_injuries(self):
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        text = INJURIES_DATE + INJURIES_TEXT.format(_html, _player)
+        plugin._injuries(text)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['injuries'], {
+            THEN_ENCODED: [INJURIES_TEXT]
+        })
+        self.assertTrue(plugin.data['updated'])
+
+    def test_highlights__with_record(self):
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT.format(_html, _player)
+        plugin._highlights(text)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['highlights'], {
+            THEN_ENCODED: [HIGHLIGHTS_TEXT]
+        })
+        self.assertTrue(plugin.data['updated'])
+
+    @mock.patch.object(StatsplusPlugin, '_scores_table')
     @mock.patch.object(StatsplusPlugin, '_live_tables_season')
-    def test_home__with_season(self, mock_live):
-        mock_live.return_value = LIVE_TABLES_SEASON
+    @mock.patch.object(StatsplusPlugin, '_injuries_table')
+    @mock.patch.object(StatsplusPlugin, '_highlights_table')
+    def test_home__with_season(self, mock_highlights, mock_injuries, mock_live,
+                               mock_scores):
+        mock_highlights.return_value = HIGHLIGHTS_TABLE_SEASON
+        mock_injuries.return_value = INJURIES_TABLE_SEASON
+        mock_live.return_value = [LIVE_TABLE_SEASON]
+        mock_scores.side_effect = [SCORES_TABLE_NOW, SCORES_TABLE_THEN]
 
         read = {
             'finished': False,
-            'scores': {},
+            'highlights': {
+                THEN_ENCODED: [HIGHLIGHTS_TEXT]
+            },
+            'injuries': {
+                THEN_ENCODED: [INJURIES_TEXT]
+            },
+            'scores': {
+                THEN_ENCODED: SEASON_SCORES,
+                NOW_ENCODED: SEASON_SCORES
+            },
             'status': 'season',
             'updated': False
         }
         plugin = self.create_plugin(read)
         ret = plugin._home(date=NOW)
-        expected = {'breadcrumbs': BREADCRUMBS, 'live': LIVE_TABLES_SEASON}
+        expected = {
+            'breadcrumbs': BREADCRUMBS,
+            'live': [LIVE_TABLE_SEASON],
+            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_THEN],
+            'injuries': [INJURIES_TABLE_SEASON],
+            'highlights': [HIGHLIGHTS_TABLE_SEASON]
+        }
         self.assertEqual(ret, expected)
 
+        mock_highlights.assert_called_once_with(THEN_ENCODED)
+        mock_injuries.assert_called_once_with(THEN_ENCODED)
         mock_live.assert_called_once_with()
+        calls = [mock.call(NOW_ENCODED), mock.call(THEN_ENCODED)]
+        mock_scores.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -375,18 +648,20 @@ class StatsplusPluginTest(TestUtil):
     def test_live_tables_season(self, mock_divisions, mock_header,
                                 mock_internal):
         mock_divisions.return_value = AL + NL
-        mock_header.return_value = LIVE_TABLES_HEADER
-        mock_internal.return_value = LIVE_TABLES_SEASON
+        mock_header.return_value = [LIVE_TABLE_HEADER]
+        mock_internal.return_value = [LIVE_TABLE_SEASON]
 
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_tables_season()
-        expected = [LIVE_TABLES_HEADER, LIVE_TABLES_SEASON] * 2
+        expected = [[LIVE_TABLE_HEADER], [LIVE_TABLE_SEASON]] * 2
         self.assertEqual(actual, expected)
 
         mock_divisions.assert_called_once_with()
@@ -396,13 +671,16 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_scores_season')
-    def test_live_tables_season_internal(self, mock_scores):
-        score = 'BAL 1-0'
-        mock_scores.return_value = score
+    @mock.patch.object(StatsplusPlugin, '_record')
+    @mock.patch.object(StatsplusPlugin, '_logo')
+    def test_live_tables_season_internal(self, mock_logo, mock_record):
+        mock_logo.return_value = 'logo'
+        mock_record.side_effect = ['2-0', '0-2', '1-1'] * 3
 
         read = {
             'finished': False,
+            'highlights': {},
+            'injuries': {},
             'scores': {},
             'status': 'season',
             'updated': False
@@ -414,32 +692,141 @@ class StatsplusPluginTest(TestUtil):
             hcols=[],
             bcols=[' class="td-sm position-relative text-center w-20"'] * 5,
             head=[],
-            body=[[score], [score], [score]])
+            body=[['logo', 'logo', 'logo'], ['logo', 'logo', 'logo'],
+                  ['logo', 'logo', 'logo']])
         self.assertEqual(actual, expected)
-
-        calls = [mock.call('33'), mock.call('35'), mock.call('42')]
-        mock_scores.assert_has_calls(calls)
+        calls = [
+            mock.call(('33', '2-0')),
+            mock.call(('48', '1-1')),
+            mock.call(('34', '0-2')),
+            mock.call(('35', '2-0')),
+            mock.call(('40', '1-1')),
+            mock.call(('38', '0-2')),
+            mock.call(('42', '2-0')),
+            mock.call(('50', '1-1')),
+            mock.call(('44', '0-2'))
+        ]
+        mock_logo.assert_has_calls(calls)
+        calls = [
+            mock.call('33'),
+            mock.call('34'),
+            mock.call('48'),
+            mock.call('35'),
+            mock.call('38'),
+            mock.call('40'),
+            mock.call('42'),
+            mock.call('44'),
+            mock.call('50')
+        ]
+        mock_record.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    def test_scores_season(self):
+    def test_record(self):
         read = {
             'finished': False,
-            'scores': {DATE_ENCODED: SEASON_SCORES},
+            'highlights': {},
+            'injuries': {},
+            'scores': {
+                THEN_ENCODED: SEASON_SCORES
+            },
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        self.assertEqual(plugin._record('33'), '0-1')
+        self.assertEqual(plugin._record('35'), '0-2')
+        self.assertEqual(plugin._record('42'), '1-0')
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    def test_scores_table(self, mock_nickname):
+        mock_nickname.return_value = ''
+
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'scores': {
+                THEN_ENCODED: SEASON_SCORES
+            },
             'status': 'season',
             'updated': False
         }
         plugin = self.create_plugin(read)
 
-        actual = plugin._scores_season('33')
-        expected = logo('33', '0-1', 'left')
+        actual = plugin._scores_table(THEN_ENCODED)
+        expected = table(
+            hcols=[''],
+            bcols=[''],
+            head=['Sunday, October 9th, 2022'],
+            body=SCORES_TABLE_BODY)
         self.assertEqual(actual, expected)
-        actual = plugin._scores_season('35')
-        expected = logo('35', '0-2', 'left')
+
+        calls = [mock.call(h, hometown=True) for h in HOMETOWNS]
+        mock_nickname.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    def test_injuries_table(self, mock_nickname):
+        mock_nickname.return_value = ''
+
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {
+                THEN_ENCODED: [INJURIES_TEXT]
+            },
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+
+        actual = plugin._injuries_table(THEN_ENCODED)
+        expected = table(
+            hcols=[''],
+            bcols=[''],
+            head=['Sunday, October 9th, 2022'],
+            body=INJURIES_TABLE_BODY)
         self.assertEqual(actual, expected)
-        actual = plugin._scores_season('42')
-        expected = logo('42', '1-0', 'left')
+
+        calls = [mock.call(h, hometown=True) for h in ['Seattle', 'Boston']]
+        mock_nickname.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    def test_highlights_table(self, mock_nickname):
+        mock_nickname.return_value = ''
+
+        read = {
+            'finished': False,
+            'highlights': {
+                THEN_ENCODED: [HIGHLIGHTS_TEXT]
+            },
+            'injuries': {},
+            'scores': {},
+            'status': 'season',
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+
+        actual = plugin._highlights_table(THEN_ENCODED)
+        expected = table(
+            hcols=[''],
+            bcols=[''],
+            head=['Sunday, October 9th, 2022'],
+            body=HIGHLIGHTS_TABLE_BODY)
         self.assertEqual(actual, expected)
+
+        calls = [mock.call(h, hometown=True) for h in ['Boston', 'Tampa Bay']]
+        mock_nickname.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
 
 
 if __name__ in ['__main__', 'plugins.statsplus.statsplus_plugin_test']:

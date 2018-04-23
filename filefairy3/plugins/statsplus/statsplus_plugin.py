@@ -14,8 +14,14 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
-from utils.datetime.datetime_util import encode_datetime  # noqa
-from utils.team.team_util import divisions, hometown, logo  # noqa
+from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
+from utils.standings.standings_util import sort  # noqa
+from utils.team.team_util import hometown, nickname, divisions, hometowns, ilogo  # noqa
+
+_hometowns = hometowns()
+_html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
+_game_box = 'box_scores/game_box_'
+_player = 'players/player_'
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -64,9 +70,21 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             self._clear()
 
         text = obj.get('text', '')
-
-        if 'MAJOR LEAGUE BASEBALL Final Scores' in text:
+        pattern = '\d{2}\/\d{2}\/\d{4} MAJOR LEAGUE BASEBALL Final Scores\n'
+        if re.findall(pattern, text):
             self._final_scores(text)
+
+        pattern = '\d{2}\/\d{2}\/\d{4} Rain delay'
+        if re.findall(pattern, text):
+            self._injuries(text)
+
+        pattern = '\d{2}\/\d{2}\/\d{4} \w+ <([^|]+)\|([^<]+)> was injured'
+        if re.findall(pattern, text):
+            self._injuries(text)
+
+        pattern = '\d{2}\/\d{2}\/\d{4} <([^|]+)\|([^<]+)> (?:sets|ties)'
+        if re.findall(pattern, text):
+            self._highlights(text)
 
         if data != original:
             self.write()
@@ -91,6 +109,14 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     @staticmethod
+    def hometown_repl(matchobj):
+        _hometown = matchobj.group(0)
+        _nickname = nickname(_hometown, hometown=True)
+        if _nickname:
+            return _hometown + ' ' + _nickname
+        return _hometown
+
+    @staticmethod
     def _live_tables_header(title):
         return table(
             clazz='table-fixed border border-bottom-0 mt-3',
@@ -99,6 +125,17 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             head=[title],
             body=[])
 
+    @staticmethod
+    def _logo(team_tuple):
+        teamid, t = team_tuple
+        return ilogo(teamid, t)
+
+    @staticmethod
+    def _rewrite(text):
+        linked = re.sub(r'<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', text)
+        pattern = '|'.join(_hometowns)
+        return re.sub(pattern, StatsplusPlugin.hometown_repl, linked)
+
     def _clear(self):
         self.data['scores'] = {}
 
@@ -106,8 +143,40 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
         if match:
             date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
-            self.data['scores'][encode_datetime(date)] = text
+            part = text.split('\n', 1)[1]
+            score = part.replace(_html + _game_box, '{0}{1}').replace('*', '')
+            self.data['scores'][encode_datetime(date)] = score
             self.data['updated'] = True
+
+    def _injuries(self, text):
+        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
+        if match:
+            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+            encoded_date = encode_datetime(date)
+            if encoded_date not in self.data['injuries']:
+                self.data['injuries'][encoded_date] = []
+
+            pattern = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
+            match = re.findall(pattern, text)
+            for m in match:
+                injury = m.replace(_html + _player, '{0}{1}')
+                self.data['injuries'][encoded_date].append(injury)
+                self.data['updated'] = True
+
+    def _highlights(self, text):
+        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
+        if match:
+            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+            encoded_date = encode_datetime(date)
+            if encoded_date not in self.data['highlights']:
+                self.data['highlights'][encoded_date] = []
+
+            pattern = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
+            match = re.findall(pattern, text)
+            for m in match:
+                highlights = m.replace(_html + _player, '{0}{1}')
+                self.data['highlights'][encoded_date].append(highlights)
+                self.data['updated'] = True
 
     def _home(self, **kwargs):
         data = self.data
@@ -118,12 +187,24 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             }, {
                 'href': '',
                 'name': 'Statsplus'
-            }]
+            }],
+            'scores': [],
+            'injuries': [],
+            'highlights': []
         }
 
         status = data['status']
         if status == 'season':
             ret['live'] = self._live_tables_season()
+
+        for date in sorted(data['scores'].keys(), reverse=True):
+            ret['scores'].append(self._scores_table(date))
+
+        for date in sorted(data['injuries'].keys(), reverse=True):
+            ret['injuries'].append(self._injuries_table(date))
+
+        for date in sorted(data['highlights'].keys(), reverse=True):
+            ret['highlights'].append(self._highlights_table(date))
 
         return ret
 
@@ -141,9 +222,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
     def _live_tables_season_internal(self, league):
         body = []
         for division in league:
-            inner = []
-            for teamid in division[1]:
-                inner.append(self._scores_season(teamid))
+            group = [(teamid, self._record(teamid)) for teamid in division[1]]
+            inner = [self._logo(team_tuple) for team_tuple in sort(group)]
             body.append(inner)
         return table(
             clazz='table-fixed border',
@@ -152,11 +232,42 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             head=[],
             body=body)
 
-    def _scores_season(self, teamid):
+    def _record(self, teamid):
         ht = hometown(teamid)
-        w, l = 0, 0
+        hw, hl = 0, 0
         for date in self.data['scores']:
             score = self.data['scores'][date]
-            w += len(re.findall(r'\|' + re.escape(ht), score))
-            l += len(re.findall(r', ' + re.escape(ht), score))
-        return logo(teamid, '{0}-{1}'.format(w, l), 'left')
+            hw += len(re.findall(r'\|' + re.escape(ht), score))
+            hl += len(re.findall(r', ' + re.escape(ht), score))
+        return '{0}-{1}'.format(hw, hl)
+
+    def _scores_table(self, date):
+        lines = self.data['scores'][date].splitlines()
+        body = self._table_body(lines, _game_box)
+        head = self._table_head(date)
+        return table(hcols=[''], bcols=[''], head=head, body=body)
+
+    def _injuries_table(self, date):
+        lines = self.data['injuries'][date]
+        body = self._table_body(lines, _player)
+        head = self._table_head(date)
+        return table(hcols=[''], bcols=[''], head=head, body=body)
+
+    def _highlights_table(self, date):
+        lines = self.data['highlights'][date]
+        body = self._table_body(lines, _player)
+        head = self._table_head(date)
+        return table(hcols=[''], bcols=[''], head=head, body=body)
+
+    def _table_body(self, lines, path):
+        body = []
+        for line in lines:
+            text = line.format(_html, path)
+            link = self._rewrite(text)
+            body.append([link])
+        return body
+
+    def _table_head(self, date):
+        ddate = decode_datetime(date)
+        fdate = ddate.strftime('%A, %B %-d{S}, %Y')
+        return [fdate.replace('{S}', suffix(ddate.day))]
