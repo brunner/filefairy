@@ -785,7 +785,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname_by_hometown')
     def test_scores_table(self, mock_nickname):
         mock_nickname.return_value = ''
 
@@ -809,7 +809,7 @@ class StatsplusPluginTest(TestUtil):
             body=SCORES_TABLE_BODY)
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(h, hometown=True) for h in HOMETOWNS]
+        calls = [mock.call(h) for h in HOMETOWNS]
         mock_nickname.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -829,7 +829,7 @@ class StatsplusPluginTest(TestUtil):
         ]
         self.mock_clarify.assert_has_calls(calls)
 
-    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname_by_hometown')
     def test_injuries_table(self, mock_nickname):
         mock_nickname.return_value = ''
 
@@ -853,13 +853,13 @@ class StatsplusPluginTest(TestUtil):
             body=INJURIES_TABLE_BODY)
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(h, hometown=True) for h in ['Seattle', 'Boston']]
+        calls = [mock.call(h) for h in ['Seattle', 'Boston']]
         mock_nickname.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    @mock.patch('plugins.statsplus.statsplus_plugin.nickname')
+    @mock.patch('plugins.statsplus.statsplus_plugin.nickname_by_hometown')
     def test_highlights_table(self, mock_nickname):
         mock_nickname.return_value = ''
 
@@ -883,7 +883,7 @@ class StatsplusPluginTest(TestUtil):
             body=HIGHLIGHTS_TABLE_BODY)
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(h, hometown=True) for h in ['Boston', 'Tampa Bay']]
+        calls = [mock.call(h) for h in ['Boston', 'Tampa Bay']]
         mock_nickname.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

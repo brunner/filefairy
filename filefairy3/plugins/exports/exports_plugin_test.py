@@ -614,7 +614,7 @@ class ExportsPluginTest(TestUtil):
         expected = 'L2'
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.exports.exports_plugin.abbreviation')
+    @mock.patch('plugins.exports.exports_plugin.abbreviation_by_teamid')
     def test_sorted(self, mock_name):
         mock_name.side_effect = ['ARI', 'ATL']
 

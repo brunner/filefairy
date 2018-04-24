@@ -17,7 +17,7 @@ from utils.box.box_util import clarify  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
-from utils.team.team_util import hometown, nickname, divisions, hometowns, ilogo  # noqa
+from utils.team.team_util import hometown_by_teamid, nickname_by_hometown, divisions, hometowns, ilogo  # noqa
 
 _hometowns = hometowns()
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
@@ -112,7 +112,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
     @staticmethod
     def _hometown_repl(matchobj):
         _hometown = matchobj.group(0)
-        _nickname = nickname(_hometown, hometown=True)
+        _nickname = nickname_by_hometown(_hometown)
         if _nickname:
             return _hometown + ' ' + _nickname
         return _hometown
@@ -245,7 +245,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             body=body)
 
     def _record(self, teamid):
-        ht = hometown(teamid)
+        ht = hometown_by_teamid(teamid)
         hw, hl = 0, 0
         for date in self.data['scores']:
             score = self.data['scores'][date]

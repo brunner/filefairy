@@ -1,92 +1,78 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-\
 
-_nicknames = {
-    'Arizona': 'Diamondbacks',
-    'Atlanta': 'Braves',
-    'Baltimore': 'Orioles',
-    'Boston': 'Red Sox',
-    'Chicago': '',
-    'Cincinnati': 'Reds',
-    'Cleveland': 'Indians',
-    'Colorado': 'Rockies',
-    'Detroit': 'Tigers',
-    'Miami': 'Marlins',
-    'Houston': 'Astros',
-    'Kansas City': 'Royals',
-    'Los Angeles': '',
-    'Milwaukee': 'Brewers',
-    'Minnesota': 'Twins',
-    'New York': '',
-    'Oakland': 'Athletics',
-    'Philadelphia': 'Phillies',
-    'Pittsburgh': 'Pirates',
-    'San Diego': 'Padres',
-    'Seattle': 'Mariners',
-    'San Francisco': 'Giants',
-    'St. Louis': 'Cardinals',
-    'Tampa Bay': 'Rays',
-    'Texas': 'Rangers',
-    'Toronto': 'Blue Jays',
-    'Washington': 'Nationals',
-}
 
-
-def _team(abbreviation, hometown, nickname=''):
+def _team(teamid, abbreviation, hometown, nickname):
     return {
+        'teamid': teamid,
         'abbreviation': abbreviation,
         'hometown': hometown,
-        'nickname': nickname if nickname else _nicknames[hometown],
+        'nickname': nickname,
     }
 
 
-_teams = {
-    '31': _team('ARI', 'Arizona'),
-    '32': _team('ATL', 'Atlanta'),
-    '33': _team('BAL', 'Baltimore'),
-    '34': _team('BOS', 'Boston'),
-    '35': _team('CWS', 'Chicago', nickname='White Sox'),
-    '36': _team('CHC', 'Chicago', nickname='Cubs'),
-    '37': _team('CIN', 'Cincinnati'),
-    '38': _team('CLE', 'Cleveland'),
-    '39': _team('COL', 'Colorado'),
-    '40': _team('DET', 'Detroit'),
-    '41': _team('MIA', 'Miami'),
-    '42': _team('HOU', 'Houston'),
-    '43': _team('KC', 'Kansas City'),
-    '44': _team('LAA', 'Los Angeles', nickname='Angels'),
-    '45': _team('LAD', 'Los Angeles', nickname='Dodgers'),
-    '46': _team('MIL', 'Milwaukee'),
-    '47': _team('MIN', 'Minnesota'),
-    '48': _team('NYY', 'New York', nickname='Yankees'),
-    '49': _team('NYM', 'New York', nickname='Mets'),
-    '50': _team('OAK', 'Oakland'),
-    '51': _team('PHI', 'Philadelphia'),
-    '52': _team('PIT', 'Pittsburgh'),
-    '53': _team('SD', 'San Diego'),
-    '54': _team('SEA', 'Seattle'),
-    '55': _team('SF', 'San Francisco'),
-    '56': _team('STL', 'St. Louis'),
-    '57': _team('TB', 'Tampa Bay'),
-    '58': _team('TEX', 'Texas'),
-    '59': _team('TOR', 'Toronto'),
-    '60': _team('WAS', 'Washington'),
-}
+_teams = [
+    _team('31', 'ARI', 'Arizona', 'Diamondbacks'),
+    _team('32', 'ATL', 'Atlanta', 'Braves'),
+    _team('33', 'BAL', 'Baltimore', 'Orioles'),
+    _team('34', 'BOS', 'Boston', 'Red Sox'),
+    _team('35', 'CWS', 'Chicago', 'White Sox'),
+    _team('36', 'CHC', 'Chicago', 'Cubs'),
+    _team('37', 'CIN', 'Cincinnati', 'Reds'),
+    _team('38', 'CLE', 'Cleveland', 'Indians'),
+    _team('39', 'COL', 'Colorado', 'Rockies'),
+    _team('40', 'DET', 'Detroit', 'Tigers'),
+    _team('41', 'MIA', 'Miami', 'Marlins'),
+    _team('42', 'HOU', 'Houston', 'Astros'),
+    _team('43', 'KC', 'Kansas City', 'Royals'),
+    _team('44', 'LAA', 'Los Angeles', 'Angels'),
+    _team('45', 'LAD', 'Los Angeles', 'Dodgers'),
+    _team('46', 'MIL', 'Milwaukee', 'Brewers'),
+    _team('47', 'MIN', 'Minnesota', 'Twins'),
+    _team('48', 'NYY', 'New York', 'Yankees'),
+    _team('49', 'NYM', 'New York', 'Mets'),
+    _team('50', 'OAK', 'Oakland', 'Athletics'),
+    _team('51', 'PHI', 'Philadelphia', 'Phillies'),
+    _team('52', 'PIT', 'Pittsburgh', 'Pirates'),
+    _team('53', 'SD', 'San Diego', 'Padres'),
+    _team('54', 'SEA', 'Seattle', 'Mariners'),
+    _team('55', 'SF', 'San Francisco', 'Giants'),
+    _team('56', 'STL', 'St. Louis', 'Cardinals'),
+    _team('57', 'TB', 'Tampa Bay', 'Rays'),
+    _team('58', 'TEX', 'Texas', 'Rangers'),
+    _team('59', 'TOR', 'Toronto', 'Blue Jays'),
+    _team('60', 'WAS', 'Washington', 'Nationals'),
+]
+
+_chlany = ['Chicago', 'Los Angeles', 'New York']
 
 
-def abbreviation(teamid):
-    return _teams.get(teamid, {}).get('abbreviation', '')
+def _map(key, values):
+    return {
+        t[key]: {v: t[v]
+                 for v in values}
+        for t in _teams if t[key] not in _chlany
+    }
 
 
-def hometown(teamid):
-    return _teams.get(teamid, {}).get('hometown', '')
+_by_teamid = _map('teamid', ['abbreviation', 'hometown', 'nickname'])
+_by_hometown = _map('hometown', ['nickname'])
 
 
-def nickname(key, hometown=False):
-    if hometown:
-        return _nicknames.get(key, '')
+def abbreviation_by_teamid(teamid):
+    return _by_teamid.get(teamid, {}).get('abbreviation', '')
 
-    return _teams.get(key, {}).get('nickname', '')
+
+def hometown_by_teamid(teamid):
+    return _by_teamid.get(teamid, {}).get('hometown', '')
+
+
+def nickname_by_teamid(teamid):
+    return _by_teamid.get(teamid, {}).get('nickname', '')
+
+
+def nickname_by_hometown(hometown):
+    return _by_hometown.get(hometown, {}).get('nickname', '')
 
 
 def divisions():
@@ -101,7 +87,12 @@ def divisions():
 
 
 def hometowns():
-    return _nicknames.keys()
+    return list(set(t['hometown'] for t in _teams))
+
+
+def _path(teamid):
+    return hometown_by_teamid(teamid) + ' ' + nickname_by_teamid(teamid)
+
 
 _aimg = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
         'reports/news/html/images/team_logos/{0}_40.png" width="20" ' + \
@@ -110,7 +101,7 @@ _aspan = '<span class="d-block text-truncate align-middle p{0}-24p">{1}</span>'
 
 
 def alogo(teamid, text, side):
-    path = hometown(teamid) + ' ' + nickname(teamid)
+    path = _path(teamid)
     fname = path.replace('.', '').replace(' ', '_').lower()
     return _aimg.format(fname, side) + _aspan.format(side[0], text)
 
@@ -121,6 +112,6 @@ _ispan = '<span class="d-inline-block align-middle px-2">{}</span>'
 
 
 def ilogo(teamid, text):
-    path = hometown(teamid) + ' ' + nickname(teamid)
+    path = _path(teamid)
     fname = path.replace('.', '').replace(' ', '_').lower()
     return _iimg.format(fname) + _ispan.format(text)
