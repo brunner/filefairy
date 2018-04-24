@@ -100,6 +100,10 @@ def divisions():
     ]
 
 
+def fullnames():
+    return list(set(t['fullname'] for t in _teams))
+
+
 def hometowns():
     return list(set(t['hometown'] for t in _teams))
 
