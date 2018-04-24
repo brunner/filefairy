@@ -8,6 +8,7 @@ def _team(teamid, abbreviation, hometown, nickname):
         'abbreviation': abbreviation,
         'hometown': hometown,
         'nickname': nickname,
+        'fullname': hometown + ' ' + nickname,
     }
 
 
@@ -54,29 +55,38 @@ def _map(key, values):
         for t in _teams if t[key] not in _chlany
     }
 
-
-_by_teamid = _map('teamid', ['abbreviation', 'hometown', 'nickname'])
-_by_hometown = _map('hometown', ['teamid', 'nickname'])
+_by_teamid_values = ['abbreviation', 'hometown', 'nickname', 'fullname']
+_by_teamid_map = _map('teamid', _by_teamid_values)
+_by_hometown_map = _map('hometown', ['teamid', 'nickname'])
+_by_fullname_map = _map('fullname', ['teamid'])
 
 
 def abbreviation_by_teamid(teamid):
-    return _by_teamid.get(teamid, {}).get('abbreviation', '')
+    return _by_teamid_map.get(teamid, {}).get('abbreviation', '')
 
 
 def hometown_by_teamid(teamid):
-    return _by_teamid.get(teamid, {}).get('hometown', '')
+    return _by_teamid_map.get(teamid, {}).get('hometown', '')
 
 
 def nickname_by_teamid(teamid):
-    return _by_teamid.get(teamid, {}).get('nickname', '')
+    return _by_teamid_map.get(teamid, {}).get('nickname', '')
+
+
+def fullname_by_teamid(teamid):
+    return _by_teamid_map.get(teamid, {}).get('fullname', '')
 
 
 def teamid_by_hometown(hometown):
-    return _by_hometown.get(hometown, {}).get('teamid', '')
+    return _by_hometown_map.get(hometown, {}).get('teamid', '')
 
 
 def nickname_by_hometown(hometown):
-    return _by_hometown.get(hometown, {}).get('nickname', '')
+    return _by_hometown_map.get(hometown, {}).get('nickname', '')
+
+
+def teamid_by_fullname(fullname):
+    return _by_fullname_map.get(fullname, {}).get('teamid', '')
 
 
 def divisions():

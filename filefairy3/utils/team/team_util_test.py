@@ -16,11 +16,13 @@ from utils.team.team_util import _ispan  # noqa
 from utils.team.team_util import abbreviation_by_teamid  # noqa
 from utils.team.team_util import alogo  # noqa
 from utils.team.team_util import divisions  # noqa
+from utils.team.team_util import fullname_by_teamid  # noqa
 from utils.team.team_util import hometown_by_teamid  # noqa
 from utils.team.team_util import hometowns  # noqa
 from utils.team.team_util import ilogo  # noqa
 from utils.team.team_util import nickname_by_hometown  # noqa
 from utils.team.team_util import nickname_by_teamid  # noqa
+from utils.team.team_util import teamid_by_fullname  # noqa
 from utils.team.team_util import teamid_by_hometown  # noqa
 from utils.team.team_util import teamids  # noqa
 
@@ -122,6 +124,38 @@ class TeamUtilTest(unittest.TestCase):
         self.assertEqual(nickname_by_teamid('59'), 'Blue Jays')
         self.assertEqual(nickname_by_teamid('60'), 'Nationals')
 
+    def test_fullname_by_teamid(self):
+        self.assertEqual(fullname_by_teamid('31'), 'Arizona Diamondbacks')
+        self.assertEqual(fullname_by_teamid('32'), 'Atlanta Braves')
+        self.assertEqual(fullname_by_teamid('33'), 'Baltimore Orioles')
+        self.assertEqual(fullname_by_teamid('34'), 'Boston Red Sox')
+        self.assertEqual(fullname_by_teamid('35'), 'Chicago White Sox')
+        self.assertEqual(fullname_by_teamid('36'), 'Chicago Cubs')
+        self.assertEqual(fullname_by_teamid('37'), 'Cincinnati Reds')
+        self.assertEqual(fullname_by_teamid('38'), 'Cleveland Indians')
+        self.assertEqual(fullname_by_teamid('39'), 'Colorado Rockies')
+        self.assertEqual(fullname_by_teamid('40'), 'Detroit Tigers')
+        self.assertEqual(fullname_by_teamid('41'), 'Miami Marlins')
+        self.assertEqual(fullname_by_teamid('42'), 'Houston Astros')
+        self.assertEqual(fullname_by_teamid('43'), 'Kansas City Royals')
+        self.assertEqual(fullname_by_teamid('44'), 'Los Angeles Angels')
+        self.assertEqual(fullname_by_teamid('45'), 'Los Angeles Dodgers')
+        self.assertEqual(fullname_by_teamid('46'), 'Milwaukee Brewers')
+        self.assertEqual(fullname_by_teamid('47'), 'Minnesota Twins')
+        self.assertEqual(fullname_by_teamid('48'), 'New York Yankees')
+        self.assertEqual(fullname_by_teamid('49'), 'New York Mets')
+        self.assertEqual(fullname_by_teamid('50'), 'Oakland Athletics')
+        self.assertEqual(fullname_by_teamid('51'), 'Philadelphia Phillies')
+        self.assertEqual(fullname_by_teamid('52'), 'Pittsburgh Pirates')
+        self.assertEqual(fullname_by_teamid('53'), 'San Diego Padres')
+        self.assertEqual(fullname_by_teamid('54'), 'Seattle Mariners')
+        self.assertEqual(fullname_by_teamid('55'), 'San Francisco Giants')
+        self.assertEqual(fullname_by_teamid('56'), 'St. Louis Cardinals')
+        self.assertEqual(fullname_by_teamid('57'), 'Tampa Bay Rays')
+        self.assertEqual(fullname_by_teamid('58'), 'Texas Rangers')
+        self.assertEqual(fullname_by_teamid('59'), 'Toronto Blue Jays')
+        self.assertEqual(fullname_by_teamid('60'), 'Washington Nationals')
+
     def test_teamid_by_hometown(self):
         self.assertEqual(teamid_by_hometown('Arizona'), '31')
         self.assertEqual(teamid_by_hometown('Atlanta'), '32')
@@ -179,6 +213,38 @@ class TeamUtilTest(unittest.TestCase):
         self.assertEqual(nickname_by_hometown('Texas'), 'Rangers')
         self.assertEqual(nickname_by_hometown('Toronto'), 'Blue Jays')
         self.assertEqual(nickname_by_hometown('Washington'), 'Nationals')
+
+    def test_teamid_by_fullname(self):
+        self.assertEqual(teamid_by_fullname('Arizona Diamondbacks'), '31')
+        self.assertEqual(teamid_by_fullname('Atlanta Braves'), '32')
+        self.assertEqual(teamid_by_fullname('Baltimore Orioles'), '33')
+        self.assertEqual(teamid_by_fullname('Boston Red Sox'), '34')
+        self.assertEqual(teamid_by_fullname('Chicago White Sox'), '35')
+        self.assertEqual(teamid_by_fullname('Chicago Cubs'), '36')
+        self.assertEqual(teamid_by_fullname('Cincinnati Reds'), '37')
+        self.assertEqual(teamid_by_fullname('Cleveland Indians'), '38')
+        self.assertEqual(teamid_by_fullname('Colorado Rockies'), '39')
+        self.assertEqual(teamid_by_fullname('Detroit Tigers'), '40')
+        self.assertEqual(teamid_by_fullname('Miami Marlins'), '41')
+        self.assertEqual(teamid_by_fullname('Houston Astros'), '42')
+        self.assertEqual(teamid_by_fullname('Kansas City Royals'), '43')
+        self.assertEqual(teamid_by_fullname('Los Angeles Angels'), '44')
+        self.assertEqual(teamid_by_fullname('Los Angeles Dodgers'), '45')
+        self.assertEqual(teamid_by_fullname('Milwaukee Brewers'), '46')
+        self.assertEqual(teamid_by_fullname('Minnesota Twins'), '47')
+        self.assertEqual(teamid_by_fullname('New York Yankees'), '48')
+        self.assertEqual(teamid_by_fullname('New York Mets'), '49')
+        self.assertEqual(teamid_by_fullname('Oakland Athletics'), '50')
+        self.assertEqual(teamid_by_fullname('Philadelphia Phillies'), '51')
+        self.assertEqual(teamid_by_fullname('Pittsburgh Pirates'), '52')
+        self.assertEqual(teamid_by_fullname('San Diego Padres'), '53')
+        self.assertEqual(teamid_by_fullname('Seattle Mariners'), '54')
+        self.assertEqual(teamid_by_fullname('San Francisco Giants'), '55')
+        self.assertEqual(teamid_by_fullname('St. Louis Cardinals'), '56')
+        self.assertEqual(teamid_by_fullname('Tampa Bay Rays'), '57')
+        self.assertEqual(teamid_by_fullname('Texas Rangers'), '58')
+        self.assertEqual(teamid_by_fullname('Toronto Blue Jays'), '59')
+        self.assertEqual(teamid_by_fullname('Washington Nationals'), '60')
 
     def test_divisions(self):
         actual = divisions()
