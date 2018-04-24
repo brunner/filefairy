@@ -25,7 +25,7 @@ class LoggerUtilTest(unittest.TestCase):
     def test_log__with_string_verbose(self, mock_post, mock_upload):
         log('name', s='str', v=True)
         mock_post.assert_called_once_with('testing', '(name) str')
-        mock_upload.assert_called_once_with('', 'name.log.txt', 'testing')
+        mock_upload.assert_not_called()
 
     @mock.patch('utils.logger.logger_util.files_upload')
     @mock.patch('utils.logger.logger_util.chat_post_message')
