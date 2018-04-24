@@ -109,21 +109,45 @@ def game_box(s):
 
 
 SCORES_TABLE_BODY = [[
-    game_box('<a href="{0}{1}2998.html">Arizona Diamondbacks 4, Los Angeles 2</a>')
-], [game_box('<a href="{0}{1}3003.html">Atlanta Braves 2, Los Angeles 1</a>')], [
-    game_box('<a href="{0}{1}2996.html">Cincinnati Reds 7, Milwaukee Brewers 2</a>')
+    game_box(
+        '<a href="{0}{1}2998.html">Arizona Diamondbacks 4, Los Angeles 2</a>')
+], [
+    game_box('<a href="{0}{1}3003.html">Atlanta Braves 2, Los Angeles 1</a>')
+], [
+    game_box(
+        '<a href="{0}{1}2996.html">Cincinnati Reds 7, Milwaukee Brewers 2</a>')
 ], [game_box('<a href="{0}{1}3002.html">Detroit Tigers 11, Chicago 4</a>')], [
-    game_box('<a href="{0}{1}2993.html">Houston Astros 7, Seattle Mariners 2</a>')
-], [game_box('<a href="{0}{1}2991.html">Kansas City Royals 8, Cleveland Indians 2</a>')], [
-    game_box('<a href="{0}{1}14721.html">Miami Marlins 6, Chicago 2</a>')
-], [game_box('<a href="{0}{1}3001.html">New York 1, San Francisco Giants 0</a>')], [
+    game_box(
+        '<a href="{0}{1}2993.html">Houston Astros 7, Seattle Mariners 2</a>')
+], [
+    game_box(
+        '<a href="{0}{1}2991.html">Kansas City Royals 8, Cleveland Indians 2</a>'
+    )
+], [game_box('<a href="{0}{1}14721.html">Miami Marlins 6, Chicago 2</a>')], [
+    game_box(
+        '<a href="{0}{1}3001.html">New York 1, San Francisco Giants 0</a>')
+], [
     game_box('<a href="{0}{1}3000.html">New York 5, Baltimore Orioles 3</a>')
-], [game_box('<a href="{0}{1}2992.html">Philadelphia Phillies 3, Washington Nationals 1</a>')], [
-    game_box('<a href="{0}{1}2999.html">San Diego Padres 8, Colorado Rockies 2</a>')
-], [game_box('<a href="{0}{1}2990.html">St. Louis Cardinals 5, Pittsburgh Pirates 4</a>')], [
-    game_box('<a href="{0}{1}2997.html">Tampa Bay Rays 12, Boston Red Sox 9</a>')
-], [game_box('<a href="{0}{1}2994.html">Texas Rangers 5, Oakland Athletics 3</a>')], [
-    game_box('<a href="{0}{1}2995.html">Toronto Blue Jays 8, Minnesota Twins 2</a>')
+], [
+    game_box(
+        '<a href="{0}{1}2992.html">Philadelphia Phillies 3, Washington Nationals 1</a>'
+    )
+], [
+    game_box(
+        '<a href="{0}{1}2999.html">San Diego Padres 8, Colorado Rockies 2</a>')
+], [
+    game_box(
+        '<a href="{0}{1}2990.html">St. Louis Cardinals 5, Pittsburgh Pirates 4</a>'
+    )
+], [
+    game_box(
+        '<a href="{0}{1}2997.html">Tampa Bay Rays 12, Boston Red Sox 9</a>')
+], [
+    game_box(
+        '<a href="{0}{1}2994.html">Texas Rangers 5, Oakland Athletics 3</a>')
+], [
+    game_box(
+        '<a href="{0}{1}2995.html">Toronto Blue Jays 8, Minnesota Twins 2</a>')
 ]]
 
 
