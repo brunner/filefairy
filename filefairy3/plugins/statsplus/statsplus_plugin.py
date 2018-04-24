@@ -20,15 +20,21 @@ from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
 from utils.team.team_util import divisions  # noqa
+from utils.team.team_util import fullname_by_teamid  # noqa
+from utils.team.team_util import fullnames  # noqa
 from utils.team.team_util import hometown_by_teamid  # noqa
 from utils.team.team_util import hometowns  # noqa
 from utils.team.team_util import ilogo  # noqa
 from utils.team.team_util import nickname_by_hometown  # noqa
+from utils.team.team_util import teamid_by_fullname  # noqa
+from utils.team.team_util import teamids  # noqa
 
-_hometowns = hometowns()
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
 _player = 'players/player_'
+_fullnames = '|'.join(fullnames())
+_hometowns = '|'.join(hometowns())
+_teamids = 'T(?:{})'.format('|'.join(teamids()))
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -116,12 +122,33 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     @staticmethod
-    def _hometown_repl(matchobj):
+    def _decode_text(text):
+        text = re.sub(_teamids, StatsplusPlugin._fullname_repl, text)
+        return text
+
+    @staticmethod
+    def _encode_text(text):
+        text = re.sub(_hometowns, StatsplusPlugin._nickname_repl, text)
+        text = re.sub(_fullnames, StatsplusPlugin._teamid_repl, text)
+        return text
+
+    @staticmethod
+    def _fullname_repl(matchobj):
+        _teamid = matchobj.group(0)[1:]
+        _fullname = fullname_by_teamid(_teamid)
+        return _fullname if _fullname else _teamid
+
+    @staticmethod
+    def _nickname_repl(matchobj):
         _hometown = matchobj.group(0)
         _nickname = nickname_by_hometown(_hometown)
-        if _nickname:
-            return _hometown + ' ' + _nickname
-        return _hometown
+        return _hometown + ' ' + _nickname if _nickname else _hometown
+
+    @staticmethod
+    def _teamid_repl(matchobj):
+        _fullname = matchobj.group(0)
+        _teamid = teamid_by_fullname(_fullname)
+        return 'T' + _teamid if _teamid else _fullname
 
     @staticmethod
     def _live_tables_header(title):
@@ -139,9 +166,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     @staticmethod
     def _rewrite(date, text):
-        pattern = '|'.join(_hometowns)
-        text = re.sub(pattern, StatsplusPlugin._hometown_repl, text)
-
         match = re.findall('<([^|]+)\|([^<]+)>', text)
         if match:
             link, content = match[0]
@@ -161,9 +185,11 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
         if match:
             date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
-            part = text.split('\n', 1)[1]
-            score = part.replace(_html + _game_box, '{0}{1}').replace('*', '')
-            self.data['scores'][encode_datetime(date)] = score
+            scores = text.split('\n', 1)[1].replace('*', '')
+
+            scores = self._encode_text(scores)
+            scores = scores.replace(_html + _game_box, '{0}{1}')
+            self.data['scores'][encode_datetime(date)] = scores
             self.data['updated'] = True
 
     def _injuries(self, text):
@@ -177,7 +203,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             pattern = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
             match = re.findall(pattern, text)
             for m in match:
-                injury = m.replace(_html + _player, '{0}{1}')
+                injury = self._encode_text(m)
+                injury = injury.replace(_html + _player, '{0}{1}')
                 self.data['injuries'][encoded_date].append(injury)
                 self.data['updated'] = True
 
@@ -192,7 +219,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             pattern = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
             match = re.findall(pattern, text)
             for m in match:
-                highlights = m.replace(_html + _player, '{0}{1}')
+                highlights = self._encode_text(m)
+                highlights = highlights.replace(_html + _player, '{0}{1}')
                 self.data['highlights'][encoded_date].append(highlights)
                 self.data['updated'] = True
 
@@ -251,12 +279,11 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             body=body)
 
     def _record(self, teamid):
-        ht = hometown_by_teamid(teamid)
         hw, hl = 0, 0
         for date in self.data['scores']:
             score = self.data['scores'][date]
-            hw += len(re.findall(r'\|' + re.escape(ht), score))
-            hl += len(re.findall(r', ' + re.escape(ht), score))
+            hw += len(re.findall(r'\|' + re.escape('T' + teamid), score))
+            hl += len(re.findall(r', ' + re.escape('T' + teamid), score))
         return '{0}-{1}'.format(hw, hl)
 
     def _scores_table(self, date):
@@ -281,6 +308,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         body = []
         for line in lines:
             text = line.format(_html, path)
+            text = self._decode_text(text)
             link = self._rewrite(date, text)
             body.append([link])
         return body
