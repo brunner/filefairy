@@ -8,7 +8,9 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/standings', '', _path))
-from utils.standings.standings_util import games_behind, elimination_number, sort  # noqa
+from utils.standings.standings_util import elimination_number  # noqa
+from utils.standings.standings_util import games_behind  # noqa
+from utils.standings.standings_util import sort  # noqa
 
 
 class StandingsUtilTest(unittest.TestCase):

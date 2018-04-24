@@ -13,10 +13,12 @@ _root = re.sub(r'/plugins/leaguefile', '', _path)
 sys.path.append(_root)
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
-from utils.component.component_util import card, table  # noqa
+from utils.component.component_util import card  # noqa
+from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.test.test_util import main, TestUtil  # noqa
+from utils.test.test_util import TestUtil  # noqa
+from utils.test.test_util import main  # noqa
 
 _data = LeaguefilePlugin._data()
 DATA = LeaguefilePlugin._data()

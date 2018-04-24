@@ -9,7 +9,8 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/corpus', '', _path))
-from utils.corpus.corpus_util import _rewrite, collect  # noqa
+from utils.corpus.corpus_util import _rewrite  # noqa
+from utils.corpus.corpus_util import collect  # noqa
 
 _members = {'U1234': 'user'}
 _messages = [

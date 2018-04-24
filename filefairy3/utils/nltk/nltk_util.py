@@ -4,6 +4,7 @@
 import collections
 import random
 import re
+
 from nltk import word_tokenize
 from nltk.probability import ConditionalFreqDist
 from nltk.tokenize.treebank import TreebankWordDetokenizer

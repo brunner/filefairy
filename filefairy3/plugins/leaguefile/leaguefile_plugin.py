@@ -13,8 +13,10 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta, elapsed  # noqa
-from utils.component.component_util import card, table  # noqa
-from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
+from utils.component.component_util import card  # noqa
+from utils.component.component_util import table  # noqa
+from utils.datetime.datetime_util import decode_datetime  # noqa
+from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa

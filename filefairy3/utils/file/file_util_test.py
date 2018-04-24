@@ -10,7 +10,8 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/file', '', _path)
 sys.path.append(_root)
-from utils.file.file_util import recreate, wget_file  # noqa
+from utils.file.file_util import recreate  # noqa
+from utils.file.file_util import wget_file  # noqa
 
 _download = os.path.join(_root, 'download')
 _name = 'orange_and_blue_league_baseball.tar.gz'

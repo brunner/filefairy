@@ -13,7 +13,9 @@ sys.path.append(_path)
 _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
 from enums.activity.activity_enum import ActivityEnum  # noqa
-from plugins.snacks.snacks_plugin import _chooselist, _snacklist, SnacksPlugin  # noqa
+from plugins.snacks.snacks_plugin import SnacksPlugin  # noqa
+from plugins.snacks.snacks_plugin import _chooselist  # noqa
+from plugins.snacks.snacks_plugin import _snacklist  # noqa
 from utils.json.json_util import dumps  # noqa
 
 COLLECT = 'collect'

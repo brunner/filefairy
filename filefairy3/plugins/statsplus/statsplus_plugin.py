@@ -15,9 +15,15 @@ from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.box.box_util import clarify  # noqa
 from utils.component.component_util import table  # noqa
-from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
+from utils.datetime.datetime_util import decode_datetime  # noqa
+from utils.datetime.datetime_util import encode_datetime  # noqa
+from utils.datetime.datetime_util import suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
-from utils.team.team_util import hometown_by_teamid, nickname_by_hometown, divisions, hometowns, ilogo  # noqa
+from utils.team.team_util import divisions  # noqa
+from utils.team.team_util import hometown_by_teamid  # noqa
+from utils.team.team_util import hometowns  # noqa
+from utils.team.team_util import ilogo  # noqa
+from utils.team.team_util import nickname_by_hometown  # noqa
 
 _hometowns = hometowns()
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'

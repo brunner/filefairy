@@ -16,8 +16,10 @@ from plugins.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import hometowns, ilogo  # noqa
-from utils.test.test_util import main, TestUtil  # noqa
+from utils.team.team_util import hometowns  # noqa
+from utils.team.team_util import ilogo  # noqa
+from utils.test.test_util import TestUtil  # noqa
+from utils.test.test_util import main  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'

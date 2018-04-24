@@ -23,7 +23,8 @@ from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card  # noqa
-from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
+from utils.datetime.datetime_util import decode_datetime  # noqa
+from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import rtm_connect  # noqa

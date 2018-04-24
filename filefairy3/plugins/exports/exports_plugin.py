@@ -11,10 +11,15 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta  # noqa
-from utils.component.component_util import card, table  # noqa
-from utils.datetime.datetime_util import decode_datetime, encode_datetime  # noqa
+from utils.component.component_util import card  # noqa
+from utils.component.component_util import table  # noqa
+from utils.datetime.datetime_util import decode_datetime  # noqa
+from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
-from utils.team.team_util import abbreviation_by_teamid, hometown_by_teamid, divisions, alogo  # noqa
+from utils.team.team_util import abbreviation_by_teamid  # noqa
+from utils.team.team_util import hometown_by_teamid  # noqa
+from utils.team.team_util import divisions  # noqa
+from utils.team.team_util import alogo  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]

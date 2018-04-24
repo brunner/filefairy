@@ -14,8 +14,13 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.corpus.corpus_util import collect  # noqa
-from utils.nltk.nltk_util import cfd, discuss  # noqa
-from utils.slack.slack_util import channels_kick, channels_list, chat_post_message, reactions_add, users_list  # noqa
+from utils.nltk.nltk_util import cfd  # noqa
+from utils.nltk.nltk_util import discuss  # noqa
+from utils.slack.slack_util import channels_kick  # noqa
+from utils.slack.slack_util import channels_list  # noqa
+from utils.slack.slack_util import chat_post_message  # noqa
+from utils.slack.slack_util import reactions_add  # noqa
+from utils.slack.slack_util import users_list  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']

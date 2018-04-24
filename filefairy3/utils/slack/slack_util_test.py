@@ -11,9 +11,16 @@ import urllib2
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/slack', '', _path))
-from utils.secrets.secrets_util import brunnerj, filefairy  # noqa
-from utils.slack.slack_util import channels_kick, channels_history, channels_list, chat_post_message  # noqa
-from utils.slack.slack_util import files_upload, reactions_add, rtm_connect, users_list  # noqa
+from utils.secrets.secrets_util import brunnerj  # noqa
+from utils.secrets.secrets_util import filefairy  # noqa
+from utils.slack.slack_util import channels_kick  # noqa
+from utils.slack.slack_util import channels_history  # noqa
+from utils.slack.slack_util import channels_list  # noqa
+from utils.slack.slack_util import chat_post_message  # noqa
+from utils.slack.slack_util import files_upload  # noqa
+from utils.slack.slack_util import reactions_add  # noqa
+from utils.slack.slack_util import rtm_connect  # noqa
+from utils.slack.slack_util import users_list  # noqa
 
 
 class SlackUtilTest(unittest.TestCase):

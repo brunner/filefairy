@@ -9,10 +9,19 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/team', '', _path)
 sys.path.append(_root)
-from utils.team.team_util import _aimg, _aspan, _iimg, _ispan  # noqa
-from utils.team.team_util import abbreviation_by_teamid, hometown_by_teamid, nickname_by_teamid  # noqa
-from utils.team.team_util import teamid_by_hometown, nickname_by_hometown  # noqa
-from utils.team.team_util import divisions, hometowns, alogo, ilogo  # noqa
+from utils.team.team_util import _aimg  # noqa
+from utils.team.team_util import _aspan  # noqa
+from utils.team.team_util import _iimg  # noqa
+from utils.team.team_util import _ispan  # noqa
+from utils.team.team_util import abbreviation_by_teamid  # noqa
+from utils.team.team_util import alogo  # noqa
+from utils.team.team_util import divisions  # noqa
+from utils.team.team_util import hometown_by_teamid  # noqa
+from utils.team.team_util import hometowns  # noqa
+from utils.team.team_util import ilogo  # noqa
+from utils.team.team_util import nickname_by_hometown  # noqa
+from utils.team.team_util import nickname_by_teamid  # noqa
+from utils.team.team_util import teamid_by_hometown  # noqa
 
 
 class TeamUtilTest(unittest.TestCase):

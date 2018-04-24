@@ -9,7 +9,8 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/ago', '', _path))
-from utils.ago.ago_util import delta, elapsed  # noqa
+from utils.ago.ago_util import delta  # noqa
+from utils.ago.ago_util import elapsed  # noqa
 
 
 class AgoUtilTest(unittest.TestCase):

@@ -11,7 +11,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/test', '', _path)
 sys.path.append(_root)
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from utils.test.test_util import main, TestUtil  # noqa
+from utils.test.test_util import TestUtil  # noqa
+from utils.test.test_util import main  # noqa
 
 
 class FakeRenderable(RenderableApi):

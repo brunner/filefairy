@@ -8,7 +8,8 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/component', '', _path))
-from utils.component.component_util import card, table  # noqa
+from utils.component.component_util import card  # noqa
+from utils.component.component_util import table  # noqa
 
 
 class ComponentUtilTest(unittest.TestCase):

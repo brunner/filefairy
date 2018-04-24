@@ -9,7 +9,8 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/urllib', '', _path))
-from utils.urllib.urllib_util import create_request, urlopen  # noqa
+from utils.urllib.urllib_util import create_request  # noqa
+from utils.urllib.urllib_util import urlopen  # noqa
 
 
 class UrllibUtilTest(unittest.TestCase):

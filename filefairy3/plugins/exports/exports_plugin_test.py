@@ -12,11 +12,13 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from plugins.exports.exports_plugin import ExportsPlugin  # noqa
 from enums.activity.activity_enum import ActivityEnum  # noqa
-from utils.component.component_util import card, table  # noqa
+from utils.component.component_util import card  # noqa
+from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
 from utils.team.team_util import alogo  # noqa
-from utils.test.test_util import main, TestUtil  # noqa
+from utils.test.test_util import TestUtil  # noqa
+from utils.test.test_util import main  # noqa
 
 DATA = ExportsPlugin._data()
 EXPORTS_LOCK = [('31', 'New'), ('32', 'Old'), ('33', 'New')]

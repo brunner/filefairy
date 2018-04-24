@@ -9,7 +9,9 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/datetime', '', _path))
-from utils.datetime.datetime_util import decode_datetime, encode_datetime, suffix  # noqa
+from utils.datetime.datetime_util import decode_datetime  # noqa
+from utils.datetime.datetime_util import encode_datetime  # noqa
+from utils.datetime.datetime_util import suffix  # noqa
 
 
 class DatetimeUtilTest(unittest.TestCase):

@@ -9,7 +9,11 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/nltk', '', _path))
-from utils.nltk.nltk_util import _capitalize, _cond_samples, _fix, cfd, discuss  # noqa
+from utils.nltk.nltk_util import _capitalize  # noqa
+from utils.nltk.nltk_util import _cond_samples  # noqa
+from utils.nltk.nltk_util import _fix  # noqa
+from utils.nltk.nltk_util import cfd  # noqa
+from utils.nltk.nltk_util import discuss  # noqa
 
 
 class NltkUtilTest(unittest.TestCase):
