@@ -10,7 +10,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/team', '', _path)
 sys.path.append(_root)
 from utils.team.team_util import _aimg, _aspan, _iimg, _ispan  # noqa
-from utils.team.team_util import abbreviation_by_teamid, hometown_by_teamid, nickname_by_teamid, nickname_by_hometown  # noqa
+from utils.team.team_util import abbreviation_by_teamid, hometown_by_teamid, nickname_by_teamid  # noqa
+from utils.team.team_util import teamid_by_hometown, nickname_by_hometown  # noqa
 from utils.team.team_util import divisions, hometowns, alogo, ilogo  # noqa
 
 
@@ -110,6 +111,35 @@ class TeamUtilTest(unittest.TestCase):
         self.assertEqual(nickname_by_teamid('58'), 'Rangers')
         self.assertEqual(nickname_by_teamid('59'), 'Blue Jays')
         self.assertEqual(nickname_by_teamid('60'), 'Nationals')
+
+    def test_teamid_by_hometown(self):
+        self.assertEqual(teamid_by_hometown('Arizona'), '31')
+        self.assertEqual(teamid_by_hometown('Atlanta'), '32')
+        self.assertEqual(teamid_by_hometown('Baltimore'), '33')
+        self.assertEqual(teamid_by_hometown('Boston'), '34')
+        self.assertEqual(teamid_by_hometown('Chicago'), '')
+        self.assertEqual(teamid_by_hometown('Cincinnati'), '37')
+        self.assertEqual(teamid_by_hometown('Cleveland'), '38')
+        self.assertEqual(teamid_by_hometown('Colorado'), '39')
+        self.assertEqual(teamid_by_hometown('Detroit'), '40')
+        self.assertEqual(teamid_by_hometown('Miami'), '41')
+        self.assertEqual(teamid_by_hometown('Houston'), '42')
+        self.assertEqual(teamid_by_hometown('Kansas City'), '43')
+        self.assertEqual(teamid_by_hometown('Los Angeles'), '')
+        self.assertEqual(teamid_by_hometown('Milwaukee'), '46')
+        self.assertEqual(teamid_by_hometown('Minnesota'), '47')
+        self.assertEqual(teamid_by_hometown('New York'), '')
+        self.assertEqual(teamid_by_hometown('Oakland'), '50')
+        self.assertEqual(teamid_by_hometown('Philadelphia'), '51')
+        self.assertEqual(teamid_by_hometown('Pittsburgh'), '52')
+        self.assertEqual(teamid_by_hometown('San Diego'), '53')
+        self.assertEqual(teamid_by_hometown('Seattle'), '54')
+        self.assertEqual(teamid_by_hometown('San Francisco'), '55')
+        self.assertEqual(teamid_by_hometown('St. Louis'), '56')
+        self.assertEqual(teamid_by_hometown('Tampa Bay'), '57')
+        self.assertEqual(teamid_by_hometown('Texas'), '58')
+        self.assertEqual(teamid_by_hometown('Toronto'), '59')
+        self.assertEqual(teamid_by_hometown('Washington'), '60')
 
     def test_nickname_by_hometown(self):
         self.assertEqual(nickname_by_hometown('Arizona'), 'Diamondbacks')

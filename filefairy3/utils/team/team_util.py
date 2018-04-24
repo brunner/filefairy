@@ -56,7 +56,7 @@ def _map(key, values):
 
 
 _by_teamid = _map('teamid', ['abbreviation', 'hometown', 'nickname'])
-_by_hometown = _map('hometown', ['nickname'])
+_by_hometown = _map('hometown', ['teamid', 'nickname'])
 
 
 def abbreviation_by_teamid(teamid):
@@ -69,6 +69,10 @@ def hometown_by_teamid(teamid):
 
 def nickname_by_teamid(teamid):
     return _by_teamid.get(teamid, {}).get('nickname', '')
+
+
+def teamid_by_hometown(hometown):
+    return _by_hometown.get(hometown, {}).get('teamid', '')
 
 
 def nickname_by_hometown(hometown):
