@@ -22,6 +22,7 @@ from utils.team.team_util import ilogo  # noqa
 from utils.team.team_util import nickname_by_hometown  # noqa
 from utils.team.team_util import nickname_by_teamid  # noqa
 from utils.team.team_util import teamid_by_hometown  # noqa
+from utils.team.team_util import teamids  # noqa
 
 
 class TeamUtilTest(unittest.TestCase):
@@ -201,6 +202,11 @@ class TeamUtilTest(unittest.TestCase):
             'San Francisco', 'Seattle', 'St. Louis', 'Tampa Bay', 'Texas',
             'Toronto', 'Washington'
         ]
+        self.assertEqual(actual, expected)
+
+    def test_teamids(self):
+        actual = sorted(teamids())
+        expected = [str(n) for n in range(31, 61)]
         self.assertEqual(actual, expected)
 
     def test_logo(self):

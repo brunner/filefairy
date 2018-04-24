@@ -94,6 +94,10 @@ def hometowns():
     return list(set(t['hometown'] for t in _teams))
 
 
+def teamids():
+    return list(set(t['teamid'] for t in _teams))
+
+
 def _path(teamid):
     return hometown_by_teamid(teamid) + ' ' + nickname_by_teamid(teamid)
 
