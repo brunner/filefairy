@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-\
 
+import re
+from functools import partial
+
 
 def _team(_, abbreviation, decoding, encoding, hometown, precoding, teamid):
     return {
@@ -54,11 +57,20 @@ def _map(k, vs):
     return {t[k]: {v: t[v] for v in vs if t[v]} for t in _teams if t[k]}
 
 
+def _repl(f, m):
+    a = m.group(0)
+    b = f(a)
+    return b if b else a
+
+
+def _sub(ks, f, s):
+    pattern = '|'.join(ks)
+    return re.sub(pattern, partial(_repl, f), s)
+
+
 _decodings = _map('decoding', ['encoding'])
 _encodings = _map('encoding', ['teamid', 'decoding'])
-_encodings_keys = sorted(_encodings.keys())
 _precodings = _map('precoding', ['encoding'])
-_precodings_keys = sorted(_precodings.keys())
 _teamids = _map('teamid', ['abbreviation', 'decoding', 'encoding', 'hometown'])
 
 _img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
@@ -73,6 +85,14 @@ _inline_span = _span.format('d-inline-block px-2', '{0}')
 
 def decoding_to_encoding(decoding):
     return _decodings.get(decoding, {}).get('encoding', '')
+
+
+def decoding_to_encoding_sub(text):
+    return _sub(_decodings_keys, decoding_to_encoding, text)
+
+
+def decodings():
+    return _decodings_keys
 
 
 def divisions():
@@ -90,6 +110,10 @@ def encoding_to_decoding(encoding):
     return _encodings.get(encoding, {}).get('decoding', '')
 
 
+def encoding_to_decoding_sub(text):
+    return _sub(_encodings_keys, encoding_to_decoding, text)
+
+
 def encoding_to_teamid(encoding):
     return _encodings.get(encoding, {}).get('teamid', '')
 
@@ -100,6 +124,10 @@ def encodings():
 
 def precoding_to_encoding(precoding):
     return _precodings.get(precoding, {}).get('encoding', '')
+
+
+def precoding_to_encoding_sub(text):
+    return _sub(_precodings_keys, precoding_to_encoding, text)
 
 
 def precodings():
@@ -136,3 +164,8 @@ def teamid_to_encoding(teamid):
 
 def teamid_to_hometown(teamid):
     return _teamids.get(teamid, {}).get('hometown', '')
+
+
+_decodings_keys = sorted(_decodings.keys(), key=decoding_to_encoding)
+_encodings_keys = sorted(_encodings.keys())
+_precodings_keys = sorted(_precodings.keys(), key=precoding_to_encoding)

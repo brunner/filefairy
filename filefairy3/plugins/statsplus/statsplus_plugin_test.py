@@ -590,7 +590,7 @@ class StatsplusPluginTest(TestUtil):
     def test_rewrite(self):
         self.init_mocks({})
 
-        content = 'Arizona 4, Los Angeles 2'
+        content = 'T31 4, TLA 2'
         text = '<link|{}>'.format(content)
         actual = StatsplusPlugin._rewrite(THEN_ENCODED, text)
         expected = '<a href="link">{}</a>'.format(content)
@@ -856,18 +856,12 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         calls = [
-            mock.call(THEN, game_box('{0}{1}2998.html'),
-                      'Arizona Diamondbacks 4, Los Angeles 2'),
-            mock.call(THEN, game_box('{0}{1}3003.html'),
-                      'Atlanta Braves 2, Los Angeles 1'),
-            mock.call(THEN, game_box('{0}{1}3002.html'),
-                      'Detroit Tigers 11, Chicago 4'),
-            mock.call(THEN, game_box('{0}{1}14721.html'),
-                      'Miami Marlins 6, Chicago 2'),
-            mock.call(THEN, game_box('{0}{1}3001.html'),
-                      'New York 1, San Francisco Giants 0'),
-            mock.call(THEN, game_box('{0}{1}3000.html'),
-                      'New York 5, Baltimore Orioles 3')
+            mock.call(THEN, game_box('{0}{1}2998.html'), 'T31 4, TLA 2'),
+            mock.call(THEN, game_box('{0}{1}3003.html'), 'T32 2, TLA 1'),
+            mock.call(THEN, game_box('{0}{1}3002.html'), 'T40 11, TCH 4'),
+            mock.call(THEN, game_box('{0}{1}14721.html'), 'T41 6, TCH 2'),
+            mock.call(THEN, game_box('{0}{1}3001.html'), 'TNY 1, T55 0'),
+            mock.call(THEN, game_box('{0}{1}3000.html'), 'TNY 5, T33 3')
         ]
         self.mock_clarify.assert_has_calls(calls)
 

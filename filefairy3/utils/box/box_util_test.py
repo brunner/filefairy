@@ -44,8 +44,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Arizona Diamondbacks 4, Los Angeles 2')
-        expected = 'Arizona Diamondbacks 4, Los Angeles Dodgers 2'
+        actual = clarify(DATE, link, 'T31 4, TLA 2')
+        expected = 'T31 4, T45 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -56,8 +56,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Los Angeles 4, Arizona Diamondbacks 2')
-        expected = 'Los Angeles Dodgers 4, Arizona Diamondbacks 2'
+        actual = clarify(DATE, link, 'TLA 4, T31 2')
+        expected = 'T45 4, T31 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -68,8 +68,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Los Angeles 4, Arizona Diamondbacks 2')
-        expected = 'Los Angeles Dodgers 4, Arizona Diamondbacks 2'
+        actual = clarify(DATE, link, 'TLA 4, T31 2')
+        expected = 'T45 4, T31 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -80,8 +80,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Arizona Diamondbacks 4, Los Angeles 2')
-        expected = 'Arizona Diamondbacks 4, Los Angeles Dodgers 2'
+        actual = clarify(DATE, link, 'T31 4, TLA 2')
+        expected = 'T31 4, T45 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -92,8 +92,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Los Angeles 4, Los Angeles 2')
-        expected = 'Los Angeles Dodgers 4, Los Angeles Angels 2'
+        actual = clarify(DATE, link, 'TLA 4, TLA 2')
+        expected = 'T45 4, T44 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -104,8 +104,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Los Angeles 4, Los Angeles 2')
-        expected = 'Los Angeles Angels 4, Los Angeles Dodgers 2'
+        actual = clarify(DATE, link, 'TLA 4, TLA 2')
+        expected = 'T44 4, T45 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -116,8 +116,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Los Angeles 4, Los Angeles 2')
-        expected = 'Los Angeles Angels 4, Los Angeles Dodgers 2'
+        actual = clarify(DATE, link, 'TLA 4, TLA 2')
+        expected = 'T44 4, T45 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -128,8 +128,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Los Angeles 4, Los Angeles 2')
-        expected = 'Los Angeles Dodgers 4, Los Angeles Angels 2'
+        actual = clarify(DATE, link, 'TLA 4, TLA 2')
+        expected = 'T45 4, T44 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -140,8 +140,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Arizona Diamondbacks 4, Los Angeles 2')
-        expected = 'Arizona Diamondbacks 4, Los Angeles 2'
+        actual = clarify(DATE, link, 'T31 4, TLA 2')
+        expected = 'T31 4, TLA 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -152,8 +152,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Arizona Diamondbacks 4, Los Angeles 2')
-        expected = 'Arizona Diamondbacks 4, Los Angeles 2'
+        actual = clarify(DATE, link, 'T31 4, TLA 2')
+        expected = 'T31 4, TLA 2'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -164,8 +164,8 @@ class BoxUtilTest(unittest.TestCase):
         mock_urlopen.return_value = content
 
         link = _html + _game_box.format('2998')
-        actual = clarify(DATE, link, 'Arizona Diamondbacks 4, Los Angeles 3')
-        expected = 'Arizona Diamondbacks 4, Los Angeles 3'
+        actual = clarify(DATE, link, 'T31 4, TLA 3')
+        expected = 'T31 4, TLA 3'
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
