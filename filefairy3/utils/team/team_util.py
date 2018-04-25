@@ -2,91 +2,77 @@
 # -*- coding: utf-8 -*-\
 
 
-def _team(teamid, abbreviation, hometown, nickname):
+def _team(_, abbreviation, decoding, encoding, hometown, precoding, teamid):
     return {
-        'teamid': teamid,
         'abbreviation': abbreviation,
-        'hometown': hometown,
-        'nickname': nickname,
-        'fullname': hometown + ' ' + nickname,
+        'decoding': decoding.format(_),
+        'encoding': encoding,
+        'hometown': hometown.format(_),
+        'precoding': precoding.format(_),
+        'teamid': teamid,
     }
 
 
 _teams = [
-    _team('31', 'ARI', 'Arizona', 'Diamondbacks'),
-    _team('32', 'ATL', 'Atlanta', 'Braves'),
-    _team('33', 'BAL', 'Baltimore', 'Orioles'),
-    _team('34', 'BOS', 'Boston', 'Red Sox'),
-    _team('35', 'CWS', 'Chicago', 'White Sox'),
-    _team('36', 'CHC', 'Chicago', 'Cubs'),
-    _team('37', 'CIN', 'Cincinnati', 'Reds'),
-    _team('38', 'CLE', 'Cleveland', 'Indians'),
-    _team('39', 'COL', 'Colorado', 'Rockies'),
-    _team('40', 'DET', 'Detroit', 'Tigers'),
-    _team('41', 'MIA', 'Miami', 'Marlins'),
-    _team('42', 'HOU', 'Houston', 'Astros'),
-    _team('43', 'KC', 'Kansas City', 'Royals'),
-    _team('44', 'LAA', 'Los Angeles', 'Angels'),
-    _team('45', 'LAD', 'Los Angeles', 'Dodgers'),
-    _team('46', 'MIL', 'Milwaukee', 'Brewers'),
-    _team('47', 'MIN', 'Minnesota', 'Twins'),
-    _team('48', 'NYY', 'New York', 'Yankees'),
-    _team('49', 'NYM', 'New York', 'Mets'),
-    _team('50', 'OAK', 'Oakland', 'Athletics'),
-    _team('51', 'PHI', 'Philadelphia', 'Phillies'),
-    _team('52', 'PIT', 'Pittsburgh', 'Pirates'),
-    _team('53', 'SD', 'San Diego', 'Padres'),
-    _team('54', 'SEA', 'Seattle', 'Mariners'),
-    _team('55', 'SF', 'San Francisco', 'Giants'),
-    _team('56', 'STL', 'St. Louis', 'Cardinals'),
-    _team('57', 'TB', 'Tampa Bay', 'Rays'),
-    _team('58', 'TEX', 'Texas', 'Rangers'),
-    _team('59', 'TOR', 'Toronto', 'Blue Jays'),
-    _team('60', 'WAS', 'Washington', 'Nationals'),
+    _team('Arizona', 'ARI', '{} Diamondbacks', 'T31', '{}', '{}', '31'),
+    _team('Atlanta', 'ATL', '{} Braves', 'T32', '{}', '{}', '32'),
+    _team('Baltimore', 'BAL', '{} Orioles', 'T33', '{}', '{}', '33'),
+    _team('Boston', 'BOS', '{} Red Sox', 'T34', '{}', '{}', '34'),
+    _team('Chicago', 'CWS', '{} White Sox', 'T35', '{}', '', '35'),
+    _team('Chicago', 'CHC', '{} Cubs', 'T36', '{}', '', '36'),
+    _team('Cincinnati', 'CIN', '{} Reds', 'T37', '{}', '{}', '37'),
+    _team('Cleveland', 'CLE', '{} Indians', 'T38', '{}', '{}', '38'),
+    _team('Colorado', 'COL', '{} Rockies', 'T39', '{}', '{}', '39'),
+    _team('Detroit', 'DET', '{} Tigers', 'T40', '{}', '{}', '40'),
+    _team('Miami', 'MIA', '{} Marlins', 'T41', '{}', '{}', '41'),
+    _team('Houston', 'HOU', '{} Astros', 'T42', '{}', '{}', '42'),
+    _team('Kansas City', 'KC', '{} Royals', 'T43', '{}', '{}', '43'),
+    _team('Los Angeles', 'LAA', '{} Angels', 'T44', '{}', '', '44'),
+    _team('Los Angeles', 'LAD', '{} Dodgers', 'T45', '{}', '', '45'),
+    _team('Milwaukee', 'MIL', '{} Brewers', 'T46', '{}', '{}', '46'),
+    _team('Minnesota', 'MIN', '{} Twins', 'T47', '{}', '{}', '47'),
+    _team('New York', 'NYY', '{} Yankees', 'T48', '{}', '', '48'),
+    _team('New York', 'NYM', '{} Mets', 'T49', '{}', '', '49'),
+    _team('Oakland', 'OAK', '{} Athletics', 'T50', '{}', '{}', '50'),
+    _team('Philadelphia', 'PHI', '{} Phillies', 'T51', '{}', '{}', '51'),
+    _team('Pittsburgh', 'PIT', '{} Pirates', 'T52', '{}', '{}', '52'),
+    _team('San Diego', 'SD', '{} Padres', 'T53', '{}', '{}', '53'),
+    _team('Seattle', 'SEA', '{} Mariners', 'T54', '{}', '{}', '54'),
+    _team('San Francisco', 'SF', '{} Giants', 'T55', '{}', '{}', '55'),
+    _team('St. Louis', 'STL', '{} Cardinals', 'T56', '{}', '{}', '56'),
+    _team('Tampa Bay', 'TB', '{} Rays', 'T57', '{}', '{}', '57'),
+    _team('Texas', 'TEX', '{} Rangers', 'T58', '{}', '{}', '58'),
+    _team('Toronto', 'TOR', '{} Blue Jays', 'T59', '{}', '{}', '59'),
+    _team('Washington', 'WAS', '{} Nationals', 'T60', '{}', '{}', '60'),
+    _team('Chicago', '', '{}', 'TCH', '', '{}', ''),
+    _team('Los Angeles', '', '{}', 'TLA', '', '{}', ''),
+    _team('New York', '', '{}', 'TNY', '', '{}', ''),
 ]
 
-_chlany = ['Chicago', 'Los Angeles', 'New York']
+
+def _map(k, vs):
+    return {t[k]: {v: t[v] for v in vs if t[v]} for t in _teams if t[k]}
 
 
-def _map(key, values):
-    return {
-        t[key]: {v: t[v]
-                 for v in values}
-        for t in _teams if t[key] not in _chlany
-    }
+_decodings = _map('decoding', ['encoding'])
+_encodings = _map('encoding', ['teamid', 'decoding'])
+_encodings_keys = sorted(_encodings.keys())
+_precodings = _map('precoding', ['encoding'])
+_precodings_keys = sorted(_precodings.keys())
+_teamids = _map('teamid', ['abbreviation', 'decoding', 'encoding', 'hometown'])
 
-_by_teamid_values = ['abbreviation', 'hometown', 'nickname', 'fullname']
-_by_teamid_map = _map('teamid', _by_teamid_values)
-_by_hometown_map = _map('hometown', ['teamid', 'nickname'])
-_by_fullname_map = _map('fullname', ['teamid'])
-
-
-def abbreviation_by_teamid(teamid):
-    return _by_teamid_map.get(teamid, {}).get('abbreviation', '')
-
-
-def hometown_by_teamid(teamid):
-    return _by_teamid_map.get(teamid, {}).get('hometown', '')
+_img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
+       'reports/news/html/images/team_logos/{0}_40.png" width="20" ' + \
+       'height="20" border="0" class="{1}">'
+_span = '<span class="align-middle {0}">{1}</span>'
+_absolute_img = _img.format('{0}', 'position-absolute {1}-8p top-14p')
+_absolute_span = _span.format('d-block text-truncate p{0}-24p', '{1}')
+_inline_img = _img.format('{0}', 'd-inline-block')
+_inline_span = _span.format('d-inline-block px-2', '{0}')
 
 
-def nickname_by_teamid(teamid):
-    return _by_teamid_map.get(teamid, {}).get('nickname', '')
-
-
-def fullname_by_teamid(teamid):
-    return _by_teamid_map.get(teamid, {}).get('fullname', '')
-
-
-def teamid_by_hometown(hometown):
-    return _by_hometown_map.get(hometown, {}).get('teamid', '')
-
-
-def nickname_by_hometown(hometown):
-    return _by_hometown_map.get(hometown, {}).get('nickname', '')
-
-
-def teamid_by_fullname(fullname):
-    return _by_fullname_map.get(fullname, {}).get('teamid', '')
+def decoding_to_encoding(decoding):
+    return _decodings.get(decoding, {}).get('encoding', '')
 
 
 def divisions():
@@ -100,40 +86,53 @@ def divisions():
     ]
 
 
-def fullnames():
-    return list(set(t['fullname'] for t in _teams))
+def encoding_to_decoding(encoding):
+    return _encodings.get(encoding, {}).get('decoding', '')
 
 
-def hometowns():
-    return list(set(t['hometown'] for t in _teams))
+def encoding_to_teamid(encoding):
+    return _encodings.get(encoding, {}).get('teamid', '')
 
 
-def teamids():
-    return list(set(t['teamid'] for t in _teams))
+def encodings():
+    return _encodings_keys
 
 
-def _path(teamid):
-    return hometown_by_teamid(teamid) + ' ' + nickname_by_teamid(teamid)
+def precoding_to_encoding(precoding):
+    return _precodings.get(precoding, {}).get('encoding', '')
 
 
-_aimg = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
-        'reports/news/html/images/team_logos/{0}_40.png" width="20" ' + \
-        'height="20" border="0" class="position-absolute {1}-8p top-14p">'
-_aspan = '<span class="d-block text-truncate align-middle p{0}-24p">{1}</span>'
+def precodings():
+    return _precodings_keys
 
 
-def alogo(teamid, text, side):
-    path = _path(teamid)
-    fname = path.replace('.', '').replace(' ', '_').lower()
-    return _aimg.format(fname, side) + _aspan.format(side[0], text)
-
-_iimg = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
-        'reports/news/html/images/team_logos/{}_40.png" ' + \
-        'width="20" height="20" border="0" class="d-inline-block">'
-_ispan = '<span class="d-inline-block align-middle px-2">{}</span>'
+def logo_absolute(teamid, text, side):
+    decoding = teamid_to_decoding(teamid)
+    fname = decoding.replace('.', '').replace(' ', '_').lower()
+    img = _absolute_img.format(fname, side)
+    span = _absolute_span.format(side[0], text)
+    return img + span
 
 
-def ilogo(teamid, text):
-    path = _path(teamid)
-    fname = path.replace('.', '').replace(' ', '_').lower()
-    return _iimg.format(fname) + _ispan.format(text)
+def logo_inline(teamid, text):
+    decoding = teamid_to_decoding(teamid)
+    fname = decoding.replace('.', '').replace(' ', '_').lower()
+    img = _inline_img.format(fname)
+    span = _inline_span.format(text)
+    return img + span
+
+
+def teamid_to_abbreviation(teamid):
+    return _teamids.get(teamid, {}).get('abbreviation', '')
+
+
+def teamid_to_decoding(teamid):
+    return _teamids.get(teamid, {}).get('decoding', '')
+
+
+def teamid_to_encoding(teamid):
+    return _teamids.get(teamid, {}).get('encoding', '')
+
+
+def teamid_to_hometown(teamid):
+    return _teamids.get(teamid, {}).get('hometown', '')

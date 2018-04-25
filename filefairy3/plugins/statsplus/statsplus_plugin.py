@@ -20,21 +20,18 @@ from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
 from utils.team.team_util import divisions  # noqa
-from utils.team.team_util import fullname_by_teamid  # noqa
-from utils.team.team_util import fullnames  # noqa
-from utils.team.team_util import hometown_by_teamid  # noqa
-from utils.team.team_util import hometowns  # noqa
-from utils.team.team_util import ilogo  # noqa
-from utils.team.team_util import nickname_by_hometown  # noqa
-from utils.team.team_util import teamid_by_fullname  # noqa
-from utils.team.team_util import teamids  # noqa
+from utils.team.team_util import encoding_to_decoding  # noqa
+from utils.team.team_util import encodings  # noqa
+from utils.team.team_util import logo_inline  # noqa
+from utils.team.team_util import precoding_to_encoding  # noqa
+from utils.team.team_util import precodings  # noqa
+from utils.team.team_util import teamid_to_encoding  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
 _player = 'players/player_'
-_fullnames = '|'.join(fullnames())
-_hometowns = '|'.join(hometowns())
-_teamids = 'T(?:{})'.format('|'.join(teamids()))
+_encodings = '|'.join(encodings())
+_precodings = '|'.join(precodings())
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -122,33 +119,24 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     @staticmethod
-    def _decode_text(text):
-        text = re.sub(_teamids, StatsplusPlugin._fullname_repl, text)
-        return text
+    def _decode_encoding(text):
+        return re.sub(_encodings, StatsplusPlugin._encoding_repl, text)
 
     @staticmethod
-    def _encode_text(text):
-        text = re.sub(_hometowns, StatsplusPlugin._nickname_repl, text)
-        text = re.sub(_fullnames, StatsplusPlugin._teamid_repl, text)
-        return text
+    def _encode_precoding(text):
+        return re.sub(_precodings, StatsplusPlugin._precoding_repl, text)
 
     @staticmethod
-    def _fullname_repl(matchobj):
-        _teamid = matchobj.group(0)[1:]
-        _fullname = fullname_by_teamid(_teamid)
-        return _fullname if _fullname else _teamid
+    def _encoding_repl(matchobj):
+        _encoding = matchobj.group(0)
+        _decoding = encoding_to_decoding(_encoding)
+        return _decoding if _decoding else _encoding
 
     @staticmethod
-    def _nickname_repl(matchobj):
-        _hometown = matchobj.group(0)
-        _nickname = nickname_by_hometown(_hometown)
-        return _hometown + ' ' + _nickname if _nickname else _hometown
-
-    @staticmethod
-    def _teamid_repl(matchobj):
-        _fullname = matchobj.group(0)
-        _teamid = teamid_by_fullname(_fullname)
-        return 'T' + _teamid if _teamid else _fullname
+    def _precoding_repl(matchobj):
+        _precoding = matchobj.group(0)
+        _encoding = precoding_to_encoding(_precoding)
+        return _encoding if _encoding else _precoding
 
     @staticmethod
     def _live_tables_header(title):
@@ -162,7 +150,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
     @staticmethod
     def _logo(team_tuple):
         teamid, t = team_tuple
-        return ilogo(teamid, t)
+        return logo_inline(teamid, t)
 
     @staticmethod
     def _rewrite(date, text):
@@ -187,7 +175,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
             scores = text.split('\n', 1)[1].replace('*', '')
 
-            scores = self._encode_text(scores)
+            scores = self._encode_precoding(scores)
             scores = scores.replace(_html + _game_box, '{0}{1}')
             self.data['scores'][encode_datetime(date)] = scores
             self.data['updated'] = True
@@ -203,7 +191,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             pattern = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
             match = re.findall(pattern, text)
             for m in match:
-                injury = self._encode_text(m)
+                injury = self._encode_precoding(m)
                 injury = injury.replace(_html + _player, '{0}{1}')
                 self.data['injuries'][encoded_date].append(injury)
                 self.data['updated'] = True
@@ -219,7 +207,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             pattern = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
             match = re.findall(pattern, text)
             for m in match:
-                highlights = self._encode_text(m)
+                highlights = self._encode_precoding(m)
                 highlights = highlights.replace(_html + _player, '{0}{1}')
                 self.data['highlights'][encoded_date].append(highlights)
                 self.data['updated'] = True
@@ -279,11 +267,12 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             body=body)
 
     def _record(self, teamid):
+        encoding = teamid_to_encoding(teamid)
         hw, hl = 0, 0
         for date in self.data['scores']:
             score = self.data['scores'][date]
-            hw += len(re.findall(r'\|' + re.escape('T' + teamid), score))
-            hl += len(re.findall(r', ' + re.escape('T' + teamid), score))
+            hw += len(re.findall(r'\|' + re.escape(encoding), score))
+            hl += len(re.findall(r', ' + re.escape(encoding), score))
         return '{0}-{1}'.format(hw, hl)
 
     def _scores_table(self, date):
@@ -308,7 +297,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         body = []
         for line in lines:
             text = line.format(_html, path)
-            text = self._decode_text(text)
+            text = self._decode_encoding(text)
             link = self._rewrite(date, text)
             body.append([link])
         return body

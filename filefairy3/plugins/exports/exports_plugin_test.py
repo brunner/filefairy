@@ -16,7 +16,7 @@ from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import alogo  # noqa
+from utils.team.team_util import logo_absolute  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
 
@@ -402,20 +402,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[alogo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [alogo('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[alogo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [alogo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[alogo('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [alogo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -451,20 +451,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[alogo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [alogo('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[alogo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [alogo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[alogo('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [alogo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -500,20 +500,20 @@ class ExportsPluginTest(TestUtil):
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL East', 'Last 10', 'Streak'],
-            body=[[alogo('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [alogo('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL Central', 'Last 10', 'Streak'],
-            body=[[alogo('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [alogo('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
             hcols=STANDINGS_COLS,
             bcols=STANDINGS_COLS,
             head=['AL West', 'Last 10', 'Streak'],
-            body=[[alogo('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [alogo('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
+            body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
+                  [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': l,
@@ -616,7 +616,7 @@ class ExportsPluginTest(TestUtil):
         expected = 'L2'
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.exports.exports_plugin.abbreviation_by_teamid')
+    @mock.patch('plugins.exports.exports_plugin.teamid_to_abbreviation')
     def test_sorted(self, mock_name):
         mock_name.side_effect = ['ARI', 'ATL']
 

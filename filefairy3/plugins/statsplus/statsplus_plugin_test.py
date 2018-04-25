@@ -16,8 +16,7 @@ from plugins.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import hometowns  # noqa
-from utils.team.team_util import ilogo  # noqa
+from utils.team.team_util import logo_inline  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
 
@@ -59,15 +58,15 @@ SEASON_SCORES = '<{0}{1}2998.html|Arizona 4, Los Angeles 2>\n' + \
                 '<{0}{1}2997.html|Tampa Bay 12, Boston 9>\n' + \
                 '<{0}{1}2994.html|Texas 5, Oakland 3>\n' + \
                 '<{0}{1}2995.html|Toronto 8, Minnesota 2>'
-SEASON_SCORES_ENCODED = '<{0}{1}2998.html|T31 4, Los Angeles 2>\n' + \
-                        '<{0}{1}3003.html|T32 2, Los Angeles 1>\n' + \
+SEASON_SCORES_ENCODED = '<{0}{1}2998.html|T31 4, TLA 2>\n' + \
+                        '<{0}{1}3003.html|T32 2, TLA 1>\n' + \
                         '<{0}{1}2996.html|T37 7, T46 2>\n' + \
-                        '<{0}{1}3002.html|T40 11, Chicago 4>\n' + \
+                        '<{0}{1}3002.html|T40 11, TCH 4>\n' + \
                         '<{0}{1}2993.html|T42 7, T54 2>\n' + \
                         '<{0}{1}2991.html|T43 8, T38 2>\n' + \
-                        '<{0}{1}14721.html|T41 6, Chicago 2>\n' + \
-                        '<{0}{1}3001.html|New York 1, T55 0>\n' + \
-                        '<{0}{1}3000.html|New York 5, T33 3>\n' + \
+                        '<{0}{1}14721.html|T41 6, TCH 2>\n' + \
+                        '<{0}{1}3001.html|TNY 1, T55 0>\n' + \
+                        '<{0}{1}3000.html|TNY 5, T33 3>\n' + \
                         '<{0}{1}2992.html|T51 3, T60 1>\n' + \
                         '<{0}{1}2999.html|T53 8, T39 2>\n' + \
                         '<{0}{1}2990.html|T56 5, T52 4>\n' + \
@@ -581,12 +580,12 @@ class StatsplusPluginTest(TestUtil):
             body=[])
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.statsplus.statsplus_plugin.ilogo')
-    def test_logo(self, mock_ilogo):
-        mock_ilogo.return_value = 'ilogo'
-        self.assertEqual(StatsplusPlugin._logo(('31', '0-1')), 'ilogo')
+    @mock.patch('plugins.statsplus.statsplus_plugin.logo_inline')
+    def test_logo(self, mock_logo):
+        mock_logo.return_value = 'logo'
+        self.assertEqual(StatsplusPlugin._logo(('31', '0-1')), 'logo')
 
-        mock_ilogo.assert_called_once_with('31', '0-1')
+        mock_logo.assert_called_once_with('31', '0-1')
 
     def test_rewrite(self):
         self.init_mocks({})
