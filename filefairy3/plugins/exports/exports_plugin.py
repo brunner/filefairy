@@ -159,7 +159,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
                     s = self._streak(teamid)
                 body.append([t, l, s])
             cols = [
-                'position-relative', ' class="text-center w-25"',
+                'class="position-relative"', ' class="text-center w-25"',
                 ' class="text-center w-25"'
             ]
             ret['standings'].append(

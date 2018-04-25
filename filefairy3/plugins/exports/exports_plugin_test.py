@@ -58,7 +58,7 @@ BREADCRUMBS = [{
 }]
 TABLE_COLS = [''] + [' class="text-center"'] * 2
 STANDINGS_COLS = [
-    'position-relative', ' class="text-center w-25"',
+    'class="position-relative"', ' class="text-center w-25"',
     ' class="text-center w-25"'
 ]
 
