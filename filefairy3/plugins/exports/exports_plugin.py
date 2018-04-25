@@ -231,7 +231,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _table(self):
         div = divisions()
         size = len(self.exports) / len(div)
-        cols = [''] + [' class="text-center"'] * size
+        cols = [''] + [' class="position-relative text-center"'] * size
         body = map(lambda t: [t[0]], div)
         for i, export in enumerate(self.exports):
             teamid, status = export
