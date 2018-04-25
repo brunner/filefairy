@@ -56,8 +56,11 @@ BREADCRUMBS = [{
     'href': '',
     'name': 'Exports'
 }]
-TABLE_COLS = [''] + [' class="position-relative text-center"'] * 2
-STANDINGS_COLS = ['', ' class="text-center w-25"', ' class="text-center w-25"']
+TABLE_COLS = [''] + [' class="text-center"'] * 2
+STANDINGS_COLS = [
+    'position-relative', ' class="text-center w-25"',
+    ' class="text-center w-25"'
+]
 
 
 class ExportsPluginTest(TestUtil):

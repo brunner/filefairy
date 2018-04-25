@@ -159,7 +159,8 @@ class ExportsPlugin(PluginApi, RenderableApi):
                     s = self._streak(teamid)
                 body.append([t, l, s])
             cols = [
-                '', ' class="text-center w-25"', ' class="text-center w-25"'
+                'position-relative', ' class="text-center w-25"',
+                ' class="text-center w-25"'
             ]
             ret['standings'].append(
                 table(
@@ -231,7 +232,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _table(self):
         div = divisions()
         size = len(self.exports) / len(div)
-        cols = [''] + [' class="position-relative text-center"'] * size
+        cols = [''] + [' class="text-center"'] * size
         body = map(lambda t: [t[0]], div)
         for i, export in enumerate(self.exports):
             teamid, status = export
