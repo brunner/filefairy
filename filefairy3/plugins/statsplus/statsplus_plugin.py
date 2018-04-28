@@ -84,19 +84,21 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         text = obj.get('text', '')
         pattern = '\d{2}\/\d{2}\/\d{4} MAJOR LEAGUE BASEBALL Final Scores\n'
         if re.findall(pattern, text):
-            self._final_scores(text)
+            self._handle('scores', text, '<[^|]+\|[^<]+>', False)
 
+        injuries = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
         pattern = '\d{2}\/\d{2}\/\d{4} Rain delay'
         if re.findall(pattern, text):
-            self._injuries(text)
+            self._handle('injuries', text, injuries, True)
 
         pattern = '\d{2}\/\d{2}\/\d{4} \w+ <([^|]+)\|([^<]+)> was injured'
         if re.findall(pattern, text):
-            self._injuries(text)
+            self._handle('injuries', text, injuries, True)
 
+        highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '\d{2}\/\d{2}\/\d{4} <([^|]+)\|([^<]+)> (?:sets|ties)'
         if re.findall(pattern, text):
-            self._highlights(text)
+            self._handle('highlights', text, highlights, True)
 
         if data != original:
             self.write()
@@ -147,50 +149,28 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
         return text
 
+    @staticmethod
+    def _shorten(text):
+        pattern = '{}(?:{}|{})'.format(_html, _game_box, _player)
+        return re.sub(pattern, '{0}{1}', text)
+
     def _clear(self):
         self.data['scores'] = {}
+        self.data['injuries'] = {}
+        self.data['highlights'] = {}
 
-    def _final_scores(self, text):
-        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
-        if match:
-            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
-            scores = text.split('\n', 1)[1].replace('*', '')
-
-            scores = precoding_to_encoding_sub(scores)
-            scores = scores.replace(_html + _game_box, '{0}{1}')
-            self.data['scores'][encode_datetime(date)] = scores
-            self.data['updated'] = True
-
-    def _injuries(self, text):
-        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
-        if match:
-            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+    def _handle(self, key, text, pattern, append):
+        date = re.findall('\d{2}\/\d{2}\/\d{4}', text)
+        if date:
+            date = datetime.datetime.strptime(date[0], '%m/%d/%Y')
             encoded_date = encode_datetime(date)
-            if encoded_date not in self.data['injuries']:
-                self.data['injuries'][encoded_date] = []
+            if not append or encoded_date not in self.data[key]:
+                self.data[key][encoded_date] = []
 
-            pattern = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
             match = re.findall(pattern, text)
             for m in match:
-                injury = precoding_to_encoding_sub(m)
-                injury = injury.replace(_html + _player, '{0}{1}')
-                self.data['injuries'][encoded_date].append(injury)
-                self.data['updated'] = True
-
-    def _highlights(self, text):
-        match = re.findall('\d{2}\/\d{2}\/\d{4}', text)
-        if match:
-            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
-            encoded_date = encode_datetime(date)
-            if encoded_date not in self.data['highlights']:
-                self.data['highlights'][encoded_date] = []
-
-            pattern = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
-            match = re.findall(pattern, text)
-            for m in match:
-                highlights = precoding_to_encoding_sub(m)
-                highlights = highlights.replace(_html + _player, '{0}{1}')
-                self.data['highlights'][encoded_date].append(highlights)
+                encoded_match = self._shorten(precoding_to_encoding_sub(m))
+                self.data[key][encoded_date].append(encoded_match)
                 self.data['updated'] = True
 
     def _home(self, **kwargs):
@@ -251,13 +231,13 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         encoding = teamid_to_encoding(teamid)
         hw, hl = 0, 0
         for date in self.data['scores']:
-            score = self.data['scores'][date]
-            hw += len(re.findall(r'\|' + re.escape(encoding), score))
-            hl += len(re.findall(r', ' + re.escape(encoding), score))
+            scores = '\n'.join(self.data['scores'][date])
+            hw += len(re.findall(r'\|' + re.escape(encoding), scores))
+            hl += len(re.findall(r', ' + re.escape(encoding), scores))
         return '{0}-{1}'.format(hw, hl)
 
     def _scores_table(self, date):
-        lines = self.data['scores'][date].splitlines()
+        lines = self.data['scores'][date]
         body = self._table_body(date, lines, _game_box)
         head = self._table_head(date)
         return table(hcols=[''], bcols=[''], head=head, body=body)

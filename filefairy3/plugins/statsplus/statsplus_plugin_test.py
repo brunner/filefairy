@@ -43,36 +43,31 @@ NL = [('NL East', ['32', '41', '49']), ('NL Central', ['36', '37', '46']),
       ('NL West', ['31', '39', '45'])]
 FINAL_SCORES_THEN = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
 FINAL_SCORES_NOW = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
-SEASON_SCORES = '<{0}{1}2998.html|Arizona 4, Los Angeles 2>\n' + \
-                '<{0}{1}3003.html|Atlanta 2, Los Angeles 1>\n' + \
-                '<{0}{1}2996.html|Cincinnati 7, Milwaukee 2>\n' + \
-                '<{0}{1}3002.html|Detroit 11, Chicago 4>\n' + \
-                '<{0}{1}2993.html|Houston 7, Seattle 2>\n' + \
-                '<{0}{1}2991.html|Kansas City 8, Cleveland 2>\n' + \
-                '<{0}{1}14721.html|Miami 6, Chicago 2>\n' + \
-                '<{0}{1}3001.html|New York 1, San Francisco 0>\n' + \
-                '<{0}{1}3000.html|New York 5, Baltimore 3>\n' + \
-                '<{0}{1}2992.html|Philadelphia 3, Washington 1>\n' + \
-                '<{0}{1}2999.html|San Diego 8, Colorado 2>\n' + \
-                '<{0}{1}2990.html|St. Louis 5, Pittsburgh 4>\n' + \
-                '<{0}{1}2997.html|Tampa Bay 12, Boston 9>\n' + \
-                '<{0}{1}2994.html|Texas 5, Oakland 3>\n' + \
-                '<{0}{1}2995.html|Toronto 8, Minnesota 2>'
-SEASON_SCORES_ENCODED = '<{0}{1}2998.html|T31 4, TLA 2>\n' + \
-                        '<{0}{1}3003.html|T32 2, TLA 1>\n' + \
-                        '<{0}{1}2996.html|T37 7, T46 2>\n' + \
-                        '<{0}{1}3002.html|T40 11, TCH 4>\n' + \
-                        '<{0}{1}2993.html|T42 7, T54 2>\n' + \
-                        '<{0}{1}2991.html|T43 8, T38 2>\n' + \
-                        '<{0}{1}14721.html|T41 6, TCH 2>\n' + \
-                        '<{0}{1}3001.html|TNY 1, T55 0>\n' + \
-                        '<{0}{1}3000.html|TNY 5, T33 3>\n' + \
-                        '<{0}{1}2992.html|T51 3, T60 1>\n' + \
-                        '<{0}{1}2999.html|T53 8, T39 2>\n' + \
-                        '<{0}{1}2990.html|T56 5, T52 4>\n' + \
-                        '<{0}{1}2997.html|T57 12, T34 9>\n' + \
-                        '<{0}{1}2994.html|T58 5, T50 3>\n' + \
-                        '<{0}{1}2995.html|T59 8, T47 2>'
+SEASON_SCORES_TEXT = '*<{0}{1}2998.html|Arizona 4, Los Angeles 2>*\n' + \
+                '*<{0}{1}3003.html|Atlanta 2, Los Angeles 1>*\n' + \
+                '*<{0}{1}2996.html|Cincinnati 7, Milwaukee 2>*\n' + \
+                '*<{0}{1}3002.html|Detroit 11, Chicago 4>*\n' + \
+                '*<{0}{1}2993.html|Houston 7, Seattle 2>*\n' + \
+                '*<{0}{1}2991.html|Kansas City 8, Cleveland 2>*\n' + \
+                '*<{0}{1}14721.html|Miami 6, Chicago 2>*\n' + \
+                '*<{0}{1}3001.html|New York 1, San Francisco 0>*\n' + \
+                '*<{0}{1}3000.html|New York 5, Baltimore 3>*\n' + \
+                '*<{0}{1}2992.html|Philadelphia 3, Washington 1>*\n' + \
+                '*<{0}{1}2999.html|San Diego 8, Colorado 2>*\n' + \
+                '*<{0}{1}2990.html|St. Louis 5, Pittsburgh 4>*\n' + \
+                '*<{0}{1}2997.html|Tampa Bay 12, Boston 9>*\n' + \
+                '*<{0}{1}2994.html|Texas 5, Oakland 3>*\n' + \
+                '*<{0}{1}2995.html|Toronto 8, Minnesota 2>*'
+SEASON_SCORES_ENCODED = [
+    '<{0}{1}2998.html|T31 4, TLA 2>', '<{0}{1}3003.html|T32 2, TLA 1>',
+    '<{0}{1}2996.html|T37 7, T46 2>', '<{0}{1}3002.html|T40 11, TCH 4>',
+    '<{0}{1}2993.html|T42 7, T54 2>', '<{0}{1}2991.html|T43 8, T38 2>',
+    '<{0}{1}14721.html|T41 6, TCH 2>', '<{0}{1}3001.html|TNY 1, T55 0>',
+    '<{0}{1}3000.html|TNY 5, T33 3>', '<{0}{1}2992.html|T51 3, T60 1>',
+    '<{0}{1}2999.html|T53 8, T39 2>', '<{0}{1}2990.html|T56 5, T52 4>',
+    '<{0}{1}2997.html|T57 12, T34 9>', '<{0}{1}2994.html|T58 5, T50 3>',
+    '<{0}{1}2995.html|T59 8, T47 2>'
+]
 HOMETOWNS = [
     'Arizona', 'Los Angeles', 'Atlanta', 'Los Angeles', 'Cincinnati',
     'Milwaukee', 'Detroit', 'Chicago', 'Houston', 'Seattle', 'Kansas City',
@@ -81,7 +76,6 @@ HOMETOWNS = [
     'St. Louis', 'Pittsburgh', 'Tampa Bay', 'Boston', 'Texas', 'Oakland',
     'Toronto', 'Minnesota'
 ]
-SEASON_SCORES_TEXT = SEASON_SCORES.replace('<', '*<').replace('>', '>*')
 INJURIES_DATE = '10/09/2022 '
 INJURIES_DELAY = '10/09/2022 Rain delay of 19 minutes in the 2nd inning. '
 INJURIES_TEXT = 'SP <{0}{1}37102.html|Jairo Labourt> was injured while ' + \
@@ -148,6 +142,9 @@ SCORES_TABLE_BODY = [[
     game_box(
         '<a href="{0}{1}2995.html">Toronto Blue Jays 8, Minnesota Twins 2</a>')
 ]]
+FINAL_SCORES_PATTERN = '<[^|]+\|[^<]+>'
+INJURIES_PATTERN = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
+HIGHLIGHTS_PATTERN = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
 
 
 def player(s):
@@ -307,8 +304,8 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_final_scores')
-    def test_on_message__with_final_scores(self, mock_final_scores):
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_final_scores(self, mock_handle):
         scores = SEASON_SCORES_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -329,13 +326,14 @@ class StatsplusPluginTest(TestUtil):
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        mock_final_scores.assert_called_once_with(FINAL_SCORES_THEN + scores)
+        mock_handle.assert_called_once_with(
+            'scores', FINAL_SCORES_THEN + scores, FINAL_SCORES_PATTERN, False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_injuries')
-    def test_on_message__with_delay(self, mock_injuries):
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_delay(self, mock_handle):
         injuries = INJURIES_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -356,13 +354,14 @@ class StatsplusPluginTest(TestUtil):
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        mock_injuries.assert_called_once_with(INJURIES_DELAY + injuries)
+        mock_handle.assert_called_once_with(
+            'injuries', INJURIES_DELAY + injuries, INJURIES_PATTERN, True)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_injuries')
-    def test_on_message__with_injuries(self, mock_injuries):
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_injuries(self, mock_handle):
         injuries = INJURIES_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -383,13 +382,14 @@ class StatsplusPluginTest(TestUtil):
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        mock_injuries.assert_called_once_with(INJURIES_DATE + injuries)
+        mock_handle.assert_called_once_with(
+            'injuries', INJURIES_DATE + injuries, INJURIES_PATTERN, True)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_highlights')
-    def test_on_message__with_highlights(self, mock_highlights):
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_highlights(self, mock_handle):
         highlights = HIGHLIGHTS_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -410,7 +410,9 @@ class StatsplusPluginTest(TestUtil):
         ret = plugin._on_message_internal(obj=obj)
         self.assertEqual(ret, ActivityEnum.BASE)
 
-        mock_highlights.assert_called_once_with(HIGHLIGHTS_DATE + highlights)
+        mock_handle.assert_called_once_with('highlights',
+                                            HIGHLIGHTS_DATE + highlights,
+                                            HIGHLIGHTS_PATTERN, True)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
@@ -600,7 +602,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_called_once_with(THEN, 'link', content)
 
-    def test_final_scores(self):
+    def test_handle__final_scores(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -611,7 +613,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = FINAL_SCORES_THEN + SEASON_SCORES_TEXT.format(_html, _game_box)
-        plugin._final_scores(text)
+        plugin._handle('scores', text, FINAL_SCORES_PATTERN, False)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -621,7 +623,7 @@ class StatsplusPluginTest(TestUtil):
         })
         self.assertTrue(plugin.data['updated'])
 
-    def test_injuries__with_delay(self):
+    def test_handle__delay(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -632,7 +634,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DELAY + INJURIES_TEXT.format(_html, _player)
-        plugin._injuries(text)
+        plugin._handle('injuries', text, INJURIES_PATTERN, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -642,7 +644,7 @@ class StatsplusPluginTest(TestUtil):
         })
         self.assertTrue(plugin.data['updated'])
 
-    def test_injuries__with_injuries(self):
+    def test_handle__injuries(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -653,7 +655,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DATE + INJURIES_TEXT.format(_html, _player)
-        plugin._injuries(text)
+        plugin._handle('injuries', text, INJURIES_PATTERN, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -663,7 +665,7 @@ class StatsplusPluginTest(TestUtil):
         })
         self.assertTrue(plugin.data['updated'])
 
-    def test_highlights__with_record(self):
+    def test_handle__highlights(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -674,7 +676,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT.format(_html, _player)
-        plugin._highlights(text)
+        plugin._handle('highlights', text, HIGHLIGHTS_PATTERN, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
