@@ -79,6 +79,9 @@ class ExportsPlugin(PluginApi, RenderableApi):
         exports = self._exports(text)
         ret = ActivityEnum.NONE
 
+        if not exports:
+            return ret
+
         if exports != self.exports:
             self.exports = exports
             ret = ActivityEnum.BASE

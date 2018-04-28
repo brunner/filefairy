@@ -297,6 +297,27 @@ class ExportsPluginTest(TestUtil):
     @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_lock')
     @mock.patch.object(ExportsPlugin, '_exports')
+    def test_run__with_exports_empty(self, mock_exports, mock_lock, mock_render):
+        mock_exports.return_value = []
+
+        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
+        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
+        ret = plugin._run_internal(date=NOW)
+        self.assertEqual(ret, ActivityEnum.NONE)
+
+        mock_exports.assert_called_once_with(URLOPEN)
+        mock_lock.assert_not_called()
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_chat.assert_not_called()
+        self.assertEqual(plugin.exports, EXPORTS_OLD)
+
+    @mock.patch.object(ExportsPlugin, '_render')
+    @mock.patch.object(ExportsPlugin, '_lock')
+    @mock.patch.object(ExportsPlugin, '_exports')
     def test_run__with_exports_lock(self, mock_exports, mock_lock,
                                     mock_render):
         mock_exports.return_value = EXPORTS_LOCK
