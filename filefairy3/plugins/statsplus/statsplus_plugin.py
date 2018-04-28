@@ -19,6 +19,7 @@ from utils.datetime.datetime_util import decode_datetime  # noqa
 from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
+from utils.team.team_util import chlany  # noqa
 from utils.team.team_util import divisions  # noqa
 from utils.team.team_util import encoding_to_decoding_sub  # noqa
 from utils.team.team_util import encodings  # noqa
@@ -32,6 +33,7 @@ _game_box = 'box_scores/game_box_'
 _player = 'players/player_'
 _encodings = '|'.join(encodings())
 _precodings = '|'.join(precodings())
+_chlany = chlany()
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -137,8 +139,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         match = re.findall('<([^|]+)\|([^<]+)>', text)
         if match:
             link, content = match[0]
-            chlany = ['TCH', 'TLA', 'TNY']
-            if any(ht in content for ht in chlany):
+            if any(ht in content for ht in _chlany):
                 ddate = decode_datetime(date)
                 content = clarify(ddate, link, content)
             repl = '<a href="{0}">{1}</a>'.format(link, content)

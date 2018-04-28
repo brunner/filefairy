@@ -13,6 +13,7 @@ from utils.team.team_util import _absolute_img  # noqa
 from utils.team.team_util import _absolute_span  # noqa
 from utils.team.team_util import _inline_img  # noqa
 from utils.team.team_util import _inline_span  # noqa
+from utils.team.team_util import chlany  # noqa
 from utils.team.team_util import decoding_to_encoding  # noqa
 from utils.team.team_util import decoding_to_encoding_sub  # noqa
 from utils.team.team_util import decodings  # noqa
@@ -64,6 +65,11 @@ PRECODINGS = [
 
 
 class TeamUtilTest(unittest.TestCase):
+    def test_chlany(self):
+        actual = chlany()
+        expected = ['TCH', 'TLA', 'TNY']
+        self.assertEqual(actual, expected)
+
     def test_decoding_to_encoding(self):
         self.assertEqual(decoding_to_encoding('Arizona Diamondbacks'), 'T31')
         self.assertEqual(decoding_to_encoding('Atlanta Braves'), 'T32')
