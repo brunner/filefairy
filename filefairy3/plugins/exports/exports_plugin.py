@@ -140,7 +140,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         }
 
         n, t = self._new()
-        title = '{:.0f}%'.format(float(100) * n / t)
+        title = '{:.0f}%'.format(float(100) * n / t) if t else '0%'
         breakdown = ', '.join([
             self._success(str(n) + ' new'),
             str(t - n) + ' old',
