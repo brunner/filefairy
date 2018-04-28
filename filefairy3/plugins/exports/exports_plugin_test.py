@@ -568,7 +568,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with(
-            'fairylab',
+            'testing',
             'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
         self.assertEqual(plugin.data['ai'], [])
@@ -587,7 +587,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with(
-            'fairylab',
+            'testing',
             'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
         self.assertEqual(plugin.data['ai'], ['32'])
@@ -611,7 +611,7 @@ class ExportsPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with(
-            'fairylab',
+            'testing',
             'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
         self.assertEqual(plugin.data['ai'], ['32'])
