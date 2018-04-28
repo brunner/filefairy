@@ -20,10 +20,10 @@ from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
 from utils.team.team_util import divisions  # noqa
-from utils.team.team_util import encoding_to_decoding  # noqa
+from utils.team.team_util import encoding_to_decoding_sub  # noqa
 from utils.team.team_util import encodings  # noqa
 from utils.team.team_util import logo_inline  # noqa
-from utils.team.team_util import precoding_to_encoding  # noqa
+from utils.team.team_util import precoding_to_encoding_sub  # noqa
 from utils.team.team_util import precodings  # noqa
 from utils.team.team_util import teamid_to_encoding  # noqa
 
@@ -119,26 +119,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         self._render(**kwargs)
 
     @staticmethod
-    def _decode_encoding(text):
-        return re.sub(_encodings, StatsplusPlugin._encoding_repl, text)
-
-    @staticmethod
-    def _encode_precoding(text):
-        return re.sub(_precodings, StatsplusPlugin._precoding_repl, text)
-
-    @staticmethod
-    def _encoding_repl(matchobj):
-        _encoding = matchobj.group(0)
-        _decoding = encoding_to_decoding(_encoding)
-        return _decoding if _decoding else _encoding
-
-    @staticmethod
-    def _precoding_repl(matchobj):
-        _precoding = matchobj.group(0)
-        _encoding = precoding_to_encoding(_precoding)
-        return _encoding if _encoding else _precoding
-
-    @staticmethod
     def _live_tables_header(title):
         return table(
             clazz='table-fixed border border-bottom-0 mt-3',
@@ -157,7 +137,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         match = re.findall('<([^|]+)\|([^<]+)>', text)
         if match:
             link, content = match[0]
-            chlany = ['Chicago', 'Los Angeles', 'New York']
+            chlany = ['TCH', 'TLA', 'TNY']
             if any(ht in content for ht in chlany):
                 ddate = decode_datetime(date)
                 content = clarify(ddate, link, content)
@@ -175,7 +155,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
             scores = text.split('\n', 1)[1].replace('*', '')
 
-            scores = self._encode_precoding(scores)
+            scores = precoding_to_encoding_sub(scores)
             scores = scores.replace(_html + _game_box, '{0}{1}')
             self.data['scores'][encode_datetime(date)] = scores
             self.data['updated'] = True
@@ -191,7 +171,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             pattern = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
             match = re.findall(pattern, text)
             for m in match:
-                injury = self._encode_precoding(m)
+                injury = precoding_to_encoding_sub(m)
                 injury = injury.replace(_html + _player, '{0}{1}')
                 self.data['injuries'][encoded_date].append(injury)
                 self.data['updated'] = True
@@ -207,7 +187,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             pattern = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
             match = re.findall(pattern, text)
             for m in match:
-                highlights = self._encode_precoding(m)
+                highlights = precoding_to_encoding_sub(m)
                 highlights = highlights.replace(_html + _player, '{0}{1}')
                 self.data['highlights'][encoded_date].append(highlights)
                 self.data['updated'] = True
@@ -297,9 +277,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         body = []
         for line in lines:
             text = line.format(_html, path)
-            text = self._decode_encoding(text)
-            link = self._rewrite(date, text)
-            body.append([link])
+            text = self._rewrite(date, text)
+            text = encoding_to_decoding_sub(text)
+            body.append([text])
         return body
 
     def _table_head(self, date):

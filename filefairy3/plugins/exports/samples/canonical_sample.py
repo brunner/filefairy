@@ -55,7 +55,7 @@ _t59 = _team('toronto_blue_jays', ['Toronto', '9 - 1', 'W4'])
 _t60 = _team('washington_nationals', ['Washington', '5 - 5', 'L1'])
 
 TABLE_COLS = [''] + [' class="text-center"']*5
-STANDINGS_COLS = ['', ' class="text-center w-25"', ' class="text-center w-25"']
+STANDINGS_COLS = ['class="position-relative"', ' class="text-center w-25"', ' class="text-center w-25"']
 
 context = {
     'title':
