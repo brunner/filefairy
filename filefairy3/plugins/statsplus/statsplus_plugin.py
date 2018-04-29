@@ -132,11 +132,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             body=[])
 
     @staticmethod
-    def _logo(team_tuple):
-        teamid, t = team_tuple
-        return logo_inline(teamid, t)
-
-    @staticmethod
     def _rewrite(date, text):
         match = re.findall('<([^|]+)\|([^<]+)>', text)
         if match:
@@ -218,7 +213,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         body = []
         for division in league:
             group = [(teamid, self._record(teamid)) for teamid in division[1]]
-            inner = [self._logo(team_tuple) for team_tuple in sort(group)]
+            inner = [logo_inline(*team_tuple) for team_tuple in sort(group)]
             body.append(inner)
         return table(
             clazz='table-fixed border',

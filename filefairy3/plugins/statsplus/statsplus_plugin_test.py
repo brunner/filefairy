@@ -582,13 +582,6 @@ class StatsplusPluginTest(TestUtil):
             body=[])
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.statsplus.statsplus_plugin.logo_inline')
-    def test_logo(self, mock_logo):
-        mock_logo.return_value = 'logo'
-        self.assertEqual(StatsplusPlugin._logo(('31', '0-1')), 'logo')
-
-        mock_logo.assert_called_once_with('31', '0-1')
-
     def test_rewrite(self):
         self.init_mocks({})
 
@@ -764,7 +757,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_clarify.assert_not_called()
 
     @mock.patch.object(StatsplusPlugin, '_record')
-    @mock.patch.object(StatsplusPlugin, '_logo')
+    @mock.patch('plugins.statsplus.statsplus_plugin.logo_inline')
     def test_live_tables_season_internal(self, mock_logo, mock_record):
         mock_logo.return_value = 'logo'
         mock_record.side_effect = ['2-0', '0-2', '1-1'] * 3
@@ -788,15 +781,15 @@ class StatsplusPluginTest(TestUtil):
                   ['logo', 'logo', 'logo']])
         self.assertEqual(actual, expected)
         calls = [
-            mock.call(('33', '2-0')),
-            mock.call(('48', '1-1')),
-            mock.call(('34', '0-2')),
-            mock.call(('35', '2-0')),
-            mock.call(('40', '1-1')),
-            mock.call(('38', '0-2')),
-            mock.call(('42', '2-0')),
-            mock.call(('50', '1-1')),
-            mock.call(('44', '0-2'))
+            mock.call('33', '2-0'),
+            mock.call('48', '1-1'),
+            mock.call('34', '0-2'),
+            mock.call('35', '2-0'),
+            mock.call('40', '1-1'),
+            mock.call('38', '0-2'),
+            mock.call('42', '2-0'),
+            mock.call('50', '1-1'),
+            mock.call('44', '0-2')
         ]
         mock_logo.assert_has_calls(calls)
         calls = [
