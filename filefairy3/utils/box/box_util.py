@@ -26,10 +26,12 @@ def clarify(date, link, encoding):
         return encoding
 
     text = encoding_to_decoding_sub(encoding)
-    left, right = text.split(', ')
-    ht1, hr1 = left.rsplit(' ', 1)
-    ht2, hr2 = right.rsplit(' ', 1)
+    result = re.findall('([^\d]+) (\d+), ([^\d]+) (\d+)', text)
+    if not result:
+        return encoding
+
     tt1, tt2 = title[0]
+    ht1, hr1, ht2, hr2 = result[0]
 
     if ht1 in tt2 and ht2 in tt1:
         tt1, tt2 = tt2, tt1
