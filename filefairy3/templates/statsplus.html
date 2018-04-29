@@ -2,7 +2,7 @@
 {% import "common.html" as common %}
 {% block content %}
     <div class="container">
-      {{ common.alert('monitor', 'Live')|indent(6) }}
+      {{ common.alert('monitor', 'Overview')|indent(6) }}
       <div class="row">
         {% if live|length() > 2 %}
         {% set n = live|length() // 2 %}
