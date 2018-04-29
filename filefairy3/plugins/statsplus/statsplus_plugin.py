@@ -31,9 +31,14 @@ from utils.team.team_util import teamid_to_encoding  # noqa
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
 _player = 'players/player_'
+_shorten = '{}(?:{}|{})'.format(_html, _game_box, _player)
 _encodings = '|'.join(encodings())
 _precodings = '|'.join(precodings())
 _chlany = chlany()
+_lhclazz = 'table-fixed border border-bottom-0 mt-3'
+_lhcols = [' class="text-center"']
+_lbclazz = 'table-fixed border'
+_lbcols = [' class="td-sm position-relative text-center w-20"'] * 5
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -82,9 +87,10 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             self._clear()
 
         text = obj.get('text', '')
-        pattern = '\d{2}\/\d{2}\/\d{4} MAJOR LEAGUE BASEBALL Final Scores\n'
+        highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
+        pattern = '\d{2}\/\d{2}\/\d{4} <([^|]+)\|([^<]+)> (?:sets|ties)'
         if re.findall(pattern, text):
-            self._handle('scores', text, '<[^|]+\|[^<]+>', False)
+            self._handle('highlights', text, highlights, True)
 
         injuries = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
         pattern = '\d{2}\/\d{2}\/\d{4} Rain delay'
@@ -95,10 +101,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         if re.findall(pattern, text):
             self._handle('injuries', text, injuries, True)
 
-        highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
-        pattern = '\d{2}\/\d{2}\/\d{4} <([^|]+)\|([^<]+)> (?:sets|ties)'
+        pattern = '\d{2}\/\d{2}\/\d{4} MAJOR LEAGUE BASEBALL Final Scores\n'
         if re.findall(pattern, text):
-            self._handle('highlights', text, highlights, True)
+            self._handle('scores', text, '<[^|]+\|[^<]+>', False)
 
         if data != original:
             self.write()
@@ -122,33 +127,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
     def _setup_internal(self, **kwargs):
         self._render(**kwargs)
 
-    @staticmethod
-    def _live_tables_header(title):
-        return table(
-            clazz='table-fixed border border-bottom-0 mt-3',
-            hcols=[' class="text-center"'],
-            bcols=[],
-            head=[title],
-            body=[])
-
-    @staticmethod
-    def _rewrite(date, text):
-        match = re.findall('<([^|]+)\|([^<]+)>', text)
-        if match:
-            link, content = match[0]
-            if any(ht in content for ht in _chlany):
-                ddate = decode_datetime(date)
-                content = clarify(ddate, link, content)
-            repl = '<a href="{0}">{1}</a>'.format(link, content)
-            text = re.sub('<[^|]+\|[^<]+>', repl, text)
-
-        return text
-
-    @staticmethod
-    def _shorten(text):
-        pattern = '{}(?:{}|{})'.format(_html, _game_box, _player)
-        return re.sub(pattern, '{0}{1}', text)
-
     def _clear(self):
         self.data['scores'] = {}
         self.data['injuries'] = {}
@@ -164,8 +142,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
             match = re.findall(pattern, text)
             for m in match:
-                encoded_match = self._shorten(precoding_to_encoding_sub(m))
-                self.data[key][encoded_date].append(encoded_match)
+                e = re.sub(_shorten, '{0}{1}', precoding_to_encoding_sub(m))
+                self.data[key][encoded_date].append(e)
                 self.data['updated'] = True
 
     def _home(self, **kwargs):
@@ -183,44 +161,42 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             'highlights': []
         }
 
-        status = data['status']
-        if status == 'season':
-            ret['live'] = self._live_tables_season()
-
-        for date in sorted(data['scores'].keys(), reverse=True):
-            ret['scores'].append(self._table('scores', date, _game_box))
-
-        for date in sorted(data['injuries'].keys(), reverse=True):
-            ret['injuries'].append(self._table('injuries', date, _player))
+        if not data['postseason']:
+            ret['live'] = self._live_regular()
 
         for date in sorted(data['highlights'].keys(), reverse=True):
             ret['highlights'].append(self._table('highlights', date, _player))
 
+        for date in sorted(data['injuries'].keys(), reverse=True):
+            ret['injuries'].append(self._table('injuries', date, _player))
+
+        for date in sorted(data['scores'].keys(), reverse=True):
+            ret['scores'].append(self._table('scores', date, _game_box))
+
         return ret
 
-    def _live_tables_season(self):
+    def _live_regular(self):
         div = divisions()
         size = len(div) / 2
         al, nl = div[:size], div[size:]
-        return [
-            self._live_tables_header('American League'),
-            self._live_tables_season_internal(al),
-            self._live_tables_header('National League'),
-            self._live_tables_season_internal(nl)
-        ]
 
-    def _live_tables_season_internal(self, league):
+        lrba = self._live_regular_body(al)
+        lrbn = self._live_regular_body(nl)
+
+        lhal = table(clazz=_lhclazz, hcols=_lhcols, head=['American League'])
+        lbal = table(clazz=_lbclazz, bcols=_lbcols, body=lrba)
+        lhnl = table(clazz=_lhclazz, hcols=_lhcols, head=['National League'])
+        lbnl = table(clazz=_lbclazz, bcols=_lbcols, body=lrbn)
+
+        return [lhal, lbal, lhnl, lbnl]
+
+    def _live_regular_body(self, league):
         body = []
         for division in league:
             group = [(teamid, self._record(teamid)) for teamid in division[1]]
             inner = [logo_inline(*team_tuple) for team_tuple in sort(group)]
             body.append(inner)
-        return table(
-            clazz='table-fixed border',
-            hcols=[],
-            bcols=[' class="td-sm position-relative text-center w-20"'] * 5,
-            head=[],
-            body=body)
+        return body
 
     def _record(self, teamid):
         encoding = teamid_to_encoding(teamid)
@@ -240,10 +216,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
     def _table_body(self, date, lines, path):
         body = []
         for line in lines:
-            text = line.format(_html, path)
-            text = self._rewrite(date, text)
-            text = encoding_to_decoding_sub(text)
-            body.append([text])
+            line = re.sub('<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', line)
+            body.append([encoding_to_decoding_sub(line).format(_html, path)])
         return body
 
     def _table_head(self, date):
