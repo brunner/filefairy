@@ -22,11 +22,14 @@ from utils.standings.standings_util import sort  # noqa
 from utils.team.team_util import chlany  # noqa
 from utils.team.team_util import divisions  # noqa
 from utils.team.team_util import encoding_to_decoding_sub  # noqa
+from utils.team.team_util import encoding_to_teamid  # noqa
 from utils.team.team_util import encodings  # noqa
+from utils.team.team_util import logo_absolute  # noqa
 from utils.team.team_util import logo_inline  # noqa
 from utils.team.team_util import precoding_to_encoding_sub  # noqa
 from utils.team.team_util import precodings  # noqa
 from utils.team.team_util import teamid_to_encoding  # noqa
+from utils.team.team_util import teamid_to_hometown  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -38,7 +41,11 @@ _chlany = chlany()
 _lhclazz = 'table-fixed border border-bottom-0 mt-3'
 _lhcols = [' class="text-center"']
 _lbclazz = 'table-fixed border'
-_lbcols = [' class="td-sm position-relative text-center w-20"'] * 5
+_lbpcols = [
+    ' class="position-relative w-40"', ' class="text-center w-10"',
+    ' class="text-center w-10"', ' class="position-relative text-right w-40"'
+]
+_lbrcols = [' class="td-sm position-relative text-center w-20"'] * 5
 
 
 class StatsplusPlugin(PluginApi, RenderableApi):
@@ -161,7 +168,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             'highlights': []
         }
 
-        if not data['postseason']:
+        if data['postseason']:
+            ret['live'] = self._live_postseason()
+        else:
             ret['live'] = self._live_regular()
 
         for date in sorted(data['highlights'].keys(), reverse=True):
@@ -175,6 +184,37 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
         return ret
 
+    def _live_postseason(self):
+        lpb = self._live_postseason_body()
+
+        lh = table(clazz=_lhclazz, hcols=_lhcols, head=['Postseason'])
+        lb = table(clazz=_lbclazz, bcols=_lbpcols, body=lpb)
+        return [lh, lb]
+
+    def _live_postseason_body(self):
+        body = []
+        for m in self._live_postseason_series():
+            group = sort([self._team_tuple(encoding_to_teamid(e)) for e in m])
+            (t1, r1), (t2, r2) = group
+            w1, w2 = [r.split('-')[0] for r in (r1, r2)]
+            inner = [
+                logo_absolute(t1, teamid_to_hometown(t1), 'left'), w1, w2,
+                logo_absolute(t2, teamid_to_hometown(t2), 'right')
+            ]
+            body.append(inner)
+        return body
+
+    def _live_postseason_series(self):
+        series = []
+        for date in self.data['scores']:
+            scores = '\n'.join(self.data['scores'][date])
+            match = re.findall('\|(\w+) \d+, (\w+) \d+>', scores)
+            for m in match:
+                m = sorted(m)
+                if not any(e in m for e in _chlany) and m not in series:
+                    series.append(m)
+        return series
+
     def _live_regular(self):
         div = divisions()
         size = len(div) / 2
@@ -184,16 +224,16 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         lrbn = self._live_regular_body(nl)
 
         lhal = table(clazz=_lhclazz, hcols=_lhcols, head=['American League'])
-        lbal = table(clazz=_lbclazz, bcols=_lbcols, body=lrba)
+        lbal = table(clazz=_lbclazz, bcols=_lbrcols, body=lrba)
         lhnl = table(clazz=_lhclazz, hcols=_lhcols, head=['National League'])
-        lbnl = table(clazz=_lbclazz, bcols=_lbcols, body=lrbn)
+        lbnl = table(clazz=_lbclazz, bcols=_lbrcols, body=lrbn)
 
         return [lhal, lbal, lhnl, lbnl]
 
     def _live_regular_body(self, league):
         body = []
         for division in league:
-            group = [(teamid, self._record(teamid)) for teamid in division[1]]
+            group = [self._team_tuple(teamid) for teamid in division[1]]
             inner = [logo_inline(*team_tuple) for team_tuple in sort(group)]
             body.append(inner)
         return body
@@ -224,3 +264,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         ddate = decode_datetime(date)
         fdate = ddate.strftime('%A, %B %-d{S}, %Y')
         return [fdate.replace('{S}', suffix(ddate.day))]
+
+    def _team_tuple(self, teamid):
+        return (teamid, self._record(teamid))

@@ -26,7 +26,11 @@ _player = 'players/player_'
 _lhclazz = 'table-fixed border border-bottom-0 mt-3'
 _lhcols = [' class="text-center"']
 _lbclazz = 'table-fixed border'
-_lbcols = [' class="td-sm position-relative text-center w-20"'] * 5
+_lbpcols = [
+    ' class="position-relative w-40"', ' class="text-center w-10"',
+    ' class="text-center w-10"', ' class="position-relative text-right w-40"'
+]
+_lbrcols = [' class="td-sm position-relative text-center w-20"'] * 5
 
 DATA = StatsplusPlugin._data()
 NOW_ENCODED = '2022-10-10T00:00:00'
@@ -36,9 +40,14 @@ INDEX = 'html/fairylab/statsplus/index.html'
 HIGHLIGHTS_TABLE = table(body=[['Player set the record.']])
 INJURIES_TABLE = table(body=[['Player was injured.']])
 LIVE_HEADER_AL = table(clazz=_lhclazz, hcols=_lhcols, head=['American League'])
+LIVE_HEADER_POSTSEASON = table(
+    clazz=_lhclazz, hcols=_lhcols, head=['Postseason'])
 LIVE_HEADER_NL = table(clazz=_lhclazz, hcols=_lhcols, head=['National League'])
+LIVE_POSTSEASON_BODY = [['Baltimore', '1', '0', 'Boston']]
+LIVE_POSTSEASON = table(
+    clazz=_lbclazz, bcols=_lbpcols, body=LIVE_POSTSEASON_BODY)
 LIVE_REGULAR_BODY = [['BAL 1-0', 'BOS 0-1']]
-LIVE_REGULAR = table(clazz=_lbclazz, bcols=_lbcols, body=LIVE_REGULAR_BODY)
+LIVE_REGULAR = table(clazz=_lbclazz, bcols=_lbrcols, body=LIVE_REGULAR_BODY)
 SCORES_TABLE_NOW = table(head='2022-10-10', body=[['Baltimore 1, Boston 0']])
 SCORES_TABLE_THEN = table(head='2022-10-09', body=[['Baltimore 1, Boston 0']])
 NOW = datetime.datetime(2022, 10, 10)
@@ -49,6 +58,9 @@ NL = [('NL East', ['32', '41', '49']), ('NL Central', ['36', '37', '46']),
       ('NL West', ['31', '39', '45'])]
 SCORES_THEN = '10/09/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
 SCORES_NOW = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
+SCORES_POSTSEASON_ENCODED = [
+    '<{0}{1}25051.html|T45 8, T53 3>', '<{0}{1}25043.html|T54 6, T34 3>'
+]
 SCORES_REGULAR_TEXT = '*<{0}{1}2998.html|Arizona 4, Los Angeles 2>*\n' + \
                 '*<{0}{1}3003.html|Atlanta 2, Los Angeles 1>*\n' + \
                 '*<{0}{1}2996.html|Cincinnati 7, Milwaukee 2>*\n' + \
@@ -642,7 +654,10 @@ class StatsplusPluginTest(TestUtil):
     def test_home__with_regular(self, mock_live, mock_table):
         mock_live.return_value = [LIVE_REGULAR]
         mock_table.side_effect = [
-            HIGHLIGHTS_TABLE, INJURIES_TABLE, SCORES_TABLE_NOW, SCORES_TABLE_THEN, 
+            HIGHLIGHTS_TABLE,
+            INJURIES_TABLE,
+            SCORES_TABLE_NOW,
+            SCORES_TABLE_THEN,
         ]
 
         read = {
@@ -683,6 +698,79 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     maxDiff = None
+
+    @mock.patch.object(StatsplusPlugin, '_live_postseason_body')
+    def test_live_postseason(self, mock_body):
+        mock_body.return_value = LIVE_POSTSEASON_BODY
+
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'postseason': True,
+            'scores': {
+                THEN_ENCODED: SCORES_POSTSEASON_ENCODED,
+            },
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        actual = plugin._live_postseason()
+        expected = [LIVE_HEADER_POSTSEASON, LIVE_POSTSEASON]
+        self.assertEqual(actual, expected)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_live_postseason_series')
+    @mock.patch.object(StatsplusPlugin, '_record')
+    @mock.patch('plugins.statsplus.statsplus_plugin.logo_absolute')
+    def test_live_postseason_body(self, mock_logo, mock_record, mock_series):
+        mock_logo.return_value = 'logo'
+        mock_record.side_effect = ['1-0', '0-1', '0-1', '1-0']
+        mock_series.return_value = [['T45', 'T53'], ['T34', 'T54']]
+
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        actual = plugin._live_postseason_body()
+        expected = [['logo', '1', '0', 'logo'], ['logo', '1', '0', 'logo']]
+        self.assertEqual(actual, expected)
+
+        homes = ['Los Angeles', 'San Diego', 'Seattle', 'Boston']
+        sides = ['left', 'right'] * 2
+        teamids = ['45', '53', '54', '34']
+        calls = [mock.call(t, h, s) for t, h, s in zip(teamids, homes, sides)]
+        mock_logo.assert_has_calls(calls)
+        teamids = ['45', '53', '34', '54']
+        calls = [mock.call(t) for t in teamids]
+        mock_record.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    def test_live_postseason_series(self):
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'postseason': False,
+            'scores': {
+                THEN_ENCODED: SCORES_POSTSEASON_ENCODED
+            },
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        actual = plugin._live_postseason_series()
+        expected = [['T45', 'T53'], ['T34', 'T54']]
+        self.assertEqual(actual, expected)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(StatsplusPlugin, '_live_regular_body')
     @mock.patch('plugins.statsplus.statsplus_plugin.divisions')
