@@ -71,13 +71,14 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return ActivityEnum.NONE
 
     def _run_internal(self, **kwargs):
+        ret = ActivityEnum.NONE
+
         data = self.data
         if data['locked']:
-            return ActivityEnum.NONE
+            return ret
 
         text = urlopen(_url)
         exports = self._exports(text)
-        ret = ActivityEnum.NONE
 
         if not exports:
             return ret
@@ -139,7 +140,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         }
 
         n, t = self._new()
-        title = '{:.0f}%'.format(float(100) * n / t)
+        title = '{:.0f}%'.format(float(100) * n / t) if t else '0%'
         breakdown = ', '.join([
             self._success(str(n) + ' new'),
             str(t - n) + ' old',

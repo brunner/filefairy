@@ -14,10 +14,10 @@ subtitle = ''
 
 tmpl = 'statsplus.html'
 
-_lws = [
-    logo_absolute('45', 'Los Angeles', 'left'), '2', '4',
-    logo_absolute('54', 'Seattle', 'right')
-]
+_body = [[
+    logo_absolute('54', 'Seattle', 'left'), '4', '2',
+    logo_absolute('45', 'Los Angeles', 'right')
+]]
 
 context = {
     'title':
@@ -33,7 +33,7 @@ context = {
         'clazz': 'table-fixed border border-bottom-0 mt-3',
         'hcols': [' class="text-center"'],
         'bcols': [],
-        'head': ['World Series'],
+        'head': ['Postseason'],
         'body': []
     }, {
         'clazz':
@@ -45,7 +45,8 @@ context = {
             ' class="position-relative text-right w-40"'
         ],
         'head': [],
-        'body': [_lws]
+        'body':
+        _body
     }],
     'scores': [{
         'clazz':

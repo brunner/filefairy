@@ -83,6 +83,10 @@ _inline_img = _img.format('{0}', 'd-inline-block')
 _inline_span = _span.format('d-inline-block px-2', '{0}')
 
 
+def chlany():
+    return ['TCH', 'TLA', 'TNY']
+
+
 def decoding_to_encoding(decoding):
     return _decodings.get(decoding, {}).get('encoding', '')
 
