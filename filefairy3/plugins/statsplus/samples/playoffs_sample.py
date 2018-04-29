@@ -14,14 +14,13 @@ subtitle = ''
 
 tmpl = 'statsplus.html'
 
-_lal = [
-    logo_absolute('34', 'Boston', 'left'), '1', '4',
-    logo_absolute('54', 'Seattle', 'right')
-]
-_lnl = [
+_body = [[
+    logo_absolute('54', 'Seattle', 'left'), '4', '1',
+    logo_absolute('34', 'Boston', 'right')
+], [
     logo_absolute('45', 'Los Angeles', 'left'), '4', '2',
     logo_absolute('53', 'San Diego', 'right')
-]
+]]
 
 context = {
     'title':
@@ -37,7 +36,7 @@ context = {
         'clazz': 'table-fixed border border-bottom-0 mt-3',
         'hcols': [' class="text-center"'],
         'bcols': [],
-        'head': ['American League'],
+        'head': ['Postseason'],
         'body': []
     }, {
         'clazz':
@@ -49,24 +48,8 @@ context = {
             ' class="position-relative text-right w-40"'
         ],
         'head': [],
-        'body': [_lal]
-    }, {
-        'clazz': 'table-fixed border border-bottom-0 mt-3',
-        'hcols': [' class="text-center"'],
-        'bcols': [],
-        'head': ['National League'],
-        'body': []
-    }, {
-        'clazz':
-        'table-fixed border',
-        'hcols': [],
-        'bcols': [
-            ' class="position-relative w-40"', ' class="text-center w-10"',
-            ' class="text-center w-10"',
-            ' class="position-relative text-right w-40"'
-        ],
-        'head': [],
-        'body': [_lnl]
+        'body':
+        _body
     }],
     'scores': [{
         'clazz':
