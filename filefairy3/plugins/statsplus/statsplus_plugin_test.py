@@ -686,16 +686,14 @@ class StatsplusPluginTest(TestUtil):
         })
         self.assertTrue(plugin.data['updated'])
 
-    @mock.patch.object(StatsplusPlugin, '_scores_table')
+    @mock.patch.object(StatsplusPlugin, '_table')
     @mock.patch.object(StatsplusPlugin, '_live_tables_season')
-    @mock.patch.object(StatsplusPlugin, '_injuries_table')
-    @mock.patch.object(StatsplusPlugin, '_highlights_table')
-    def test_home__with_season(self, mock_highlights, mock_injuries, mock_live,
-                               mock_scores):
-        mock_highlights.return_value = HIGHLIGHTS_TABLE_SEASON
-        mock_injuries.return_value = INJURIES_TABLE_SEASON
+    def test_home__with_season(self, mock_live, mock_table):
         mock_live.return_value = [LIVE_TABLE_SEASON]
-        mock_scores.side_effect = [SCORES_TABLE_NOW, SCORES_TABLE_THEN]
+        mock_table.side_effect = [
+            SCORES_TABLE_NOW, SCORES_TABLE_THEN, INJURIES_TABLE_SEASON,
+            HIGHLIGHTS_TABLE_SEASON
+        ]
 
         read = {
             'finished': False,
@@ -723,11 +721,14 @@ class StatsplusPluginTest(TestUtil):
         }
         self.assertEqual(ret, expected)
 
-        mock_highlights.assert_called_once_with(THEN_ENCODED)
-        mock_injuries.assert_called_once_with(THEN_ENCODED)
         mock_live.assert_called_once_with()
-        calls = [mock.call(NOW_ENCODED), mock.call(THEN_ENCODED)]
-        mock_scores.assert_has_calls(calls)
+        calls = [
+            mock.call('scores', NOW_ENCODED, _game_box),
+            mock.call('scores', THEN_ENCODED, _game_box),
+            mock.call('injuries', THEN_ENCODED, _player),
+            mock.call('highlights', THEN_ENCODED, _player)
+        ]
+        mock_table.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
@@ -834,7 +835,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    def test_scores_table(self):
+    def test_table__final_scores(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -847,7 +848,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
 
-        actual = plugin._scores_table(THEN_ENCODED)
+        actual = plugin._table('scores', THEN_ENCODED, _game_box)
         expected = table(
             hcols=[''],
             bcols=[''],
@@ -867,7 +868,7 @@ class StatsplusPluginTest(TestUtil):
         ]
         self.mock_clarify.assert_has_calls(calls)
 
-    def test_injuries_table(self):
+    def test_table__injuries(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -880,7 +881,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
 
-        actual = plugin._injuries_table(THEN_ENCODED)
+        actual = plugin._table('injuries', THEN_ENCODED, _player)
         expected = table(
             hcols=[''],
             bcols=[''],
@@ -892,7 +893,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_clarify.assert_not_called()
 
-    def test_highlights_table(self):
+    def test_table__highlights(self):
         read = {
             'finished': False,
             'highlights': {
@@ -905,7 +906,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
 
-        actual = plugin._highlights_table(THEN_ENCODED)
+        actual = plugin._table('highlights', THEN_ENCODED, _player)
         expected = table(
             hcols=[''],
             bcols=[''],

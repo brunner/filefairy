@@ -193,13 +193,13 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             ret['live'] = self._live_tables_season()
 
         for date in sorted(data['scores'].keys(), reverse=True):
-            ret['scores'].append(self._scores_table(date))
+            ret['scores'].append(self._table('scores', date, _game_box))
 
         for date in sorted(data['injuries'].keys(), reverse=True):
-            ret['injuries'].append(self._injuries_table(date))
+            ret['injuries'].append(self._table('injuries', date, _player))
 
         for date in sorted(data['highlights'].keys(), reverse=True):
-            ret['highlights'].append(self._highlights_table(date))
+            ret['highlights'].append(self._table('highlights', date, _player))
 
         return ret
 
@@ -236,21 +236,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             hl += len(re.findall(r', ' + re.escape(encoding), scores))
         return '{0}-{1}'.format(hw, hl)
 
-    def _scores_table(self, date):
-        lines = self.data['scores'][date]
-        body = self._table_body(date, lines, _game_box)
-        head = self._table_head(date)
-        return table(hcols=[''], bcols=[''], head=head, body=body)
-
-    def _injuries_table(self, date):
-        lines = self.data['injuries'][date]
-        body = self._table_body(date, lines, _player)
-        head = self._table_head(date)
-        return table(hcols=[''], bcols=[''], head=head, body=body)
-
-    def _highlights_table(self, date):
-        lines = self.data['highlights'][date]
-        body = self._table_body(date, lines, _player)
+    def _table(self, key, date, path):
+        lines = self.data[key][date]
+        body = self._table_body(date, lines, path)
         head = self._table_head(date)
         return table(hcols=[''], bcols=[''], head=head, body=body)
 
