@@ -4,7 +4,7 @@
 from enum import Enum
 
 
-class NotificationValue(Enum):
+class NotifyValue(Enum):
     NONE = 0
     BASE = 1
     EXPORT = 2

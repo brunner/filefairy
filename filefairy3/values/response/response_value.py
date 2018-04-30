@@ -7,19 +7,19 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/values/response', '', _path))
-from values.notification.notification_value import NotificationValue  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
 
 
 class ResponseValue(object):
-    def __init__(self, notification=None, shadow=None):
-        self.notification = notification
+    def __init__(self, notify=None, shadow=None):
+        self.notify = notify
         self.shadow = shadow
 
     @staticmethod
-    def check_notification(value):
+    def check_notify(value):
         if not isinstance(value, list):
             raise TypeError(value)
-        if any(not isinstance(v, NotificationValue) for v in value):
+        if any(not isinstance(v, NotifyValue) for v in value):
             raise ValueError(value)
         return value
 
@@ -33,17 +33,17 @@ class ResponseValue(object):
             raise ValueError(value)
         return value
 
-    def get_notification(self):
-        return self._notification
+    def get_notify(self):
+        return self._notify
 
     def get_shadow(self):
         return self._shadow
 
-    def set_notification(self, value):
+    def set_notify(self, value):
         if value is None:
-            self._notification = []
+            self._notify = []
         else:
-            self._notification = self.check_notification(value)
+            self._notify = self.check_notify(value)
 
     def set_shadow(self, value):
         if value is None:
@@ -51,5 +51,5 @@ class ResponseValue(object):
         else:
             self._shadow = self.check_shadow(value)
 
-    notification = property(get_notification, set_notification)
+    notify = property(get_notify, set_notify)
     shadow = property(get_shadow, set_shadow)
