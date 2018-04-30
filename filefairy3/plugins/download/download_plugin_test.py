@@ -160,7 +160,7 @@ class DownloadPluginTest(unittest.TestCase):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
-        self.assertEqual(value, {'statsplus': {'download.now', NOW_ENCODED}})
+        self.assertEqual(value, {'statsplus': {'download.now': NOW_ENCODED}})
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

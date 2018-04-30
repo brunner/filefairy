@@ -62,7 +62,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
         pass
 
     def _shadow_internal(self, **kwargs):
-        return {'statsplus': {'download.now', self.data['now']}}
+        return {'statsplus': {'download.now': self.data['now']}}
 
     def _download(self):
         wget_file()
