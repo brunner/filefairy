@@ -11,7 +11,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/recap', '', _path)
 sys.path.append(_root)
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.recap.recap_plugin import RecapPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
@@ -19,6 +18,8 @@ from utils.json.json_util import dumps  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 _leagues = os.path.join(_root, 'file/news/txt/leagues')
 _injuries = os.path.join(_leagues, 'league_100_injuries.txt')
@@ -144,10 +145,10 @@ class RecapPluginTest(TestUtil):
     @mock.patch.object(RecapPlugin, '_render')
     def test_notify__with_download(self, mock_render):
         plugin = self.create_plugin()
-        ret = plugin._notify_internal(activity=ActivityEnum.DOWNLOAD)
-        self.assertTrue(ret)
+        value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD)
+        self.assertTrue(value)
 
-        mock_render.assert_called_once_with(activity=ActivityEnum.DOWNLOAD)
+        mock_render.assert_called_once_with(notify=NotifyValue.DOWNLOAD)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_called_once_with(
@@ -158,8 +159,8 @@ class RecapPluginTest(TestUtil):
     @mock.patch.object(RecapPlugin, '_render')
     def test_notify__with_none(self, mock_render):
         plugin = self.create_plugin()
-        ret = plugin._notify_internal(activity=ActivityEnum.NONE)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.NONE)
+        self.assertFalse(value)
 
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()
@@ -168,8 +169,8 @@ class RecapPluginTest(TestUtil):
 
     def test_on_message(self):
         plugin = self.create_plugin()
-        ret = plugin._on_message_internal()
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal()
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -177,8 +178,8 @@ class RecapPluginTest(TestUtil):
 
     def test_run(self):
         plugin = self.create_plugin()
-        ret = plugin._run_internal()
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal()
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -189,8 +190,8 @@ class RecapPluginTest(TestUtil):
         mock_home.return_value = HOME
 
         plugin = self.create_plugin()
-        ret = plugin._render_internal(date=NOW)
-        self.assertEqual(ret, [(INDEX, '', 'recap.html', HOME)])
+        value = plugin._render_internal(date=NOW)
+        self.assertEqual(value, [(INDEX, '', 'recap.html', HOME)])
 
         mock_home.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
@@ -203,6 +204,15 @@ class RecapPluginTest(TestUtil):
         plugin._setup_internal(date=NOW)
 
         mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    def test_shadow(self):
+        plugin = self.create_plugin()
+        value = plugin._shadow_internal()
+        self.assertEqual(value, {})
+
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -227,14 +237,14 @@ class RecapPluginTest(TestUtil):
 
         mock_tables.side_effect = fake_tables
 
-        ret = plugin._home(date=NOW)
+        value = plugin._home(date=NOW)
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'injuries': [INJ_TABLE],
             'news': [NEWS_TABLE],
             'transactions': [TRANS_TABLE]
         }
-        self.assertEqual(ret, expected)
+        self.assertEqual(value, expected)
 
         mock_tables.assert_has_calls([
             mock.call('injuries'),

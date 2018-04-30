@@ -11,7 +11,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta, elapsed  # noqa
 from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
@@ -21,6 +20,8 @@ from utils.jinja2.jinja2_util import env  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 _size_pattern = '(\d+)'
 _date_pattern = '(\w+\s\d+\s\d+:\d+)'
@@ -56,13 +57,13 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         return False
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _run_internal(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
-        ret = ActivityEnum.NONE
+        response = ResponseValue()
         for size, date, name, fp in self._check():
             if '.filepart' in name:
                 if not data['fp']:
@@ -71,7 +72,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                         'File upload started.',
                         attachments=self._attachments())
                     data['fp'] = {'start': date}
-                    ret = ActivityEnum.UPLOAD
+                    response.notify = [NotifyValue.UPLOAD]
                 if data['fp'].get('size', 0) != size:
                     data['fp']['size'] = size
                     data['fp']['end'] = date
@@ -89,7 +90,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                         'fairylab',
                         'File upload completed.',
                         attachments=self._attachments())
-                    ret = ActivityEnum.FILE
+                    response.notify = [NotifyValue.FILE]
                 data['fp'] = None
 
         if data != original:
@@ -97,10 +98,10 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
 
         if data != original or data['fp']:
             self._render(**kwargs)
-            if ret == ActivityEnum.NONE:
-                ret = ActivityEnum.BASE
+            if not response.notify:
+                response.notify = [NotifyValue.BASE]
 
-        return ret
+        return response
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/leaguefile/index.html'
@@ -135,6 +136,9 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
             self.write()
 
         self._render(**kwargs)
+
+    def _shadow_internal(self, **kwargs):
+        return {}
 
     @staticmethod
     def _date(s):

@@ -9,7 +9,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
@@ -21,10 +20,12 @@ from utils.team.team_util import logo_absolute  # noqa
 from utils.team.team_util import teamid_to_abbreviation  # noqa
 from utils.team.team_util import teamid_to_hometown  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
-_lock_activities = [ActivityEnum.SIM, ActivityEnum.UPLOAD]
-_unlock_activities = [ActivityEnum.FILE]
+_lock_values = [NotifyValue.SIM, NotifyValue.UPLOAD]
+_unlock_values = [NotifyValue.FILE]
 _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
 
@@ -53,11 +54,11 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return 'Tracks how often each manager exports.'
 
     def _notify_internal(self, **kwargs):
-        activity = kwargs['activity']
+        notify = kwargs['notify']
         data = self.data
-        if not data['locked'] and activity in _lock_activities:
+        if not data['locked'] and notify in _lock_values:
             self._lock()
-        elif data['locked'] and activity in _unlock_activities:
+        elif data['locked'] and notify in _unlock_values:
             self._unlock()
         else:
             return False
@@ -68,35 +69,35 @@ class ExportsPlugin(PluginApi, RenderableApi):
         return True
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _run_internal(self, **kwargs):
-        ret = ActivityEnum.NONE
+        response = ResponseValue()
 
         data = self.data
         if data['locked']:
-            return ret
+            return response
 
         text = urlopen(_url)
         exports = self._exports(text)
 
         if not exports:
-            return ret
+            return response
 
         if exports != self.exports:
             self.exports = exports
-            ret = ActivityEnum.BASE
+            response.notify = [NotifyValue.BASE]
 
         if any([True for e in exports if e in _emails]):
             self._lock()
-            ret = ActivityEnum.EXPORT
+            response.notify = [NotifyValue.EXPORT]
 
-        if ret != ActivityEnum.NONE:
+        if response.notify:
             data['date'] = encode_datetime(kwargs['date'])
             self.write()
 
         self._render(**kwargs)
-        return ret
+        return response
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/exports/index.html'
@@ -107,6 +108,9 @@ class ExportsPlugin(PluginApi, RenderableApi):
         text = urlopen(_url)
         self.exports = self._exports(text)
         self._render(**kwargs)
+
+    def _shadow_internal(self, **kwargs):
+        return {}
 
     @staticmethod
     def _exports(text):

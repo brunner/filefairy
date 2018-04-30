@@ -12,11 +12,12 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.snacks.snacks_plugin import SnacksPlugin  # noqa
 from plugins.snacks.snacks_plugin import _chooselist  # noqa
 from plugins.snacks.snacks_plugin import _snacklist  # noqa
 from utils.json.json_util import dumps  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 COLLECT = 'collect'
 DATA = SnacksPlugin._data()
@@ -87,8 +88,8 @@ class SnacksPluginTest(unittest.TestCase):
     def test_notify(self):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal()
-        self.assertFalse(ret)
+        value = plugin._notify_internal()
+        self.assertFalse(value)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -109,8 +110,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {'members': MEMBERS_NOW}
         calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
@@ -135,8 +136,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {'members': MEMBERS_NOW}
         mock_discuss.assert_called_once_with('topic', {}, 4, 6, 30)
@@ -157,8 +158,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read, {'U5678': 'user'})
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {'members': MEMBERS_NOW}
         mock_kick.assert_called_once_with('C9YE6NQG0', 'U5678')
@@ -178,8 +179,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {'members': MEMBERS_NOW}
         self.mock_open.assert_called_once_with(DATA, 'w')
@@ -201,8 +202,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {'members': MEMBERS_NOW}
         mock_snacks.assert_called_once_with()
@@ -226,8 +227,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -245,8 +246,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -264,8 +265,8 @@ class SnacksPluginTest(unittest.TestCase):
         }
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -291,8 +292,8 @@ class SnacksPluginTest(unittest.TestCase):
         mock_names.reset_mock()
         self.reset_mocks()
 
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue())
 
         mock_corpus.assert_called_once_with()
         mock_fnames.assert_called_once_with()
@@ -322,8 +323,8 @@ class SnacksPluginTest(unittest.TestCase):
         mock_names.reset_mock()
         self.reset_mocks()
 
-        ret = plugin._run_internal(date=THEN)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal(date=THEN)
+        self.assertEqual(response, ResponseValue())
 
         mock_corpus.assert_not_called()
         mock_fnames.assert_not_called()
@@ -357,6 +358,19 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.day, 26)
+
+    def test_shadow(self):
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read)
+        value = plugin._shadow_internal()
+        self.assertEqual(value, {})
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     @mock.patch('plugins.snacks.snacks_plugin.os.listdir')
     def test_fnames(self, mock_listdir):

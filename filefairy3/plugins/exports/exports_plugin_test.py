@@ -11,7 +11,6 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/exports', '', _path))
 from plugins.exports.exports_plugin import ExportsPlugin  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
@@ -19,6 +18,8 @@ from utils.json.json_util import dumps  # noqa
 from utils.team.team_util import logo_absolute  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 DATA = ExportsPlugin._data()
 EXPORTS_LOCK = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
@@ -109,13 +110,13 @@ class ExportsPluginTest(TestUtil):
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_lock')
-    def test_notify__with_unlocked_none(self, mock_lock, mock_render,
-                                        mock_unlock):
+    def test_notify__with_unlocked_export(self, mock_lock, mock_render,
+                                          mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.EXPORT, date=NOW)
+        self.assertFalse(value)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -142,13 +143,12 @@ class ExportsPluginTest(TestUtil):
 
         mock_lock.side_effect = fake_lock
 
-        ret = plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
-        self.assertTrue(ret)
+        value = plugin._notify_internal(notify=NotifyValue.SIM, date=NOW)
+        self.assertTrue(value)
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_lock.assert_called_once_with()
-        mock_render.assert_called_once_with(
-            activity=ActivityEnum.SIM, date=NOW)
+        mock_render.assert_called_once_with(notify=NotifyValue.SIM, date=NOW)
         mock_unlock.assert_not_called()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_with(dumps(write) + '\n')
@@ -163,8 +163,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.FILE, date=NOW)
+        self.assertFalse(value)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -182,8 +182,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.NONE, date=NOW)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.NONE, date=NOW)
+        self.assertFalse(value)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -201,8 +201,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.SIM, date=NOW)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.SIM, date=NOW)
+        self.assertFalse(value)
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -226,13 +226,12 @@ class ExportsPluginTest(TestUtil):
 
         mock_unlock.side_effect = fake_unlock
 
-        ret = plugin._notify_internal(activity=ActivityEnum.FILE, date=NOW)
-        self.assertTrue(ret)
+        value = plugin._notify_internal(notify=NotifyValue.FILE, date=NOW)
+        self.assertTrue(value)
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(
-            activity=ActivityEnum.FILE, date=NOW)
+        mock_render.assert_called_once_with(notify=NotifyValue.FILE, date=NOW)
         mock_unlock.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -243,8 +242,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal()
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal()
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -260,8 +259,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue())
 
         mock_exports.assert_called_once_with(URLOPEN)
         mock_lock.assert_not_called()
@@ -281,8 +280,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_exports.assert_called_once_with(URLOPEN)
@@ -297,14 +296,15 @@ class ExportsPluginTest(TestUtil):
     @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_lock')
     @mock.patch.object(ExportsPlugin, '_exports')
-    def test_run__with_exports_empty(self, mock_exports, mock_lock, mock_render):
+    def test_run__with_exports_empty(self, mock_exports, mock_lock,
+                                     mock_render):
         mock_exports.return_value = []
 
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue())
 
         mock_exports.assert_called_once_with(URLOPEN)
         mock_lock.assert_not_called()
@@ -331,8 +331,8 @@ class ExportsPluginTest(TestUtil):
 
         mock_lock.side_effect = fake_lock
 
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.EXPORT)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.EXPORT]))
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_exports.assert_called_once_with(URLOPEN)
@@ -351,8 +351,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        ret = plugin._render_internal(date=NOW)
-        self.assertEqual(ret, [(INDEX, '', 'exports.html', HOME)])
+        value = plugin._render_internal(date=NOW)
+        self.assertEqual(value, [(INDEX, '', 'exports.html', HOME)])
 
         mock_home.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
@@ -378,6 +378,18 @@ class ExportsPluginTest(TestUtil):
         self.mock_urlopen.assert_called_once_with(URL)
         self.mock_chat.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_OLD)
+
+    def test_shadow(self):
+        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
+        plugin = self.create_plugin(read)
+        value = plugin._shadow_internal()
+        self.assertEqual(value, {})
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     def test_exports__with_valid_input(self):
         text = '<td><a href="../teams/team_36.html">Chicago Cubs</a>' + \
@@ -420,7 +432,7 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_NEW_HOME)
-        ret = plugin._home(date=THEN)
+        response = plugin._home(date=THEN)
         l = card(title='100%', info=INFO_NEW, table=TABLE, ts='0s ago')
         e = table(
             hcols=STANDINGS_COLS,
@@ -445,7 +457,7 @@ class ExportsPluginTest(TestUtil):
             'live': l,
             'standings': [e, c, w]
         }
-        self.assertEqual(ret, expected)
+        self.assertEqual(response, expected)
 
         mock_divisions.assert_called_once_with()
         calls = [mock.call(k) for k in ['33', '34', '35', '40', '42', '44']]
@@ -469,7 +481,7 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
-        ret = plugin._home(date=THEN)
+        response = plugin._home(date=THEN)
         l = card(title='67%', info=INFO_OLD, table=TABLE, ts='0s ago')
         e = table(
             hcols=STANDINGS_COLS,
@@ -494,7 +506,7 @@ class ExportsPluginTest(TestUtil):
             'live': l,
             'standings': [e, c, w]
         }
-        self.assertEqual(ret, expected)
+        self.assertEqual(response, expected)
 
         mock_divisions.assert_called_once_with()
         calls = [mock.call(k) for k in ['33', '34', '35', '40', '42', '44']]
@@ -518,7 +530,7 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_NEW) for k in keys}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
-        ret = plugin._home(date=THEN)
+        response = plugin._home(date=THEN)
         l = card(title='67%', info=INFO_LOCK, table=TABLE, ts='0s ago')
         e = table(
             hcols=STANDINGS_COLS,
@@ -543,7 +555,7 @@ class ExportsPluginTest(TestUtil):
             'live': l,
             'standings': [e, c, w]
         }
-        self.assertEqual(ret, expected)
+        self.assertEqual(response, expected)
 
         mock_divisions.assert_called_once_with()
         calls = [mock.call(k) for k in ['33', '34', '35', '40', '42', '44']]

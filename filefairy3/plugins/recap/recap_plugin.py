@@ -11,12 +11,13 @@ _root = re.sub(r'/plugins/recap', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class RecapPlugin(PluginApi, RenderableApi):
@@ -44,8 +45,8 @@ class RecapPlugin(PluginApi, RenderableApi):
         return 'recap'
 
     def _notify_internal(self, **kwargs):
-        activity = kwargs['activity']
-        if activity == ActivityEnum.DOWNLOAD:
+        notify = kwargs['notify']
+        if notify == NotifyValue.DOWNLOAD:
             self._render(**kwargs)
             chat_post_message(
                 'fairylab',
@@ -55,10 +56,10 @@ class RecapPlugin(PluginApi, RenderableApi):
         return False
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _run_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/recap/index.html'
@@ -67,6 +68,9 @@ class RecapPlugin(PluginApi, RenderableApi):
 
     def _setup_internal(self, **kwargs):
         self._render(**kwargs)
+
+    def _shadow_internal(self, **kwargs):
+        return {}
 
     @staticmethod
     def _strip_teams(text):

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import abc
+import copy
 import os
 import re
 import sys
@@ -11,8 +12,9 @@ sys.path.append(re.sub(r'/apis/plugin', '', _path))
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class PluginApi(MessageableApi, RunnableApi):
@@ -20,6 +22,7 @@ class PluginApi(MessageableApi, RunnableApi):
 
     def __init__(self, **kwargs):
         super(PluginApi, self).__init__(**kwargs)
+        self.shadow = {}
 
     @abc.abstractproperty
     def enabled(self):
@@ -37,6 +40,10 @@ class PluginApi(MessageableApi, RunnableApi):
     def _setup_internal(self, **kwargs):
         pass
 
+    @abc.abstractmethod
+    def _shadow_internal(self, **kwargs):
+        pass
+
     def _attachments(self):
         if not isinstance(self, RenderableApi):
             return []
@@ -52,9 +59,14 @@ class PluginApi(MessageableApi, RunnableApi):
         }]
 
     def _notify(self, **kwargs):
-        ret = self._notify_internal(**kwargs)
-        return ActivityEnum.BASE if ret else ActivityEnum.NONE
+        if self._notify_internal(**kwargs):
+            return ResponseValue(notify=[NotifyValue.BASE])
+        return ResponseValue()
 
     def _setup(self, **kwargs):
         self._setup_internal(**kwargs)
-        return ActivityEnum.NONE
+        return ResponseValue(shadow=self._shadow_internal(**kwargs))
+
+    def _shadow(self, **kwargs):
+        self.shadow.update(copy.deepcopy(kwargs['shadow']))
+        return ResponseValue()

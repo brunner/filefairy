@@ -11,7 +11,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/statsplus', '', _path)
 sys.path.append(_root)
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
@@ -19,6 +18,8 @@ from utils.json.json_util import dumps  # noqa
 from utils.team.team_util import logo_inline  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -218,8 +219,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.DOWNLOAD)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD)
+        self.assertFalse(value)
 
         write = {
             'finished': True,
@@ -242,8 +243,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.NONE)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.NONE)
+        self.assertFalse(value)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -266,8 +267,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {
             'finished': False,
@@ -299,8 +300,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         mock_clear.assert_not_called()
         self.mock_open.assert_not_called()
@@ -325,8 +326,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         mock_handle.assert_called_once_with('scores', SCORES_THEN + scores,
                                             SCORES_PATTERN, False)
@@ -352,8 +353,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         mock_handle.assert_called_once_with(
             'injuries', INJURIES_DELAY + injuries, INJURIES_PATTERN, True)
@@ -379,8 +380,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         mock_handle.assert_called_once_with(
             'injuries', INJURIES_DATE + injuries, INJURIES_PATTERN, True)
@@ -406,8 +407,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         mock_handle.assert_called_once_with('highlights',
                                             HIGHLIGHTS_DATE + highlights,
@@ -432,8 +433,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue())
 
         mock_clear.assert_not_called()
         self.mock_open.assert_not_called()
@@ -457,8 +458,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal(obj=obj)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue())
 
         mock_clear.assert_not_called()
         self.mock_open.assert_not_called()
@@ -475,8 +476,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': True
         }
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {
             'finished': False,
@@ -501,8 +502,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue())
 
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()
@@ -521,8 +522,8 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._render_internal(date=NOW)
-        self.assertEqual(ret, [(INDEX, '', 'statsplus.html', HOME)])
+        value = plugin._render_internal(date=NOW)
+        self.assertEqual(value, [(INDEX, '', 'statsplus.html', HOME)])
 
         mock_home.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
@@ -542,6 +543,22 @@ class StatsplusPluginTest(TestUtil):
         plugin._setup_internal(date=NOW)
 
         mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    def test_shadow(self):
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        value = plugin._shadow_internal()
+        self.assertEqual(value, {})
+
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -650,6 +667,54 @@ class StatsplusPluginTest(TestUtil):
         self.assertTrue(plugin.data['updated'])
 
     @mock.patch.object(StatsplusPlugin, '_table')
+    @mock.patch.object(StatsplusPlugin, '_live_postseason')
+    def test_home__with_postseason(self, mock_live, mock_table):
+        mock_live.return_value = [LIVE_POSTSEASON]
+        mock_table.side_effect = [
+            HIGHLIGHTS_TABLE,
+            INJURIES_TABLE,
+            SCORES_TABLE_NOW,
+            SCORES_TABLE_THEN,
+        ]
+
+        read = {
+            'finished': False,
+            'highlights': {
+                THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
+            },
+            'injuries': {
+                THEN_ENCODED: [INJURIES_TEXT_ENCODED]
+            },
+            'postseason': True,
+            'scores': {
+                THEN_ENCODED: SCORES_REGULAR_ENCODED,
+                NOW_ENCODED: SCORES_REGULAR_ENCODED
+            },
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        actual = plugin._home(date=NOW)
+        expected = {
+            'breadcrumbs': BREADCRUMBS,
+            'live': [LIVE_POSTSEASON],
+            'highlights': [HIGHLIGHTS_TABLE],
+            'injuries': [INJURIES_TABLE],
+            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_THEN],
+        }
+        self.assertEqual(actual, expected)
+
+        mock_live.assert_called_once_with()
+        calls = [
+            mock.call('highlights', THEN_ENCODED, _player),
+            mock.call('injuries', THEN_ENCODED, _player),
+            mock.call('scores', NOW_ENCODED, _game_box),
+            mock.call('scores', THEN_ENCODED, _game_box),
+        ]
+        mock_table.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_table')
     @mock.patch.object(StatsplusPlugin, '_live_regular')
     def test_home__with_regular(self, mock_live, mock_table):
         mock_live.return_value = [LIVE_REGULAR]
@@ -676,7 +741,7 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        ret = plugin._home(date=NOW)
+        actual = plugin._home(date=NOW)
         expected = {
             'breadcrumbs': BREADCRUMBS,
             'live': [LIVE_REGULAR],
@@ -684,7 +749,7 @@ class StatsplusPluginTest(TestUtil):
             'injuries': [INJURIES_TABLE],
             'scores': [SCORES_TABLE_NOW, SCORES_TABLE_THEN],
         }
-        self.assertEqual(ret, expected)
+        self.assertEqual(actual, expected)
 
         mock_live.assert_called_once_with()
         calls = [
@@ -696,8 +761,6 @@ class StatsplusPluginTest(TestUtil):
         mock_table.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-
-    maxDiff = None
 
     @mock.patch.object(StatsplusPlugin, '_live_postseason_body')
     def test_live_postseason(self, mock_body):

@@ -20,7 +20,6 @@ sys.path.append(_root)
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa
@@ -28,6 +27,7 @@ from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import rtm_connect  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
 
 
 class FairylabProgram(MessageableApi, RenderableApi):
@@ -52,11 +52,21 @@ class FairylabProgram(MessageableApi, RenderableApi):
         return 'home'
 
     def _setup(self):
+        data = self.data
+        original = copy.deepcopy(data)
+
         date = datetime.datetime.now()
         d = os.path.join(_root, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in ps:
-            self.install(a1=p, date=date)
+            self._install_internal(a1=p, date=date)
+
+        ps = data['plugins'].keys()
+        for p in ps:
+            self._try(p, '_setup', date=date)
+
+        if data != original:
+            self.write()
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -92,21 +102,25 @@ class FairylabProgram(MessageableApi, RenderableApi):
             return
 
         date = kwargs.get('date') or datetime.datetime.now()
-        ret = ActivityEnum.NONE
+        edate = encode_datetime(date)
+
         try:
-            ret = item(**dict(kwargs, date=date))
+            response = item(**dict(kwargs, date=date))
+            if response.notify:
+                data['plugins'][p]['date'] = edate
+            for n in response.notify:
+                if n != NotifyValue.BASE:
+                    ps = filter(lambda q: p != q, data['plugins'].keys())
+                    for p in ps:
+                        self._try(p, '_notify', **dict(kwargs, notify=n))
+            for s in response.shadow:
+                shadow = response.shadow[s]
+                self._try(s, '_shadow', **dict(kwargs, shadow=shadow))
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
             data['plugins'][p]['ok'] = False
-            data['plugins'][p]['date'] = encode_datetime(date)
-
-        if ret != ActivityEnum.NONE:
-            data['plugins'][p]['date'] = encode_datetime(date)
-            if ret != ActivityEnum.BASE:
-                ps = filter(lambda q: p != q, data['plugins'].keys())
-                for p in ps:
-                    self._try(p, '_notify', **dict(kwargs, activity=ret))
+            data['plugins'][p]['date'] = edate
 
     def _recv(self, message):
         self.lock.acquire()
@@ -208,17 +222,14 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         return ret
 
-    def install(self, **kwargs):
-        self.uninstall(**dict(kwargs, v=False))
-        data = self.data
-        original = copy.deepcopy(data)
+    def _install_internal(self, **kwargs):
+        p = kwargs['a1']
+        date = kwargs['date']
 
-        p = kwargs.get('a1', '')
         path = self._plugin_path(p)
         clazz = self._plugin_clazz(p)
-
-        date = kwargs.get('date') or datetime.datetime.now()
         encoded_date = encode_datetime(date)
+
         try:
             ok = True
             plugin = getattr(importlib.import_module(path), clazz)
@@ -237,11 +248,23 @@ class FairylabProgram(MessageableApi, RenderableApi):
             log(clazz, **dict(kwargs, s='Disabled.', v=True))
 
         if enabled:
-            data['plugins'][p] = {
+            self.data['plugins'][p] = {
                 'date': encoded_date,
                 'ok': ok,
             }
             self.pins[p] = instance
+
+    def install(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        p = kwargs.get('a1', '')
+        date = kwargs.get('date') or datetime.datetime.now()
+
+        self.uninstall(**dict(kwargs, v=False))
+        self._install_internal(**dict(kwargs, a1=p, date=date))
+
+        if self._plugin(p).get('ok'):
             self._try(p, '_setup', date=date)
 
         if data != original:

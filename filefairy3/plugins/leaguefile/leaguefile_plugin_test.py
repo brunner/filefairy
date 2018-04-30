@@ -11,7 +11,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/leaguefile', '', _path)
 sys.path.append(_root)
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
@@ -19,6 +18,8 @@ from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 _data = LeaguefilePlugin._data()
 DATA = LeaguefilePlugin._data()
@@ -112,8 +113,8 @@ class LeaguefilePluginTest(TestUtil):
     def test_notify(self):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal()
-        self.assertFalse(ret)
+        value = plugin._notify_internal()
+        self.assertFalse(value)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -122,8 +123,8 @@ class LeaguefilePluginTest(TestUtil):
     def test_on_message(self):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal()
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal()
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -136,8 +137,8 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.UPLOAD)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.UPLOAD]))
 
         write = {'fp': FILEPART, 'up': []}
         mock_check.assert_called_once_with()
@@ -156,8 +157,8 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': FILEPART, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
@@ -172,8 +173,8 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': None, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue())
 
         mock_check.assert_called_once_with()
         mock_render.assert_not_called()
@@ -188,8 +189,8 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=NOW)
-        self.assertEqual(ret, ActivityEnum.FILE)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.FILE]))
 
         write = {'fp': None, 'up': [UP_FILEPART]}
         mock_check.assert_called_once_with()
@@ -211,8 +212,8 @@ class LeaguefilePluginTest(TestUtil):
 
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        ret = plugin._render_internal(date=NOW)
-        self.assertEqual(ret, [(INDEX, '', 'leaguefile.html', HOME)])
+        response = plugin._render_internal(date=NOW)
+        self.assertEqual(response, [(INDEX, '', 'leaguefile.html', HOME)])
 
         mock_home.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
@@ -297,6 +298,16 @@ class LeaguefilePluginTest(TestUtil):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
 
+    def test_shadow(self):
+        read = {'fp': None, 'up': [UP_THEN]}
+        plugin = self.create_plugin(read)
+        value = plugin._shadow_internal()
+        self.assertEqual(value, {})
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
     def test_date(self):
         s = 'Jan 29 15:55'
         actual = LeaguefilePlugin._date(s)
@@ -351,19 +362,19 @@ class LeaguefilePluginTest(TestUtil):
     def test_home__with_empty(self):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        ret = plugin._home(date=NOW)
+        value = plugin._home(date=NOW)
         up = table(
             hcols=['', '', ''],
             bcols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=[])
         expected = {'breadcrumbs': BREADCRUMBS, 'fp': None, 'up': up}
-        self.assertEqual(ret, expected)
+        self.assertEqual(value, expected)
 
     def test_home__with_filepart(self):
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
-        ret = plugin._home(date=NOW)
+        value = plugin._home(date=NOW)
         fp = card(
             title='Jan 29',
             table=table(
@@ -379,19 +390,19 @@ class LeaguefilePluginTest(TestUtil):
             head=['Date', 'Time', 'Size'],
             body=[])
         expected = {'breadcrumbs': BREADCRUMBS, 'fp': fp, 'up': up}
-        self.assertEqual(ret, expected)
+        self.assertEqual(value, expected)
 
     def test_home__with_up(self):
         read = {'fp': None, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        ret = plugin._home(date=NOW)
+        value = plugin._home(date=NOW)
         up = table(
             hcols=['', '', ''],
             bcols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=[['Jan 27', '0m', '345,678,901']])
         expected = {'breadcrumbs': BREADCRUMBS, 'fp': None, 'up': up}
-        self.assertEqual(ret, expected)
+        self.assertEqual(value, expected)
 
 
 if __name__ in ['__main__', 'plugins.leaguefile.leaguefile_plugin_test']:

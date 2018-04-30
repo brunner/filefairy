@@ -12,9 +12,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugins/download', '', _path)
 sys.path.append(_root)
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from plugins.download.download_plugin import DownloadPlugin  # noqa
 from utils.json.json_util import dumps  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 DATA = DownloadPlugin._data()
 BOX_NON_MLB = '<html>\n<head>\n<title>ABL Box Scores, Adelaide Bite at ' + \
@@ -98,8 +99,8 @@ class DownloadPluginTest(unittest.TestCase):
     def test_notify__with_file(self, mock_download, mock_thread):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.FILE)
-        self.assertTrue(ret)
+        value = plugin._notify_internal(notify=NotifyValue.FILE)
+        self.assertTrue(value)
 
         mock_thread.assert_called_once_with(target=mock_download)
         mock_thread.return_value.start.assert_called_once_with()
@@ -111,8 +112,8 @@ class DownloadPluginTest(unittest.TestCase):
     def test_notify__with_none(self, mock_download, mock_thread):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        ret = plugin._notify_internal(activity=ActivityEnum.NONE)
-        self.assertFalse(ret)
+        value = plugin._notify_internal(notify=NotifyValue.NONE)
+        self.assertFalse(value)
 
         mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
@@ -121,8 +122,8 @@ class DownloadPluginTest(unittest.TestCase):
     def test_on_message(self):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        ret = plugin._on_message_internal()
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._on_message_internal()
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -130,8 +131,9 @@ class DownloadPluginTest(unittest.TestCase):
     def test_run__with_downloaded_true(self):
         read = {'downloaded': True, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=THEN)
-        self.assertEqual(ret, ActivityEnum.DOWNLOAD)
+        response = plugin._run_internal(date=THEN)
+        self.assertEqual(
+            response, ResponseValue(notify=[NotifyValue.DOWNLOAD]))
 
         write = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         self.mock_open.assert_called_once_with(DATA, 'w')
@@ -140,8 +142,8 @@ class DownloadPluginTest(unittest.TestCase):
     def test_run__with_downloaded_false(self):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        ret = plugin._run_internal(date=THEN)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._run_internal(date=THEN)
+        self.assertEqual(response, ResponseValue())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -150,6 +152,15 @@ class DownloadPluginTest(unittest.TestCase):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
         plugin._setup_internal()
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    def test_shadow(self):
+        read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
+        plugin = self.create_plugin(read)
+        value = plugin._shadow_internal()
+        self.assertEqual(value, {'statsplus': {'download.now', NOW_ENCODED}})
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

@@ -8,9 +8,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/git', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class GitPlugin(PluginApi):
@@ -29,7 +30,7 @@ class GitPlugin(PluginApi):
         return False
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _run_internal(self, **kwargs):
         day = kwargs['date'].day
@@ -39,15 +40,18 @@ class GitPlugin(PluginApi):
             self.push(**kwargs)
             self.day = day
 
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _setup_internal(self, **kwargs):
         self.day = kwargs['date'].day
 
+    def _shadow_internal(self, **kwargs):
+        return {}
+
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')
         log(self._name(), **dict(kwargs, c=d, s='Call completed.'))
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], kwargs)

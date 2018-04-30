@@ -12,7 +12,6 @@ _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd  # noqa
 from utils.nltk.nltk_util import discuss  # noqa
@@ -22,6 +21,8 @@ from utils.slack.slack_util import chat_post_message  # noqa
 from utils.slack.slack_util import reactions_add  # noqa
 from utils.slack.slack_util import users_list  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
 
@@ -74,11 +75,13 @@ class SnacksPlugin(PluginApi, SerializableApi):
         return False
 
     def _on_message_internal(self, **kwargs):
+        response = ResponseValue()
+
         obj = kwargs['obj']
         user = obj.get('user')
         ts = obj.get('ts')
         if obj.get('channel') not in _channels or not user or not ts:
-            return ActivityEnum.NONE
+            return response
 
         data = self.data
         original = copy.deepcopy(data)
@@ -92,47 +95,45 @@ class SnacksPlugin(PluginApi, SerializableApi):
         else:
             ok = float(ts) - float(data['members'][user]['latest']) > 10
 
-        ret = ActivityEnum.NONE
         if ok:
             match = re.findall('^<@U3ULC7DBP> choose (.+)$', text)
             if match:
                 statement = random.choice(_chooselist)
                 choice = random.choice(match[0].split(' or '))
-                response = re.sub('^([a-zA-Z])',
-                                  lambda x: x.groups()[0].upper(),
-                                  statement.format(choice), 1)
-                chat_post_message(channel, response)
-                ret = ActivityEnum.BASE
+                reply = re.sub('^([a-zA-Z])', lambda x: x.groups()[0].upper(),
+                               statement.format(choice), 1)
+                chat_post_message(channel, reply)
+                response.notify = [NotifyValue.BASE]
 
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
                 cfd = self.__dict__.get('cfd', {})
-                response = discuss(match[0], cfd, 4, 6, 30)
-                chat_post_message(channel, response)
-                ret = ActivityEnum.BASE
+                reply = discuss(match[0], cfd, 4, 6, 30)
+                chat_post_message(channel, reply)
+                response.notify = [NotifyValue.BASE]
 
             match = re.findall('^<@U3ULC7DBP> kick <@(.+)>$', text)
             if match and match[0] in self.names:
                 channels_kick(channel, match[0])
-                ret = ActivityEnum.BASE
+                response.notify = [NotifyValue.BASE]
 
             match = re.findall('^<@U3ULC7DBP> say (.+)$', text)
             if match:
                 chat_post_message(channel, match[0])
-                ret = ActivityEnum.BASE
+                response.notify = [NotifyValue.BASE]
 
             if text == '<@U3ULC7DBP> snack me':
                 for snack in self._snacks():
                     reactions_add(snack, channel, ts)
-                ret = ActivityEnum.BASE
+                response.notify = [NotifyValue.BASE]
 
-        if ret != ActivityEnum.NONE:
+        if response.notify:
             data['members'][user]['latest'] = ts
 
         if data != original:
             self.write()
 
-        return ret
+        return response
 
     def _run_internal(self, **kwargs):
         day = kwargs['date'].day
@@ -142,12 +143,15 @@ class SnacksPlugin(PluginApi, SerializableApi):
             self.day = day
             self.names = self._names()
 
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _setup_internal(self, **kwargs):
         self.cfd = cfd(4, *self._fnames())
         self.day = kwargs['date'].day
         self.names = self._names()
+
+    def _shadow_internal(self, **kwargs):
+        return {}
 
     @staticmethod
     def _fnames():

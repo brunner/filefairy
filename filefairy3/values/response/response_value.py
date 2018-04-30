@@ -15,6 +15,9 @@ class ResponseValue(object):
         self.notify = notify
         self.shadow = shadow
 
+    def __eq__(self, other):
+        return self.notify == other.notify and self.shadow == other.shadow
+
     @staticmethod
     def check_notify(value):
         if not isinstance(value, list):

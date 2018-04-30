@@ -13,12 +13,13 @@ _root = re.sub(r'/plugins/download', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa
 from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.file.file_util import recreate  # noqa
 from utils.file.file_util import wget_file  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class DownloadPlugin(PluginApi, SerializableApi):
@@ -38,8 +39,8 @@ class DownloadPlugin(PluginApi, SerializableApi):
         return 'Manages file download and data extraction.'
 
     def _notify_internal(self, **kwargs):
-        activity = kwargs['activity']
-        if activity == ActivityEnum.FILE:
+        notify = kwargs['notify']
+        if notify == NotifyValue.FILE:
             t = threading.Thread(target=self._download)
             t.daemon = True
             t.start()
@@ -47,18 +48,21 @@ class DownloadPlugin(PluginApi, SerializableApi):
         return False
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _run_internal(self, **kwargs):
         if self.data['downloaded']:
             self.data['downloaded'] = False
             self.write()
-            return ActivityEnum.DOWNLOAD
+            return ResponseValue(notify=[NotifyValue.DOWNLOAD])
 
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _setup_internal(self, **kwargs):
         pass
+
+    def _shadow_internal(self, **kwargs):
+        return {'statsplus': {'download.now', self.data['now']}}
 
     def _download(self):
         wget_file()

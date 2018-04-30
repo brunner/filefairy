@@ -13,8 +13,9 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class FakePlugin(PluginApi):
@@ -30,15 +31,18 @@ class FakePlugin(PluginApi):
         return 'Description.'
 
     def _notify_internal(self, **kwargs):
-        return kwargs['ret']
+        return True if kwargs['notify'] == NotifyValue.EXPORT else False
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _run_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _setup_internal(self, **kwargs):
+        pass
+
+    def _shadow_internal(self, **kwargs):
         pass
 
 
@@ -74,15 +78,18 @@ class FakeRenderable(PluginApi, RenderableApi):
         pass
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _run_internal(self, **kwargs):
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _render_internal(self, **kwargs):
         return {}
 
     def _setup_internal(self, **kwargs):
+        pass
+
+    def _shadow_internal(self, **kwargs):
         pass
 
 
@@ -118,23 +125,36 @@ class PluginApiTest(unittest.TestCase):
         expected = []
         self.assertEqual(actual, expected)
 
-    def test_notify__with_true(self):
+    def test_notify__with_base(self):
         plugin = FakePlugin()
-        ret = plugin._notify(ret=True)
-        self.assertEqual(ret, ActivityEnum.BASE)
+        response = plugin._notify(notify=NotifyValue.EXPORT)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-    def test_notify__with_false(self):
+    def test_notify__with_none(self):
         plugin = FakePlugin()
-        ret = plugin._notify(ret=False)
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._notify(notify=NotifyValue.NONE)
+        self.assertEqual(response, ResponseValue())
 
+    @mock.patch.object(FakePlugin, '_shadow_internal')
     @mock.patch.object(FakePlugin, '_setup_internal')
-    def test_setup(self, mock_setup):
+    def test_setup(self, mock_setup, mock_shadow):
+        shadow = {'foo': {'fake.bar': 'baz'}}
+        mock_shadow.return_value = shadow
+
         plugin = FakePlugin()
-        ret = plugin._setup()
-        self.assertEqual(ret, ActivityEnum.NONE)
+        response = plugin._setup()
+        self.assertEqual(response, ResponseValue(shadow=shadow))
 
         mock_setup.assert_called_once_with()
+        mock_shadow.assert_called_once_with()
+
+    def test_shadow(self):
+        plugin = FakePlugin()
+        self.assertEqual(plugin.shadow, {})
+
+        response = plugin._shadow(shadow={'fake.bar': 'baz'})
+        self.assertEqual(response, ResponseValue())
+        self.assertEqual(plugin.shadow, {'fake.bar': 'baz'})
 
 
 if __name__ == '__main__':

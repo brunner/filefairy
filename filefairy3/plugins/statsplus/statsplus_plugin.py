@@ -12,7 +12,6 @@ _root = re.sub(r'/plugins/statsplus', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from utils.box.box_util import clarify  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa
@@ -30,6 +29,8 @@ from utils.team.team_util import precoding_to_encoding_sub  # noqa
 from utils.team.team_util import precodings  # noqa
 from utils.team.team_util import teamid_to_encoding  # noqa
 from utils.team.team_util import teamid_to_hometown  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -73,8 +74,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         return 'statsplus'
 
     def _notify_internal(self, **kwargs):
-        activity = kwargs['activity']
-        if activity == ActivityEnum.DOWNLOAD:
+        notify = kwargs['notify']
+        if notify == NotifyValue.DOWNLOAD:
             self.data['finished'] = True
             self.write()
         return False
@@ -84,7 +85,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         bot_id = obj.get('bot_id')
         channel = obj.get('channel')
         if bot_id != 'B7KJ3362Y' or channel != 'C7JSGHW8G':
-            return ActivityEnum.NONE
+            return ResponseValue()
 
         data = self.data
         original = copy.deepcopy(data)
@@ -115,16 +116,16 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         if data != original:
             self.write()
 
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def _run_internal(self, **kwargs):
         if self.data['updated']:
             self.data['updated'] = False
             self._render(**kwargs)
             self.write()
-            return ActivityEnum.BASE
+            return ResponseValue(notify=[NotifyValue.BASE])
 
-        return ActivityEnum.NONE
+        return ResponseValue()
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/statsplus/index.html'
@@ -133,6 +134,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     def _setup_internal(self, **kwargs):
         self._render(**kwargs)
+
+    def _shadow_internal(self, **kwargs):
+        return {}
 
     def _clear(self):
         self.data['scores'] = {}

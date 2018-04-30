@@ -15,13 +15,14 @@ _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
-from enums.activity.activity_enum import ActivityEnum  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
 from utils.component.component_util import card  # noqa
 from utils.json.json_util import dumps  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class BrowsablePlugin(PluginApi, RenderableApi):
@@ -52,15 +53,18 @@ class BrowsablePlugin(PluginApi, RenderableApi):
         pass
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def _run_internal(self, **kwargs):
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def _render_internal(self, **kwargs):
         return [('html/fairylab/browsable/index.html', '', 'browse.html', {})]
 
     def _setup_internal(self, **kwargs):
+        pass
+
+    def _shadow_internal(self, **kwargs):
         pass
 
 
@@ -82,12 +86,15 @@ class InternalPlugin(PluginApi):
         pass
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def _run_internal(self, **kwargs):
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def _setup_internal(self, **kwargs):
+        pass
+
+    def _shadow_internal(self, **kwargs):
         pass
 
 
@@ -107,12 +114,15 @@ class DisabledPlugin(PluginApi):
         pass
 
     def _on_message_internal(self, **kwargs):
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def _run_internal(self, **kwargs):
-        return ActivityEnum.BASE
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def _setup_internal(self, **kwargs):
+        pass
+
+    def _shadow_internal(self, **kwargs):
         pass
 
 
@@ -141,9 +151,7 @@ NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
 NOW_ENCODED = '1985-10-26T00:02:30'
 THEN = datetime.datetime(1985, 10, 26, 0, 0, 0)
 THEN_ENCODED = '1985-10-26T00:00:00'
-DIR_BAR = os.path.join(_root, 'plugins', 'bar')
-DIR_BAZ = os.path.join(_root, 'plugins', 'baz')
-DIR_FOO = os.path.join(_root, 'plugins', 'foo')
+DIR_INTERNAL = os.path.join(_root, 'plugins', 'internal')
 DIR_PLUGINS = os.path.join(_root, 'plugins')
 HOME = {'breadcrumbs': [], 'browsable': [], 'internal': []}
 INDEX = 'html/fairylab/index.html'
@@ -231,26 +239,23 @@ class FairylabProgramTest(TestUtil):
         self.assertEqual(program.sleep, 120)
         self.assertEqual(program.ws, None)
 
+    @mock.patch.object(FairylabProgram, '_try')
     @mock.patch('programs.fairylab.fairylab_program.os.listdir')
     @mock.patch('programs.fairylab.fairylab_program.os.path.isdir')
-    @mock.patch.object(FairylabProgram, 'install')
-    def test_setup(self, mock_install, mock_isdir, mock_listdir):
-        mock_isdir.side_effect = [True, True, True]
-        mock_listdir.return_value = ['foo', 'bar', 'baz']
+    @mock.patch.object(FairylabProgram, '_install_internal')
+    def test_setup(self, mock_install, mock_isdir, mock_listdir, mock_try):
+        mock_isdir.return_value = True
+        mock_listdir.return_value = ['internal']
 
         read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         program = self.create_program(read, pins=PINS_INTERNAL)
         program._setup()
 
-        calls = [
-            mock.call(a1='foo', date=THEN),
-            mock.call(a1='bar', date=THEN),
-            mock.call(a1='baz', date=THEN)
-        ]
-        mock_install.assert_has_calls(calls)
-        calls = [mock.call(DIR_FOO), mock.call(DIR_BAR), mock.call(DIR_BAZ)]
+        mock_install.assert_has_calls([mock.call(a1='internal', date=THEN)])
+        calls = [mock.call(DIR_INTERNAL)]
         mock_isdir.assert_has_calls(calls)
         mock_listdir.assert_called_once_with(DIR_PLUGINS)
+        mock_try.assert_has_calls([mock.call('internal', '_setup', date=THEN)])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
@@ -290,8 +295,7 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(InternalPlugin, '_notify')
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__with_valid_input(self, mock_bnotify, mock_inotify, mock_run):
-        mock_bnotify.return_value = ActivityEnum.NONE
-        mock_run.return_value = ActivityEnum.BASE
+        mock_run.return_value = ResponseValue(notify=[NotifyValue.BASE])
 
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
@@ -312,9 +316,9 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(InternalPlugin, '_run_internal')
     @mock.patch.object(InternalPlugin, '_notify')
     @mock.patch.object(BrowsablePlugin, '_notify')
-    def test_try__with_activity(self, mock_bnotify, mock_inotify, mock_run):
-        mock_bnotify.return_value = ActivityEnum.NONE
-        mock_run.return_value = ActivityEnum.EXPORT
+    def test_try__with_notify(self, mock_bnotify, mock_inotify, mock_run):
+        mock_bnotify.return_value = ResponseValue()
+        mock_run.return_value = ResponseValue(notify=[NotifyValue.EXPORT])
 
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
@@ -322,7 +326,8 @@ class FairylabProgramTest(TestUtil):
         program = self.create_program(read, pins=PINS_BOTH)
         program._try('internal', '_run_internal', date=NOW)
 
-        mock_bnotify.assert_called_once_with(activity=ActivityEnum.EXPORT, date=NOW)
+        mock_bnotify.assert_called_once_with(
+            notify=NotifyValue.EXPORT, date=NOW)
         mock_inotify.assert_not_called()
         mock_run.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()
@@ -333,11 +338,42 @@ class FairylabProgramTest(TestUtil):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
+    @mock.patch.object(InternalPlugin, '_shadow')
+    @mock.patch.object(InternalPlugin, '_notify')
+    @mock.patch.object(BrowsablePlugin, '_shadow')
+    @mock.patch.object(BrowsablePlugin, '_notify')
+    def test_try__with_shadow(self, mock_bnotify, mock_bshadow, mock_inotify,
+                              mock_ishadow, mock_run):
+        mock_bshadow.return_value = ResponseValue()
+        mock_run.return_value = ResponseValue(shadow={
+            'browsable': {
+                'foo': 'bar'
+            }
+        })
+
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
+        program._try('internal', '_run_internal', date=NOW)
+
+        mock_bnotify.assert_not_called()
+        mock_bshadow.assert_called_once_with(shadow={'foo': 'bar'}, date=NOW)
+        mock_inotify.assert_not_called()
+        mock_ishadow.assert_not_called()
+        mock_run.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+
+    @mock.patch.object(InternalPlugin, '_run_internal')
     @mock.patch.object(InternalPlugin, '_notify')
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__with_no_change(self, mock_bnotify, mock_inotify, mock_run):
-        mock_bnotify.return_value = ActivityEnum.NONE
-        mock_run.return_value = ActivityEnum.NONE
+        mock_run.return_value = ResponseValue()
 
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
@@ -359,8 +395,7 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(InternalPlugin, '_notify')
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__without_date(self, mock_bnotify, mock_inotify, mock_run):
-        mock_bnotify.return_value = ActivityEnum.NONE
-        mock_run.return_value = ActivityEnum.BASE
+        mock_run.return_value = ResponseValue(notify=[NotifyValue.BASE])
 
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
@@ -383,7 +418,6 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__with_thrown_exception(self, mock_bnotify, mock_inotify,
                                         mock_run):
-        mock_bnotify.return_value = ActivityEnum.NONE
         mock_run.side_effect = Exception()
 
         keys = ['browsable', 'internal']
@@ -408,8 +442,6 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__with_plugin_error(self, mock_bnotify, mock_inotify,
                                     mock_run):
-        mock_bnotify.return_value = ActivityEnum.NONE
-        
         plugins = {
             'browsable': copy.deepcopy(PLUGIN_CANONICAL_THEN),
             'internal': copy.deepcopy(PLUGIN_CANONICAL_ERROR)
@@ -433,8 +465,6 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__with_plugin_not_found(self, mock_bnotify, mock_inotify,
                                         mock_run):
-        mock_bnotify.return_value = ActivityEnum.NONE
-        
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
         read = {'plugins': plugins}
@@ -454,8 +484,6 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(InternalPlugin, '_notify')
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__with_item_not_found(self, mock_bnotify, mock_inotify):
-        mock_bnotify.return_value = ActivityEnum.NONE
-
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
         read = {'plugins': plugins}
@@ -474,8 +502,6 @@ class FairylabProgramTest(TestUtil):
     @mock.patch.object(InternalPlugin, '_notify')
     @mock.patch.object(BrowsablePlugin, '_notify')
     def test_try__with_item_not_callable(self, mock_bnotify, mock_inotify):
-        mock_bnotify.return_value = ActivityEnum.NONE
-        
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
         read = {'plugins': plugins}
@@ -731,7 +757,7 @@ class FairylabProgramTest(TestUtil):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_called_once_with(
-            'InternalPlugin', a1='internal', s='Installed.', v=True)
+            'InternalPlugin', a1='internal', date=THEN, s='Installed.', v=True)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(FairylabProgram, 'uninstall')
