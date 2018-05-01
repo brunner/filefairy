@@ -268,19 +268,12 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        self.assertEqual(response, ResponseValue())
 
-        write = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'postseason': False,
-            'scores': {},
-            'updated': False
-        }
         mock_clear.assert_called_once_with()
-        self.mock_open.assert_called_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertFalse(plugin.data['finished'])
 
     @mock.patch.object(StatsplusPlugin, '_clear')
     def test_on_message__with_finished_false(self, mock_clear):
@@ -301,11 +294,12 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        self.assertEqual(response, ResponseValue())
 
         mock_clear.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.assertFalse(plugin.data['finished'])
 
     @mock.patch.object(StatsplusPlugin, '_handle')
     def test_on_message__with_scores(self, mock_handle):
@@ -329,7 +323,8 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        mock_handle.assert_called_once_with('scores', SCORES_THEN + scores,
+        mock_handle.assert_called_once_with('scores', THEN_ENCODED,
+                                            SCORES_THEN + scores,
                                             SCORES_PATTERN, False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -356,8 +351,9 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        mock_handle.assert_called_once_with(
-            'injuries', INJURIES_DELAY + injuries, INJURIES_PATTERN, True)
+        mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
+                                            INJURIES_DELAY + injuries,
+                                            INJURIES_PATTERN, True)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -383,8 +379,9 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        mock_handle.assert_called_once_with(
-            'injuries', INJURIES_DATE + injuries, INJURIES_PATTERN, True)
+        mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
+                                            INJURIES_DATE + injuries,
+                                            INJURIES_PATTERN, True)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -410,7 +407,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        mock_handle.assert_called_once_with('highlights',
+        mock_handle.assert_called_once_with('highlights', THEN_ENCODED,
                                             HIGHLIGHTS_DATE + highlights,
                                             HIGHLIGHTS_PATTERN, True)
         self.mock_open.assert_not_called()
@@ -597,7 +594,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DELAY + INJURIES_TEXT.format(_html, _player)
-        plugin._handle('injuries', text, INJURIES_PATTERN, True)
+        plugin._handle('injuries', THEN_ENCODED, text, INJURIES_PATTERN, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -617,7 +614,8 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT.format(_html, _player)
-        plugin._handle('highlights', text, HIGHLIGHTS_PATTERN, True)
+        plugin._handle('highlights', THEN_ENCODED, text, HIGHLIGHTS_PATTERN,
+                       True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -637,7 +635,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DATE + INJURIES_TEXT.format(_html, _player)
-        plugin._handle('injuries', text, INJURIES_PATTERN, True)
+        plugin._handle('injuries', THEN_ENCODED, text, INJURIES_PATTERN, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -657,7 +655,7 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         text = SCORES_THEN + SCORES_REGULAR_TEXT.format(_html, _game_box)
-        plugin._handle('scores', text, SCORES_PATTERN, False)
+        plugin._handle('scores', THEN_ENCODED, text, SCORES_PATTERN, False)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

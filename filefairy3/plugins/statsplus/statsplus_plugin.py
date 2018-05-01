@@ -95,23 +95,27 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             self._clear()
 
         text = obj.get('text', '')
+        date = re.findall('\d{2}\/\d{2}\/\d{4}', text)
+        if not date:
+            return ResponseValue()
+
+        ddate = datetime.datetime.strptime(date[0], '%m/%d/%Y')
+        edate = encode_datetime(ddate)
+
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
-        pattern = '\d{2}\/\d{2}\/\d{4} <([^|]+)\|([^<]+)> (?:sets|ties)'
+        pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
         if re.findall(pattern, text):
-            self._handle('highlights', text, highlights, True)
+            self._handle('highlights', edate, text, highlights, True)
 
         injuries = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
-        pattern = '\d{2}\/\d{2}\/\d{4} Rain delay'
+        pattern = '\w+ <([^|]+)\|([^<]+)> was injured'
         if re.findall(pattern, text):
-            self._handle('injuries', text, injuries, True)
+            self._handle('injuries', edate, text, injuries, True)
 
-        pattern = '\d{2}\/\d{2}\/\d{4} \w+ <([^|]+)\|([^<]+)> was injured'
+        scores = '<[^|]+\|[^<]+>'
+        pattern = 'MAJOR LEAGUE BASEBALL Final Scores\n'
         if re.findall(pattern, text):
-            self._handle('injuries', text, injuries, True)
-
-        pattern = '\d{2}\/\d{2}\/\d{4} MAJOR LEAGUE BASEBALL Final Scores\n'
-        if re.findall(pattern, text):
-            self._handle('scores', text, '<[^|]+\|[^<]+>', False)
+            self._handle('scores', edate, text, scores, False)
 
         if data != original:
             self.write()
@@ -143,19 +147,15 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         self.data['injuries'] = {}
         self.data['highlights'] = {}
 
-    def _handle(self, key, text, pattern, append):
-        date = re.findall('\d{2}\/\d{2}\/\d{4}', text)
-        if date:
-            date = datetime.datetime.strptime(date[0], '%m/%d/%Y')
-            encoded_date = encode_datetime(date)
-            if not append or encoded_date not in self.data[key]:
-                self.data[key][encoded_date] = []
+    def _handle(self, key, encoded_date, text, pattern, append):
+        if not append or encoded_date not in self.data[key]:
+            self.data[key][encoded_date] = []
 
-            match = re.findall(pattern, text)
-            for m in match:
-                e = re.sub(_shorten, '{0}{1}', precoding_to_encoding_sub(m))
-                self.data[key][encoded_date].append(e)
-                self.data['updated'] = True
+        match = re.findall(pattern, text)
+        for m in match:
+            e = re.sub(_shorten, '{0}{1}', precoding_to_encoding_sub(m))
+            self.data[key][encoded_date].append(e)
+            self.data['updated'] = True
 
     def _home(self, **kwargs):
         data = self.data
