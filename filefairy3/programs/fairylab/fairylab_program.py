@@ -61,7 +61,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         d = os.path.join(_root, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
-        for p in ps:
+        for p in sorted(ps):
             self._install_internal(a1=p, date=date)
 
         self._try_all('_setup', date=date)
@@ -89,7 +89,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         return self.data['plugins'].get(p, {})
 
     def _try_all(self, method, **kwargs):
-        ps = self.data['plugins'].keys()
+        ps = sorted(self.data['plugins'].keys())
         for p in ps:
             self._try(p, method, **kwargs)
 
