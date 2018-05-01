@@ -262,7 +262,8 @@ class FairylabProgramTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(
+            'FairylabProgram', s='Completed setup.', v=True)
         self.assertEqual(program.day, NOW.day)
         self.assertEqual(program.pins, PINS_INTERNAL)
 
@@ -762,8 +763,21 @@ class FairylabProgramTest(TestUtil):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'InternalPlugin', a1='internal', date=THEN, s='Installed.', v=True)
+        calls = [
+            mock.call(
+                'InternalPlugin',
+                a1='internal',
+                date=THEN,
+                s='Installed.',
+                v=True),
+            mock.call(
+                'FairylabProgram',
+                a1='internal',
+                date=THEN,
+                s='Completed setup.',
+                v=True)
+        ]
+        self.mock_log.assert_has_calls(calls)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(FairylabProgram, 'uninstall')
@@ -787,8 +801,20 @@ class FairylabProgramTest(TestUtil):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_datetime.datetime.now.assert_called_once_with()
-        self.mock_log.assert_called_once_with(
-            'InternalPlugin', a1='internal', date=NOW, s='Installed.', v=True)
+        calls = [
+            mock.call(
+                'InternalPlugin',
+                a1='internal',
+                date=NOW,
+                s='Installed.',
+                v=True),
+            mock.call(
+                'FairylabProgram',
+                a1='internal',
+                s='Completed setup.',
+                v=True)
+        ]
+        self.mock_log.assert_has_calls(calls)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
 
     @mock.patch.object(FairylabProgram, 'uninstall')

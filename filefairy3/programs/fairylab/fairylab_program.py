@@ -65,6 +65,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
             self._install_internal(a1=p, date=date)
 
         self._try_all('_setup', date=date)
+        log(self._name(), s='Completed setup.', v=True)
 
         if data != original:
             self.write()
@@ -257,6 +258,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
             }
             self.pins[p] = instance
 
+        return enabled
+
     def install(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
@@ -265,8 +268,11 @@ class FairylabProgram(MessageableApi, RenderableApi):
         date = kwargs.get('date') or datetime.datetime.now()
 
         self.uninstall(**dict(kwargs, v=False))
-        self._install_internal(**dict(kwargs, a1=p, date=date))
-        self._try_all('_setup', date=date)
+        value = self._install_internal(**dict(kwargs, a1=p, date=date))
+
+        if value:
+            self._try_all('_setup', date=date)
+            log(self._name(), **dict(kwargs, s='Completed setup.', v=True))
 
         if data != original:
             self.write()
