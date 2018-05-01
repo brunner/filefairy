@@ -64,7 +64,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         for p in sorted(ps):
             self._install_internal(a1=p, date=date)
 
-        self._try_all('_setup', date=date)
+        self._try_all('_setup', date=date, v=True)
         log(self._name(), s='Completed setup.', v=True)
 
         if data != original:
@@ -271,7 +271,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         value = self._install_internal(**dict(kwargs, a1=p, date=date))
 
         if value:
-            self._try_all('_setup', date=date)
+            self._try_all('_setup', date=date, v=True)
             log(self._name(), **dict(kwargs, s='Completed setup.', v=True))
 
         if data != original:
