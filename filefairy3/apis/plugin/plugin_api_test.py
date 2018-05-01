@@ -31,7 +31,7 @@ class FakePlugin(PluginApi):
         return 'Description.'
 
     def _notify_internal(self, **kwargs):
-        return True if kwargs['notify'] == NotifyValue.EXPORT else False
+        return True
 
     def _on_message_internal(self, **kwargs):
         return ResponseValue()
@@ -75,7 +75,7 @@ class FakeRenderable(PluginApi, RenderableApi):
         return 'foo.html'
 
     def _notify_internal(self, **kwargs):
-        pass
+        return False
 
     def _on_message_internal(self, **kwargs):
         return ResponseValue()
@@ -125,14 +125,18 @@ class PluginApiTest(unittest.TestCase):
         expected = []
         self.assertEqual(actual, expected)
 
-    def test_notify__with_base(self):
+    def test_notify__with_true(self):
         plugin = FakePlugin()
-        response = plugin._notify(notify=NotifyValue.EXPORT)
+        response = plugin._notify(notify=NotifyValue.OTHER)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-    def test_notify__with_none(self):
-        plugin = FakePlugin()
-        response = plugin._notify(notify=NotifyValue.NONE)
+    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    def test_notify__with_false(self, mock_open):
+        data = '{"a": 1, "b": true}'
+        mo = mock.mock_open(read_data=data)
+        mock_open.side_effect = [mo.return_value]
+        plugin = FakeRenderable(e=env())
+        response = plugin._notify(notify=NotifyValue.OTHER)
         self.assertEqual(response, ResponseValue())
 
     @mock.patch.object(FakePlugin, '_shadow_internal')

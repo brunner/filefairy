@@ -138,7 +138,8 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.UPLOAD]))
+        self.assertEqual(
+            response, ResponseValue(notify=[NotifyValue.LEAGUEFILE_START]))
 
         write = {'fp': FILEPART, 'up': []}
         mock_check.assert_called_once_with()
@@ -190,7 +191,8 @@ class LeaguefilePluginTest(TestUtil):
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.FILE]))
+        self.assertEqual(
+            response, ResponseValue(notify=[NotifyValue.LEAGUEFILE_FINISH]))
 
         write = {'fp': None, 'up': [UP_FILEPART]}
         mock_check.assert_called_once_with()

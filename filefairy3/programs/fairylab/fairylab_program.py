@@ -33,6 +33,7 @@ from values.notify.notify_value import NotifyValue  # noqa
 class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self, **kwargs):
         super(FairylabProgram, self).__init__(**dict(kwargs))
+        self.day = None
         self.pins = {}
         self.keep_running = True
         self.lock = threading.Lock()
@@ -56,14 +57,14 @@ class FairylabProgram(MessageableApi, RenderableApi):
         original = copy.deepcopy(data)
 
         date = datetime.datetime.now()
+        self.day = date.day
+
         d = os.path.join(_root, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in ps:
             self._install_internal(a1=p, date=date)
 
-        ps = data['plugins'].keys()
-        for p in ps:
-            self._try(p, '_setup', date=date)
+        self._try_all('_setup', date=date)
 
         if data != original:
             self.write()
@@ -86,6 +87,11 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
     def _plugin(self, p):
         return self.data['plugins'].get(p, {})
+
+    def _try_all(self, method, **kwargs):
+        ps = self.data['plugins'].keys()
+        for p in ps:
+            self._try(p, method, **kwargs)
 
     def _try(self, p, method, **kwargs):
         data = self.data
@@ -110,9 +116,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
                 data['plugins'][p]['date'] = edate
             for n in response.notify:
                 if n != NotifyValue.BASE:
-                    ps = filter(lambda q: p != q, data['plugins'].keys())
-                    for p in ps:
-                        self._try(p, '_notify', **dict(kwargs, notify=n))
+                    self._try_all('_notify', **dict(kwargs, notify=n))
             for s in response.shadow:
                 shadow = response.shadow[s]
                 self._try(s, '_shadow', **dict(kwargs, shadow=shadow))
@@ -129,10 +133,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         obj = json.loads(message)
         self._on_message(obj=obj)
-
-        ps = data['plugins'].keys()
-        for p in ps:
-            self._try(p, '_on_message', obj=obj)
+        self._try_all('_on_message', obj=obj)
 
         if data != original:
             self.write()
@@ -162,9 +163,11 @@ class FairylabProgram(MessageableApi, RenderableApi):
             original = copy.deepcopy(data)
 
             date = datetime.datetime.now()
-            ps = data['plugins'].keys()
-            for p in ps:
-                self._try(p, '_run', date=date)
+            self._try_all('_run', date=date)
+
+            if self.day != date.day:
+                self.day = date.day
+                self._try_all('_notify', notify=NotifyValue.FAIRYLAB_DAY)
 
             if data != original:
                 self.write()
@@ -263,10 +266,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         self.uninstall(**dict(kwargs, v=False))
         self._install_internal(**dict(kwargs, a1=p, date=date))
-
-        ps = data['plugins'].keys()
-        for p in ps:
-            self._try(p, '_setup', date=date)
+        self._try_all('_setup', date=date)
 
         if data != original:
             self.write()

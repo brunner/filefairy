@@ -69,6 +69,7 @@ class SnacksPluginTest(unittest.TestCase):
     def create_plugin(self, data, names=None):
         self.init_mocks(data)
         plugin = SnacksPlugin()
+        plugin.loaded = True
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
@@ -85,12 +86,44 @@ class SnacksPluginTest(unittest.TestCase):
 
         return plugin
 
-    def test_notify(self):
+    @mock.patch('plugins.snacks.snacks_plugin.threading.Thread')
+    @mock.patch.object(SnacksPlugin, '_load')
+    def test_notify__with_day(self, mock_load, mock_thread):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal()
+        plugin._setup(date=THEN)
+
+        mock_load.reset_mock()
+        mock_thread.reset_mock()
+        self.reset_mocks()
+
+        value = plugin._notify_internal(notify=NotifyValue.FAIRYLAB_DAY)
         self.assertFalse(value)
 
+        mock_thread.assert_called_once_with(target=mock_load)
+        mock_thread.return_value.start.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    @mock.patch('plugins.snacks.snacks_plugin.threading.Thread')
+    @mock.patch.object(SnacksPlugin, '_load')
+    def test_notify__with_other(self, mock_load, mock_thread):
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read)
+        plugin._setup(date=THEN)
+
+        mock_load.reset_mock()
+        mock_thread.reset_mock()
+        self.reset_mocks()
+
+        value = plugin._notify_internal(notify=NotifyValue.OTHER)
+        self.assertFalse(value)
+
+        mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -275,89 +308,34 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(SnacksPlugin, '_names')
-    @mock.patch.object(SnacksPlugin, '_fnames')
-    @mock.patch.object(SnacksPlugin, '_corpus')
-    def test_run__with_different_day(self, mock_corpus, mock_fnames,
-                                     mock_names):
-        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
-        mock_fnames.return_value = fnames
-
+    def test_run(self):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        plugin._setup(date=THEN)
-
-        mock_corpus.reset_mock()
-        mock_fnames.reset_mock()
-        mock_names.reset_mock()
-        self.reset_mocks()
-
-        response = plugin._run_internal(date=NOW)
+        response = plugin._run_internal()
         self.assertEqual(response, ResponseValue())
 
-        mock_corpus.assert_called_once_with()
-        mock_fnames.assert_called_once_with()
-        mock_names.assert_called_once_with()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_cfd.assert_called_once_with(4, *fnames)
-        self.mock_chat.assert_not_called()
-        self.mock_collect.assert_not_called()
-        self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.day, 27)
-
-    @mock.patch.object(SnacksPlugin, '_names')
-    @mock.patch.object(SnacksPlugin, '_fnames')
-    @mock.patch.object(SnacksPlugin, '_corpus')
-    def test_run__with_same_day(self, mock_corpus, mock_fnames,
-                                mock_names):
-        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
-        mock_fnames.return_value = fnames
-
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
-        plugin._setup(date=THEN)
-
-        mock_corpus.reset_mock()
-        mock_fnames.reset_mock()
-        mock_names.reset_mock()
-        self.reset_mocks()
-
-        response = plugin._run_internal(date=THEN)
-        self.assertEqual(response, ResponseValue())
-
-        mock_corpus.assert_not_called()
-        mock_fnames.assert_not_called()
-        mock_names.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.day, 26)
 
-    @mock.patch.object(SnacksPlugin, '_names')
-    @mock.patch.object(SnacksPlugin, '_fnames')
-    @mock.patch.object(SnacksPlugin, '_corpus')
-    def test_setup(self, mock_corpus, mock_fnames, mock_names):
-        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
-        mock_fnames.return_value = fnames
-
+    @mock.patch('plugins.download.download_plugin.threading.Thread')
+    @mock.patch.object(SnacksPlugin, '_load_internal')
+    def test_setup(self, mock_load_internal, mock_thread):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         plugin._setup_internal(date=THEN)
 
-        mock_corpus.assert_not_called()
-        mock_fnames.assert_called_once_with()
-        mock_names.assert_called_once_with()
+        mock_thread.assert_called_once_with(target=mock_load_internal)
+        mock_thread.return_value.start.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_cfd.assert_called_once_with(4, *fnames)
+        self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.day, 26)
 
     def test_shadow(self):
         read = {'members': MEMBERS_THEN}
@@ -446,6 +424,45 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_called_once_with('C1234', {'U1234': 'user'})
         self.mock_reactions.assert_not_called()
+
+    @mock.patch.object(SnacksPlugin, '_load_internal')
+    @mock.patch.object(SnacksPlugin, '_corpus')
+    def test_load(self, mock_corpus, mock_load_internal):
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read, names={'U1234': 'user'})
+        plugin.loaded = False
+        plugin._load()
+
+        mock_corpus.assert_called_once_with()
+        mock_load_internal.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+        self.assertFalse(plugin.loaded)
+
+    @mock.patch.object(SnacksPlugin, '_names')
+    @mock.patch.object(SnacksPlugin, '_fnames')
+    def test_load_internal(self, mock_fnames, mock_names):
+        fnames = [os.path.join(_root, 'corpus', 'C1234.txt')]
+        mock_fnames.return_value = fnames
+
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read, names={'U1234': 'user'})
+        plugin.loaded = False
+        plugin._load_internal()
+
+        mock_fnames.assert_called_once_with()
+        mock_names.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_called_once_with(4, *fnames)
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+        self.assertTrue(plugin.loaded)
 
 
 if __name__ == '__main__':

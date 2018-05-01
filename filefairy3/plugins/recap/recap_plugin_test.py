@@ -145,10 +145,10 @@ class RecapPluginTest(TestUtil):
     @mock.patch.object(RecapPlugin, '_render')
     def test_notify__with_download(self, mock_render):
         plugin = self.create_plugin()
-        value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD)
+        value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_FINISH)
         self.assertTrue(value)
 
-        mock_render.assert_called_once_with(notify=NotifyValue.DOWNLOAD)
+        mock_render.assert_called_once_with(notify=NotifyValue.DOWNLOAD_FINISH)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_called_once_with(
@@ -157,9 +157,9 @@ class RecapPluginTest(TestUtil):
             attachments=plugin._attachments())
 
     @mock.patch.object(RecapPlugin, '_render')
-    def test_notify__with_none(self, mock_render):
+    def test_notify__with_other(self, mock_render):
         plugin = self.create_plugin()
-        value = plugin._notify_internal(notify=NotifyValue.NONE)
+        value = plugin._notify_internal(notify=NotifyValue.OTHER)
         self.assertFalse(value)
 
         mock_render.assert_not_called()

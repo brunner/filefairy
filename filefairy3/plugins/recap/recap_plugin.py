@@ -46,7 +46,7 @@ class RecapPlugin(PluginApi, RenderableApi):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
-        if notify == NotifyValue.DOWNLOAD:
+        if notify == NotifyValue.DOWNLOAD_FINISH:
             self._render(**kwargs)
             chat_post_message(
                 'fairylab',

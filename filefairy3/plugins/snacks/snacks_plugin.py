@@ -6,6 +6,7 @@ import os
 import random
 import re
 import sys
+import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugins/snacks', '', _path)
@@ -58,6 +59,7 @@ _snacklist = [
 class SnacksPlugin(PluginApi, SerializableApi):
     def __init__(self, **kwargs):
         super(SnacksPlugin, self).__init__(**kwargs)
+        self.loaded = False
 
     @property
     def enabled(self):
@@ -72,10 +74,19 @@ class SnacksPlugin(PluginApi, SerializableApi):
         return 'Feeds the masses bread and circuses.'
 
     def _notify_internal(self, **kwargs):
+        notify = kwargs['notify']
+        if notify == NotifyValue.FAIRYLAB_DAY:
+            self.loaded = False
+            t = threading.Thread(target=self._load)
+            t.daemon = True
+            t.start()
         return False
 
     def _on_message_internal(self, **kwargs):
         response = ResponseValue()
+
+        if not self.loaded:
+            return response
 
         obj = kwargs['obj']
         user = obj.get('user')
@@ -136,19 +147,12 @@ class SnacksPlugin(PluginApi, SerializableApi):
         return response
 
     def _run_internal(self, **kwargs):
-        day = kwargs['date'].day
-        if self.day != day:
-            self._corpus()
-            self.cfd = cfd(4, *self._fnames())
-            self.day = day
-            self.names = self._names()
-
         return ResponseValue()
 
     def _setup_internal(self, **kwargs):
-        self.cfd = cfd(4, *self._fnames())
-        self.day = kwargs['date'].day
-        self.names = self._names()
+        t = threading.Thread(target=self._load_internal)
+        t.daemon = True
+        t.start()
 
     def _shadow_internal(self, **kwargs):
         return {}
@@ -185,3 +189,12 @@ class SnacksPlugin(PluginApi, SerializableApi):
             fname = os.path.join(_root, 'corpus', channelid + '.txt')
             with open(fname, 'w') as f:
                 f.write(collected)
+
+    def _load(self):
+        self._corpus()
+        self._load_internal()
+
+    def _load_internal(self):
+        self.cfd = cfd(4, *self._fnames())
+        self.names = self._names()
+        self.loaded = True

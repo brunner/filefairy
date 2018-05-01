@@ -4,6 +4,7 @@
 import os
 import re
 import sys
+import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/git', '', _path))
@@ -27,23 +28,21 @@ class GitPlugin(PluginApi):
         return 'Exposes git commands to admins.'
 
     def _notify_internal(self, **kwargs):
+        notify = kwargs['notify']
+        if notify == NotifyValue.FAIRYLAB_DAY:
+            t = threading.Thread(target=self.automate)
+            t.daemon = True
+            t.start()
         return False
 
     def _on_message_internal(self, **kwargs):
         return ResponseValue()
 
     def _run_internal(self, **kwargs):
-        day = kwargs['date'].day
-        if self.day != day:
-            self.add(**kwargs)
-            self.commit(**kwargs)
-            self.push(**kwargs)
-            self.day = day
-
         return ResponseValue()
 
     def _setup_internal(self, **kwargs):
-        self.day = kwargs['date'].day
+        pass
 
     def _shadow_internal(self, **kwargs):
         return {}
@@ -55,6 +54,12 @@ class GitPlugin(PluginApi):
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], kwargs)
+
+    def automate(self, **kwargs):
+        self.add(**kwargs)
+        self.commit(**kwargs)
+        self.push(**kwargs)
+        return ResponseValue(notify=[NotifyValue.BASE])
 
     def commit(self, **kwargs):
         return self._call(['git', 'commit', '-m', 'Automated data push.'],

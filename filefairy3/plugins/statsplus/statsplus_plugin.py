@@ -75,7 +75,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
-        if notify == NotifyValue.DOWNLOAD:
+        if notify == NotifyValue.DOWNLOAD_FINISH:
             self.data['finished'] = True
             self.write()
         return False

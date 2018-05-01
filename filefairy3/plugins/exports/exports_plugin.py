@@ -24,8 +24,8 @@ from values.notify.notify_value import NotifyValue  # noqa
 from values.response.response_value import ResponseValue  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
-_lock_values = [NotifyValue.SIM, NotifyValue.UPLOAD]
-_unlock_values = [NotifyValue.FILE]
+_lock_values = [NotifyValue.STATSPLUS_SIM, NotifyValue.LEAGUEFILE_START]
+_unlock_values = [NotifyValue.LEAGUEFILE_FINISH]
 _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
 
@@ -90,7 +90,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
         if any([True for e in exports if e in _emails]):
             self._lock()
-            response.notify = [NotifyValue.EXPORT]
+            response.notify = [NotifyValue.EXPORTS_EMAILS]
 
         if response.notify:
             data['date'] = encode_datetime(kwargs['date'])

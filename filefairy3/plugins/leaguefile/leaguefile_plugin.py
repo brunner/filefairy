@@ -72,7 +72,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                         'File upload started.',
                         attachments=self._attachments())
                     data['fp'] = {'start': date}
-                    response.notify = [NotifyValue.UPLOAD]
+                    response.notify = [NotifyValue.LEAGUEFILE_START]
                 if data['fp'].get('size', 0) != size:
                     data['fp']['size'] = size
                     data['fp']['end'] = date
@@ -90,7 +90,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
                         'fairylab',
                         'File upload completed.',
                         attachments=self._attachments())
-                    response.notify = [NotifyValue.FILE]
+                    response.notify = [NotifyValue.LEAGUEFILE_FINISH]
                 data['fp'] = None
 
         if data != original:

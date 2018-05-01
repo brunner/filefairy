@@ -110,12 +110,12 @@ class ExportsPluginTest(TestUtil):
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_lock')
-    def test_notify__with_unlocked_export(self, mock_lock, mock_render,
-                                          mock_unlock):
+    def test_notify__with_unlocked_other(self, mock_lock, mock_render,
+                                         mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.EXPORT, date=NOW)
+        value = plugin._notify_internal(notify=NotifyValue.OTHER, date=NOW)
         self.assertFalse(value)
 
         mock_lock.assert_not_called()
@@ -143,12 +143,14 @@ class ExportsPluginTest(TestUtil):
 
         mock_lock.side_effect = fake_lock
 
-        value = plugin._notify_internal(notify=NotifyValue.SIM, date=NOW)
+        value = plugin._notify_internal(
+            notify=NotifyValue.STATSPLUS_SIM, date=NOW)
         self.assertTrue(value)
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_lock.assert_called_once_with()
-        mock_render.assert_called_once_with(notify=NotifyValue.SIM, date=NOW)
+        mock_render.assert_called_once_with(
+            notify=NotifyValue.STATSPLUS_SIM, date=NOW)
         mock_unlock.assert_not_called()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_with(dumps(write) + '\n')
@@ -163,7 +165,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.FILE, date=NOW)
+        value = plugin._notify_internal(
+            notify=NotifyValue.LEAGUEFILE_FINISH, date=NOW)
         self.assertFalse(value)
 
         mock_lock.assert_not_called()
@@ -177,12 +180,12 @@ class ExportsPluginTest(TestUtil):
     @mock.patch.object(ExportsPlugin, '_unlock')
     @mock.patch.object(ExportsPlugin, '_render')
     @mock.patch.object(ExportsPlugin, '_lock')
-    def test_notify__with_locked_none(self, mock_lock, mock_render,
-                                      mock_unlock):
+    def test_notify__with_locked_other(self, mock_lock, mock_render,
+                                       mock_unlock):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.NONE, date=NOW)
+        value = plugin._notify_internal(notify=NotifyValue.OTHER, date=NOW)
         self.assertFalse(value)
 
         mock_lock.assert_not_called()
@@ -201,7 +204,8 @@ class ExportsPluginTest(TestUtil):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.SIM, date=NOW)
+        value = plugin._notify_internal(
+            notify=NotifyValue.STATSPLUS_SIM, date=NOW)
         self.assertFalse(value)
 
         mock_lock.assert_not_called()
@@ -226,12 +230,14 @@ class ExportsPluginTest(TestUtil):
 
         mock_unlock.side_effect = fake_unlock
 
-        value = plugin._notify_internal(notify=NotifyValue.FILE, date=NOW)
+        value = plugin._notify_internal(
+            notify=NotifyValue.LEAGUEFILE_FINISH, date=NOW)
         self.assertTrue(value)
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(notify=NotifyValue.FILE, date=NOW)
+        mock_render.assert_called_once_with(
+            notify=NotifyValue.LEAGUEFILE_FINISH, date=NOW)
         mock_unlock.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -332,7 +338,8 @@ class ExportsPluginTest(TestUtil):
         mock_lock.side_effect = fake_lock
 
         response = plugin._run_internal(date=NOW)
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.EXPORT]))
+        self.assertEqual(
+            response, ResponseValue(notify=[NotifyValue.EXPORTS_EMAILS]))
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_exports.assert_called_once_with(URLOPEN)

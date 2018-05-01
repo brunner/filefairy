@@ -39,16 +39,28 @@ class GitPluginTest(unittest.TestCase):
 
         self.reset_mocks()
 
-        if day:
-            plugin.day = day
-
         return plugin
 
-    def test_notify(self):
+    @mock.patch('plugins.git.git_plugin.threading.Thread')
+    @mock.patch.object(GitPlugin, 'automate')
+    def test_notify__with_day(self, mock_automate, mock_thread):
         plugin = self.create_plugin()
-        value = plugin._notify_internal()
+        value = plugin._notify_internal(notify=NotifyValue.FAIRYLAB_DAY)
         self.assertFalse(value)
 
+        mock_thread.assert_called_once_with(target=mock_automate)
+        mock_thread.return_value.start.assert_called_once_with()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch('plugins.git.git_plugin.threading.Thread')
+    @mock.patch.object(GitPlugin, 'automate')
+    def test_notify__with_other(self, mock_automate, mock_thread):
+        plugin = self.create_plugin()
+        value = plugin._notify_internal(notify=NotifyValue.OTHER)
+        self.assertFalse(value)
+
+        mock_thread.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
@@ -60,35 +72,13 @@ class GitPluginTest(unittest.TestCase):
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
-    @mock.patch.object(GitPlugin, 'push')
-    @mock.patch.object(GitPlugin, 'commit')
-    @mock.patch.object(GitPlugin, 'add')
-    def test_run__with_different_day(self, mock_add, mock_commit, mock_push):
-        plugin = self.create_plugin(day=26)
-        response = plugin._run_internal(date=NOW)
-        self.assertEqual(response, ResponseValue())
-
-        mock_add.assert_called_once_with(date=NOW)
-        mock_commit.assert_called_once_with(date=NOW)
-        mock_push.assert_called_once_with(date=NOW)
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
-        self.assertEqual(plugin.day, 27)
-
-    @mock.patch.object(GitPlugin, 'push')
-    @mock.patch.object(GitPlugin, 'commit')
-    @mock.patch.object(GitPlugin, 'add')
-    def test_run__with_same_day(self, mock_add, mock_commit, mock_push):
-        plugin = self.create_plugin(day=26)
+    def test_run(self):
+        plugin = self.create_plugin()
         response = plugin._run_internal(date=THEN)
         self.assertEqual(response, ResponseValue())
 
-        mock_add.assert_not_called()
-        mock_commit.assert_not_called()
-        mock_push.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
-        self.assertEqual(plugin.day, 26)
 
     def test_setup(self):
         plugin = self.create_plugin()
@@ -96,7 +86,6 @@ class GitPluginTest(unittest.TestCase):
 
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
-        self.assertEqual(plugin.day, 26)
 
     def test_shadow(self):
         plugin = self.create_plugin()
@@ -122,6 +111,20 @@ class GitPluginTest(unittest.TestCase):
             's': 'Call completed.',
             'v': True
         })
+
+    @mock.patch.object(GitPlugin, 'push')
+    @mock.patch.object(GitPlugin, 'commit')
+    @mock.patch.object(GitPlugin, 'add')
+    def test_automate(self, mock_add, mock_commit, mock_push):
+        plugin = self.create_plugin()
+        value = plugin.automate(date=NOW)
+        self.assertEqual(value, ResponseValue(notify=[NotifyValue.BASE]))
+
+        mock_add.assert_called_once_with(date=NOW)
+        mock_commit.assert_called_once_with(date=NOW)
+        mock_push.assert_called_once_with(date=NOW)
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
 
     def test_commit(self):
         plugin = self.create_plugin()

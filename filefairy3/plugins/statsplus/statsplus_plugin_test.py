@@ -220,7 +220,7 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD)
+        value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_FINISH)
         self.assertFalse(value)
 
         write = {
@@ -234,7 +234,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_notify__with_none(self):
+    def test_notify__with_other(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -244,7 +244,7 @@ class StatsplusPluginTest(TestUtil):
             'updated': False
         }
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.NONE)
+        value = plugin._notify_internal(notify=NotifyValue.OTHER)
         self.assertFalse(value)
 
         self.mock_open.assert_not_called()

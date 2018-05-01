@@ -40,7 +40,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
-        if notify == NotifyValue.FILE:
+        if notify == NotifyValue.LEAGUEFILE_FINISH:
             t = threading.Thread(target=self._download)
             t.daemon = True
             t.start()
@@ -54,7 +54,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
         if self.data['downloaded']:
             self.data['downloaded'] = False
             self.write()
-            return ResponseValue(notify=[NotifyValue.DOWNLOAD])
+            return ResponseValue(notify=[NotifyValue.DOWNLOAD_FINISH])
 
         return ResponseValue()
 

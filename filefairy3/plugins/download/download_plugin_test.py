@@ -99,7 +99,7 @@ class DownloadPluginTest(unittest.TestCase):
     def test_notify__with_file(self, mock_download, mock_thread):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.FILE)
+        value = plugin._notify_internal(notify=NotifyValue.LEAGUEFILE_FINISH)
         self.assertTrue(value)
 
         mock_thread.assert_called_once_with(target=mock_download)
@@ -109,10 +109,10 @@ class DownloadPluginTest(unittest.TestCase):
 
     @mock.patch('plugins.download.download_plugin.threading.Thread')
     @mock.patch.object(DownloadPlugin, '_download')
-    def test_notify__with_none(self, mock_download, mock_thread):
+    def test_notify__with_other(self, mock_download, mock_thread):
         read = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=NotifyValue.NONE)
+        value = plugin._notify_internal(notify=NotifyValue.OTHER)
         self.assertFalse(value)
 
         mock_thread.assert_not_called()
@@ -133,7 +133,7 @@ class DownloadPluginTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=THEN)
         self.assertEqual(
-            response, ResponseValue(notify=[NotifyValue.DOWNLOAD]))
+            response, ResponseValue(notify=[NotifyValue.DOWNLOAD_FINISH]))
 
         write = {'downloaded': False, 'now': NOW_ENCODED, 'then': THEN_ENCODED}
         self.mock_open.assert_called_once_with(DATA, 'w')
