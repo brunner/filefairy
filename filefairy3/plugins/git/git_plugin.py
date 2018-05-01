@@ -47,9 +47,14 @@ class GitPlugin(PluginApi):
     def _shadow_internal(self, **kwargs):
         return {}
 
+    @staticmethod
+    def _format(cmd):
+        return ' '.join(['"{}"'.format(c) if ' ' in c else c for c in cmd])
+
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')
-        log(self._name(), **dict(kwargs, c=d, s='Call completed.'))
+        s = 'Call completed: ' + self._format(cmd)
+        log(self._name(), **dict(kwargs, c=d, s=s))
         return ResponseValue(notify=[NotifyValue.BASE])
 
     def add(self, **kwargs):
