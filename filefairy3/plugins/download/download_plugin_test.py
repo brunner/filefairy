@@ -267,7 +267,7 @@ class DownloadPluginTest(unittest.TestCase):
     @mock.patch('plugins.download.download_plugin.wget_file')
     @mock.patch.object(DownloadPlugin, '_games')
     def test_download__with_same_year(self, mock_games, mock_file,
-                                     mock_leagues):
+                                      mock_leagues):
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
