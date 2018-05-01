@@ -48,6 +48,17 @@ class ResponseValueTest(unittest.TestCase):
         self.assertEqual(response.notify, [])
         self.assertEqual(response.shadow, {'plugin': {'key': 'value'}})
 
+    def test_append_notify__invalid_element_value(self):
+        response = ResponseValue()
+        with self.assertRaises(ValueError):
+            response.append_notify(1)
+
+    def test_append_notify__valid(self):
+        response = ResponseValue()
+        response.append_notify(NotifyValue.BASE)
+        self.assertEqual(response.notify, [NotifyValue.BASE])
+        self.assertEqual(response.shadow, {})
+
 
 if __name__ == '__main__':
     unittest.main()

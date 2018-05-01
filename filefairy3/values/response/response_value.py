@@ -19,22 +19,35 @@ class ResponseValue(object):
         return self.notify == other.notify and self.shadow == other.shadow
 
     @staticmethod
-    def check_notify(value):
-        if not isinstance(value, list):
-            raise TypeError(value)
-        if any(not isinstance(v, NotifyValue) for v in value):
-            raise ValueError(value)
-        return value
+    def check_notify_list(values):
+        if not isinstance(values, list):
+            raise TypeError(values)
+        for value in values:
+            ResponseValue.check_notify_value(value)
 
     @staticmethod
-    def check_shadow(value):
+    def check_notify_value(value):
+        if not isinstance(value, NotifyValue):
+            raise ValueError(value)
+
+    @staticmethod
+    def check_shadow_dict(values):
+        if not isinstance(values, dict):
+            raise TypeError(values)
+        for key in values.keys():
+            ResponseValue.check_shadow_key(key)
+        for value in values.values():
+            ResponseValue.check_shadow_value(value)
+
+    @staticmethod
+    def check_shadow_key(key):
+        if not isinstance(key, str):
+            raise ValueError(key)
+
+    @staticmethod
+    def check_shadow_value(value):
         if not isinstance(value, dict):
-            raise TypeError(value)
-        if any(not isinstance(k, str) for k in value.keys()):
             raise ValueError(value)
-        if any(not isinstance(v, dict) for v in value.values()):
-            raise ValueError(value)
-        return value
 
     def get_notify(self):
         return self._notify
@@ -42,17 +55,23 @@ class ResponseValue(object):
     def get_shadow(self):
         return self._shadow
 
-    def set_notify(self, value):
-        if value is None:
+    def set_notify(self, values):
+        if values is None:
             self._notify = []
         else:
-            self._notify = self.check_notify(value)
+            self.check_notify_list(values)
+            self._notify = values
 
-    def set_shadow(self, value):
-        if value is None:
+    def set_shadow(self, values):
+        if values is None:
             self._shadow = {}
         else:
-            self._shadow = self.check_shadow(value)
+            self.check_shadow_dict(values)
+            self._shadow = values
 
     notify = property(get_notify, set_notify)
     shadow = property(get_shadow, set_shadow)
+
+    def append_notify(self, value):
+        self.check_notify_value(value)
+        self._notify.append(value)

@@ -51,12 +51,18 @@ class DownloadPlugin(PluginApi, SerializableApi):
         return ResponseValue()
 
     def _run_internal(self, **kwargs):
+        response = ResponseValue()
+
+        if self.data['year']:
+            self.data['year'] = False
+            response.append_notify(NotifyValue.DOWNLOAD_YEAR)
+
         if self.data['downloaded']:
             self.data['downloaded'] = False
+            response.append_notify(NotifyValue.DOWNLOAD_FINISH)
             self.write()
-            return ResponseValue(notify=[NotifyValue.DOWNLOAD_FINISH])
 
-        return ResponseValue()
+        return response
 
     def _setup_internal(self, **kwargs):
         pass
@@ -72,6 +78,12 @@ class DownloadPlugin(PluginApi, SerializableApi):
         self._leagues()
 
         self.data['downloaded'] = True
+
+        dthen = decode_datetime(self.data['then'])
+        dnow = decode_datetime(self.data['now'])
+        if dthen.year != dnow.year:
+            self.data['year'] = True
+
         self.write()
 
     def _games(self):
