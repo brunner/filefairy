@@ -200,6 +200,7 @@ class StatsplusPluginTest(TestUtil):
     def create_plugin(self, data):
         self.init_mocks(data)
         plugin = StatsplusPlugin(e=env())
+        plugin.shadow['download.now'] = THEN_ENCODED
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
@@ -413,16 +414,17 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_clear')
-    def test_on_message__with_invalid_bot_id(self, mock_clear):
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_invalid_bot_id(self, mock_handle):
+        scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'G3SUFLMK4',
-            'text': 'text',
+            'text': SCORES_THEN + scores,
             'ts': '1000.789',
             'user': 'U1234',
         }
         read = {
-            'finished': True,
+            'finished': False,
             'highlights': {},
             'injuries': {},
             'postseason': False,
@@ -433,21 +435,22 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
-        mock_clear.assert_not_called()
+        mock_handle.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_clear')
-    def test_on_message__with_invalid_channel(self, mock_clear):
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_invalid_date(self, mock_handle):
+        scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
-            'channel': 'G3SUFLMK4',
-            'text': 'text',
+            'channel': 'C7JSGHW8G',
+            'text': SCORES_NOW + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
         read = {
-            'finished': True,
+            'finished': False,
             'highlights': {},
             'injuries': {},
             'postseason': False,
@@ -458,7 +461,33 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
-        mock_clear.assert_not_called()
+        mock_handle.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_invalid_channel(self, mock_handle):
+        scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
+        obj = {
+            'channel': 'G3SUFLMK4',
+            'text': SCORES_THEN + scores,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue())
+
+        mock_handle.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 

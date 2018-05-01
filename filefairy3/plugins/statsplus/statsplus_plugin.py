@@ -101,6 +101,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
         ddate = datetime.datetime.strptime(date[0], '%m/%d/%Y')
         edate = encode_datetime(ddate)
+        ndate = decode_datetime(self.shadow.get('download.now', edate))
+        if ndate < ddate:
+            return ResponseValue()
 
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
