@@ -53,7 +53,7 @@ class GitPlugin(PluginApi):
 
     def _call(self, cmd, kwargs):
         d = check_output(cmd).strip('\n')
-        s = 'Call completed: ' + self._format(cmd)
+        s = 'Call completed: \'{}\'.'.format(self._format(cmd))
         log(self._name(), **dict(kwargs, c=d, s=s))
         return ResponseValue(notify=[NotifyValue.BASE])
 
