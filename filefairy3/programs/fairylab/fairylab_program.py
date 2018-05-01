@@ -264,7 +264,8 @@ class FairylabProgram(MessageableApi, RenderableApi):
         self.uninstall(**dict(kwargs, v=False))
         self._install_internal(**dict(kwargs, a1=p, date=date))
 
-        if self._plugin(p).get('ok'):
+        ps = data['plugins'].keys()
+        for p in ps:
             self._try(p, '_setup', date=date)
 
         if data != original:
