@@ -78,6 +78,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         if notify == NotifyValue.DOWNLOAD_FINISH:
             self.data['finished'] = True
             self.write()
+        if notify == NotifyValue.DOWNLOAD_YEAR:
+            self.data['offseason'] = True
+            self.write()
         return False
 
     def _on_message_internal(self, **kwargs):
@@ -119,6 +122,13 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         pattern = 'MAJOR LEAGUE BASEBALL Final Scores\n'
         if re.findall(pattern, text):
             self._handle('scores', edate, text, scores, False)
+            if data['offseason'] and data['postseason']:
+                data['postseason'] = False
+
+        pattern = 'MAJOR LEAGUE BASEBALL Live Table'
+        if re.findall(pattern, text):
+            if data['offseason']:
+                data['offseason'] = False
 
         if data != original:
             self.write()

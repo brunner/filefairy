@@ -87,6 +87,19 @@ SCORES_REGULAR_ENCODED = [
     '<{0}{1}2997.html|T57 12, T34 9>', '<{0}{1}2994.html|T58 5, T50 3>',
     '<{0}{1}2995.html|T59 8, T47 2>'
 ]
+TABLE_THEN = '```MAJOR LEAGUE BASEBALL Live Table - 10/09/2022\n'
+TABLE_TEXT = 'Cincinnati Reds 111\nSan Diego Padres 104\nBoston Red Sox ' + \
+             '99\nSeattle Mariners 98\nLos Angeles Dodgers 97\nNew York ' + \
+             'Mets 95\nSt. Louis Cardinals 89\nColorado Rockies 88\n' + \
+             'Minnesota Twins 88\nNew York Yankees 88\nDetroit Tigers 86\n' + \
+             'Houston Astros 85\nMiami Marlins 84\nChicago White Sox 82\n' + \
+             'Atlanta Braves 77\nMilwaukee Brewers 77\nCleveland Indians ' + \
+             '76\nArizona Diamondbacks 76\nKansas City Royals 76\n' + \
+             'Philadelphia Phillies 75\nOakland Athletics 75\nWashington ' + \
+             'Nationals 73\nToronto Blue Jays 73\nChicago Cubs 71\n' + \
+             'Baltimore Orioles 70\nLos Angeles Angels 70\nTexas Rangers ' + \
+             '67\nTampa Bay Rays 65\nSan Francisco Giants 62\nPittsburgh ' + \
+             'Pirates 53```'
 HOMETOWNS = [
     'Arizona', 'Los Angeles', 'Atlanta', 'Los Angeles', 'Cincinnati',
     'Milwaukee', 'Detroit', 'Chicago', 'Houston', 'Seattle', 'Kansas City',
@@ -210,11 +223,12 @@ class StatsplusPluginTest(TestUtil):
 
         return plugin
 
-    def test_notify__with_download(self):
+    def test_notify__with_finish(self):
         read = {
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -227,6 +241,33 @@ class StatsplusPluginTest(TestUtil):
             'finished': True,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        self.mock_open.assert_called_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    def test_notify__with_year(self):
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'offseason': False,
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_YEAR)
+        self.assertFalse(value)
+
+        write = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'offseason': True,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -239,6 +280,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -263,6 +305,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': True,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -289,6 +332,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -316,6 +360,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -331,6 +376,79 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_scores_and_postseason(self, mock_handle):
+        scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
+        obj = {
+            'channel': 'C7JSGHW8G',
+            'text': SCORES_THEN + scores,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'offseason': True,
+            'postseason': True,
+            'scores': {},
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+
+        write = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'offseason': True,
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        mock_handle.assert_called_once_with('scores', THEN_ENCODED,
+                                            SCORES_THEN + scores,
+                                            SCORES_PATTERN, False)
+        self.mock_open.assert_called_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(StatsplusPlugin, '_handle')
+    def test_on_message__with_table_and_postseason(self, mock_handle):
+        obj = {
+            'channel': 'C7JSGHW8G',
+            'text': TABLE_THEN + TABLE_TEXT,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'offseason': True,
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        plugin = self.create_plugin(read)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+
+        write = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'offseason': False,
+            'postseason': False,
+            'scores': {},
+            'updated': False
+        }
+        mock_handle.assert_not_called()
+        self.mock_open.assert_called_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(StatsplusPlugin, '_handle')
     def test_on_message__with_delay(self, mock_handle):
         injuries = INJURIES_TEXT.format(_html, _player)
         obj = {
@@ -344,6 +462,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -372,6 +491,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -400,6 +520,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -427,6 +548,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -453,6 +575,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -479,6 +602,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -497,6 +621,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': True
@@ -509,6 +634,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -523,6 +649,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -543,6 +670,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -561,6 +689,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -577,6 +706,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -597,6 +727,7 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {
                 THEN_ENCODED: [INJURIES_TEXT_ENCODED]
             },
+            'offseason': False,
             'postseason': False,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
@@ -617,6 +748,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -637,6 +769,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -658,6 +791,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -678,6 +812,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -712,6 +847,7 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {
                 THEN_ENCODED: [INJURIES_TEXT_ENCODED]
             },
+            'offseason': False,
             'postseason': True,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
@@ -760,6 +896,7 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {
                 THEN_ENCODED: [INJURIES_TEXT_ENCODED]
             },
+            'offseason': False,
             'postseason': False,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
@@ -797,6 +934,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': True,
             'scores': {
                 THEN_ENCODED: SCORES_POSTSEASON_ENCODED,
@@ -823,6 +961,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -848,6 +987,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {
                 THEN_ENCODED: SCORES_POSTSEASON_ENCODED
@@ -872,6 +1012,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -896,6 +1037,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -920,6 +1062,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
@@ -941,6 +1084,7 @@ class StatsplusPluginTest(TestUtil):
                 THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
             },
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -965,6 +1109,7 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {
                 THEN_ENCODED: [INJURIES_TEXT_ENCODED]
             },
+            'offseason': False,
             'postseason': False,
             'scores': {},
             'updated': False
@@ -987,6 +1132,7 @@ class StatsplusPluginTest(TestUtil):
             'finished': False,
             'highlights': {},
             'injuries': {},
+            'offseason': False,
             'postseason': False,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
