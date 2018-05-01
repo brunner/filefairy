@@ -67,7 +67,7 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     @staticmethod
     def _info():
-        return 'Collects live sim results.'
+        return 'Collects sim results in real time.'
 
     @staticmethod
     def _title():
