@@ -71,15 +71,17 @@ class RenderableApiTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             FakeRenderable()
 
+    @mock.patch('apis.renderable.renderable_api.threading.Thread')
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('apis.serializable.serializable_api.log')
     @mock.patch('apis.renderable.renderable_api.server', 'server')
+    @mock.patch.object(RenderableApi, '_scp')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('apis.renderable.renderable_api.check_output')
     @mock.patch('apis.renderable.renderable_api.log')
-    def test_render__with_valid_input(self, mock_rlog, mock_check, mock_dump,
-                                      mock_open, mock_slog, mock_stream):
+    def test_render__with_valid_input(self, mock_rlog, mock_dump, mock_open,
+                                      mock_scp, mock_slog, mock_stream,
+                                      mock_thread):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
@@ -101,14 +103,19 @@ class RenderableApiTest(unittest.TestCase):
         sub = '/html/fairylab/foo/sub/index.html'
         rdyn = _root + '/html/fairylab/foo/dyn/dyn_{}.html'
         tdyn = there + '/html/fairylab/foo/dyn/dyn_{}.html'
-        check_calls = [
-            mock.call(['scp', _root + foo, there + foo], timeout=2),
-            mock.call(['scp', _root + sub, there + sub], timeout=2),
-            mock.call(['scp', rdyn.format(0), tdyn.format(0)], timeout=2),
-            mock.call(['scp', rdyn.format(1), tdyn.format(1)], timeout=2),
-            mock.call(['scp', rdyn.format(2), tdyn.format(2)], timeout=2)
+        thread_calls = [
+            mock.call(target=mock_scp, args=(_root + foo, there + foo)),
+            mock.call().start(),
+            mock.call(target=mock_scp, args=(_root + sub, there + sub)),
+            mock.call().start(),
+            mock.call(target=mock_scp, args=(rdyn.format(0), tdyn.format(0))),
+            mock.call().start(),
+            mock.call(target=mock_scp, args=(rdyn.format(1), tdyn.format(1))),
+            mock.call().start(),
+            mock.call(target=mock_scp, args=(rdyn.format(2), tdyn.format(2))),
+            mock.call().start(),
         ]
-        mock_check.assert_has_calls(check_calls)
+        mock_thread.assert_has_calls(thread_calls)
         dump_calls = [
             mock.call(_root + foo),
             mock.call(_root + sub),
@@ -155,17 +162,18 @@ class RenderableApiTest(unittest.TestCase):
         self.assertEqual(renderable.data, {'a': 1, 'b': True})
         mock_rlog.assert_not_called()
 
+    @mock.patch('apis.renderable.renderable_api.threading.Thread')
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('apis.serializable.serializable_api.log')
     @mock.patch('apis.renderable.renderable_api.server', 'server')
-    @mock.patch('apis.renderable.renderable_api.log')
+    @mock.patch.object(RenderableApi, '_scp')
     @mock.patch('apis.serializable.serializable_api.open', create=True)
     @mock.patch('apis.renderable.renderable_api.traceback.format_exc')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('apis.renderable.renderable_api.check_output')
-    def test_render__with_thrown_exception(self, mock_check, mock_dump,
-                                           mock_exc, mock_open, mock_rlog,
-                                           mock_slog, mock_stream):
+    @mock.patch('apis.renderable.renderable_api.log')
+    def test_render__with_thrown_exception(
+            self, mock_rlog, mock_dump, mock_exc, mock_open, mock_scp,
+            mock_slog, mock_stream, mock_thread):
         mock_exc.return_value = 'Traceback: ...'
         mock_dump.side_effect = Exception()
         data = '{"a": 1, "b": true}'
@@ -187,7 +195,7 @@ class RenderableApiTest(unittest.TestCase):
         foo = '/html/fairylab/foo/index.html'
         sub = '/html/fairylab/foo/sub/index.html'
         dyn = '/html/fairylab/foo/dyn/dyn_{}.html'
-        mock_check.assert_not_called()
+        mock_thread.assert_not_called()
         dump_calls = [
             mock.call(_root + foo),
             mock.call(_root + sub),

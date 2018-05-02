@@ -6,6 +6,7 @@ import errno
 import os
 import re
 import sys
+import threading
 import traceback
 
 _path = os.path.dirname(os.path.abspath(__file__))
@@ -51,7 +52,9 @@ class RenderableApi(SerializableApi):
                 there = 'brunnerj@' + server + ':/var/www/' + html
                 self._mkdir_p(here.rsplit('/', 1)[0])
                 ts.dump(here)
-                check_output(['scp', here, there], timeout=2)
+                t = threading.Thread(target=self._scp, args=(here, there))
+                t.daemon = True
+                t.start()
             except Exception:
                 exc = traceback.format_exc()
                 log(self._name(), s='Exception.', c=exc, v=True)
@@ -65,3 +68,7 @@ class RenderableApi(SerializableApi):
                 pass
             else:
                 raise
+
+    @staticmethod
+    def _scp(here, there):
+        check_output(['scp', here, there], timeout=2)
