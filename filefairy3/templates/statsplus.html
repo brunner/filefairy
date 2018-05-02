@@ -2,7 +2,7 @@
 {% import "common.html" as common %}
 {% block content %}
     <div class="container">
-      {{ common.alert('monitor', 'Overview')|indent(6) }}
+      {{ common.heading('monitor', 'Overview')|indent(6) }}
       <div class="row">
         {% if live|length() > 2 %}
         {% set n = live|length() // 2 %}
@@ -27,13 +27,13 @@
       </div>
     </div>
     <div class="container">
-      {{ common.alert('magnifying-glass', 'Filter')|indent(6) }}
+      {{ common.heading('magnifying-glass', 'Filter')|indent(6) }}
       {{ common.form()|indent(6) }}
     </div>
     {% if scores %}
-    <div class="container">
-      {{ common.alert('layers', 'Scores')|indent(6) }}
-      <div class="row" id="scores">
+    <div class="container" id="scores">
+      {{ common.heading('layers', 'Scores')|indent(6) }}
+      <div class="row">
         <div class="col-12">
           {% for table in scores %}
           {{ common.table(table)|indent(10) }}
@@ -43,9 +43,9 @@
     </div>
     {% endif %}
     {% if injuries %}
-    <div class="container">
-      {{ common.alert('pulse', 'Injuries')|indent(6) }}
-      <div class="row" id="injuries">
+    <div class="container" id="injuries">
+      {{ common.heading('pulse', 'Injuries')|indent(6) }}
+      <div class="row">
         <div class="col-12">
           {% for table in injuries %}
           {{ common.table(table)|indent(10) }}
@@ -55,9 +55,9 @@
     </div>
     {% endif %}
     {% if highlights %}
-    <div class="container">
-      {{ common.alert('bolt', 'Highlights')|indent(6) }}
-      <div class="row" id="highlights">
+    <div class="container" id="highlights">
+      {{ common.heading('bolt', 'Highlights')|indent(6) }}
+      <div class="row">
         <div class="col-12">
           {% for table in highlights %}
           {{ common.table(table)|indent(10) }}
@@ -68,7 +68,7 @@
     {% endif %}
     {% if forecast %}
     <div class="container">
-      {{ common.alert('compass', 'Forecast')|indent(6) }}
+      {{ common.heading('compass', 'Forecast')|indent(6) }}
       <div class="row">
         {% set n = forecast|length() // 2 %}
         <div class="col-md-6">

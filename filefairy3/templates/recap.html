@@ -2,13 +2,13 @@
 {% import "common.html" as common %}
 {% block content %}
     <div class="container">
-      {{ common.alert('magnifying-glass', 'Filter')|indent(6) }}
+      {{ common.heading('magnifying-glass', 'Filter')|indent(6) }}
       {{ common.form()|indent(6) }}
     </div>
     {% if injuries %}
-    <div class="container">
-      {{ common.alert('pulse', 'Injuries')|indent(6) }}
-      <div class="row" id="injuries">
+    <div class="container" id="injuries"s>
+      {{ common.heading('pulse', 'Injuries')|indent(6) }}
+      <div class="row">
         <div class="col-12">
           {% for table in injuries %}
           {{ common.table(table)|indent(10) }}
@@ -18,9 +18,9 @@
     </div>
     {% endif %}
     {% if news %}
-    <div class="container">
-      {{ common.alert('rss', 'News')|indent(6) }}
-      <div class="row" id="news">
+    <div class="container" id="news">
+      {{ common.heading('rss', 'News')|indent(6) }}
+      <div class="row">
         <div class="col-12">
           {% for table in news %}
           {{ common.table(table)|indent(10) }}
@@ -30,9 +30,9 @@
     </div>
     {% endif %}
     {% if transactions %}
-    <div class="container">
-      {{ common.alert('loop-circular', 'Transactions')|indent(6) }}
-      <div class="row" id="transactions">
+    <div class="container" id="transactions">
+      {{ common.heading('loop-circular', 'Transactions')|indent(6) }}
+      <div class="row">
         <div class="col-12">
           {% for table in transactions %}
           {{ common.table(table)|indent(10) }}
@@ -43,5 +43,5 @@
     {% endif %}
 {% endblock %}
 {% block script %}
-  {{ common.form_js(['#injuries', '#news', '#transactions'])|indent(2) }}
+  {{ common.form_js(['injuries', 'news', 'transactions'])|indent(2) }}
 {% endblock %}
