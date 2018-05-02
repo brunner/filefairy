@@ -236,6 +236,7 @@ class DownloadPluginTest(unittest.TestCase):
     @mock.patch.object(DownloadPlugin, '_games')
     def test_download__with_new_year(self, mock_games, mock_file,
                                      mock_leagues):
+        mock_file.return_value = {'ok': True}
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
@@ -268,6 +269,8 @@ class DownloadPluginTest(unittest.TestCase):
     @mock.patch.object(DownloadPlugin, '_games')
     def test_download__with_same_year(self, mock_games, mock_file,
                                       mock_leagues):
+        mock_file.return_value = {'ok': True}
+
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
@@ -294,6 +297,28 @@ class DownloadPluginTest(unittest.TestCase):
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(DownloadPlugin, '_leagues')
+    @mock.patch('plugins.download.download_plugin.wget_file')
+    @mock.patch.object(DownloadPlugin, '_games')
+    def test_download__with_ok_false(self, mock_games, mock_file,
+                                     mock_leagues):
+        mock_file.return_value = {'ok': False}
+
+        read = {
+            'downloaded': False,
+            'now': THEN_ENCODED,
+            'then': THEN_ENCODED,
+            'year': False
+        }
+        plugin = self.create_plugin(read)
+        plugin._download()
+
+        mock_games.assert_not_called()
+        mock_file.assert_called_once_with()
+        mock_leagues.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.recreate')
     @mock.patch('plugins.download.download_plugin.os.listdir')

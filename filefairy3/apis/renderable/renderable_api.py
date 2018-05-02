@@ -51,7 +51,7 @@ class RenderableApi(SerializableApi):
                 there = 'brunnerj@' + server + ':/var/www/' + html
                 self._mkdir_p(here.rsplit('/', 1)[0])
                 ts.dump(here)
-                check_output(['scp', here, there])
+                check_output(['scp', here, there], timeout=2)
             except Exception:
                 exc = traceback.format_exc()
                 log(self._name(), s='Exception.', c=exc, v=True)

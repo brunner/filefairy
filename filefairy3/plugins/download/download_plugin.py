@@ -71,7 +71,10 @@ class DownloadPlugin(PluginApi, SerializableApi):
         return {'statsplus': {'download.now': self.data['now']}}
 
     def _download(self):
-        wget_file()
+        output = wget_file()
+        if not output.get('ok'):
+            return
+
         self.data['then'] = self.data['now']
 
         self._games()

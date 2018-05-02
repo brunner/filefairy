@@ -332,7 +332,7 @@ class LeaguefilePluginTest(TestUtil):
     @mock.patch('plugins.leaguefile.leaguefile_plugin.server', 'SERVER')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_check__with_filepart(self, mock_check):
-        mock_check.return_value = LS_WITH_FILEPART
+        mock_check.return_value = {'ok': True, 'output': LS_WITH_FILEPART}
 
         actual = LeaguefilePlugin._check()
         expected = iter([CHECK_FILEPART, CHECK_UP_TRUE])
@@ -341,14 +341,14 @@ class LeaguefilePluginTest(TestUtil):
         mock_check.assert_called_once_with([
             'ssh', 'brunnerj@SERVER',
             'ls -l /var/www/html/StatsLab/league_file'
-        ])
+        ], timeout=2)
         self.mock_open.assert_not_called()
         self.mock_chat.assert_not_called()
 
     @mock.patch('plugins.leaguefile.leaguefile_plugin.server', 'SERVER')
     @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
     def test_check__without_filepart(self, mock_check):
-        mock_check.return_value = LS_WITHOUT_FILEPART
+        mock_check.return_value = {'ok': True, 'output': LS_WITHOUT_FILEPART}
 
         actual = LeaguefilePlugin._check()
         expected = iter([CHECK_UP_FALSE])
@@ -357,7 +357,7 @@ class LeaguefilePluginTest(TestUtil):
         mock_check.assert_called_once_with([
             'ssh', 'brunnerj@SERVER',
             'ls -l /var/www/html/StatsLab/league_file'
-        ])
+        ], timeout=2)
         self.mock_open.assert_not_called()
         self.mock_chat.assert_not_called()
 

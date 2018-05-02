@@ -99,21 +99,22 @@ class RenderableApiTest(unittest.TestCase):
         there = 'brunnerj@server:/var/www'
         foo = '/html/fairylab/foo/index.html'
         sub = '/html/fairylab/foo/sub/index.html'
-        dyn = '/html/fairylab/foo/dyn/dyn_{}.html'
+        rdyn = _root + '/html/fairylab/foo/dyn/dyn_{}.html'
+        tdyn = there + '/html/fairylab/foo/dyn/dyn_{}.html'
         check_calls = [
-            mock.call(['scp', _root + foo, there + foo]),
-            mock.call(['scp', _root + sub, there + sub]),
-            mock.call(['scp', _root + dyn.format(0), there + dyn.format(0)]),
-            mock.call(['scp', _root + dyn.format(1), there + dyn.format(1)]),
-            mock.call(['scp', _root + dyn.format(2), there + dyn.format(2)])
+            mock.call(['scp', _root + foo, there + foo], timeout=2),
+            mock.call(['scp', _root + sub, there + sub], timeout=2),
+            mock.call(['scp', rdyn.format(0), tdyn.format(0)], timeout=2),
+            mock.call(['scp', rdyn.format(1), tdyn.format(1)], timeout=2),
+            mock.call(['scp', rdyn.format(2), tdyn.format(2)], timeout=2)
         ]
         mock_check.assert_has_calls(check_calls)
         dump_calls = [
             mock.call(_root + foo),
             mock.call(_root + sub),
-            mock.call(_root + dyn.format(0)),
-            mock.call(_root + dyn.format(1)),
-            mock.call(_root + dyn.format(2))
+            mock.call(rdyn.format(0)),
+            mock.call(rdyn.format(1)),
+            mock.call(rdyn.format(2))
         ]
         mock_dump.assert_has_calls(dump_calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')

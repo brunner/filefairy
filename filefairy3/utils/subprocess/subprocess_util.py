@@ -1,13 +1,42 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import subprocess
+import threading
 
 
-def check_output(cmd):
-    try:
-        with open(os.devnull, 'w') as devnull:
-            return subprocess.check_output(cmd, stderr=devnull)
-    except:
-        return ''
+class Command(object):
+    def __init__(self, cmd):
+        self.output = {'ok': True}
+        self.proc = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    def run(self, timeout):
+        try:
+            t = threading.Thread(target=self._target)
+            t.start()
+
+            if timeout:
+                t.join(timeout)
+                if t.is_alive():
+                    self.proc.terminate()
+                    self.output.update({'ok': False, 'error': 'timeout'})
+
+            t.join()
+        except Exception as e:
+            self.output.update({
+                'ok': False,
+                'error': 'exception',
+                'exception': str(e)
+            })
+
+        return self.output
+
+    def _target(self):
+        stdout, _ = self.proc.communicate()
+        if stdout:
+            self.output.update({'output': stdout})
+
+
+def check_output(cmd, timeout=0):
+    return Command(cmd).run(timeout)

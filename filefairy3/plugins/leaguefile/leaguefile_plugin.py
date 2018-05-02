@@ -157,13 +157,15 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
     @staticmethod
     def _check():
         ls = 'ls -l /var/www/html/StatsLab/league_file'
-        out = check_output(['ssh', 'brunnerj@' + server, ls])
-        fp = '.filepart' in out
-        for line in out.splitlines():
-            line = re.sub(r'\s+', ' ', line)
-            match = re.findall(_line_pattern, line)
-            if match:
-                yield match[0] + (fp, )
+        output = check_output(['ssh', 'brunnerj@' + server, ls], timeout=2)
+        if output.get('ok'):
+            value = output.get('output', '')
+            fp = '.filepart' in value
+            for line in value.splitlines():
+                line = re.sub(r'\s+', ' ', line)
+                match = re.findall(_line_pattern, line)
+                if match:
+                    yield match[0] + (fp, )
 
     def _home(self, **kwargs):
         data = self.data
