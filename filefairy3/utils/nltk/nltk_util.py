@@ -37,7 +37,6 @@ def _fix(tokens):
 
     return modified
 
-
 def cfd(n, *fnames):
     tokens = []
     for fname in fnames:
@@ -68,6 +67,9 @@ def discuss(topic, cfd, n, length, truncate):
                     if key == seed[-1]:
                         continue
                     dist[key] += value * j * j
+
+        if seed == original and len(dist.keys()) > 1 and '.' in dist.keys():
+            dist.pop('.')
 
         x = random.randint(0, sum(dist.values()))
         for key, value in dist.iteritems():

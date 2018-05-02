@@ -173,7 +173,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = {'members': MEMBERS_NOW}
-        mock_discuss.assert_called_once_with('topic', {}, 4, 6, 30)
+        mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
