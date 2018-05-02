@@ -34,7 +34,7 @@ class UrllibUtilTest(unittest.TestCase):
         actual = urlopen('http://url')
         expected = 'response'
         self.assertEqual(actual, expected)
-        mock_urlopen.assert_called_once_with('http://url')
+        mock_urlopen.assert_called_once_with('http://url', timeout=2)
 
 
 if __name__ == '__main__':

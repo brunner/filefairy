@@ -11,6 +11,6 @@ def create_request(url, params):
 
 def urlopen(url):
     try:
-        return urllib2.urlopen(url).read()
+        return urllib2.urlopen(url, timeout=2).read()
     except:
         return ''
