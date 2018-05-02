@@ -9,6 +9,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/apis/messageable', '', _path))
 from apis.nameable.nameable_api import NameableApi  # noqa
+from values.notify.notify_value import NotifyValue  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class MessageableApi(NameableApi):
@@ -41,6 +43,7 @@ class MessageableApi(NameableApi):
                 if match:
                     for i, a in enumerate(match[0].split(',')):
                         kwargs['a{}'.format(i+1)] = a
-                    return item(**dict(kwargs, v=True))
+                    item(**dict(kwargs, v=True))
+                    return ResponseValue(notify=[NotifyValue.BASE])
 
         return self._on_message_internal(**kwargs)

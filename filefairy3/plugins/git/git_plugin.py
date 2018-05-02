@@ -55,7 +55,6 @@ class GitPlugin(PluginApi):
         d = check_output(cmd).strip('\n')
         s = 'Call completed: \'{}\'.'.format(self._format(cmd))
         log(self._name(), **dict(kwargs, c=d, s=s))
-        return ResponseValue(notify=[NotifyValue.BASE])
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], kwargs)
@@ -64,7 +63,6 @@ class GitPlugin(PluginApi):
         self.add(**kwargs)
         self.commit(**kwargs)
         self.push(**kwargs)
-        return ResponseValue(notify=[NotifyValue.BASE])
 
     def commit(self, **kwargs):
         return self._call(['git', 'commit', '-m', 'Automated data push.'],

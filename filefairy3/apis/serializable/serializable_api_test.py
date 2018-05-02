@@ -10,7 +10,6 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/apis/serializable', '', _path))
 from apis.serializable.serializable_api import SerializableApi  # noqa
-from values.response.response_value import ResponseValue  # noqa
 
 
 class FakeSerializable(SerializableApi):
@@ -48,8 +47,7 @@ class SerializableApiTest(unittest.TestCase):
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
         mock_log.reset_mock()
-        value = serializable.read()
-        self.assertEqual(value, ResponseValue())
+        serializable.read()
         mock_open.assert_called_once_with(FakeSerializable._data(), 'r')
         mock_log.assert_called_once_with(serializable._name(), **{
             's': 'Read completed.',
@@ -68,8 +66,7 @@ class SerializableApiTest(unittest.TestCase):
         mock_open.reset_mock()
         mock_open.side_effect = [mo.return_value]
         mock_log.reset_mock()
-        value = serializable.write()
-        self.assertEqual(value, ResponseValue())
+        serializable.write()
         mock_open.assert_called_once_with(serializable._data(), 'w')
         handle = mo()
         calls = [mock.call('{\n  "a": 2, \n  "b": false\n}\n')]
@@ -88,8 +85,7 @@ class SerializableApiTest(unittest.TestCase):
         serializable = FakeSerializable()
         mock_log.reset_mock()
         mock_log.return_value = {'a': 1, 'b': True}
-        value = serializable.dump()
-        self.assertEqual(value, ResponseValue())
+        serializable.dump()
         mock_log.assert_called_once_with(serializable._name(), **{
             'c': '{\n  "a": 1, \n  "b": true\n}',
             's': 'Dump completed.'

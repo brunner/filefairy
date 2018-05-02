@@ -101,8 +101,7 @@ class GitPluginTest(unittest.TestCase):
         self.mock_check.return_value = ''
         self.mock_log.return_value = ''
 
-        response = plugin.add(**{'a1': '', 'v': True})
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        plugin.add(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'add', '.'])
         self.mock_log.assert_called_once_with(
@@ -118,8 +117,7 @@ class GitPluginTest(unittest.TestCase):
     @mock.patch.object(GitPlugin, 'add')
     def test_automate(self, mock_add, mock_commit, mock_push):
         plugin = self.create_plugin()
-        value = plugin.automate(date=NOW)
-        self.assertEqual(value, ResponseValue(notify=[NotifyValue.BASE]))
+        plugin.automate(date=NOW)
 
         mock_add.assert_called_once_with(date=NOW)
         mock_commit.assert_called_once_with(date=NOW)
@@ -133,8 +131,7 @@ class GitPluginTest(unittest.TestCase):
         self.mock_check.return_value = '[master 0abcd0a] Auto...\n1 files\n'
         self.mock_log.return_value = '[master 0abcd0a] Auto...\n1 files'
 
-        response = plugin.commit(**{'a1': '', 'v': True})
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        plugin.commit(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(
             ['git', 'commit', '-m', 'Automated data push.'])
@@ -153,8 +150,7 @@ class GitPluginTest(unittest.TestCase):
         self.mock_check.return_value = 'remote: Counting...\nUnpacking...\n'
         self.mock_log.return_value = 'remote: Counting...\nUnpacking...'
 
-        response = plugin.pull(**{'a1': '', 'v': True})
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        plugin.pull(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'pull'])
         self.mock_log.assert_called_once_with(
@@ -171,8 +167,7 @@ class GitPluginTest(unittest.TestCase):
         self.mock_check.return_value = 'Counting...\nCompressing...\n'
         self.mock_log.return_value = 'Counting...\nCompressing...'
 
-        response = plugin.push(**{'a1': '', 'v': True})
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        plugin.push(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'push'])
         self.mock_log.assert_called_once_with(
@@ -189,8 +184,7 @@ class GitPluginTest(unittest.TestCase):
         self.mock_check.return_value = ''
         self.mock_log.return_value = ''
 
-        response = plugin.reset(**{'a1': '', 'v': True})
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        plugin.reset(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'reset', '--hard'])
         self.mock_log.assert_called_once_with(
@@ -207,8 +201,7 @@ class GitPluginTest(unittest.TestCase):
         self.mock_check.return_value = 'On branch master\nYour branch...\n'
         self.mock_log.return_value = 'On branch master\nYour branch...'
 
-        response = plugin.status(**{'a1': '', 'v': True})
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+        plugin.status(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'status'])
         self.mock_log.assert_called_once_with(
