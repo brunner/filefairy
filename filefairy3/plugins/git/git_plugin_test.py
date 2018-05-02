@@ -95,12 +95,40 @@ class GitPluginTest(unittest.TestCase):
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
-    def test_add(self):
+    def test_call__with_ok_false(self):
+        self.mock_check.return_value = {'ok': False, 'error': 'timeout'}
+
         plugin = self.create_plugin()
+        plugin._call(['cmd'], {'a1': '', 'v': True})
 
-        self.mock_check.return_value = ''
-        self.mock_log.return_value = ''
+        self.mock_check.assert_called_once_with(['cmd'])
+        self.mock_log.assert_called_once_with(
+            plugin._name(), **{
+                'a1': '',
+                'c': {'ok': False, 'error': 'timeout'},
+                's': 'Call failed: \'cmd\'.',
+                'v': True
+            })
 
+    def test_call__with_ok_true(self):
+        self.mock_check.return_value = {'ok': True, 'output': ''}
+
+        plugin = self.create_plugin()
+        plugin._call(['cmd'], {'a1': '', 'v': True})
+
+        self.mock_check.assert_called_once_with(['cmd'])
+        self.mock_log.assert_called_once_with(
+            plugin._name(), **{
+                'a1': '',
+                'c': '',
+                's': 'Call completed: \'cmd\'.',
+                'v': True
+            })
+
+    def test_add(self):
+        self.mock_check.return_value = {'ok': True, 'output': ''}
+
+        plugin = self.create_plugin()
         plugin.add(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'add', '.'])
@@ -126,11 +154,12 @@ class GitPluginTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_commit(self):
+        self.mock_check.return_value = {
+            'ok': True,
+            'output': '[master 0abcd0a] Auto...\n1 files\n'
+        }
+
         plugin = self.create_plugin()
-
-        self.mock_check.return_value = '[master 0abcd0a] Auto...\n1 files\n'
-        self.mock_log.return_value = '[master 0abcd0a] Auto...\n1 files'
-
         plugin.commit(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(
@@ -145,11 +174,12 @@ class GitPluginTest(unittest.TestCase):
             })
 
     def test_pull(self):
+        self.mock_check.return_value = {
+            'ok': True,
+            'output': 'remote: Counting...\nUnpacking...\n'
+        }
+
         plugin = self.create_plugin()
-
-        self.mock_check.return_value = 'remote: Counting...\nUnpacking...\n'
-        self.mock_log.return_value = 'remote: Counting...\nUnpacking...'
-
         plugin.pull(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'pull'])
@@ -162,11 +192,12 @@ class GitPluginTest(unittest.TestCase):
             })
 
     def test_push(self):
+        self.mock_check.return_value = {
+            'ok': True,
+            'output': 'Counting...\nCompressing...\n'
+        }
+
         plugin = self.create_plugin()
-
-        self.mock_check.return_value = 'Counting...\nCompressing...\n'
-        self.mock_log.return_value = 'Counting...\nCompressing...'
-
         plugin.push(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'push'])
@@ -179,11 +210,9 @@ class GitPluginTest(unittest.TestCase):
             })
 
     def test_reset(self):
+        self.mock_check.return_value = {'ok': True, 'output': ''}
+
         plugin = self.create_plugin()
-
-        self.mock_check.return_value = ''
-        self.mock_log.return_value = ''
-
         plugin.reset(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'reset', '--hard'])
@@ -196,11 +225,12 @@ class GitPluginTest(unittest.TestCase):
             })
 
     def test_status(self):
+        self.mock_check.return_value = {
+            'ok': True,
+            'output': 'On branch master\nYour branch...\n'
+        }
+
         plugin = self.create_plugin()
-
-        self.mock_check.return_value = 'On branch master\nYour branch...\n'
-        self.mock_log.return_value = 'On branch master\nYour branch...'
-
         plugin.status(**{'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['git', 'status'])

@@ -52,9 +52,14 @@ class GitPlugin(PluginApi):
         return ' '.join(['"{}"'.format(c) if ' ' in c else c for c in cmd])
 
     def _call(self, cmd, kwargs):
-        d = check_output(cmd).strip('\n')
-        s = 'Call completed: \'{}\'.'.format(self._format(cmd))
-        log(self._name(), **dict(kwargs, c=d, s=s))
+        output = check_output(cmd)
+        if output.get('ok'):
+            value = output.get('output', '').strip('\n')
+            s = 'Call completed: \'{}\'.'.format(self._format(cmd))
+            log(self._name(), **dict(kwargs, c=value, s=s))
+        else:
+            s = 'Call failed: \'{}\'.'.format(self._format(cmd))
+            log(self._name(), **dict(kwargs, c=output, s=s))
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], kwargs)
