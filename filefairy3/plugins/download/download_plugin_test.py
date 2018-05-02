@@ -102,43 +102,39 @@ class DownloadPluginTest(unittest.TestCase):
 
         return plugin
 
-    @mock.patch('plugins.download.download_plugin.threading.Thread')
-    @mock.patch.object(DownloadPlugin, '_download_internal')
-    def test_notify__with_file(self, mock_download, mock_thread):
+    @mock.patch.object(DownloadPlugin, 'download')
+    def test_notify__with_file(self, mock_download):
         read = {
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.LEAGUEFILE_FINISH)
         self.assertTrue(value)
 
-        mock_thread.assert_called_once_with(
-            target=mock_download,
-            kwargs={
-                'notify': NotifyValue.LEAGUEFILE_FINISH
-            })
-        mock_thread.return_value.start.assert_called_once_with()
+        mock_download.assert_called_once_with(
+            notify=NotifyValue.LEAGUEFILE_FINISH)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.threading.Thread')
-    @mock.patch.object(DownloadPlugin, '_download_internal')
-    def test_notify__with_other(self, mock_download, mock_thread):
+    @mock.patch.object(DownloadPlugin, 'download')
+    def test_notify__with_other(self, mock_download):
         read = {
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.OTHER)
         self.assertFalse(value)
 
-        mock_thread.assert_not_called()
+        mock_download.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -148,6 +144,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -158,36 +155,12 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
 
-    def test_run__with_downloaded_and_year_true(self):
-        read = {
-            'downloaded': True,
-            'now': YEAR_ENCODED,
-            'then': THEN_ENCODED,
-            'year': True
-        }
-        plugin = self.create_plugin(read)
-        response = plugin._run_internal(date=THEN)
-        self.assertEqual(
-            response,
-            ResponseValue(notify=[
-                NotifyValue.DOWNLOAD_YEAR, NotifyValue.DOWNLOAD_FINISH
-            ]))
-
-        write = {
-            'downloaded': False,
-            'now': YEAR_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_log.assert_not_called()
-
-    def test_run__with_downloaded_true(self):
+    def test_run__with_downloaded(self):
         read = {
             'downloaded': True,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -199,32 +172,80 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_not_called()
 
-    def test_run__with_downloaded_false(self):
+    def test_run__with_year(self):
+        read = {
+            'downloaded': False,
+            'now': YEAR_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': True
+        }
+        plugin = self.create_plugin(read)
+        response = plugin._run_internal(date=THEN)
+        self.assertEqual(
+            response, ResponseValue(notify=[NotifyValue.DOWNLOAD_YEAR]))
+
+        write = {
+            'downloaded': False,
+            'now': YEAR_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': False
+        }
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_log.assert_not_called()
+
+    @mock.patch('plugins.download.download_plugin.threading.Thread')
+    @mock.patch('plugins.download.download_plugin.ping')
+    @mock.patch.object(DownloadPlugin, '_download_internal')
+    def test_run__with_unreachable(self, mock_download_internal, mock_ping,
+                                   mock_thread):
+        mock_ping.return_value = {'ok': True}
+
         read = {
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': True,
             'year': False
         }
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=THEN)
-        self.assertEqual(response, ResponseValue())
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
+        write = {
+            'downloaded': False,
+            'now': NOW_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': False
+        }
+        mock_thread.assert_called_once_with(
+            target=mock_download_internal, kwargs={
+                'date': THEN
+            })
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_log.assert_called_once_with('DownloadPlugin', **{
+            'date': THEN,
+            's': 'Download resumed.',
+            'v': True
+        })
 
     def test_setup(self):
         read = {
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -239,6 +260,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -249,116 +271,33 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch.object(DownloadPlugin, '_leagues')
-    @mock.patch('plugins.download.download_plugin.wget_file')
-    @mock.patch.object(DownloadPlugin, '_games')
-    def test_download_internal__with_new_year(self, mock_games, mock_file,
-                                              mock_leagues):
-        mock_file.return_value = {'ok': True}
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
-
-        def fake_games(*args, **kwargs):
-            plugin.data['now'] = YEAR_ENCODED
-
-        mock_games.side_effect = fake_games
-
-        plugin._download_internal(v=True)
-
-        write = {
-            'downloaded': True,
-            'now': YEAR_ENCODED,
-            'then': THEN_ENCODED,
-            'year': True
-        }
-        mock_games.assert_called_once_with()
-        mock_file.assert_called_once_with()
-        mock_leagues.assert_called_once_with()
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        calls = [
-            mock.call('DownloadPlugin', **{
-                's': 'Download started.',
-                'v': True
-            }),
-            mock.call('DownloadPlugin', **{
-                's': 'Download finished.',
-                'v': True
-            })
-        ]
-        self.mock_log.assert_has_calls(calls)
-
-    @mock.patch.object(DownloadPlugin, '_leagues')
-    @mock.patch('plugins.download.download_plugin.wget_file')
-    @mock.patch.object(DownloadPlugin, '_games')
-    def test_download_internal__with_same_year(self, mock_games, mock_file,
-                                               mock_leagues):
-        mock_file.return_value = {'ok': True}
+    @mock.patch('plugins.download.download_plugin.threading.Thread')
+    @mock.patch('plugins.download.download_plugin.ping')
+    @mock.patch.object(DownloadPlugin, '_download_internal')
+    def test_download__with_ok_false(self, mock_download_internal, mock_ping,
+                                     mock_thread):
+        mock_ping.return_value = {'ok': False}
 
         read = {
             'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
-
-        def fake_games(*args, **kwargs):
-            plugin.data['now'] = NOW_ENCODED
-
-        mock_games.side_effect = fake_games
-
-        plugin._download_internal(v=True)
-
-        write = {
-            'downloaded': True,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'year': False
-        }
-        mock_games.assert_called_once_with()
-        mock_file.assert_called_once_with()
-        mock_leagues.assert_called_once_with()
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        calls = [
-            mock.call('DownloadPlugin', **{
-                's': 'Download started.',
-                'v': True
-            }),
-            mock.call('DownloadPlugin', **{
-                's': 'Download finished.',
-                'v': True
-            })
-        ]
-        self.mock_log.assert_has_calls(calls)
-
-    @mock.patch.object(DownloadPlugin, '_leagues')
-    @mock.patch('plugins.download.download_plugin.wget_file')
-    @mock.patch.object(DownloadPlugin, '_games')
-    def test_download_internal__with_ok_false(self, mock_games, mock_file,
-                                              mock_leagues):
-        mock_file.return_value = {'ok': False}
-
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
-        plugin._download_internal(v=True)
+        plugin.download(v=True)
 
-        mock_games.assert_not_called()
-        mock_file.assert_called_once_with()
-        mock_leagues.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
+        write = {
+            'downloaded': False,
+            'now': NOW_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': True,
+            'year': False
+        }
+        mock_thread.assert_not_called()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         calls = [
             mock.call('DownloadPlugin', **{
                 's': 'Download started.',
@@ -374,6 +313,113 @@ class DownloadPluginTest(unittest.TestCase):
         ]
         self.mock_log.assert_has_calls(calls)
 
+    @mock.patch('plugins.download.download_plugin.threading.Thread')
+    @mock.patch('plugins.download.download_plugin.ping')
+    @mock.patch.object(DownloadPlugin, '_download_internal')
+    def test_download__with_ok_true(self, mock_download_internal, mock_ping,
+                                    mock_thread):
+        mock_ping.return_value = {'ok': True}
+
+        read = {
+            'downloaded': False,
+            'now': NOW_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': False
+        }
+        plugin = self.create_plugin(read)
+        plugin.download(v=True)
+
+        mock_thread.assert_called_once_with(
+            target=mock_download_internal, kwargs={
+                'v': True
+            })
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_called_once_with('DownloadPlugin', **{
+            's': 'Download started.',
+            'v': True
+        })
+
+    @mock.patch.object(DownloadPlugin, '_leagues')
+    @mock.patch('plugins.download.download_plugin.wget_file')
+    @mock.patch.object(DownloadPlugin, '_games')
+    def test_download_internal__with_new_year(self, mock_games, mock_file,
+                                              mock_leagues):
+        mock_file.return_value = {'ok': True}
+        read = {
+            'downloaded': False,
+            'now': THEN_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': False
+        }
+        plugin = self.create_plugin(read)
+
+        def fake_games(*args, **kwargs):
+            plugin.data['now'] = YEAR_ENCODED
+
+        mock_games.side_effect = fake_games
+
+        plugin._download_internal(v=True)
+
+        write = {
+            'downloaded': True,
+            'now': YEAR_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': True
+        }
+        mock_games.assert_called_once_with()
+        mock_file.assert_called_once_with()
+        mock_leagues.assert_called_once_with()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_log.assert_called_once_with('DownloadPlugin', **{
+            's': 'Download finished.',
+            'v': True
+        })
+
+    @mock.patch.object(DownloadPlugin, '_leagues')
+    @mock.patch('plugins.download.download_plugin.wget_file')
+    @mock.patch.object(DownloadPlugin, '_games')
+    def test_download_internal__with_same_year(self, mock_games, mock_file,
+                                               mock_leagues):
+        mock_file.return_value = {'ok': True}
+
+        read = {
+            'downloaded': False,
+            'now': THEN_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': False
+        }
+        plugin = self.create_plugin(read)
+
+        def fake_games(*args, **kwargs):
+            plugin.data['now'] = NOW_ENCODED
+
+        mock_games.side_effect = fake_games
+
+        plugin._download_internal(v=True)
+
+        write = {
+            'downloaded': True,
+            'now': NOW_ENCODED,
+            'then': THEN_ENCODED,
+            'unreachable': False,
+            'year': False
+        }
+        mock_games.assert_called_once_with()
+        mock_file.assert_called_once_with()
+        mock_leagues.assert_called_once_with()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_log.assert_called_once_with('DownloadPlugin', **{
+            's': 'Download finished.',
+            'v': True
+        })
+
     @mock.patch('plugins.download.download_plugin.recreate')
     @mock.patch('plugins.download.download_plugin.os.listdir')
     @mock.patch('plugins.download.download_plugin.os.path.isfile')
@@ -386,6 +432,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -444,6 +491,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -479,6 +527,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -509,6 +558,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -532,6 +582,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -581,6 +632,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -612,6 +664,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -643,6 +696,7 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
+            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import codecs
+import copy
 import datetime
 import os
 import re
@@ -15,6 +16,7 @@ from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.serializable.serializable_api import SerializableApi  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa
 from utils.datetime.datetime_util import encode_datetime  # noqa
+from utils.file.file_util import ping  # noqa
 from utils.file.file_util import recreate  # noqa
 from utils.file.file_util import wget_file  # noqa
 from utils.logger.logger_util import log  # noqa
@@ -50,6 +52,9 @@ class DownloadPlugin(PluginApi, SerializableApi):
         return ResponseValue()
 
     def _run_internal(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
         response = ResponseValue()
 
         if self.data['year']:
@@ -59,6 +64,20 @@ class DownloadPlugin(PluginApi, SerializableApi):
         if self.data['downloaded']:
             self.data['downloaded'] = False
             response.append_notify(NotifyValue.DOWNLOAD_FINISH)
+
+        if self.data['unreachable']:
+            output = ping()
+            if output.get('ok'):
+                log(self._name(), **dict(
+                    kwargs, s='Download resumed.', v=True))
+                self.data['unreachable'] = False
+                t = threading.Thread(
+                    target=self._download_internal, kwargs=kwargs)
+                t.daemon = True
+                t.start()
+                response.append_notify(NotifyValue.BASE)
+
+        if data != original:
             self.write()
 
         return response
@@ -70,23 +89,32 @@ class DownloadPlugin(PluginApi, SerializableApi):
         return {'statsplus': {'download.now': self.data['now']}}
 
     def download(self, **kwargs):
-        t = threading.Thread(target=self._download_internal, kwargs=kwargs)
-        t.daemon = True
-        t.start()
+        data = self.data
+        original = copy.deepcopy(data)
+
+        log(self._name(), **dict(kwargs, s='Download started.'))
+        output = ping()
+        if output.get('ok'):
+            data['unreachable'] = False
+            t = threading.Thread(target=self._download_internal, kwargs=kwargs)
+            t.daemon = True
+            t.start()
+        else:
+            data['unreachable'] = True
+            log(self._name(), **dict(kwargs, c=output, s='Download failed.'))
+
+        if data != original:
+            self.write()
 
     def _download_internal(self, **kwargs):
-        log(self._name(), **dict(kwargs, s='Download started.'))
-        output = wget_file()
-        if not output.get('ok'):
-            log(self._name(), **dict(kwargs, c=output, s='Download failed.'))
-            return
-
         self.data['then'] = self.data['now']
 
+        wget_file()
         self._games()
         self._leagues()
 
         self.data['downloaded'] = True
+        log(self._name(), **dict(kwargs, s='Download finished.'))
 
         dthen = decode_datetime(self.data['then'])
         dnow = decode_datetime(self.data['now'])
@@ -94,7 +122,6 @@ class DownloadPlugin(PluginApi, SerializableApi):
             self.data['year'] = True
 
         self.write()
-        log(self._name(), **dict(kwargs, s='Download finished.'))
 
     def _games(self):
         box_scores = os.path.join(_root, 'extract/box_scores')
