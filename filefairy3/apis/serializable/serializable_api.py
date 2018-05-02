@@ -13,6 +13,7 @@ from apis.nameable.nameable_api import NameableApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
 from utils.json.json_util import dumps  # noqa
 from utils.logger.logger_util import log  # noqa
+from values.response.response_value import ResponseValue  # noqa
 
 
 class SerializableApi(NameableApi):
@@ -33,12 +34,15 @@ class SerializableApi(NameableApi):
         with open(self._data(), 'r') as f:
             self.data = json.loads(f.read())
             log(self._name(), **dict(kwargs, s='Read completed.'))
+        return ResponseValue()
 
     def write(self, **kwargs):
         with open(self._data(), 'w') as f:
             f.write(dumps(self.data) + '\n')
             log(self._name(), **dict(kwargs, s='Write completed.'))
+        return ResponseValue()
 
     def dump(self, **kwargs):
         d = dumps(self.data)
-        return log(self._name(), **dict(kwargs, s='Dump completed.', c=d))
+        log(self._name(), **dict(kwargs, s='Dump completed.', c=d))
+        return ResponseValue()
