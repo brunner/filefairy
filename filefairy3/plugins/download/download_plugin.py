@@ -17,6 +17,7 @@ from utils.datetime.datetime_util import decode_datetime  # noqa
 from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.file.file_util import recreate  # noqa
 from utils.file.file_util import wget_file  # noqa
+from utils.logger.logger_util import log  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
 from values.notify.notify_value import NotifyValue  # noqa
 from values.response.response_value import ResponseValue  # noqa
@@ -41,9 +42,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == NotifyValue.LEAGUEFILE_FINISH:
-            t = threading.Thread(target=self._download)
-            t.daemon = True
-            t.start()
+            self.download(**kwargs)
             return True
         return False
 
@@ -70,9 +69,16 @@ class DownloadPlugin(PluginApi, SerializableApi):
     def _shadow_internal(self, **kwargs):
         return {'statsplus': {'download.now': self.data['now']}}
 
-    def _download(self):
+    def download(self, **kwargs):
+        t = threading.Thread(target=self._download_internal, kwargs=kwargs)
+        t.daemon = True
+        t.start()
+
+    def _download_internal(self, **kwargs):
+        log(self._name(), **dict(kwargs, s='Download started.'))
         output = wget_file()
         if not output.get('ok'):
+            log(self._name(), **dict(kwargs, c=output, s='Download failed.'))
             return
 
         self.data['then'] = self.data['now']
@@ -88,6 +94,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
             self.data['year'] = True
 
         self.write()
+        log(self._name(), **dict(kwargs, s='Download finished.'))
 
     def _games(self):
         box_scores = os.path.join(_root, 'extract/box_scores')
@@ -100,9 +107,9 @@ class DownloadPlugin(PluginApi, SerializableApi):
         for box in os.listdir(os.path.join(_root, boxes)):
             bdname = os.path.join(box_scores, box)
             bfname = os.path.join(_root, boxes, box)
-            log = box.replace('game_box', 'log').replace('html', 'txt')
-            ldname = os.path.join(game_logs, log)
-            lfname = os.path.join(_root, leagues, log)
+            log_ = box.replace('game_box', 'log').replace('html', 'txt')
+            ldname = os.path.join(game_logs, log_)
+            lfname = os.path.join(_root, leagues, log_)
             if not os.path.isfile(bfname) or not os.path.isfile(lfname):
                 continue
             self._games_internal(bdname, bfname, ldname, lfname)

@@ -75,6 +75,10 @@ class DownloadPluginTest(unittest.TestCase):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
+        patch_log = mock.patch('plugins.download.download_plugin.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
+
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
@@ -83,6 +87,7 @@ class DownloadPluginTest(unittest.TestCase):
     def reset_mocks(self):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
+        self.mock_log.reset_mock()
 
     def create_plugin(self, data):
         self.init_mocks(data)
@@ -90,6 +95,7 @@ class DownloadPluginTest(unittest.TestCase):
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
         self.reset_mocks()
         self.init_mocks(data)
@@ -97,7 +103,7 @@ class DownloadPluginTest(unittest.TestCase):
         return plugin
 
     @mock.patch('plugins.download.download_plugin.threading.Thread')
-    @mock.patch.object(DownloadPlugin, '_download')
+    @mock.patch.object(DownloadPlugin, '_download_internal')
     def test_notify__with_file(self, mock_download, mock_thread):
         read = {
             'downloaded': False,
@@ -109,13 +115,18 @@ class DownloadPluginTest(unittest.TestCase):
         value = plugin._notify_internal(notify=NotifyValue.LEAGUEFILE_FINISH)
         self.assertTrue(value)
 
-        mock_thread.assert_called_once_with(target=mock_download)
+        mock_thread.assert_called_once_with(
+            target=mock_download,
+            kwargs={
+                'notify': NotifyValue.LEAGUEFILE_FINISH
+            })
         mock_thread.return_value.start.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.threading.Thread')
-    @mock.patch.object(DownloadPlugin, '_download')
+    @mock.patch.object(DownloadPlugin, '_download_internal')
     def test_notify__with_other(self, mock_download, mock_thread):
         read = {
             'downloaded': False,
@@ -130,6 +141,7 @@ class DownloadPluginTest(unittest.TestCase):
         mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_on_message(self):
         read = {
@@ -144,6 +156,7 @@ class DownloadPluginTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_run__with_downloaded_and_year_true(self):
         read = {
@@ -168,6 +181,7 @@ class DownloadPluginTest(unittest.TestCase):
         }
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_log.assert_not_called()
 
     def test_run__with_downloaded_true(self):
         read = {
@@ -189,6 +203,7 @@ class DownloadPluginTest(unittest.TestCase):
         }
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_log.assert_not_called()
 
     def test_run__with_downloaded_false(self):
         read = {
@@ -203,6 +218,7 @@ class DownloadPluginTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_setup(self):
         read = {
@@ -216,6 +232,7 @@ class DownloadPluginTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_shadow(self):
         read = {
@@ -230,12 +247,13 @@ class DownloadPluginTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(DownloadPlugin, '_leagues')
     @mock.patch('plugins.download.download_plugin.wget_file')
     @mock.patch.object(DownloadPlugin, '_games')
-    def test_download__with_new_year(self, mock_games, mock_file,
-                                     mock_leagues):
+    def test_download_internal__with_new_year(self, mock_games, mock_file,
+                                              mock_leagues):
         mock_file.return_value = {'ok': True}
         read = {
             'downloaded': False,
@@ -250,7 +268,7 @@ class DownloadPluginTest(unittest.TestCase):
 
         mock_games.side_effect = fake_games
 
-        plugin._download()
+        plugin._download_internal(v=True)
 
         write = {
             'downloaded': True,
@@ -263,12 +281,23 @@ class DownloadPluginTest(unittest.TestCase):
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        calls = [
+            mock.call('DownloadPlugin', **{
+                's': 'Download started.',
+                'v': True
+            }),
+            mock.call('DownloadPlugin', **{
+                's': 'Download finished.',
+                'v': True
+            })
+        ]
+        self.mock_log.assert_has_calls(calls)
 
     @mock.patch.object(DownloadPlugin, '_leagues')
     @mock.patch('plugins.download.download_plugin.wget_file')
     @mock.patch.object(DownloadPlugin, '_games')
-    def test_download__with_same_year(self, mock_games, mock_file,
-                                      mock_leagues):
+    def test_download_internal__with_same_year(self, mock_games, mock_file,
+                                               mock_leagues):
         mock_file.return_value = {'ok': True}
 
         read = {
@@ -284,7 +313,7 @@ class DownloadPluginTest(unittest.TestCase):
 
         mock_games.side_effect = fake_games
 
-        plugin._download()
+        plugin._download_internal(v=True)
 
         write = {
             'downloaded': True,
@@ -297,12 +326,23 @@ class DownloadPluginTest(unittest.TestCase):
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        calls = [
+            mock.call('DownloadPlugin', **{
+                's': 'Download started.',
+                'v': True
+            }),
+            mock.call('DownloadPlugin', **{
+                's': 'Download finished.',
+                'v': True
+            })
+        ]
+        self.mock_log.assert_has_calls(calls)
 
     @mock.patch.object(DownloadPlugin, '_leagues')
     @mock.patch('plugins.download.download_plugin.wget_file')
     @mock.patch.object(DownloadPlugin, '_games')
-    def test_download__with_ok_false(self, mock_games, mock_file,
-                                     mock_leagues):
+    def test_download_internal__with_ok_false(self, mock_games, mock_file,
+                                              mock_leagues):
         mock_file.return_value = {'ok': False}
 
         read = {
@@ -312,13 +352,27 @@ class DownloadPluginTest(unittest.TestCase):
             'year': False
         }
         plugin = self.create_plugin(read)
-        plugin._download()
+        plugin._download_internal(v=True)
 
         mock_games.assert_not_called()
         mock_file.assert_called_once_with()
         mock_leagues.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        calls = [
+            mock.call('DownloadPlugin', **{
+                's': 'Download started.',
+                'v': True
+            }),
+            mock.call('DownloadPlugin', **{
+                'c': {
+                    'ok': False
+                },
+                's': 'Download failed.',
+                'v': True
+            })
+        ]
+        self.mock_log.assert_has_calls(calls)
 
     @mock.patch('plugins.download.download_plugin.recreate')
     @mock.patch('plugins.download.download_plugin.os.listdir')
@@ -369,6 +423,7 @@ class DownloadPluginTest(unittest.TestCase):
         mock_recreate.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     def test_games_internal__mlb_now(self, mock_open):
@@ -406,6 +461,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     def test_games_internal__mlb_then(self, mock_open):
@@ -435,6 +491,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], THEN_ENCODED)
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     def test_games_internal__non_mlb(self, mock_open):
@@ -464,6 +521,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], THEN_ENCODED)
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(DownloadPlugin, '_leagues_internal')
     @mock.patch('plugins.download.download_plugin.os.path.isfile')
@@ -505,6 +563,7 @@ class DownloadPluginTest(unittest.TestCase):
         mock_leagues.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     @mock.patch('plugins.download.download_plugin.codecs.open')
@@ -535,6 +594,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     @mock.patch('plugins.download.download_plugin.codecs.open')
@@ -565,6 +625,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugins.download.download_plugin.open', create=True)
     @mock.patch('plugins.download.download_plugin.codecs.open')
@@ -595,6 +656,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], THEN_ENCODED)
+        self.mock_log.assert_not_called()
 
 
 if __name__ == '__main__':
