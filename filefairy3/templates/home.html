@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
+
+{% set items = [('browsable', 'Browsable'), ('internal', 'Internal')] %}
+{% block nav %}
+          {{ common.nav(items)|indent(8) }}
+{% endblock %}
+
 {% block content %}
     {% if browsable %}
-    <div class="container">
+    <div class="container anchor" id="browsable">
       {{ common.heading('globe', 'Browsable')|indent(6) }}
       <div class="row d-flex flex-wrap">
         {% for card in browsable %}
@@ -14,7 +20,7 @@
     </div>
     {% endif %}
     {% if internal %}
-    <div class="container">
+    <div class="container anchor" id="internal">
       {{ common.heading('shield', 'Internal')|indent(6) }}
       <div class="row d-flex flex-wrap">
         {% for card in internal %}

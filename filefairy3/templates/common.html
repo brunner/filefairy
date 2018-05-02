@@ -1,3 +1,21 @@
+{% macro nav(items) -%}
+<button class="navbar-toggler border-0" type="button"
+        data-toggle="collapse" data-target="#nav-dropdown"
+        aria-controls="#nav-dropdown" aria-expanded="false"
+        aria-label="nav toggler">
+  <span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse border-top" id="nav-dropdown">
+  <ul class="navbar-nav">
+    {% for item in items %}
+    <li class="nav-item">
+      <a class="nav-link" href="#{{ item[0] }}">{{ item[1] }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{%- endmacro -%}
+
 {% macro heading(icon, text) -%}
 <div class="row">
   <div class="col-12">
@@ -60,7 +78,7 @@
     if (val != filter) {
       filter = val;
       $.each({{ ids }}, function(i, v) {
-        container = $('#' + v)
+        container = $('#' + v);
         $('tbody td', container).each(function(e) {
           if ($(this).text().toLowerCase().indexOf(filter) != -1) {
             $(this).removeClass('d-none');

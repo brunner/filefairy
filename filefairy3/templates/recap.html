@@ -1,12 +1,27 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
+
+{% set items = [('filter', 'Filter')] %}
+{% if injuries %}
+{% do items.append(('injuries', 'Injuries')) %}
+{% endif %}
+{% if news %}
+{% do items.append(('news', 'News')) %}
+{% endif %}
+{% if transactions %}
+{% do items.append(('transactions', 'Transactions')) %}
+{% endif %}
+{% block nav %}
+          {{ common.nav(items)|indent(8) }}
+{% endblock %}
+
 {% block content %}
-    <div class="container">
+    <div class="container anchor" id="filter">
       {{ common.heading('magnifying-glass', 'Filter')|indent(6) }}
       {{ common.form()|indent(6) }}
     </div>
     {% if injuries %}
-    <div class="container" id="injuries"s>
+    <div class="container anchor" id="injuries"s>
       {{ common.heading('pulse', 'Injuries')|indent(6) }}
       <div class="row">
         <div class="col-12">
@@ -18,7 +33,7 @@
     </div>
     {% endif %}
     {% if news %}
-    <div class="container" id="news">
+    <div class="container anchor" id="news">
       {{ common.heading('rss', 'News')|indent(6) }}
       <div class="row">
         <div class="col-12">
@@ -30,7 +45,7 @@
     </div>
     {% endif %}
     {% if transactions %}
-    <div class="container" id="transactions">
+    <div class="container anchor" id="transactions">
       {{ common.heading('loop-circular', 'Transactions')|indent(6) }}
       <div class="row">
         <div class="col-12">
@@ -42,6 +57,7 @@
     </div>
     {% endif %}
 {% endblock %}
+
 {% block script %}
   {{ common.form_js(['injuries', 'news', 'transactions'])|indent(2) }}
 {% endblock %}

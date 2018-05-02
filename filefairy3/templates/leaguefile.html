@@ -1,8 +1,22 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
+
+{% set items = [] %}
+{% if fp %}
+{% do items.append(('progress', 'In Progress')) %}
+{% endif %}
+{% if up %}
+{% do items.append(('completed', 'Completed')) %}
+{% endif %}
+{% block nav %}
+          {% if items %}
+          {{ common.nav(items)|indent(8) }}
+          {% endif %}
+{% endblock %}
+
 {% block content %}
     {% if fp %}
-    <div class="container">
+    <div class="container anchor" id="progress">
       {{ common.heading('clock', 'In Progress')|indent(6) }}
       <div class="row">
         <div class="col-12">
@@ -12,7 +26,7 @@
     </div>
     {% endif %}
     {% if up %}
-    <div class="container">
+    <div class="container anchor" id="completed">
       {{ common.heading('task', 'Completed')|indent(6) }}
       <div class="row">
         <div class="col-12">

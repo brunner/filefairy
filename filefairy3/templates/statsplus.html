@@ -1,7 +1,22 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
+
+{% set items = [('overview', 'Overview'), ('filter', 'Filter'), ('scores', 'Scores')] %}
+{% if injuries %}
+{% do items.append(('injuries', 'Injuries')) %}
+{% endif %}
+{% if highlights %}
+{% do items.append(('highlights', 'Highlights')) %}
+{% endif %}
+{% if forecast %}
+{% do items.append(('forecast', 'Forecast')) %}
+{% endif %}
+{% block nav %}
+        {{ common.nav(items)|indent(8) }}
+{% endblock %}
+
 {% block content %}
-    <div class="container">
+    <div class="container anchor" id="overview">
       {{ common.heading('monitor', 'Overview')|indent(6) }}
       <div class="row">
         {% if live|length() > 2 %}
@@ -26,12 +41,11 @@
         {% endif %}
       </div>
     </div>
-    <div class="container">
+    <div class="container anchor" id="filter">
       {{ common.heading('magnifying-glass', 'Filter')|indent(6) }}
       {{ common.form()|indent(6) }}
     </div>
-    {% if scores %}
-    <div class="container" id="scores">
+    <div class="container anchor" id="scores">
       {{ common.heading('layers', 'Scores')|indent(6) }}
       <div class="row">
         <div class="col-12">
@@ -41,9 +55,8 @@
         </div>
       </div>
     </div>
-    {% endif %}
     {% if injuries %}
-    <div class="container" id="injuries">
+    <div class="container anchor" id="injuries">
       {{ common.heading('pulse', 'Injuries')|indent(6) }}
       <div class="row">
         <div class="col-12">
@@ -55,7 +68,7 @@
     </div>
     {% endif %}
     {% if highlights %}
-    <div class="container" id="highlights">
+    <div class="container anchor" id="highlights">
       {{ common.heading('bolt', 'Highlights')|indent(6) }}
       <div class="row">
         <div class="col-12">
@@ -67,7 +80,7 @@
     </div>
     {% endif %}
     {% if forecast %}
-    <div class="container">
+    <div class="container anchor" id="forecast">
       {{ common.heading('compass', 'Forecast')|indent(6) }}
       <div class="row">
         {% set n = forecast|length() // 2 %}
@@ -85,6 +98,7 @@
     </div>
     {% endif %}
 {% endblock %}
+
 {% block script %}
   {{ common.form_js(['#scores', '#injuries', '#highlights'])|indent(2) }}
 {% endblock %}

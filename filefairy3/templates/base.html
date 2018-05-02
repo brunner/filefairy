@@ -17,20 +17,19 @@
       min-height: 100%;
     }
     body {
-      margin: 60px 0;
-    }
-    header, footer {
-      position: absolute;
-      width: 100%;
-      height: 60px;
-      line-height: 60px;
-      background-color: #f5f5f5;
+      margin-bottom: 60px;
     }
     header {
-      top: 0;
+      background-color: #f5f5f5;
+      width: 100%;
     }
     footer {
+      background-color: #f5f5f5;
       bottom: 0;
+      height: 60px;
+      line-height: 60px;
+      position: absolute;
+      width: 100%;
     }
     .alert, .form-control {
       padding: .75rem;
@@ -39,14 +38,29 @@
       line-height: 24px;
       padding-right: .75rem;
     }
+    .anchor {
+      padding-top: 0px;
+      margin-top: 0px;
+      transition: padding-top .35s ease, margin-top .35s ease;
+    }
     .breadcrumb {
       background-color: inherit;
+      line-height: 60px;
     }
     .flex-grow {
       flex-grow: 1;
     }
     .left-8p {
       left: 8px;
+    }
+    .navbar {
+      padding: 0;
+    }
+    .navbar-nav {
+      padding: .5rem 0;
+    }
+    .navbar .nav-link {
+      padding: .5rem;
     }
     .pl-24p {
       padding-left: 24px;
@@ -92,9 +106,9 @@
 </head>
 
 <body>
-  <header class="border-bottom">
+  <header class="border-bottom sticky-top">
     <div class="container">
-      <nav aria-label="breadcrumb">
+      <nav class="navbar navbar-light" aria-label="nav">
         <ol class="breadcrumb m-0 p-0">
           {% for breadcrumb in breadcrumbs %}
           {% if breadcrumb.href != '' %}
@@ -107,6 +121,7 @@
           {% endif %}
           {% endfor %}
         </ol>
+        {% block nav %}{% endblock %}
       </nav>
     </div>
   </header>
@@ -128,6 +143,18 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
           integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
           crossorigin="anonymous"></script>
+  <script>
+    $('.navbar-toggler').one('click', function(e) {
+      setTimeout(function() {
+        var height = $('header').height() + 1;
+        var css = '<style> .anchor.offset { padding-top: %spx; margin-top: -%spx; } </style>';
+        $(css.replace(/%s/g, height)).appendTo('head');
+      }, 500);
+    });
+    $('.navbar-toggler').on('click', function(e) {
+      $('.anchor').toggleClass('offset');
+    });
+  </script>
   {% block script %}{% endblock %}
 </body>
 
