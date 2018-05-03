@@ -819,7 +819,10 @@ class FairylabProgramTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_called_once_with('DisabledPlugin',
-                                              **dict(kwargs, s='Disabled.', c=None))
+                                              **dict(
+                                                  kwargs,
+                                                  s='Disabled.',
+                                                  c=None))
         self.assertEqual(program.data, read)
 
     @mock.patch('programs.fairylab.fairylab_program.os.execv')
