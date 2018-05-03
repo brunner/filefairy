@@ -37,6 +37,7 @@ def _fix(tokens):
 
     return modified
 
+
 def cfd(n, *fnames):
     tokens = []
     for fname in fnames:
