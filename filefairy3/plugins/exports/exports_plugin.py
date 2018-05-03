@@ -57,9 +57,9 @@ class ExportsPlugin(PluginApi, RenderableApi):
         notify = kwargs['notify']
         data = self.data
         if not data['locked'] and notify in _lock_values:
-            self._lock()
+            self._lock_internal()
         elif data['locked'] and notify in _unlock_values:
-            self._unlock()
+            self._unlock_internal()
         else:
             return False
 
@@ -89,7 +89,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
             response.notify = [NotifyValue.BASE]
 
         if any([True for e in exports if e in _emails]):
-            self._lock()
+            self._lock_internal()
             response.notify = [NotifyValue.EXPORTS_EMAILS]
 
         if response.notify:
@@ -125,6 +125,18 @@ class ExportsPlugin(PluginApi, RenderableApi):
     def _success(text):
         s = '<span class="text-success border px-1">{}</span>'
         return s.format(text)
+
+    def lock(self, **kwargs):
+        self._lock_internal()
+        self.data['date'] = encode_datetime(kwargs['date'])
+        self._render(**kwargs)
+        self.write()
+
+    def unlock(self, **kwargs):
+        self._unlock_internal()
+        self.data['date'] = encode_datetime(kwargs['date'])
+        self._render(**kwargs)
+        self.write()
 
     def _form(self, teamid):
         form = self.data['form'][teamid]
@@ -179,7 +191,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
         return ret
 
-    def _lock(self):
+    def _lock_internal(self):
         data = self.data
         data['locked'] = True
         chat_post_message(
@@ -252,5 +264,5 @@ class ExportsPlugin(PluginApi, RenderableApi):
             body[i / size].append(text)
         return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 
-    def _unlock(self):
+    def _unlock_internal(self):
         self.data['locked'] = False
