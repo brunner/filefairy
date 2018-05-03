@@ -234,11 +234,16 @@ class DownloadPluginTest(unittest.TestCase):
             })
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_log.assert_called_once_with('DownloadPlugin', **{
+        calls = [mock.call('DownloadPlugin', **{
+            's': 'Ping output.',
+            'c': {'ok': True},
+            'v': True
+        }), mock.call('DownloadPlugin', **{
             'date': THEN,
             's': 'Download resumed.',
             'v': True
-        })
+        })]
+        self.mock_log.assert_has_calls(calls)
 
     def test_setup(self):
         read = {
