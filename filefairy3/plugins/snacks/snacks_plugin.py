@@ -119,7 +119,7 @@ class SnacksPlugin(PluginApi, SerializableApi):
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
                 cfd = self.__dict__.get('cfd', {})
-                reply = discuss(match[0], cfd, 4, 6, 30)
+                reply = discuss(match[0], cfd, 4, 8, 30)
                 chat_post_message(channel, reply)
                 response.notify = [NotifyValue.BASE]
 
