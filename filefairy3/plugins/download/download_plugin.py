@@ -67,6 +67,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
 
         if self.data['unreachable']:
             output = ping()
+            log(self._name(), s='Ping output.', c=output, v=True)
             if output.get('ok'):
                 log(self._name(), **dict(
                     kwargs, s='Download resumed.', v=True))
