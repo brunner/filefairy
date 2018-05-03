@@ -242,10 +242,10 @@ class FairylabProgramTest(TestUtil):
         self.assertEqual(program.ws, None)
 
     @mock.patch.object(FairylabProgram, '_try')
+    @mock.patch.object(FairylabProgram, '_reload_internal')
     @mock.patch('programs.fairylab.fairylab_program.os.listdir')
     @mock.patch('programs.fairylab.fairylab_program.os.path.isdir')
-    @mock.patch.object(FairylabProgram, '_install_internal')
-    def test_setup(self, mock_install, mock_isdir, mock_listdir, mock_try):
+    def test_setup(self, mock_isdir, mock_listdir, mock_reload, mock_try):
         mock_isdir.return_value = True
         mock_listdir.return_value = ['internal']
 
@@ -254,7 +254,8 @@ class FairylabProgramTest(TestUtil):
         program.day = THEN.day
         program._setup()
 
-        mock_install.assert_has_calls([mock.call(a1='internal', date=NOW)])
+        calls = [mock.call(a1='plugin', a2='internal', date=NOW, v=True)]
+        mock_reload.assert_has_calls(calls)
         calls = [mock.call(DIR_INTERNAL)]
         mock_isdir.assert_has_calls(calls)
         mock_listdir.assert_called_once_with(DIR_PLUGINS)
@@ -264,7 +265,7 @@ class FairylabProgramTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_called_once_with(
-            'FairylabProgram', s='Completed setup.', v=True)
+            'FairylabProgram', s='Completed setup.', date=NOW, v=True)
         self.assertEqual(program.day, NOW.day)
         self.assertEqual(program.pins, PINS_INTERNAL)
 
@@ -284,17 +285,17 @@ class FairylabProgramTest(TestUtil):
         self.mock_log.assert_not_called()
         self.assertEqual(program.pins, PINS_INTERNAL)
 
-    def test_plugin_path(self):
-        actual = FairylabProgram._plugin_path('internal')
-        expected = 'plugins.internal.internal_plugin'
-        self.assertEqual(actual, expected)
-
-    def test_plugin_clazz(self):
-        actual = FairylabProgram._plugin_clazz('internal')
+    def test_clazz(self):
+        actual = FairylabProgram._clazz('internal')
         expected = 'InternalPlugin'
         self.assertEqual(actual, expected)
-        actual = FairylabProgram._plugin_clazz('foo_bar')
+        actual = FairylabProgram._clazz('foo_bar')
         expected = 'FooBarPlugin'
+        self.assertEqual(actual, expected)
+
+    def test_package(self):
+        actual = FairylabProgram._package('plugin', 'internal')
+        expected = 'plugins.internal.internal_plugin'
         self.assertEqual(actual, expected)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
@@ -535,11 +536,12 @@ class FairylabProgramTest(TestUtil):
 
         write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_NOW)}}
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
-        mock_message.assert_called_once_with(obj=obj)
-        mock_try.assert_called_once_with('internal', '_on_message', obj=obj)
+        mock_message.assert_called_once_with(obj=obj, date=NOW)
+        mock_try.assert_called_once_with(
+            'internal', '_on_message', obj=obj, date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
 
@@ -551,11 +553,12 @@ class FairylabProgramTest(TestUtil):
         program._recv('{"type":"message","channel":"ABC","text":"foo"}')
 
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
-        mock_message.assert_called_once_with(obj=obj)
-        mock_try.assert_called_once_with('internal', '_on_message', obj=obj)
+        mock_message.assert_called_once_with(obj=obj, date=NOW)
+        mock_try.assert_called_once_with(
+            'internal', '_on_message', obj=obj, date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
@@ -742,167 +745,88 @@ class FairylabProgramTest(TestUtil):
         }
         self.assertEqual(ret, expected)
 
-    @mock.patch.object(FairylabProgram, 'uninstall')
     @mock.patch.object(FairylabProgram, '_try')
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
-    def test_install__with_valid_input(self, mock_getattr, mock_import,
-                                       mock_try, mock_uninstall):
+    def test_reload__with_valid_input(self, mock_getattr, mock_import,
+                                      mock_try):
         mock_getattr.return_value = InternalPlugin
 
+        kwargs = {'a1': 'plugin', 'a2': 'internal', 'date': THEN, 'v': True}
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.install(a1='internal', date=THEN)
+        program.reload(**kwargs)
 
         write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'InternalPlugin')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
-        mock_try.assert_called_once_with(
-            'internal', '_setup', date=THEN, v=True)
-        mock_uninstall.assert_called_once_with(
-            a1='internal', date=THEN, v=False)
+        mock_try.assert_called_once_with('internal', '_setup', **dict(kwargs))
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_datetime.datetime.now.assert_not_called()
         calls = [
-            mock.call(
-                'InternalPlugin',
-                a1='internal',
-                date=THEN,
-                s='Installed.',
-                v=True),
-            mock.call(
-                'FairylabProgram',
-                a1='internal',
-                date=THEN,
-                s='Completed setup.',
-                v=True)
+            mock.call('InternalPlugin', **dict(kwargs, s='Installed.',
+                                               c=None)),
+            mock.call('FairylabProgram', **dict(kwargs, s='Completed setup.'))
         ]
         self.mock_log.assert_has_calls(calls)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
-    @mock.patch.object(FairylabProgram, 'uninstall')
     @mock.patch.object(FairylabProgram, '_try')
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
-    def test_install__without_date(self, mock_getattr, mock_import, mock_try,
-                                   mock_uninstall):
-        mock_getattr.return_value = InternalPlugin
-
-        read = {'plugins': {}}
-        program = self.create_program(read)
-        program.install(a1='internal', v=True)
-
-        write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_NOW)}}
-        module = mock_import.return_value
-        mock_getattr.assert_called_once_with(module, 'InternalPlugin')
-        mock_import.assert_called_once_with('plugins.internal.internal_plugin')
-        mock_try.assert_called_once_with(
-            'internal', '_setup', date=NOW, v=True)
-        mock_uninstall.assert_called_once_with(a1='internal', v=False)
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_datetime.datetime.now.assert_called_once_with()
-        calls = [
-            mock.call(
-                'InternalPlugin',
-                a1='internal',
-                date=NOW,
-                s='Installed.',
-                v=True),
-            mock.call(
-                'FairylabProgram', a1='internal', s='Completed setup.', v=True)
-        ]
-        self.mock_log.assert_has_calls(calls)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
-
-    @mock.patch.object(FairylabProgram, 'uninstall')
-    @mock.patch.object(FairylabProgram, '_try')
-    @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab_program.getattr')
-    def test_install__with_thrown_exception(self, mock_getattr, mock_import,
-                                            mock_try, mock_uninstall):
+    def test_reload__with_thrown_exception(self, mock_getattr, mock_import,
+                                           mock_try):
         mock_getattr.side_effect = Exception()
 
+        kwargs = {'a1': 'plugin', 'a2': 'internal', 'date': THEN, 'v': True}
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.install(a1='internal', date=THEN)
+        program.reload(**kwargs)
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'InternalPlugin')
         mock_import.assert_called_once_with('plugins.internal.internal_plugin')
         mock_try.assert_not_called()
-        mock_uninstall.assert_called_once_with(
-            a1='internal', date=THEN, v=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'InternalPlugin',
-            a1='internal',
-            c=TRACEBACK,
-            date=THEN,
-            s='Exception.',
-            v=True)
+        self.mock_log.assert_called_once_with('InternalPlugin',
+                                              **dict(
+                                                  kwargs,
+                                                  c=TRACEBACK,
+                                                  s='Exception.'))
         self.assertEqual(program.data, read)
 
-    @mock.patch.object(FairylabProgram, 'uninstall')
     @mock.patch.object(FairylabProgram, '_try')
     @mock.patch('programs.fairylab.fairylab_program.importlib.import_module')
     @mock.patch('programs.fairylab.fairylab_program.getattr')
-    def test_install__with_disabled_plugin(self, mock_getattr, mock_import,
-                                           mock_try, mock_uninstall):
+    def test_reload__with_disabled_plugin(self, mock_getattr, mock_import,
+                                          mock_try):
         mock_getattr.return_value = DisabledPlugin
 
+        kwargs = {'a1': 'plugin', 'a2': 'disabled', 'date': THEN, 'v': True}
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.install(a1='disabled', date=THEN)
+        program.reload(**kwargs)
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'DisabledPlugin')
         mock_import.assert_called_once_with('plugins.disabled.disabled_plugin')
         mock_try.assert_not_called()
-        mock_uninstall.assert_called_once_with(
-            a1='disabled', date=THEN, v=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'DisabledPlugin', a1='disabled', date=THEN, s='Disabled.', v=True)
-        self.assertEqual(program.data, read)
-
-    @mock.patch.dict('programs.fairylab.fairylab_program.sys.modules', MODULES)
-    def test_uninstall__with_valid_input(self):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
-        program.uninstall(a1='internal')
-
-        write = {'plugins': {}}
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'InternalPlugin', a1='internal', s='Uninstalled.')
-        self.assertEqual(program.data, write)
-
-    def test_uninstall__with_plugin_not_found(self):
-        read = {'plugins': {}}
-        program = self.create_program(read)
-        program.uninstall(a1='internal')
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'InternalPlugin', a1='internal', s='Not found.')
+        self.mock_log.assert_called_once_with('DisabledPlugin',
+                                              **dict(kwargs, s='Disabled.', c=None))
         self.assertEqual(program.data, read)
 
     @mock.patch('programs.fairylab.fairylab_program.os.execv')
     def test_reboot(self, mock_execv):
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.reboot()
+        program.reboot(v=True)
 
         expected = ['python'] + sys.argv
         mock_execv.assert_called_once_with(sys.executable, expected)
@@ -915,7 +839,7 @@ class FairylabProgramTest(TestUtil):
     def test_shutdown(self):
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.shutdown()
+        program.shutdown(v=True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

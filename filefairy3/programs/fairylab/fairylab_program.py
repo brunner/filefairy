@@ -29,6 +29,9 @@ from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import rtm_connect  # noqa
 from values.notify.notify_value import NotifyValue  # noqa
 
+import logging
+logging.basicConfig()
+
 
 class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self, **kwargs):
@@ -57,15 +60,16 @@ class FairylabProgram(MessageableApi, RenderableApi):
         original = copy.deepcopy(data)
 
         date = datetime.datetime.now()
+        kwargs = {'date': date, 'v': True}
         self.day = date.day
 
         d = os.path.join(_root, 'plugins')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in sorted(ps):
-            self._install_internal(a1=p, date=date)
+            self._reload_internal(**dict(kwargs, a1='plugin', a2=p))
 
-        self._try_all('_setup', date=date, v=True)
-        log(self._name(), s='Completed setup.', v=True)
+        self._try_all('_setup', **kwargs)
+        log(self._name(), **dict(kwargs, s='Completed setup.'))
 
         if data != original:
             self.write()
@@ -78,13 +82,13 @@ class FairylabProgram(MessageableApi, RenderableApi):
         return [('html/fairylab/index.html', '', 'home.html', _home)]
 
     @staticmethod
-    def _plugin_path(p):
-        return 'plugins.{0}.{0}_plugin'.format(p)
+    def _clazz(name):
+        camel = ''.join([w.capitalize() for w in name.split('_')])
+        return '{}Plugin'.format(camel)
 
     @staticmethod
-    def _plugin_clazz(p):
-        camel = ''.join([w.capitalize() for w in p.split('_')])
-        return '{}Plugin'.format(camel)
+    def _package(path, name):
+        return '{0}s.{1}.{1}_{0}'.format(path, name)
 
     def _plugin(self, p):
         return self.data['plugins'].get(p, {})
@@ -132,13 +136,13 @@ class FairylabProgram(MessageableApi, RenderableApi):
         data = self.data
         original = copy.deepcopy(data)
 
+        date = datetime.datetime.now()
         obj = json.loads(message)
-        self._on_message(obj=obj)
-        self._try_all('_on_message', obj=obj)
+        self._on_message(obj=obj, date=date)
+        self._try_all('_on_message', obj=obj, date=date)
 
         if data != original:
             self.write()
-
         self.lock.release()
 
     def _connect(self):
@@ -226,81 +230,77 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
         return ret
 
-    def _install_internal(self, **kwargs):
-        p = kwargs['a1']
-        date = kwargs['date']
+    def reload(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
 
-        path = self._plugin_path(p)
-        clazz = self._plugin_clazz(p)
-        encoded_date = encode_datetime(date)
+        value = self._reload_internal(**kwargs)
+        if value:
+            self._try_all('_setup', **kwargs)
+            log(self._name(), **dict(kwargs, s='Completed setup.'))
+
+        if data != original:
+            self.write()
+
+    def _reload_internal(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        path = kwargs.get('a1', '')
+        name = kwargs.get('a2', '')
+        package = self._package(path, name)
+
+        if package in sys.modules:
+            del sys.modules[package]
 
         try:
+            module = importlib.import_module(package)
+
+            if path == 'plugin':
+                clazz = self._clazz(name)
+                return self._install(name, module, clazz, **kwargs)
+            else:
+                s = 'Reloaded {}.'.format(name)
+                log(self._name(), **dict(kwargs, s=s))
+        except Exception:
+            exc = traceback.format_exc()
+            log(clazz, **dict(kwargs, s='Exception.', c=exc))
+
+        return False
+
+    def _install(self, name, module, clazz, **kwargs):
+        try:
+            date = kwargs['date']
             ok = True
-            plugin = getattr(importlib.import_module(path), clazz)
+            plugin = getattr(module, clazz)
             instance = plugin(**dict(kwargs, e=self.environment))
             enabled = instance.enabled
+            exc = None
         except Exception:
+            date = None
             ok = False
             instance = None
             enabled = False
             exc = traceback.format_exc()
-            log(clazz, **dict(kwargs, s='Exception.', c=exc, v=True))
+
+        s = 'Exception.' if exc else 'Installed.' if enabled else 'Disabled.'
+        log(clazz, **dict(kwargs, s=s, c=exc))
 
         if enabled:
-            log(clazz, **dict(kwargs, s='Installed.', v=True))
-        elif instance:
-            log(clazz, **dict(kwargs, s='Disabled.', v=True))
-
-        if enabled:
-            self.data['plugins'][p] = {
-                'date': encoded_date,
-                'ok': ok,
+            self.data['plugins'][name] = {
+                'date': encode_datetime(date),
+                'ok': True,
             }
-            self.pins[p] = instance
+            self.pins[name] = instance
 
         return enabled
 
-    def install(self, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        p = kwargs.get('a1', '')
-        date = kwargs.get('date') or datetime.datetime.now()
-
-        self.uninstall(**dict(kwargs, v=False))
-        value = self._install_internal(**dict(kwargs, a1=p, date=date))
-
-        if value:
-            self._try_all('_setup', date=date, v=True)
-            log(self._name(), **dict(kwargs, s='Completed setup.', v=True))
-
-        if data != original:
-            self.write()
-
-    def uninstall(self, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        p = kwargs.get('a1', '')
-        path = self._plugin_path(p)
-        clazz = self._plugin_clazz(p)
-
-        if p in data['plugins'] and path in sys.modules:
-            del data['plugins'][p]
-            del sys.modules[path]
-            log(clazz, **dict(kwargs, s='Uninstalled.'))
-        else:
-            log(clazz, **dict(kwargs, s='Not found.'))
-
-        if data != original:
-            self.write()
-
     def reboot(self, **kwargs):
-        log(self._name(), **dict(kwargs, s='Rebooting.', v=True))
+        log(self._name(), **dict(kwargs, s='Rebooting.'))
         os.execv(sys.executable, ['python'] + sys.argv)
 
     def shutdown(self, **kwargs):
-        log(self._name(), **dict(kwargs, s='Shutting down.', v=True))
+        log(self._name(), **dict(kwargs, s='Shutting down.'))
         self.keep_running = False
 
 

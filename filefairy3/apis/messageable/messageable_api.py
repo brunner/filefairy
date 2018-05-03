@@ -42,7 +42,7 @@ class MessageableApi(NameableApi):
                 match = re.findall(pattern, text)
                 if match:
                     for i, a in enumerate(match[0].split(',')):
-                        kwargs['a{}'.format(i+1)] = a
+                        kwargs['a{}'.format(i+1)] = a.strip()
                     item(**dict(kwargs, v=True))
                     return ResponseValue(notify=[NotifyValue.BASE])
 
