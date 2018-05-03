@@ -14,6 +14,7 @@ from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa
 from utils.datetime.datetime_util import encode_datetime  # noqa
+from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.team.team_util import divisions  # noqa
 from utils.team.team_util import logo_absolute  # noqa
@@ -128,12 +129,14 @@ class ExportsPlugin(PluginApi, RenderableApi):
 
     def lock(self, **kwargs):
         self._lock_internal()
+        log(self._name(), **dict(kwargs, s='Locked tracker.'))
         self.data['date'] = encode_datetime(kwargs['date'])
         self._render(**kwargs)
         self.write()
 
     def unlock(self, **kwargs):
         self._unlock_internal()
+        log(self._name(), **dict(kwargs, s='Unlocked tracker.'))
         self.data['date'] = encode_datetime(kwargs['date'])
         self._render(**kwargs)
         self.write()
