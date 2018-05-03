@@ -29,9 +29,6 @@ from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import rtm_connect  # noqa
 from values.notify.notify_value import NotifyValue  # noqa
 
-import logging
-logging.basicConfig()
-
 
 class FairylabProgram(MessageableApi, RenderableApi):
     def __init__(self, **kwargs):
