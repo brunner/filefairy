@@ -65,18 +65,6 @@ class DownloadPlugin(PluginApi, SerializableApi):
             self.data['downloaded'] = False
             response.append_notify(NotifyValue.DOWNLOAD_FINISH)
 
-        if self.data['unreachable']:
-            output = ping()
-            if output.get('ok'):
-                log(self._name(), **dict(
-                    kwargs, s='Download resumed.', v=True))
-                self.data['unreachable'] = False
-                t = threading.Thread(
-                    target=self._download_internal, kwargs=kwargs)
-                t.daemon = True
-                t.start()
-                response.append_notify(NotifyValue.BASE)
-
         if data != original:
             self.write()
 
@@ -92,16 +80,15 @@ class DownloadPlugin(PluginApi, SerializableApi):
         data = self.data
         original = copy.deepcopy(data)
 
-        log(self._name(), **dict(kwargs, s='Download started.'))
         output = ping()
         if output.get('ok'):
-            data['unreachable'] = False
+            log(self._name(), **dict(kwargs, s='Download started.'))
             t = threading.Thread(target=self._download_internal, kwargs=kwargs)
             t.daemon = True
             t.start()
         else:
-            data['unreachable'] = True
-            log(self._name(), **dict(kwargs, c=output, s='Download failed.'))
+            log(self._name(),
+                **dict(kwargs, c=output, s='Download failed.', v=True))
 
         if data != original:
             self.write()

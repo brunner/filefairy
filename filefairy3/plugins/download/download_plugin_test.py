@@ -108,7 +108,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -127,7 +126,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -144,7 +142,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -160,7 +157,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': True,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -172,7 +168,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         self.mock_open.assert_called_once_with(DATA, 'w')
@@ -184,7 +179,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': YEAR_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': True
         }
         plugin = self.create_plugin(read)
@@ -196,56 +190,17 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': YEAR_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.threading.Thread')
-    @mock.patch('plugins.download.download_plugin.ping')
-    @mock.patch.object(DownloadPlugin, '_download_internal')
-    def test_run__with_unreachable(self, mock_download_internal, mock_ping,
-                                   mock_thread):
-        mock_ping.return_value = {'ok': True}
-
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'unreachable': True,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
-        response = plugin._run_internal(date=THEN)
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
-
-        write = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'unreachable': False,
-            'year': False
-        }
-        mock_thread.assert_called_once_with(
-            target=mock_download_internal, kwargs={
-                'date': THEN
-            })
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_log.assert_called_once_with('DownloadPlugin', **{
-            'date': THEN,
-            's': 'Download resumed.',
-            'v': True
-        })
-
     def test_setup(self):
         read = {
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -260,7 +215,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -282,36 +236,19 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
-        plugin.download(v=True)
+        plugin.download()
 
-        write = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'unreachable': True,
-            'year': False
-        }
         mock_thread.assert_not_called()
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        calls = [
-            mock.call('DownloadPlugin', **{
-                's': 'Download started.',
-                'v': True
-            }),
-            mock.call('DownloadPlugin', **{
-                'c': {
-                    'ok': False
-                },
-                's': 'Download failed.',
-                'v': True
-            })
-        ]
-        self.mock_log.assert_has_calls(calls)
+        self.mock_log.assert_called_once_with('DownloadPlugin', **{
+            'c': {
+                'ok': False
+            },
+            's': 'Download failed.',
+            'v': True
+        })
 
     @mock.patch('plugins.download.download_plugin.threading.Thread')
     @mock.patch('plugins.download.download_plugin.ping')
@@ -324,21 +261,17 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
-        plugin.download(v=True)
+        plugin.download()
 
         mock_thread.assert_called_once_with(
-            target=mock_download_internal, kwargs={
-                'v': True
-            })
+            target=mock_download_internal, kwargs={})
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_called_once_with('DownloadPlugin', **{
-            's': 'Download started.',
-            'v': True
+            's': 'Download started.'
         })
 
     @mock.patch.object(DownloadPlugin, '_leagues')
@@ -351,7 +284,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -367,7 +299,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': True,
             'now': YEAR_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': True
         }
         mock_games.assert_called_once_with()
@@ -391,7 +322,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -407,7 +337,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': True,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         mock_games.assert_called_once_with()
@@ -432,7 +361,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -491,7 +419,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -527,7 +454,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -558,7 +484,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -582,7 +507,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': NOW_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -632,7 +556,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -664,7 +587,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
@@ -696,7 +618,6 @@ class DownloadPluginTest(unittest.TestCase):
             'downloaded': False,
             'now': THEN_ENCODED,
             'then': THEN_ENCODED,
-            'unreachable': False,
             'year': False
         }
         plugin = self.create_plugin(read)
