@@ -298,11 +298,15 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
     @mock.patch.object(StatsplusPlugin, '_clear')
-    def test_on_message__with_finished_true(self, mock_clear):
+    def test_on_message__with_finished(self, mock_clear, mock_handle,
+                                       mock_table):
+        scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': 'text',
+            'text': SCORES_THEN + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -319,23 +323,9 @@ class StatsplusPluginTest(TestUtil):
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, ResponseValue())
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        mock_clear.assert_called_once_with()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.assertFalse(plugin.data['finished'])
-
-    @mock.patch.object(StatsplusPlugin, '_clear')
-    def test_on_message__with_finished_false(self, mock_clear):
-        obj = {
-            'channel': 'C7JSGHW8G',
-            'text': 'text',
-            'ts': '1000.789',
-            'user': 'U1234',
-            'bot_id': 'B7KJ3362Y'
-        }
-        read = {
+        write = {
             'finished': False,
             'highlights': {},
             'injuries': {},
@@ -345,18 +335,19 @@ class StatsplusPluginTest(TestUtil):
             'scores': {},
             'table': {},
         }
-        plugin = self.create_plugin(read)
-        response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, ResponseValue())
-
-        mock_clear.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.assertFalse(plugin.data['finished'])
+        mock_clear.assert_called_once_with()
+        mock_handle.assert_called_once_with('scores', THEN_ENCODED,
+                                            SCORES_THEN + scores,
+                                            SCORES_PATTERN, False)
+        mock_table.assert_not_called()
+        self.mock_open.assert_called_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_scores(self, mock_handle, mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_scores(self, mock_clear, mock_handle,
+                                     mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -379,6 +370,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
+        mock_clear.assert_not_called()
         mock_handle.assert_called_once_with('scores', THEN_ENCODED,
                                             SCORES_THEN + scores,
                                             SCORES_PATTERN, False)
@@ -388,8 +380,9 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_scores_and_postseason(self, mock_handle,
-                                                    mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_scores_and_postseason(self, mock_clear,
+                                                    mock_handle, mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -422,6 +415,7 @@ class StatsplusPluginTest(TestUtil):
             'scores': {},
             'table': {},
         }
+        mock_clear.assert_not_called()
         mock_handle.assert_called_once_with('scores', THEN_ENCODED,
                                             SCORES_THEN + scores,
                                             SCORES_PATTERN, False)
@@ -431,8 +425,9 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_table_and_postseason(self, mock_handle,
-                                                   mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_table_and_postseason(self, mock_clear,
+                                                   mock_handle, mock_table):
         obj = {
             'channel': 'C7JSGHW8G',
             'text': TABLE_THEN + TABLE_TEXT,
@@ -464,6 +459,7 @@ class StatsplusPluginTest(TestUtil):
             'scores': {},
             'table': {},
         }
+        mock_clear.assert_not_called()
         mock_handle.assert_not_called()
         mock_table.assert_called_once_with(THEN_ENCODED,
                                            TABLE_THEN + TABLE_TEXT)
@@ -472,7 +468,8 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_delay(self, mock_handle, mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_delay(self, mock_clear, mock_handle, mock_table):
         injuries = INJURIES_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -495,6 +492,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
+        mock_clear.assert_not_called()
         mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
                                             INJURIES_DELAY + injuries,
                                             INJURIES_PATTERN, True)
@@ -504,7 +502,9 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_injuries(self, mock_handle, mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_injuries(self, mock_clear, mock_handle,
+                                       mock_table):
         injuries = INJURIES_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -527,6 +527,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
+        mock_clear.assert_not_called()
         mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
                                             INJURIES_DATE + injuries,
                                             INJURIES_PATTERN, True)
@@ -536,7 +537,9 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_highlights(self, mock_handle, mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_highlights(self, mock_clear, mock_handle,
+                                         mock_table):
         highlights = HIGHLIGHTS_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -559,6 +562,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
+        mock_clear.assert_not_called()
         mock_handle.assert_called_once_with('highlights', THEN_ENCODED,
                                             HIGHLIGHTS_DATE + highlights,
                                             HIGHLIGHTS_PATTERN, True)
@@ -568,7 +572,9 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_invalid_bot_id(self, mock_handle, mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_invalid_bot_id(self, mock_clear, mock_handle,
+                                             mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'G3SUFLMK4',
@@ -590,6 +596,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
+        mock_clear.assert_not_called()
         mock_handle.assert_not_called()
         mock_table.assert_not_called()
         self.mock_open.assert_not_called()
@@ -597,7 +604,9 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_invalid_date(self, mock_handle, mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_invalid_date(self, mock_clear, mock_handle,
+                                           mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -620,6 +629,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
+        mock_clear.assert_not_called()
         mock_handle.assert_not_called()
         mock_table.assert_not_called()
         self.mock_open.assert_not_called()
@@ -627,7 +637,9 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_handle_table')
     @mock.patch.object(StatsplusPlugin, '_handle_key')
-    def test_on_message__with_invalid_channel(self, mock_handle, mock_table):
+    @mock.patch.object(StatsplusPlugin, '_clear')
+    def test_on_message__with_invalid_channel(self, mock_clear, mock_handle,
+                                              mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'G3SUFLMK4',
@@ -650,6 +662,7 @@ class StatsplusPluginTest(TestUtil):
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
+        mock_clear.assert_not_called()
         mock_handle.assert_not_called()
         mock_table.assert_not_called()
         self.mock_open.assert_not_called()
@@ -898,9 +911,7 @@ class StatsplusPluginTest(TestUtil):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['table'], {
-            THEN_ENCODED: TABLE_ENCODED
-        })
+        self.assertEqual(plugin.data['table'], {THEN_ENCODED: TABLE_ENCODED})
         self.assertTrue(plugin.data['resolved'])
 
     @mock.patch.object(StatsplusPlugin, '_table')

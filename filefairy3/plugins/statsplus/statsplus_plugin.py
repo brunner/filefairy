@@ -95,10 +95,6 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         data = self.data
         original = copy.deepcopy(data)
 
-        if self.data['finished']:
-            self.data['finished'] = False
-            self._clear()
-
         text = obj.get('text', '')
         date = re.findall('\d{2}\/\d{2}\/\d{4}', text)
         if not date:
@@ -109,6 +105,10 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         ndate = decode_datetime(self.shadow.get('download.now', edate))
         if ndate < ddate:
             return ResponseValue()
+
+        if self.data['finished']:
+            self.data['finished'] = False
+            self._clear()
 
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
