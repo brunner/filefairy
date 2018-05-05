@@ -529,28 +529,38 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    @mock.patch.object(StatsplusPlugin, '_resolve')
     @mock.patch.object(StatsplusPlugin, '_render')
-    def test_run__with_resolved_false(self, mock_render):
-        read = _data(unresolved=[THEN_ENCODED])
-        plugin = self.create_plugin(read)
-        response = plugin._run_internal(date=NOW)
-        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
-
-        write = DATA_CANONICAL
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-
-    @mock.patch.object(StatsplusPlugin, '_render')
-    def test_run__with_resolved_true(self, mock_render):
+    def test_run__with_resolved(self, mock_render, mock_resolve):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
         self.assertEqual(response, ResponseValue())
 
         mock_render.assert_not_called()
+        mock_resolve.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_resolve')
+    @mock.patch.object(StatsplusPlugin, '_render')
+    def test_run__with_unresolved(self, mock_render, mock_resolve):
+        read = _data(unresolved=[THEN_ENCODED])
+        plugin = self.create_plugin(read)
+
+        def fake_resolve(*args, **kwargs):
+            plugin.data['unresolved'].remove(args[0])
+
+        mock_resolve.side_effect = fake_resolve
+
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
+
+        write = DATA_CANONICAL
+        mock_render.assert_called_once_with(date=NOW)
+        mock_resolve.assert_called_once_with(THEN_ENCODED)
+        self.mock_open.assert_called_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(StatsplusPlugin, '_home')
     def test_render(self, mock_home):
@@ -849,6 +859,13 @@ class StatsplusPluginTest(TestUtil):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+
+    def test_resolve(self):
+        read = _data(unresolved=[THEN_ENCODED])
+        plugin = self.create_plugin(read)
+        plugin._resolve(THEN_ENCODED)
+
+        self.assertFalse(plugin.data['unresolved'])
 
     def test_table__highlights(self):
         read = _data(highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]})

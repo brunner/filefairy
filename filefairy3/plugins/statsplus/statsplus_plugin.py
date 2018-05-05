@@ -139,8 +139,13 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         return ResponseValue(notify=[NotifyValue.BASE])
 
     def _run_internal(self, **kwargs):
-        if self.data['unresolved']:
-            self.data['unresolved'] = []
+        data = self.data
+        original = copy.deepcopy(data)
+
+        for encoded_date in original['unresolved']:
+            self._resolve(encoded_date)
+
+        if data != original:
             self._render(**kwargs)
             self.write()
             return ResponseValue(notify=[NotifyValue.BASE])
@@ -281,6 +286,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             hw += len(re.findall(r'\|' + re.escape(encoding), scores))
             hl += len(re.findall(r', ' + re.escape(encoding), scores))
         return '{0}-{1}'.format(hw, hl)
+
+    def _resolve(self, encoded_date):
+        self.data['unresolved'].remove(encoded_date)
 
     def _table(self, key, date, path):
         lines = self.data[key][date]
