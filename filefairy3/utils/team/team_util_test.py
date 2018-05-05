@@ -20,6 +20,7 @@ from utils.team.team_util import decodings  # noqa
 from utils.team.team_util import divisions  # noqa
 from utils.team.team_util import encoding_to_decoding  # noqa
 from utils.team.team_util import encoding_to_decoding_sub  # noqa
+from utils.team.team_util import encoding_to_precoding  # noqa
 from utils.team.team_util import encoding_to_teamid  # noqa
 from utils.team.team_util import encodings  # noqa
 from utils.team.team_util import precoding_to_encoding  # noqa
@@ -164,6 +165,35 @@ class TeamUtilTest(unittest.TestCase):
         encodings = ', '.join(DE_ENCODINGS)
         decodings = ', '.join(DECODINGS)
         self.assertEqual(encoding_to_decoding_sub(encodings), decodings)
+
+    def test_encoding_to_precoding(self):
+        self.assertEqual(encoding_to_precoding('T31'), 'Arizona')
+        self.assertEqual(encoding_to_precoding('T32'), 'Atlanta')
+        self.assertEqual(encoding_to_precoding('T33'), 'Baltimore')
+        self.assertEqual(encoding_to_precoding('T34'), 'Boston')
+        self.assertEqual(encoding_to_precoding('T37'), 'Cincinnati')
+        self.assertEqual(encoding_to_precoding('T38'), 'Cleveland')
+        self.assertEqual(encoding_to_precoding('T39'), 'Colorado')
+        self.assertEqual(encoding_to_precoding('T40'), 'Detroit')
+        self.assertEqual(encoding_to_precoding('T41'), 'Miami')
+        self.assertEqual(encoding_to_precoding('T42'), 'Houston')
+        self.assertEqual(encoding_to_precoding('T43'), 'Kansas City')
+        self.assertEqual(encoding_to_precoding('T46'), 'Milwaukee')
+        self.assertEqual(encoding_to_precoding('T47'), 'Minnesota')
+        self.assertEqual(encoding_to_precoding('T50'), 'Oakland')
+        self.assertEqual(encoding_to_precoding('T51'), 'Philadelphia')
+        self.assertEqual(encoding_to_precoding('T52'), 'Pittsburgh')
+        self.assertEqual(encoding_to_precoding('T53'), 'San Diego')
+        self.assertEqual(encoding_to_precoding('T54'), 'Seattle')
+        self.assertEqual(encoding_to_precoding('T55'), 'San Francisco')
+        self.assertEqual(encoding_to_precoding('T56'), 'St. Louis')
+        self.assertEqual(encoding_to_precoding('T57'), 'Tampa Bay')
+        self.assertEqual(encoding_to_precoding('T58'), 'Texas')
+        self.assertEqual(encoding_to_precoding('T59'), 'Toronto')
+        self.assertEqual(encoding_to_precoding('T60'), 'Washington')
+        self.assertEqual(encoding_to_precoding('TCH'), 'Chicago')
+        self.assertEqual(encoding_to_precoding('TLA'), 'Los Angeles')
+        self.assertEqual(encoding_to_precoding('TNY'), 'New York')
 
     def test_encoding_to_teamid(self):
         self.assertEqual(encoding_to_teamid('T31'), '31')

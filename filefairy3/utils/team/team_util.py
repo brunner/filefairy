@@ -69,7 +69,7 @@ def _sub(ks, f, s):
 
 
 _decodings = _map('decoding', ['encoding'])
-_encodings = _map('encoding', ['teamid', 'decoding'])
+_encodings = _map('encoding', ['decoding', 'precoding', 'teamid'])
 _precodings = _map('precoding', ['encoding'])
 _teamids = _map('teamid', ['abbreviation', 'decoding', 'encoding', 'hometown'])
 
@@ -116,6 +116,10 @@ def encoding_to_decoding(encoding):
 
 def encoding_to_decoding_sub(text):
     return _sub(_encodings_keys, encoding_to_decoding, text)
+
+
+def encoding_to_precoding(encoding):
+    return _encodings.get(encoding, {}).get('precoding', '')
 
 
 def encoding_to_teamid(encoding):
