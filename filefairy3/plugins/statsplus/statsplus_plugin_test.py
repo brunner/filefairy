@@ -195,6 +195,29 @@ HIGHLIGHTS_TABLE_BODY = [[
 ]]
 
 
+def _data(finished=False,
+          highlights={},
+          injuries={},
+          offseason=False,
+          postseason=False,
+          scores={},
+          table={},
+          unresolved=[]):
+    return {
+        'finished': finished,
+        'highlights': highlights,
+        'injuries': injuries,
+        'offseason': offseason,
+        'postseason': postseason,
+        'scores': scores,
+        'table': table,
+        'unresolved': unresolved,
+    }
+
+
+DATA_CANONICAL = _data()
+
+
 class StatsplusPluginTest(TestUtil):
     def setUp(self):
         patch_open = mock.patch(
@@ -225,72 +248,27 @@ class StatsplusPluginTest(TestUtil):
         return plugin
 
     def test_notify__with_finish(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_FINISH)
         self.assertFalse(value)
 
-        write = {
-            'finished': True,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        write = _data(finished=True)
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_notify__with_year(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_YEAR)
         self.assertFalse(value)
 
-        write = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': True,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        write = _data(offseason=True)
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_notify__with_other(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.OTHER)
         self.assertFalse(value)
@@ -311,30 +289,12 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': True,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = _data(finished=True)
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        write = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        write = DATA_CANONICAL
         mock_clear.assert_called_once_with()
         mock_handle.assert_called_once_with('scores', THEN_ENCODED,
                                             SCORES_THEN + scores,
@@ -356,16 +316,7 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
@@ -391,30 +342,12 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': True,
-            'postseason': True,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = _data(offseason=True, postseason=True)
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        write = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': True,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        write = _data(offseason=True)
         mock_clear.assert_not_called()
         mock_handle.assert_called_once_with('scores', THEN_ENCODED,
                                             SCORES_THEN + scores,
@@ -435,30 +368,12 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': True,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = _data(offseason=True)
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        write = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        write = DATA_CANONICAL
         mock_clear.assert_not_called()
         mock_handle.assert_not_called()
         mock_table.assert_called_once_with(THEN_ENCODED,
@@ -478,16 +393,7 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
@@ -513,16 +419,7 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
@@ -548,16 +445,7 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
@@ -582,16 +470,7 @@ class StatsplusPluginTest(TestUtil):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
@@ -615,16 +494,7 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
@@ -648,16 +518,7 @@ class StatsplusPluginTest(TestUtil):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
@@ -670,46 +531,19 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_render')
     def test_run__with_resolved_false(self, mock_render):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': False,
-            'scores': {},
-            'table': {},
-        }
+        read = _data(unresolved=[THEN_ENCODED])
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-        write = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        write = DATA_CANONICAL
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(StatsplusPlugin, '_render')
     def test_run__with_resolved_true(self, mock_render):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
         self.assertEqual(response, ResponseValue())
@@ -722,16 +556,7 @@ class StatsplusPluginTest(TestUtil):
     def test_render(self, mock_home):
         mock_home.return_value = HOME
 
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         value = plugin._render_internal(date=NOW)
         self.assertEqual(value, [(INDEX, '', 'statsplus.html', HOME)])
@@ -742,16 +567,7 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_render')
     def test_setup(self, mock_render):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         plugin._setup_internal(date=NOW)
 
@@ -760,16 +576,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_shadow(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
         self.assertEqual(value, {})
@@ -778,22 +585,12 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_clear(self):
-        read = {
-            'finished': False,
-            'highlights': {
-                THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
-            },
-            'injuries': {
-                THEN_ENCODED: [INJURIES_TEXT_ENCODED]
-            },
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {
+        read = _data(
+            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
+            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            scores={
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
-            },
-            'table': {},
-        }
+            })
         plugin = self.create_plugin(read)
         plugin._clear()
 
@@ -804,16 +601,7 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['scores'], {})
 
     def test_handle_key__delay(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         text = INJURIES_DELAY + INJURIES_TEXT.format(_html, _player)
         plugin._handle_key('injuries', THEN_ENCODED, text, INJURIES_PATTERN,
@@ -824,19 +612,10 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['injuries'], {
             THEN_ENCODED: [INJURIES_TEXT_ENCODED]
         })
-        self.assertTrue(plugin.data['resolved'])
+        self.assertFalse(plugin.data['unresolved'])
 
     def test_handle_key__highlights(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT.format(_html, _player)
         plugin._handle_key('highlights', THEN_ENCODED, text,
@@ -847,19 +626,10 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['highlights'], {
             THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
         })
-        self.assertTrue(plugin.data['resolved'])
+        self.assertFalse(plugin.data['unresolved'])
 
     def test_handle_key__injuries(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         text = INJURIES_DATE + INJURIES_TEXT.format(_html, _player)
         plugin._handle_key('injuries', THEN_ENCODED, text, INJURIES_PATTERN,
@@ -870,19 +640,10 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['injuries'], {
             THEN_ENCODED: [INJURIES_TEXT_ENCODED]
         })
-        self.assertTrue(plugin.data['resolved'])
+        self.assertFalse(plugin.data['unresolved'])
 
     def test_handle_key__scores(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         text = SCORES_THEN + SCORES_REGULAR_TEXT.format(_html, _game_box)
         plugin._handle_key('scores', THEN_ENCODED, text, SCORES_PATTERN, False)
@@ -892,19 +653,10 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['scores'], {
             THEN_ENCODED: SCORES_REGULAR_ENCODED
         })
-        self.assertFalse(plugin.data['resolved'])
+        self.assertTrue(plugin.data['unresolved'])
 
     def test_handle_table(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         text = TABLE_THEN + TABLE_TEXT
         plugin._handle_table(THEN_ENCODED, text)
@@ -912,7 +664,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['table'], {THEN_ENCODED: TABLE_ENCODED})
-        self.assertTrue(plugin.data['resolved'])
+        self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(StatsplusPlugin, '_table')
     @mock.patch.object(StatsplusPlugin, '_live_postseason')
@@ -925,22 +677,14 @@ class StatsplusPluginTest(TestUtil):
             SCORES_TABLE_THEN,
         ]
 
-        read = {
-            'finished': False,
-            'highlights': {
-                THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
-            },
-            'injuries': {
-                THEN_ENCODED: [INJURIES_TEXT_ENCODED]
-            },
-            'offseason': False,
-            'postseason': True,
-            'resolved': True,
-            'scores': {
+        read = _data(
+            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
+            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            postseason=True,
+            scores={
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
                 NOW_ENCODED: SCORES_REGULAR_ENCODED
-            },
-        }
+            })
         plugin = self.create_plugin(read)
         actual = plugin._home(date=NOW)
         expected = {
@@ -974,22 +718,13 @@ class StatsplusPluginTest(TestUtil):
             SCORES_TABLE_THEN,
         ]
 
-        read = {
-            'finished': False,
-            'highlights': {
-                THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
-            },
-            'injuries': {
-                THEN_ENCODED: [INJURIES_TEXT_ENCODED]
-            },
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {
+        read = _data(
+            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
+            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            scores={
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
                 NOW_ENCODED: SCORES_REGULAR_ENCODED
-            },
-        }
+            })
         plugin = self.create_plugin(read)
         actual = plugin._home(date=NOW)
         expected = {
@@ -1016,18 +751,10 @@ class StatsplusPluginTest(TestUtil):
     def test_live_postseason(self, mock_body):
         mock_body.return_value = LIVE_POSTSEASON_BODY
 
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': True,
-            'resolved': True,
-            'scores': {
-                THEN_ENCODED: SCORES_POSTSEASON_ENCODED,
-            },
-            'table': {},
-        }
+        read = _data(
+            postseason=True, scores={
+                THEN_ENCODED: SCORES_POSTSEASON_ENCODED
+            })
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason()
         expected = [LIVE_HEADER_POSTSEASON, LIVE_POSTSEASON]
@@ -1044,16 +771,7 @@ class StatsplusPluginTest(TestUtil):
         mock_record.side_effect = ['1-0', '0-1', '0-1', '1-0']
         mock_series.return_value = [['T45', 'T53'], ['T34', 'T54']]
 
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason_body()
         expected = [['logo', '1', '0', 'logo'], ['logo', '1', '0', 'logo']]
@@ -1071,18 +789,10 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_live_postseason_series(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {
+        read = _data(
+            postseason=True, scores={
                 THEN_ENCODED: SCORES_POSTSEASON_ENCODED
-            },
-            'table': {},
-        }
+            })
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason_series()
         expected = [['T45', 'T53'], ['T34', 'T54']]
@@ -1097,16 +807,7 @@ class StatsplusPluginTest(TestUtil):
         mock_divisions.return_value = AL + NL
         mock_body.return_value = LIVE_REGULAR_BODY
 
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         actual = plugin._live_regular()
         expected = [LIVE_HEADER_AL, LIVE_REGULAR, LIVE_HEADER_NL, LIVE_REGULAR]
@@ -1123,16 +824,7 @@ class StatsplusPluginTest(TestUtil):
         mock_logo.return_value = 'logo'
         mock_record.side_effect = ['2-0', '0-2', '1-1'] * 3
 
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         actual = plugin._live_regular_body(AL)
         expected = [['logo'] * 3, ['logo'] * 3, ['logo'] * 3]
@@ -1149,18 +841,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_record(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {
-                THEN_ENCODED: SCORES_REGULAR_ENCODED
-            },
-            'table': {},
-        }
+        read = _data(scores={THEN_ENCODED: SCORES_REGULAR_ENCODED})
         plugin = self.create_plugin(read)
         self.assertEqual(plugin._record('33'), '0-1')
         self.assertEqual(plugin._record('35'), '0-0')
@@ -1170,18 +851,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_table__highlights(self):
-        read = {
-            'finished': False,
-            'highlights': {
-                THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
-            },
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = _data(highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]})
         plugin = self.create_plugin(read)
 
         actual = plugin._table('highlights', THEN_ENCODED, _player)
@@ -1196,18 +866,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_table__injuries(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {
-                THEN_ENCODED: [INJURIES_TEXT_ENCODED]
-            },
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {},
-            'table': {},
-        }
+        read = _data(injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]})
         plugin = self.create_plugin(read)
 
         actual = plugin._table('injuries', THEN_ENCODED, _player)
@@ -1222,18 +881,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     def test_table__scores(self):
-        read = {
-            'finished': False,
-            'highlights': {},
-            'injuries': {},
-            'offseason': False,
-            'postseason': False,
-            'resolved': True,
-            'scores': {
-                THEN_ENCODED: SCORES_REGULAR_ENCODED
-            },
-            'table': {},
-        }
+        read = _data(scores={THEN_ENCODED: SCORES_REGULAR_ENCODED})
         plugin = self.create_plugin(read)
 
         actual = plugin._table('scores', THEN_ENCODED, _game_box)

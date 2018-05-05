@@ -139,8 +139,8 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         return ResponseValue(notify=[NotifyValue.BASE])
 
     def _run_internal(self, **kwargs):
-        if not self.data['resolved']:
-            self.data['resolved'] = True
+        if self.data['unresolved']:
+            self.data['unresolved'] = []
             self._render(**kwargs)
             self.write()
             return ResponseValue(notify=[NotifyValue.BASE])
@@ -172,8 +172,9 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         for m in match:
             e = re.sub(_shorten, '{0}{1}', precoding_to_encoding_sub(m))
             self.data[key][encoded_date].append(e)
-            if key == 'scores' and any(c in e for c in _chlany):
-                self.data['resolved'] = False
+            if key == 'scores' and encoded_date not in self.data['unresolved']:
+                if any(c in e for c in _chlany):
+                    self.data['unresolved'].append(encoded_date)
 
     def _handle_table(self, encoded_date, text):
         if encoded_date not in self.data['table']:
