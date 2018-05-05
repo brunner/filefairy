@@ -19,8 +19,10 @@ from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.standings.standings_util import sort  # noqa
 from utils.team.team_util import chlany  # noqa
+from utils.team.team_util import decoding_to_encoding_sub  # noqa
 from utils.team.team_util import divisions  # noqa
 from utils.team.team_util import encoding_to_decoding_sub  # noqa
+from utils.team.team_util import encoding_to_precoding  # noqa
 from utils.team.team_util import encoding_to_teamid  # noqa
 from utils.team.team_util import encodings  # noqa
 from utils.team.team_util import logo_absolute  # noqa
@@ -111,22 +113,23 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
         if re.findall(pattern, text):
-            self._handle('highlights', edate, text, highlights, True)
+            self._handle_key('highlights', edate, text, highlights, True)
 
         injuries = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
         pattern = '\w+ <([^|]+)\|([^<]+)> was injured'
         if re.findall(pattern, text):
-            self._handle('injuries', edate, text, injuries, True)
+            self._handle_key('injuries', edate, text, injuries, True)
 
         scores = '<[^|]+\|[^<]+>'
         pattern = 'MAJOR LEAGUE BASEBALL Final Scores\n'
         if re.findall(pattern, text):
-            self._handle('scores', edate, text, scores, False)
+            self._handle_key('scores', edate, text, scores, False)
             if data['offseason'] and data['postseason']:
                 data['postseason'] = False
 
         pattern = 'MAJOR LEAGUE BASEBALL Live Table'
         if re.findall(pattern, text):
+            self._handle_table(edate, text)
             if data['offseason']:
                 data['offseason'] = False
 
@@ -156,11 +159,12 @@ class StatsplusPlugin(PluginApi, RenderableApi):
         return {}
 
     def _clear(self):
-        self.data['scores'] = {}
-        self.data['injuries'] = {}
         self.data['highlights'] = {}
+        self.data['injuries'] = {}
+        self.data['scores'] = {}
+        self.data['table'] = {}
 
-    def _handle(self, key, encoded_date, text, pattern, append):
+    def _handle_key(self, key, encoded_date, text, pattern, append):
         if not append or encoded_date not in self.data[key]:
             self.data[key][encoded_date] = []
 
@@ -170,6 +174,18 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             self.data[key][encoded_date].append(e)
             if key == 'scores' and any(c in e for c in _chlany):
                 self.data['resolved'] = False
+
+    def _handle_table(self, encoded_date, text):
+        if encoded_date not in self.data['table']:
+            self.data['table'][encoded_date] = []
+
+        prechlany = [encoding_to_precoding(c) for c in _chlany]
+        pattern = '(?:{})[^\d]+\d+\n'.format('|'.join(prechlany))
+        match = re.findall(pattern, text)
+        for m in match:
+            s = decoding_to_encoding_sub(m)
+            e = re.sub('\s{2,}', ' ', s).strip('\n')
+            self.data['table'][encoded_date].append(e)
 
     def _home(self, **kwargs):
         data = self.data

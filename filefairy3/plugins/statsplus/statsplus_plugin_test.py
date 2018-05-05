@@ -100,6 +100,7 @@ TABLE_TEXT = 'Cincinnati Reds 111\nSan Diego Padres 104\nBoston Red Sox ' + \
              'Baltimore Orioles 70\nLos Angeles Angels 70\nTexas Rangers ' + \
              '67\nTampa Bay Rays 65\nSan Francisco Giants 62\nPittsburgh ' + \
              'Pirates 53```'
+TABLE_ENCODED = ['T45 97', 'T49 95', 'T48 88', 'T35 82', 'T36 71', 'T44 70']
 HOMETOWNS = [
     'Arizona', 'Los Angeles', 'Atlanta', 'Los Angeles', 'Cincinnati',
     'Milwaukee', 'Detroit', 'Chicago', 'Houston', 'Seattle', 'Kansas City',
@@ -232,6 +233,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_FINISH)
@@ -245,6 +247,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -258,6 +261,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_YEAR)
@@ -271,6 +275,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -284,6 +289,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.OTHER)
@@ -309,6 +315,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -336,6 +343,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -346,8 +354,9 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.assertFalse(plugin.data['finished'])
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_scores(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_scores(self, mock_handle, mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -364,6 +373,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -372,11 +382,14 @@ class StatsplusPluginTest(TestUtil):
         mock_handle.assert_called_once_with('scores', THEN_ENCODED,
                                             SCORES_THEN + scores,
                                             SCORES_PATTERN, False)
+        mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_scores_and_postseason(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_scores_and_postseason(self, mock_handle,
+                                                    mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -393,6 +406,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': True,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -406,15 +420,19 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         mock_handle.assert_called_once_with('scores', THEN_ENCODED,
                                             SCORES_THEN + scores,
                                             SCORES_PATTERN, False)
+        mock_table.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_table_and_postseason(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_table_and_postseason(self, mock_handle,
+                                                   mock_table):
         obj = {
             'channel': 'C7JSGHW8G',
             'text': TABLE_THEN + TABLE_TEXT,
@@ -430,6 +448,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -443,13 +462,17 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         mock_handle.assert_not_called()
+        mock_table.assert_called_once_with(THEN_ENCODED,
+                                           TABLE_THEN + TABLE_TEXT)
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_delay(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_delay(self, mock_handle, mock_table):
         injuries = INJURIES_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -466,6 +489,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -474,11 +498,13 @@ class StatsplusPluginTest(TestUtil):
         mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
                                             INJURIES_DELAY + injuries,
                                             INJURIES_PATTERN, True)
+        mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_injuries(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_injuries(self, mock_handle, mock_table):
         injuries = INJURIES_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -495,6 +521,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -503,11 +530,13 @@ class StatsplusPluginTest(TestUtil):
         mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
                                             INJURIES_DATE + injuries,
                                             INJURIES_PATTERN, True)
+        mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_highlights(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_highlights(self, mock_handle, mock_table):
         highlights = HIGHLIGHTS_TEXT.format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -524,6 +553,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -532,11 +562,13 @@ class StatsplusPluginTest(TestUtil):
         mock_handle.assert_called_once_with('highlights', THEN_ENCODED,
                                             HIGHLIGHTS_DATE + highlights,
                                             HIGHLIGHTS_PATTERN, True)
+        mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_invalid_bot_id(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_invalid_bot_id(self, mock_handle, mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'G3SUFLMK4',
@@ -552,17 +584,20 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
         mock_handle.assert_not_called()
+        mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_invalid_date(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_invalid_date(self, mock_handle, mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
@@ -579,17 +614,20 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
         mock_handle.assert_not_called()
+        mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_handle')
-    def test_on_message__with_invalid_channel(self, mock_handle):
+    @mock.patch.object(StatsplusPlugin, '_handle_table')
+    @mock.patch.object(StatsplusPlugin, '_handle_key')
+    def test_on_message__with_invalid_channel(self, mock_handle, mock_table):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'G3SUFLMK4',
@@ -606,12 +644,14 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, ResponseValue())
 
         mock_handle.assert_not_called()
+        mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -624,7 +664,8 @@ class StatsplusPluginTest(TestUtil):
             'offseason': False,
             'postseason': False,
             'resolved': False,
-            'scores': {}
+            'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
@@ -638,6 +679,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_with(DATA, 'w')
@@ -653,6 +695,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
@@ -674,6 +717,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         value = plugin._render_internal(date=NOW)
@@ -693,6 +737,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         plugin._setup_internal(date=NOW)
@@ -710,6 +755,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
@@ -733,6 +779,7 @@ class StatsplusPluginTest(TestUtil):
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
             },
+            'table': {},
         }
         plugin = self.create_plugin(read)
         plugin._clear()
@@ -743,7 +790,7 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['injuries'], {})
         self.assertEqual(plugin.data['scores'], {})
 
-    def test_handle__delay(self):
+    def test_handle_key__delay(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -752,10 +799,12 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DELAY + INJURIES_TEXT.format(_html, _player)
-        plugin._handle('injuries', THEN_ENCODED, text, INJURIES_PATTERN, True)
+        plugin._handle_key('injuries', THEN_ENCODED, text, INJURIES_PATTERN,
+                           True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -764,7 +813,7 @@ class StatsplusPluginTest(TestUtil):
         })
         self.assertTrue(plugin.data['resolved'])
 
-    def test_handle__highlights(self):
+    def test_handle_key__highlights(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -773,11 +822,12 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT.format(_html, _player)
-        plugin._handle('highlights', THEN_ENCODED, text, HIGHLIGHTS_PATTERN,
-                       True)
+        plugin._handle_key('highlights', THEN_ENCODED, text,
+                           HIGHLIGHTS_PATTERN, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -786,7 +836,7 @@ class StatsplusPluginTest(TestUtil):
         })
         self.assertTrue(plugin.data['resolved'])
 
-    def test_handle__injuries(self):
+    def test_handle_key__injuries(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -795,10 +845,12 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DATE + INJURIES_TEXT.format(_html, _player)
-        plugin._handle('injuries', THEN_ENCODED, text, INJURIES_PATTERN, True)
+        plugin._handle_key('injuries', THEN_ENCODED, text, INJURIES_PATTERN,
+                           True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -807,7 +859,7 @@ class StatsplusPluginTest(TestUtil):
         })
         self.assertTrue(plugin.data['resolved'])
 
-    def test_handle__scores(self):
+    def test_handle_key__scores(self):
         read = {
             'finished': False,
             'highlights': {},
@@ -816,10 +868,11 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         text = SCORES_THEN + SCORES_REGULAR_TEXT.format(_html, _game_box)
-        plugin._handle('scores', THEN_ENCODED, text, SCORES_PATTERN, False)
+        plugin._handle_key('scores', THEN_ENCODED, text, SCORES_PATTERN, False)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -827,6 +880,28 @@ class StatsplusPluginTest(TestUtil):
             THEN_ENCODED: SCORES_REGULAR_ENCODED
         })
         self.assertFalse(plugin.data['resolved'])
+
+    def test_handle_table(self):
+        read = {
+            'finished': False,
+            'highlights': {},
+            'injuries': {},
+            'offseason': False,
+            'postseason': False,
+            'resolved': True,
+            'scores': {},
+            'table': {},
+        }
+        plugin = self.create_plugin(read)
+        text = TABLE_THEN + TABLE_TEXT
+        plugin._handle_table(THEN_ENCODED, text)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.assertEqual(plugin.data['table'], {
+            THEN_ENCODED: TABLE_ENCODED
+        })
+        self.assertTrue(plugin.data['resolved'])
 
     @mock.patch.object(StatsplusPlugin, '_table')
     @mock.patch.object(StatsplusPlugin, '_live_postseason')
@@ -940,6 +1015,7 @@ class StatsplusPluginTest(TestUtil):
             'scores': {
                 THEN_ENCODED: SCORES_POSTSEASON_ENCODED,
             },
+            'table': {},
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason()
@@ -965,6 +1041,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason_body()
@@ -993,6 +1070,7 @@ class StatsplusPluginTest(TestUtil):
             'scores': {
                 THEN_ENCODED: SCORES_POSTSEASON_ENCODED
             },
+            'table': {},
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason_series()
@@ -1016,6 +1094,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_regular()
@@ -1041,6 +1120,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_regular_body(AL)
@@ -1068,6 +1148,7 @@ class StatsplusPluginTest(TestUtil):
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
             },
+            'table': {},
         }
         plugin = self.create_plugin(read)
         self.assertEqual(plugin._record('33'), '0-1')
@@ -1088,6 +1169,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
 
@@ -1113,6 +1195,7 @@ class StatsplusPluginTest(TestUtil):
             'postseason': False,
             'resolved': True,
             'scores': {},
+            'table': {},
         }
         plugin = self.create_plugin(read)
 
@@ -1138,6 +1221,7 @@ class StatsplusPluginTest(TestUtil):
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
             },
+            'table': {},
         }
         plugin = self.create_plugin(read)
 
