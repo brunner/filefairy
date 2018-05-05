@@ -230,8 +230,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_FINISH)
@@ -243,8 +243,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -256,8 +256,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_YEAR)
@@ -269,8 +269,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': True,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -282,8 +282,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         value = plugin._notify_internal(notify=NotifyValue.OTHER)
@@ -307,8 +307,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -334,8 +334,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -362,8 +362,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -391,8 +391,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': True,
             'postseason': True,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -404,8 +404,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': True,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         mock_handle.assert_called_once_with('scores', THEN_ENCODED,
                                             SCORES_THEN + scores,
@@ -428,8 +428,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': True,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -441,8 +441,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         mock_handle.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
@@ -464,8 +464,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -493,8 +493,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -522,8 +522,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -550,8 +550,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -577,8 +577,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -604,8 +604,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
@@ -616,15 +616,15 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(StatsplusPlugin, '_render')
-    def test_run__with_updated_true(self, mock_render):
+    def test_run__with_resolved_false(self, mock_render):
         read = {
             'finished': False,
             'highlights': {},
             'injuries': {},
             'offseason': False,
             'postseason': False,
-            'scores': {},
-            'updated': True
+            'resolved': False,
+            'scores': {}
         }
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
@@ -636,23 +636,23 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(StatsplusPlugin, '_render')
-    def test_run__with_updated_false(self, mock_render):
+    def test_run__with_resolved_true(self, mock_render):
         read = {
             'finished': False,
             'highlights': {},
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
@@ -672,8 +672,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         value = plugin._render_internal(date=NOW)
@@ -691,8 +691,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         plugin._setup_internal(date=NOW)
@@ -708,8 +708,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
@@ -729,10 +729,10 @@ class StatsplusPluginTest(TestUtil):
             },
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
             },
-            'updated': False
         }
         plugin = self.create_plugin(read)
         plugin._clear()
@@ -750,8 +750,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DELAY + INJURIES_TEXT.format(_html, _player)
@@ -762,7 +762,7 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['injuries'], {
             THEN_ENCODED: [INJURIES_TEXT_ENCODED]
         })
-        self.assertTrue(plugin.data['updated'])
+        self.assertTrue(plugin.data['resolved'])
 
     def test_handle__highlights(self):
         read = {
@@ -771,8 +771,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT.format(_html, _player)
@@ -784,7 +784,7 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['highlights'], {
             THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
         })
-        self.assertTrue(plugin.data['updated'])
+        self.assertTrue(plugin.data['resolved'])
 
     def test_handle__injuries(self):
         read = {
@@ -793,8 +793,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         text = INJURIES_DATE + INJURIES_TEXT.format(_html, _player)
@@ -805,7 +805,7 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['injuries'], {
             THEN_ENCODED: [INJURIES_TEXT_ENCODED]
         })
-        self.assertTrue(plugin.data['updated'])
+        self.assertTrue(plugin.data['resolved'])
 
     def test_handle__scores(self):
         read = {
@@ -814,8 +814,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         text = SCORES_THEN + SCORES_REGULAR_TEXT.format(_html, _game_box)
@@ -826,7 +826,7 @@ class StatsplusPluginTest(TestUtil):
         self.assertEqual(plugin.data['scores'], {
             THEN_ENCODED: SCORES_REGULAR_ENCODED
         })
-        self.assertTrue(plugin.data['updated'])
+        self.assertFalse(plugin.data['resolved'])
 
     @mock.patch.object(StatsplusPlugin, '_table')
     @mock.patch.object(StatsplusPlugin, '_live_postseason')
@@ -849,11 +849,11 @@ class StatsplusPluginTest(TestUtil):
             },
             'offseason': False,
             'postseason': True,
+            'resolved': True,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
                 NOW_ENCODED: SCORES_REGULAR_ENCODED
             },
-            'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._home(date=NOW)
@@ -898,11 +898,11 @@ class StatsplusPluginTest(TestUtil):
             },
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
                 NOW_ENCODED: SCORES_REGULAR_ENCODED
             },
-            'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._home(date=NOW)
@@ -936,10 +936,10 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': True,
+            'resolved': True,
             'scores': {
                 THEN_ENCODED: SCORES_POSTSEASON_ENCODED,
             },
-            'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason()
@@ -963,8 +963,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason_body()
@@ -989,10 +989,10 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {
                 THEN_ENCODED: SCORES_POSTSEASON_ENCODED
             },
-            'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason_series()
@@ -1014,8 +1014,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_regular()
@@ -1039,8 +1039,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
         actual = plugin._live_regular_body(AL)
@@ -1064,10 +1064,10 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
             },
-            'updated': False
         }
         plugin = self.create_plugin(read)
         self.assertEqual(plugin._record('33'), '0-1')
@@ -1086,8 +1086,8 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
 
@@ -1111,8 +1111,8 @@ class StatsplusPluginTest(TestUtil):
             },
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {},
-            'updated': False
         }
         plugin = self.create_plugin(read)
 
@@ -1134,10 +1134,10 @@ class StatsplusPluginTest(TestUtil):
             'injuries': {},
             'offseason': False,
             'postseason': False,
+            'resolved': True,
             'scores': {
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
             },
-            'updated': False
         }
         plugin = self.create_plugin(read)
 
