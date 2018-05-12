@@ -189,15 +189,17 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     def _handle_table(self, encoded_date, text):
         if encoded_date not in self.data['table']:
-            self.data['table'][encoded_date] = []
+            self.data['table'][encoded_date] = {}
 
         prechlany = [encoding_to_precoding(c) for c in _chlany]
         pattern = '(?:{})[^\d]+\d+\n'.format('|'.join(prechlany))
         match = re.findall(pattern, text)
         for m in match:
             s = decoding_to_encoding_sub(m)
-            e = re.sub('\s{2,}', ' ', s).strip('\n')
-            self.data['table'][encoded_date].append(e)
+            e = re.sub('\s{2,}', ' ', s).strip('\n').rsplit(' ', 1)
+            if len(e) == 2:
+                team, wins = e
+                self.data['table'][encoded_date][team] = wins
 
     def _home(self, **kwargs):
         data = self.data

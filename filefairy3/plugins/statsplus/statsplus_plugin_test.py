@@ -100,7 +100,7 @@ TABLE_TEXT = 'Cincinnati Reds 111\nSan Diego Padres 104\nBoston Red Sox ' + \
              'Baltimore Orioles 70\nLos Angeles Angels 70\nTexas Rangers ' + \
              '67\nTampa Bay Rays 65\nSan Francisco Giants 62\nPittsburgh ' + \
              'Pirates 53```'
-TABLE_ENCODED = ['T45 97', 'T49 95', 'T48 88', 'T35 82', 'T36 71', 'T44 70']
+TABLE_ENCODED = {'T45': '97', 'T49': '95', 'T48': '88', 'T35': '82', 'T36': '71', 'T44': '70'}
 HOMETOWNS = [
     'Arizona', 'Los Angeles', 'Atlanta', 'Los Angeles', 'Cincinnati',
     'Milwaukee', 'Detroit', 'Chicago', 'Houston', 'Seattle', 'Kansas City',
