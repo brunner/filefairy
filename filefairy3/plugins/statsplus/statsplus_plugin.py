@@ -6,6 +6,7 @@ import datetime
 import os
 import re
 import sys
+import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugins/statsplus', '', _path)
@@ -140,17 +141,22 @@ class StatsplusPlugin(PluginApi, RenderableApi):
 
     def _run_internal(self, **kwargs):
         data = self.data
-        original = copy.deepcopy(data)
+        response = ResponseValue()
 
-        for encoded_date in original['unresolved']:
-            self._resolve(encoded_date)
-
-        if data != original:
+        if data['updated']:
+            data['updated'] = False
             self._render(**kwargs)
             self.write()
-            return ResponseValue(notify=[NotifyValue.BASE])
+            response.notify = [NotifyValue.BASE]
 
-        return ResponseValue()
+        if data['unresolved']:
+            original = copy.deepcopy(data)
+            t = threading.Thread(
+                target=self._resolve_all, args=(original['unresolved'], ))
+            t.daemon = True
+            t.start()
+
+        return response
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/statsplus/index.html'
@@ -287,8 +293,31 @@ class StatsplusPlugin(PluginApi, RenderableApi):
             hl += len(re.findall(r', ' + re.escape(encoding), scores))
         return '{0}-{1}'.format(hw, hl)
 
-    def _resolve(self, encoded_date):
-        self.data['unresolved'].remove(encoded_date)
+    def _resolve_all(self, unresolved):
+        for encoded_date in unresolved:
+            scores = self.data['scores'].get(encoded_date, [])
+            original = copy.deepcopy(scores)
+            for i in range(len(scores)):
+                if any(e in scores[i] for e in _chlany):
+                    self._resolve(encoded_date, i)
+            scores = self.data['scores'].get(encoded_date, [])
+            if not any(e in '\n'.join(scores) for e in _chlany):
+                self.data['unresolved'].remove(encoded_date)
+            if scores != original:
+                self.data['updated'] = True
+
+    def _resolve(self, encoded_date, i):
+        score = self.data['scores'][encoded_date][i]
+        pattern = '<([^|]+)\|([^<]+)>'
+        match = re.findall(pattern, score)
+        if match:
+            link, encoding = match[0]
+            value = clarify(encoded_date, link.format(_html, _game_box),
+                            encoding)
+            if encoding != value['encoding']:
+                encoding = value['encoding']
+                self.data['scores'][encoded_date][i] = '<{0}|{1}>'.format(
+                    link, encoding)
 
     def _table(self, key, date, path):
         lines = self.data[key][date]

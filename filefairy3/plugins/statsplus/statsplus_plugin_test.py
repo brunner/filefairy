@@ -190,7 +190,7 @@ INJURIES_TABLE_BODY = [[
 ]]
 HIGHLIGHTS_TABLE_BODY = [[
     player('<a href="{0}{1}38868.html">Connor Harrell</a> ties the BOS '
-           'regular season game record for runs with 4 (Boston Red Sox @ ' + \
+           'regular season game record for runs with 4 (Boston Red Sox @ '
            'Tampa Bay Rays)')
 ]]
 
@@ -202,7 +202,8 @@ def _data(finished=False,
           postseason=False,
           scores={},
           table={},
-          unresolved=[]):
+          unresolved=[],
+          updated=False):
     return {
         'finished': finished,
         'highlights': highlights,
@@ -212,6 +213,7 @@ def _data(finished=False,
         'scores': scores,
         'table': table,
         'unresolved': unresolved,
+        'updated': updated
     }
 
 
@@ -529,7 +531,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_resolve')
+    @mock.patch.object(StatsplusPlugin, '_resolve_all')
     @mock.patch.object(StatsplusPlugin, '_render')
     def test_run__with_resolved(self, mock_render, mock_resolve):
         read = DATA_CANONICAL
@@ -542,23 +544,38 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(StatsplusPlugin, '_resolve')
+    @mock.patch.object(StatsplusPlugin, '_resolve_all')
     @mock.patch.object(StatsplusPlugin, '_render')
     def test_run__with_unresolved(self, mock_render, mock_resolve):
         read = _data(unresolved=[THEN_ENCODED])
         plugin = self.create_plugin(read)
 
-        def fake_resolve(*args, **kwargs):
-            plugin.data['unresolved'].remove(args[0])
+        def fake_resolve_all(*args, **kwargs):
+            for date in args[0]:
+                plugin.data['unresolved'].remove(date)
 
-        mock_resolve.side_effect = fake_resolve
+        mock_resolve.side_effect = fake_resolve_all
+
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, ResponseValue())
+
+        mock_render.assert_not_called()
+        mock_resolve.assert_called_once_with([THEN_ENCODED])
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(StatsplusPlugin, '_resolve_all')
+    @mock.patch.object(StatsplusPlugin, '_render')
+    def test_run__with_updated(self, mock_render, mock_resolve):
+        read = _data(updated=True)
+        plugin = self.create_plugin(read)
 
         response = plugin._run_internal(date=NOW)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
         write = DATA_CANONICAL
         mock_render.assert_called_once_with(date=NOW)
-        mock_resolve.assert_called_once_with(THEN_ENCODED)
+        mock_resolve.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -860,12 +877,56 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    def test_resolve(self):
-        read = _data(unresolved=[THEN_ENCODED])
+    @mock.patch('plugins.statsplus.statsplus_plugin.clarify')
+    def test_resolve_all(self, mock_clarify):
+        mock_clarify.side_effect = [{
+            'encoding': 'T31 4 T45 2',
+            'away': 'T31',
+            'home': 'T45'
+        }, {
+            'encoding': 'T32 2 T44 1',
+            'away': 'T44',
+            'home': 'T32'
+        }, {
+            'encoding': 'T40 11 T35 4',
+            'away': 'T40',
+            'home': 'T35'
+        }, {
+            'encoding': 'T41 6 T36 2',
+            'away': 'T36',
+            'home': 'T41'
+        }, {
+            'encoding': 'T49 1 T55 0',
+            'away': 'T49',
+            'home': 'T55'
+        }, {
+            'encoding': 'T48 5 T33 3',
+            'away': 'T48',
+            'home': 'T33'
+        }]
+        read = _data(
+            scores={THEN_ENCODED: SCORES_REGULAR_ENCODED},
+            unresolved=[THEN_ENCODED])
         plugin = self.create_plugin(read)
-        plugin._resolve(THEN_ENCODED)
+        plugin._resolve_all([THEN_ENCODED])
 
+        calls = [
+            mock.call(THEN_ENCODED, '{0}{1}2998.html'.format(_html, _game_box),
+                      'T31 4, TLA 2'),
+            mock.call(THEN_ENCODED, '{0}{1}3003.html'.format(_html, _game_box),
+                      'T32 2, TLA 1'),
+            mock.call(THEN_ENCODED, '{0}{1}3002.html'.format(_html, _game_box),
+                      'T40 11, TCH 4'),
+            mock.call(THEN_ENCODED, '{0}{1}14721.html'.format(
+                _html, _game_box), 'T41 6, TCH 2'),
+            mock.call(THEN_ENCODED, '{0}{1}3001.html'.format(_html, _game_box),
+                      'TNY 1, T55 0'),
+            mock.call(THEN_ENCODED, '{0}{1}3000.html'.format(_html, _game_box),
+                      'TNY 5, T33 3')
+        ]
+        mock_clarify.assert_has_calls(calls)
         self.assertFalse(plugin.data['unresolved'])
+        self.assertTrue(plugin.data['updated'])
 
     def test_table__highlights(self):
         read = _data(highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]})
