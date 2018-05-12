@@ -17,7 +17,7 @@ _url = 'https://' + _host + '/StatsLab/league_file/' + _name
 
 
 def ping():
-    return check_output(['ping', '-c', '1', _host], timeout=2)
+    return check_output(['ping', '-c', '1', _host], timeout=8)
 
 
 def recreate(dirname):

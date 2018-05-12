@@ -31,7 +31,7 @@ class FileUtilTest(unittest.TestCase):
         self.assertEqual(output, OK)
 
         mock_check.assert_called_once_with(
-            ['ping', '-c', '1', _host], timeout=2)
+            ['ping', '-c', '1', _host], timeout=8)
 
     @mock.patch('utils.file.file_util.check_output')
     def test_recreate(self, mock_check):
