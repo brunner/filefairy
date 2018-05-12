@@ -161,8 +161,14 @@ class DownloadPluginTest(unittest.TestCase):
         }
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=THEN)
-        self.assertEqual(
-            response, ResponseValue(notify=[NotifyValue.DOWNLOAD_FINISH]))
+        self.assertEqual(response,
+                         ResponseValue(
+                             notify=[NotifyValue.DOWNLOAD_FINISH],
+                             shadow={
+                                 'statsplus': {
+                                     'download.now': NOW_ENCODED
+                                 }
+                             }))
 
         write = {
             'downloaded': False,

@@ -64,6 +64,7 @@ class DownloadPlugin(PluginApi, SerializableApi):
         if self.data['downloaded']:
             self.data['downloaded'] = False
             response.append_notify(NotifyValue.DOWNLOAD_FINISH)
+            response.shadow = self._shadow_internal(**kwargs)
 
         if data != original:
             self.write()
