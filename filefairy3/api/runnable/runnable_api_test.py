@@ -7,8 +7,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/apis/runnable', '', _path))
-from apis.runnable.runnable_api import RunnableApi  # noqa
+sys.path.append(re.sub(r'/api/runnable', '', _path))
+from api.runnable.runnable_api import RunnableApi  # noqa
 
 
 class FakeRunnable(RunnableApi):

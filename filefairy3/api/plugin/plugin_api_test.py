@@ -8,11 +8,11 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/apis/plugin', '', _path))
-from apis.plugin.plugin_api import PluginApi  # noqa
-from apis.messageable.messageable_api import MessageableApi  # noqa
-from apis.runnable.runnable_api import RunnableApi  # noqa
-from apis.renderable.renderable_api import RenderableApi  # noqa
+sys.path.append(re.sub(r'/api/plugin', '', _path))
+from api.plugin.plugin_api import PluginApi  # noqa
+from api.messageable.messageable_api import MessageableApi  # noqa
+from api.runnable.runnable_api import RunnableApi  # noqa
+from api.renderable.renderable_api import RenderableApi  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
@@ -100,7 +100,7 @@ class PluginApiTest(unittest.TestCase):
         self.assertTrue(isinstance(plugin, MessageableApi))
         self.assertTrue(isinstance(plugin, RunnableApi))
 
-    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    @mock.patch('api.serializable.serializable_api.open', create=True)
     def test_attachments__with_valid_input(self, mock_open):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -130,7 +130,7 @@ class PluginApiTest(unittest.TestCase):
         response = plugin._notify(notify=NotifyValue.OTHER)
         self.assertEqual(response, ResponseValue(notify=[NotifyValue.BASE]))
 
-    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    @mock.patch('api.serializable.serializable_api.open', create=True)
     def test_notify__with_false(self, mock_open):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)

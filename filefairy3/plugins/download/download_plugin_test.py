@@ -71,7 +71,7 @@ YEAR_ENCODED = '2023-01-01T00:00:00'
 class DownloadPluginTest(unittest.TestCase):
     def setUp(self):
         patch_open = mock.patch(
-            'apis.serializable.serializable_api.open', create=True)
+            'api.serializable.serializable_api.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 

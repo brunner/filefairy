@@ -17,9 +17,9 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
 
-from apis.messageable.messageable_api import MessageableApi  # noqa
-from apis.plugin.plugin_api import PluginApi  # noqa
-from apis.renderable.renderable_api import RenderableApi  # noqa
+from api.messageable.messageable_api import MessageableApi  # noqa
+from api.plugin.plugin_api import PluginApi  # noqa
+from api.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta  # noqa
 from utils.component.component_util import card  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa

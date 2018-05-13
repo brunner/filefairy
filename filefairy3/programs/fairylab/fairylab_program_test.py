@@ -13,8 +13,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/programs/fairylab', '', _path)
 sys.path.append(_root)
-from apis.plugin.plugin_api import PluginApi  # noqa
-from apis.renderable.renderable_api import RenderableApi  # noqa
+from api.plugin.plugin_api import PluginApi  # noqa
+from api.renderable.renderable_api import RenderableApi  # noqa
 from programs.fairylab.fairylab_program import FairylabProgram  # noqa
 from utils.component.component_util import card  # noqa
 from utils.json.json_util import dumps  # noqa
@@ -179,7 +179,7 @@ def set_running_false(program, *args, **kwargs):
 class FairylabProgramTest(TestUtil):
     def setUp(self):
         patch_open = mock.patch(
-            'apis.serializable.serializable_api.open', create=True)
+            'api.serializable.serializable_api.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 

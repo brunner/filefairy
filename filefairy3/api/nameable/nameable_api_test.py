@@ -7,8 +7,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/apis/nameable', '', _path))
-from apis.nameable.nameable_api import NameableApi  # noqa
+sys.path.append(re.sub(r'/api/nameable', '', _path))
+from api.nameable.nameable_api import NameableApi  # noqa
 
 
 class FakeNameable(NameableApi):

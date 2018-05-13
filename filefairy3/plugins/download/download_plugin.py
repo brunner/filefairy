@@ -12,8 +12,8 @@ import threading
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugins/download', '', _path)
 sys.path.append(_root)
-from apis.plugin.plugin_api import PluginApi  # noqa
-from apis.serializable.serializable_api import SerializableApi  # noqa
+from api.plugin.plugin_api import PluginApi  # noqa
+from api.serializable.serializable_api import SerializableApi  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa
 from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.file.file_util import ping  # noqa

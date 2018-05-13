@@ -11,8 +11,8 @@ import threading
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugins/statsplus', '', _path)
 sys.path.append(_root)
-from apis.plugin.plugin_api import PluginApi  # noqa
-from apis.renderable.renderable_api import RenderableApi  # noqa
+from api.plugin.plugin_api import PluginApi  # noqa
+from api.renderable.renderable_api import RenderableApi  # noqa
 from utils.box.box_util import clarify  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import decode_datetime  # noqa

@@ -10,9 +10,9 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/apis/renderable', '', _path)
+_root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
-from apis.renderable.renderable_api import RenderableApi  # noqa
+from api.renderable.renderable_api import RenderableApi  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 
 
@@ -56,14 +56,14 @@ class FakeRenderable(RenderableApi):
 
 
 class RenderableApiTest(unittest.TestCase):
-    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    @mock.patch('api.serializable.serializable_api.open', create=True)
     def test_init__with_valid_input(self, mock_open):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
         FakeRenderable(e=env())
 
-    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    @mock.patch('api.serializable.serializable_api.open', create=True)
     def test_init__with_invalid_input(self, mock_open):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -71,14 +71,14 @@ class RenderableApiTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             FakeRenderable()
 
-    @mock.patch('apis.renderable.renderable_api.threading.Thread')
+    @mock.patch('api.renderable.renderable_api.threading.Thread')
     @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('apis.serializable.serializable_api.log')
-    @mock.patch('apis.renderable.renderable_api.server', 'server')
+    @mock.patch('api.serializable.serializable_api.log')
+    @mock.patch('api.renderable.renderable_api.server', 'server')
     @mock.patch.object(RenderableApi, '_scp')
-    @mock.patch('apis.serializable.serializable_api.open', create=True)
+    @mock.patch('api.serializable.serializable_api.open', create=True)
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('apis.renderable.renderable_api.log')
+    @mock.patch('api.renderable.renderable_api.log')
     def test_render__with_valid_input(self, mock_rlog, mock_dump, mock_open,
                                       mock_scp, mock_slog, mock_stream,
                                       mock_thread):
@@ -162,15 +162,15 @@ class RenderableApiTest(unittest.TestCase):
         self.assertEqual(renderable.data, {'a': 1, 'b': True})
         mock_rlog.assert_not_called()
 
-    @mock.patch('apis.renderable.renderable_api.threading.Thread')
+    @mock.patch('api.renderable.renderable_api.threading.Thread')
     @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('apis.serializable.serializable_api.log')
-    @mock.patch('apis.renderable.renderable_api.server', 'server')
+    @mock.patch('api.serializable.serializable_api.log')
+    @mock.patch('api.renderable.renderable_api.server', 'server')
     @mock.patch.object(RenderableApi, '_scp')
-    @mock.patch('apis.serializable.serializable_api.open', create=True)
-    @mock.patch('apis.renderable.renderable_api.traceback.format_exc')
+    @mock.patch('api.serializable.serializable_api.open', create=True)
+    @mock.patch('api.renderable.renderable_api.traceback.format_exc')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('apis.renderable.renderable_api.log')
+    @mock.patch('api.renderable.renderable_api.log')
     def test_render__with_thrown_exception(
             self, mock_rlog, mock_dump, mock_exc, mock_open, mock_scp,
             mock_slog, mock_stream, mock_thread):

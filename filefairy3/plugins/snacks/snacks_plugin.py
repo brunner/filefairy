@@ -11,8 +11,8 @@ import threading
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugins/snacks', '', _path)
 sys.path.append(_root)
-from apis.plugin.plugin_api import PluginApi  # noqa
-from apis.serializable.serializable_api import SerializableApi  # noqa
+from api.plugin.plugin_api import PluginApi  # noqa
+from api.serializable.serializable_api import SerializableApi  # noqa
 from utils.corpus.corpus_util import collect  # noqa
 from utils.nltk.nltk_util import cfd  # noqa
 from utils.nltk.nltk_util import discuss  # noqa

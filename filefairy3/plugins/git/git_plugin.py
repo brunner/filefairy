@@ -8,7 +8,7 @@ import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/git', '', _path))
-from apis.plugin.plugin_api import PluginApi  # noqa
+from api.plugin.plugin_api import PluginApi  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
 from value.notify.notify_value import NotifyValue  # noqa

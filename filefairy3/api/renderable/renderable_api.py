@@ -10,9 +10,9 @@ import threading
 import traceback
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/apis/renderable', '', _path)
+_root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
-from apis.serializable.serializable_api import SerializableApi  # noqa
+from api.serializable.serializable_api import SerializableApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.secrets.secrets_util import server  # noqa

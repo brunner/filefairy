@@ -8,10 +8,10 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/apis/plugin', '', _path))
-from apis.messageable.messageable_api import MessageableApi  # noqa
-from apis.renderable.renderable_api import RenderableApi  # noqa
-from apis.runnable.runnable_api import RunnableApi  # noqa
+sys.path.append(re.sub(r'/api/plugin', '', _path))
+from api.messageable.messageable_api import MessageableApi  # noqa
+from api.renderable.renderable_api import RenderableApi  # noqa
+from api.runnable.runnable_api import RunnableApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa

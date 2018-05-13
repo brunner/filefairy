@@ -7,8 +7,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/apis/messageable', '', _path))
-from apis.messageable.messageable_api import MessageableApi  # noqa
+sys.path.append(re.sub(r'/api/messageable', '', _path))
+from api.messageable.messageable_api import MessageableApi  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

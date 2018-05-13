@@ -14,7 +14,7 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/utils/test', '', _path)
 sys.path.append(_root)
-from apis.renderable.renderable_api import RenderableApi  # noqa
+from api.renderable.renderable_api import RenderableApi  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
 
@@ -36,7 +36,7 @@ class TestUtil(unittest.TestCase):
 
 def _gen_golden(case, _cls, _pkg, _pth, _read):
     @mock.patch.object(_cls, '_render_internal')
-    @mock.patch('apis.renderable.renderable_api.check_output')
+    @mock.patch('api.renderable.renderable_api.check_output')
     def test_golden(self, mock_check, mock_render):
         self.init_mocks(_read)
         date = datetime.datetime(1985, 10, 26, 6, 2, 30)
