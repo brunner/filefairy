@@ -151,11 +151,11 @@ NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
 NOW_ENCODED = '1985-10-26T00:02:30'
 THEN = datetime.datetime(1985, 10, 25, 0, 0, 0)
 THEN_ENCODED = '1985-10-25T00:00:00'
-DIR_INTERNAL = os.path.join(_root, 'plugins', 'internal')
-DIR_PLUGINS = os.path.join(_root, 'plugins')
+DIR_INTERNAL = os.path.join(_root, 'plugin', 'internal')
+DIR_PLUGINS = os.path.join(_root, 'plugin')
 HOME = {'breadcrumbs': [], 'browsable': [], 'internal': []}
 INDEX = 'html/fairylab/index.html'
-MODULES = {'plugins.internal.internal_plugin': None}
+MODULES = {'plugin.internal.internal_plugin': None}
 PINS_BOTH = {
     'browsable': BrowsablePlugin(e=env()),
     'internal': InternalPlugin()
@@ -295,7 +295,7 @@ class FairylabProgramTest(TestUtil):
 
     def test_package(self):
         actual = FairylabProgram._package('plugin', 'internal')
-        expected = 'plugins.internal.internal_plugin'
+        expected = 'plugin.internal.internal_plugin'
         self.assertEqual(actual, expected)
 
     @mock.patch.object(InternalPlugin, '_run_internal')
@@ -760,7 +760,7 @@ class FairylabProgramTest(TestUtil):
         write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'InternalPlugin')
-        mock_import.assert_called_once_with('plugins.internal.internal_plugin')
+        mock_import.assert_called_once_with('plugin.internal.internal_plugin')
         mock_try.assert_called_once_with('internal', '_setup', **dict(kwargs))
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -787,7 +787,7 @@ class FairylabProgramTest(TestUtil):
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'InternalPlugin')
-        mock_import.assert_called_once_with('plugins.internal.internal_plugin')
+        mock_import.assert_called_once_with('plugin.internal.internal_plugin')
         mock_try.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -813,7 +813,7 @@ class FairylabProgramTest(TestUtil):
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'DisabledPlugin')
-        mock_import.assert_called_once_with('plugins.disabled.disabled_plugin')
+        mock_import.assert_called_once_with('plugin.disabled.disabled_plugin')
         mock_try.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

@@ -9,9 +9,9 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
-_root = re.sub(r'/plugins/statsplus', '', _path)
+_root = re.sub(r'/plugin/statsplus', '', _path)
 sys.path.append(_root)
-from plugins.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
+from plugin.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
@@ -799,7 +799,7 @@ class StatsplusPluginTest(TestUtil):
 
     @mock.patch.object(StatsplusPlugin, '_live_postseason_series')
     @mock.patch.object(StatsplusPlugin, '_record')
-    @mock.patch('plugins.statsplus.statsplus_plugin.logo_absolute')
+    @mock.patch('plugin.statsplus.statsplus_plugin.logo_absolute')
     def test_live_postseason_body(self, mock_logo, mock_record, mock_series):
         mock_logo.return_value = 'logo'
         mock_record.side_effect = ['1-0', '0-1', '0-1', '1-0']
@@ -836,7 +836,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(StatsplusPlugin, '_live_regular_body')
-    @mock.patch('plugins.statsplus.statsplus_plugin.divisions')
+    @mock.patch('plugin.statsplus.statsplus_plugin.divisions')
     def test_live_regular(self, mock_divisions, mock_body):
         mock_divisions.return_value = AL + NL
         mock_body.return_value = LIVE_REGULAR_BODY
@@ -853,7 +853,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(StatsplusPlugin, '_record')
-    @mock.patch('plugins.statsplus.statsplus_plugin.logo_inline')
+    @mock.patch('plugin.statsplus.statsplus_plugin.logo_inline')
     def test_live_regular_body(self, mock_logo, mock_record):
         mock_logo.return_value = 'logo'
         mock_record.side_effect = ['2-0', '0-2', '1-1'] * 3
@@ -884,7 +884,7 @@ class StatsplusPluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch('plugins.statsplus.statsplus_plugin.clarify')
+    @mock.patch('plugin.statsplus.statsplus_plugin.clarify')
     def test_resolve_all(self, mock_clarify):
         mock_clarify.side_effect = [{
             'encoding': 'T31 4 T45 2',
@@ -981,8 +981,8 @@ class StatsplusPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
 
 
-if __name__ in ['__main__', 'plugins.statsplus.statsplus_plugin_test']:
+if __name__ in ['__main__', 'plugin.statsplus.statsplus_plugin_test']:
     _main = __name__ == '__main__'
-    _pkg = 'plugins.statsplus'
-    _pth = 'plugins/statsplus'
+    _pkg = 'plugin.statsplus'
+    _pth = 'plugin/statsplus'
     main(StatsplusPluginTest, StatsplusPlugin, _pkg, _pth, {}, _main)

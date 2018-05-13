@@ -7,7 +7,7 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/plugins/recap', '', _path)
+_root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa

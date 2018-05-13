@@ -9,8 +9,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugins/git', '', _path))
-from plugins.git.git_plugin import GitPlugin  # noqa
+sys.path.append(re.sub(r'/plugin/git', '', _path))
+from plugin.git.git_plugin import GitPlugin  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 
@@ -20,10 +20,10 @@ THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
 
 class GitPluginTest(unittest.TestCase):
     def setUp(self):
-        patch_log = mock.patch('plugins.git.git_plugin.log')
+        patch_log = mock.patch('plugin.git.git_plugin.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
-        patch_check = mock.patch('plugins.git.git_plugin.check_output')
+        patch_check = mock.patch('plugin.git.git_plugin.check_output')
         self.addCleanup(patch_check.stop)
         self.mock_check = patch_check.start()
 
@@ -41,7 +41,7 @@ class GitPluginTest(unittest.TestCase):
 
         return plugin
 
-    @mock.patch('plugins.git.git_plugin.threading.Thread')
+    @mock.patch('plugin.git.git_plugin.threading.Thread')
     @mock.patch.object(GitPlugin, 'automate')
     def test_notify__with_day(self, mock_automate, mock_thread):
         plugin = self.create_plugin()
@@ -53,7 +53,7 @@ class GitPluginTest(unittest.TestCase):
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
-    @mock.patch('plugins.git.git_plugin.threading.Thread')
+    @mock.patch('plugin.git.git_plugin.threading.Thread')
     @mock.patch.object(GitPlugin, 'automate')
     def test_notify__with_other(self, mock_automate, mock_thread):
         plugin = self.create_plugin()

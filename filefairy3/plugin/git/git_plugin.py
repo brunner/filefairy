@@ -7,7 +7,7 @@ import sys
 import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugins/git', '', _path))
+sys.path.append(re.sub(r'/pluin/git', '', _path))
 from api.plugin.plugin_api import PluginApi  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa

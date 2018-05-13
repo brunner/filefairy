@@ -8,7 +8,7 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugins/leaguefile', '', _path))
+sys.path.append(re.sub(r'/plugin/leaguefile', '', _path))
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa
 from utils.ago.ago_util import delta, elapsed  # noqa

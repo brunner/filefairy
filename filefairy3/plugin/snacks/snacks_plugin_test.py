@@ -10,11 +10,11 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
-_root = re.sub(r'/plugins/snacks', '', _path)
+_root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
-from plugins.snacks.snacks_plugin import SnacksPlugin  # noqa
-from plugins.snacks.snacks_plugin import _chooselist  # noqa
-from plugins.snacks.snacks_plugin import _snacklist  # noqa
+from plugin.snacks.snacks_plugin import SnacksPlugin  # noqa
+from plugin.snacks.snacks_plugin import _chooselist  # noqa
+from plugin.snacks.snacks_plugin import _snacklist  # noqa
 from utils.json.json_util import dumps  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
@@ -34,21 +34,21 @@ class SnacksPluginTest(unittest.TestCase):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
-        patch_cfd = mock.patch('plugins.snacks.snacks_plugin.cfd')
+        patch_cfd = mock.patch('plugin.snacks.snacks_plugin.cfd')
         self.addCleanup(patch_cfd.stop)
         self.mock_cfd = patch_cfd.start()
 
         patch_chat = mock.patch(
-            'plugins.snacks.snacks_plugin.chat_post_message')
+            'plugin.snacks.snacks_plugin.chat_post_message')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
-        patch_collect = mock.patch('plugins.snacks.snacks_plugin.collect')
+        patch_collect = mock.patch('plugin.snacks.snacks_plugin.collect')
         self.addCleanup(patch_collect.stop)
         self.mock_collect = patch_collect.start()
 
         patch_reactions = mock.patch(
-            'plugins.snacks.snacks_plugin.reactions_add')
+            'plugin.snacks.snacks_plugin.reactions_add')
         self.addCleanup(patch_reactions.stop)
         self.mock_reactions = patch_reactions.start()
 
@@ -86,7 +86,7 @@ class SnacksPluginTest(unittest.TestCase):
 
         return plugin
 
-    @mock.patch('plugins.snacks.snacks_plugin.threading.Thread')
+    @mock.patch('plugin.snacks.snacks_plugin.threading.Thread')
     @mock.patch.object(SnacksPlugin, '_load')
     def test_notify__with_day(self, mock_load, mock_thread):
         read = {'members': MEMBERS_THEN}
@@ -109,7 +109,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugins.snacks.snacks_plugin.threading.Thread')
+    @mock.patch('plugin.snacks.snacks_plugin.threading.Thread')
     @mock.patch.object(SnacksPlugin, '_load')
     def test_notify__with_other(self, mock_load, mock_thread):
         read = {'members': MEMBERS_THEN}
@@ -131,7 +131,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugins.snacks.snacks_plugin.random.choice')
+    @mock.patch('plugin.snacks.snacks_plugin.random.choice')
     def test_on_message__with_choose_text(self, mock_random):
         mock_random.side_effect = ['{}. Did you even need to ask?', 'a']
 
@@ -157,7 +157,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugins.snacks.snacks_plugin.discuss')
+    @mock.patch('plugin.snacks.snacks_plugin.discuss')
     def test_on_message__with_discuss_text(self, mock_discuss):
         mock_discuss.return_value = 'response'
 
@@ -181,7 +181,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugins.snacks.snacks_plugin.channels_kick')
+    @mock.patch('plugin.snacks.snacks_plugin.channels_kick')
     def test_on_message__with_kick_text(self, mock_kick):
         obj = {
             'channel': 'C9YE6NQG0',
@@ -321,7 +321,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.threading.Thread')
+    @mock.patch('plugin.download.download_plugin.threading.Thread')
     @mock.patch.object(SnacksPlugin, '_load_internal')
     def test_setup(self, mock_load_internal, mock_thread):
         read = {'members': MEMBERS_THEN}
@@ -350,7 +350,7 @@ class SnacksPluginTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugins.snacks.snacks_plugin.os.listdir')
+    @mock.patch('plugin.snacks.snacks_plugin.os.listdir')
     def test_fnames(self, mock_listdir):
         mock_listdir.return_value = ['C1234.txt', 'C5678.txt']
 
@@ -361,7 +361,7 @@ class SnacksPluginTest(unittest.TestCase):
         ]
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.snacks.snacks_plugin.users_list')
+    @mock.patch('plugin.snacks.snacks_plugin.users_list')
     def test_names(self, mock_users):
         mock_users.return_value = {
             'ok': True,
@@ -375,7 +375,7 @@ class SnacksPluginTest(unittest.TestCase):
         expected = {'U1234': 'user'}
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.snacks.snacks_plugin.random.choice')
+    @mock.patch('plugin.snacks.snacks_plugin.random.choice')
     def test_snacks__with_different_values(self, mock_random):
         mock_random.side_effect = ['a', 'b']
 
@@ -386,7 +386,7 @@ class SnacksPluginTest(unittest.TestCase):
         calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 
-    @mock.patch('plugins.snacks.snacks_plugin.random.choice')
+    @mock.patch('plugin.snacks.snacks_plugin.random.choice')
     def test_snacks__with_same_value(self, mock_random):
         mock_random.side_effect = ['a', 'a']
 
@@ -397,8 +397,8 @@ class SnacksPluginTest(unittest.TestCase):
         calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 
-    @mock.patch('plugins.snacks.snacks_plugin.open', create=True)
-    @mock.patch('plugins.snacks.snacks_plugin.channels_list')
+    @mock.patch('plugin.snacks.snacks_plugin.open', create=True)
+    @mock.patch('plugin.snacks.snacks_plugin.channels_list')
     def test_corpus(self, mock_channels, mock_open):
         mock_channels.return_value = {
             'ok': True,

@@ -10,7 +10,7 @@ import sys
 import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/plugins/download', '', _path)
+_root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.serializable.serializable_api import SerializableApi  # noqa

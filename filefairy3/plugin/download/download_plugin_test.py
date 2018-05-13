@@ -10,9 +10,9 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
-_root = re.sub(r'/plugins/download', '', _path)
+_root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
-from plugins.download.download_plugin import DownloadPlugin  # noqa
+from plugin.download.download_plugin import DownloadPlugin  # noqa
 from utils.json.json_util import dumps  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
@@ -75,7 +75,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
-        patch_log = mock.patch('plugins.download.download_plugin.log')
+        patch_log = mock.patch('plugin.download.download_plugin.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
@@ -231,8 +231,8 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.threading.Thread')
-    @mock.patch('plugins.download.download_plugin.ping')
+    @mock.patch('plugin.download.download_plugin.threading.Thread')
+    @mock.patch('plugin.download.download_plugin.ping')
     @mock.patch.object(DownloadPlugin, '_download_internal')
     def test_download__with_ok_false(self, mock_download_internal, mock_ping,
                                      mock_thread):
@@ -256,8 +256,8 @@ class DownloadPluginTest(unittest.TestCase):
             'v': True
         })
 
-    @mock.patch('plugins.download.download_plugin.threading.Thread')
-    @mock.patch('plugins.download.download_plugin.ping')
+    @mock.patch('plugin.download.download_plugin.threading.Thread')
+    @mock.patch('plugin.download.download_plugin.ping')
     @mock.patch.object(DownloadPlugin, '_download_internal')
     def test_download__with_ok_true(self, mock_download_internal, mock_ping,
                                     mock_thread):
@@ -281,7 +281,7 @@ class DownloadPluginTest(unittest.TestCase):
         })
 
     @mock.patch.object(DownloadPlugin, '_leagues')
-    @mock.patch('plugins.download.download_plugin.wget_file')
+    @mock.patch('plugin.download.download_plugin.wget_file')
     @mock.patch.object(DownloadPlugin, '_games')
     def test_download_internal__with_new_year(self, mock_games, mock_file,
                                               mock_leagues):
@@ -318,7 +318,7 @@ class DownloadPluginTest(unittest.TestCase):
         })
 
     @mock.patch.object(DownloadPlugin, '_leagues')
-    @mock.patch('plugins.download.download_plugin.wget_file')
+    @mock.patch('plugin.download.download_plugin.wget_file')
     @mock.patch.object(DownloadPlugin, '_games')
     def test_download_internal__with_same_year(self, mock_games, mock_file,
                                                mock_leagues):
@@ -355,9 +355,9 @@ class DownloadPluginTest(unittest.TestCase):
             'v': True
         })
 
-    @mock.patch('plugins.download.download_plugin.recreate')
-    @mock.patch('plugins.download.download_plugin.os.listdir')
-    @mock.patch('plugins.download.download_plugin.os.path.isfile')
+    @mock.patch('plugin.download.download_plugin.recreate')
+    @mock.patch('plugin.download.download_plugin.os.listdir')
+    @mock.patch('plugin.download.download_plugin.os.path.isfile')
     @mock.patch.object(DownloadPlugin, '_games_internal')
     def test_games(self, mock_games, mock_isfile, mock_listdir, mock_recreate):
         mock_isfile.return_value = True
@@ -406,7 +406,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.open', create=True)
+    @mock.patch('plugin.download.download_plugin.open', create=True)
     def test_games_internal__mlb_now(self, mock_open):
         bmo = mock.mock_open(read_data=BOX_MLB_NOW)
         mock_bhandle = bmo()
@@ -444,7 +444,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.open', create=True)
+    @mock.patch('plugin.download.download_plugin.open', create=True)
     def test_games_internal__mlb_then(self, mock_open):
         bmo = mock.mock_open(read_data=BOX_MLB_THEN)
         mock_bhandle = bmo()
@@ -474,7 +474,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.assertEqual(plugin.data['now'], THEN_ENCODED)
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.open', create=True)
+    @mock.patch('plugin.download.download_plugin.open', create=True)
     def test_games_internal__non_mlb(self, mock_open):
         bmo = mock.mock_open(read_data=BOX_NON_MLB)
         mock_bhandle = bmo()
@@ -505,7 +505,7 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     @mock.patch.object(DownloadPlugin, '_leagues_internal')
-    @mock.patch('plugins.download.download_plugin.os.path.isfile')
+    @mock.patch('plugin.download.download_plugin.os.path.isfile')
     def test_leagues(self, mock_isfile, mock_leagues):
         mock_isfile.return_value = True
 
@@ -546,8 +546,8 @@ class DownloadPluginTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.open', create=True)
-    @mock.patch('plugins.download.download_plugin.codecs.open')
+    @mock.patch('plugin.download.download_plugin.open', create=True)
+    @mock.patch('plugin.download.download_plugin.codecs.open')
     def test_leagues_internal__injuries(self, mock_copen, mock_open):
         cdata = '\n'.join([INJ_THEN, INJ_NOW])
         cmo = mock.mock_open(read_data=cdata)
@@ -577,8 +577,8 @@ class DownloadPluginTest(unittest.TestCase):
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.open', create=True)
-    @mock.patch('plugins.download.download_plugin.codecs.open')
+    @mock.patch('plugin.download.download_plugin.open', create=True)
+    @mock.patch('plugin.download.download_plugin.codecs.open')
     def test_leagues_internal__news(self, mock_copen, mock_open):
         cdata = '\n'.join([NEWS_THEN, NEWS_NOW])
         cmo = mock.mock_open(read_data=cdata)
@@ -608,8 +608,8 @@ class DownloadPluginTest(unittest.TestCase):
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
         self.mock_log.assert_not_called()
 
-    @mock.patch('plugins.download.download_plugin.open', create=True)
-    @mock.patch('plugins.download.download_plugin.codecs.open')
+    @mock.patch('plugin.download.download_plugin.open', create=True)
+    @mock.patch('plugin.download.download_plugin.codecs.open')
     def test_leagues_internal__transactions(self, mock_copen, mock_open):
         cdata = '\n'.join([TRANS_THEN, TRANS_NOW])
         cmo = mock.mock_open(read_data=cdata)

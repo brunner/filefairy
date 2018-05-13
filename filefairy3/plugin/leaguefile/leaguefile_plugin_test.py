@@ -9,9 +9,9 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
-_root = re.sub(r'/plugins/leaguefile', '', _path)
+_root = re.sub(r'/plugin/leaguefile', '', _path)
 sys.path.append(_root)
-from plugins.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
+from plugin.leaguefile.leaguefile_plugin import LeaguefilePlugin  # noqa
 from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
@@ -82,7 +82,7 @@ class LeaguefilePluginTest(TestUtil):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
         patch_chat = mock.patch(
-            'plugins.leaguefile.leaguefile_plugin.chat_post_message')
+            'plugin.leaguefile.leaguefile_plugin.chat_post_message')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
@@ -329,8 +329,8 @@ class LeaguefilePluginTest(TestUtil):
         expected = '1h 55m'
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.server', 'SERVER')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
+    @mock.patch('plugin.leaguefile.leaguefile_plugin.server', 'SERVER')
+    @mock.patch('plugin.leaguefile.leaguefile_plugin.check_output')
     def test_check__with_filepart(self, mock_check):
         mock_check.return_value = {'ok': True, 'output': LS_WITH_FILEPART}
 
@@ -345,8 +345,8 @@ class LeaguefilePluginTest(TestUtil):
         self.mock_open.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.server', 'SERVER')
-    @mock.patch('plugins.leaguefile.leaguefile_plugin.check_output')
+    @mock.patch('plugin.leaguefile.leaguefile_plugin.server', 'SERVER')
+    @mock.patch('plugin.leaguefile.leaguefile_plugin.check_output')
     def test_check__without_filepart(self, mock_check):
         mock_check.return_value = {'ok': True, 'output': LS_WITHOUT_FILEPART}
 
@@ -407,8 +407,8 @@ class LeaguefilePluginTest(TestUtil):
         self.assertEqual(value, expected)
 
 
-if __name__ in ['__main__', 'plugins.leaguefile.leaguefile_plugin_test']:
+if __name__ in ['__main__', 'plugin.leaguefile.leaguefile_plugin_test']:
     _main = __name__ == '__main__'
-    _pkg = 'plugins.leaguefile'
-    _pth = 'plugins/leaguefile'
+    _pkg = 'plugin.leaguefile'
+    _pth = 'plugin/leaguefile'
     main(LeaguefilePluginTest, LeaguefilePlugin, _pkg, _pth, {}, _main)

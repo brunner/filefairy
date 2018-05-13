@@ -60,7 +60,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
         kwargs = {'date': date, 'v': True}
         self.day = date.day
 
-        d = os.path.join(_root, 'plugins')
+        d = os.path.join(_root, 'plugin')
         ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
         for p in sorted(ps):
             self._reload_internal(**dict(kwargs, a1='plugin', a2=p))
@@ -85,7 +85,7 @@ class FairylabProgram(MessageableApi, RenderableApi):
 
     @staticmethod
     def _package(path, name):
-        return '{0}s.{1}.{1}_{0}'.format(path, name)
+        return '{0}.{1}.{1}_{0}'.format(path, name)
 
     def _plugin(self, p):
         return self.data['plugins'].get(p, {})

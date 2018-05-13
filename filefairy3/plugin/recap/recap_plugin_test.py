@@ -9,9 +9,9 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
-_root = re.sub(r'/plugins/recap', '', _path)
+_root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
-from plugins.recap.recap_plugin import RecapPlugin  # noqa
+from plugin.recap.recap_plugin import RecapPlugin  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.json.json_util import dumps  # noqa
@@ -118,7 +118,7 @@ class RecapPluginTest(TestUtil):
             'api.serializable.serializable_api.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
-        patch_chat = mock.patch('plugins.recap.recap_plugin.chat_post_message')
+        patch_chat = mock.patch('plugin.recap.recap_plugin.chat_post_message')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
@@ -263,8 +263,8 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.recap.recap_plugin.records')
-    @mock.patch('plugins.recap.recap_plugin.os.listdir')
+    @mock.patch('plugin.recap.recap_plugin.records')
+    @mock.patch('plugin.recap.recap_plugin.os.listdir')
     def test_standings(self, mock_listdir, mock_records):
         boxes = ['123', '456', '789']
         mock_listdir.return_value = [
@@ -289,7 +289,7 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.recap.recap_plugin.open', create=True)
+    @mock.patch('plugin.recap.recap_plugin.open', create=True)
     def test_tables__injuries(self, mock_open):
         mo = mock.mock_open(read_data=INJ_AFTER)
         mock_open.side_effect = [mo.return_value]
@@ -305,7 +305,7 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.recap.recap_plugin.open', create=True)
+    @mock.patch('plugin.recap.recap_plugin.open', create=True)
     def test_tables__news(self, mock_open):
         mo = mock.mock_open(read_data=NEWS_AFTER)
         mock_open.side_effect = [mo.return_value]
@@ -321,7 +321,7 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugins.recap.recap_plugin.open', create=True)
+    @mock.patch('plugin.recap.recap_plugin.open', create=True)
     def test_tables__transactions(self, mock_open):
         mo = mock.mock_open(read_data=TRANS_AFTER)
         mock_open.side_effect = [mo.return_value]
@@ -338,8 +338,8 @@ class RecapPluginTest(TestUtil):
         self.mock_chat.assert_not_called()
 
 
-if __name__ in ['__main__', 'plugins.recap.recap_plugin_test']:
+if __name__ in ['__main__', 'plugin.recap.recap_plugin_test']:
     _main = __name__ == '__main__'
-    _pkg = 'plugins.recap'
-    _pth = 'plugins/recap'
+    _pkg = 'plugin.recap'
+    _pth = 'plugin/recap'
     main(RecapPluginTest, RecapPlugin, _pkg, _pth, {}, _main)

@@ -9,8 +9,8 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugins/exports', '', _path))
-from plugins.exports.exports_plugin import ExportsPlugin  # noqa
+sys.path.append(re.sub(r'/plugin/exports', '', _path))
+from plugin.exports.exports_plugin import ExportsPlugin  # noqa
 from utils.component.component_util import card  # noqa
 from utils.component.component_util import table  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
@@ -71,16 +71,16 @@ class ExportsPluginTest(TestUtil):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
-        patch_urlopen = mock.patch('plugins.exports.exports_plugin.urlopen')
+        patch_urlopen = mock.patch('plugin.exports.exports_plugin.urlopen')
         self.addCleanup(patch_urlopen.stop)
         self.mock_urlopen = patch_urlopen.start()
 
         patch_chat = mock.patch(
-            'plugins.exports.exports_plugin.chat_post_message')
+            'plugin.exports.exports_plugin.chat_post_message')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
-        patch_log = mock.patch('plugins.exports.exports_plugin.log')
+        patch_log = mock.patch('plugin.exports.exports_plugin.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
@@ -449,7 +449,7 @@ class ExportsPluginTest(TestUtil):
 
     @mock.patch.object(ExportsPlugin, '_table')
     @mock.patch.object(ExportsPlugin, '_sorted')
-    @mock.patch('plugins.exports.exports_plugin.divisions')
+    @mock.patch('plugin.exports.exports_plugin.divisions')
     def test_home__without_old(self, mock_divisions, mock_sorted, mock_table):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
@@ -499,7 +499,7 @@ class ExportsPluginTest(TestUtil):
 
     @mock.patch.object(ExportsPlugin, '_table')
     @mock.patch.object(ExportsPlugin, '_sorted')
-    @mock.patch('plugins.exports.exports_plugin.divisions')
+    @mock.patch('plugin.exports.exports_plugin.divisions')
     def test_home__with_old(self, mock_divisions, mock_sorted, mock_table):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
@@ -549,7 +549,7 @@ class ExportsPluginTest(TestUtil):
 
     @mock.patch.object(ExportsPlugin, '_table')
     @mock.patch.object(ExportsPlugin, '_sorted')
-    @mock.patch('plugins.exports.exports_plugin.divisions')
+    @mock.patch('plugin.exports.exports_plugin.divisions')
     def test_home__with_lock_internal(self, mock_divisions, mock_sorted,
                                       mock_table):
         mock_divisions.return_value = [('AL East', ['33', '34']),
@@ -720,7 +720,7 @@ class ExportsPluginTest(TestUtil):
         expected = 'L2'
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.exports.exports_plugin.teamid_to_abbreviation')
+    @mock.patch('plugin.exports.exports_plugin.teamid_to_abbreviation')
     def test_sorted(self, mock_name):
         mock_name.side_effect = ['ARI', 'ATL']
 
@@ -740,7 +740,7 @@ class ExportsPluginTest(TestUtil):
         mock_name.assert_called_once_with('32')
         self.assertEqual(actual, expected)
 
-    @mock.patch('plugins.exports.exports_plugin.divisions')
+    @mock.patch('plugin.exports.exports_plugin.divisions')
     def test_table(self, mock_divisions):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
@@ -778,8 +778,8 @@ class ExportsPluginTest(TestUtil):
         self.assertFalse(plugin.data['locked'])
 
 
-if __name__ in ['__main__', 'plugins.exports.exports_plugin_test']:
+if __name__ in ['__main__', 'plugin.exports.exports_plugin_test']:
     _main = __name__ == '__main__'
-    _pkg = 'plugins.exports'
-    _pth = 'plugins/exports'
+    _pkg = 'plugin.exports'
+    _pth = 'plugin/exports'
     main(ExportsPluginTest, ExportsPlugin, _pkg, _pth, {}, _main)
