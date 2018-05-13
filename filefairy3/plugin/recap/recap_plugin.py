@@ -69,6 +69,12 @@ class RecapPlugin(PluginApi, RenderableApi):
         return [(html, '', 'recap.html', _home)]
 
     def _setup_internal(self, **kwargs):
+        # Temporary, remove.
+        chat_post_message(
+            'fairylab',
+            'League news updated.',
+            attachments=self._attachments())
+
         self._render(**kwargs)
 
     def _shadow_internal(self, **kwargs):
