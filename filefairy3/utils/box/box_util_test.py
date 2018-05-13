@@ -11,6 +11,7 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/utils/box', '', _path))
 from utils.box.box_util import clarify  # noqa
+from utils.box.box_util import records  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_{}.html'
@@ -18,6 +19,8 @@ _game_box = 'box_scores/game_box_{}.html'
 DATE = datetime.datetime(2022, 10, 9, 0, 0, 0)
 FDATE = '10/09/2022'
 FDATE_INVALID = '10/26/1985'
+RECORD1 = '76-86'
+RECORD2 = '97-65'
 TEAM1 = 'Arizona Diamondbacks'
 TEAM2 = 'Los Angeles Dodgers'
 TEAM3 = 'Los Angeles Angels'
@@ -170,6 +173,20 @@ class BoxUtilTest(unittest.TestCase):
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 3')
         expected = _value('T31 4, TLA 3', '', '')
+        self.assertEqual(actual, expected)
+
+        mock_urlopen.assert_called_once_with(link)
+
+    @mock.patch('utils.box.box_util.urlopen')
+    def test_records__with_valid_content(self, mock_urlopen):
+        row1 = '{} ({})'.format(TEAM1, RECORD1)
+        row2 = '{} ({})'.format(TEAM2, RECORD2)
+        content = VALID.format(TEAM1, TEAM2, FDATE, row1, row2)
+        mock_urlopen.return_value = content
+
+        link = _html + _game_box.format('2998')
+        actual = records(link)
+        expected = {'T31': RECORD1, 'T45': RECORD2}
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)

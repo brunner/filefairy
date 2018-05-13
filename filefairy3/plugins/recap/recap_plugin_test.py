@@ -106,6 +106,10 @@ BREADCRUMBS = [{
     'href': '',
     'name': 'Recap'
 }]
+READ = {'standings': {}}
+RECORDS1 = {'T31': '76-86', 'T45': '97-65'}
+RECORDS2 = {'T32': '77-85', 'T44': '70-92'}
+RECORDS3 = {'T31': '75-86', 'T45': '97-64'}
 
 
 class RecapPluginTest(TestUtil):
@@ -128,27 +132,29 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.reset_mock()
         self.mock_chat.reset_mock()
 
-    def create_plugin(self):
-        self.init_mocks({})
+    def create_plugin(self, read):
+        self.init_mocks(read)
         plugin = RecapPlugin(e=env())
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
-        self.assertEqual(plugin.data, {})
+        self.assertEqual(plugin.data, read)
 
         self.reset_mocks()
         self.init_mocks({})
 
         return plugin
 
+    @mock.patch.object(RecapPlugin, '_standings')
     @mock.patch.object(RecapPlugin, '_render')
-    def test_notify__with_download(self, mock_render):
-        plugin = self.create_plugin()
+    def test_notify__with_download(self, mock_render, mock_standings):
+        plugin = self.create_plugin(READ)
         value = plugin._notify_internal(notify=NotifyValue.DOWNLOAD_FINISH)
         self.assertTrue(value)
 
         mock_render.assert_called_once_with(notify=NotifyValue.DOWNLOAD_FINISH)
+        mock_standings.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_called_once_with(
@@ -156,19 +162,21 @@ class RecapPluginTest(TestUtil):
             'League news updated.',
             attachments=plugin._attachments())
 
+    @mock.patch.object(RecapPlugin, '_standings')
     @mock.patch.object(RecapPlugin, '_render')
-    def test_notify__with_other(self, mock_render):
-        plugin = self.create_plugin()
+    def test_notify__with_other(self, mock_render, mock_standings):
+        plugin = self.create_plugin(READ)
         value = plugin._notify_internal(notify=NotifyValue.OTHER)
         self.assertFalse(value)
 
         mock_render.assert_not_called()
+        mock_standings.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
     def test_on_message(self):
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         response = plugin._on_message_internal()
         self.assertEqual(response, ResponseValue())
 
@@ -177,7 +185,7 @@ class RecapPluginTest(TestUtil):
         self.mock_chat.assert_not_called()
 
     def test_run(self):
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         response = plugin._run_internal()
         self.assertEqual(response, ResponseValue())
 
@@ -189,7 +197,7 @@ class RecapPluginTest(TestUtil):
     def test_render(self, mock_home):
         mock_home.return_value = HOME
 
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         value = plugin._render_internal(date=NOW)
         self.assertEqual(value, [(INDEX, '', 'recap.html', HOME)])
 
@@ -200,7 +208,7 @@ class RecapPluginTest(TestUtil):
 
     @mock.patch.object(RecapPlugin, '_render')
     def test_setup(self, mock_render):
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         plugin._setup_internal(date=NOW)
 
         mock_render.assert_called_once_with(date=NOW)
@@ -209,7 +217,7 @@ class RecapPluginTest(TestUtil):
         self.mock_chat.assert_not_called()
 
     def test_shadow(self):
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         value = plugin._shadow_internal()
         self.assertEqual(value, {})
 
@@ -229,7 +237,7 @@ class RecapPluginTest(TestUtil):
 
     @mock.patch.object(RecapPlugin, '_tables')
     def test_home(self, mock_tables):
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
 
         def fake_tables(*args, **kwargs):
             key = args[0]
@@ -255,12 +263,38 @@ class RecapPluginTest(TestUtil):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    @mock.patch('plugins.recap.recap_plugin.records')
+    @mock.patch('plugins.recap.recap_plugin.os.listdir')
+    def test_standings(self, mock_listdir, mock_records):
+        boxes = ['123', '456', '789']
+        mock_listdir.return_value = [
+            'game_box_{}.html'.format(b) for b in boxes
+        ]
+        mock_records.side_effect = [RECORDS1, RECORDS2, RECORDS3]
+
+        plugin = self.create_plugin(READ)
+        plugin._standings()
+        expected = RECORDS1.copy()
+        expected.update(RECORDS2)
+        self.assertEqual(plugin.data['standings'], expected)
+
+        dpath = os.path.join(_root, 'extract/box_scores')
+        mock_listdir.assert_called_once_with(dpath)
+        calls = [
+            mock.call(os.path.join(dpath, 'game_box_{}.html'.format(b)))
+            for b in boxes
+        ]
+        mock_records.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
     @mock.patch('plugins.recap.recap_plugin.open', create=True)
     def test_tables__injuries(self, mock_open):
         mo = mock.mock_open(read_data=INJ_AFTER)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         actual = plugin._tables('injuries')
         expected = [INJ_TABLE]
         self.assertEqual(actual, expected)
@@ -276,7 +310,7 @@ class RecapPluginTest(TestUtil):
         mo = mock.mock_open(read_data=NEWS_AFTER)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         actual = plugin._tables('news')
         expected = [NEWS_TABLE]
         self.assertEqual(actual, expected)
@@ -292,7 +326,7 @@ class RecapPluginTest(TestUtil):
         mo = mock.mock_open(read_data=TRANS_AFTER)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin()
+        plugin = self.create_plugin(READ)
         actual = plugin._tables('transactions')
         expected = [TRANS_TABLE]
         self.assertEqual(actual, expected)

@@ -16,6 +16,7 @@ _title = '<title>MLB Box Scores, (.+?) at (.+?), {}</title>'
 _row = '<tr style=\"background-color:#FFFFFE;\">(.+?)</tr>'
 _team = '<td class="dl">(?:<b>)?([^<]+)(?:</b>)?</td>'
 _line = '<td class="dc"><b>(\d+)</b></td>'
+_record = '(\w+) \(([^)]+)\)'
 
 
 def _value(encoding, away='', home=''):
@@ -65,3 +66,20 @@ def clarify(date, link, encoding):
         decoding_to_encoding_sub(text),
         away=decoding_to_encoding(ct1),
         home=decoding_to_encoding(ct2))
+
+
+def records(link):
+    ret = {}
+    content = urlopen(link)
+    rows = re.findall(_row, content, re.DOTALL)
+    if len(rows) != 2:
+        return ret
+
+    for r in [re.findall(_team, row)[0] for row in rows]:
+        e = decoding_to_encoding_sub(r)
+        match = re.findall(_record, e)
+        if match:
+            team, record = match[0]
+            ret[team] = record
+
+    return ret

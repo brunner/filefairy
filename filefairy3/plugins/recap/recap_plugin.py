@@ -11,6 +11,7 @@ _root = re.sub(r'/plugins/recap', '', _path)
 sys.path.append(_root)
 from apis.plugin.plugin_api import PluginApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
+from utils.box.box_util import records  # noqa
 from utils.component.component_util import table  # noqa
 from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
@@ -47,6 +48,7 @@ class RecapPlugin(PluginApi, RenderableApi):
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == NotifyValue.DOWNLOAD_FINISH:
+            self._standings()
             self._render(**kwargs)
             chat_post_message(
                 'fairylab',
@@ -83,6 +85,12 @@ class RecapPlugin(PluginApi, RenderableApi):
                       '<a href="/StatsLab/reports/news/html/players/player',
                       text)
 
+    @staticmethod
+    def _total(record):
+        if record.count('-') == 1:
+            return sum(int(n) for n in record.split('-'))
+        return 0
+
     def _home(self, **kwargs):
         ret = {
             'breadcrumbs': [{
@@ -96,6 +104,18 @@ class RecapPlugin(PluginApi, RenderableApi):
         for key in ['injuries', 'news', 'transactions']:
             ret[key] = self._tables(key)
         return ret
+
+    def _standings(self):
+        dpath = os.path.join(_root, 'extract/box_scores')
+        for box in os.listdir(dpath):
+            bdname = os.path.join(dpath, box)
+            recs = records(bdname)
+            for t in recs:
+                record = recs[t]
+                ntotal = self._total(record)
+                ttotal = self._total(self.data['standings'].get(t, ''))
+                if ntotal > ttotal:
+                    self.data['standings'][t] = record
 
     def _tables(self, key):
         dpath = os.path.join(_root, 'extract/leagues/{}.txt')
