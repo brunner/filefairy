@@ -8,8 +8,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/statsplus/samples', '', _path)
 sys.path.append(_root)
-from util.team.team_util import logo_absolute  # noqa
-from util.team.team_util import logo_inline  # noqa
+from util.team.team import logo_absolute  # noqa
+from util.team.team import logo_inline  # noqa
 
 subtitle = ''
 
