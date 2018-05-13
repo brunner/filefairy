@@ -71,4 +71,4 @@ class RenderableApi(SerializableApi):
 
     @staticmethod
     def _scp(here, there):
-        check_output(['scp', here, there], timeout=2)
+        check_output(['scp', here, there], timeout=8)

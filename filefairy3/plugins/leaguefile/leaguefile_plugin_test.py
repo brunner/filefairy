@@ -341,7 +341,7 @@ class LeaguefilePluginTest(TestUtil):
         mock_check.assert_called_once_with([
             'ssh', 'brunnerj@SERVER',
             'ls -l /var/www/html/StatsLab/league_file'
-        ], timeout=2)
+        ], timeout=8)
         self.mock_open.assert_not_called()
         self.mock_chat.assert_not_called()
 
@@ -357,7 +357,7 @@ class LeaguefilePluginTest(TestUtil):
         mock_check.assert_called_once_with([
             'ssh', 'brunnerj@SERVER',
             'ls -l /var/www/html/StatsLab/league_file'
-        ], timeout=2)
+        ], timeout=8)
         self.mock_open.assert_not_called()
         self.mock_chat.assert_not_called()
 

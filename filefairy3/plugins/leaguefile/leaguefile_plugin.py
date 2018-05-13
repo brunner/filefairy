@@ -157,7 +157,7 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
     @staticmethod
     def _check():
         ls = 'ls -l /var/www/html/StatsLab/league_file'
-        output = check_output(['ssh', 'brunnerj@' + server, ls], timeout=2)
+        output = check_output(['ssh', 'brunnerj@' + server, ls], timeout=8)
         if output.get('ok'):
             value = output.get('output', '')
             fp = '.filepart' in value
