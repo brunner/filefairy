@@ -11,8 +11,8 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugins/git', '', _path))
 from plugins.git.git_plugin import GitPlugin  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
 THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)

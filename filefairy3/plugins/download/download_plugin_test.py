@@ -14,8 +14,8 @@ _root = re.sub(r'/plugins/download', '', _path)
 sys.path.append(_root)
 from plugins.download.download_plugin import DownloadPlugin  # noqa
 from utils.json.json_util import dumps  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 DATA = DownloadPlugin._data()
 BOX_NON_MLB = '<html>\n<head>\n<title>ABL Box Scores, Adelaide Bite at ' + \

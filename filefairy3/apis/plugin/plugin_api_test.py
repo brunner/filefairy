@@ -14,8 +14,8 @@ from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class FakePlugin(PluginApi):

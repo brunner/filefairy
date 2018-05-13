@@ -9,8 +9,8 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/apis/messageable', '', _path))
 from apis.messageable.messageable_api import MessageableApi  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class FakeMessageable(MessageableApi):

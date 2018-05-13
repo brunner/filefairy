@@ -13,8 +13,8 @@ from apis.messageable.messageable_api import MessageableApi  # noqa
 from apis.renderable.renderable_api import RenderableApi  # noqa
 from apis.runnable.runnable_api import RunnableApi  # noqa
 from utils.abc.abc_util import abstractstatic  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class PluginApi(MessageableApi, RunnableApi):

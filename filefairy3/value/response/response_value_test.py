@@ -7,9 +7,9 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/values/response', '', _path))
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+sys.path.append(re.sub(r'/value/response', '', _path))
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class ResponseValueTest(unittest.TestCase):

@@ -32,8 +32,8 @@ from utils.team.team_util import precoding_to_encoding_sub  # noqa
 from utils.team.team_util import precodings  # noqa
 from utils.team.team_util import teamid_to_encoding  # noqa
 from utils.team.team_util import teamid_to_hometown  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'

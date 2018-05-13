@@ -20,8 +20,8 @@ from utils.jinja2.jinja2_util import env  # noqa
 from utils.secrets.secrets_util import server  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 _size_pattern = '(\d+)'
 _date_pattern = '(\w+\s\d+\s\d+:\d+)'

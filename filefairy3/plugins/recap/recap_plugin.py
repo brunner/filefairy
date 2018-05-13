@@ -17,8 +17,8 @@ from utils.datetime.datetime_util import suffix  # noqa
 from utils.hash.hash_util import hash_file  # noqa
 from utils.slack.slack_util import chat_post_message  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class RecapPlugin(PluginApi, RenderableApi):

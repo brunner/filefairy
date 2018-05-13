@@ -21,8 +21,8 @@ from utils.team.team_util import logo_absolute  # noqa
 from utils.team.team_util import teamid_to_abbreviation  # noqa
 from utils.team.team_util import teamid_to_hometown  # noqa
 from utils.urllib.urllib_util import urlopen  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
 _lock_values = [NotifyValue.STATSPLUS_SIM, NotifyValue.LEAGUEFILE_START]

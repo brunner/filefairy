@@ -21,8 +21,8 @@ from utils.json.json_util import dumps  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class BrowsablePlugin(PluginApi, RenderableApi):

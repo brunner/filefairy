@@ -11,8 +11,8 @@ sys.path.append(re.sub(r'/plugins/git', '', _path))
 from apis.plugin.plugin_api import PluginApi  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.subprocess.subprocess_util import check_output  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class GitPlugin(PluginApi):

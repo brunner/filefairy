@@ -21,8 +21,8 @@ from utils.file.file_util import recreate  # noqa
 from utils.file.file_util import wget_file  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.unicode.unicode_util import deunicode  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 
 class DownloadPlugin(PluginApi, SerializableApi):

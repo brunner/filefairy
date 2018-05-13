@@ -27,7 +27,7 @@ from utils.datetime.datetime_util import encode_datetime  # noqa
 from utils.jinja2.jinja2_util import env  # noqa
 from utils.logger.logger_util import log  # noqa
 from utils.slack.slack_util import rtm_connect  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
 
 
 class FairylabProgram(MessageableApi, RenderableApi):

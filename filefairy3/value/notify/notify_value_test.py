@@ -7,8 +7,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/values/notify', '', _path))
-from values.notify.notify_value import NotifyValue  # noqa
+sys.path.append(re.sub(r'/value/notify', '', _path))
+from value.notify.notify_value import NotifyValue  # noqa
 
 
 class NotifyValueTest(unittest.TestCase):

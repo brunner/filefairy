@@ -6,8 +6,8 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/values/response', '', _path))
-from values.notify.notify_value import NotifyValue  # noqa
+sys.path.append(re.sub(r'/value/response', '', _path))
+from value.notify.notify_value import NotifyValue  # noqa
 
 
 class ResponseValue(object):

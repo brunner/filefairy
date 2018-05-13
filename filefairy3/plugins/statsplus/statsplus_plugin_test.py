@@ -18,8 +18,8 @@ from utils.json.json_util import dumps  # noqa
 from utils.team.team_util import logo_inline  # noqa
 from utils.test.test_util import TestUtil  # noqa
 from utils.test.test_util import main  # noqa
-from values.notify.notify_value import NotifyValue  # noqa
-from values.response.response_value import ResponseValue  # noqa
+from value.notify.notify_value import NotifyValue  # noqa
+from value.response.response_value import ResponseValue  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
