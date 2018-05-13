@@ -198,7 +198,7 @@ class ExportsPlugin(PluginApi, RenderableApi):
         data = self.data
         data['locked'] = True
         chat_post_message(
-            'testing',
+            'fairylab',
             'Tracker locked and exports recorded.',
             attachments=self._attachments())
 
