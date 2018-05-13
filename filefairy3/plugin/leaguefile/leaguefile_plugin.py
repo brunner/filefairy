@@ -109,13 +109,6 @@ class LeaguefilePlugin(PluginApi, RenderableApi):
         return [(html, '', 'leaguefile.html', _home)]
 
     def _setup_internal(self, **kwargs):
-        # Temporary, remove.
-        chat_post_message('general', 'File is up.')
-        chat_post_message(
-            'fairylab',
-            'File upload completed.',
-            attachments=self._attachments())
-
         data = self.data
         original = copy.deepcopy(data)
 
