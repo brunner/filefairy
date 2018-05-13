@@ -13,7 +13,7 @@ sys.path.append(_path)
 _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
 from plugin.download.download_plugin import DownloadPlugin  # noqa
-from utils.json.json_util import dumps  # noqa
+from util.json.json_util import dumps  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

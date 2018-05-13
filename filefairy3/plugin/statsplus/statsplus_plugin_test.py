@@ -12,12 +12,12 @@ sys.path.append(_path)
 _root = re.sub(r'/plugin/statsplus', '', _path)
 sys.path.append(_root)
 from plugin.statsplus.statsplus_plugin import StatsplusPlugin  # noqa
-from utils.component.component_util import table  # noqa
-from utils.jinja2.jinja2_util import env  # noqa
-from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import logo_inline  # noqa
-from utils.test.test_util import TestUtil  # noqa
-from utils.test.test_util import main  # noqa
+from util.component.component_util import table  # noqa
+from util.jinja2.jinja2_util import env  # noqa
+from util.json.json_util import dumps  # noqa
+from util.team.team_util import logo_inline  # noqa
+from util.test.test_util import TestUtil  # noqa
+from util.test.test_util import main  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

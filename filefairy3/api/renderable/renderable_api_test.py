@@ -13,7 +13,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.renderable.renderable_api import RenderableApi  # noqa
-from utils.jinja2.jinja2_util import env  # noqa
+from util.jinja2.jinja2_util import env  # noqa
 
 
 class FakeRenderable(RenderableApi):

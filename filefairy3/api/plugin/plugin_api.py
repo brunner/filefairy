@@ -12,7 +12,7 @@ sys.path.append(re.sub(r'/api/plugin', '', _path))
 from api.messageable.messageable_api import MessageableApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa
 from api.runnable.runnable_api import RunnableApi  # noqa
-from utils.abc.abc_util import abstractstatic  # noqa
+from util.abc.abc_util import abstractstatic  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

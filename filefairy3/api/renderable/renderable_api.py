@@ -13,10 +13,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.serializable.serializable_api import SerializableApi  # noqa
-from utils.abc.abc_util import abstractstatic  # noqa
-from utils.logger.logger_util import log  # noqa
-from utils.secrets.secrets_util import server  # noqa
-from utils.subprocess.subprocess_util import check_output  # noqa
+from util.abc.abc_util import abstractstatic  # noqa
+from util.logger.logger_util import log  # noqa
+from util.secrets.secrets_util import server  # noqa
+from util.subprocess.subprocess_util import check_output  # noqa
 
 
 class RenderableApi(SerializableApi):

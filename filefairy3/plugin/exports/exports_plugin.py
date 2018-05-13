@@ -9,18 +9,18 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/exports', '', _path))
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa
-from utils.ago.ago_util import delta  # noqa
-from utils.component.component_util import card  # noqa
-from utils.component.component_util import table  # noqa
-from utils.datetime.datetime_util import decode_datetime  # noqa
-from utils.datetime.datetime_util import encode_datetime  # noqa
-from utils.logger.logger_util import log  # noqa
-from utils.slack.slack_util import chat_post_message  # noqa
-from utils.team.team_util import divisions  # noqa
-from utils.team.team_util import logo_absolute  # noqa
-from utils.team.team_util import teamid_to_abbreviation  # noqa
-from utils.team.team_util import teamid_to_hometown  # noqa
-from utils.urllib.urllib_util import urlopen  # noqa
+from util.ago.ago_util import delta  # noqa
+from util.component.component_util import card  # noqa
+from util.component.component_util import table  # noqa
+from util.datetime.datetime_util import decode_datetime  # noqa
+from util.datetime.datetime_util import encode_datetime  # noqa
+from util.logger.logger_util import log  # noqa
+from util.slack.slack_util import chat_post_message  # noqa
+from util.team.team_util import divisions  # noqa
+from util.team.team_util import logo_absolute  # noqa
+from util.team.team_util import teamid_to_abbreviation  # noqa
+from util.team.team_util import teamid_to_hometown  # noqa
+from util.urllib.urllib_util import urlopen  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

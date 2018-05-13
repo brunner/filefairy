@@ -15,7 +15,7 @@ sys.path.append(_root)
 from plugin.snacks.snacks_plugin import SnacksPlugin  # noqa
 from plugin.snacks.snacks_plugin import _chooselist  # noqa
 from plugin.snacks.snacks_plugin import _snacklist  # noqa
-from utils.json.json_util import dumps  # noqa
+from util.json.json_util import dumps  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

@@ -14,13 +14,13 @@ _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.serializable.serializable_api import SerializableApi  # noqa
-from utils.datetime.datetime_util import decode_datetime  # noqa
-from utils.datetime.datetime_util import encode_datetime  # noqa
-from utils.file.file_util import ping  # noqa
-from utils.file.file_util import recreate  # noqa
-from utils.file.file_util import wget_file  # noqa
-from utils.logger.logger_util import log  # noqa
-from utils.unicode.unicode_util import deunicode  # noqa
+from util.datetime.datetime_util import decode_datetime  # noqa
+from util.datetime.datetime_util import encode_datetime  # noqa
+from util.file.file_util import ping  # noqa
+from util.file.file_util import recreate  # noqa
+from util.file.file_util import wget_file  # noqa
+from util.logger.logger_util import log  # noqa
+from util.unicode.unicode_util import deunicode  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

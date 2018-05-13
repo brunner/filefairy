@@ -13,7 +13,7 @@ from api.plugin.plugin_api import PluginApi  # noqa
 from api.messageable.messageable_api import MessageableApi  # noqa
 from api.runnable.runnable_api import RunnableApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa
-from utils.jinja2.jinja2_util import env  # noqa
+from util.jinja2.jinja2_util import env  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

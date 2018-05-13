@@ -11,13 +11,13 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/exports', '', _path))
 from plugin.exports.exports_plugin import ExportsPlugin  # noqa
-from utils.component.component_util import card  # noqa
-from utils.component.component_util import table  # noqa
-from utils.jinja2.jinja2_util import env  # noqa
-from utils.json.json_util import dumps  # noqa
-from utils.team.team_util import logo_absolute  # noqa
-from utils.test.test_util import TestUtil  # noqa
-from utils.test.test_util import main  # noqa
+from util.component.component_util import card  # noqa
+from util.component.component_util import table  # noqa
+from util.jinja2.jinja2_util import env  # noqa
+from util.json.json_util import dumps  # noqa
+from util.team.team_util import logo_absolute  # noqa
+from util.test.test_util import TestUtil  # noqa
+from util.test.test_util import main  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

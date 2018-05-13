@@ -20,13 +20,13 @@ sys.path.append(_root)
 from api.messageable.messageable_api import MessageableApi  # noqa
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa
-from utils.ago.ago_util import delta  # noqa
-from utils.component.component_util import card  # noqa
-from utils.datetime.datetime_util import decode_datetime  # noqa
-from utils.datetime.datetime_util import encode_datetime  # noqa
-from utils.jinja2.jinja2_util import env  # noqa
-from utils.logger.logger_util import log  # noqa
-from utils.slack.slack_util import rtm_connect  # noqa
+from util.ago.ago_util import delta  # noqa
+from util.component.component_util import card  # noqa
+from util.datetime.datetime_util import decode_datetime  # noqa
+from util.datetime.datetime_util import encode_datetime  # noqa
+from util.jinja2.jinja2_util import env  # noqa
+from util.logger.logger_util import log  # noqa
+from util.slack.slack_util import rtm_connect  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 
 

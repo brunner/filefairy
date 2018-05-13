@@ -10,9 +10,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/serializable', '', _path))
 from api.nameable.nameable_api import NameableApi  # noqa
-from utils.abc.abc_util import abstractstatic  # noqa
-from utils.json.json_util import dumps  # noqa
-from utils.logger.logger_util import log  # noqa
+from util.abc.abc_util import abstractstatic  # noqa
+from util.json.json_util import dumps  # noqa
+from util.logger.logger_util import log  # noqa
 
 
 class SerializableApi(NameableApi):

@@ -13,15 +13,15 @@ _root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.serializable.serializable_api import SerializableApi  # noqa
-from utils.corpus.corpus_util import collect  # noqa
-from utils.nltk.nltk_util import cfd  # noqa
-from utils.nltk.nltk_util import discuss  # noqa
-from utils.slack.slack_util import channels_kick  # noqa
-from utils.slack.slack_util import channels_list  # noqa
-from utils.slack.slack_util import chat_post_message  # noqa
-from utils.slack.slack_util import reactions_add  # noqa
-from utils.slack.slack_util import users_list  # noqa
-from utils.unicode.unicode_util import deunicode  # noqa
+from util.corpus.corpus_util import collect  # noqa
+from util.nltk.nltk_util import cfd  # noqa
+from util.nltk.nltk_util import discuss  # noqa
+from util.slack.slack_util import channels_kick  # noqa
+from util.slack.slack_util import channels_list  # noqa
+from util.slack.slack_util import chat_post_message  # noqa
+from util.slack.slack_util import reactions_add  # noqa
+from util.slack.slack_util import users_list  # noqa
+from util.unicode.unicode_util import deunicode  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

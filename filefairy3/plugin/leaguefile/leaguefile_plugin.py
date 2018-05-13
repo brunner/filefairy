@@ -11,15 +11,15 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/leaguefile', '', _path))
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa
-from utils.ago.ago_util import delta, elapsed  # noqa
-from utils.component.component_util import card  # noqa
-from utils.component.component_util import table  # noqa
-from utils.datetime.datetime_util import decode_datetime  # noqa
-from utils.datetime.datetime_util import encode_datetime  # noqa
-from utils.jinja2.jinja2_util import env  # noqa
-from utils.secrets.secrets_util import server  # noqa
-from utils.slack.slack_util import chat_post_message  # noqa
-from utils.subprocess.subprocess_util import check_output  # noqa
+from util.ago.ago_util import delta, elapsed  # noqa
+from util.component.component_util import card  # noqa
+from util.component.component_util import table  # noqa
+from util.datetime.datetime_util import decode_datetime  # noqa
+from util.datetime.datetime_util import encode_datetime  # noqa
+from util.jinja2.jinja2_util import env  # noqa
+from util.secrets.secrets_util import server  # noqa
+from util.slack.slack_util import chat_post_message  # noqa
+from util.subprocess.subprocess_util import check_output  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 

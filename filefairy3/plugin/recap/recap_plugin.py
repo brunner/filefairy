@@ -11,12 +11,12 @@ _root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin_api import PluginApi  # noqa
 from api.renderable.renderable_api import RenderableApi  # noqa
-from utils.box.box_util import records  # noqa
-from utils.component.component_util import table  # noqa
-from utils.datetime.datetime_util import suffix  # noqa
-from utils.hash.hash_util import hash_file  # noqa
-from utils.slack.slack_util import chat_post_message  # noqa
-from utils.unicode.unicode_util import deunicode  # noqa
+from util.box.box_util import records  # noqa
+from util.component.component_util import table  # noqa
+from util.datetime.datetime_util import suffix  # noqa
+from util.hash.hash_util import hash_file  # noqa
+from util.slack.slack_util import chat_post_message  # noqa
+from util.unicode.unicode_util import deunicode  # noqa
 from value.notify.notify_value import NotifyValue  # noqa
 from value.response.response_value import ResponseValue  # noqa
 
