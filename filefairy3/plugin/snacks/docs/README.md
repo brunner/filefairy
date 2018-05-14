@@ -15,9 +15,9 @@ Need some help making a choice?
 @filefairy choose <foo> or <bar>
 ```
 
-![Example](images/snacks_choose_mets.png?raw=true)
+![Example](images/choose_mets.png?raw=true)
 
-![Example](images/snacks_choose_shade.png?raw=true)
+![Example](images/choose_shade.png?raw=true)
 
 ### Discuss
 
@@ -27,9 +27,9 @@ Want a nonsensical opinion on a topic?
 @filefairy discuss <foo>
 ```
 
-![Example](images/snacks_discuss_bunting.png?raw=true)
+![Example](images/discuss_bunting.png?raw=true)
 
-![Example](images/snacks_discuss_loyola.png?raw=true)
+![Example](images/discuss_loyola.png?raw=true)
 
 ### Say
 
@@ -39,7 +39,7 @@ Looking for an echo chamber?
 @filefairy say <foo>
 ```
 
-![Example](images/snacks_say.png?raw=true)
+![Example](images/say.png?raw=true)
 
 ### Snack Me
 
@@ -49,7 +49,7 @@ Hungry?
 @filefairy snack me
 ```
 
-![Example](images/snacks_snack_me.png?raw=true)
+![Example](images/snack_me.png?raw=true)
 
 ## FAQ
 
