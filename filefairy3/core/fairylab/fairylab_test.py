@@ -11,11 +11,11 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
-_root = re.sub(r'/programs/fairylab', '', _path)
+_root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
-from programs.fairylab.fairylab import Fairylab  # noqa
+from core.fairylab.fairylab import Fairylab  # noqa
 from util.component.component import card  # noqa
 from util.json.json_ import dumps  # noqa
 from util.jinja2.jinja2_ import env  # noqa
@@ -180,16 +180,16 @@ class FairylabTest(Test):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
-        patch_datetime = mock.patch('programs.fairylab.fairylab.datetime')
+        patch_datetime = mock.patch('core.fairylab.fairylab.datetime')
         self.addCleanup(patch_datetime.stop)
         self.mock_datetime = patch_datetime.start()
 
-        patch_log = mock.patch('programs.fairylab.fairylab.log')
+        patch_log = mock.patch('core.fairylab.fairylab.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
         patch_traceback = mock.patch(
-            'programs.fairylab.fairylab.traceback.format_exc')
+            'core.fairylab.fairylab.traceback.format_exc')
         self.addCleanup(patch_traceback.stop)
         self.mock_traceback = patch_traceback.start()
 
@@ -239,8 +239,8 @@ class FairylabTest(Test):
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch.object(Fairylab, '_reload_internal')
-    @mock.patch('programs.fairylab.fairylab.os.listdir')
-    @mock.patch('programs.fairylab.fairylab.os.path.isdir')
+    @mock.patch('core.fairylab.fairylab.os.listdir')
+    @mock.patch('core.fairylab.fairylab.os.path.isdir')
     def test_setup(self, mock_isdir, mock_listdir, mock_reload, mock_try):
         mock_isdir.return_value = True
         mock_listdir.return_value = ['internal']
@@ -544,9 +544,9 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
-    @mock.patch('programs.fairylab.fairylab.websocket.WebSocketApp')
-    @mock.patch('programs.fairylab.fairylab.threading.Thread')
-    @mock.patch('programs.fairylab.fairylab.rtm_connect')
+    @mock.patch('core.fairylab.fairylab.websocket.WebSocketApp')
+    @mock.patch('core.fairylab.fairylab.threading.Thread')
+    @mock.patch('core.fairylab.fairylab.rtm_connect')
     @mock.patch.object(Fairylab, '_recv')
     def test_connect__with_valid_input(self, mock_recv, mock_rtm, mock_thread,
                                        mock_ws):
@@ -570,9 +570,9 @@ class FairylabTest(Test):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
         self.assertIsNotNone(program.ws)
 
-    @mock.patch('programs.fairylab.fairylab.websocket.WebSocketApp')
-    @mock.patch('programs.fairylab.fairylab.threading.Thread')
-    @mock.patch('programs.fairylab.fairylab.rtm_connect')
+    @mock.patch('core.fairylab.fairylab.websocket.WebSocketApp')
+    @mock.patch('core.fairylab.fairylab.threading.Thread')
+    @mock.patch('core.fairylab.fairylab.rtm_connect')
     @mock.patch.object(Fairylab, '_recv')
     def test_connect__with_error(self, mock_recv, mock_rtm, mock_thread,
                                  mock_ws):
@@ -594,7 +594,7 @@ class FairylabTest(Test):
         self.assertIsNone(program.ws)
 
     @mock.patch.object(Fairylab, '_try')
-    @mock.patch('programs.fairylab.fairylab.time.sleep')
+    @mock.patch('core.fairylab.fairylab.time.sleep')
     @mock.patch.object(Fairylab, '_render')
     @mock.patch.object(Fairylab, '_connect')
     def test_start__with_valid_input(self, mock_connect, mock_render,
@@ -617,7 +617,7 @@ class FairylabTest(Test):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
 
     @mock.patch.object(Fairylab, '_try')
-    @mock.patch('programs.fairylab.fairylab.time.sleep')
+    @mock.patch('core.fairylab.fairylab.time.sleep')
     @mock.patch.object(Fairylab, '_render')
     @mock.patch.object(Fairylab, '_connect')
     def test_start__with_date_change(self, mock_connect, mock_render,
@@ -643,7 +643,7 @@ class FairylabTest(Test):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(Fairylab, '_try')
-    @mock.patch('programs.fairylab.fairylab.time.sleep')
+    @mock.patch('core.fairylab.fairylab.time.sleep')
     @mock.patch.object(Fairylab, '_render')
     @mock.patch.object(Fairylab, '_connect')
     def test_start__with_no_change(self, mock_connect, mock_render, mock_sleep,
@@ -663,7 +663,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
-    @mock.patch('programs.fairylab.fairylab.delta')
+    @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_valid_input(self, mock_delta):
         mock_delta.side_effect = ['2m ago', '2h ago']
 
@@ -689,7 +689,7 @@ class FairylabTest(Test):
         }
         self.assertEqual(ret, expected)
 
-    @mock.patch('programs.fairylab.fairylab.delta')
+    @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_success(self, mock_delta):
         mock_delta.return_value = '0s ago'
 
@@ -708,7 +708,7 @@ class FairylabTest(Test):
         }
         self.assertEqual(ret, expected)
 
-    @mock.patch('programs.fairylab.fairylab.delta')
+    @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_danger(self, mock_delta):
         mock_delta.return_value = '2m ago'
 
@@ -728,8 +728,8 @@ class FairylabTest(Test):
         self.assertEqual(ret, expected)
 
     @mock.patch.object(Fairylab, '_try')
-    @mock.patch('programs.fairylab.fairylab.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab.getattr')
+    @mock.patch('core.fairylab.fairylab.importlib.import_module')
+    @mock.patch('core.fairylab.fairylab.getattr')
     def test_reload__with_valid_input(self, mock_getattr, mock_import,
                                       mock_try):
         mock_getattr.return_value = Internal
@@ -755,8 +755,8 @@ class FairylabTest(Test):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(Fairylab, '_try')
-    @mock.patch('programs.fairylab.fairylab.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab.getattr')
+    @mock.patch('core.fairylab.fairylab.importlib.import_module')
+    @mock.patch('core.fairylab.fairylab.getattr')
     def test_reload__with_thrown_exception(self, mock_getattr, mock_import,
                                            mock_try):
         mock_getattr.side_effect = Exception()
@@ -781,10 +781,9 @@ class FairylabTest(Test):
         self.assertEqual(program.data, read)
 
     @mock.patch.object(Fairylab, '_try')
-    @mock.patch('programs.fairylab.fairylab.importlib.import_module')
-    @mock.patch('programs.fairylab.fairylab.getattr')
-    def test_reload__with_disabled(self, mock_getattr, mock_import,
-                                          mock_try):
+    @mock.patch('core.fairylab.fairylab.importlib.import_module')
+    @mock.patch('core.fairylab.fairylab.getattr')
+    def test_reload__with_disabled(self, mock_getattr, mock_import, mock_try):
         mock_getattr.return_value = Disabled
 
         kwargs = {'a1': 'plugin', 'a2': 'disabled', 'date': THEN, 'v': True}
@@ -806,7 +805,7 @@ class FairylabTest(Test):
                                                   c=None))
         self.assertEqual(program.data, read)
 
-    @mock.patch('programs.fairylab.fairylab.os.execv')
+    @mock.patch('core.fairylab.fairylab.os.execv')
     def test_reboot(self, mock_execv):
         read = {'plugins': {}}
         program = self.create_program(read)
@@ -833,9 +832,9 @@ class FairylabTest(Test):
         self.assertFalse(program.keep_running)
 
 
-if __name__ in ['__main__', 'programs.fairylab.fairylab_test']:
+if __name__ in ['__main__', 'core.fairylab.fairylab_test']:
     _main = __name__ == '__main__'
-    _pkg = 'programs.fairylab'
-    _pth = 'programs/fairylab'
+    _pkg = 'core.fairylab'
+    _pth = 'core/fairylab'
     _read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
     main(FairylabTest, Fairylab, _pkg, _pth, _read, _main)

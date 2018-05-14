@@ -14,7 +14,7 @@ import traceback
 import websocket
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/programs/fairylab', '', _path)
+_root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
 
 from api.messageable.messageable import Messageable  # noqa
