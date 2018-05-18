@@ -87,11 +87,13 @@ class Statsplus(Plugin, Renderable):
         return False
 
     def _on_message_internal(self, **kwargs):
+        response = Response()
+
         obj = kwargs['obj']
         bot_id = obj.get('bot_id')
         channel = obj.get('channel')
         if bot_id != 'B7KJ3362Y' or channel != 'C7JSGHW8G':
-            return Response()
+            return response
 
         data = self.data
         original = copy.deepcopy(data)
@@ -99,17 +101,21 @@ class Statsplus(Plugin, Renderable):
         text = obj.get('text', '')
         date = re.findall('\d{2}\/\d{2}\/\d{4}', text)
         if not date:
-            return Response()
+            return response
 
         ddate = datetime.datetime.strptime(date[0], '%m/%d/%Y')
         edate = encode_datetime(ddate)
         ndate = decode_datetime(self.shadow.get('download.now', edate))
         if ndate < ddate:
-            return Response()
+            return response
+
+        response.append_notify(Notify.BASE)
+        shadow = False
 
         if self.data['finished']:
             self.data['finished'] = False
             self._clear()
+            shadow = True
 
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
@@ -127,17 +133,22 @@ class Statsplus(Plugin, Renderable):
             self._handle_key('scores', edate, text, scores, False)
             if data['offseason'] and data['postseason']:
                 data['postseason'] = False
+                shadow = True
 
         pattern = 'MAJOR LEAGUE BASEBALL Live Table'
         if re.findall(pattern, text):
             self._handle_table(edate, text)
             if data['offseason']:
                 data['offseason'] = False
+                shadow = True
+
+        if shadow:
+            response.shadow = self._shadow_internal(**kwargs)
 
         if data != original:
             self.write()
 
-        return Response(notify=[Notify.BASE])
+        return response
 
     def _run_internal(self, **kwargs):
         data = self.data
@@ -167,7 +178,12 @@ class Statsplus(Plugin, Renderable):
         self._render(**kwargs)
 
     def _shadow_internal(self, **kwargs):
-        return {}
+        return {
+            'recap': {
+                'statsplus.offseason': self.data['offseason'],
+                'statsplus.postseason': self.data['postseason']
+            }
+        }
 
     def _clear(self):
         self.data['highlights'] = {}
