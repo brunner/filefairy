@@ -96,3 +96,18 @@ def discuss(topic, cfd, n, length, truncate):
     text = re.sub('([.?!]) ([a-z])', _capitalize, text)
 
     return text
+
+
+def imitate(cfd, n, length, truncate):
+    conditions = cfd.conditions()
+    total = 0
+    for condition in conditions:
+        total += sum(cfd[condition].values())
+
+    x = random.randint(0, total)
+    for condition in conditions:
+        x -= sum(cfd[condition].values())
+        if x <= 0:
+            return discuss(' '.join(condition), cfd, n, length, truncate)
+
+    return ''

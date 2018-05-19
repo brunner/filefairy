@@ -14,6 +14,7 @@ from util.nltk.nltk_ import _cond_samples  # noqa
 from util.nltk.nltk_ import _fix  # noqa
 from util.nltk.nltk_ import cfd  # noqa
 from util.nltk.nltk_ import discuss  # noqa
+from util.nltk.nltk_ import imitate  # noqa
 
 
 class NltkTest(unittest.TestCase):
@@ -202,6 +203,62 @@ class NltkTest(unittest.TestCase):
         c = cfd(3, *fnames)
         actual = discuss('the', c, 3, 5, 10)
         expected = 'The quick brown fox jumps over the lazy fox.'
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.nltk.nltk_.random.randint')
+    @mock.patch('util.nltk.nltk_.open', create=True)
+    def test_imitate__with_randint_first(self, mock_open, mock_randint):
+        data_a = 'The quick brown fox jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+        mock_randint.return_value = 0
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = imitate(c, 3, 5, 10)
+        expected = 'The quick brown fox jumps over the quick brown fox...'
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.nltk.nltk_.random.randint')
+    @mock.patch('util.nltk.nltk_.open', create=True)
+    def test_imitate__with_randint_middle(self, mock_open, mock_randint):
+        data_a = 'The quick brown fox jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+
+        def fake_randint(*args, **kwargs):
+            return args[1]
+
+        mock_randint.side_effect = fake_randint
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = imitate(c, 3, 5, 10)
+        expected = 'Quick grey wolf jumps over the lazy dog.'
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.nltk.nltk_.random.randint')
+    @mock.patch('util.nltk.nltk_.open', create=True)
+    def test_imitate__with_randint_last(self, mock_open, mock_randint):
+        data_a = 'The quick brown fox jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+
+        def fake_randint(*args, **kwargs):
+            return args[1] / 2
+
+        mock_randint.side_effect = fake_randint
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = imitate(c, 3, 5, 10)
+        expected = 'The lazy fox. The quick brown fox jumps over...'
         self.assertEqual(actual, expected)
 
 

@@ -16,6 +16,7 @@ from api.serializable.serializable import Serializable  # noqa
 from util.corpus.corpus import collect  # noqa
 from util.nltk.nltk_ import cfd  # noqa
 from util.nltk.nltk_ import discuss  # noqa
+from util.nltk.nltk_ import imitate  # noqa
 from util.slack.slack import channels_kick  # noqa
 from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
@@ -26,6 +27,7 @@ from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
+_n = 4
 
 _chooselist = [
     '{}. Did you even need to ask?',
@@ -118,10 +120,20 @@ class Snacks(Plugin, Serializable):
 
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
-                cfd = self.__dict__.get('cfd', {})
-                reply = discuss(match[0], cfd, 4, 8, 30)
+                cfds = self.__dict__.get('cfds', {})
+                cfd = cfds.get('all', {})
+                reply = discuss(match[0], cfd, _n, 8, 30)
                 chat_post_message(channel, reply)
                 response.notify = [Notify.BASE]
+
+            match = re.findall('^<@U3ULC7DBP> imitate <@(.+)>$', text)
+            if match:
+                cfds = self.__dict__.get('cfds', {})
+                if match[0] in cfds:
+                    cfd = cfds[match[0]]
+                    reply = imitate(cfd, _n, 8, 30)
+                    chat_post_message(channel, reply)
+                    response.notify = [Notify.BASE]
 
             match = re.findall('^<@U3ULC7DBP> kick <@(.+)>$', text)
             if match and match[0] in self.names:
@@ -183,18 +195,34 @@ class Snacks(Plugin, Serializable):
         if not channels['ok']:
             return
 
+        collected = {}
         for c in channels['channels']:
             channelid = c['id']
-            collected = collect(channelid, self.names)
-            fname = os.path.join(_root, 'corpus', channelid + '.txt')
+            _collect = collect(channelid, self.names)
+            for user in _collect:
+                if user not in collected:
+                    collected[user] = []
+                collected[user] += _collect[user]
+
+        for user in collected:
+            fname = os.path.join(_root, 'corpus', user + '.txt')
             with open(fname, 'w') as f:
-                f.write(collected)
+                f.write('\n'.join(collected[user]))
 
     def _load(self):
         self._corpus()
         self._load_internal()
 
     def _load_internal(self):
-        self.cfd = cfd(4, *self._fnames())
+        self.cfds = {}
+
+        fnames = self._fnames()
+
+        for fname in fnames:
+            key = fname.rstrip('.txt').rsplit('/', 1)[1]
+            self.cfds[key] = cfd(_n, *[fname])
+
+        self.cfds['all'] = cfd(_n, *fnames)
+
         self.names = self._names()
         self.loaded = True

@@ -26,7 +26,7 @@ def _rewrite(text, members):
 
 
 def collect(channelid, members):
-    messages = []
+    messages = {}
 
     latest = ''
     while True:
@@ -36,6 +36,7 @@ def collect(channelid, members):
 
         for m in history['messages']:
             if 'user' in m and m['user'] not in _bots:
+                user = m['user']
                 if 'subtype' in m and m['subtype'] not in _subtypes:
                     continue
 
@@ -46,11 +47,15 @@ def collect(channelid, members):
                         if not match:
                             text += '.'
 
-                        messages.insert(0, text)
+                        user = m['user']
+                        if user not in messages:
+                            messages[user] = []
+
+                        messages[user].insert(0, text)
 
         if history['messages']:
             latest = history['messages'][-1].get('ts')
         else:
             break
 
-    return '\n'.join(messages)
+    return messages

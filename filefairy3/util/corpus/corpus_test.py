@@ -88,7 +88,10 @@ class CorpusTest(unittest.TestCase):
         }]
 
         actual = collect('C1234', _members)
-        expected = 'reply.\nabc!\nfoo.\nbar.\nbaz.'
+        expected = {
+            'U1234': ['reply.', 'foo.', 'bar.', 'baz.'],
+            'U5678': ['abc!']
+        }
         self.assertEqual(actual, expected)
 
         calls = [
