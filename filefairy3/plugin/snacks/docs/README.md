@@ -31,6 +31,14 @@ Want a nonsensical opinion on a topic?
 
 ![Example](images/discuss_loyola.png?raw=true)
 
+### Imitate
+
+Want \<user\>'s nonsensical opinion on a topic (or lack thereof)?
+
+![Example](images/imitate_random.png?raw=true)
+
+![Example](images/imitate_topic.png?raw=true)
+
 ### Say
 
 Looking for an echo chamber?
