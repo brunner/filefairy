@@ -33,9 +33,17 @@ Want a nonsensical opinion on a topic?
 
 ### Imitate
 
-Want \<user\>'s nonsensical opinion on a topic (or lack thereof)?
+Want @user's nonsensical opinion on a topic (or lack thereof)?
+
+```
+@filefairy imitate @user
+```
 
 ![Example](images/imitate_random.png?raw=true)
+
+```
+@filefairy imitate @user <topic>
+```
 
 ![Example](images/imitate_topic.png?raw=true)
 
