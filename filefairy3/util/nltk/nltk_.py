@@ -107,7 +107,7 @@ def discuss(topic, cfd, n, length, truncate):
 
 
 def imitate(cfd, n, length, truncate):
-    conditions = cfd.conditions()
+    conditions = filter(lambda c: re.findall('^\w', c[0]), cfd.conditions())
     total = 0
     for condition in conditions:
         total += sum(cfd[condition].values())
@@ -115,7 +115,7 @@ def imitate(cfd, n, length, truncate):
     x = random.randint(0, total)
     for condition in conditions:
         x -= sum(cfd[condition].values())
-        if x <= 0 and re.findall('^\w', condition[0]):
+        if x <= 0:
             return discuss(' '.join(condition), cfd, n, length, truncate)
 
     return ''
