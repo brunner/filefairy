@@ -1,9 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import re
+import sys
 
-def _decode(s):
-    return [int(n) for n in s.split('-')]
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/util/standings', '', _path))
+from util.component.component import table  # noqa
+from util.team.team import divisions  # noqa
+from util.team.team import logo_absolute  # noqa
+from util.team.team import teamid_to_hometown  # noqa
+
+_cols = [
+    'class="position-relative text-truncate"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"'
+]
+_divisions = divisions()
+
+
+def _decode(s, to_int=True):
+    return [int(n) if to_int else n for n in s.split('-')]
 
 
 def games_behind(t, u):
@@ -29,3 +46,21 @@ def sort(group):
         return (gb, pct, tw, inv, n)
 
     return sorted(group, key=_sort, reverse=True)
+
+
+def standings_table(records):
+    tables = []
+    for division, teamids in _divisions:
+        body = []
+        for team_tuple in sort(filter(lambda t: t[0] in teamids, records)):
+            teamid, record = team_tuple
+            t = logo_absolute(teamid, teamid_to_hometown(teamid), 'left')
+            w, l = _decode(record, to_int=False)
+            body.append([t, w, l])
+
+        tables.append(
+            table(
+                hcols=_cols, bcols=_cols, head=[division, 'W', 'L'],
+                body=body))
+
+    return tables

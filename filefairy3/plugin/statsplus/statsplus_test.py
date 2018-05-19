@@ -301,7 +301,10 @@ class StatsplusTest(Test):
         read = _data(finished=True)
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response,
+                         Response(
+                             notify=[Notify.BASE],
+                             shadow=plugin._shadow_internal()))
 
         write = DATA_CANONICAL
         mock_clear.assert_called_once_with()
@@ -354,7 +357,10 @@ class StatsplusTest(Test):
         read = _data(offseason=True, postseason=True)
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response,
+                         Response(
+                             notify=[Notify.BASE],
+                             shadow=plugin._shadow_internal()))
 
         write = _data(offseason=True)
         mock_clear.assert_not_called()
@@ -380,7 +386,10 @@ class StatsplusTest(Test):
         read = _data(offseason=True)
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response,
+                         Response(
+                             notify=[Notify.BASE],
+                             shadow=plugin._shadow_internal()))
 
         write = DATA_CANONICAL
         mock_clear.assert_not_called()
@@ -618,7 +627,12 @@ class StatsplusTest(Test):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
-        self.assertEqual(value, {})
+        self.assertEqual(value, {
+            'recap': {
+                'statsplus.offseason': False,
+                'statsplus.postseason': False
+            }
+        })
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
