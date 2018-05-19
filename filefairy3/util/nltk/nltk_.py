@@ -115,7 +115,7 @@ def imitate(cfd, n, length, truncate):
     x = random.randint(0, total)
     for condition in conditions:
         x -= sum(cfd[condition].values())
-        if x <= 0:
+        if x <= 0 and re.findall('^\w', condition[0]):
             return discuss(' '.join(condition), cfd, n, length, truncate)
 
     return ''
