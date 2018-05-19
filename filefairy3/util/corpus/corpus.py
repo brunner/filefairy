@@ -13,6 +13,7 @@ from util.unicode.unicode import deunicode  # noqa
 
 _h = HTMLParser.HTMLParser()
 _bots = ['U3ULC7DBP']
+_snacks = ['C9YE6NQG0']
 _subtypes = [
     'file_comment', 'me_message', 'message_changed', 'thread_broadcast'
 ]
@@ -35,8 +36,11 @@ def collect(channelid, members):
             break
 
         for m in history['messages']:
-            if 'user' in m and m['user'] not in _bots:
+            if 'user' in m:
                 user = m['user']
+
+                if user in _bots and channelid not in _snacks:
+                    continue
                 if 'subtype' in m and m['subtype'] not in _subtypes:
                     continue
 
