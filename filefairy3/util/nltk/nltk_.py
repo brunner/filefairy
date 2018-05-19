@@ -10,6 +10,15 @@ from nltk.probability import ConditionalFreqDist
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.util import ngrams
 
+_channel = '^<\#\w+\|\w+>$'
+_user = '^<@\w+>$'
+_case_pattern = '|'.join([_channel, _user])
+_fix_pattern = '|'.join(['^:[^:]+:$', _channel, _user])
+
+
+def _case(grams):
+    return [t if re.findall(_case_pattern, t) else t.lower() for t in grams]
+
 
 def _capitalize(m):
     return ' '.join([c.upper() for c in m.groups()])
@@ -18,18 +27,17 @@ def _capitalize(m):
 def _cond_samples(grams):
     for gram in grams:
         n = len(gram) - 1
-        yield tuple([t.lower() for t in gram[:n]]), gram[n]
+        yield tuple(_case(gram[:n])), gram[n]
 
 
 def _fix(tokens):
     i = 0
     modified = []
-    pattern = '^<\#\w+\|\w+>$|^:[^:]+:$|^<@\w+>$'
 
     while i < len(tokens):
         for j in range(min(4, len(tokens) - i), 0, -1):
             s = ''.join(tokens[i:i + j])
-            if re.findall(pattern, s) or j == 1:
+            if re.findall(_fix_pattern, s) or j == 1:
                 i += j - 1
                 modified.append(s)
                 break
@@ -62,7 +70,7 @@ def discuss(topic, cfd, n, length, truncate):
 
         dist = collections.defaultdict(int)
         for j in range(min(n, len(seed)), 0, -1):
-            ngram = tuple([t.lower() for t in seed[-j:]])
+            ngram = tuple(_case(seed[-j:]))
             if ngram in cfd:
                 for key, value in zip(cfd[ngram].keys(), cfd[ngram].values()):
                     if key == seed[-1]:
