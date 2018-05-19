@@ -90,7 +90,7 @@ def discuss(topic, cfd, n, length, truncate):
 
         if not match:
             if seed == original:
-                return 'I don\'t know anything about ' + topic + '.'
+                return ''
             conjunction = random.choice(['and', 'but', 'for', 'or', 'so'])
             seed.append(conjunction)
 

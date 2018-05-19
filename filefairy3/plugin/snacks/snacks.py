@@ -123,6 +123,8 @@ class Snacks(Plugin, Serializable):
                 cfds = self.__dict__.get('cfds', {})
                 cfd = cfds.get('all', {})
                 reply = discuss(match[0], cfd, _n, 8, 30)
+                if not reply:
+                    reply = 'I don\'t know anything about ' + match[0] + '.'
                 chat_post_message(channel, reply)
                 response.notify = [Notify.BASE]
 
@@ -132,6 +134,21 @@ class Snacks(Plugin, Serializable):
                 if match[0] in cfds:
                     cfd = cfds[match[0]]
                     reply = imitate(cfd, _n, 8, 30)
+                    if not reply:
+                        reply = '<@' + match[0] + '> doesn\'t know anything.'
+                    chat_post_message(channel, reply)
+                    response.notify = [Notify.BASE]
+
+            match = re.findall('^<@U3ULC7DBP> imitate <@(.+)> (.+)$', text)
+            if match:
+                target, topic = match[0]
+                cfds = self.__dict__.get('cfds', {})
+                if target in cfds:
+                    cfd = cfds[target]
+                    reply = discuss(topic, cfd, _n, 8, 30)
+                    if not reply:
+                        reply = '<@' + target + '> doesn\'t know anything ' \
+                                'about ' + topic + '.'
                     chat_post_message(channel, reply)
                     response.notify = [Notify.BASE]
 
