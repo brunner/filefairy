@@ -340,8 +340,8 @@ class Statsplus(Plugin, Renderable):
         match = re.findall(pattern, score)
         if match:
             link, encoding = match[0]
-            value = clarify(encoded_date, link.format(_html, _game_box),
-                            encoding)
+            ddate = decode_datetime(encoded_date)
+            value = clarify(ddate, link.format(_html, _game_box), encoding)
             if encoding != value['encoding']:
                 encoding = value['encoding']
                 self.data['scores'][encoded_date][i] = '<{0}|{1}>'.format(

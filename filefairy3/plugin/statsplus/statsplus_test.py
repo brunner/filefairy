@@ -319,9 +319,8 @@ class StatsplusTest(Test):
 
         write = DATA_CANONICAL
         mock_clear.assert_called_once_with()
-        mock_handle.assert_called_once_with('scores', NOW_ENCODED,
-                                            SCORES_NOW + scores,
-                                            SCORES_PATTERN, False)
+        mock_handle.assert_called_once_with(
+            'scores', NOW_ENCODED, SCORES_NOW + scores, SCORES_PATTERN, False)
         mock_render.assert_called_once_with(obj=obj)
         mock_table.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
@@ -351,9 +350,8 @@ class StatsplusTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_clear.assert_not_called()
-        mock_handle.assert_called_once_with('scores', NOW_ENCODED,
-                                            SCORES_NOW + scores,
-                                            SCORES_PATTERN, False)
+        mock_handle.assert_called_once_with(
+            'scores', NOW_ENCODED, SCORES_NOW + scores, SCORES_PATTERN, False)
         mock_render.assert_called_once_with(obj=obj)
         mock_table.assert_not_called()
         self.mock_open.assert_not_called()
@@ -384,9 +382,8 @@ class StatsplusTest(Test):
 
         write = _data(offseason=True)
         mock_clear.assert_not_called()
-        mock_handle.assert_called_once_with('scores', NOW_ENCODED,
-                                            SCORES_NOW + scores,
-                                            SCORES_PATTERN, False)
+        mock_handle.assert_called_once_with(
+            'scores', NOW_ENCODED, SCORES_NOW + scores, SCORES_PATTERN, False)
         mock_render.assert_called_once_with(obj=obj)
         mock_table.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
@@ -418,8 +415,7 @@ class StatsplusTest(Test):
         mock_clear.assert_not_called()
         mock_handle.assert_not_called()
         mock_render.assert_not_called()
-        mock_table.assert_called_once_with(NOW_ENCODED,
-                                           TABLE_NOW + TABLE_TEXT)
+        mock_table.assert_called_once_with(NOW_ENCODED, TABLE_NOW + TABLE_TEXT)
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
@@ -1001,17 +997,17 @@ class StatsplusTest(Test):
         plugin._resolve_all([THEN_ENCODED])
 
         calls = [
-            mock.call(THEN_ENCODED, '{0}{1}2998.html'.format(_html, _game_box),
+            mock.call(THEN, '{0}{1}2998.html'.format(_html, _game_box),
                       'T31 4, TLA 2'),
-            mock.call(THEN_ENCODED, '{0}{1}3003.html'.format(_html, _game_box),
+            mock.call(THEN, '{0}{1}3003.html'.format(_html, _game_box),
                       'T32 2, TLA 1'),
-            mock.call(THEN_ENCODED, '{0}{1}3002.html'.format(_html, _game_box),
+            mock.call(THEN, '{0}{1}3002.html'.format(_html, _game_box),
                       'T40 11, TCH 4'),
-            mock.call(THEN_ENCODED, '{0}{1}14721.html'.format(
-                _html, _game_box), 'T41 6, TCH 2'),
-            mock.call(THEN_ENCODED, '{0}{1}3001.html'.format(_html, _game_box),
+            mock.call(THEN, '{0}{1}14721.html'.format(_html, _game_box),
+                      'T41 6, TCH 2'),
+            mock.call(THEN, '{0}{1}3001.html'.format(_html, _game_box),
                       'TNY 1, T55 0'),
-            mock.call(THEN_ENCODED, '{0}{1}3000.html'.format(_html, _game_box),
+            mock.call(THEN, '{0}{1}3000.html'.format(_html, _game_box),
                       'TNY 5, T33 3')
         ]
         mock_clarify.assert_has_calls(calls)

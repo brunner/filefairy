@@ -347,7 +347,7 @@
       var val = $(this).val().toLowerCase();
       if (val != filter) {
         filter = val;
-        $.each(['#scores', '#injuries', '#highlights'], function(i, v) {
+        $.each(['scores', 'injuries', 'highlights'], function(i, v) {
           container = $('#' + v);
           $('tbody td', container).each(function(e) {
             if ($(this).text().toLowerCase().indexOf(filter) != -1) {
