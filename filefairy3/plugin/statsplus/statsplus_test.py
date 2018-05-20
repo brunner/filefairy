@@ -50,7 +50,7 @@ LIVE_POSTSEASON = table(
 LIVE_REGULAR_BODY = [['BAL 1-0', 'BOS 0-1']]
 LIVE_REGULAR = table(clazz=_lbclazz, bcols=_lbrcols, body=LIVE_REGULAR_BODY)
 SCORES_TABLE_NOW = table(head='2022-10-10', body=[['Baltimore 1, Boston 0']])
-SCORES_TABLE_THEN = table(head='2022-10-09', body=[['Baltimore 1, Boston 0']])
+SCORES_TABLE_NOW = table(head='2022-10-09', body=[['Baltimore 1, Boston 0']])
 NOW = datetime.datetime(2022, 10, 10)
 THEN = datetime.datetime(2022, 10, 9)
 AL = [('AL East', ['33', '34', '48']), ('AL Central', ['35', '38', '40']),
@@ -87,7 +87,7 @@ SCORES_REGULAR_ENCODED = [
     '<{0}{1}2997.html|T57 12, T34 9>', '<{0}{1}2994.html|T58 5, T50 3>',
     '<{0}{1}2995.html|T59 8, T47 2>'
 ]
-TABLE_THEN = '```MAJOR LEAGUE BASEBALL Live Table - 10/09/2022\n'
+TABLE_NOW = '```MAJOR LEAGUE BASEBALL Live Table - 10/10/2022\n'
 TABLE_TEXT = 'Cincinnati Reds 111\nSan Diego Padres 104\nBoston Red Sox ' + \
              '99\nSeattle Mariners 98\nLos Angeles Dodgers 97\nNew York ' + \
              'Mets 95\nSt. Louis Cardinals 89\nColorado Rockies 88\n' + \
@@ -116,13 +116,13 @@ HOMETOWNS = [
     'St. Louis', 'Pittsburgh', 'Tampa Bay', 'Boston', 'Texas', 'Oakland',
     'Toronto', 'Minnesota'
 ]
-INJURIES_DATE = '10/09/2022 '
-INJURIES_DELAY = '10/09/2022 Rain delay of 19 minutes in the 2nd inning. '
+INJURIES_DATE = '10/10/2022 '
+INJURIES_DELAY = '10/10/2022 Rain delay of 19 minutes in the 2nd inning. '
 INJURIES_TEXT = 'SP <{0}{1}37102.html|Jairo Labourt> was injured while ' + \
                 'pitching (Seattle @ Boston)'
 INJURIES_TEXT_ENCODED = 'SP <{0}{1}37102.html|Jairo Labourt> was injured ' + \
                 'while pitching (T54 @ T34)'
-HIGHLIGHTS_DATE = '10/09/2022 '
+HIGHLIGHTS_DATE = '10/10/2022 '
 HIGHLIGHTS_TEXT = '<{0}{1}38868.html|Connor Harrell> ties the ' + \
                   'BOS regular season game record for runs with 4 (Boston ' + \
                   '@ Tampa Bay)'
@@ -208,6 +208,7 @@ def _data(finished=False,
           offseason=False,
           postseason=False,
           scores={},
+          started=False,
           table={},
           unresolved=[],
           updated=False):
@@ -218,6 +219,7 @@ def _data(finished=False,
         'offseason': offseason,
         'postseason': postseason,
         'scores': scores,
+        'started': started,
         'table': table,
         'unresolved': unresolved,
         'updated': updated
@@ -250,7 +252,7 @@ class StatsplusTest(Test):
     def create_plugin(self, data):
         self.init_mocks(data)
         plugin = Statsplus(e=env())
-        plugin.shadow['download.now'] = THEN_ENCODED
+        plugin.shadow['download.now'] = NOW_ENCODED
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
@@ -302,7 +304,7 @@ class StatsplusTest(Test):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': SCORES_THEN + scores,
+            'text': SCORES_NOW + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -317,8 +319,8 @@ class StatsplusTest(Test):
 
         write = DATA_CANONICAL
         mock_clear.assert_called_once_with()
-        mock_handle.assert_called_once_with('scores', THEN_ENCODED,
-                                            SCORES_THEN + scores,
+        mock_handle.assert_called_once_with('scores', NOW_ENCODED,
+                                            SCORES_NOW + scores,
                                             SCORES_PATTERN, False)
         mock_render.assert_called_once_with(obj=obj)
         mock_table.assert_not_called()
@@ -338,7 +340,7 @@ class StatsplusTest(Test):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': SCORES_THEN + scores,
+            'text': SCORES_NOW + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -349,8 +351,8 @@ class StatsplusTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_clear.assert_not_called()
-        mock_handle.assert_called_once_with('scores', THEN_ENCODED,
-                                            SCORES_THEN + scores,
+        mock_handle.assert_called_once_with('scores', NOW_ENCODED,
+                                            SCORES_NOW + scores,
                                             SCORES_PATTERN, False)
         mock_render.assert_called_once_with(obj=obj)
         mock_table.assert_not_called()
@@ -367,7 +369,7 @@ class StatsplusTest(Test):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': SCORES_THEN + scores,
+            'text': SCORES_NOW + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -382,8 +384,8 @@ class StatsplusTest(Test):
 
         write = _data(offseason=True)
         mock_clear.assert_not_called()
-        mock_handle.assert_called_once_with('scores', THEN_ENCODED,
-                                            SCORES_THEN + scores,
+        mock_handle.assert_called_once_with('scores', NOW_ENCODED,
+                                            SCORES_NOW + scores,
                                             SCORES_PATTERN, False)
         mock_render.assert_called_once_with(obj=obj)
         mock_table.assert_not_called()
@@ -399,7 +401,7 @@ class StatsplusTest(Test):
             self, mock_clear, mock_handle, mock_render, mock_table):
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': TABLE_THEN + TABLE_TEXT,
+            'text': TABLE_NOW + TABLE_TEXT,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -416,8 +418,8 @@ class StatsplusTest(Test):
         mock_clear.assert_not_called()
         mock_handle.assert_not_called()
         mock_render.assert_not_called()
-        mock_table.assert_called_once_with(THEN_ENCODED,
-                                           TABLE_THEN + TABLE_TEXT)
+        mock_table.assert_called_once_with(NOW_ENCODED,
+                                           TABLE_NOW + TABLE_TEXT)
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
@@ -442,7 +444,7 @@ class StatsplusTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_clear.assert_not_called()
-        mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
+        mock_handle.assert_called_once_with('injuries', NOW_ENCODED,
                                             INJURIES_DELAY + injuries,
                                             INJURIES_PATTERN, True)
         mock_render.assert_not_called()
@@ -471,7 +473,7 @@ class StatsplusTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_clear.assert_not_called()
-        mock_handle.assert_called_once_with('injuries', THEN_ENCODED,
+        mock_handle.assert_called_once_with('injuries', NOW_ENCODED,
                                             INJURIES_DATE + injuries,
                                             INJURIES_PATTERN, True)
         mock_render.assert_not_called()
@@ -500,7 +502,7 @@ class StatsplusTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_clear.assert_not_called()
-        mock_handle.assert_called_once_with('highlights', THEN_ENCODED,
+        mock_handle.assert_called_once_with('highlights', NOW_ENCODED,
                                             HIGHLIGHTS_DATE + highlights,
                                             HIGHLIGHTS_PATTERN, True)
         mock_render.assert_not_called()
@@ -544,7 +546,7 @@ class StatsplusTest(Test):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'C7JSGHW8G',
-            'text': SCORES_NOW + scores,
+            'text': SCORES_THEN + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -571,7 +573,7 @@ class StatsplusTest(Test):
         scores = SCORES_REGULAR_TEXT.format(_html, _game_box)
         obj = {
             'channel': 'G3SUFLMK4',
-            'text': SCORES_THEN + scores,
+            'text': SCORES_NOW + scores,
             'ts': '1000.789',
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
@@ -750,7 +752,7 @@ class StatsplusTest(Test):
     def test_handle_key__scores(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        text = SCORES_THEN + SCORES_REGULAR_TEXT.format(_html, _game_box)
+        text = SCORES_NOW + SCORES_REGULAR_TEXT.format(_html, _game_box)
         plugin._handle_key('scores', THEN_ENCODED, text, SCORES_PATTERN, False)
 
         self.mock_open.assert_not_called()
@@ -764,7 +766,7 @@ class StatsplusTest(Test):
     def test_handle_table(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        text = TABLE_THEN + TABLE_TEXT
+        text = TABLE_NOW + TABLE_TEXT
         plugin._handle_table(THEN_ENCODED, text)
 
         self.mock_open.assert_not_called()
@@ -781,7 +783,7 @@ class StatsplusTest(Test):
             HIGHLIGHTS_TABLE,
             INJURIES_TABLE,
             SCORES_TABLE_NOW,
-            SCORES_TABLE_THEN,
+            SCORES_TABLE_NOW,
         ]
 
         read = _data(
@@ -799,7 +801,7 @@ class StatsplusTest(Test):
             'live': [LIVE_POSTSEASON],
             'highlights': [HIGHLIGHTS_TABLE],
             'injuries': [INJURIES_TABLE],
-            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_THEN],
+            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_NOW],
         }
         self.assertEqual(actual, expected)
 
@@ -823,7 +825,7 @@ class StatsplusTest(Test):
             HIGHLIGHTS_TABLE,
             INJURIES_TABLE,
             SCORES_TABLE_NOW,
-            SCORES_TABLE_THEN,
+            SCORES_TABLE_NOW,
         ]
 
         read = _data(
@@ -840,7 +842,7 @@ class StatsplusTest(Test):
             'live': [LIVE_REGULAR],
             'highlights': [HIGHLIGHTS_TABLE],
             'injuries': [INJURIES_TABLE],
-            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_THEN],
+            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_NOW],
         }
         self.assertEqual(actual, expected)
 

@@ -107,18 +107,17 @@ class Statsplus(Plugin, Renderable):
         ddate = datetime.datetime.strptime(date[0], '%m/%d/%Y')
         edate = encode_datetime(ddate)
         ndate = decode_datetime(self.shadow.get('download.now', edate))
-        if ndate < ddate:
+        if ddate < ndate:
             return response
 
         response.append_notify(Notify.BASE)
         shadow = False
-        started = False
 
         if self.data['finished']:
             self.data['finished'] = False
+            self.data['started'] = True
             self._clear()
             shadow = True
-            started = True
 
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
@@ -138,7 +137,8 @@ class Statsplus(Plugin, Renderable):
                 data['postseason'] = False
                 shadow = True
             self._render(**kwargs)
-            if started:
+            if self.data['started']:
+                self.data['started'] = False
                 chat_post_message(
                     'fairylab',
                     'Final scores updated.',
