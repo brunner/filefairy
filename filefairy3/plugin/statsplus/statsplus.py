@@ -18,6 +18,7 @@ from util.component.component import table  # noqa
 from util.datetime.datetime_ import decode_datetime  # noqa
 from util.datetime.datetime_ import encode_datetime  # noqa
 from util.datetime.datetime_ import suffix  # noqa
+from util.slack.slack import chat_post_message  # noqa
 from util.standings.standings import sort  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
@@ -111,11 +112,13 @@ class Statsplus(Plugin, Renderable):
 
         response.append_notify(Notify.BASE)
         shadow = False
+        started = False
 
         if self.data['finished']:
             self.data['finished'] = False
             self._clear()
             shadow = True
+            started = True
 
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
@@ -134,6 +137,13 @@ class Statsplus(Plugin, Renderable):
             if data['offseason'] and data['postseason']:
                 data['postseason'] = False
                 shadow = True
+            self._render(**kwargs)
+            if started:
+                chat_post_message(
+                    'fairylab',
+                    'Final scores updated.',
+                    attachments=self._attachments())
+                response.notify = [Notify.STATSPLUS_SIM]
 
         pattern = 'MAJOR LEAGUE BASEBALL Live Table'
         if re.findall(pattern, text):
