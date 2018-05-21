@@ -50,7 +50,7 @@ def cfd(n, *fnames):
     tokens = []
     for fname in fnames:
         with open(fname, 'r') as f:
-            tokens += _fix(word_tokenize(f.read()))
+            tokens += _fix(word_tokenize(f.read().decode('utf-8')))
 
     grams = []
     for i in range(2, n + 1):

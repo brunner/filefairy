@@ -22,7 +22,6 @@ from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.slack.slack import users_list  # noqa
-from util.unicode.unicode import deunicode  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 
@@ -100,7 +99,7 @@ class Snacks(Plugin, Serializable):
         original = copy.deepcopy(data)
 
         channel = obj.get('channel', '')
-        text = deunicode(obj.get('text', ''), errors='ignore')
+        text = obj.get('text', '')
 
         ok = True
         if user not in data['members']:
@@ -226,7 +225,7 @@ class Snacks(Plugin, Serializable):
         for user in collected:
             fname = os.path.join(_root, 'corpus', user + '.txt')
             with open(fname, 'w') as f:
-                f.write('\n'.join(collected[user]))
+                f.write('\n'.join(collected[user]).encode('utf-8'))
 
     def _load(self):
         self._corpus()

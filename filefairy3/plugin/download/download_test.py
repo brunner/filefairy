@@ -547,14 +547,13 @@ class DownloadTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     @mock.patch('plugin.download.download.open', create=True)
-    @mock.patch('plugin.download.download.codecs.open')
-    def test_leagues_internal__injuries(self, mock_copen, mock_open):
-        cdata = '\n'.join([INJ_THEN, INJ_NOW])
-        cmo = mock.mock_open(read_data=cdata)
-        mock_copen.side_effect = [cmo.return_value]
-        mo = mock.mock_open()
-        mock_handle = mo()
-        mock_open.side_effect = [mo.return_value]
+    def test_leagues_internal__injuries(self, mock_open):
+        data_a = '\n'.join([INJ_THEN, INJ_NOW])
+        mo_a = mock.mock_open(read_data=data_a)
+        mock_handle_a = mo_a()
+        mo_b = mock.mock_open()
+        mock_handle_b = mo_b()
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
 
         dname = 'extract/injuries.txt'
         fname = 'download/news/txt/leagues/league_100_injuries.txt'
@@ -567,25 +566,24 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues_internal('injuries', dname, fname)
 
-        mock_copen.assert_called_once_with(
-            fname, 'r', encoding='utf-8', errors='replace')
-        mock_open.assert_called_once_with(dname, 'w')
+        calls = [mock.call(fname, 'r'), mock.call(dname, 'w')]
+        mock_open.assert_has_calls(calls)
+        mock_handle_a.write.assert_not_called()
         calls = [mock.call(s + '\n') for s in INJ_NOW.split('\n') if s]
-        mock_handle.write.assert_has_calls(calls)
+        mock_handle_b.write.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
         self.mock_log.assert_not_called()
 
     @mock.patch('plugin.download.download.open', create=True)
-    @mock.patch('plugin.download.download.codecs.open')
-    def test_leagues_internal__news(self, mock_copen, mock_open):
-        cdata = '\n'.join([NEWS_THEN, NEWS_NOW])
-        cmo = mock.mock_open(read_data=cdata)
-        mock_copen.side_effect = [cmo.return_value]
-        mo = mock.mock_open()
-        mock_handle = mo()
-        mock_open.side_effect = [mo.return_value]
+    def test_leagues_internal__news(self, mock_open):
+        data_a = '\n'.join([NEWS_THEN, NEWS_NOW])
+        mo_a = mock.mock_open(read_data=data_a)
+        mock_handle_a = mo_a()
+        mo_b = mock.mock_open()
+        mock_handle_b = mo_b()
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
 
         dname = 'extract/news.txt'
         fname = 'download/news/txt/leagues/league_100_news.txt'
@@ -598,25 +596,24 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues_internal('news', dname, fname)
 
-        mock_copen.assert_called_once_with(
-            fname, 'r', encoding='utf-8', errors='replace')
-        mock_open.assert_called_once_with(dname, 'w')
+        calls = [mock.call(fname, 'r'), mock.call(dname, 'w')]
+        mock_open.assert_has_calls(calls)
+        mock_handle_a.write.assert_not_called()
         calls = [mock.call(s + '\n') for s in NEWS_NOW.split('\n') if s]
-        mock_handle.write.assert_has_calls(calls)
+        mock_handle_b.write.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
         self.mock_log.assert_not_called()
 
     @mock.patch('plugin.download.download.open', create=True)
-    @mock.patch('plugin.download.download.codecs.open')
-    def test_leagues_internal__transactions(self, mock_copen, mock_open):
-        cdata = '\n'.join([TRANS_THEN, TRANS_NOW])
-        cmo = mock.mock_open(read_data=cdata)
-        mock_copen.side_effect = [cmo.return_value]
-        mo = mock.mock_open()
-        mock_handle = mo()
-        mock_open.side_effect = [mo.return_value]
+    def test_leagues_internal__transactions(self, mock_open):
+        data_a = '\n'.join([TRANS_THEN, TRANS_NOW])
+        mo_a = mock.mock_open(read_data=data_a)
+        mock_handle_a = mo_a()
+        mo_b = mock.mock_open()
+        mock_handle_b = mo_b()
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
 
         dname = 'extract/transactions.txt'
         fname = 'download/transactions/txt/leagues/league_100_transactions.txt'
@@ -629,11 +626,11 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues_internal('transactions', dname, fname)
 
-        mock_copen.assert_called_once_with(
-            fname, 'r', encoding='utf-8', errors='replace')
-        mock_open.assert_called_once_with(dname, 'w')
+        calls = [mock.call(fname, 'r'), mock.call(dname, 'w')]
+        mock_open.assert_has_calls(calls)
+        mock_handle_a.write.assert_not_called()
         calls = [mock.call(s + '\n') for s in TRANS_NOW.split('\n') if s]
-        mock_handle.write.assert_has_calls(calls)
+        mock_handle_b.write.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.assertEqual(plugin.data['now'], THEN_ENCODED)

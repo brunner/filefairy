@@ -64,11 +64,6 @@ class CorpusTest(unittest.TestCase):
         expected = 'foo bar baz'
         self.assertEqual(actual, expected)
 
-    def test_rewrite__with_unicode(self):
-        actual = _rewrite('(╯°□°）╯︵ ┻━┻ foo', _members)
-        expected = 'foo'
-        self.assertEqual(actual, expected)
-
     def test_rewrite__with_escaped_html(self):
         actual = _rewrite('&gt; foo', _members)
         expected = '> foo'

@@ -17,7 +17,6 @@ from util.jinja2.jinja2_ import env  # noqa
 from util.json.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
-from util.unicode.unicode import deunicode  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 

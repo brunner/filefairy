@@ -16,7 +16,6 @@ from util.component.component import table  # noqa
 from util.datetime.datetime_ import suffix  # noqa
 from util.hash.hash import hash_file  # noqa
 from util.slack.slack import chat_post_message  # noqa
-from util.unicode.unicode import deunicode  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 
@@ -121,7 +120,7 @@ class Recap(Plugin, Renderable):
         dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         dname = dpath.format(key)
         with open(dname, 'r') as f:
-            content = f.read()
+            content = f.read().decode('utf-8')
 
         ret = []
 

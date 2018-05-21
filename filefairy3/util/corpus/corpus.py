@@ -9,7 +9,6 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/corpus', '', _path))
 from util.slack.slack import channels_history  # noqa
-from util.unicode.unicode import deunicode  # noqa
 
 _h = HTMLParser.HTMLParser()
 _bots = ['U3ULC7DBP']
@@ -21,7 +20,6 @@ _subtypes = [
 
 def _rewrite(text, members):
     text = re.sub('(<https?://[^>]+>)|(<![^>]+>)|([()])', '', text)
-    text = deunicode(text, errors='ignore')
     text = _h.unescape(text).strip(' \t\n\r')
     return text
 
