@@ -109,7 +109,7 @@ class SubprocessTest(unittest.TestCase):
     @mock.patch('util.subprocess_.subprocess_.subprocess.Popen')
     def test_target(self, mock_popen):
         mock_proc = mock.Mock()
-        mock_proc.communicate.return_value = ('ret', '')
+        mock_proc.communicate.return_value = (b'ret', b'')
         mock_popen.return_value = mock_proc
 
         command = Command(['cmd', 'foo', 'bar'])

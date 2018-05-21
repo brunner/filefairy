@@ -35,7 +35,7 @@ class Command(object):
     def _target(self):
         stdout, _ = self.proc.communicate()
         if stdout:
-            self.output.update({'output': stdout})
+            self.output.update({'output': stdout.decode('utf-8')})
 
 
 def check_output(cmd, timeout=0):
