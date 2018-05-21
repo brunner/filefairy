@@ -61,7 +61,7 @@ class Fairylab(Messageable, Renderable):
         self.day = date.day
 
         d = os.path.join(_root, 'plugin')
-        ps = filter(lambda x: os.path.isdir(os.path.join(d, x)), os.listdir(d))
+        ps = filter(lambda x: self._is_plugin_dir(d, x), os.listdir(d))
         for p in sorted(ps):
             self._reload_internal(**dict(kwargs, a1='plugin', a2=p))
 
@@ -77,6 +77,10 @@ class Fairylab(Messageable, Renderable):
     def _render_internal(self, **kwargs):
         _home = self._home(**kwargs)
         return [('html/fairylab/index.html', '', 'home.html', _home)]
+
+    @staticmethod
+    def _is_plugin_dir(d, x):
+        return os.path.isdir(os.path.join(d, x)) and x != '__pycache__'
 
     @staticmethod
     def _package(path, name):
