@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import copy
@@ -22,9 +22,9 @@ from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
-from util.datetime.datetime_ import decode_datetime  # noqa
-from util.datetime.datetime_ import encode_datetime  # noqa
-from util.jinja2.jinja2_ import env  # noqa
+from util.datetime_.datetime_ import decode_datetime  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
 from util.logger.logger import log  # noqa
 from util.slack.slack import rtm_connect  # noqa
 from value.notify.notify import Notify  # noqa

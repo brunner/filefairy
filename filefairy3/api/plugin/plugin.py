@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import abc
@@ -12,7 +12,7 @@ sys.path.append(re.sub(r'/api/plugin', '', _path))
 from api.messageable.messageable import Messageable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
-from util.abc.abc_ import abstractstatic  # noqa
+from util.abc_.abc_ import abstractstatic  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 

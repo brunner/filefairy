@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import copy
 import datetime
 import functools
-import mock
 import os
 import re
 import sys
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
@@ -17,8 +17,8 @@ from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
 from util.component.component import card  # noqa
-from util.json.json_ import dumps  # noqa
-from util.jinja2.jinja2_ import env  # noqa
+from util.json_.json_ import dumps  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 from value.notify.notify import Notify  # noqa

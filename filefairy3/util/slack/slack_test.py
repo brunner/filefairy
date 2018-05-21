@@ -1,13 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 import urllib
-import urllib2
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/slack', '', _path))
@@ -30,9 +29,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     @mock.patch('util.slack.slack.create_request')
     def test_channels_kick(self, mock_request, mock_urlopen):
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/channels.kick',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _brunnerj,
                 'channel': 'channel',
                 'user': 'U1234',
@@ -52,9 +51,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     @mock.patch('util.slack.slack.create_request')
     def test_channels_history(self, mock_request, mock_urlopen):
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/channels.history',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _filefairy,
                 'channel': 'channel',
                 'count': 1000,
@@ -76,9 +75,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     @mock.patch('util.slack.slack.create_request')
     def test_channels_list(self, mock_request, mock_urlopen):
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/channels.list',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _filefairy,
                 'exclude_members': True,
                 'exclude_archived': True,
@@ -99,9 +98,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.create_request')
     def test_chat_post_message(self, mock_request, mock_urlopen):
         attachments = [{'fallback': 'a', 'title': 'b', 'text': 'c'}]
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/chat.postMessage',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _filefairy,
                 'channel': 'channel',
                 'text': 'foo',
@@ -127,9 +126,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     @mock.patch('util.slack.slack.create_request')
     def test_files_upload(self, mock_request, mock_urlopen):
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/files.upload',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _filefairy,
                 'content': 'content',
                 'filename': 'filename.txt',
@@ -151,9 +150,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     @mock.patch('util.slack.slack.create_request')
     def test_reactions_add(self, mock_request, mock_urlopen):
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/reactions.add',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _filefairy,
                 'name': 'name',
                 'channel': 'C1234',
@@ -175,9 +174,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     @mock.patch('util.slack.slack.create_request')
     def test_rtm_connect(self, mock_request, mock_urlopen):
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/rtm.connect',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _filefairy
             }))
         mock_urlopen.return_value = '{"ok":true,"url":"wss://..."}'
@@ -193,9 +192,9 @@ class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     @mock.patch('util.slack.slack.create_request')
     def test_users_list(self, mock_request, mock_urlopen):
-        mock_request.return_value = urllib2.Request(
+        mock_request.return_value = urllib.request.Request(
             'https://slack.com/api/users.list',
-            urllib.urlencode({
+            urllib.parse.urlencode({
                 'token': _filefairy,
             }))
         mock_urlopen.return_value = '{"ok":true,"members":[{"id":"U12345"}]}'

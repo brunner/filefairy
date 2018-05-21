@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import json
@@ -10,8 +10,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/slack', '', _path))
 from util.secrets.secrets import brunnerj  # noqa
 from util.secrets.secrets import filefairy  # noqa
-from util.urllib.urllib_ import urlopen  # noqa
-from util.urllib.urllib_ import create_request  # noqa
+from util.urllib_.urllib_ import urlopen  # noqa
+from util.urllib_.urllib_ import create_request  # noqa
 
 _brunnerj = brunnerj()
 _filefairy = filefairy()

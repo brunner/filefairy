@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import abc
@@ -10,8 +10,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/serializable', '', _path))
 from api.nameable.nameable import Nameable  # noqa
-from util.abc.abc_ import abstractstatic  # noqa
-from util.json.json_ import dumps  # noqa
+from util.abc_.abc_ import abstractstatic  # noqa
+from util.json_.json_ import dumps  # noqa
 from util.logger.logger import log  # noqa
 
 

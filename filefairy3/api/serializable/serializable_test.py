@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/serializable', '', _path))
@@ -69,7 +69,7 @@ class SerializableTest(unittest.TestCase):
         serializable.write()
         mock_open.assert_called_once_with(serializable._data(), 'w')
         handle = mo()
-        calls = [mock.call('{\n  "a": 2, \n  "b": false\n}\n')]
+        calls = [mock.call('{\n  "a": 2,\n  "b": false\n}\n')]
         handle.write.assert_has_calls(calls)
         mock_log.assert_called_once_with(serializable._name(), **{
             's': 'Write completed.'
@@ -87,7 +87,7 @@ class SerializableTest(unittest.TestCase):
         mock_log.return_value = {'a': 1, 'b': True}
         serializable.dump()
         mock_log.assert_called_once_with(serializable._name(), **{
-            'c': '{\n  "a": 1, \n  "b": true\n}',
+            'c': '{\n  "a": 1,\n  "b": true\n}',
             's': 'Dump completed.'
         })
 

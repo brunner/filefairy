@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import HTMLParser
+import html
 import os
 import re
 import sys
@@ -10,7 +10,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/corpus', '', _path))
 from util.slack.slack import channels_history  # noqa
 
-_h = HTMLParser.HTMLParser()
 _bots = ['U3ULC7DBP']
 _snacks = ['C9YE6NQG0']
 _subtypes = [
@@ -20,7 +19,7 @@ _subtypes = [
 
 def _rewrite(text, members):
     text = re.sub('(<https?://[^>]+>)|(<![^>]+>)|([()])', '', text)
-    text = _h.unescape(text).strip(' \t\n\r')
+    text = html.unescape(text).strip(' \t\n\r')
     return text
 
 

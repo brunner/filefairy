@@ -1,23 +1,23 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mock
 import os
 import re
 import subprocess
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/subprocess', '', _path))
-from util.subprocess.subprocess_ import Command  # noqa
-from util.subprocess.subprocess_ import check_output  # noqa
+sys.path.append(re.sub(r'/util/subprocess_', '', _path))
+from util.subprocess_.subprocess_ import Command  # noqa
+from util.subprocess_.subprocess_ import check_output  # noqa
 
 
 class SubprocessTest(unittest.TestCase):
-    @mock.patch('util.subprocess.subprocess_.threading.Thread')
+    @mock.patch('util.subprocess_.subprocess_.threading.Thread')
     @mock.patch.object(Command, '_target')
-    @mock.patch('util.subprocess.subprocess_.subprocess.Popen')
+    @mock.patch('util.subprocess_.subprocess_.subprocess.Popen')
     def test_run__ok(self, mock_popen, mock_target, mock_thread):
         mock_proc = mock.Mock()
         mock_popen.return_value = mock_proc
@@ -49,9 +49,9 @@ class SubprocessTest(unittest.TestCase):
         mock_target.assert_called_once_with()
         mock_thread.assert_called_once_with(target=mock_target)
 
-    @mock.patch('util.subprocess.subprocess_.threading.Thread')
+    @mock.patch('util.subprocess_.subprocess_.threading.Thread')
     @mock.patch.object(Command, '_target')
-    @mock.patch('util.subprocess.subprocess_.subprocess.Popen')
+    @mock.patch('util.subprocess_.subprocess_.subprocess.Popen')
     def test_run__exception(self, mock_popen, mock_target, mock_thread):
         mock_proc = mock.Mock()
         mock_popen.return_value = mock_proc
@@ -78,9 +78,9 @@ class SubprocessTest(unittest.TestCase):
         mock_t.is_alive.assert_not_called()
         mock_thread.assert_called_once_with(target=mock_target)
 
-    @mock.patch('util.subprocess.subprocess_.threading.Thread')
+    @mock.patch('util.subprocess_.subprocess_.threading.Thread')
     @mock.patch.object(Command, '_target')
-    @mock.patch('util.subprocess.subprocess_.subprocess.Popen')
+    @mock.patch('util.subprocess_.subprocess_.subprocess.Popen')
     def test_run__timeout(self, mock_popen, mock_target, mock_thread):
         mock_proc = mock.Mock()
         mock_popen.return_value = mock_proc
@@ -106,7 +106,7 @@ class SubprocessTest(unittest.TestCase):
         mock_target.assert_called_once_with()
         mock_thread.assert_called_once_with(target=mock_target)
 
-    @mock.patch('util.subprocess.subprocess_.subprocess.Popen')
+    @mock.patch('util.subprocess_.subprocess_.subprocess.Popen')
     def test_target(self, mock_popen):
         mock_proc = mock.Mock()
         mock_proc.communicate.return_value = ('ret', '')

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -13,9 +13,9 @@ def delta(then, now, fmt='{} ago'):
         if s < 60:
             t = str(s) + 's'
         elif s < 3600:
-            t = str(s / 60) + 'm'
+            t = str(s // 60) + 'm'
         else:
-            t = str(s / 3600) + 'h'
+            t = str(s // 3600) + 'h'
     else:
         t = str(d) + 'd'
 
@@ -32,7 +32,7 @@ def elapsed(then, now):
     if d > 0:
         s += 86400 * d
 
-    h, m = s / 3600, (s / 60) % 60
+    h, m = s // 3600, (s // 60) % 60
     hm = []
     if h > 0:
         hm.append('{}h'.format(h))

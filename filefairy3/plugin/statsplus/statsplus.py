@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import copy
@@ -15,9 +15,9 @@ from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from util.box.box import clarify  # noqa
 from util.component.component import table  # noqa
-from util.datetime.datetime_ import decode_datetime  # noqa
-from util.datetime.datetime_ import encode_datetime  # noqa
-from util.datetime.datetime_ import suffix  # noqa
+from util.datetime_.datetime_ import decode_datetime  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
+from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.standings.standings import sort  # noqa
 from util.team.team import chlany  # noqa
@@ -291,7 +291,7 @@ class Statsplus(Plugin, Renderable):
 
     def _live_regular(self):
         div = divisions()
-        size = len(div) / 2
+        size = len(div) // 2
         al, nl = div[:size], div[size:]
 
         lrba = self._live_regular_body(al)

@@ -1,19 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
 from plugin.download.download import Download  # noqa
-from util.json.json_ import dumps  # noqa
+from util.json_.json_ import dumps  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 
@@ -114,8 +114,7 @@ class DownloadTest(unittest.TestCase):
         value = plugin._notify_internal(notify=Notify.LEAGUEFILE_FINISH)
         self.assertTrue(value)
 
-        mock_download.assert_called_once_with(
-            notify=Notify.LEAGUEFILE_FINISH)
+        mock_download.assert_called_once_with(notify=Notify.LEAGUEFILE_FINISH)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -189,8 +188,7 @@ class DownloadTest(unittest.TestCase):
         }
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=THEN)
-        self.assertEqual(
-            response, Response(notify=[Notify.DOWNLOAD_YEAR]))
+        self.assertEqual(response, Response(notify=[Notify.DOWNLOAD_YEAR]))
 
         write = {
             'downloaded': False,
@@ -566,7 +564,10 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues_internal('injuries', dname, fname)
 
-        calls = [mock.call(fname, 'r'), mock.call(dname, 'w')]
+        calls = [
+            mock.call(fname, 'r', encoding='iso-8859-1'),
+            mock.call(dname, 'w')
+        ]
         mock_open.assert_has_calls(calls)
         mock_handle_a.write.assert_not_called()
         calls = [mock.call(s + '\n') for s in INJ_NOW.split('\n') if s]
@@ -596,7 +597,10 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues_internal('news', dname, fname)
 
-        calls = [mock.call(fname, 'r'), mock.call(dname, 'w')]
+        calls = [
+            mock.call(fname, 'r', encoding='iso-8859-1'),
+            mock.call(dname, 'w')
+        ]
         mock_open.assert_has_calls(calls)
         mock_handle_a.write.assert_not_called()
         calls = [mock.call(s + '\n') for s in NEWS_NOW.split('\n') if s]
@@ -626,7 +630,10 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues_internal('transactions', dname, fname)
 
-        calls = [mock.call(fname, 'r'), mock.call(dname, 'w')]
+        calls = [
+            mock.call(fname, 'r', encoding='iso-8859-1'),
+            mock.call(dname, 'w')
+        ]
         mock_open.assert_has_calls(calls)
         mock_handle_a.write.assert_not_called()
         calls = [mock.call(s + '\n') for s in TRANS_NOW.split('\n') if s]

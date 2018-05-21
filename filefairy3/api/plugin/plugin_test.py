@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/plugin', '', _path))
@@ -13,7 +13,7 @@ from api.plugin.plugin import Plugin  # noqa
 from api.messageable.messageable import Messageable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.renderable.renderable import Renderable  # noqa
-from util.jinja2.jinja2_ import env  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 

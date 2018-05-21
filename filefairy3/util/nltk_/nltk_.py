@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import collections
@@ -50,7 +50,7 @@ def cfd(n, *fnames):
     tokens = []
     for fname in fnames:
         with open(fname, 'r') as f:
-            tokens += _fix(word_tokenize(f.read().decode('utf-8')))
+            tokens += _fix(word_tokenize(f.read()))
 
     grams = []
     for i in range(2, n + 1):
@@ -72,7 +72,7 @@ def discuss(topic, cfd, n, length, truncate):
         for j in range(min(n, len(seed)), 0, -1):
             ngram = tuple(_case(seed[-j:]))
             if ngram in cfd:
-                for key, value in zip(cfd[ngram].keys(), cfd[ngram].values()):
+                for key, value in list(cfd[ngram].items()):
                     if key == seed[-1]:
                         continue
                     dist[key] += value * j * j
@@ -81,7 +81,7 @@ def discuss(topic, cfd, n, length, truncate):
             dist.pop('.')
 
         x = random.randint(0, sum(dist.values()))
-        for key, value in dist.iteritems():
+        for key, value in sorted(dist.items()):
             x -= value
             if x <= 0:
                 seed.append(key)
@@ -107,15 +107,15 @@ def discuss(topic, cfd, n, length, truncate):
 
 
 def imitate(cfd, n, length, truncate):
-    conditions = filter(lambda c: re.findall('^\w', c[0]), cfd.conditions())
+    conds = list(filter(lambda c: re.findall('^\w', c[0]), cfd.conditions()))
     total = 0
-    for condition in conditions:
-        total += sum(cfd[condition].values())
+    for cond in conds:
+        total += sum(cfd[cond].values())
 
     x = random.randint(0, total)
-    for condition in conditions:
-        x -= sum(cfd[condition].values())
+    for cond in sorted(conds):
+        x -= sum(cfd[cond].values())
         if x <= 0:
-            return discuss(' '.join(condition), cfd, n, length, truncate)
+            return discuss(' '.join(cond), cfd, n, length, truncate)
 
     return ''

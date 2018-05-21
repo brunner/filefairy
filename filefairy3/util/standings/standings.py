@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -52,7 +52,8 @@ def standings_table(records):
     tables = []
     for division, teamids in _divisions:
         body = []
-        for team_tuple in sort(filter(lambda t: t[0] in teamids, records)):
+        filtered = list(filter(lambda t: t[0] in teamids, records))
+        for team_tuple in sort(filtered):
             teamid, record = team_tuple
             t = logo_absolute(teamid, teamid_to_hometown(teamid), 'left')
             w, l = _decode(record, to_int=False)

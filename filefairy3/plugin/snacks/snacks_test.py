@@ -1,12 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
@@ -15,7 +15,7 @@ sys.path.append(_root)
 from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
-from util.json.json_ import dumps  # noqa
+from util.json_.json_ import dumps  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 

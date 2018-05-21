@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
@@ -13,8 +13,7 @@ from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from util.box.box import records  # noqa
 from util.component.component import table  # noqa
-from util.datetime.datetime_ import suffix  # noqa
-from util.hash.hash import hash_file  # noqa
+from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
@@ -120,7 +119,7 @@ class Recap(Plugin, Renderable):
         dpath = os.path.join(_root, 'extract/leagues/{}.txt')
         dname = dpath.format(key)
         with open(dname, 'r') as f:
-            content = f.read().decode('utf-8')
+            content = f.read()
 
         ret = []
 

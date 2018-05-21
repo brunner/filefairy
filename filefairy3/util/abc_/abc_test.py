@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import abc
@@ -8,8 +8,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/abc', '', _path))
-from util.abc.abc_ import abstractstatic  # noqa
+sys.path.append(re.sub(r'/util/abc_', '', _path))
+from util.abc_.abc_ import abstractstatic  # noqa
 
 
 class Foo(object):

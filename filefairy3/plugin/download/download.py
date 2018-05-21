@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import copy
@@ -13,11 +13,11 @@ _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.serializable.serializable import Serializable  # noqa
-from util.datetime.datetime_ import decode_datetime  # noqa
-from util.datetime.datetime_ import encode_datetime  # noqa
-from util.file.file import ping  # noqa
-from util.file.file import recreate  # noqa
-from util.file.file import wget_file  # noqa
+from util.datetime_.datetime_ import decode_datetime  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
+from util.file_.file_ import ping  # noqa
+from util.file_.file_ import recreate  # noqa
+from util.file_.file_ import wget_file  # noqa
 from util.logger.logger import log  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
@@ -165,15 +165,15 @@ class Download(Plugin, Serializable):
         then = decode_datetime(self.data['then'])
         now = decode_datetime(self.data['now'])
 
-        with open(fname, 'r') as ff:
-            content = ff.read().decode('iso-8859-1')
+        with open(fname, 'r', encoding='iso-8859-1') as ff:
+            content = ff.read()
 
         with open(dname, 'w') as df:
             match = re.findall('\d{8}\t[^\n]+\n', content.strip() + '\n')
             for m in match:
                 date = datetime.datetime.strptime(m[:8], '%Y%m%d')
                 if date >= then:
-                    df.write(m.encode('utf-8'))
+                    df.write(m)
                 if date > now:
                     now = date
 

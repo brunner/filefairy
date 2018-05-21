@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/test', '', _path)
@@ -48,7 +48,7 @@ class TestTest(unittest.TestCase):
         actual = FakeRenderableTest.write('data.json', {'a': 2, 'b': False})
         self.assertEqual(actual, {'a': 1, 'b': True})
         handle = mo()
-        calls = [mock.call('{\n  "a": 2, \n  "b": false\n}\n')]
+        calls = [mock.call('{\n  "a": 2,\n  "b": false\n}\n')]
         handle.write.assert_has_calls(calls)
 
     @mock.patch('util.test.test.os.listdir')

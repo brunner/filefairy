@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import copy
@@ -14,9 +14,9 @@ sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.serializable.serializable import Serializable  # noqa
 from util.corpus.corpus import collect  # noqa
-from util.nltk.nltk_ import cfd  # noqa
-from util.nltk.nltk_ import discuss  # noqa
-from util.nltk.nltk_ import imitate  # noqa
+from util.nltk_.nltk_ import cfd  # noqa
+from util.nltk_.nltk_ import discuss  # noqa
+from util.nltk_.nltk_ import imitate  # noqa
 from util.slack.slack import channels_kick  # noqa
 from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
@@ -225,7 +225,7 @@ class Snacks(Plugin, Serializable):
         for user in collected:
             fname = os.path.join(_root, 'corpus', user + '.txt')
             with open(fname, 'w') as f:
-                f.write('\n'.join(collected[user]).encode('utf-8'))
+                f.write('\n'.join(collected[user]))
 
     def _load(self):
         self._corpus()

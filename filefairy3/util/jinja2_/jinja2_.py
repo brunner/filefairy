@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import jinja2
@@ -6,7 +6,7 @@ import os
 import re
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/util/jinja2', '', _path)
+_root = re.sub(r'/util/jinja2_', '', _path)
 
 
 def env():

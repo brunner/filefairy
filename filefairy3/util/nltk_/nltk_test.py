@@ -1,20 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/nltk', '', _path))
-from util.nltk.nltk_ import _capitalize  # noqa
-from util.nltk.nltk_ import _cond_samples  # noqa
-from util.nltk.nltk_ import _fix  # noqa
-from util.nltk.nltk_ import cfd  # noqa
-from util.nltk.nltk_ import discuss  # noqa
-from util.nltk.nltk_ import imitate  # noqa
+sys.path.append(re.sub(r'/util/nltk_', '', _path))
+from util.nltk_.nltk_ import _capitalize  # noqa
+from util.nltk_.nltk_ import _cond_samples  # noqa
+from util.nltk_.nltk_ import _fix  # noqa
+from util.nltk_.nltk_ import cfd  # noqa
+from util.nltk_.nltk_ import discuss  # noqa
+from util.nltk_.nltk_ import imitate  # noqa
 
 
 class NltkTest(unittest.TestCase):
@@ -35,7 +35,7 @@ class NltkTest(unittest.TestCase):
             'a',
             'b',
         ), 'C')])
-        self.assertItemsEqual(actual, expected)
+        self.assertCountEqual(actual, expected)
 
     def test_fix__channel(self):
         tokens = ['before', '<', '#', 'C1234|channel', '>', 'after']
@@ -55,7 +55,7 @@ class NltkTest(unittest.TestCase):
         expected = ['before', '<@U1234>', 'after']
         self.assertEqual(actual, expected)
 
-    @mock.patch('util.nltk.nltk_.open', create=True)
+    @mock.patch('util.nltk_.nltk_.open', create=True)
     def test_cfd(self, mock_open):
         data_a = 'The quick brown fox jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
@@ -67,15 +67,15 @@ class NltkTest(unittest.TestCase):
         c = cfd(4, *fnames)
 
         ngram = ('the', )
-        actual = (c[ngram].keys(), c[ngram].values())
-        expected = (['quick', 'lazy'], [2, 2])
+        actual = (sorted(list(c[ngram].keys())), list(c[ngram].values()))
+        expected = (['lazy', 'quick'], [2, 2])
         self.assertEqual(actual, expected)
 
         ngram = (
             'the',
             'quick',
         )
-        actual = (c[ngram].keys(), c[ngram].values())
+        actual = (sorted(list(c[ngram].keys())), list(c[ngram].values()))
         expected = (['brown', 'grey'], [1, 1])
         self.assertEqual(actual, expected)
 
@@ -84,7 +84,7 @@ class NltkTest(unittest.TestCase):
             'over',
             'the',
         )
-        actual = (c[ngram].keys(), c[ngram].values())
+        actual = (list(c[ngram].keys()), list(c[ngram].values()))
         expected = (['lazy'], [2])
         self.assertEqual(actual, expected)
 
@@ -99,8 +99,8 @@ class NltkTest(unittest.TestCase):
         calls = [mock.call('a.txt', 'r'), mock.call('b.txt', 'r')]
         mock_open.assert_has_calls(calls)
 
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
     def test_discuss__channel(self, mock_open, mock_randint):
         data_a = 'The quick brown <#C1234|channel> jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
@@ -112,12 +112,11 @@ class NltkTest(unittest.TestCase):
         fnames = ['a.txt', 'b.txt']
         c = cfd(3, *fnames)
         actual = discuss('<#C1234|channel>', c, 3, 5, 10)
-        expected = '<#C1234|channel> jumps over the quick brown ' + \
-                   '<#C1234|channel> jumps over the...'
+        expected = '<#C1234|channel> jumps over the lazy dog.'
         self.assertEqual(actual, expected)
 
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
     def test_discuss__emoji(self, mock_open, mock_randint):
         data_a = 'The quick brown :+1: jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
@@ -129,11 +128,11 @@ class NltkTest(unittest.TestCase):
         fnames = ['a.txt', 'b.txt']
         c = cfd(3, *fnames)
         actual = discuss(':+1:', c, 3, 5, 10)
-        expected = ':+1: jumps over the quick brown :+1: jumps over the...'
+        expected = ':+1: jumps over the lazy dog.'
         self.assertEqual(actual, expected)
 
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
     def test_discuss__user(self, mock_open, mock_randint):
         data_a = 'The quick brown <@U1234> jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
@@ -145,12 +144,11 @@ class NltkTest(unittest.TestCase):
         fnames = ['a.txt', 'b.txt']
         c = cfd(3, *fnames)
         actual = discuss('<@U1234>', c, 3, 5, 10)
-        expected = '<@U1234> jumps over the quick brown <@U1234> jumps ' + \
-                   'over the...'
+        expected = '<@U1234> jumps over the lazy dog.'
         self.assertEqual(actual, expected)
 
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
     def test_discuss__with_randint_first(self, mock_open, mock_randint):
         data_a = 'The quick brown fox jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
@@ -162,32 +160,12 @@ class NltkTest(unittest.TestCase):
         fnames = ['a.txt', 'b.txt']
         c = cfd(3, *fnames)
         actual = discuss('the', c, 3, 5, 10)
-        expected = 'The quick brown fox jumps over the quick brown fox...'
-        self.assertEqual(actual, expected)
-
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
-    def test_discuss__with_randint_middle(self, mock_open, mock_randint):
-        data_a = 'The quick brown fox jumps over the lazy dog.'
-        mo_a = mock.mock_open(read_data=data_a)
-        data_b = 'The quick grey wolf jumps over the lazy fox.'
-        mo_b = mock.mock_open(read_data=data_b)
-        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
-
-        def fake_randint(*args, **kwargs):
-            return args[1]
-
-        mock_randint.side_effect = fake_randint
-
-        fnames = ['a.txt', 'b.txt']
-        c = cfd(3, *fnames)
-        actual = discuss('the', c, 3, 5, 10)
         expected = 'The lazy dog. The lazy dog.'
         self.assertEqual(actual, expected)
 
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
-    def test_discuss__with_randint_last(self, mock_open, mock_randint):
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
+    def test_discuss__with_randint_middle(self, mock_open, mock_randint):
         data_a = 'The quick brown fox jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
         data_b = 'The quick grey wolf jumps over the lazy fox.'
@@ -202,11 +180,31 @@ class NltkTest(unittest.TestCase):
         fnames = ['a.txt', 'b.txt']
         c = cfd(3, *fnames)
         actual = discuss('the', c, 3, 5, 10)
-        expected = 'The quick brown fox jumps over the lazy fox.'
+        expected = 'The lazy dog. The quick brown fox jumps over...'
         self.assertEqual(actual, expected)
 
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
+    def test_discuss__with_randint_last(self, mock_open, mock_randint):
+        data_a = 'The quick brown fox jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+
+        def fake_randint(*args, **kwargs):
+            return args[1]
+
+        mock_randint.side_effect = fake_randint
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = discuss('the', c, 3, 5, 10)
+        expected = 'The quick grey wolf jumps over the quick grey wolf...'
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
     def test_imitate__with_randint_first(self, mock_open, mock_randint):
         data_a = 'The quick brown fox jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
@@ -218,32 +216,12 @@ class NltkTest(unittest.TestCase):
         fnames = ['a.txt', 'b.txt']
         c = cfd(3, *fnames)
         actual = imitate(c, 3, 5, 10)
-        expected = 'The quick brown fox jumps over the quick brown fox...'
+        expected = 'Brown fox. The lazy dog.'
         self.assertEqual(actual, expected)
 
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
     def test_imitate__with_randint_middle(self, mock_open, mock_randint):
-        data_a = 'The quick brown fox jumps over the lazy dog.'
-        mo_a = mock.mock_open(read_data=data_a)
-        data_b = 'The quick grey wolf jumps over the lazy fox.'
-        mo_b = mock.mock_open(read_data=data_b)
-        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
-
-        def fake_randint(*args, **kwargs):
-            return args[1]
-
-        mock_randint.side_effect = fake_randint
-
-        fnames = ['a.txt', 'b.txt']
-        c = cfd(3, *fnames)
-        actual = imitate(c, 3, 5, 10)
-        expected = 'Quick grey wolf jumps over the lazy dog.'
-        self.assertEqual(actual, expected)
-
-    @mock.patch('util.nltk.nltk_.random.randint')
-    @mock.patch('util.nltk.nltk_.open', create=True)
-    def test_imitate__with_randint_last(self, mock_open, mock_randint):
         data_a = 'The quick brown fox jumps over the lazy dog.'
         mo_a = mock.mock_open(read_data=data_a)
         data_b = 'The quick grey wolf jumps over the lazy fox.'
@@ -258,7 +236,27 @@ class NltkTest(unittest.TestCase):
         fnames = ['a.txt', 'b.txt']
         c = cfd(3, *fnames)
         actual = imitate(c, 3, 5, 10)
-        expected = 'The lazy fox. The quick brown fox jumps over...'
+        expected = 'Over the lazy dog.'
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.nltk_.nltk_.random.randint')
+    @mock.patch('util.nltk_.nltk_.open', create=True)
+    def test_imitate__with_randint_last(self, mock_open, mock_randint):
+        data_a = 'The quick brown fox jumps over the lazy dog.'
+        mo_a = mock.mock_open(read_data=data_a)
+        data_b = 'The quick grey wolf jumps over the lazy fox.'
+        mo_b = mock.mock_open(read_data=data_b)
+        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
+
+        def fake_randint(*args, **kwargs):
+            return args[1]
+
+        mock_randint.side_effect = fake_randint
+
+        fnames = ['a.txt', 'b.txt']
+        c = cfd(3, *fnames)
+        actual = imitate(c, 3, 5, 10)
+        expected = 'Wolf jumps over the quick grey wolf jumps over the...'
         self.assertEqual(actual, expected)
 
 

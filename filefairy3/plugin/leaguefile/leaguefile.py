@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import copy
@@ -11,15 +11,16 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/leaguefile', '', _path))
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
-from util.ago.ago import delta, elapsed  # noqa
+from util.ago.ago import delta  # noqa
+from util.ago.ago import elapsed  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
-from util.datetime.datetime_ import decode_datetime  # noqa
-from util.datetime.datetime_ import encode_datetime  # noqa
-from util.jinja2.jinja2_ import env  # noqa
+from util.datetime_.datetime_ import decode_datetime  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
 from util.secrets.secrets import server  # noqa
 from util.slack.slack import chat_post_message  # noqa
-from util.subprocess.subprocess_ import check_output  # noqa
+from util.subprocess_.subprocess_ import check_output  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 

@@ -1,19 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
 import jinja2
-import mock
 import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.renderable.renderable import Renderable  # noqa
-from util.jinja2.jinja2_ import env  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
 from util.secrets.secrets import server  # noqa
 
 _server = server()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -12,15 +12,15 @@ from api.renderable.renderable import Renderable  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
-from util.datetime.datetime_ import decode_datetime  # noqa
-from util.datetime.datetime_ import encode_datetime  # noqa
+from util.datetime_.datetime_ import decode_datetime  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.logger.logger import log  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_abbreviation  # noqa
 from util.team.team import teamid_to_hometown  # noqa
-from util.urllib.urllib_ import urlopen  # noqa
+from util.urllib_.urllib_ import urlopen  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 
@@ -254,9 +254,9 @@ class Exports(Plugin, Renderable):
 
     def _table(self):
         div = divisions()
-        size = len(self.exports) / len(div)
+        size = len(self.exports) // len(div)
         cols = [''] + [' class="text-center"'] * size
-        body = map(lambda t: [t[0]], div)
+        body = [[t[0]] for t in div]
         for i, export in enumerate(self.exports):
             teamid, status = export
             text = teamid_to_abbreviation(teamid)
@@ -264,7 +264,7 @@ class Exports(Plugin, Renderable):
                 text = self._secondary(text)
             if status == 'New':
                 text = self._success(text)
-            body[i / size].append(text)
+            body[i // size].append(text)
         return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 
     def _unlock_internal(self):

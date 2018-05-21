@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
-import mock
 import os
 import re
 import sys
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
@@ -14,8 +14,8 @@ sys.path.append(_root)
 from plugin.leaguefile.leaguefile import Leaguefile  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
-from util.jinja2.jinja2_ import env  # noqa
-from util.json.json_ import dumps  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
+from util.json_.json_ import dumps  # noqa
 from util.secrets.secrets import server  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
@@ -337,7 +337,7 @@ class LeaguefileTest(Test):
 
         actual = Leaguefile._check()
         expected = iter([CHECK_FILEPART, CHECK_UP_TRUE])
-        self.assertItemsEqual(actual, expected)
+        self.assertCountEqual(actual, expected)
 
         mock_check.assert_called_once_with([
             'ssh', 'brunnerj@' + _server,
@@ -352,7 +352,7 @@ class LeaguefileTest(Test):
 
         actual = Leaguefile._check()
         expected = iter([CHECK_UP_FALSE])
-        self.assertItemsEqual(actual, expected)
+        self.assertCountEqual(actual, expected)
 
         mock_check.assert_called_once_with([
             'ssh', 'brunnerj@' + _server,

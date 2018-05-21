@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
@@ -8,10 +8,10 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/datetime', '', _path))
-from util.datetime.datetime_ import decode_datetime  # noqa
-from util.datetime.datetime_ import encode_datetime  # noqa
-from util.datetime.datetime_ import suffix  # noqa
+sys.path.append(re.sub(r'/util/datetime_', '', _path))
+from util.datetime_.datetime_ import decode_datetime  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
+from util.datetime_.datetime_ import suffix  # noqa
 
 
 class DatetimeTest(unittest.TestCase):

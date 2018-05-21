@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -6,9 +6,9 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/util/file', '', _path)
+_root = re.sub(r'/util/file_', '', _path)
 sys.path.append(_root)
-from util.subprocess.subprocess_ import check_output  # noqa
+from util.subprocess_.subprocess_ import check_output  # noqa
 
 _download = os.path.join(_root, 'download')
 _host = 'www.orangeandblueleaguebaseball.com'

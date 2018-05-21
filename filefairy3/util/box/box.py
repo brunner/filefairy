@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -10,7 +10,7 @@ sys.path.append(re.sub(r'/util/box', '', _path))
 from util.team.team import decoding_to_encoding  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import encoding_to_decoding_sub  # noqa
-from util.urllib.urllib_ import urlopen  # noqa
+from util.urllib_.urllib_ import urlopen  # noqa
 
 _title = '<title>MLB Box Scores, (.+?) at (.+?), {}</title>'
 _row = '<tr style=\"background-color:#FFFFFE;\">(.+?)</tr>'

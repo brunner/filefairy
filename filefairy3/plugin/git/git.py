@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -10,7 +10,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/pluin/git', '', _path))
 from api.plugin.plugin import Plugin  # noqa
 from util.logger.logger import log  # noqa
-from util.subprocess.subprocess_ import check_output  # noqa
+from util.subprocess_.subprocess_ import check_output  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 

@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
-import mock
 import os
 import re
 import sys
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
@@ -13,8 +13,8 @@ _root = re.sub(r'/plugin/statsplus', '', _path)
 sys.path.append(_root)
 from plugin.statsplus.statsplus import Statsplus  # noqa
 from util.component.component import table  # noqa
-from util.jinja2.jinja2_ import env  # noqa
-from util.json.json_ import dumps  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
+from util.json_.json_ import dumps  # noqa
 from util.team.team import logo_inline  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa

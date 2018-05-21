@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import abc
@@ -13,10 +13,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.serializable.serializable import Serializable  # noqa
-from util.abc.abc_ import abstractstatic  # noqa
+from util.abc_.abc_ import abstractstatic  # noqa
 from util.logger.logger import log  # noqa
 from util.secrets.secrets import server  # noqa
-from util.subprocess.subprocess_ import check_output  # noqa
+from util.subprocess_.subprocess_ import check_output  # noqa
 
 _server = server()
 
