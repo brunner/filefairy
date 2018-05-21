@@ -11,7 +11,6 @@ sys.path.append(re.sub(r'/util/slack', '', _path))
 from util.secrets.secrets import brunnerj  # noqa
 from util.secrets.secrets import filefairy  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
-from util.urllib_.urllib_ import create_request  # noqa
 
 _brunnerj = brunnerj()
 _filefairy = filefairy()
@@ -21,8 +20,7 @@ def _call(method, params):
     url = 'https://slack.com/api/{}'.format(method)
     obj = {'ok': False}
     try:
-        request = create_request(url, params)
-        response = urlopen(request)
+        response = urlopen(url, params)
         obj = json.loads(response)
     except:
         pass
