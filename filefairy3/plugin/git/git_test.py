@@ -41,26 +41,23 @@ class GitTest(unittest.TestCase):
 
         return plugin
 
-    @mock.patch('plugin.git.git.threading.Thread')
     @mock.patch.object(Git, 'automate')
-    def test_notify__with_day(self, mock_automate, mock_thread):
+    def test_notify__with_day(self, mock_automate):
         plugin = self.create_plugin()
         value = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
         self.assertFalse(value)
 
-        mock_thread.assert_called_once_with(target=mock_automate)
-        mock_thread.return_value.start.assert_called_once_with()
+        mock_automate.assert_called_once_with(notify=Notify.FAIRYLAB_DAY)
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
-    @mock.patch('plugin.git.git.threading.Thread')
     @mock.patch.object(Git, 'automate')
-    def test_notify__with_other(self, mock_automate, mock_thread):
+    def test_notify__with_other(self, mock_automate):
         plugin = self.create_plugin()
         value = plugin._notify_internal(notify=Notify.OTHER)
         self.assertFalse(value)
 
-        mock_thread.assert_not_called()
+        mock_automate.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 

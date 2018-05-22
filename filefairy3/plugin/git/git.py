@@ -4,7 +4,6 @@
 import os
 import re
 import sys
-import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/pluin/git', '', _path))
@@ -30,9 +29,7 @@ class Git(Plugin):
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == Notify.FAIRYLAB_DAY:
-            t = threading.Thread(target=self.automate)
-            t.daemon = True
-            t.start()
+            self.automate(**kwargs)
         return False
 
     def _on_message_internal(self, **kwargs):
