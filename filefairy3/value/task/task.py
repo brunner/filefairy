@@ -55,7 +55,7 @@ class Task(object):
 
     def set_kwargs(self, value):
         if value is None:
-            self._kwargs = tuple()
+            self._kwargs = dict()
         else:
             self.check_kwargs_value(value)
             self._kwargs = value

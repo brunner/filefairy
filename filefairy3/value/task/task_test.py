@@ -13,9 +13,25 @@ from value.task.task import Task  # noqa
 
 
 class TaskTest(unittest.TestCase):
-    def test_init__empty(self):
+    def test_init__empty_target(self):
         with self.assertRaises(ValueError):
             Task()
+
+    def test_init__empty_args(self):
+        mock_foo = mock.Mock()
+        kwargs = {'key': 'value'}
+        task = Task(target=mock_foo, kwargs=kwargs)
+        self.assertEqual(task.target, mock_foo)
+        self.assertEqual(task.args, tuple())
+        self.assertEqual(task.kwargs, kwargs)
+
+    def test_init__empty_kwargs(self):
+        mock_foo = mock.Mock()
+        args = (True, False)
+        task = Task(target=mock_foo, args=args)
+        self.assertEqual(task.target, mock_foo)
+        self.assertEqual(task.args, args)
+        self.assertEqual(task.kwargs, dict())
 
     def test_init__task_invalid_target(self):
         args = (True, False)
