@@ -144,18 +144,17 @@ class Fairylab(Messageable, Renderable):
             time.sleep(self.sleep)
 
     def _recv(self, message):
-        self.lock.acquire()
-        data = self.data
-        original = copy.deepcopy(data)
+        with self.lock:
+            data = self.data
+            original = copy.deepcopy(data)
 
-        date = datetime.datetime.now()
-        obj = json.loads(message)
-        self._on_message(obj=obj, date=date)
-        self._try_all('_on_message', obj=obj, date=date)
+            date = datetime.datetime.now()
+            obj = json.loads(message)
+            self._on_message(obj=obj, date=date)
+            self._try_all('_on_message', obj=obj, date=date)
 
-        if data != original:
-            self.write()
-        self.lock.release()
+            if data != original:
+                self.write()
 
     def _connect(self):
         def _recv(ws, message):
@@ -180,22 +179,21 @@ class Fairylab(Messageable, Renderable):
                     self.ws.close()
                 self._connect()
 
-            self.lock.acquire()
-            data = self.data
-            original = copy.deepcopy(data)
+            with self.lock:
+                data = self.data
+                original = copy.deepcopy(data)
 
-            date = datetime.datetime.now()
-            self._try_all('_run', date=date)
+                date = datetime.datetime.now()
+                self._try_all('_run', date=date)
 
-            if self.day != date.day:
-                self.day = date.day
-                self._try_all('_notify', notify=Notify.FAIRYLAB_DAY)
+                if self.day != date.day:
+                    self.day = date.day
+                    self._try_all('_notify', notify=Notify.FAIRYLAB_DAY)
 
-            if data != original:
-                self.write()
+                if data != original:
+                    self.write()
 
-            self._render(date=date)
-            self.lock.release()
+                self._render(date=date)
 
             time.sleep(self.sleep)
 
