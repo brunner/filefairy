@@ -18,6 +18,7 @@ from plugin.snacks.snacks import _snacklist  # noqa
 from util.json_.json_ import dumps  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
 
 COLLECT = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
 COLLECT_ENCODED = 'reply.\nfoo.\nbar.\nbaz.'
@@ -89,22 +90,16 @@ class SnacksTest(unittest.TestCase):
 
         return plugin
 
-    @mock.patch('plugin.snacks.snacks.threading.Thread')
-    @mock.patch.object(Snacks, '_load')
-    def test_notify__with_day(self, mock_load, mock_thread):
+    def test_notify__with_day(self):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         plugin._setup(date=THEN)
 
-        mock_load.reset_mock()
-        mock_thread.reset_mock()
         self.reset_mocks()
 
         response = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
-        self.assertEqual(response, Response())
+        self.assertEqual(response, Response(task=[Task(target=plugin._load)]))
 
-        mock_thread.assert_called_once_with(target=mock_load)
-        mock_thread.return_value.start.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -112,21 +107,16 @@ class SnacksTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugin.snacks.snacks.threading.Thread')
-    @mock.patch.object(Snacks, '_load')
-    def test_notify__with_other(self, mock_load, mock_thread):
+    def test_notify__with_other(self):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         plugin._setup(date=THEN)
 
-        mock_load.reset_mock()
-        mock_thread.reset_mock()
         self.reset_mocks()
 
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -459,16 +449,12 @@ class SnacksTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugin.snacks.snacks.threading.Thread')
-    @mock.patch.object(Snacks, '_load_internal')
-    def test_setup(self, mock_load_internal, mock_thread):
+    def test_setup(self):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         response = plugin._setup_internal(date=THEN)
-        self.assertEqual(response, Response())
+        self.assertEqual(response, Response(task=[Task(target=plugin._load_internal)]))
 
-        mock_thread.assert_called_once_with(target=mock_load_internal)
-        mock_thread.return_value.start.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()

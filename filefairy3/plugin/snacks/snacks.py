@@ -6,7 +6,6 @@ import os
 import random
 import re
 import sys
-import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/snacks', '', _path)
@@ -24,6 +23,7 @@ from util.slack.slack import reactions_add  # noqa
 from util.slack.slack import users_list  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
 _n = 4
@@ -76,12 +76,11 @@ class Snacks(Plugin, Serializable):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
+        response = Response()
         if notify == Notify.FAIRYLAB_DAY:
             self.loaded = False
-            t = threading.Thread(target=self._load)
-            t.daemon = True
-            t.start()
-        return Response()
+            response.append_task(Task(target=self._load))
+        return response
 
     def _on_message_internal(self, **kwargs):
         response = Response()
@@ -180,10 +179,7 @@ class Snacks(Plugin, Serializable):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        t = threading.Thread(target=self._load_internal)
-        t.daemon = True
-        t.start()
-        return Response()
+        return Response(task=[Task(target=self._load_internal)])
 
     def _shadow_internal(self, **kwargs):
         return {}

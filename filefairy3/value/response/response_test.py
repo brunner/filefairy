@@ -5,16 +5,13 @@ import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/value/response', '', _path))
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
 from value.task.task import Task  # noqa
-
-
-def foo(*args, **kwargs):
-    pass
 
 
 class ResponseTest(unittest.TestCase):
@@ -55,18 +52,20 @@ class ResponseTest(unittest.TestCase):
         self.assertEqual(response.shadow, {'plugin': {'key': 'value'}})
 
     def test_init__task_invalid_type(self):
+        mock_foo = mock.Mock()
         with self.assertRaises(TypeError):
-            Response(task=Task(target=foo))
+            Response(task=Task(target=mock_foo))
 
     def test_init__task_invalid_element_value(self):
         with self.assertRaises(ValueError):
             Response(task=[1])
 
     def test_init__task_valid(self):
-        response = Response(task=[Task(target=foo)])
+        mock_foo = mock.Mock()
+        response = Response(task=[Task(target=mock_foo)])
         self.assertEqual(response.notify, [])
         self.assertEqual(response.shadow, {})
-        self.assertEqual(response.task, [Task(target=foo)])
+        self.assertEqual(response.task, [Task(target=mock_foo)])
 
     def test_append_notify__invalid_element_value(self):
         response = Response()
@@ -85,11 +84,12 @@ class ResponseTest(unittest.TestCase):
             response.append_task(1)
 
     def test_append_task__valid(self):
+        mock_foo = mock.Mock()
         response = Response()
-        response.append_task(Task(target=foo))
+        response.append_task(Task(target=mock_foo))
         self.assertEqual(response.notify, [])
         self.assertEqual(response.shadow, {})
-        self.assertEqual(response.task, [Task(target=foo)])
+        self.assertEqual(response.task, [Task(target=mock_foo)])
 
 
 if __name__ == '__main__':

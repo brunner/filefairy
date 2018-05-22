@@ -23,6 +23,7 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
 
 
 class Browsable(Plugin, Renderable):
@@ -207,7 +208,7 @@ class FairylabTest(Test):
         self.mock_log.reset_mock()
         self.mock_traceback.reset_mock()
 
-    def create_program(self, data, pins={}):
+    def create_program(self, data, pins=None, tasks=None):
         self.init_mocks(data)
         program = Fairylab(e=env())
         program.day = NOW.day
@@ -223,6 +224,9 @@ class FairylabTest(Test):
 
         if pins:
             program.pins = pins
+
+        if tasks:
+            program.tasks = tasks
 
         return program
 
@@ -330,6 +334,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_shadow')
@@ -358,6 +363,31 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.tasks, [])
+
+    @mock.patch.object(Internal, '_run_internal')
+    @mock.patch.object(Internal, '_notify')
+    @mock.patch.object(Browsable, '_notify')
+    def test_try__with_task(self, mock_bnotify, mock_inotify, mock_run):
+        mock_foo = mock.Mock()
+        mock_run.return_value = Response(task=[Task(target=mock_foo)])
+
+        keys = ['browsable', 'internal']
+        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
+        read = {'plugins': plugins}
+        program = self.create_program(read, pins=PINS_BOTH)
+        program._try('internal', '_run_internal', date=NOW)
+
+        mock_bnotify.assert_not_called()
+        mock_inotify.assert_not_called()
+        mock_run.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.tasks, [Task(target=mock_foo)])
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_notify')
@@ -380,6 +410,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_notify')
@@ -402,6 +433,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_notify')
@@ -426,6 +458,7 @@ class FairylabTest(Test):
             'Internal', c='Traceback: ...', s='Exception.', v=True)
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_ERROR)
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_notify')
@@ -449,6 +482,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_ERROR)
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_notify')
@@ -470,6 +504,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_notify')
     @mock.patch.object(Browsable, '_notify')
@@ -488,6 +523,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_notify')
     @mock.patch.object(Browsable, '_notify')
@@ -506,6 +542,25 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.tasks, [])
+
+    @mock.patch('core.fairylab.fairylab.time.sleep')
+    def test_background(self, mock_sleep):
+        mock_task = mock.MagicMock(spec=Task)
+        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
+        program = self.create_program(
+            read, pins=PINS_INTERNAL, tasks=[mock_task])
+
+        mock_sleep.side_effect = functools.partial(set_running_false, program)
+        program._background()
+
+        mock_sleep.assert_called_once_with(120)
+        mock_task.execute.assert_called_once_with()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch.object(Fairylab, '_on_message')
@@ -594,11 +649,13 @@ class FairylabTest(Test):
         self.assertIsNone(program.ws)
 
     @mock.patch.object(Fairylab, '_try')
+    @mock.patch('core.fairylab.fairylab.threading.Thread')
     @mock.patch('core.fairylab.fairylab.time.sleep')
     @mock.patch.object(Fairylab, '_render')
     @mock.patch.object(Fairylab, '_connect')
-    def test_start__with_valid_input(self, mock_connect, mock_render,
-                                     mock_sleep, mock_try):
+    @mock.patch.object(Fairylab, '_background')
+    def test_start__with_valid_input(self, mock_bg, mock_connect, mock_render,
+                                     mock_sleep, mock_thread, mock_try):
         read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         program = self.create_program(read, pins=PINS_INTERNAL)
 
@@ -609,6 +666,8 @@ class FairylabTest(Test):
         write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_NOW)}}
         mock_connect.assert_called_once_with()
         mock_sleep.assert_called_once_with(120)
+        mock_thread.assert_called_once_with(target=mock_bg)
+        mock_thread.return_value.start.assert_called_once_with()
         mock_try.assert_called_once_with('internal', '_run', date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -617,11 +676,13 @@ class FairylabTest(Test):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
 
     @mock.patch.object(Fairylab, '_try')
+    @mock.patch('core.fairylab.fairylab.threading.Thread')
     @mock.patch('core.fairylab.fairylab.time.sleep')
     @mock.patch.object(Fairylab, '_render')
     @mock.patch.object(Fairylab, '_connect')
-    def test_start__with_date_change(self, mock_connect, mock_render,
-                                     mock_sleep, mock_try):
+    @mock.patch.object(Fairylab, '_background')
+    def test_start__with_date_change(self, mock_bg, mock_connect, mock_render,
+                                     mock_sleep, mock_thread, mock_try):
         read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         program = self.create_program(read, pins=PINS_INTERNAL)
         program.day = THEN.day
@@ -631,6 +692,8 @@ class FairylabTest(Test):
 
         mock_connect.assert_called_once_with()
         mock_sleep.assert_called_once_with(120)
+        mock_thread.assert_called_once_with(target=mock_bg)
+        mock_thread.return_value.start.assert_called_once_with()
         calls = [
             mock.call('internal', '_run', date=NOW),
             mock.call('internal', '_notify', notify=Notify.FAIRYLAB_DAY)
@@ -643,11 +706,13 @@ class FairylabTest(Test):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
 
     @mock.patch.object(Fairylab, '_try')
+    @mock.patch('core.fairylab.fairylab.threading.Thread')
     @mock.patch('core.fairylab.fairylab.time.sleep')
     @mock.patch.object(Fairylab, '_render')
     @mock.patch.object(Fairylab, '_connect')
-    def test_start__with_no_change(self, mock_connect, mock_render, mock_sleep,
-                                   mock_try):
+    @mock.patch.object(Fairylab, '_background')
+    def test_start__with_no_change(self, mock_bg, mock_connect, mock_render,
+                                   mock_sleep, mock_thread, mock_try):
         read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         program = self.create_program(read, pins=PINS_INTERNAL)
 
@@ -656,6 +721,8 @@ class FairylabTest(Test):
 
         mock_connect.assert_called_once_with()
         mock_sleep.assert_called_once_with(120)
+        mock_thread.assert_called_once_with(target=mock_bg)
+        mock_thread.return_value.start.assert_called_once_with()
         mock_try.assert_called_once_with('internal', '_run', date=NOW)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

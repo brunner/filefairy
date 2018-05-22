@@ -5,14 +5,11 @@ import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/value/task', '', _path))
 from value.task.task import Task  # noqa
-
-
-def foo(*args, **kwargs):
-    pass
 
 
 class TaskTest(unittest.TestCase):
@@ -27,10 +24,11 @@ class TaskTest(unittest.TestCase):
             Task(target=[1], args=args, kwargs=kwargs)
 
     def test_init__task_valid(self):
+        mock_foo = mock.Mock()
         args = (True, False)
         kwargs = {'key': 'value'}
-        task = Task(target=foo, args=args, kwargs=kwargs)
-        self.assertEqual(task.target, foo)
+        task = Task(target=mock_foo, args=args, kwargs=kwargs)
+        self.assertEqual(task.target, mock_foo)
         self.assertEqual(task.args, args)
         self.assertEqual(task.kwargs, kwargs)
 

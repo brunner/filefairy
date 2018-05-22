@@ -33,11 +33,13 @@ from value.notify.notify import Notify  # noqa
 class Fairylab(Messageable, Renderable):
     def __init__(self, **kwargs):
         super(Fairylab, self).__init__(**dict(kwargs))
+        self.bg = None
         self.day = None
         self.pins = {}
         self.keep_running = True
         self.lock = threading.Lock()
         self.sleep = 120
+        self.tasks = []
         self.ws = None
 
     @staticmethod
@@ -121,11 +123,25 @@ class Fairylab(Messageable, Renderable):
             for s in response.shadow:
                 shadow = response.shadow[s]
                 self._try(s, '_shadow', **dict(kwargs, shadow=shadow))
+            for t in response.task:
+                with self.lock:
+                    self.tasks.append(t)
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
             data['plugins'][p]['ok'] = False
             data['plugins'][p]['date'] = edate
+
+    def _background(self):
+        while self.keep_running:
+            with self.lock:
+                original = list(self.tasks)
+                self.tasks = []
+
+            for task in original:
+                task.execute()
+
+            time.sleep(self.sleep)
 
     def _recv(self, message):
         self.lock.acquire()
@@ -154,6 +170,11 @@ class Fairylab(Messageable, Renderable):
 
     def _start(self):
         while self.keep_running:
+            if not self.bg:
+                self.bg = threading.Thread(target=self._background)
+                self.bg.daemon = True
+                self.bg.start()
+
             if not self.ws or not self.ws.sock:
                 if self.ws:
                     self.ws.close()
