@@ -85,7 +85,7 @@ class Statsplus(Plugin, Renderable):
         if notify == Notify.DOWNLOAD_YEAR:
             self.data['offseason'] = True
             self.write()
-        return False
+        return Response()
 
     def _on_message_internal(self, **kwargs):
         response = Response()

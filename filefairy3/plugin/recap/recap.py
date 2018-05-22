@@ -45,6 +45,7 @@ class Recap(Plugin, Renderable):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
+        response = Response()
         if notify == Notify.DOWNLOAD_FINISH:
             self._standings()
             self._render(**kwargs)
@@ -52,8 +53,8 @@ class Recap(Plugin, Renderable):
                 'fairylab',
                 'League news updated.',
                 attachments=self._attachments())
-            return True
-        return False
+            response.notify = [Notify.BASE]
+        return response
 
     def _on_message_internal(self, **kwargs):
         return Response()

@@ -149,8 +149,8 @@ class RecapTest(Test):
     @mock.patch.object(Recap, '_render')
     def test_notify__with_download(self, mock_render, mock_standings):
         plugin = self.create_plugin(READ)
-        value = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
-        self.assertTrue(value)
+        response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
         mock_standings.assert_called_once_with()
@@ -165,8 +165,8 @@ class RecapTest(Test):
     @mock.patch.object(Recap, '_render')
     def test_notify__with_other(self, mock_render, mock_standings):
         plugin = self.create_plugin(READ)
-        value = plugin._notify_internal(notify=Notify.OTHER)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.OTHER)
+        self.assertEqual(response, Response())
 
         mock_render.assert_not_called()
         mock_standings.assert_not_called()

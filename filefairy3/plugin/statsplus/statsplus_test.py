@@ -266,8 +266,8 @@ class StatsplusTest(Test):
     def test_notify__with_finish(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
+        self.assertEqual(response, Response())
 
         write = _data(finished=True)
         self.mock_open.assert_called_with(DATA, 'w')
@@ -277,8 +277,8 @@ class StatsplusTest(Test):
     def test_notify__with_year(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=Notify.DOWNLOAD_YEAR)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.DOWNLOAD_YEAR)
+        self.assertEqual(response, Response())
 
         write = _data(offseason=True)
         self.mock_open.assert_called_with(DATA, 'w')
@@ -288,8 +288,8 @@ class StatsplusTest(Test):
     def test_notify__with_other(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=Notify.OTHER)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.OTHER)
+        self.assertEqual(response, Response())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

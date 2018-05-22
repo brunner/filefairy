@@ -100,8 +100,8 @@ class SnacksTest(unittest.TestCase):
         mock_thread.reset_mock()
         self.reset_mocks()
 
-        value = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
+        self.assertEqual(response, Response())
 
         mock_thread.assert_called_once_with(target=mock_load)
         mock_thread.return_value.start.assert_called_once_with()
@@ -123,8 +123,8 @@ class SnacksTest(unittest.TestCase):
         mock_thread.reset_mock()
         self.reset_mocks()
 
-        value = plugin._notify_internal(notify=Notify.OTHER)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.OTHER)
+        self.assertEqual(response, Response())
 
         mock_thread.assert_not_called()
         self.mock_open.assert_not_called()

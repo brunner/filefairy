@@ -30,7 +30,7 @@ class Git(Plugin):
         notify = kwargs['notify']
         if notify == Notify.FAIRYLAB_DAY:
             self.automate(**kwargs)
-        return False
+        return Response()
 
     def _on_message_internal(self, **kwargs):
         return Response()

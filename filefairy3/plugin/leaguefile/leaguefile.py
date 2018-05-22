@@ -56,7 +56,7 @@ class Leaguefile(Plugin, Renderable):
         return 'leaguefile'
 
     def _notify_internal(self, **kwargs):
-        return False
+        return Response()
 
     def _on_message_internal(self, **kwargs):
         return Response()

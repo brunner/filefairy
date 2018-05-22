@@ -81,7 +81,7 @@ class Snacks(Plugin, Serializable):
             t = threading.Thread(target=self._load)
             t.daemon = True
             t.start()
-        return False
+        return Response()
 
     def _on_message_internal(self, **kwargs):
         response = Response()

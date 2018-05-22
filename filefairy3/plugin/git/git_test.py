@@ -44,8 +44,8 @@ class GitTest(unittest.TestCase):
     @mock.patch.object(Git, 'automate')
     def test_notify__with_day(self, mock_automate):
         plugin = self.create_plugin()
-        value = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
+        self.assertEqual(response, Response())
 
         mock_automate.assert_called_once_with(notify=Notify.FAIRYLAB_DAY)
         self.mock_log.assert_not_called()
@@ -54,8 +54,8 @@ class GitTest(unittest.TestCase):
     @mock.patch.object(Git, 'automate')
     def test_notify__with_other(self, mock_automate):
         plugin = self.create_plugin()
-        value = plugin._notify_internal(notify=Notify.OTHER)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.OTHER)
+        self.assertEqual(response, Response())
 
         mock_automate.assert_not_called()
         self.mock_log.assert_not_called()
@@ -102,7 +102,10 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_called_once_with(
             plugin._name(), **{
                 'a1': '',
-                'c': {'ok': False, 'error': 'timeout'},
+                'c': {
+                    'ok': False,
+                    'error': 'timeout'
+                },
                 's': 'Call failed: \'cmd\'.',
                 'v': True
             })
@@ -114,13 +117,12 @@ class GitTest(unittest.TestCase):
         plugin._call(['cmd'], {'a1': '', 'v': True})
 
         self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_called_once_with(
-            plugin._name(), **{
-                'a1': '',
-                'c': '',
-                's': 'Call completed: \'cmd\'.',
-                'v': True
-            })
+        self.mock_log.assert_called_once_with(plugin._name(), **{
+            'a1': '',
+            'c': '',
+            's': 'Call completed: \'cmd\'.',
+            'v': True
+        })
 
     def test_add(self):
         self.mock_check.return_value = {'ok': True, 'output': ''}

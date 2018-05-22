@@ -31,7 +31,7 @@ class FakePlugin(Plugin):
         return 'Description.'
 
     def _notify_internal(self, **kwargs):
-        return True
+        return Response(notify=[Notify.BASE])
 
     def _on_message_internal(self, **kwargs):
         return Response()
@@ -75,7 +75,7 @@ class FakeRenderable(Plugin, Renderable):
         return 'foo.html'
 
     def _notify_internal(self, **kwargs):
-        return False
+        return Response()
 
     def _on_message_internal(self, **kwargs):
         return Response()

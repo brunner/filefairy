@@ -62,12 +62,12 @@ class Exports(Plugin, Renderable):
         elif data['locked'] and notify in _unlock_values:
             self._unlock_internal()
         else:
-            return False
+            return Response()
 
         data['date'] = encode_datetime(kwargs['date'])
         self._render(**kwargs)
         self.write()
-        return True
+        return Response(notify=[Notify.BASE])
 
     def _on_message_internal(self, **kwargs):
         return Response()

@@ -111,8 +111,8 @@ class DownloadTest(unittest.TestCase):
             'year': False
         }
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=Notify.LEAGUEFILE_FINISH)
-        self.assertTrue(value)
+        response = plugin._notify_internal(notify=Notify.LEAGUEFILE_FINISH)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_download.assert_called_once_with(notify=Notify.LEAGUEFILE_FINISH)
         self.mock_open.assert_not_called()
@@ -128,8 +128,8 @@ class DownloadTest(unittest.TestCase):
             'year': False
         }
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=Notify.OTHER)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.OTHER)
+        self.assertEqual(response, Response())
 
         mock_download.assert_not_called()
         self.mock_open.assert_not_called()

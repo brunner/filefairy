@@ -115,8 +115,8 @@ class LeaguefileTest(Test):
     def test_notify(self):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal()
-        self.assertFalse(value)
+        response = plugin._notify_internal()
+        self.assertEqual(response, Response())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -140,8 +140,7 @@ class LeaguefileTest(Test):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
-        self.assertEqual(
-            response, Response(notify=[Notify.LEAGUEFILE_START]))
+        self.assertEqual(response, Response(notify=[Notify.LEAGUEFILE_START]))
 
         write = {'fp': FILEPART, 'up': []}
         mock_check.assert_called_once_with()
@@ -193,8 +192,7 @@ class LeaguefileTest(Test):
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
-        self.assertEqual(
-            response, Response(notify=[Notify.LEAGUEFILE_FINISH]))
+        self.assertEqual(response, Response(notify=[Notify.LEAGUEFILE_FINISH]))
 
         write = {'fp': None, 'up': [UP_FILEPART]}
         mock_check.assert_called_once_with()
@@ -339,10 +337,12 @@ class LeaguefileTest(Test):
         expected = iter([CHECK_FILEPART, CHECK_UP_TRUE])
         self.assertCountEqual(actual, expected)
 
-        mock_check.assert_called_once_with([
-            'ssh', 'brunnerj@' + _server,
-            'ls -l /var/www/html/StatsLab/league_file'
-        ], timeout=8)
+        mock_check.assert_called_once_with(
+            [
+                'ssh', 'brunnerj@' + _server,
+                'ls -l /var/www/html/StatsLab/league_file'
+            ],
+            timeout=8)
         self.mock_open.assert_not_called()
         self.mock_chat.assert_not_called()
 
@@ -354,10 +354,12 @@ class LeaguefileTest(Test):
         expected = iter([CHECK_UP_FALSE])
         self.assertCountEqual(actual, expected)
 
-        mock_check.assert_called_once_with([
-            'ssh', 'brunnerj@' + _server,
-            'ls -l /var/www/html/StatsLab/league_file'
-        ], timeout=8)
+        mock_check.assert_called_once_with(
+            [
+                'ssh', 'brunnerj@' + _server,
+                'ls -l /var/www/html/StatsLab/league_file'
+            ],
+            timeout=8)
         self.mock_open.assert_not_called()
         self.mock_chat.assert_not_called()
 

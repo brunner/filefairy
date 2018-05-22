@@ -75,8 +75,7 @@ class ExportsTest(Test):
         self.addCleanup(patch_urlopen.stop)
         self.mock_urlopen = patch_urlopen.start()
 
-        patch_chat = mock.patch(
-            'plugin.exports.exports.chat_post_message')
+        patch_chat = mock.patch('plugin.exports.exports.chat_post_message')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
@@ -123,8 +122,8 @@ class ExportsTest(Test):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=Notify.OTHER, date=NOW)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.OTHER, date=NOW)
+        self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -152,9 +151,9 @@ class ExportsTest(Test):
 
         mock_lock.side_effect = fake_lock
 
-        value = plugin._notify_internal(
+        response = plugin._notify_internal(
             notify=Notify.STATSPLUS_SIM, date=NOW)
-        self.assertTrue(value)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_lock.assert_called_once_with()
@@ -175,9 +174,9 @@ class ExportsTest(Test):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(
+        response = plugin._notify_internal(
             notify=Notify.LEAGUEFILE_FINISH, date=NOW)
-        self.assertFalse(value)
+        self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -196,8 +195,8 @@ class ExportsTest(Test):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(notify=Notify.OTHER, date=NOW)
-        self.assertFalse(value)
+        response = plugin._notify_internal(notify=Notify.OTHER, date=NOW)
+        self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -216,9 +215,9 @@ class ExportsTest(Test):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
         plugin = self.create_plugin(read)
-        value = plugin._notify_internal(
+        response = plugin._notify_internal(
             notify=Notify.STATSPLUS_SIM, date=NOW)
-        self.assertFalse(value)
+        self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
@@ -243,9 +242,9 @@ class ExportsTest(Test):
 
         mock_unlock.side_effect = fake_unlock
 
-        value = plugin._notify_internal(
+        response = plugin._notify_internal(
             notify=Notify.LEAGUEFILE_FINISH, date=NOW)
-        self.assertTrue(value)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
         mock_lock.assert_not_called()
@@ -356,8 +355,7 @@ class ExportsTest(Test):
         mock_lock.side_effect = fake_lock
 
         response = plugin._run_internal(date=NOW)
-        self.assertEqual(
-            response, Response(notify=[Notify.EXPORTS_EMAILS]))
+        self.assertEqual(response, Response(notify=[Notify.EXPORTS_EMAILS]))
 
         write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
         mock_exports.assert_called_once_with(URLOPEN)
@@ -751,15 +749,13 @@ class ExportsTest(Test):
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
         actual = plugin._table()
-        body = [[
-            'AL East',
-            Exports._success('BAL'),
-            Exports._success('BOS')
-        ], [
-            'AL Central',
-            Exports._success('CWS'),
-            Exports._success('DET')
-        ], ['AL West', 'HOU', 'LAA']]
+        body = [['AL East',
+                 Exports._success('BAL'),
+                 Exports._success('BOS')], [
+                     'AL Central',
+                     Exports._success('CWS'),
+                     Exports._success('DET')
+                 ], ['AL West', 'HOU', 'LAA']]
         expected = table(
             clazz='table-sm', hcols=TABLE_COLS, bcols=TABLE_COLS, body=body)
         self.assertEqual(actual, expected)

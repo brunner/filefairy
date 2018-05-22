@@ -41,10 +41,11 @@ class Download(Plugin, Serializable):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
+        response = Response()
         if notify == Notify.LEAGUEFILE_FINISH:
             self.download(**kwargs)
-            return True
-        return False
+            response.notify = [Notify.BASE]
+        return response
 
     def _on_message_internal(self, **kwargs):
         return Response()

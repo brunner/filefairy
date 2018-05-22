@@ -59,9 +59,10 @@ class Plugin(Messageable, Runnable):
         }]
 
     def _notify(self, **kwargs):
-        if self._notify_internal(**kwargs):
-            return Response(notify=[Notify.BASE])
-        return Response()
+        response = self._notify_internal(**kwargs)
+        if response.notify:
+            response.notify = [Notify.BASE]
+        return response
 
     def _setup(self, **kwargs):
         self._setup_internal(**kwargs)
