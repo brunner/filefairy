@@ -17,11 +17,23 @@ class TaskTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             Task()
 
-    def test_init__task_invalid(self):
+    def test_init__task_invalid_target(self):
         args = (True, False)
         kwargs = {'key': 'value'}
         with self.assertRaises(ValueError):
             Task(target=[1], args=args, kwargs=kwargs)
+
+    def test_init__task_invalid_args(self):
+        mock_foo = mock.Mock()
+        kwargs = {'key': 'value'}
+        with self.assertRaises(ValueError):
+            Task(target=mock_foo, args=[1], kwargs=kwargs)
+
+    def test_init__task_invalid_kwargs(self):
+        mock_foo = mock.Mock()
+        args = (True, False)
+        with self.assertRaises(ValueError):
+            Task(target=mock_foo, args=args, kwargs=[1])
 
     def test_init__task_valid(self):
         mock_foo = mock.Mock()
