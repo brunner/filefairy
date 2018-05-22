@@ -790,8 +790,8 @@ class StatsplusTest(Test):
         calls = [
             mock.call('highlights', THEN_ENCODED, _player),
             mock.call('injuries', THEN_ENCODED, _player),
-            mock.call('scores', NOW_ENCODED, _game_box),
             mock.call('scores', THEN_ENCODED, _game_box),
+            mock.call('scores', NOW_ENCODED, _game_box),
         ]
         mock_table.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -831,8 +831,8 @@ class StatsplusTest(Test):
         calls = [
             mock.call('highlights', THEN_ENCODED, _player),
             mock.call('injuries', THEN_ENCODED, _player),
-            mock.call('scores', NOW_ENCODED, _game_box),
             mock.call('scores', THEN_ENCODED, _game_box),
+            mock.call('scores', NOW_ENCODED, _game_box),
         ]
         mock_table.assert_has_calls(calls)
         self.mock_open.assert_not_called()

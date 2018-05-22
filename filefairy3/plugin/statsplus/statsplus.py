@@ -246,13 +246,13 @@ class Statsplus(Plugin, Renderable):
         else:
             ret['live'] = self._live_regular()
 
-        for date in sorted(data['highlights'].keys(), reverse=True):
+        for date in sorted(data['highlights'].keys()):
             ret['highlights'].append(self._table('highlights', date, _player))
 
-        for date in sorted(data['injuries'].keys(), reverse=True):
+        for date in sorted(data['injuries'].keys()):
             ret['injuries'].append(self._table('injuries', date, _player))
 
-        for date in sorted(data['scores'].keys(), reverse=True):
+        for date in sorted(data['scores'].keys()):
             ret['scores'].append(self._table('scores', date, _game_box))
 
         return ret
