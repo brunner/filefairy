@@ -6,7 +6,6 @@ import datetime
 import os
 import re
 import sys
-import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/statsplus', '', _path)
@@ -35,6 +34,7 @@ from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -171,11 +171,9 @@ class Statsplus(Plugin, Renderable):
             response.notify = [Notify.BASE]
 
         if data['unresolved']:
-            original = copy.deepcopy(data)
-            t = threading.Thread(
-                target=self._resolve_all, args=(original['unresolved'], ))
-            t.daemon = True
-            t.start()
+            unresolved = copy.deepcopy(data)['unresolved']
+            response.append_task(
+                Task(target=self._resolve_all, args=(unresolved, )))
 
         return response
 

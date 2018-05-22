@@ -43,7 +43,10 @@ class Messageable(Nameable):
                 if match:
                     for i, a in enumerate(match[0].split(',')):
                         kwargs['a{}'.format(i + 1)] = a.strip()
-                    item(**dict(kwargs, v=True))
-                    return Response(notify=[Notify.BASE])
+                    response = item(**dict(kwargs, v=True))
+                    if not isinstance(response, Response):
+                        response = Response()
+                    response.notify = [Notify.BASE]
+                    return response
 
         return self._on_message_internal(**kwargs)

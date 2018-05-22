@@ -6,7 +6,6 @@ import datetime
 import os
 import re
 import sys
-import threading
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/download', '', _path)
@@ -21,6 +20,7 @@ from util.file_.file_ import wget_file  # noqa
 from util.logger.logger import log  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
 
 
 class Download(Plugin, Serializable):
@@ -41,11 +41,11 @@ class Download(Plugin, Serializable):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
-        response = Response()
         if notify == Notify.LEAGUEFILE_FINISH:
-            self.download(**kwargs)
+            response = self.download(**kwargs)
             response.notify = [Notify.BASE]
-        return response
+            return response
+        return Response()
 
     def _on_message_internal(self, **kwargs):
         return Response()
@@ -77,38 +77,31 @@ class Download(Plugin, Serializable):
         return {'statsplus': {'download.now': self.data['now']}}
 
     def download(self, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
         output = ping()
         if output.get('ok'):
             log(self._name(), **dict(kwargs, s='Download started.'))
-            t = threading.Thread(target=self._download_internal, kwargs=kwargs)
-            t.daemon = True
-            t.start()
+            return Response(
+                task=[Task(target=self._download_internal, kwargs=kwargs)])
         else:
             log(self._name(),
                 **dict(kwargs, c=output, s='Download failed.', v=True))
-
-        if data != original:
-            self.write()
+            return Response()
 
     def _download_internal(self, **kwargs):
-        self.data['then'] = self.data['now']
+        data = self.data
+        data['then'] = data['now']
 
         wget_file()
         self._games()
         self._leagues()
 
-        self.data['downloaded'] = True
+        data['downloaded'] = True
         log(self._name(), **dict(kwargs, s='Download finished.'))
 
-        dthen = decode_datetime(self.data['then'])
-        dnow = decode_datetime(self.data['now'])
+        dthen = decode_datetime(data['then'])
+        dnow = decode_datetime(data['now'])
         if dthen.year != dnow.year:
-            self.data['year'] = True
-
-        self.write()
+            data['year'] = True
 
     def _games(self):
         box_scores = os.path.join(_root, 'extract/box_scores')

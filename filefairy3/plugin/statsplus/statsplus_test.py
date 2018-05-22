@@ -20,6 +20,7 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -587,49 +588,33 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugin.statsplus.statsplus.threading.Thread')
-    @mock.patch.object(Statsplus, '_resolve_all')
     @mock.patch.object(Statsplus, '_render')
-    def test_run__with_resolved(self, mock_render, mock_resolve, mock_thread):
+    def test_run__with_resolved(self, mock_render):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
         self.assertEqual(response, Response())
 
         mock_render.assert_not_called()
-        mock_thread.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugin.statsplus.statsplus.threading.Thread')
-    @mock.patch.object(Statsplus, '_resolve_all')
     @mock.patch.object(Statsplus, '_render')
-    def test_run__with_unresolved(self, mock_render, mock_resolve,
-                                  mock_thread):
+    def test_run__with_unresolved(self, mock_render):
         read = _data(unresolved=[THEN_ENCODED])
         plugin = self.create_plugin(read)
-
-        def fake_resolve_all(*args, **kwargs):
-            for date in args[0]:
-                plugin.data['unresolved'].remove(date)
-
-        mock_resolve.side_effect = fake_resolve_all
-
         response = plugin._run_internal(date=NOW)
-        self.assertEqual(response, Response())
+        task = Task(target=plugin._resolve_all, args=([THEN_ENCODED], ))
+        self.assertEqual(response, Response(task=[task]))
 
         mock_render.assert_not_called()
-        mock_thread.assert_called_once_with(
-            target=mock_resolve, args=([THEN_ENCODED], ))
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugin.statsplus.statsplus.threading.Thread')
-    @mock.patch.object(Statsplus, '_resolve_all')
     @mock.patch.object(Statsplus, '_render')
-    def test_run__with_updated(self, mock_render, mock_resolve, mock_thread):
+    def test_run__with_updated(self, mock_render):
         read = _data(updated=True)
         plugin = self.create_plugin(read)
 
@@ -638,7 +623,6 @@ class StatsplusTest(Test):
 
         write = DATA_CANONICAL
         mock_render.assert_called_once_with(date=NOW)
-        mock_thread.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()

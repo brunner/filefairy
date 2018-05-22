@@ -11,6 +11,7 @@ sys.path.append(re.sub(r'/api/messageable', '', _path))
 from api.messageable.messageable import Messageable  # noqa
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
 
 
 class FakeMessageable(Messageable):
@@ -27,6 +28,9 @@ class FakeMessageable(Messageable):
 
     def _bar(self, **kwargs):
         pass
+
+    def baz(self, **kwargs):
+        return Response(task=[Task(target=self._bar)])
 
 
 class MessageableTest(unittest.TestCase):
@@ -49,6 +53,14 @@ class MessageableTest(unittest.TestCase):
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
+        self.assertEqual(actual, expected)
+
+    def test_on_message__with_response(self):
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.baz()'}
+        messageable = FakeMessageable()
+        actual = messageable._on_message(obj=data)
+        expected = Response(
+            notify=[Notify.BASE], task=[Task(target=messageable._bar)])
         self.assertEqual(actual, expected)
 
     def test_on_message__with_invalid_channel(self):
