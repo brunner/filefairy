@@ -10,6 +10,11 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/value/response', '', _path))
 from value.notify.notify import Notify  # noqa
 from value.response.response import Response  # noqa
+from value.task.task import Task  # noqa
+
+
+def foo(*args, **kwargs):
+    pass
 
 
 class ResponseTest(unittest.TestCase):
@@ -17,6 +22,7 @@ class ResponseTest(unittest.TestCase):
         response = Response()
         self.assertEqual(response.notify, [])
         self.assertEqual(response.shadow, {})
+        self.assertEqual(response.task, [])
 
     def test_init__notify_invalid_type(self):
         with self.assertRaises(TypeError):
@@ -48,6 +54,20 @@ class ResponseTest(unittest.TestCase):
         self.assertEqual(response.notify, [])
         self.assertEqual(response.shadow, {'plugin': {'key': 'value'}})
 
+    def test_init__task_invalid_type(self):
+        with self.assertRaises(TypeError):
+            Response(task=Task(target=foo))
+
+    def test_init__task_invalid_element_value(self):
+        with self.assertRaises(ValueError):
+            Response(task=[1])
+
+    def test_init__task_valid(self):
+        response = Response(task=[Task(target=foo)])
+        self.assertEqual(response.notify, [])
+        self.assertEqual(response.shadow, {})
+        self.assertEqual(response.task, [Task(target=foo)])
+
     def test_append_notify__invalid_element_value(self):
         response = Response()
         with self.assertRaises(ValueError):
@@ -58,6 +78,18 @@ class ResponseTest(unittest.TestCase):
         response.append_notify(Notify.BASE)
         self.assertEqual(response.notify, [Notify.BASE])
         self.assertEqual(response.shadow, {})
+
+    def test_append_task__invalid_element_value(self):
+        response = Response()
+        with self.assertRaises(ValueError):
+            response.append_task(1)
+
+    def test_append_task__valid(self):
+        response = Response()
+        response.append_task(Task(target=foo))
+        self.assertEqual(response.notify, [])
+        self.assertEqual(response.shadow, {})
+        self.assertEqual(response.task, [Task(target=foo)])
 
 
 if __name__ == '__main__':

@@ -8,15 +8,17 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/value/response', '', _path))
 from value.notify.notify import Notify  # noqa
+from value.task.task import Task  # noqa
 
 
 class Response(object):
-    def __init__(self, notify=None, shadow=None):
+    def __init__(self, notify=None, shadow=None, task=None):
         self.notify = notify
         self.shadow = shadow
+        self.task = task
 
     def __eq__(self, other):
-        return self.notify == other.notify and self.shadow == other.shadow
+        return self.__dict__ == other.__dict__
 
     @staticmethod
     def check_notify_list(values):
@@ -45,6 +47,18 @@ class Response(object):
             raise ValueError(key)
 
     @staticmethod
+    def check_task_list(values):
+        if not isinstance(values, list):
+            raise TypeError(values)
+        for value in values:
+            Response.check_task_value(value)
+
+    @staticmethod
+    def check_task_value(value):
+        if not isinstance(value, Task):
+            raise ValueError(value)
+
+    @staticmethod
     def check_shadow_value(value):
         if not isinstance(value, dict):
             raise ValueError(value)
@@ -54,6 +68,9 @@ class Response(object):
 
     def get_shadow(self):
         return self._shadow
+
+    def get_task(self):
+        return self._task
 
     def set_notify(self, values):
         if values is None:
@@ -69,9 +86,21 @@ class Response(object):
             self.check_shadow_dict(values)
             self._shadow = values
 
+    def set_task(self, values):
+        if values is None:
+            self._task = []
+        else:
+            self.check_task_list(values)
+            self._task = values
+
     notify = property(get_notify, set_notify)
     shadow = property(get_shadow, set_shadow)
+    task = property(get_task, set_task)
 
     def append_notify(self, value):
         self.check_notify_value(value)
         self._notify.append(value)
+
+    def append_task(self, value):
+        self.check_task_value(value)
+        self._task.append(value)
