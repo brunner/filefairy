@@ -65,8 +65,9 @@ class Plugin(Messageable, Runnable):
         return response
 
     def _setup(self, **kwargs):
-        self._setup_internal(**kwargs)
-        return Response(shadow=self._shadow_internal(**kwargs))
+        response = self._setup_internal(**kwargs)
+        response.shadow = self._shadow_internal(**kwargs)
+        return response
 
     def _shadow(self, **kwargs):
         self.shadow.update(copy.deepcopy(kwargs['shadow']))

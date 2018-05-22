@@ -394,7 +394,8 @@ class ExportsTest(Test):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
-        plugin._setup_internal()
+        response = plugin._setup_internal()
+        self.assertEqual(response, Response())
 
         mock_exports.assert_called_once_with(URLOPEN)
         mock_render.assert_called_with()

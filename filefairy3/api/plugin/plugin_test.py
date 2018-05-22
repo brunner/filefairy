@@ -40,10 +40,10 @@ class FakePlugin(Plugin):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        pass
+        return Response()
 
     def _shadow_internal(self, **kwargs):
-        pass
+        return {'foo': {'fake.bar': 'baz'}}
 
 
 class FakeRenderable(Plugin, Renderable):
@@ -87,7 +87,7 @@ class FakeRenderable(Plugin, Renderable):
         return {}
 
     def _setup_internal(self, **kwargs):
-        pass
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         pass
@@ -139,18 +139,15 @@ class PluginTest(unittest.TestCase):
         response = plugin._notify(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-    @mock.patch.object(FakePlugin, '_shadow_internal')
-    @mock.patch.object(FakePlugin, '_setup_internal')
-    def test_setup(self, mock_setup, mock_shadow):
-        shadow = {'foo': {'fake.bar': 'baz'}}
-        mock_shadow.return_value = shadow
-
+    def test_setup(self):
         plugin = FakePlugin()
         response = plugin._setup()
-        self.assertEqual(response, Response(shadow=shadow))
-
-        mock_setup.assert_called_once_with()
-        mock_shadow.assert_called_once_with()
+        self.assertEqual(
+            response, Response(shadow={
+                'foo': {
+                    'fake.bar': 'baz'
+                }
+            }))
 
     def test_shadow(self):
         plugin = FakePlugin()

@@ -39,7 +39,7 @@ class Git(Plugin):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        pass
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         return {}

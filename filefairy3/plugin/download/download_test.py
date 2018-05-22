@@ -208,7 +208,8 @@ class DownloadTest(unittest.TestCase):
             'year': False
         }
         plugin = self.create_plugin(read)
-        plugin._setup_internal()
+        response = plugin._setup_internal()
+        self.assertEqual(response, Response())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

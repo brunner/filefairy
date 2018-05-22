@@ -186,6 +186,7 @@ class Statsplus(Plugin, Renderable):
 
     def _setup_internal(self, **kwargs):
         self._render(**kwargs)
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         return {

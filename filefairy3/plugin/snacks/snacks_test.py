@@ -464,7 +464,8 @@ class SnacksTest(unittest.TestCase):
     def test_setup(self, mock_load_internal, mock_thread):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=THEN)
+        response = plugin._setup_internal(date=THEN)
+        self.assertEqual(response, Response())
 
         mock_thread.assert_called_once_with(target=mock_load_internal)
         mock_thread.return_value.start.assert_called_once_with()

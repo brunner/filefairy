@@ -661,7 +661,8 @@ class StatsplusTest(Test):
     def test_setup(self, mock_render):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
+        response = plugin._setup_internal(date=NOW)
+        self.assertEqual(response, Response())
 
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()

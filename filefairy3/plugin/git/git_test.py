@@ -79,7 +79,8 @@ class GitTest(unittest.TestCase):
 
     def test_setup(self):
         plugin = self.create_plugin()
-        plugin._setup_internal(date=THEN)
+        response = plugin._setup_internal(date=THEN)
+        self.assertEqual(response, Response())
 
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()

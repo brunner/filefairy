@@ -183,6 +183,7 @@ class Snacks(Plugin, Serializable):
         t = threading.Thread(target=self._load_internal)
         t.daemon = True
         t.start()
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         return {}

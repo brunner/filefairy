@@ -109,6 +109,7 @@ class Exports(Plugin, Renderable):
         text = urlopen(_url)
         self.exports = self._exports(text)
         self._render(**kwargs)
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         return {}

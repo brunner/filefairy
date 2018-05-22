@@ -71,7 +71,7 @@ class Download(Plugin, Serializable):
         return response
 
     def _setup_internal(self, **kwargs):
-        pass
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         return {'statsplus': {'download.now': self.data['now']}}

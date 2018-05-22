@@ -229,7 +229,8 @@ class LeaguefileTest(Test):
 
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
+        response = plugin._setup_internal(date=NOW)
+        self.assertEqual(response, Response())
 
         write = {'fp': FILEPART, 'up': [UP_THEN]}
         mock_check.assert_called_once_with()
@@ -245,7 +246,8 @@ class LeaguefileTest(Test):
 
         read = {'fp': FILEPART, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
+        response = plugin._setup_internal(date=NOW)
+        self.assertEqual(response, Response())
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
@@ -260,7 +262,8 @@ class LeaguefileTest(Test):
 
         read = {'fp': None, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
+        response = plugin._setup_internal(date=NOW)
+        self.assertEqual(response, Response())
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
@@ -275,7 +278,8 @@ class LeaguefileTest(Test):
 
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
+        response = plugin._setup_internal(date=NOW)
+        self.assertEqual(response, Response())
 
         write = {'fp': None, 'up': [UP_NOW]}
         mock_check.assert_called_once_with()
@@ -291,7 +295,8 @@ class LeaguefileTest(Test):
 
         read = {'fp': FILEPART, 'up': [UP_THEN]}
         plugin = self.create_plugin(read)
-        plugin._setup_internal(date=NOW)
+        response = plugin._setup_internal(date=NOW)
+        self.assertEqual(response, Response())
 
         write = {'fp': None, 'up': [UP_NOW, UP_THEN]}
         mock_check.assert_called_once_with()

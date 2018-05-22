@@ -208,7 +208,8 @@ class RecapTest(Test):
     @mock.patch.object(Recap, '_render')
     def test_setup(self, mock_render):
         plugin = self.create_plugin(READ)
-        plugin._setup_internal(date=NOW)
+        response = plugin._setup_internal(date=NOW)
+        self.assertEqual(response, Response())
 
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_not_called()

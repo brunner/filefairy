@@ -138,6 +138,7 @@ class Leaguefile(Plugin, Renderable):
             self.write()
 
         self._render(**kwargs)
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         return {}
