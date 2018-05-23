@@ -88,6 +88,9 @@ class Exports(Plugin, Renderable):
         if exports != self.exports:
             self.exports = exports
             response.notify = [Notify.BASE]
+            for teamid, status in self.exports:
+                if teamid in self.data['ai'] and status == 'New':
+                    self.data['ai'].remove(teamid)
 
         if any([True for e in exports if e in _emails]):
             self._lock_internal()
@@ -205,12 +208,6 @@ class Exports(Plugin, Renderable):
 
         for teamid, status in self.exports:
             s = status.lower()[0]
-            if teamid in data['ai']:
-                if s == 'n':
-                    data['ai'].remove(teamid)
-                else:
-                    continue
-
             data['form'][teamid] += s
             while len(data['form'][teamid]) > 10:
                 data['form'][teamid] = data['form'][teamid][1:]
