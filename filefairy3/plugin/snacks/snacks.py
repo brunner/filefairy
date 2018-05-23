@@ -224,7 +224,7 @@ class Snacks(Plugin, Serializable):
             with open(fname, 'w') as f:
                 f.write('\n'.join(collected[user]))
 
-    def _load(self):
+    def _load(self, *args, **kwargs):
         self._corpus()
         return self._load_internal()
 
