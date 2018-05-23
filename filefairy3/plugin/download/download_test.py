@@ -427,8 +427,8 @@ class DownloadTest(unittest.TestCase):
         plugin._games_internal(bdname, bfname, ldname, lfname)
 
         calls = [
-            mock.call(bfname, 'r'),
-            mock.call(lfname, 'r'),
+            mock.call(bfname, 'r', encoding='iso-8859-1'),
+            mock.call(lfname, 'r', encoding='iso-8859-1'),
             mock.call(bdname, 'w'),
             mock.call(ldname, 'w')
         ]
@@ -461,7 +461,10 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._games_internal(bdname, bfname, ldname, lfname)
 
-        calls = [mock.call(bfname, 'r'), mock.call(lfname, 'r')]
+        calls = [
+            mock.call(bfname, 'r', encoding='iso-8859-1'),
+            mock.call(lfname, 'r', encoding='iso-8859-1')
+        ]
         mock_open.assert_has_calls(calls)
         mock_bhandle.write.assert_not_called()
         mock_lhandle.write.assert_not_called()
@@ -491,7 +494,10 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._games_internal(bdname, bfname, ldname, lfname)
 
-        calls = [mock.call(bfname, 'r'), mock.call(lfname, 'r')]
+        calls = [
+            mock.call(bfname, 'r', encoding='iso-8859-1'),
+            mock.call(lfname, 'r', encoding='iso-8859-1')
+        ]
         mock_open.assert_has_calls(calls)
         mock_bhandle.write.assert_not_called()
         mock_lhandle.write.assert_not_called()

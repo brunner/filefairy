@@ -127,9 +127,9 @@ class Download(Plugin, Serializable):
         then = decode_datetime(self.data['then'])
         now = decode_datetime(self.data['now'])
 
-        with open(bfname, 'r') as bff:
+        with open(bfname, 'r', encoding='iso-8859-1') as bff:
             bcontent = bff.read()
-        with open(lfname, 'r') as lff:
+        with open(lfname, 'r', encoding='iso-8859-1') as lff:
             lcontent = lff.read()
 
         pattern = 'MLB Box Scores[^\d]+(\d{2}\/\d{2}\/\d{4})'
