@@ -87,10 +87,8 @@ class Exports(Plugin, Renderable):
 
         if exports != self.exports:
             self.exports = exports
+            self._remove()
             response.notify = [Notify.BASE]
-            for teamid, status in self.exports:
-                if teamid in self.data['ai'] and status == 'New':
-                    self.data['ai'].remove(teamid)
 
         if any([True for e in exports if e in _emails]):
             self._lock_internal()
@@ -111,6 +109,7 @@ class Exports(Plugin, Renderable):
     def _setup_internal(self, **kwargs):
         text = urlopen(_url).decode('utf-8')
         self.exports = self._exports(text)
+        self._remove()
         self._render(**kwargs)
         return Response()
 
@@ -224,6 +223,11 @@ class Exports(Plugin, Renderable):
                 if status == 'New':
                     n += 1
         return (n, t)
+
+    def _remove(self):
+        for teamid, status in self.exports:
+            if teamid in self.data['ai'] and status == 'New':
+                self.data['ai'].remove(teamid)
 
     def _sorted(self, teamid):
         ret = []

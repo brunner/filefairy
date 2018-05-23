@@ -273,6 +273,29 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock_internal')
     @mock.patch.object(Exports, '_exports')
+    def test_run__with_exports_new(self, mock_exports, mock_lock, mock_render):
+        mock_exports.return_value = EXPORTS_NEW
+
+        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
+        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
+        mock_exports.assert_called_once_with(URLOPEN)
+        mock_lock.assert_not_called()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.assertEqual(plugin.exports, EXPORTS_NEW)
+
+    @mock.patch.object(Exports, '_render')
+    @mock.patch.object(Exports, '_lock_internal')
+    @mock.patch.object(Exports, '_exports')
     def test_run__with_exports_old(self, mock_exports, mock_lock, mock_render):
         mock_exports.return_value = EXPORTS_OLD
 
@@ -295,16 +318,26 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock_internal')
     @mock.patch.object(Exports, '_exports')
-    def test_run__with_exports_new(self, mock_exports, mock_lock, mock_render):
+    def test_run__with_exports_ai(self, mock_exports, mock_lock, mock_render):
         mock_exports.return_value = EXPORTS_NEW
 
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
+        read = {
+            'ai': ['31', '32', '33'],
+            'date': THEN_ENCODED,
+            'form': form,
+            'locked': False
+        }
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
         response = plugin._run_internal(date=NOW)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
+        write = {
+            'ai': ['32', '33'],
+            'date': NOW_ENCODED,
+            'form': form,
+            'locked': False
+        }
         mock_exports.assert_called_once_with(URLOPEN)
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(date=NOW)
@@ -647,11 +680,11 @@ class ExportsTest(Test):
             'fairylab',
             'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
-        self.mock_log.assert_not_called()
 
     def test_lock_internal__with_ai_added(self):
         form = {k: copy.deepcopy(FORM_DEAD) for k in ['31', '32', '33']}
@@ -667,36 +700,11 @@ class ExportsTest(Test):
             'fairylab',
             'Tracker locked and exports recorded.',
             attachments=plugin._attachments())
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['ai'], ['32'])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
-        self.mock_log.assert_not_called()
-
-    def test_lock_internal__with_ai_removed(self):
-        form = {k: copy.deepcopy(FORM_EMPTY) for k in ['31', '32', '33']}
-        read = {
-            'ai': ['31', '32', '33'],
-            'date': THEN_ENCODED,
-            'form': form,
-            'locked': False
-        }
-        plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
-        plugin._lock_internal()
-
-        form = {'31': FORM_NEW, '32': FORM_EMPTY, '33': FORM_NEW}
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_urlopen.assert_not_called()
-        self.mock_chat.assert_called_once_with(
-            'fairylab',
-            'Tracker locked and exports recorded.',
-            attachments=plugin._attachments())
-        self.assertEqual(plugin.data['ai'], ['32'])
-        self.assertEqual(plugin.data['form'], form)
-        self.assertTrue(plugin.data['locked'], True)
-        self.assertEqual(plugin.exports, EXPORTS_LOCK)
-        self.mock_log.assert_not_called()
 
     def test_new(self):
         form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
@@ -706,6 +714,12 @@ class ExportsTest(Test):
         actual = plugin._new()
         expected = (1, 3)
         self.assertEqual(actual, expected)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_streak(self):
         form = {'31': FORM_NEW_TRUNCATED, '32': FORM_OLD_TRUNCATED}
