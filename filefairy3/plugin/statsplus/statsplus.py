@@ -170,10 +170,10 @@ class Statsplus(Plugin, Renderable):
             self.write()
             response.notify = [Notify.BASE]
 
-        if data['unresolved']:
-            unresolved = copy.deepcopy(data)['unresolved']
-            response.append_task(
-                Task(target=self._resolve_all, args=(unresolved, )))
+        # if data['unresolved']:
+        #     unresolved = copy.deepcopy(data)['unresolved']
+        #     response.append_task(
+        #         Task(target=self._resolve_all, args=(unresolved, )))
 
         return response
 
