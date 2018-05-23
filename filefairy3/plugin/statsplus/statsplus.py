@@ -320,7 +320,11 @@ class Statsplus(Plugin, Renderable):
             hl += len(re.findall(r', ' + re.escape(encoding), scores))
         return '{0}-{1}'.format(hw, hl)
 
-    def _resolve_all(self, unresolved):
+    def _resolve_all(self, *args, **kwargs):
+        if len(args) != 1:
+            return Response()
+
+        unresolved = args[0]
         for encoded_date in unresolved:
             scores = self.data['scores'].get(encoded_date, [])
             original = copy.deepcopy(scores)
