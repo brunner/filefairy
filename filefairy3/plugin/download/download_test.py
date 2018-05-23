@@ -270,7 +270,7 @@ class DownloadTest(unittest.TestCase):
         response = plugin.download()
         self.assertEqual(
             response,
-            Response(task=[Task(target=plugin._download_internal, kwargs={})]))
+            Response(task=[Task(target='_download_internal', kwargs={})]))
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -297,7 +297,8 @@ class DownloadTest(unittest.TestCase):
 
         mock_games.side_effect = fake_games
 
-        plugin._download_internal(v=True)
+        response = plugin._download_internal(v=True)
+        self.assertEqual(response, Response())
 
         mock_games.assert_called_once_with()
         mock_file.assert_called_once_with()
@@ -333,7 +334,8 @@ class DownloadTest(unittest.TestCase):
 
         mock_games.side_effect = fake_games
 
-        plugin._download_internal(v=True)
+        response = plugin._download_internal(v=True)
+        self.assertEqual(response, Response())
 
         mock_games.assert_called_once_with()
         mock_file.assert_called_once_with()

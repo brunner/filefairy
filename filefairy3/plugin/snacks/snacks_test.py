@@ -98,7 +98,7 @@ class SnacksTest(unittest.TestCase):
         self.reset_mocks()
 
         response = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
-        self.assertEqual(response, Response(task=[Task(target=plugin._load)]))
+        self.assertEqual(response, Response(task=[Task(target='_load')]))
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -453,7 +453,8 @@ class SnacksTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         response = plugin._setup_internal(date=THEN)
-        self.assertEqual(response, Response(task=[Task(target=plugin._load_internal)]))
+        self.assertEqual(
+            response, Response(task=[Task(target='_load_internal')]))
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -560,6 +561,8 @@ class SnacksTest(unittest.TestCase):
     @mock.patch.object(Snacks, '_load_internal')
     @mock.patch.object(Snacks, '_corpus')
     def test_load(self, mock_corpus, mock_load_internal):
+        mock_load_internal.return_value = Response()
+
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(
             read, names={
@@ -567,7 +570,8 @@ class SnacksTest(unittest.TestCase):
                 'U5678': 'bar'
             })
         plugin.loaded = False
-        plugin._load()
+        response = plugin._load()
+        self.assertEqual(response, Response())
 
         mock_corpus.assert_called_once_with()
         mock_load_internal.assert_called_once_with()
@@ -591,7 +595,8 @@ class SnacksTest(unittest.TestCase):
                 'U5678': 'bar'
             })
         plugin.loaded = False
-        plugin._load_internal()
+        response = plugin._load_internal()
+        self.assertEqual(response, Response())
 
         mock_fnames.assert_called_once_with()
         mock_names.assert_called_once_with()

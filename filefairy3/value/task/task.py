@@ -20,7 +20,7 @@ class Task(object):
 
     @staticmethod
     def check_target_value(value):
-        if not callable(value):
+        if not isinstance(value, str):
             raise ValueError(value)
 
     @staticmethod
@@ -63,6 +63,3 @@ class Task(object):
     target = property(get_target, set_target)
     args = property(get_args, set_args)
     kwargs = property(get_kwargs, set_kwargs)
-
-    def execute(self):
-        self.target(*self.args, **self.kwargs)

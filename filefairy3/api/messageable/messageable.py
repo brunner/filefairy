@@ -41,9 +41,9 @@ class Messageable(Nameable):
                 pattern = '^' + self._name() + '\.' + method + '\((.*)\)$'
                 match = re.findall(pattern, text)
                 if match:
-                    for i, a in enumerate(match[0].split(',')):
-                        kwargs['a{}'.format(i + 1)] = a.strip()
-                    response = item(**dict(kwargs, v=True))
+                    m = match[0].split(',')
+                    args = [a.strip() for a in m if a.strip()]
+                    response = item(*args, **dict(kwargs, v=True))
                     if not isinstance(response, Response):
                         response = Response()
                     response.notify = [Notify.BASE]

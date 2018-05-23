@@ -5,7 +5,6 @@ import os
 import re
 import sys
 import unittest
-import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/value/task', '', _path))
@@ -18,18 +17,16 @@ class TaskTest(unittest.TestCase):
             Task()
 
     def test_init__empty_args(self):
-        mock_foo = mock.Mock()
         kwargs = {'key': 'value'}
-        task = Task(target=mock_foo, kwargs=kwargs)
-        self.assertEqual(task.target, mock_foo)
+        task = Task(target='foo', kwargs=kwargs)
+        self.assertEqual(task.target, 'foo')
         self.assertEqual(task.args, tuple())
         self.assertEqual(task.kwargs, kwargs)
 
     def test_init__empty_kwargs(self):
-        mock_foo = mock.Mock()
         args = (True, False)
-        task = Task(target=mock_foo, args=args)
-        self.assertEqual(task.target, mock_foo)
+        task = Task(target='foo', args=args)
+        self.assertEqual(task.target, 'foo')
         self.assertEqual(task.args, args)
         self.assertEqual(task.kwargs, dict())
 
@@ -40,23 +37,20 @@ class TaskTest(unittest.TestCase):
             Task(target=[1], args=args, kwargs=kwargs)
 
     def test_init__task_invalid_args(self):
-        mock_foo = mock.Mock()
         kwargs = {'key': 'value'}
         with self.assertRaises(ValueError):
-            Task(target=mock_foo, args=[1], kwargs=kwargs)
+            Task(target='foo', args=[1], kwargs=kwargs)
 
     def test_init__task_invalid_kwargs(self):
-        mock_foo = mock.Mock()
         args = (True, False)
         with self.assertRaises(ValueError):
-            Task(target=mock_foo, args=args, kwargs=[1])
+            Task(target='foo', args=args, kwargs=[1])
 
     def test_init__task_valid(self):
-        mock_foo = mock.Mock()
         args = (True, False)
         kwargs = {'key': 'value'}
-        task = Task(target=mock_foo, args=args, kwargs=kwargs)
-        self.assertEqual(task.target, mock_foo)
+        task = Task(target='foo', args=args, kwargs=kwargs)
+        self.assertEqual(task.target, 'foo')
         self.assertEqual(task.args, args)
         self.assertEqual(task.kwargs, kwargs)
 

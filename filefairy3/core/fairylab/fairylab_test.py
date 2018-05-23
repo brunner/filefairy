@@ -254,7 +254,7 @@ class FairylabTest(Test):
         program.day = THEN.day
         program._setup()
 
-        calls = [mock.call(a1='plugin', a2='internal', date=NOW, v=True)]
+        calls = [mock.call('plugin', 'internal', date=NOW, v=True)]
         mock_reload.assert_has_calls(calls)
         calls = [mock.call(DIR_INTERNAL)]
         mock_isdir.assert_has_calls(calls)
@@ -369,8 +369,7 @@ class FairylabTest(Test):
     @mock.patch.object(Internal, '_notify')
     @mock.patch.object(Browsable, '_notify')
     def test_try__with_task(self, mock_bnotify, mock_inotify, mock_run):
-        mock_foo = mock.Mock()
-        mock_run.return_value = Response(task=[Task(target=mock_foo)])
+        mock_run.return_value = Response(task=[Task(target='foo')])
 
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
@@ -387,7 +386,7 @@ class FairylabTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program.tasks, [Task(target=mock_foo)])
+        self.assertEqual(program.tasks, [('internal', Task(target='foo'))])
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_notify')
@@ -544,18 +543,21 @@ class FairylabTest(Test):
         self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
         self.assertEqual(program.tasks, [])
 
+    @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.time.sleep')
-    def test_background(self, mock_sleep):
-        mock_task = mock.MagicMock(spec=Task)
+    def test_background(self, mock_sleep, mock_try):
+        args = (True, False)
+        kwargs = {'key': 'value'}
+        task = Task(target='foo', args=args, kwargs=kwargs)
         read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         program = self.create_program(
-            read, pins=PINS_INTERNAL, tasks=[mock_task])
+            read, pins=PINS_INTERNAL, tasks=[('internal', task)])
 
         mock_sleep.side_effect = functools.partial(set_running_false, program)
         program._background()
 
         mock_sleep.assert_called_once_with(120)
-        mock_task.execute.assert_called_once_with()
+        mock_try.assert_called_once_with('internal', 'foo', *args, **kwargs)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
@@ -801,10 +803,11 @@ class FairylabTest(Test):
                                       mock_try):
         mock_getattr.return_value = Internal
 
-        kwargs = {'a1': 'plugin', 'a2': 'internal', 'date': THEN, 'v': True}
+        args = ('plugin', 'internal')
+        kwargs = {'date': THEN, 'v': True}
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.reload(**kwargs)
+        program.reload(*args, **kwargs)
 
         write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         module = mock_import.return_value
@@ -828,10 +831,11 @@ class FairylabTest(Test):
                                            mock_try):
         mock_getattr.side_effect = Exception()
 
-        kwargs = {'a1': 'plugin', 'a2': 'internal', 'date': THEN, 'v': True}
+        args = ('plugin', 'internal')
+        kwargs = {'date': THEN, 'v': True}
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.reload(**kwargs)
+        program.reload(*args, **kwargs)
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'Internal')
@@ -853,10 +857,11 @@ class FairylabTest(Test):
     def test_reload__with_disabled(self, mock_getattr, mock_import, mock_try):
         mock_getattr.return_value = Disabled
 
-        kwargs = {'a1': 'plugin', 'a2': 'disabled', 'date': THEN, 'v': True}
+        args = ('plugin', 'disabled')
+        kwargs = {'date': THEN, 'v': True}
         read = {'plugins': {}}
         program = self.create_program(read)
-        program.reload(**kwargs)
+        program.reload(*args, **kwargs)
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'Disabled')

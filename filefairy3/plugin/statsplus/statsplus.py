@@ -170,10 +170,10 @@ class Statsplus(Plugin, Renderable):
             self.write()
             response.notify = [Notify.BASE]
 
-        # if data['unresolved']:
-        #     unresolved = copy.deepcopy(data)['unresolved']
-        #     response.append_task(
-        #         Task(target=self._resolve_all, args=(unresolved, )))
+        if data['unresolved']:
+            unresolved = copy.deepcopy(data)['unresolved']
+            response.append_task(
+                Task(target='_resolve_all', args=(unresolved, )))
 
         return response
 
@@ -332,6 +332,7 @@ class Statsplus(Plugin, Renderable):
                 self.data['unresolved'].remove(encoded_date)
             if scores != original:
                 self.data['updated'] = True
+        return Response()
 
     def _resolve(self, encoded_date, i):
         score = self.data['scores'][encoded_date][i]

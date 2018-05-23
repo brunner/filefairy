@@ -79,7 +79,7 @@ class Snacks(Plugin, Serializable):
         response = Response()
         if notify == Notify.FAIRYLAB_DAY:
             self.loaded = False
-            response.append_task(Task(target=self._load))
+            response.append_task(Task(target='_load'))
         return response
 
     def _on_message_internal(self, **kwargs):
@@ -179,7 +179,7 @@ class Snacks(Plugin, Serializable):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        return Response(task=[Task(target=self._load_internal)])
+        return Response(task=[Task(target='_load_internal')])
 
     def _shadow_internal(self, **kwargs):
         return {}
@@ -226,7 +226,7 @@ class Snacks(Plugin, Serializable):
 
     def _load(self):
         self._corpus()
-        self._load_internal()
+        return self._load_internal()
 
     def _load_internal(self):
         self.cfds = {}
@@ -241,3 +241,5 @@ class Snacks(Plugin, Serializable):
 
         self.names = self._names()
         self.loaded = True
+
+        return Response()

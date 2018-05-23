@@ -605,7 +605,7 @@ class StatsplusTest(Test):
         read = _data(unresolved=[THEN_ENCODED])
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
-        task = Task(target=plugin._resolve_all, args=([THEN_ENCODED], ))
+        task = Task(target='_resolve_all', args=([THEN_ENCODED], ))
         self.assertEqual(response, Response(task=[task]))
 
         mock_render.assert_not_called()
@@ -979,7 +979,8 @@ class StatsplusTest(Test):
             scores={THEN_ENCODED: SCORES_REGULAR_ENCODED},
             unresolved=[THEN_ENCODED])
         plugin = self.create_plugin(read)
-        plugin._resolve_all([THEN_ENCODED])
+        response = plugin._resolve_all([THEN_ENCODED])
+        self.assertEqual(response, Response())
 
         calls = [
             mock.call(THEN, '{0}{1}2998.html'.format(_html, _game_box),

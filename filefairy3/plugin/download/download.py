@@ -81,13 +81,13 @@ class Download(Plugin, Serializable):
         if output.get('ok'):
             log(self._name(), **dict(kwargs, s='Download started.'))
             return Response(
-                task=[Task(target=self._download_internal, kwargs=kwargs)])
+                task=[Task(target='_download_internal', kwargs=kwargs)])
         else:
             log(self._name(),
                 **dict(kwargs, c=output, s='Download failed.', v=True))
             return Response()
 
-    def _download_internal(self, **kwargs):
+    def _download_internal(self, *args, **kwargs):
         data = self.data
         data['then'] = data['now']
 
@@ -102,6 +102,8 @@ class Download(Plugin, Serializable):
         dnow = decode_datetime(data['now'])
         if dthen.year != dnow.year:
             data['year'] = True
+
+        return Response()
 
     def _games(self):
         box_scores = os.path.join(_root, 'extract/box_scores')

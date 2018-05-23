@@ -52,20 +52,18 @@ class ResponseTest(unittest.TestCase):
         self.assertEqual(response.shadow, {'plugin': {'key': 'value'}})
 
     def test_init__task_invalid_type(self):
-        mock_foo = mock.Mock()
         with self.assertRaises(TypeError):
-            Response(task=Task(target=mock_foo))
+            Response(task=Task(target='foo'))
 
     def test_init__task_invalid_element_value(self):
         with self.assertRaises(ValueError):
             Response(task=[1])
 
     def test_init__task_valid(self):
-        mock_foo = mock.Mock()
-        response = Response(task=[Task(target=mock_foo)])
+        response = Response(task=[Task(target='foo')])
         self.assertEqual(response.notify, [])
         self.assertEqual(response.shadow, {})
-        self.assertEqual(response.task, [Task(target=mock_foo)])
+        self.assertEqual(response.task, [Task(target='foo')])
 
     def test_append_notify__invalid_element_value(self):
         response = Response()
@@ -84,12 +82,11 @@ class ResponseTest(unittest.TestCase):
             response.append_task(1)
 
     def test_append_task__valid(self):
-        mock_foo = mock.Mock()
         response = Response()
-        response.append_task(Task(target=mock_foo))
+        response.append_task(Task(target='foo'))
         self.assertEqual(response.notify, [])
         self.assertEqual(response.shadow, {})
-        self.assertEqual(response.task, [Task(target=mock_foo)])
+        self.assertEqual(response.task, [Task(target='foo')])
 
 
 if __name__ == '__main__':

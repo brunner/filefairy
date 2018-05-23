@@ -65,7 +65,7 @@ class Fairylab(Messageable, Renderable):
         d = os.path.join(_root, 'plugin')
         ps = filter(lambda x: self._is_plugin_dir(d, x), os.listdir(d))
         for p in sorted(ps):
-            self._reload_internal(**dict(kwargs, a1='plugin', a2=p))
+            self._reload_internal('plugin', p, **kwargs)
 
         self._try_all('_setup', **kwargs)
         log(self._name(), **dict(kwargs, s='Completed setup.'))
@@ -91,12 +91,12 @@ class Fairylab(Messageable, Renderable):
     def _plugin(self, p):
         return self.data['plugins'].get(p, {})
 
-    def _try_all(self, method, **kwargs):
+    def _try_all(self, method, *args, **kwargs):
         ps = sorted(self.data['plugins'].keys())
         for p in ps:
-            self._try(p, method, **kwargs)
+            self._try(p, method, *args, **kwargs)
 
-    def _try(self, p, method, **kwargs):
+    def _try(self, p, method, *args, **kwargs):
         data = self.data
         if p not in data['plugins']:
             return
@@ -114,7 +114,7 @@ class Fairylab(Messageable, Renderable):
         edate = encode_datetime(date)
 
         try:
-            response = item(**dict(kwargs, date=date))
+            response = item(*args, **dict(kwargs, date=date))
             if response.notify:
                 data['plugins'][p]['date'] = edate
             for n in response.notify:
@@ -124,7 +124,7 @@ class Fairylab(Messageable, Renderable):
                 shadow = response.shadow[s]
                 self._try(s, '_shadow', **dict(kwargs, shadow=shadow))
             for t in response.task:
-                self.tasks.append(t)
+                self.tasks.append((p, t))
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
@@ -136,8 +136,8 @@ class Fairylab(Messageable, Renderable):
             original = list(self.tasks)
             self.tasks = []
 
-            for task in original:
-                task.execute()
+            for p, task in original:
+                self._try(p, task.target, *task.args, **task.kwargs)
 
             time.sleep(self.sleep)
 
@@ -243,11 +243,11 @@ class Fairylab(Messageable, Renderable):
 
         return ret
 
-    def reload(self, **kwargs):
+    def reload(self, *args, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
-        value = self._reload_internal(**kwargs)
+        value = self._reload_internal(*args, **kwargs)
         if value:
             self._try_all('_setup', **kwargs)
             log(self._name(), **dict(kwargs, s='Completed setup.'))
@@ -255,9 +255,11 @@ class Fairylab(Messageable, Renderable):
         if data != original:
             self.write()
 
-    def _reload_internal(self, **kwargs):
-        path = kwargs.get('a1', '')
-        name = kwargs.get('a2', '')
+    def _reload_internal(self, *args, **kwargs):
+        if len(args) != 2:
+            return False
+
+        path, name = args
         clazz = name.capitalize()
         package = self._package(path, name)
 
@@ -303,11 +305,11 @@ class Fairylab(Messageable, Renderable):
 
         return enabled
 
-    def reboot(self, **kwargs):
+    def reboot(self, *args, **kwargs):
         log(self._name(), **dict(kwargs, s='Rebooting.'))
         os.execv(sys.executable, ['python'] + sys.argv)
 
-    def shutdown(self, **kwargs):
+    def shutdown(self, *args, **kwargs):
         log(self._name(), **dict(kwargs, s='Shutting down.'))
         self.keep_running = False
 

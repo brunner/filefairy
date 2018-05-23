@@ -29,16 +29,16 @@ class Serializable(Nameable):
     def _data():
         pass
 
-    def read(self, **kwargs):
+    def read(self, *args, **kwargs):
         with open(self._data(), 'r') as f:
             self.data = json.loads(f.read())
             log(self._name(), **dict(kwargs, s='Read completed.'))
 
-    def write(self, **kwargs):
+    def write(self, *args, **kwargs):
         with open(self._data(), 'w') as f:
             f.write(dumps(self.data) + '\n')
             log(self._name(), **dict(kwargs, s='Write completed.'))
 
-    def dump(self, **kwargs):
+    def dump(self, *args, **kwargs):
         d = dumps(self.data)
         log(self._name(), **dict(kwargs, s='Dump completed.', c=d))
