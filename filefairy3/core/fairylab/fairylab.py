@@ -124,8 +124,7 @@ class Fairylab(Messageable, Renderable):
                 shadow = response.shadow[s]
                 self._try(s, '_shadow', **dict(kwargs, shadow=shadow))
             for t in response.task:
-                with self.lock:
-                    self.tasks.append(t)
+                self.tasks.append(t)
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
@@ -134,9 +133,8 @@ class Fairylab(Messageable, Renderable):
 
     def _background(self):
         while self.keep_running:
-            with self.lock:
-                original = list(self.tasks)
-                self.tasks = []
+            original = list(self.tasks)
+            self.tasks = []
 
             for task in original:
                 task.execute()
