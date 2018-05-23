@@ -228,7 +228,7 @@ class Snacks(Plugin, Serializable):
         self._corpus()
         return self._load_internal()
 
-    def _load_internal(self):
+    def _load_internal(self, *args, **kwargs):
         self.cfds = {}
 
         fnames = self._fnames()
