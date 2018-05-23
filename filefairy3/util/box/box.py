@@ -19,12 +19,21 @@ _line = '<td class="dc"><b>(\d+)</b></td>'
 _record = '(\w+) \(([^)]+)\)'
 
 
+def _open(link):
+    if link.startswith('http'):
+        return urlopen(link)
+    if os.path.isfile(link):
+        with open(link, 'r', encoding='iso-8859-1') as f:
+            return f.read()
+    return ''
+
+
 def _value(encoding, away='', home=''):
     return {'encoding': encoding, 'away': away, 'home': home}
 
 
 def clarify(date, link, encoding):
-    content = urlopen(link)
+    content = _open(link)
     fdate = date.strftime('%m/%d/%Y')
     pattern = _title.format(fdate)
     title = re.findall(pattern, content, re.DOTALL)
@@ -70,7 +79,7 @@ def clarify(date, link, encoding):
 
 def records(link):
     ret = {}
-    content = urlopen(link)
+    content = _open(link)
     rows = re.findall(_row, content, re.DOTALL)
     if len(rows) != 2:
         return ret
