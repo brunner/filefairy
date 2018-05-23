@@ -109,6 +109,14 @@ READ = {'standings': {}}
 RECORDS1 = {'T31': '76-86', 'T45': '97-65'}
 RECORDS2 = {'T32': '77-85', 'T44': '70-92'}
 RECORDS3 = {'T31': '75-86', 'T45': '97-64'}
+WRITE = {
+    'standings': {
+        'T31': '76-86',
+        'T32': '77-85',
+        'T44': '70-92',
+        'T45': '97-65'
+    }
+}
 
 
 class RecapTest(Test):
@@ -285,8 +293,8 @@ class RecapTest(Test):
             for b in boxes
         ]
         mock_records.assert_has_calls(calls)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(WRITE) + '\n')
         self.mock_chat.assert_not_called()
 
     @mock.patch('plugin.recap.recap.open', create=True)

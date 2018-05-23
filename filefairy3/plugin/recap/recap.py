@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import copy
 import datetime
 import os
 import re
@@ -106,6 +107,9 @@ class Recap(Plugin, Renderable):
         return ret
 
     def _standings(self):
+        data = self.data
+        original = copy.deepcopy(data)
+
         dpath = os.path.join(_root, 'extract/box_scores')
         for box in os.listdir(dpath):
             bdname = os.path.join(dpath, box)
@@ -116,6 +120,9 @@ class Recap(Plugin, Renderable):
                 ttotal = self._total(self.data['standings'].get(t, ''))
                 if ntotal > ttotal:
                     self.data['standings'][t] = record
+
+        if data != original:
+            self.write()
 
     def _tables(self, key):
         dpath = os.path.join(_root, 'extract/leagues/{}.txt')
