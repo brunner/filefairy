@@ -79,7 +79,7 @@ class Exports(Plugin, Renderable):
         if data['locked']:
             return response
 
-        text = urlopen(_url)
+        text = urlopen(_url).decode('utf-8')
         exports = self._exports(text)
 
         if not exports:
@@ -106,7 +106,7 @@ class Exports(Plugin, Renderable):
         return [(html, '', 'exports.html', _home)]
 
     def _setup_internal(self, **kwargs):
-        text = urlopen(_url)
+        text = urlopen(_url).decode('utf-8')
         self.exports = self._exports(text)
         self._render(**kwargs)
         return Response()

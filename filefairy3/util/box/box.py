@@ -21,7 +21,7 @@ _record = '(\w+) \(([^)]+)\)'
 
 def _open(link):
     if link.startswith('http'):
-        return urlopen(link)
+        return urlopen(link).decode('iso-8859-1')
     if os.path.isfile(link):
         with open(link, 'r', encoding='iso-8859-1') as f:
             return f.read()

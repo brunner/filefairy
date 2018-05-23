@@ -6,8 +6,6 @@ import re
 import sys
 import unittest
 import unittest.mock as mock
-import urllib.parse as parse
-import urllib.request as request
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/slack', '', _path))
@@ -29,7 +27,7 @@ _filefairy = filefairy()
 class SlackTest(unittest.TestCase):
     @mock.patch('util.slack.slack.urlopen')
     def test_channels_kick(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true}'
+        mock_urlopen.return_value = bytes('{"ok":true}', 'utf-8')
 
         actual = channels_kick('channel', 'U1234')
         expected = {'ok': True}
@@ -44,7 +42,8 @@ class SlackTest(unittest.TestCase):
 
     @mock.patch('util.slack.slack.urlopen')
     def test_channels_history(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true,"latest":"12000000"}'
+        mock_urlopen.return_value = bytes('{"ok":true,"latest":"12000000"}',
+                                          'utf-8')
 
         actual = channels_history('channel', 0)
         expected = {'ok': True, 'latest': '12000000'}
@@ -60,7 +59,8 @@ class SlackTest(unittest.TestCase):
 
     @mock.patch('util.slack.slack.urlopen')
     def test_channels_list(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true,"channels":[{"id":"C12345"}]}'
+        mock_urlopen.return_value = bytes(
+            '{"ok":true,"channels":[{"id":"C12345"}]}', 'utf-8')
 
         actual = channels_list()
         expected = {'ok': True, 'channels': [{'id': 'C12345'}]}
@@ -75,7 +75,8 @@ class SlackTest(unittest.TestCase):
 
     @mock.patch('util.slack.slack.urlopen')
     def test_chat_post_message(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true,"message":{"text":"foo"}}'
+        mock_urlopen.return_value = bytes(
+            '{"ok":true,"message":{"text":"foo"}}', 'utf-8')
 
         attachments = [{'fallback': 'a', 'title': 'b', 'text': 'c'}]
         actual = chat_post_message('channel', 'foo', attachments=attachments)
@@ -94,7 +95,8 @@ class SlackTest(unittest.TestCase):
 
     @mock.patch('util.slack.slack.urlopen')
     def test_files_upload(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true,"file":{"preview":"content"}}'
+        mock_urlopen.return_value = bytes(
+            '{"ok":true,"file":{"preview":"content"}}', 'utf-8')
 
         actual = files_upload('content', 'filename.txt', 'channel')
         expected = {'ok': True, 'file': {'preview': 'content'}}
@@ -110,7 +112,7 @@ class SlackTest(unittest.TestCase):
 
     @mock.patch('util.slack.slack.urlopen')
     def test_reactions_add(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true}'
+        mock_urlopen.return_value = bytes('{"ok":true}', 'utf-8')
 
         actual = reactions_add('name', 'C1234', 'timestamp')
         expected = {'ok': True}
@@ -126,7 +128,8 @@ class SlackTest(unittest.TestCase):
 
     @mock.patch('util.slack.slack.urlopen')
     def test_rtm_connect(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true,"url":"wss://..."}'
+        mock_urlopen.return_value = bytes('{"ok":true,"url":"wss://..."}',
+                                          'utf-8')
 
         actual = rtm_connect()
         expected = {'ok': True, 'url': 'wss://...'}
@@ -139,7 +142,8 @@ class SlackTest(unittest.TestCase):
 
     @mock.patch('util.slack.slack.urlopen')
     def test_users_list(self, mock_urlopen):
-        mock_urlopen.return_value = '{"ok":true,"members":[{"id":"U12345"}]}'
+        mock_urlopen.return_value = bytes(
+            '{"ok":true,"members":[{"id":"U12345"}]}', 'utf-8')
 
         actual = users_list()
         expected = {'ok': True, 'members': [{'id': 'U12345'}]}

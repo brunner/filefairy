@@ -87,7 +87,7 @@ class ExportsTest(Test):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-        self.mock_urlopen.return_value = URLOPEN
+        self.mock_urlopen.return_value = bytes(URLOPEN, 'utf-8')
 
     def reset_mocks(self):
         self.mock_open.reset_mock()

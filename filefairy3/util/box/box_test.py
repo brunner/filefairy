@@ -48,7 +48,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_one_valid_content(self, mock_urlopen):
         content = VALID.format(TEAM1, TEAM2, FDATE, TEAM1, TEAM2)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 2')
@@ -60,7 +60,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_one_swap_both(self, mock_urlopen):
         content = VALID.format(TEAM2, TEAM1, FDATE, TEAM2, TEAM1)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, T31 2')
@@ -72,7 +72,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_one_swap_row(self, mock_urlopen):
         content = VALID.format(TEAM1, TEAM2, FDATE, TEAM2, TEAM1)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, T31 2')
@@ -84,7 +84,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_one_swap_title(self, mock_urlopen):
         content = VALID.format(TEAM2, TEAM1, FDATE, TEAM1, TEAM2)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 2')
@@ -96,7 +96,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_two_valid_content(self, mock_urlopen):
         content = VALID.format(TEAM2, TEAM3, FDATE, TEAM2, TEAM3)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
@@ -108,7 +108,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_two_swap_both(self, mock_urlopen):
         content = VALID.format(TEAM3, TEAM2, FDATE, TEAM3, TEAM2)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
@@ -120,7 +120,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_two_swap_row(self, mock_urlopen):
         content = VALID.format(TEAM2, TEAM3, FDATE, TEAM3, TEAM2)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
@@ -132,7 +132,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_two_swap_title(self, mock_urlopen):
         content = VALID.format(TEAM3, TEAM2, FDATE, TEAM2, TEAM3)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
@@ -144,7 +144,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_invalid_date(self, mock_urlopen):
         content = VALID.format(TEAM1, TEAM2, FDATE_INVALID, TEAM1, TEAM2)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 2')
@@ -156,7 +156,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_invalid_title(self, mock_urlopen):
         content = VALID.format(TEAM2, TEAM3, FDATE, TEAM2, TEAM3)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 2')
@@ -168,7 +168,7 @@ class BoxTest(unittest.TestCase):
     @mock.patch('util.box.box.urlopen')
     def test_clarify__with_invalid_runs(self, mock_urlopen):
         content = VALID.format(TEAM1, TEAM2, FDATE, TEAM1, TEAM2)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 3')
@@ -182,7 +182,7 @@ class BoxTest(unittest.TestCase):
         row1 = '{} ({})'.format(TEAM1, RECORD1)
         row2 = '{} ({})'.format(TEAM2, RECORD2)
         content = VALID.format(TEAM1, TEAM2, FDATE, row1, row2)
-        mock_urlopen.return_value = content
+        mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
         actual = records(link)

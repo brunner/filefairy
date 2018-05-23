@@ -16,11 +16,12 @@ from util.urllib_.urllib_ import urlopen  # noqa
 class UrllibTest(unittest.TestCase):
     @mock.patch('util.urllib_.urllib_.request.urlopen')
     def test_urlopen(self, mock_urlopen):
-        mock_urlopen.return_value.__enter__.return_value.read.return_value = bytes('response', 'utf-8')
+        r = bytes('response', 'utf-8')
+        mock_urlopen.return_value.__enter__.return_value.read.return_value = r
 
         data = {'a': 1, 'b': 2}
         actual = urlopen('http://url', data)
-        expected = 'response'
+        expected = r
         self.assertEqual(actual, expected)
 
         encoded_data = parse.urlencode(data).encode('utf-8')

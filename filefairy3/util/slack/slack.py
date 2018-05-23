@@ -20,7 +20,7 @@ def _call(method, params):
     url = 'https://slack.com/api/{}'.format(method)
     obj = {'ok': False}
     try:
-        response = urlopen(url, params)
+        response = urlopen(url, params).decode('utf-8')
         obj = json.loads(response)
     except:
         pass
