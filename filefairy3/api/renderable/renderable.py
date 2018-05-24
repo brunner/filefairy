@@ -49,7 +49,7 @@ class Renderable(Serializable):
                 title = _title + subtitle
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(dict(context, title=title, date=date))
-                here = os.path.join(_root, html)
+                here = os.path.join(_root, 'resource', html)
                 there = 'brunnerj@' + _server + ':/var/www/' + html
                 self._mkdir_p(here.rsplit('/', 1)[0])
                 ts.dump(here)

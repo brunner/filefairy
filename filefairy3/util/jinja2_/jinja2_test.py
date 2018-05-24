@@ -15,7 +15,7 @@ from util.jinja2_.jinja2_ import env  # noqa
 class Jinja2Test(unittest.TestCase):
     def test_env(self):
         environment = env()
-        templates = os.path.join(_root, 'templates')
+        templates = os.path.join(_root, 'resource/templates')
         self.assertEqual(environment.loader.searchpath, [templates])
         self.assertEqual(environment.trim_blocks, True)
         self.assertEqual(environment.lstrip_blocks, True)

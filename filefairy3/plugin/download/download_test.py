@@ -368,16 +368,16 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._games()
 
-        box_scores = os.path.join(_root, 'extract/box_scores')
-        game_logs = os.path.join(_root, 'extract/game_logs')
-        boxes = 'download/news/html/box_scores'
+        box_scores = os.path.join(_root, 'resource/extract/box_scores')
+        game_logs = os.path.join(_root, 'resource/extract/game_logs')
+        boxes = 'resource/download/news/html/box_scores'
         bdpath = os.path.join(box_scores, 'game_box_{}.html')
         bd123 = bdpath.format('123')
         bd456 = bdpath.format('456')
         bfpath = os.path.join(_root, boxes, 'game_box_{}.html')
         bf123 = bfpath.format('123')
         bf456 = bfpath.format('456')
-        leagues = 'download/news/txt/leagues'
+        leagues = 'resource/download/news/txt/leagues'
         ldpath = os.path.join(game_logs, 'log_{}.txt')
         ld123 = ldpath.format('123')
         ld456 = ldpath.format('456')
@@ -413,10 +413,10 @@ class DownloadTest(unittest.TestCase):
             lmo.return_value
         ]
 
-        bdname = 'extract/box_scores/game_box_12345.html'
-        bfname = 'download/news/html/box_scores/game_box_12345.html'
-        ldname = 'extract/game_logs/log_12345.txt'
-        lfname = 'download/news/txt/leagues/log_12345.txt'
+        bdname = 'resource/extract/box_scores/game_box_12345.html'
+        bfname = 'resource/download/news/html/box_scores/game_box_12345.html'
+        ldname = 'resource/extract/game_logs/log_12345.txt'
+        lfname = 'resource/download/news/txt/leagues/log_12345.txt'
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
@@ -448,10 +448,10 @@ class DownloadTest(unittest.TestCase):
         mock_lhandle = lmo()
         mock_open.side_effect = [bmo.return_value, lmo.return_value]
 
-        bdname = 'extract/box_scores/game_box_12345.html'
-        bfname = 'download/news/html/box_scores/game_box_12345.html'
-        ldname = 'extract/game_logs/log_12345.txt'
-        lfname = 'download/news/txt/leagues/log_12345.txt'
+        bdname = 'resource/extract/box_scores/game_box_12345.html'
+        bfname = 'resource/download/news/html/box_scores/game_box_12345.html'
+        ldname = 'resource/extract/game_logs/log_12345.txt'
+        lfname = 'resource/download/news/txt/leagues/log_12345.txt'
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
@@ -481,10 +481,10 @@ class DownloadTest(unittest.TestCase):
         mock_lhandle = lmo()
         mock_open.side_effect = [bmo.return_value, lmo.return_value]
 
-        bdname = 'extract/box_scores/game_box_12345.html'
-        bfname = 'download/news/html/box_scores/game_box_12345.html'
-        ldname = 'extract/game_logs/log_12345.txt'
-        lfname = 'download/news/txt/leagues/log_12345.txt'
+        bdname = 'resource/extract/box_scores/game_box_12345.html'
+        bfname = 'resource/download/news/html/box_scores/game_box_12345.html'
+        ldname = 'resource/extract/game_logs/log_12345.txt'
+        lfname = 'resource/download/news/txt/leagues/log_12345.txt'
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
@@ -520,8 +520,8 @@ class DownloadTest(unittest.TestCase):
         plugin = self.create_plugin(read)
         plugin._leagues()
 
-        leagues = 'download/news/txt/leagues'
-        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
+        leagues = 'resource/download/news/txt/leagues'
+        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         dinjuries = dpath.format('injuries')
         dnews = dpath.format('news')
         dtransactions = dpath.format('transactions')
@@ -557,8 +557,8 @@ class DownloadTest(unittest.TestCase):
         mock_handle_b = mo_b()
         mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
 
-        dname = 'extract/injuries.txt'
-        fname = 'download/news/txt/leagues/league_100_injuries.txt'
+        dname = 'resource/extract/injuries.txt'
+        fname = 'resource/download/news/txt/leagues/league_100_injuries.txt'
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
@@ -590,8 +590,8 @@ class DownloadTest(unittest.TestCase):
         mock_handle_b = mo_b()
         mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
 
-        dname = 'extract/news.txt'
-        fname = 'download/news/txt/leagues/league_100_news.txt'
+        dname = 'resource/extract/news.txt'
+        fname = 'resource/download/news/txt/leagues/league_100_news.txt'
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,
@@ -623,8 +623,9 @@ class DownloadTest(unittest.TestCase):
         mock_handle_b = mo_b()
         mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
 
-        dname = 'extract/transactions.txt'
-        fname = 'download/transactions/txt/leagues/league_100_transactions.txt'
+        dname = 'resource/extract/transactions.txt'
+        fname = 'resource/download/transactions/txt/leagues/' + \
+                'league_100_transactions.txt'
         read = {
             'downloaded': False,
             'now': THEN_ENCODED,

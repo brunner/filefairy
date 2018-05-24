@@ -24,7 +24,8 @@ COLLECT = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
 COLLECT_ENCODED = 'reply.\nfoo.\nbar.\nbaz.'
 DATA = Snacks._data()
 USERS = ['U1234', 'U5678']
-FNAMES = [os.path.join(_root, 'corpus', '{}.txt').format(u) for u in USERS]
+FPATH = os.path.join(_root, 'resource/corpus', '{}.txt')
+FNAMES = [FPATH.format(u) for u in USERS]
 MEMBERS_THEN = {'U1234': {'latest': '100.123'}, 'U5678': {'latest': '100.456'}}
 MEMBERS_NOW = {'U1234': {'latest': '1000.789'}, 'U5678': {'latest': '100.456'}}
 NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
@@ -482,8 +483,8 @@ class SnacksTest(unittest.TestCase):
 
         actual = Snacks._fnames()
         expected = [
-            os.path.join(_root, 'corpus', 'C1234.txt'),
-            os.path.join(_root, 'corpus', 'C5678.txt')
+            os.path.join(_root, 'resource/corpus', 'C1234.txt'),
+            os.path.join(_root, 'resource/corpus', 'C5678.txt')
         ]
         self.assertEqual(actual, expected)
 
@@ -546,7 +547,7 @@ class SnacksTest(unittest.TestCase):
 
         mock_channels.assert_called_once_with()
         mock_open.assert_called_once_with(
-            os.path.join(_root, 'corpus', 'U1234.txt'), 'w')
+            os.path.join(_root, 'resource/corpus', 'U1234.txt'), 'w')
         mock_handle.write.assert_called_once_with(COLLECT_ENCODED)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

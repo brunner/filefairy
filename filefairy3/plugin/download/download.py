@@ -106,13 +106,13 @@ class Download(Plugin, Serializable):
         return Response()
 
     def _games(self):
-        box_scores = os.path.join(_root, 'extract/box_scores')
-        game_logs = os.path.join(_root, 'extract/game_logs')
+        box_scores = os.path.join(_root, 'resource/extract/box_scores')
+        game_logs = os.path.join(_root, 'resource/extract/game_logs')
         recreate(box_scores)
         recreate(game_logs)
 
-        boxes = 'download/news/html/box_scores'
-        leagues = 'download/news/txt/leagues'
+        boxes = 'resource/download/news/html/box_scores'
+        leagues = 'resource/download/news/txt/leagues'
         for box in os.listdir(os.path.join(_root, boxes)):
             bdname = os.path.join(box_scores, box)
             bfname = os.path.join(_root, boxes, box)
@@ -147,8 +147,8 @@ class Download(Plugin, Serializable):
         self.data['now'] = encode_datetime(now)
 
     def _leagues(self):
-        leagues = 'download/news/txt/leagues'
-        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
+        leagues = 'resource/download/news/txt/leagues'
+        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         fpath = os.path.join(_root, leagues, 'league_100_{}.txt')
         for key in ['injuries', 'news', 'transactions']:
             dname = dpath.format(key)

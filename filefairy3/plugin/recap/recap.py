@@ -110,7 +110,7 @@ class Recap(Plugin, Renderable):
         data = self.data
         original = copy.deepcopy(data)
 
-        dpath = os.path.join(_root, 'extract/box_scores')
+        dpath = os.path.join(_root, 'resource/extract/box_scores')
         for box in os.listdir(dpath):
             bdname = os.path.join(dpath, box)
             recs = records(bdname)
@@ -125,7 +125,7 @@ class Recap(Plugin, Renderable):
             self.write()
 
     def _tables(self, key):
-        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
+        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         dname = dpath.format(key)
         with open(dname, 'r') as f:
             content = f.read()

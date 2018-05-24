@@ -14,7 +14,7 @@ from util.file_.file_ import ping  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.file_.file_ import wget_file  # noqa
 
-_download = os.path.join(_root, 'download')
+_download = os.path.join(_root, 'resource/download')
 _host = 'www.orangeandblueleaguebaseball.com'
 _name = 'orange_and_blue_league_baseball.tar.gz'
 _url = 'https://' + _host + '/StatsLab/league_file/' + _name

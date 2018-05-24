@@ -186,7 +186,7 @@ class Snacks(Plugin, Serializable):
 
     @staticmethod
     def _fnames():
-        d = os.path.join(_root, 'corpus')
+        d = os.path.join(_root, 'resource/corpus')
         return [os.path.join(d, c) for c in os.listdir(d)]
 
     @staticmethod
@@ -220,7 +220,7 @@ class Snacks(Plugin, Serializable):
                 collected[user] += _collect[user]
 
         for user in collected:
-            fname = os.path.join(_root, 'corpus', user + '.txt')
+            fname = os.path.join(_root, 'resource/corpus', user + '.txt')
             with open(fname, 'w') as f:
                 f.write('\n'.join(collected[user]))
 

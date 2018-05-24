@@ -105,11 +105,13 @@ class RenderableTest(unittest.TestCase):
         there = 'brunnerj@' + _server + ':/var/www'
         foo = '/html/fairylab/foo/index.html'
         sub = '/html/fairylab/foo/sub/index.html'
-        rdyn = _root + '/html/fairylab/foo/dyn/dyn_{}.html'
+        rdyn = _root + '/resource/html/fairylab/foo/dyn/dyn_{}.html'
         tdyn = there + '/html/fairylab/foo/dyn/dyn_{}.html'
         check_calls = [
-            mock.call(['scp', _root + foo, there + foo], timeout=8),
-            mock.call(['scp', _root + sub, there + sub], timeout=8),
+            mock.call(
+                ['scp', _root + '/resource' + foo, there + foo], timeout=8),
+            mock.call(
+                ['scp', _root + '/resource' + sub, there + sub], timeout=8),
             mock.call(
                 ['scp', rdyn.format(0), tdyn.format(0)], timeout=8),
             mock.call(
@@ -119,19 +121,19 @@ class RenderableTest(unittest.TestCase):
         ]
         mock_check.assert_has_calls(check_calls)
         dump_calls = [
-            mock.call(_root + foo),
-            mock.call(_root + sub),
+            mock.call(_root + '/resource' + foo),
+            mock.call(_root + '/resource' + sub),
             mock.call(rdyn.format(0)),
             mock.call(rdyn.format(1)),
             mock.call(rdyn.format(2))
         ]
         mock_dump.assert_has_calls(dump_calls)
         calls = [
-            mock.call(_root + '/html/fairylab/foo'),
-            mock.call(_root + '/html/fairylab/foo/sub'),
-            mock.call(_root + '/html/fairylab/foo/dyn'),
-            mock.call(_root + '/html/fairylab/foo/dyn'),
-            mock.call(_root + '/html/fairylab/foo/dyn'),
+            mock.call(_root + '/resource/html/fairylab/foo'),
+            mock.call(_root + '/resource/html/fairylab/foo/sub'),
+            mock.call(_root + '/resource/html/fairylab/foo/dyn'),
+            mock.call(_root + '/resource/html/fairylab/foo/dyn'),
+            mock.call(_root + '/resource/html/fairylab/foo/dyn'),
         ]
         mock_makedirs.assert_has_calls(calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
@@ -208,19 +210,19 @@ class RenderableTest(unittest.TestCase):
         dyn = '/html/fairylab/foo/dyn/dyn_{}.html'
         mock_check.assert_not_called()
         dump_calls = [
-            mock.call(_root + foo),
-            mock.call(_root + sub),
-            mock.call(_root + dyn.format(0)),
-            mock.call(_root + dyn.format(1)),
-            mock.call(_root + dyn.format(2))
+            mock.call(_root + '/resource' + foo),
+            mock.call(_root + '/resource' + sub),
+            mock.call(_root + '/resource' + dyn.format(0)),
+            mock.call(_root + '/resource' + dyn.format(1)),
+            mock.call(_root + '/resource' + dyn.format(2))
         ]
         mock_dump.assert_has_calls(dump_calls)
         calls = [
-            mock.call(_root + '/html/fairylab/foo'),
-            mock.call(_root + '/html/fairylab/foo/sub'),
-            mock.call(_root + '/html/fairylab/foo/dyn'),
-            mock.call(_root + '/html/fairylab/foo/dyn'),
-            mock.call(_root + '/html/fairylab/foo/dyn'),
+            mock.call(_root + '/resource/html/fairylab/foo'),
+            mock.call(_root + '/resource/html/fairylab/foo/sub'),
+            mock.call(_root + '/resource/html/fairylab/foo/dyn'),
+            mock.call(_root + '/resource/html/fairylab/foo/dyn'),
+            mock.call(_root + '/resource/html/fairylab/foo/dyn'),
         ]
         mock_makedirs.assert_has_calls(calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')

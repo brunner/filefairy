@@ -286,7 +286,7 @@ class RecapTest(Test):
         expected.update(RECORDS2)
         self.assertEqual(plugin.data['standings'], expected)
 
-        dpath = os.path.join(_root, 'extract/box_scores')
+        dpath = os.path.join(_root, 'resource/extract/box_scores')
         mock_listdir.assert_called_once_with(dpath)
         calls = [
             mock.call(os.path.join(dpath, 'game_box_{}.html'.format(b)))
@@ -307,7 +307,7 @@ class RecapTest(Test):
         expected = [INJ_TABLE]
         self.assertEqual(actual, expected)
 
-        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
+        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         mock_open.assert_called_once_with(dpath.format('injuries'), 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -323,7 +323,7 @@ class RecapTest(Test):
         expected = [NEWS_TABLE]
         self.assertEqual(actual, expected)
 
-        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
+        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         mock_open.assert_called_once_with(dpath.format('news'), 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -339,7 +339,7 @@ class RecapTest(Test):
         expected = [TRANS_TABLE]
         self.assertEqual(actual, expected)
 
-        dpath = os.path.join(_root, 'extract/leagues/{}.txt')
+        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         mock_open.assert_called_once_with(dpath.format('transactions'), 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

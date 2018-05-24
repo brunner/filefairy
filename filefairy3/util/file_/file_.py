@@ -10,7 +10,7 @@ _root = re.sub(r'/util/file_', '', _path)
 sys.path.append(_root)
 from util.subprocess_.subprocess_ import check_output  # noqa
 
-_download = os.path.join(_root, 'download')
+_download = os.path.join(_root, 'resource/download')
 _host = 'www.orangeandblueleaguebaseball.com'
 _name = 'orange_and_blue_league_baseball.tar.gz'
 _url = 'https://' + _host + '/StatsLab/league_file/' + _name
