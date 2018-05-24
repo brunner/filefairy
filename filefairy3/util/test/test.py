@@ -40,8 +40,8 @@ def _gen_golden(case, _cls, _pkg, _pth, _read):
     def test_golden(self, mock_check, mock_render):
         self.init_mocks(_read)
         date = datetime.datetime(1985, 10, 26, 6, 2, 30)
-        golden = os.path.join(_pth, 'goldens/{}_golden.html'.format(case))
-        sample = '{}.samples.{}_sample'.format(_pkg, case)
+        golden = os.path.join(_pth, 'goldens/{}.html'.format(case))
+        sample = '{}.samples.{}'.format(_pkg, case)
         module = importlib.import_module(sample)
         subtitle, tmpl, context = [
             getattr(module, attr) for attr in ['subtitle', 'tmpl', 'context']
@@ -56,9 +56,9 @@ def _gen_golden(case, _cls, _pkg, _pth, _read):
 def main(_tst, _cls, _pkg, _pth, _read, _main):
     if issubclass(_cls, Renderable):
         d = os.path.join(_root, _pth, 'samples')
-        cs = filter(lambda x: x.endswith('_sample.py'), os.listdir(d))
+        cs = filter(lambda x: '_' not in x, os.listdir(d))
         for c in cs:
-            case = re.sub('_sample.py', '', c)
+            case = re.sub('.py', '', c)
             test_golden = _gen_golden(case, _cls, _pkg, _pth, _read)
             setattr(_tst, 'test_golden__{}'.format(case), test_golden)
 

@@ -53,7 +53,7 @@ class TestTest(unittest.TestCase):
 
     @mock.patch('util.test.test.os.listdir')
     def test_main(self, mock_listdir):
-        mock_listdir.return_value = ['foo_sample.py', 'bar_sample.py']
+        mock_listdir.return_value = ['foo.py', 'bar.py']
         main(FakeRenderableTest, FakeRenderable, 'path.to.fake',
              os.path.join(_root, 'path/to/fake'), {}, False)
         self.assertTrue(hasattr(FakeRenderableTest, 'test_golden__foo'))
