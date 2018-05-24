@@ -11,14 +11,14 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from plugin.recap.recap import Recap  # noqa
 from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 _leagues = os.path.join(_root, 'file/news/txt/leagues')
 _injuries = os.path.join(_leagues, 'league_100_injuries.txt')

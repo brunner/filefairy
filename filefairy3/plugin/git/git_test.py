@@ -10,9 +10,9 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/git', '', _path))
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from plugin.git.git import Git  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
 THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)

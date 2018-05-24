@@ -20,6 +20,7 @@ sys.path.append(_root)
 from api.messageable.messageable import Messageable  # noqa
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.notify.notify import Notify  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
@@ -27,7 +28,6 @@ from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.logger.logger import log  # noqa
 from util.slack.slack import rtm_connect  # noqa
-from value.notify.notify import Notify  # noqa
 
 
 class Fairylab(Messageable, Renderable):

@@ -5,13 +5,12 @@ import os
 import re
 import sys
 import unittest
-import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/value/response', '', _path))
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
-from value.task.task import Task  # noqa
+sys.path.append(re.sub(r'/core/response', '', _path))
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
+from core.task.task import Task  # noqa
 
 
 class ResponseTest(unittest.TestCase):

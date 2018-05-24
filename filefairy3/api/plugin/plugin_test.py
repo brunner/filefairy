@@ -13,9 +13,9 @@ from api.plugin.plugin import Plugin  # noqa
 from api.messageable.messageable import Messageable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 
 class FakePlugin(Plugin):

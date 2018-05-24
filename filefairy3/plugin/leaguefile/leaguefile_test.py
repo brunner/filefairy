@@ -11,6 +11,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugin/leaguefile', '', _path)
 sys.path.append(_root)
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from plugin.leaguefile.leaguefile import Leaguefile  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
@@ -19,8 +21,6 @@ from util.json_.json_ import dumps  # noqa
 from util.secrets.secrets import server  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 _data = Leaguefile._data()
 _server = server()

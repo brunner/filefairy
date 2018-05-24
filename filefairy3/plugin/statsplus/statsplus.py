@@ -12,6 +12,9 @@ _root = re.sub(r'/plugin/statsplus', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
+from core.task.task import Task  # noqa
 from util.box.box import clarify  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
@@ -32,9 +35,6 @@ from util.team.team import precoding_to_encoding_sub  # noqa
 from util.team.team import precodings  # noqa
 from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
-from value.task.task import Task  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'

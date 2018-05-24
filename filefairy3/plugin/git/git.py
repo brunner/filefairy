@@ -8,10 +8,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/pluin/git', '', _path))
 from api.plugin.plugin import Plugin  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from util.logger.logger import log  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 
 class Git(Plugin):

@@ -12,15 +12,15 @@ _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.serializable.serializable import Serializable  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
+from core.task.task import Task  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.file_.file_ import ping  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.file_.file_ import wget_file  # noqa
 from util.logger.logger import log  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
-from value.task.task import Task  # noqa
 
 
 class Download(Plugin, Serializable):

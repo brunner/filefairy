@@ -12,6 +12,9 @@ _root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.serializable.serializable import Serializable  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
+from core.task.task import Task  # noqa
 from util.corpus.corpus import collect  # noqa
 from util.nltk_.nltk_ import cfd  # noqa
 from util.nltk_.nltk_ import discuss  # noqa
@@ -21,9 +24,6 @@ from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.slack.slack import users_list  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
-from value.task.task import Task  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
 _n = 4

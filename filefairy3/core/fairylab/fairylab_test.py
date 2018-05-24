@@ -16,14 +16,14 @@ sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
+from core.task.task import Task  # noqa
 from util.component.component import card  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
-from value.task.task import Task  # noqa
 
 
 class Browsable(Plugin, Renderable):

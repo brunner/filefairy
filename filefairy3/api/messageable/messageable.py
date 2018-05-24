@@ -9,8 +9,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 from api.nameable.nameable import Nameable  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 
 
 class Messageable(Nameable):

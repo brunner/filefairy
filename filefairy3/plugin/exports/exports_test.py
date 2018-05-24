@@ -10,6 +10,8 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/exports', '', _path))
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from plugin.exports.exports import Exports  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
@@ -18,8 +20,6 @@ from util.json_.json_ import dumps  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 DATA = Exports._data()
 EXPORTS_LOCK = [('31', 'New'), ('32', 'Old'), ('33', 'New')]

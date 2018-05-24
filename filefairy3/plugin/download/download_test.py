@@ -12,11 +12,11 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
+from core.task.task import Task  # noqa
 from plugin.download.download import Download  # noqa
 from util.json_.json_ import dumps  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
-from value.task.task import Task  # noqa
 
 DATA = Download._data()
 BOX_NON_MLB = '<html>\n<head>\n<title>ABL Box Scores, Adelaide Bite at ' + \

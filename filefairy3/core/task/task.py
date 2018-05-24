@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
-import re
-import sys
-
-_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/value/task', '', _path))
-
 
 class Task(object):
     def __init__(self, target=None, args=None, kwargs=None):

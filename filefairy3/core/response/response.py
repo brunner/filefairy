@@ -6,9 +6,9 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/value/response', '', _path))
-from value.notify.notify import Notify  # noqa
-from value.task.task import Task  # noqa
+sys.path.append(re.sub(r'/core/response', '', _path))
+from core.notify.notify import Notify  # noqa
+from core.task.task import Task  # noqa
 
 
 class Response(object):

@@ -12,12 +12,12 @@ _root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from util.box.box import records  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import chat_post_message  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 
 class Recap(Plugin, Renderable):

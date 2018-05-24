@@ -9,6 +9,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/exports', '', _path))
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
@@ -21,8 +23,6 @@ from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_abbreviation  # noqa
 from util.team.team import teamid_to_hometown  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
 _lock_values = [Notify.STATSPLUS_SIM, Notify.LEAGUEFILE_START]

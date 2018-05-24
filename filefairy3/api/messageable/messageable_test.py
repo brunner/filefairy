@@ -10,9 +10,9 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 from api.messageable.messageable import Messageable  # noqa
-from value.notify.notify import Notify  # noqa
-from value.response.response import Response  # noqa
-from value.task.task import Task  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
+from core.task.task import Task  # noqa
 
 
 class FakeMessageable(Messageable):
