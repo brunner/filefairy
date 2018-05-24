@@ -48,7 +48,7 @@ def _gen_golden(case, _cls, _pkg, _pth, _read):
         ]
         mock_render.return_value = [(golden, subtitle, tmpl, context)]
         plugin = _cls(e=env())
-        plugin._render(date=date)
+        plugin._render(date=date, test=True)
 
     return test_golden
 

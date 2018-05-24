@@ -41,6 +41,7 @@ class Renderable(Serializable):
 
     def _render(self, **kwargs):
         date = kwargs['date'].strftime('%Y-%m-%d %H:%M:%S') + ' PST'
+        test = kwargs.get('test')
 
         _title = self._title()
         for html, subtitle, tmpl, context in self._render_internal(**kwargs):
@@ -49,7 +50,8 @@ class Renderable(Serializable):
                 title = _title + subtitle
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(dict(context, title=title, date=date))
-                here = os.path.join(_root, 'resource', html)
+                hroot = _root if test else os.path.join(_root, 'resource')
+                here = os.path.join(hroot, html)
                 there = 'brunnerj@' + _server + ':/var/www/' + html
                 self._mkdir_p(here.rsplit('/', 1)[0])
                 ts.dump(here)
