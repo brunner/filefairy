@@ -10,6 +10,7 @@ sys.path.append(re.sub(r'/util/box', '', _path))
 from util.team.team import decoding_to_encoding  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import encoding_to_decoding_sub  # noqa
+from util.team.team import encoding_to_teamid  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
 
 _title = '<title>MLB Box Scores, (.+?) at (.+?), {}</title>'
@@ -88,7 +89,7 @@ def records(link):
         e = decoding_to_encoding_sub(r)
         match = re.findall(_record, e)
         if match:
-            team, record = match[0]
-            ret[team] = record
+            encoding, record = match[0]
+            ret[encoding_to_teamid(encoding)] = record
 
     return ret

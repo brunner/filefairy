@@ -52,7 +52,7 @@ def standings_table(records):
     tables = []
     for division, teamids in _divisions:
         body = []
-        filtered = list(filter(lambda t: t[0] in teamids, records))
+        filtered = [(t, records.get(t, '0-0')) for t in teamids]
         for team_tuple in sort(filtered):
             teamid, record = team_tuple
             t = logo_absolute(teamid, teamid_to_hometown(teamid), 'left')

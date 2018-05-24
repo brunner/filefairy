@@ -19,14 +19,38 @@ COLS = [
     'class="position-relative text-truncate"', ' class="text-right w-55p"',
     ' class="text-right w-55p"'
 ]
-RECORDS = [('31', '76-86'), ('32', '77-85'), ('33', '70-92'), ('34', '99-63'),
-           ('35', '82-80'), ('36', '71-91'), ('37', '111-51'), ('38', '76-86'),
-           ('39', '88-74'), ('40', '86-76'), ('41', '84-78'), ('42', '85-77'),
-           ('43', '76-86'), ('44', '70-92'), ('45', '97-65'), ('46', '77-85'),
-           ('47', '88-74'), ('48', '88-74'), ('49', '95-67'), ('50', '75-87'),
-           ('51', '75-87'), ('52', '53-109'), ('53', '104-58'),
-           ('54', '98-64'), ('55', '62-100'), ('56', '89-73'), ('57', '65-97'),
-           ('58', '67-95'), ('59', '73-89'), ('60', '73-89')]
+RECORDS = {
+    '31': '76-86',
+    '32': '77-85',
+    '33': '70-92',
+    '34': '99-63',
+    '35': '82-80',
+    '36': '71-91',
+    '37': '111-51',
+    '38': '76-86',
+    '39': '88-74',
+    '40': '86-76',
+    '41': '84-78',
+    '42': '85-77',
+    '43': '76-86',
+    '44': '70-92',
+    '45': '97-65',
+    '46': '77-85',
+    '47': '88-74',
+    '48': '88-74',
+    '49': '95-67',
+    '50': '75-87',
+    '51': '75-87',
+    '52': '53-109',
+    '53': '104-58',
+    '54': '98-64',
+    '55': '62-100',
+    '56': '89-73',
+    '57': '65-97',
+    '58': '67-95',
+    '59': '73-89',
+    '60': '73-89'
+}
 
 
 class StandingsTest(unittest.TestCase):
@@ -78,7 +102,69 @@ class StandingsTest(unittest.TestCase):
         expected = [('32', '4-0'), ('31', '3-0'), ('33', '0-3'), ('34', '0-4')]
         self.assertEqual(actual, expected)
 
-    def test_standings_table(self):
+    def test_standings_table__with_empty(self):
+        actual = standings_table({})
+        expected = [
+            table(
+                hcols=COLS,
+                bcols=COLS,
+                head=['AL East', 'W', 'L'],
+                body=[[logo_absolute('33', 'Baltimore', 'left'), '0', '0'], [
+                    logo_absolute('34', 'Boston', 'left'), '0', '0'
+                ], [logo_absolute('48', 'New York', 'left'), '0',
+                    '0'], [logo_absolute('57', 'Tampa Bay', 'left'), '0', '0'],
+                      [logo_absolute('59', 'Toronto', 'left'), '0', '0']]),
+            table(
+                hcols=COLS,
+                bcols=COLS,
+                head=['AL Central', 'W', 'L'],
+                body=[[logo_absolute('35', 'Chicago', 'left'), '0', '0'], [
+                    logo_absolute('38', 'Cleveland', 'left'), '0', '0'
+                ], [logo_absolute('40', 'Detroit', 'left'), '0', '0'],
+                      [logo_absolute('43', 'Kansas City', 'left'), '0', '0'],
+                      [logo_absolute('47', 'Minnesota', 'left'), '0', '0']]),
+            table(
+                hcols=COLS,
+                bcols=COLS,
+                head=['AL West', 'W', 'L'],
+                body=[[logo_absolute('42', 'Houston', 'left'), '0', '0'], [
+                    logo_absolute('44', 'Los Angeles', 'left'), '0', '0'
+                ], [logo_absolute('50', 'Oakland', 'left'), '0',
+                    '0'], [logo_absolute('54', 'Seattle', 'left'), '0', '0'],
+                      [logo_absolute('58', 'Texas', 'left'), '0', '0']]),
+            table(
+                hcols=COLS,
+                bcols=COLS,
+                head=['NL East', 'W', 'L'],
+                body=[[logo_absolute('32', 'Atlanta', 'left'), '0',
+                       '0'], [logo_absolute('41', 'Miami', 'left'), '0', '0'],
+                      [logo_absolute('49', 'New York', 'left'), '0', '0'], [
+                          logo_absolute('51', 'Philadelphia', 'left'), '0', '0'
+                      ], [logo_absolute('60', 'Washington', 'left'), '0',
+                          '0']]),
+            table(
+                hcols=COLS,
+                bcols=COLS,
+                head=['NL Central', 'W', 'L'],
+                body=[[logo_absolute('36', 'Chicago', 'left'), '0', '0'], [
+                    logo_absolute('37', 'Cincinnati', 'left'), '0', '0'
+                ], [logo_absolute('46', 'Milwaukee', 'left'), '0', '0'],
+                      [logo_absolute('52', 'Pittsburgh', 'left'), '0', '0'],
+                      [logo_absolute('56', 'St. Louis', 'left'), '0', '0']]),
+            table(
+                hcols=COLS,
+                bcols=COLS,
+                head=['NL West', 'W', 'L'],
+                body=[[logo_absolute('31', 'Arizona', 'left'), '0', '0'], [
+                    logo_absolute('39', 'Colorado', 'left'), '0', '0'
+                ], [logo_absolute('45', 'Los Angeles', 'left'), '0',
+                    '0'], [logo_absolute('53', 'San Diego', 'left'), '0', '0'],
+                      [logo_absolute('55', 'San Francisco', 'left'), '0',
+                       '0']])
+        ]
+        self.assertEqual(actual, expected)
+
+    def test_standings_table__with_valid_input(self):
         actual = standings_table(RECORDS)
         expected = [
             table(

@@ -18,6 +18,7 @@ from util.box.box import records  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import chat_post_message  # noqa
+from util.standings.standings import standings_table  # noqa
 
 
 class Recap(Plugin, Renderable):
@@ -104,6 +105,8 @@ class Recap(Plugin, Renderable):
         }
         for key in ['injuries', 'news', 'transactions']:
             ret[key] = self._tables(key)
+        ret['standings'] = standings_table(self.data['standings'])
+
         return ret
 
     def _standings(self):

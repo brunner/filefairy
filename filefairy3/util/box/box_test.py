@@ -186,7 +186,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = records(link)
-        expected = {'T31': RECORD1, 'T45': RECORD2}
+        expected = {'31': RECORD1, '45': RECORD2}
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)

@@ -93,6 +93,18 @@ AFTER_MAP = {
         'hash': TRANS_HASH
     }
 }
+COLS = [
+    'class="position-relative text-truncate"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"'
+]
+STANDINGS_TABLE = [
+    table(
+        hcols=COLS,
+        bcols=COLS,
+        head=['AL East', 'W', 'L'],
+        body=[['33', '0', '0'], ['34', '0', '0'], ['48', '0', '0'],
+              ['57', '0', '0'], ['59', '0', '0']])
+]
 LINE = '<a href=\"../teams/team_47.html\">Minnesota Twins</a>: 1B <a href=\"../players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
 LINE_STRIPPED = 'Minnesota Twins: 1B <a href=\"../players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
 LINE_REWRITTEN = '<a href=\"../teams/team_47.html\">Minnesota Twins</a>: 1B <a href=\"/StatsLab/reports/news/html/players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
@@ -106,15 +118,15 @@ BREADCRUMBS = [{
     'name': 'Recap'
 }]
 READ = {'standings': {}}
-RECORDS1 = {'T31': '76-86', 'T45': '97-65'}
-RECORDS2 = {'T32': '77-85', 'T44': '70-92'}
-RECORDS3 = {'T31': '75-86', 'T45': '97-64'}
+RECORDS1 = {'31': '76-86', '45': '97-65'}
+RECORDS2 = {'32': '77-85', '44': '70-92'}
+RECORDS3 = {'31': '75-86', '45': '97-64'}
 WRITE = {
     'standings': {
-        'T31': '76-86',
-        'T32': '77-85',
-        'T44': '70-92',
-        'T45': '97-65'
+        '31': '76-86',
+        '32': '77-85',
+        '44': '70-92',
+        '45': '97-65'
     }
 }
 
@@ -244,7 +256,10 @@ class RecapTest(Test):
         self.assertEqual(actual, expected)
 
     @mock.patch.object(Recap, '_tables')
-    def test_home(self, mock_tables):
+    @mock.patch('plugin.recap.recap.standings_table')
+    def test_home(self, mock_standings, mock_tables):
+        mock_standings.return_value = STANDINGS_TABLE
+
         plugin = self.create_plugin(READ)
 
         def fake_tables(*args, **kwargs):
@@ -258,7 +273,8 @@ class RecapTest(Test):
             'breadcrumbs': BREADCRUMBS,
             'injuries': [INJ_TABLE],
             'news': [NEWS_TABLE],
-            'transactions': [TRANS_TABLE]
+            'transactions': [TRANS_TABLE],
+            'standings': STANDINGS_TABLE
         }
         self.assertEqual(value, expected)
 
