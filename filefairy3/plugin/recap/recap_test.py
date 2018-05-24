@@ -275,6 +275,8 @@ class RecapTest(Test):
         mock_standings.return_value = STANDINGS_TABLE
 
         plugin = self.create_plugin(READ)
+        plugin.shadow['statsplus.offseason'] = False
+        plugin.shadow['statsplus.postseason'] = False
 
         def fake_tables(*args, **kwargs):
             key = args[0]

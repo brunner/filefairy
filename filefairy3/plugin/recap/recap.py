@@ -106,7 +106,11 @@ class Recap(Plugin, Renderable):
         }
         for key in ['injuries', 'news', 'transactions']:
             ret[key] = self._tables(key)
-        ret['standings'] = standings_table(self.data['standings'])
+
+        offseason = self.shadow.get('statsplus.offseason', True)
+        postseason = self.shadow.get('statsplus.postseason', True)
+        if not (offseason or postseason):
+            ret['standings'] = standings_table(self.data['standings'])
 
         return ret
 
