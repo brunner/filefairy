@@ -117,7 +117,14 @@ BREADCRUMBS = [{
     'href': '',
     'name': 'Recap'
 }]
-READ = {'standings': {}}
+READ = {
+    'standings': {
+        '31': '75-85',
+        '32': '76-85',
+        '44': '70-91',
+        '45': '96-64'
+    }
+}
 RECORDS1 = {'31': '76-86', '45': '97-65'}
 RECORDS2 = {'32': '77-85', '44': '70-92'}
 RECORDS3 = {'31': '75-86', '45': '97-64'}
@@ -170,7 +177,10 @@ class RecapTest(Test):
     def test_notify__with_download(self, mock_render, mock_standings):
         plugin = self.create_plugin(READ)
         response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response,
+                         Response(
+                             notify=[Notify.BASE],
+                             shadow=plugin._shadow_internal()))
 
         mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
         mock_standings.assert_called_once_with()
@@ -239,7 +249,11 @@ class RecapTest(Test):
     def test_shadow(self):
         plugin = self.create_plugin(READ)
         value = plugin._shadow_internal()
-        self.assertEqual(value, {})
+        self.assertEqual(value, {
+            'statsplus': {
+                'recap.standings': READ['standings']
+            }
+        })
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

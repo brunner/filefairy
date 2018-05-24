@@ -11,6 +11,9 @@
 {% if transactions %}
 {% do items.append(('transactions', 'Transactions')) %}
 {% endif %}
+{% if standings %}
+{% do items.append(('standings', 'Standings')) %}
+{% endif %}
 {% block nav %}
           {{ common.nav(items)|indent(8) }}
 {% endblock %}
@@ -50,6 +53,24 @@
       <div class="row">
         <div class="col-12">
           {% for table in transactions %}
+          {{ common.table(table)|indent(10) }}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if standings %}
+    <div class="container anchor" id="standings">
+      {{ common.heading('book', 'Standings')|indent(6) }}
+      <div class="row">
+        {% set n = standings|length() // 2 %}
+        <div class="col-md-6">
+          {% for table in standings[:n] %}
+          {{ common.table(table)|indent(10) }}
+          {% endfor %}
+        </div>
+        <div class="col-md-6">
+          {% for table in standings[n:] %}
           {{ common.table(table)|indent(10) }}
           {% endfor %}
         </div>

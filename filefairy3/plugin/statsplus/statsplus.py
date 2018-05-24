@@ -22,6 +22,7 @@ from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.standings.standings import sort  # noqa
+from util.standings.standings import standings_table  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import divisions  # noqa
@@ -35,6 +36,7 @@ from util.team.team import precoding_to_encoding_sub  # noqa
 from util.team.team import precodings  # noqa
 from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
+from util.team.team import teamids  # noqa
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -238,7 +240,8 @@ class Statsplus(Plugin, Renderable):
             }],
             'scores': [],
             'injuries': [],
-            'highlights': []
+            'highlights': [],
+            'forecast': {}
         }
 
         if data['postseason']:
@@ -255,7 +258,25 @@ class Statsplus(Plugin, Renderable):
         for date in sorted(data['scores'].keys()):
             ret['scores'].append(self._table('scores', date, _game_box))
 
+        if not (data['finished'] or data['offseason'] or data['postseason']):
+            ret['forecast'] = standings_table(self._forecast())
+
         return ret
+
+    @staticmethod
+    def _combine(r1, r2):
+        (w1, l1) = r1.split('-')
+        (w2, l2) = r2.split('-')
+        return '{0}-{1}'.format(int(w1) + int(w2), int(l1) + int(l2))
+
+    def _forecast(self):
+        forecast = {}
+        standings = self.shadow.get('recap.standings', {})
+        for teamid in teamids():
+            srecord = standings.get(teamid, '0-0')
+            lrecord = self._record(teamid)
+            forecast[teamid] = self._combine(srecord, lrecord)
+        return forecast
 
     def _live_postseason(self):
         lpb = self._live_postseason_body()

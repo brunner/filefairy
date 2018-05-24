@@ -56,6 +56,7 @@ class Recap(Plugin, Renderable):
                 'League news updated.',
                 attachments=self._attachments())
             response.notify = [Notify.BASE]
+            response.shadow = self._shadow_internal(**kwargs)
         return response
 
     def _on_message_internal(self, **kwargs):
@@ -74,7 +75,7 @@ class Recap(Plugin, Renderable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return {}
+        return {'statsplus': {'recap.standings': self.data['standings']}}
 
     @staticmethod
     def _strip_teams(text):

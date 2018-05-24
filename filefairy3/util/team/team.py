@@ -72,7 +72,6 @@ _decodings = _map('decoding', ['encoding'])
 _encodings = _map('encoding', ['decoding', 'precoding', 'teamid'])
 _precodings = _map('precoding', ['encoding'])
 _teamids = _map('teamid', ['abbreviation', 'decoding', 'encoding', 'hometown'])
-
 _img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
        'reports/news/html/images/team_logos/{0}_40.png" width="20" ' + \
        'height="20" border="0" class="{1}">'
@@ -174,6 +173,11 @@ def teamid_to_hometown(teamid):
     return _teamids.get(teamid, {}).get('hometown', '')
 
 
-_decodings_keys = sorted(_decodings.keys(), key=decoding_to_encoding)
-_encodings_keys = sorted(_encodings.keys())
-_precodings_keys = sorted(_precodings.keys(), key=precoding_to_encoding)
+def teamids():
+    return _teamids_keys
+
+
+_decodings_keys = list(sorted(_decodings.keys(), key=decoding_to_encoding))
+_encodings_keys = list(sorted(_encodings.keys()))
+_precodings_keys = list(sorted(_precodings.keys(), key=precoding_to_encoding))
+_teamids_keys = list(sorted(_teamids.keys()))

@@ -32,6 +32,7 @@ from util.team.team import teamid_to_abbreviation  # noqa
 from util.team.team import teamid_to_decoding  # noqa
 from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
+from util.team.team import teamids  # noqa
 
 DECODINGS = [
     'Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles',
@@ -62,6 +63,11 @@ PRECODINGS = [
     'Minnesota', 'Oakland', 'Philadelphia', 'Pittsburgh', 'San Diego',
     'Seattle', 'San Francisco', 'St. Louis', 'Tampa Bay', 'Texas', 'Toronto',
     'Washington', 'Chicago', 'Los Angeles', 'New York'
+]
+TEAMIDS = [
+    '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42',
+    '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54',
+    '55', '56', '57', '58', '59', '60'
 ]
 
 
@@ -408,6 +414,9 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(teamid_to_hometown('58'), 'Texas')
         self.assertEqual(teamid_to_hometown('59'), 'Toronto')
         self.assertEqual(teamid_to_hometown('60'), 'Washington')
+
+    def test_teamids(self):
+        self.assertEqual(teamids(), TEAMIDS)
 
 
 if __name__ == '__main__':

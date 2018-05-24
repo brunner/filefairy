@@ -88,6 +88,10 @@ SCORES_REGULAR_ENCODED = [
     '<{0}{1}2997.html|T57 12, T34 9>', '<{0}{1}2994.html|T58 5, T50 3>',
     '<{0}{1}2995.html|T59 8, T47 2>'
 ]
+SCORES_FORECAST_NOW = [
+    '<{0}{1}2998.html|T31 4, T45 2>', '<{0}{1}3003.html|T32 2, T44 1>'
+]
+SCORES_FORECAST_THEN = ['<{0}{1}2998.html|T45 5, T31 3>']
 TABLE_NOW = '```MAJOR LEAGUE BASEBALL Live Table - 10/10/2022\n'
 TABLE_TEXT = 'Cincinnati Reds 111\nSan Diego Padres 104\nBoston Red Sox ' + \
              '99\nSeattle Mariners 98\nLos Angeles Dodgers 97\nNew York ' + \
@@ -129,6 +133,20 @@ HIGHLIGHTS_TEXT = '<{0}{1}38868.html|Connor Harrell> ties the ' + \
                   '@ Tampa Bay)'
 HIGHLIGHTS_TEXT_ENCODED = '<{0}{1}38868.html|Connor Harrell> ties the ' + \
                   'BOS regular season game record for runs with 4 (T34 @ T57)'
+COLS = [
+    'class="position-relative text-truncate"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"'
+]
+STANDINGS_THEN = {'31': '75-85', '32': '76-85', '44': '70-91', '45': '96-64'}
+STANDINGS_NOW = {'31': '76-86', '32': '77-85', '44': '70-92', '45': '97-65'}
+STANDINGS_TABLE = [
+    table(
+        hcols=COLS,
+        bcols=COLS,
+        head=['AL East', 'W', 'L'],
+        body=[['33', '0', '0'], ['34', '0', '0'], ['48', '0', '0'],
+              ['57', '0', '0'], ['59', '0', '0']])
+]
 BREADCRUMBS = [{
     'href': '/fairylab/',
     'name': 'Home'
@@ -757,8 +775,11 @@ class StatsplusTest(Test):
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_table')
+    @mock.patch('plugin.statsplus.statsplus.standings_table')
     @mock.patch.object(Statsplus, '_live_postseason')
-    def test_home__with_postseason(self, mock_live, mock_table):
+    @mock.patch.object(Statsplus, '_forecast')
+    def test_home__with_postseason(self, mock_forecast, mock_live,
+                                   mock_standings, mock_table):
         mock_live.return_value = [LIVE_POSTSEASON]
         mock_table.side_effect = [
             HIGHLIGHTS_TABLE,
@@ -783,9 +804,11 @@ class StatsplusTest(Test):
             'highlights': [HIGHLIGHTS_TABLE],
             'injuries': [INJURIES_TABLE],
             'scores': [SCORES_TABLE_NOW, SCORES_TABLE_NOW],
+            'forecast': {}
         }
         self.assertEqual(actual, expected)
 
+        mock_forecast.assert_not_called()
         mock_live.assert_called_once_with()
         calls = [
             mock.call('highlights', THEN_ENCODED, _player),
@@ -793,15 +816,21 @@ class StatsplusTest(Test):
             mock.call('scores', THEN_ENCODED, _game_box),
             mock.call('scores', NOW_ENCODED, _game_box),
         ]
+        mock_standings.assert_not_called()
         mock_table.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
     @mock.patch.object(Statsplus, '_table')
+    @mock.patch('plugin.statsplus.statsplus.standings_table')
     @mock.patch.object(Statsplus, '_live_regular')
-    def test_home__with_regular(self, mock_live, mock_table):
+    @mock.patch.object(Statsplus, '_forecast')
+    def test_home__with_regular(self, mock_forecast, mock_live, mock_standings,
+                                mock_table):
+        mock_forecast.return_value = STANDINGS_NOW
         mock_live.return_value = [LIVE_REGULAR]
+        mock_standings.return_value = [STANDINGS_TABLE]
         mock_table.side_effect = [
             HIGHLIGHTS_TABLE,
             INJURIES_TABLE,
@@ -824,9 +853,11 @@ class StatsplusTest(Test):
             'highlights': [HIGHLIGHTS_TABLE],
             'injuries': [INJURIES_TABLE],
             'scores': [SCORES_TABLE_NOW, SCORES_TABLE_NOW],
+            'forecast': [STANDINGS_TABLE]
         }
         self.assertEqual(actual, expected)
 
+        mock_forecast.assert_called_once_with()
         mock_live.assert_called_once_with()
         calls = [
             mock.call('highlights', THEN_ENCODED, _player),
@@ -834,10 +865,103 @@ class StatsplusTest(Test):
             mock.call('scores', THEN_ENCODED, _game_box),
             mock.call('scores', NOW_ENCODED, _game_box),
         ]
+        mock_standings.assert_called_once_with(STANDINGS_NOW)
         mock_table.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+
+    @mock.patch.object(Statsplus, '_table')
+    @mock.patch('plugin.statsplus.statsplus.standings_table')
+    @mock.patch.object(Statsplus, '_live_regular')
+    @mock.patch.object(Statsplus, '_forecast')
+    def test_home__with_finished(self, mock_forecast, mock_live,
+                                 mock_standings, mock_table):
+        mock_live.return_value = [LIVE_REGULAR]
+        mock_table.side_effect = [
+            HIGHLIGHTS_TABLE,
+            INJURIES_TABLE,
+            SCORES_TABLE_NOW,
+            SCORES_TABLE_NOW,
+        ]
+
+        read = _data(
+            finished=True,
+            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
+            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            scores={
+                THEN_ENCODED: SCORES_REGULAR_ENCODED,
+                NOW_ENCODED: SCORES_REGULAR_ENCODED
+            })
+        plugin = self.create_plugin(read)
+        actual = plugin._home(date=NOW)
+        expected = {
+            'breadcrumbs': BREADCRUMBS,
+            'live': [LIVE_REGULAR],
+            'highlights': [HIGHLIGHTS_TABLE],
+            'injuries': [INJURIES_TABLE],
+            'scores': [SCORES_TABLE_NOW, SCORES_TABLE_NOW],
+            'forecast': {}
+        }
+        self.assertEqual(actual, expected)
+
+        mock_forecast.assert_not_called()
+        mock_live.assert_called_once_with()
+        calls = [
+            mock.call('highlights', THEN_ENCODED, _player),
+            mock.call('injuries', THEN_ENCODED, _player),
+            mock.call('scores', THEN_ENCODED, _game_box),
+            mock.call('scores', NOW_ENCODED, _game_box),
+        ]
+        mock_standings.assert_not_called()
+        mock_table.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch('plugin.statsplus.statsplus.teamids')
+    @mock.patch.object(Statsplus, '_record')
+    def test_forecast__with_empty(self, mock_record, mock_teamids):
+        teamids = ['31', '32', '44', '45']
+        mock_record.side_effect = ['1-1', '1-0', '0-1', '1-1']
+        mock_teamids.return_value = teamids
+
+        read = _data(
+            finished=True,
+            scores={
+                THEN_ENCODED: SCORES_FORECAST_THEN,
+                NOW_ENCODED: SCORES_FORECAST_NOW
+            })
+        plugin = self.create_plugin(read)
+        plugin.shadow['recap.standings'] = {}
+        actual = plugin._forecast()
+        expected = {'31': '1-1', '32': '1-0', '44': '0-1', '45': '1-1'}
+        self.assertEqual(actual, expected)
+
+        mock_record.assert_has_calls([mock.call(t) for t in teamids])
+        mock_teamids.assert_called_once_with()
+
+    @mock.patch('plugin.statsplus.statsplus.teamids')
+    @mock.patch.object(Statsplus, '_record')
+    def test_forecast__with_valid_input(self, mock_record, mock_teamids):
+        teamids = ['31', '32', '44', '45']
+        mock_record.side_effect = ['1-1', '1-0', '0-1', '1-1']
+        mock_teamids.return_value = teamids
+
+        read = _data(
+            finished=True,
+            scores={
+                THEN_ENCODED: SCORES_FORECAST_THEN,
+                NOW_ENCODED: SCORES_FORECAST_NOW
+            })
+        plugin = self.create_plugin(read)
+        plugin.shadow['recap.standings'] = STANDINGS_THEN
+        actual = plugin._forecast()
+        expected = STANDINGS_NOW
+        self.assertEqual(actual, expected)
+
+        mock_record.assert_has_calls([mock.call(t) for t in teamids])
+        mock_teamids.assert_called_once_with()
 
     @mock.patch.object(Statsplus, '_live_postseason_body')
     def test_live_postseason(self, mock_body):
