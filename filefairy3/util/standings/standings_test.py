@@ -5,6 +5,7 @@ import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/standings', '', _path))
@@ -17,9 +18,10 @@ from util.team.team import logo_absolute  # noqa
 
 COLS = [
     'class="position-relative text-truncate"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"', ' class="text-right w-55p"',
     ' class="text-right w-55p"'
 ]
-RECORDS = {
+RECORDS_FINAL = {
     '31': '76-86',
     '32': '77-85',
     '33': '70-92',
@@ -51,6 +53,117 @@ RECORDS = {
     '59': '73-89',
     '60': '73-89'
 }
+RECORDS_IRREGULAR = {
+    '31': '24-18',
+    '32': '25-12',
+    '33': '26-15',
+    '34': '23-13',
+    '35': '24-16',
+    '36': '23-18',
+    '37': '22-17',
+    '38': '23-15',
+    '39': '23-15',
+    '40': '22-17',
+    '41': '21-17',
+    '42': '25-13',
+    '43': '13-26',
+    '44': '21-18',
+    '45': '22-16',
+    '46': '20-20',
+    '47': '10-32',
+    '48': '17-20',
+    '49': '18-19',
+    '50': '19-19',
+    '51': '17-22',
+    '52': '16-19',
+    '53': '20-23',
+    '54': '17-20',
+    '55': '16-26',
+    '56': '13-25',
+    '57': '16-21',
+    '58': '14-24',
+    '59': '13-26',
+    '60': '14-26'
+}
+
+RECORDS_MIDSEASON = {
+    '31': '50-62',
+    '32': '56-55',
+    '33': '57-54',
+    '34': '55-55',
+    '35': '57-54',
+    '36': '57-53',
+    '37': '77-34',
+    '38': '59-53',
+    '39': '69-41',
+    '40': '53-58',
+    '41': '36-75',
+    '42': '54-57',
+    '43': '54-59',
+    '44': '53-58',
+    '45': '63-46',
+    '46': '52-59',
+    '47': '66-45',
+    '48': '50-60',
+    '49': '64-47',
+    '50': '46-54',
+    '51': '57-54',
+    '52': '34-78',
+    '53': '67-46',
+    '54': '65-45',
+    '55': '48-63',
+    '56': '59-52',
+    '57': '57-54',
+    '58': '37-74',
+    '59': '64-47',
+    '60': '49-63'
+}
+RECORDS_WEAK = {
+    '31': '77-60',
+    '32': '58-79',
+    '33': '53-82',
+    '34': '70-64',
+    '35': '65-70',
+    '36': '82-53',
+    '37': '60-76',
+    '38': '84-52',
+    '39': '61-75',
+    '40': '75-60',
+    '41': '80-57',
+    '42': '70-65',
+    '43': '48-89',
+    '44': '71-66',
+    '45': '89-47',
+    '46': '79-57',
+    '47': '75-61',
+    '48': '65-70',
+    '49': '59-78',
+    '50': '65-72',
+    '51': '64-72',
+    '52': '74-62',
+    '53': '63-75',
+    '54': '67-70',
+    '55': '55-82',
+    '56': '60-77',
+    '57': '65-71',
+    '58': '61-75',
+    '59': '80-55',
+    '60': '67-70',
+}
+
+
+def _fake_logo(*args, **kwargs):
+    teamid, text, side = args
+    return teamid
+
+
+def _row(teamid, w, l, gb, mn):
+    return [_fake_logo(teamid, '', ''), w, l, gb, mn]
+
+
+def _table(title, body):
+    return table(
+        hcols=COLS, bcols=COLS, head=[title, 'W', 'L', 'GB', 'M#'], body=body)
 
 
 class StandingsTest(unittest.TestCase):
@@ -102,128 +215,338 @@ class StandingsTest(unittest.TestCase):
         expected = [('32', '4-0'), ('31', '3-0'), ('33', '0-3'), ('34', '0-4')]
         self.assertEqual(actual, expected)
 
-    def test_standings_table__with_empty(self):
-        actual = standings_table({})
+    @mock.patch('util.standings.standings.logo_absolute')
+    def test_standings_table__with_empty(self, mock_logo):
+        mock_logo.side_effect = _fake_logo
+
+        actual = standings_table({}, 4)
         expected = [
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['AL East', 'W', 'L'],
-                body=[[logo_absolute('33', 'Baltimore', 'left'), '0', '0'], [
-                    logo_absolute('34', 'Boston', 'left'), '0', '0'
-                ], [logo_absolute('48', 'New York', 'left'), '0',
-                    '0'], [logo_absolute('57', 'Tampa Bay', 'left'), '0', '0'],
-                      [logo_absolute('59', 'Toronto', 'left'), '0', '0']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['AL Central', 'W', 'L'],
-                body=[[logo_absolute('35', 'Chicago', 'left'), '0', '0'], [
-                    logo_absolute('38', 'Cleveland', 'left'), '0', '0'
-                ], [logo_absolute('40', 'Detroit', 'left'), '0', '0'],
-                      [logo_absolute('43', 'Kansas City', 'left'), '0', '0'],
-                      [logo_absolute('47', 'Minnesota', 'left'), '0', '0']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['AL West', 'W', 'L'],
-                body=[[logo_absolute('42', 'Houston', 'left'), '0', '0'], [
-                    logo_absolute('44', 'Los Angeles', 'left'), '0', '0'
-                ], [logo_absolute('50', 'Oakland', 'left'), '0',
-                    '0'], [logo_absolute('54', 'Seattle', 'left'), '0', '0'],
-                      [logo_absolute('58', 'Texas', 'left'), '0', '0']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['NL East', 'W', 'L'],
-                body=[[logo_absolute('32', 'Atlanta', 'left'), '0',
-                       '0'], [logo_absolute('41', 'Miami', 'left'), '0', '0'],
-                      [logo_absolute('49', 'New York', 'left'), '0', '0'], [
-                          logo_absolute('51', 'Philadelphia', 'left'), '0', '0'
-                      ], [logo_absolute('60', 'Washington', 'left'), '0',
-                          '0']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['NL Central', 'W', 'L'],
-                body=[[logo_absolute('36', 'Chicago', 'left'), '0', '0'], [
-                    logo_absolute('37', 'Cincinnati', 'left'), '0', '0'
-                ], [logo_absolute('46', 'Milwaukee', 'left'), '0', '0'],
-                      [logo_absolute('52', 'Pittsburgh', 'left'), '0', '0'],
-                      [logo_absolute('56', 'St. Louis', 'left'), '0', '0']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['NL West', 'W', 'L'],
-                body=[[logo_absolute('31', 'Arizona', 'left'), '0', '0'], [
-                    logo_absolute('39', 'Colorado', 'left'), '0', '0'
-                ], [logo_absolute('45', 'Los Angeles', 'left'), '0',
-                    '0'], [logo_absolute('53', 'San Diego', 'left'), '0', '0'],
-                      [logo_absolute('55', 'San Francisco', 'left'), '0',
-                       '0']])
+            _table('AL East', [
+                _row('33', '0', '0', '-', '163'),
+                _row('34', '0', '0', '-', '163'),
+                _row('48', '0', '0', '-', '163'),
+                _row('57', '0', '0', '-', '163'),
+                _row('59', '0', '0', '-', '163')
+            ]),
+            _table('AL Central', [
+                _row('35', '0', '0', '-', '163'),
+                _row('38', '0', '0', '-', '163'),
+                _row('40', '0', '0', '-', '163'),
+                _row('43', '0', '0', '-', '163'),
+                _row('47', '0', '0', '-', '163')
+            ]),
+            _table('AL West', [
+                _row('42', '0', '0', '-', '163'),
+                _row('44', '0', '0', '-', '163'),
+                _row('50', '0', '0', '-', '163'),
+                _row('54', '0', '0', '-', '163'),
+                _row('58', '0', '0', '-', '163')
+            ]),
+            _table('AL Wild Card', [
+                _row('33', '0', '0', '-', '163'),
+                _row('34', '0', '0', '-', '163'),
+                _row('35', '0', '0', '-', '163'),
+                _row('38', '0', '0', '-', '163')
+            ]),
+            _table('NL East', [
+                _row('32', '0', '0', '-', '163'),
+                _row('41', '0', '0', '-', '163'),
+                _row('49', '0', '0', '-', '163'),
+                _row('51', '0', '0', '-', '163'),
+                _row('60', '0', '0', '-', '163')
+            ]),
+            _table('NL Central', [
+                _row('36', '0', '0', '-', '163'),
+                _row('37', '0', '0', '-', '163'),
+                _row('46', '0', '0', '-', '163'),
+                _row('52', '0', '0', '-', '163'),
+                _row('56', '0', '0', '-', '163')
+            ]),
+            _table('NL West', [
+                _row('31', '0', '0', '-', '163'),
+                _row('39', '0', '0', '-', '163'),
+                _row('45', '0', '0', '-', '163'),
+                _row('53', '0', '0', '-', '163'),
+                _row('55', '0', '0', '-', '163')
+            ]),
+            _table('NL Wild Card', [
+                _row('31', '0', '0', '-', '163'),
+                _row('32', '0', '0', '-', '163'),
+                _row('36', '0', '0', '-', '163'),
+                _row('37', '0', '0', '-', '163')
+            ])
         ]
         self.assertEqual(actual, expected)
 
-    def test_standings_table__with_valid_input(self):
-        actual = standings_table(RECORDS)
+    @mock.patch('util.standings.standings.logo_absolute')
+    def test_standings_table__with_final(self, mock_logo):
+        mock_logo.side_effect = _fake_logo
+
+        actual = standings_table(RECORDS_FINAL, 4)
         expected = [
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['AL East', 'W', 'L'],
-                body=[[logo_absolute('34', 'Boston', 'left'), '99', '63'], [
-                    logo_absolute('48', 'New York', 'left'), '88', '74'
-                ], [logo_absolute('59', 'Toronto', 'left'), '73', '89'],
-                      [logo_absolute('33', 'Baltimore', 'left'), '70', '92'],
-                      [logo_absolute('57', 'Tampa Bay', 'left'), '65', '97']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['AL Central', 'W', 'L'],
-                body=[[logo_absolute('47', 'Minnesota', 'left'), '88', '74'], [
-                    logo_absolute('40', 'Detroit', 'left'), '86', '76'
-                ], [logo_absolute('35', 'Chicago', 'left'), '82', '80'], [
-                    logo_absolute('38', 'Cleveland', 'left'), '76', '86'
-                ], [logo_absolute('43', 'Kansas City', 'left'), '76', '86']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['AL West', 'W', 'L'],
-                body=[[logo_absolute('54', 'Seattle', 'left'), '98', '64'], [
-                    logo_absolute('42', 'Houston', 'left'), '85', '77'
-                ], [logo_absolute('50', 'Oakland', 'left'), '75', '87'],
-                      [logo_absolute('44', 'Los Angeles', 'left'), '70', '92'],
-                      [logo_absolute('58', 'Texas', 'left'), '67', '95']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['NL East', 'W', 'L'],
-                body=[[logo_absolute('49', 'New York', 'left'), '95', '67'], [
-                    logo_absolute('41', 'Miami', 'left'), '84', '78'
-                ], [logo_absolute('32', 'Atlanta', 'left'), '77', '85'], [
-                    logo_absolute('51', 'Philadelphia', 'left'), '75', '87'
-                ], [logo_absolute('60', 'Washington', 'left'), '73', '89']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['NL Central', 'W', 'L'],
-                body=[[logo_absolute('37', 'Cincinnati', 'left'), '111', '51'],
-                      [logo_absolute('56', 'St. Louis', 'left'), '89', '73'], [
-                          logo_absolute('46', 'Milwaukee', 'left'), '77', '85'
-                      ], [logo_absolute('36', 'Chicago', 'left'), '71', '91'],
-                      [logo_absolute('52', 'Pittsburgh', 'left'), '53',
-                       '109']]),
-            table(
-                hcols=COLS,
-                bcols=COLS,
-                head=['NL West', 'W', 'L'],
-                body=[[logo_absolute('53', 'San Diego', 'left'), '104', '58'],
-                      [logo_absolute('45', 'Los Angeles', 'left'), '97', '65'],
-                      [logo_absolute('39', 'Colorado', 'left'), '88', '74'],
-                      [logo_absolute('31', 'Arizona', 'left'), '76', '86'], [
-                          logo_absolute('55', 'San Francisco', 'left'), '62',
-                          '100'
-                      ]])
+            _table('AL East', [
+                _row('34', '99', '63', '-', 'X'),
+                _row('48', '88', '74', '11.0', ''),
+                _row('59', '73', '89', '26.0', ''),
+                _row('33', '70', '92', '29.0', ''),
+                _row('57', '65', '97', '34.0', '')
+            ]),
+            _table('AL Central', [
+                _row('47', '88', '74', '-', 'X'),
+                _row('40', '86', '76', '2.0', ''),
+                _row('35', '82', '80', '6.0', ''),
+                _row('38', '76', '86', '12.0', ''),
+                _row('43', '76', '86', '12.0', '')
+            ]),
+            _table('AL West', [
+                _row('54', '98', '64', '-', 'X'),
+                _row('42', '85', '77', '13.0', ''),
+                _row('50', '75', '87', '23.0', ''),
+                _row('44', '70', '92', '28.0', ''),
+                _row('58', '67', '95', '31.0', '')
+            ]),
+            _table('AL Wild Card', [
+                _row('48', '88', '74', '+2.0', 'X'),
+                _row('40', '86', '76', '-', 'X'),
+                _row('42', '85', '77', '1.0', ''),
+                _row('35', '82', '80', '4.0', '')
+            ]),
+            _table('NL East', [
+                _row('49', '95', '67', '-', 'X'),
+                _row('41', '84', '78', '11.0', ''),
+                _row('32', '77', '85', '18.0', ''),
+                _row('51', '75', '87', '20.0', ''),
+                _row('60', '73', '89', '22.0', '')
+            ]),
+            _table('NL Central', [
+                _row('37', '111', '51', '-', 'X'),
+                _row('56', '89', '73', '22.0', ''),
+                _row('46', '77', '85', '34.0', ''),
+                _row('36', '71', '91', '40.0', ''),
+                _row('52', '53', '109', '58.0', '')
+            ]),
+            _table('NL West', [
+                _row('53', '104', '58', '-', 'X'),
+                _row('45', '97', '65', '7.0', ''),
+                _row('39', '88', '74', '16.0', ''),
+                _row('31', '76', '86', '28.0', ''),
+                _row('55', '62', '100', '42.0', '')
+            ]),
+            _table('NL Wild Card', [
+                _row('45', '97', '65', '+8.0', 'X'),
+                _row('56', '89', '73', '-', 'X'),
+                _row('39', '88', '74', '1.0', ''),
+                _row('41', '84', '78', '5.0', '')
+            ])
+        ]
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.standings.standings.logo_absolute')
+    def test_standings_table__with_irregular(self, mock_logo):
+        mock_logo.side_effect = _fake_logo
+
+        actual = standings_table(RECORDS_IRREGULAR, 4)
+        expected = [
+            _table('AL East', [
+                _row('33', '26', '15', '-', '124'),
+                _row('34', '23', '13', '0.5', ''),
+                _row('48', '17', '20', '7.0', ''),
+                _row('57', '16', '21', '8.0', ''),
+                _row('59', '13', '26', '12.0', '')
+            ]),
+            _table('AL Central', [
+                _row('38', '23', '15', '-', '124'),
+                _row('35', '24', '16', '-', '124'),
+                _row('40', '22', '17', '1.5', ''),
+                _row('43', '13', '26', '10.5', ''),
+                _row('47', '10', '32', '15.0', '')
+            ]),
+            _table('AL West', [
+                _row('42', '25', '13', '-', '120'),
+                _row('44', '21', '18', '4.5', ''),
+                _row('50', '19', '19', '6.0', ''),
+                _row('54', '17', '20', '7.5', ''),
+                _row('58', '14', '24', '11.0', '')
+            ]),
+            _table('AL Wild Card', [
+                _row('34', '23', '13', '+1.0', '123'),
+                _row('38', '23', '15', '-', '123'),
+                _row('35', '24', '16', '-', '122'),
+                _row('40', '22', '17', '1.5', '')
+            ]),
+            _table('NL East', [
+                _row('32', '25', '12', '-', '121'),
+                _row('41', '21', '17', '4.5', ''),
+                _row('49', '18', '19', '7.0', ''),
+                _row('51', '17', '22', '9.0', ''),
+                _row('60', '14', '26', '12.5', '')
+            ]),
+            _table('NL Central', [
+                _row('37', '22', '17', '-', '123'),
+                _row('36', '23', '18', '-', '123'),
+                _row('46', '20', '20', '2.5', ''),
+                _row('52', '16', '19', '4.0', ''),
+                _row('56', '13', '25', '8.5', '')
+            ]),
+            _table('NL West', [
+                _row('39', '23', '15', '-', '124'),
+                _row('45', '22', '16', '1.0', ''),
+                _row('31', '24', '18', '1.0', ''),
+                _row('53', '20', '23', '5.5', ''),
+                _row('55', '16', '26', '9.0', '')
+            ]),
+            _table('NL Wild Card', [
+                _row('45', '22', '16', '-', '124'),
+                _row('31', '24', '18', '-', '122'),
+                _row('37', '22', '17', '0.5', ''),
+                _row('36', '23', '18', '0.5', '')
+            ])
+        ]
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.standings.standings.logo_absolute')
+    def test_standings_table__with_midseason(self, mock_logo):
+        mock_logo.side_effect = _fake_logo
+
+        actual = standings_table(RECORDS_MIDSEASON, 0)
+        expected = [
+            _table('AL East', [
+                _row('59', '64', '47', '-', '45'),
+                _row('33', '57', '54', '7.0', ''),
+                _row('57', '57', '54', '7.0', ''),
+                _row('34', '55', '55', '8.5', ''),
+                _row('48', '50', '60', '13.5', '')
+            ]),
+            _table('AL Central', [
+                _row('47', '66', '45', '-', '44'),
+                _row('38', '59', '53', '7.5', ''),
+                _row('35', '57', '54', '9.0', ''),
+                _row('43', '54', '59', '13.0', ''),
+                _row('40', '53', '58', '13.0', '')
+            ]),
+            _table('AL West', [
+                _row('54', '65', '45', '-', '44'),
+                _row('42', '54', '57', '11.5', ''),
+                _row('44', '53', '58', '12.5', ''),
+                _row('50', '46', '54', '14.0', ''),
+                _row('58', '37', '74', '28.5', '')
+            ]),
+            _table('AL Wild Card', [
+                _row('38', '59', '53', '+1.5', '50'),
+                _row('33', '57', '54', '-', '52'),
+                _row('35', '57', '54', '-', '52'),
+                _row('57', '57', '54', '-', '52'),
+                _row('34', '55', '55', '1.5', ''),
+                _row('42', '54', '57', '3.0', ''),
+                _row('43', '54', '59', '4.0', ''),
+                _row('40', '53', '58', '4.0', ''),
+                _row('44', '53', '58', '4.0', ''),
+                _row('50', '46', '54', '5.5', ''),
+                _row('48', '50', '60', '6.5', ''),
+                _row('58', '37', '74', '20.0', '')
+            ]),
+            _table('NL East', [
+                _row('49', '64', '47', '-', '45'),
+                _row('51', '57', '54', '7.0', ''),
+                _row('32', '56', '55', '8.0', ''),
+                _row('60', '49', '63', '15.5', ''),
+                _row('41', '36', '75', '28.0', '')
+            ]),
+            _table('NL Central', [
+                _row('37', '77', '34', '-', '34'),
+                _row('56', '59', '52', '18.0', ''),
+                _row('36', '57', '53', '19.5', ''),
+                _row('46', '52', '59', '25.0', ''),
+                _row('52', '34', '78', '43.5', '')
+            ]),
+            _table('NL West', [
+                _row('39', '69', '41', '-', '48'),
+                _row('53', '67', '46', '3.5', ''),
+                _row('45', '63', '46', '5.5', ''),
+                _row('31', '50', '62', '20.0', ''),
+                _row('55', '48', '63', '21.5', '')
+            ]),
+            _table('NL Wild Card', [
+                _row('53', '67', '46', '+2.0', '44'),
+                _row('45', '63', '46', '-', '48'),
+                _row('56', '59', '52', '5.0', ''),
+                _row('36', '57', '53', '6.5', ''),
+                _row('51', '57', '54', '7.0', ''),
+                _row('32', '56', '55', '8.0', ''),
+                _row('46', '52', '59', '12.0', ''),
+                _row('31', '50', '62', '14.5', ''),
+                _row('60', '49', '63', '15.5', ''),
+                _row('55', '48', '63', '16.0', ''),
+                _row('41', '36', '75', '28.0', ''),
+                _row('52', '34', '78', '30.5', '')
+            ])
+        ]
+        self.assertEqual(actual, expected)
+
+    @mock.patch('util.standings.standings.logo_absolute')
+    def test_standings_table__with_weak(self, mock_logo):
+        mock_logo.side_effect = _fake_logo
+
+        actual = standings_table(RECORDS_WEAK, 6)
+        expected = [
+            _table('AL East', [
+                _row('59', '80', '55', '-', '19'),
+                _row('34', '70', '64', '9.5', ''),
+                _row('48', '65', '70', '15.0', ''),
+                _row('57', '65', '71', '15.5', ''),
+                _row('33', '53', '82', '27.0', '')
+            ]),
+            _table('AL Central', [
+                _row('38', '84', '52', '-', '19'),
+                _row('40', '75', '60', '8.5', ''),
+                _row('47', '75', '61', '9.0', ''),
+                _row('35', '65', '70', '18.5', ''),
+                _row('43', '48', '89', '36.5', '')
+            ]),
+            _table('AL West', [
+                _row('42', '70', '65', '-', '27'),
+                _row('44', '71', '66', '-', '27'),
+                _row('54', '67', '70', '4.0', ''),
+                _row('50', '65', '72', '6.0', ''),
+                _row('58', '61', '75', '9.5', '')
+            ]),
+            _table('AL Wild Card', [
+                _row('40', '75', '60', '+0.5', '24'),
+                _row('47', '75', '61', '-', '24'),
+                _row('34', '70', '64', '4.0', ''),
+                _row('42', '70', '65', '4.5', ''),
+                _row('44', '71', '66', '4.5', ''),
+                _row('54', '67', '70', '8.5', '')
+            ]),
+            _table('NL East', [
+                _row('41', '80', '57', '-', '13'),
+                _row('60', '67', '70', '13.0', ''),
+                _row('51', '64', '72', '15.5', ''),
+                _row('49', '59', '78', '21.0', ''),
+                _row('32', '58', '79', '22.0', '')
+            ]),
+            _table('NL Central', [
+                _row('36', '82', '53', '-', '24'),
+                _row('46', '79', '57', '3.5', ''),
+                _row('52', '74', '62', '8.5', ''),
+                _row('37', '60', '76', '22.5', ''),
+                _row('56', '60', '77', '23.0', '')
+            ]),
+            _table('NL West', [
+                _row('45', '89', '47', '-', '14'),
+                _row('31', '77', '60', '12.5', ''),
+                _row('53', '63', '75', '27.0', ''),
+                _row('39', '61', '75', '28.0', ''),
+                _row('55', '55', '82', '34.5', '')
+            ]),
+            _table('NL Wild Card', [
+                _row('46', '79', '57', '+2.5', '22'),
+                _row('31', '77', '60', '-', '24'),
+                _row('52', '74', '62', '2.5', ''),
+                _row('60', '67', '70', '10.0', ''),
+                _row('51', '64', '72', '12.5', ''),
+                _row('53', '63', '75', '14.5', '')
+            ])
         ]
         self.assertEqual(actual, expected)
 

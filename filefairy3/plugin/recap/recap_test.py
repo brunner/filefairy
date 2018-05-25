@@ -95,15 +95,17 @@ AFTER_MAP = {
 }
 COLS = [
     'class="position-relative text-truncate"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"', ' class="text-right w-55p"',
     ' class="text-right w-55p"'
 ]
 STANDINGS_TABLE = [
     table(
         hcols=COLS,
         bcols=COLS,
-        head=['AL East', 'W', 'L'],
-        body=[['33', '0', '0'], ['34', '0', '0'], ['48', '0', '0'],
-              ['57', '0', '0'], ['59', '0', '0']])
+        head=['AL East', 'W', 'L', 'GB', 'M#'],
+        body=[['33', '0', '0', '-', '163'], ['34', '0', '0', '-', '163'],
+              ['48', '0', '0', '-', '163'], ['57', '0', '0', '-', '163'],
+              ['59', '0', '0', '-', '163']])
 ]
 LINE = '<a href=\"../teams/team_47.html\">Minnesota Twins</a>: 1B <a href=\"../players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
 LINE_STRIPPED = 'Minnesota Twins: 1B <a href=\"../players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
@@ -117,25 +119,11 @@ BREADCRUMBS = [{
     'href': '',
     'name': 'Recap'
 }]
-READ = {
-    'standings': {
-        '31': '75-85',
-        '32': '76-85',
-        '44': '70-91',
-        '45': '96-64'
-    }
-}
+STANDINGS_NOW = {'31': '76-86', '32': '77-85', '44': '70-92', '45': '97-65'}
+STANDINGS_THEN = {'31': '75-85', '32': '76-85', '44': '70-91', '45': '96-64'}
 RECORDS1 = {'31': '76-86', '45': '97-65'}
 RECORDS2 = {'32': '77-85', '44': '70-92'}
 RECORDS3 = {'31': '75-86', '45': '97-64'}
-WRITE = {
-    'standings': {
-        '31': '76-86',
-        '32': '77-85',
-        '44': '70-92',
-        '45': '97-65'
-    }
-}
 
 
 class RecapTest(Test):
@@ -175,7 +163,7 @@ class RecapTest(Test):
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')
     def test_notify__with_download(self, mock_render, mock_standings):
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(response,
                          Response(
@@ -194,7 +182,7 @@ class RecapTest(Test):
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')
     def test_notify__with_other(self, mock_render, mock_standings):
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
@@ -205,7 +193,7 @@ class RecapTest(Test):
         self.mock_chat.assert_not_called()
 
     def test_on_message(self):
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         response = plugin._on_message_internal()
         self.assertEqual(response, Response())
 
@@ -214,7 +202,7 @@ class RecapTest(Test):
         self.mock_chat.assert_not_called()
 
     def test_run(self):
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         response = plugin._run_internal()
         self.assertEqual(response, Response())
 
@@ -226,7 +214,7 @@ class RecapTest(Test):
     def test_render(self, mock_home):
         mock_home.return_value = HOME
 
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         value = plugin._render_internal(date=NOW)
         self.assertEqual(value, [(INDEX, '', 'recap.html', HOME)])
 
@@ -237,7 +225,7 @@ class RecapTest(Test):
 
     @mock.patch.object(Recap, '_render')
     def test_setup(self, mock_render):
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         response = plugin._setup_internal(date=NOW)
         self.assertEqual(response, Response())
 
@@ -247,13 +235,16 @@ class RecapTest(Test):
         self.mock_chat.assert_not_called()
 
     def test_shadow(self):
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         value = plugin._shadow_internal()
-        self.assertEqual(value, {
-            'statsplus': {
-                'recap.standings': READ['standings']
-            }
-        })
+        self.assertEqual(
+            value, {
+                'statsplus': {
+                    'recap.standings': {
+                        'standings': STANDINGS_THEN
+                    }['standings']
+                }
+            })
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -269,12 +260,14 @@ class RecapTest(Test):
         expected = LINE_REWRITTEN
         self.assertEqual(actual, expected)
 
+    maxDiff = None
+
     @mock.patch.object(Recap, '_tables')
     @mock.patch('plugin.recap.recap.standings_table')
     def test_home(self, mock_standings, mock_tables):
         mock_standings.return_value = STANDINGS_TABLE
 
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         plugin.shadow['statsplus.offseason'] = False
         plugin.shadow['statsplus.postseason'] = False
 
@@ -294,6 +287,7 @@ class RecapTest(Test):
         }
         self.assertEqual(value, expected)
 
+        mock_standings.assert_called_once_with(STANDINGS_THEN, 0)
         mock_tables.assert_has_calls([
             mock.call('injuries'),
             mock.call('news'),
@@ -312,12 +306,13 @@ class RecapTest(Test):
         ]
         mock_records.side_effect = [RECORDS1, RECORDS2, RECORDS3]
 
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         plugin._standings()
         expected = RECORDS1.copy()
         expected.update(RECORDS2)
         self.assertEqual(plugin.data['standings'], expected)
 
+        write = {'standings': STANDINGS_NOW}
         dpath = os.path.join(_root, 'resource/extract/box_scores')
         mock_listdir.assert_called_once_with(dpath)
         calls = [
@@ -326,7 +321,7 @@ class RecapTest(Test):
         ]
         mock_records.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(WRITE) + '\n')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
 
     @mock.patch('plugin.recap.recap.open', create=True)
@@ -334,7 +329,7 @@ class RecapTest(Test):
         mo = mock.mock_open(read_data=INJ_AFTER)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         actual = plugin._tables('injuries')
         expected = [INJ_TABLE]
         self.assertEqual(actual, expected)
@@ -350,7 +345,7 @@ class RecapTest(Test):
         mo = mock.mock_open(read_data=NEWS_AFTER)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         actual = plugin._tables('news')
         expected = [NEWS_TABLE]
         self.assertEqual(actual, expected)
@@ -366,7 +361,7 @@ class RecapTest(Test):
         mo = mock.mock_open(read_data=TRANS_AFTER)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin(READ)
+        plugin = self.create_plugin({'standings': STANDINGS_THEN})
         actual = plugin._tables('transactions')
         expected = [TRANS_TABLE]
         self.assertEqual(actual, expected)

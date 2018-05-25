@@ -865,7 +865,7 @@ class StatsplusTest(Test):
             mock.call('scores', THEN_ENCODED, _game_box),
             mock.call('scores', NOW_ENCODED, _game_box),
         ]
-        mock_standings.assert_called_once_with(STANDINGS_NOW)
+        mock_standings.assert_called_once_with(STANDINGS_NOW, 4)
         mock_table.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

@@ -110,7 +110,7 @@ class Recap(Plugin, Renderable):
         offseason = self.shadow.get('statsplus.offseason', True)
         postseason = self.shadow.get('statsplus.postseason', True)
         if not (offseason or postseason):
-            ret['standings'] = standings_table(self.data['standings'])
+            ret['standings'] = standings_table(self.data['standings'], 0)
 
         return ret
 
