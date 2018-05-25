@@ -71,4 +71,5 @@ class Plugin(Messageable, Runnable):
 
     def _shadow(self, **kwargs):
         self.shadow.update(copy.deepcopy(kwargs['shadow']))
+        self._setup(**kwargs)
         return Response()

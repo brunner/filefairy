@@ -149,13 +149,17 @@ class PluginTest(unittest.TestCase):
                 }
             }))
 
-    def test_shadow(self):
+    @mock.patch.object(FakePlugin, '_setup')
+    def test_shadow(self, mock_setup):
+        shadow = {'fake.bar': 'baz'}
         plugin = FakePlugin()
         self.assertEqual(plugin.shadow, {})
 
-        response = plugin._shadow(shadow={'fake.bar': 'baz'})
+        response = plugin._shadow(shadow=shadow)
         self.assertEqual(response, Response())
-        self.assertEqual(plugin.shadow, {'fake.bar': 'baz'})
+
+        mock_setup.assert_called_once_with(shadow=shadow)
+        self.assertEqual(plugin.shadow, shadow)
 
 
 if __name__ == '__main__':
