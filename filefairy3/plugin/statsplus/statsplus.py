@@ -199,6 +199,7 @@ class Statsplus(Plugin, Renderable):
         self.data['injuries'] = {}
         self.data['scores'] = {}
         self.data['table'] = {}
+        self.data['unresolved'] = []
 
     def _handle_key(self, key, encoded_date, text, pattern, append):
         if not append or encoded_date not in self.data[key]:
