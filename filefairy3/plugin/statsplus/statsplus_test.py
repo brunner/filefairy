@@ -124,10 +124,10 @@ HOMETOWNS = [
 ]
 INJURIES_DATE = '10/10/2022 '
 INJURIES_DELAY = '10/10/2022 Rain delay of 19 minutes in the 2nd inning. '
-INJURIES_TEXT = 'SP <{0}{1}37102.html|Jairo Labourt> was injured while ' + \
-                'pitching (Seattle @ Boston)'
-INJURIES_TEXT_ENCODED = 'SP <{0}{1}37102.html|Jairo Labourt> was injured ' + \
-                'while pitching (T54 @ T34)'
+INJURIES_TEXT = 'SS <{0}{1}29923.html|Jeremy Houston> was injured while ' + \
+                'running the bases (Seattle @ Boston)'
+INJURIES_TEXT_ENCODED = 'SS <{0}{1}29923.html|Jeremy Houston> was injured ' + \
+                'while running the bases (T54 @ T34)'
 HIGHLIGHTS_DATE = '10/10/2022 '
 HIGHLIGHTS_TEXT = '<{0}{1}38868.html|Connor Harrell> ties the ' + \
                   'BOS regular season game record for runs with 4 (Boston ' + \
@@ -212,8 +212,8 @@ def player(s):
 
 
 INJURIES_TABLE_BODY = [[
-    player('SP <a href="{0}{1}37102.html">Jairo Labourt</a> was injured while '
-           'pitching (Seattle Mariners @ Boston Red Sox)')
+    player('SS <a href="{0}{1}29923.html">Jeremy Houston</a> was injured '
+           'while running the bases (Seattle Mariners @ Boston Red Sox)')
 ]]
 HIGHLIGHTS_TABLE_BODY = [[
     player('<a href="{0}{1}38868.html">Connor Harrell</a> ties the BOS '

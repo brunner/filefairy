@@ -213,7 +213,7 @@ class Statsplus(Plugin, Renderable):
 
         match = re.findall(pattern, text)
         for m in match:
-            e = re.sub(_shorten, '{0}{1}', precoding_to_encoding_sub(m))
+            e = re.sub(_shorten, '{0}{1}', self._encode(key, m))
             self.data[key][encoded_date].append(e)
             if key == 'scores' and encoded_date not in self.data['unresolved']:
                 if any(c in e for c in _chlany):
@@ -273,6 +273,16 @@ class Statsplus(Plugin, Renderable):
         (w1, l1) = r1.split('-')
         (w2, l2) = r2.split('-')
         return '{0}-{1}'.format(int(w1) + int(w2), int(l1) + int(l2))
+
+    @staticmethod
+    def _encode(key, text):
+        if key == 'scores':
+            return precoding_to_encoding_sub(text)
+
+        match = re.findall('\([^)]+\)', text)
+        for m in match:
+            text = re.sub(re.escape(m), precoding_to_encoding_sub(m), text)
+        return text
 
     def _forecast(self):
         forecast = {}
