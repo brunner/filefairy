@@ -139,7 +139,8 @@ class Fairylab(Messageable, Renderable):
             for p, task in original:
                 self._try(p, task.target, *task.args, **task.kwargs)
 
-            time.sleep(self.sleep)
+            if not self.tasks:
+                time.sleep(self.sleep)
 
     def _recv(self, message):
         with self.lock:
