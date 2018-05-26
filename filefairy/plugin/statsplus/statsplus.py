@@ -377,7 +377,7 @@ class Statsplus(Plugin, Renderable):
                 if total != 3:
                     el, cl = total // 2 - ew, total // 2 - cw
                 else:
-                    el, cl = 0 if cw else 1, 0 if cw else 1
+                    el, cl = 0 if ew else 1, 0 if cw else 1
                 if ew + cw == tw and el + cl <= tl:
                     return ew, el
         elif encoding in table_:
@@ -389,7 +389,7 @@ class Statsplus(Plugin, Renderable):
         encoding = teamid_to_encoding(teamid)
         chlany_ = encoding_to_chlany(encoding)
         hw, hl, cw, cl = 0, 0, 0, 0
-        for date in self.data['scores']:
+        for date in sorted(self.data['scores']):
             scores = '\n'.join(self.data['scores'][date])
             ew, el = self._wl(scores, encoding)
             if chlany_:
