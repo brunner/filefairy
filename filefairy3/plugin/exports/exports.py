@@ -114,7 +114,7 @@ class Exports(Plugin, Renderable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return {}
+        return []
 
     @staticmethod
     def _exports(text):

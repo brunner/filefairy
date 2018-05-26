@@ -14,6 +14,7 @@ from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from util.box.box import clarify  # noqa
 from util.component.component import table  # noqa
@@ -189,12 +190,16 @@ class Statsplus(Plugin, Renderable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return {
-            'recap': {
-                'statsplus.offseason': self.data['offseason'],
-                'statsplus.postseason': self.data['postseason']
-            }
-        }
+        return [
+            Shadow(
+                destination='recap',
+                key='statsplus.offseason',
+                data=self.data['offseason']),
+            Shadow(
+                destination='recap',
+                key='statsplus.postseason',
+                data=self.data['postseason'])
+        ]
 
     def _clear(self):
         self.data['highlights'] = {}

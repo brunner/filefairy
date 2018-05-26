@@ -13,6 +13,7 @@ _root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from plugin.recap.recap import Recap  # noqa
 from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -237,14 +238,12 @@ class RecapTest(Test):
     def test_shadow(self):
         plugin = self.create_plugin({'standings': STANDINGS_THEN})
         value = plugin._shadow_internal()
-        self.assertEqual(
-            value, {
-                'statsplus': {
-                    'recap.standings': {
-                        'standings': STANDINGS_THEN
-                    }['standings']
-                }
-            })
+        self.assertEqual(value, [
+            Shadow(
+                destination='statsplus',
+                key='recap.standings',
+                data=STANDINGS_THEN)
+        ])
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

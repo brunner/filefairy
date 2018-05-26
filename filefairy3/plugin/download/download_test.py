@@ -14,6 +14,7 @@ _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from plugin.download.download import Download  # noqa
 from util.json_.json_ import dumps  # noqa
@@ -167,11 +168,12 @@ class DownloadTest(unittest.TestCase):
         self.assertEqual(response,
                          Response(
                              notify=[Notify.DOWNLOAD_FINISH],
-                             shadow={
-                                 'statsplus': {
-                                     'download.now': NOW_ENCODED
-                                 }
-                             }))
+                             shadow=[
+                                 Shadow(
+                                     destination='statsplus',
+                                     key='download.now',
+                                     data=NOW_ENCODED)
+                             ]))
 
         write = {
             'downloaded': False,
@@ -228,7 +230,10 @@ class DownloadTest(unittest.TestCase):
         }
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
-        self.assertEqual(value, {'statsplus': {'download.now': NOW_ENCODED}})
+        self.assertEqual(value, [
+            Shadow(
+                destination='statsplus', key='download.now', data=NOW_ENCODED)
+        ])
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

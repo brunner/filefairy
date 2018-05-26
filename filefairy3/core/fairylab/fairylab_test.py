@@ -18,6 +18,7 @@ from api.renderable.renderable import Renderable  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from util.component.component import card  # noqa
 from util.json_.json_ import dumps  # noqa
@@ -66,7 +67,7 @@ class Browsable(Plugin, Renderable):
         pass
 
     def _shadow_internal(self, **kwargs):
-        pass
+        return []
 
 
 class Internal(Plugin):
@@ -96,7 +97,7 @@ class Internal(Plugin):
         pass
 
     def _shadow_internal(self, **kwargs):
-        pass
+        return []
 
 
 class Disabled(Plugin):
@@ -124,7 +125,7 @@ class Disabled(Plugin):
         pass
 
     def _shadow_internal(self, **kwargs):
-        pass
+        return []
 
 
 class FakeWebSocketApp(object):
@@ -343,8 +344,9 @@ class FairylabTest(Test):
     @mock.patch.object(Browsable, '_notify')
     def test_try__with_shadow(self, mock_bnotify, mock_bshadow, mock_inotify,
                               mock_ishadow, mock_run):
+        shadow = Shadow(destination='browsable', key='internal.foo')
         mock_bshadow.return_value = Response()
-        mock_run.return_value = Response(shadow={'browsable': {'foo': 'bar'}})
+        mock_run.return_value = Response(shadow=[shadow])
 
         keys = ['browsable', 'internal']
         plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
@@ -353,7 +355,7 @@ class FairylabTest(Test):
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
-        mock_bshadow.assert_called_once_with(shadow={'foo': 'bar'}, date=NOW)
+        mock_bshadow.assert_called_once_with(shadow=shadow, date=NOW)
         mock_inotify.assert_not_called()
         mock_ishadow.assert_not_called()
         mock_run.assert_called_once_with(date=NOW)

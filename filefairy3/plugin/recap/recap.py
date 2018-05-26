@@ -14,6 +14,7 @@ from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from util.box.box import records  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
@@ -75,7 +76,12 @@ class Recap(Plugin, Renderable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return {'statsplus': {'recap.standings': self.data['standings']}}
+        return [
+            Shadow(
+                destination='statsplus',
+                key='recap.standings',
+                data=self.data['standings'])
+        ]
 
     @staticmethod
     def _strip_teams(text):

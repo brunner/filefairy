@@ -15,6 +15,7 @@ from api.runnable.runnable import Runnable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 
 
@@ -43,7 +44,7 @@ class FakePlugin(Plugin):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return {'foo': {'fake.bar': 'baz'}}
+        return [Shadow(destination='foo', key='plugin.bar', data='baz')]
 
 
 class FakeRenderable(Plugin, Renderable):
@@ -90,7 +91,7 @@ class FakeRenderable(Plugin, Renderable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        pass
+        return []
 
 
 class PluginTest(unittest.TestCase):
@@ -143,15 +144,14 @@ class PluginTest(unittest.TestCase):
         plugin = FakePlugin()
         response = plugin._setup()
         self.assertEqual(
-            response, Response(shadow={
-                'foo': {
-                    'fake.bar': 'baz'
-                }
-            }))
+            response,
+            Response(shadow=[
+                Shadow(destination='foo', key='plugin.bar', data='baz')
+            ]))
 
     @mock.patch.object(FakePlugin, '_setup')
     def test_shadow(self, mock_setup):
-        shadow = {'fake.bar': 'baz'}
+        shadow = Shadow(destination='foo', key='plugin.bar', data='baz')
         plugin = FakePlugin()
         self.assertEqual(plugin.shadow, {})
 
@@ -159,7 +159,7 @@ class PluginTest(unittest.TestCase):
         self.assertEqual(response, Response())
 
         mock_setup.assert_called_once_with(shadow=shadow)
-        self.assertEqual(plugin.shadow, shadow)
+        self.assertEqual(plugin.shadow, {'plugin.bar': 'baz'})
 
 
 if __name__ == '__main__':

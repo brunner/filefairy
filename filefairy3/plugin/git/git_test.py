@@ -88,7 +88,7 @@ class GitTest(unittest.TestCase):
     def test_shadow(self):
         plugin = self.create_plugin()
         value = plugin._shadow_internal()
-        self.assertEqual(value, {})
+        self.assertEqual(value, [])
 
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()

@@ -468,7 +468,7 @@ class SnacksTest(unittest.TestCase):
         read = {'members': MEMBERS_THEN}
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
-        self.assertEqual(value, {})
+        self.assertEqual(value, [])
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

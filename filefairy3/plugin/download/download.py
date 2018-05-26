@@ -14,6 +14,7 @@ from api.plugin.plugin import Plugin  # noqa
 from api.serializable.serializable import Serializable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
@@ -74,7 +75,12 @@ class Download(Plugin, Serializable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return {'statsplus': {'download.now': self.data['now']}}
+        return [
+            Shadow(
+                destination='statsplus',
+                key='download.now',
+                data=self.data['now'])
+        ]
 
     def download(self, **kwargs):
         output = ping()

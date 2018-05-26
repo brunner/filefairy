@@ -70,6 +70,7 @@ class Plugin(Messageable, Runnable):
         return response
 
     def _shadow(self, **kwargs):
-        self.shadow.update(copy.deepcopy(kwargs['shadow']))
+        shadow = kwargs['shadow']
+        self.shadow[shadow.key] = shadow.data
         self._setup(**kwargs)
         return Response()

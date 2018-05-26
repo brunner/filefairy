@@ -182,7 +182,7 @@ class Snacks(Plugin, Serializable):
         return Response(task=[Task(target='_load_internal')])
 
     def _shadow_internal(self, **kwargs):
-        return {}
+        return []
 
     @staticmethod
     def _fnames():

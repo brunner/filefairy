@@ -444,7 +444,7 @@ class ExportsTest(Test):
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
-        self.assertEqual(value, {})
+        self.assertEqual(value, [])
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

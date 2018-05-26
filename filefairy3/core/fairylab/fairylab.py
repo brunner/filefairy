@@ -120,8 +120,8 @@ class Fairylab(Messageable, Renderable):
             for n in response.notify:
                 if n != Notify.BASE:
                     self._try_all('_notify', **dict(kwargs, notify=n))
-            for s in response.shadow:
-                shadow = response.shadow[s]
+            for shadow in response.shadow:
+                s = shadow.destination
                 self._try(s, '_shadow', **dict(kwargs, shadow=shadow))
             for t in response.task:
                 self.tasks.append((p, t))

@@ -8,6 +8,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/response', '', _path))
 from core.notify.notify import Notify  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 
 
@@ -33,18 +34,16 @@ class Response(object):
             raise ValueError(value)
 
     @staticmethod
-    def check_shadow_dict(values):
-        if not isinstance(values, dict):
+    def check_shadow_list(values):
+        if not isinstance(values, list):
             raise TypeError(values)
-        for key in values.keys():
-            Response.check_shadow_key(key)
-        for value in values.values():
+        for value in values:
             Response.check_shadow_value(value)
 
     @staticmethod
-    def check_shadow_key(key):
-        if not isinstance(key, str):
-            raise ValueError(key)
+    def check_shadow_value(value):
+        if not isinstance(value, Shadow):
+            raise ValueError(value)
 
     @staticmethod
     def check_task_list(values):
@@ -56,11 +55,6 @@ class Response(object):
     @staticmethod
     def check_task_value(value):
         if not isinstance(value, Task):
-            raise ValueError(value)
-
-    @staticmethod
-    def check_shadow_value(value):
-        if not isinstance(value, dict):
             raise ValueError(value)
 
     def get_notify(self):
@@ -81,9 +75,9 @@ class Response(object):
 
     def set_shadow(self, values):
         if values is None:
-            self._shadow = {}
+            self._shadow = []
         else:
-            self.check_shadow_dict(values)
+            self.check_shadow_list(values)
             self._shadow = values
 
     def set_task(self, values):
@@ -100,6 +94,10 @@ class Response(object):
     def append_notify(self, value):
         self.check_notify_value(value)
         self._notify.append(value)
+
+    def append_shadow(self, value):
+        self.check_shadow_value(value)
+        self._shadow.append(value)
 
     def append_task(self, value):
         self.check_task_value(value)

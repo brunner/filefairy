@@ -13,6 +13,7 @@ _root = re.sub(r'/plugin/statsplus', '', _path)
 sys.path.append(_root)
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from plugin.statsplus.statsplus import Statsplus  # noqa
 from util.component.component import table  # noqa
@@ -675,12 +676,11 @@ class StatsplusTest(Test):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
         value = plugin._shadow_internal()
-        self.assertEqual(value, {
-            'recap': {
-                'statsplus.offseason': False,
-                'statsplus.postseason': False
-            }
-        })
+        self.assertEqual(value, [
+            Shadow(destination='recap', key='statsplus.offseason', data=False),
+            Shadow(
+                destination='recap', key='statsplus.postseason', data=False)
+        ])
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
