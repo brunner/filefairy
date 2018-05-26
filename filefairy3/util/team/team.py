@@ -5,52 +5,81 @@ import re
 from functools import partial
 
 
-def _team(_, abbr, crosstown, decoding, encoding, hometown, precoding, teamid):
+def _team(_, abbr, chlany, cross, decoding, encoding, home, precoding, teamid):
     return {
         'abbreviation': abbr,
-        'crosstown': crosstown,
+        'chlany': chlany,
+        'crosstown': cross,
         'decoding': decoding.format(_),
         'encoding': encoding,
-        'hometown': hometown.format(_),
+        'hometown': home.format(_),
         'precoding': precoding.format(_),
         'teamid': teamid,
     }
 
 
+_31 = 'Arizona'
+_32 = 'Atlanta'
+_33 = 'Baltimore'
+_34 = 'Boston'
+_37 = 'Cincinnati'
+_38 = 'Cleveland'
+_39 = 'Colorado'
+_40 = 'Detroit'
+_41 = 'Miami'
+_42 = 'Houston'
+_43 = 'Kansas City'
+_46 = 'Milwaukee'
+_47 = 'Minnesota'
+_50 = 'Oakland'
+_51 = 'Philadelphia'
+_52 = 'Pittsburgh'
+_53 = 'San Diego'
+_54 = 'Seattle'
+_55 = 'San Francisco'
+_56 = 'St. Louis'
+_57 = 'Tampa Bay'
+_58 = 'Texas'
+_59 = 'Toronto'
+_60 = 'Washington'
+_ch = 'Chicago'
+_la = 'Los Angeles'
+_ny = 'New York'
+
 _teams = [
-    _team('Arizona', 'ARI', '', '{} Diamondbacks', 'T31', '{}', '{}', '31'),
-    _team('Atlanta', 'ATL', '', '{} Braves', 'T32', '{}', '{}', '32'),
-    _team('Baltimore', 'BAL', '', '{} Orioles', 'T33', '{}', '{}', '33'),
-    _team('Boston', 'BOS', '', '{} Red Sox', 'T34', '{}', '{}', '34'),
-    _team('Chicago', 'CWS', 'T36', '{} White Sox', 'T35', '{}', '', '35'),
-    _team('Chicago', 'CHC', 'T35', '{} Cubs', 'T36', '{}', '', '36'),
-    _team('Cincinnati', 'CIN', '', '{} Reds', 'T37', '{}', '{}', '37'),
-    _team('Cleveland', 'CLE', '', '{} Indians', 'T38', '{}', '{}', '38'),
-    _team('Colorado', 'COL', '', '{} Rockies', 'T39', '{}', '{}', '39'),
-    _team('Detroit', 'DET', '', '{} Tigers', 'T40', '{}', '{}', '40'),
-    _team('Miami', 'MIA', '', '{} Marlins', 'T41', '{}', '{}', '41'),
-    _team('Houston', 'HOU', '', '{} Astros', 'T42', '{}', '{}', '42'),
-    _team('Kansas City', 'KC', '', '{} Royals', 'T43', '{}', '{}', '43'),
-    _team('Los Angeles', 'LAA', 'T45', '{} Angels', 'T44', '{}', '', '44'),
-    _team('Los Angeles', 'LAD', 'T44', '{} Dodgers', 'T45', '{}', '', '45'),
-    _team('Milwaukee', 'MIL', '', '{} Brewers', 'T46', '{}', '{}', '46'),
-    _team('Minnesota', 'MIN', '', '{} Twins', 'T47', '{}', '{}', '47'),
-    _team('New York', 'NYY', 'T49', '{} Yankees', 'T48', '{}', '', '48'),
-    _team('New York', 'NYM', 'T48', '{} Mets', 'T49', '{}', '', '49'),
-    _team('Oakland', 'OAK', '', '{} Athletics', 'T50', '{}', '{}', '50'),
-    _team('Philadelphia', 'PHI', '', '{} Phillies', 'T51', '{}', '{}', '51'),
-    _team('Pittsburgh', 'PIT', '', '{} Pirates', 'T52', '{}', '{}', '52'),
-    _team('San Diego', 'SD', '', '{} Padres', 'T53', '{}', '{}', '53'),
-    _team('Seattle', 'SEA', '', '{} Mariners', 'T54', '{}', '{}', '54'),
-    _team('San Francisco', 'SF', '', '{} Giants', 'T55', '{}', '{}', '55'),
-    _team('St. Louis', 'STL', '', '{} Cardinals', 'T56', '{}', '{}', '56'),
-    _team('Tampa Bay', 'TB', '', '{} Rays', 'T57', '{}', '{}', '57'),
-    _team('Texas', 'TEX', '', '{} Rangers', 'T58', '{}', '{}', '58'),
-    _team('Toronto', 'TOR', '', '{} Blue Jays', 'T59', '{}', '{}', '59'),
-    _team('Washington', 'WAS', '', '{} Nationals', 'T60', '{}', '{}', '60'),
-    _team('Chicago', '', '', '{}', 'TCH', '', '{}', ''),
-    _team('Los Angeles', '', '', '{}', 'TLA', '', '{}', ''),
-    _team('New York', '', '', '{}', 'TNY', '', '{}', ''),
+    _team(_31, 'ARI', '', '', '{} Diamondbacks', 'T31', '{}', '{}', '31'),
+    _team(_32, 'ATL', '', '', '{} Braves', 'T32', '{}', '{}', '32'),
+    _team(_33, 'BAL', '', '', '{} Orioles', 'T33', '{}', '{}', '33'),
+    _team(_34, 'BOS', '', '', '{} Red Sox', 'T34', '{}', '{}', '34'),
+    _team(_ch, 'CWS', 'TCH', 'T36', '{} White Sox', 'T35', '{}', '', '35'),
+    _team(_ch, 'CHC', 'TCH', 'T35', '{} Cubs', 'T36', '{}', '', '36'),
+    _team(_37, 'CIN', '', '', '{} Reds', 'T37', '{}', '{}', '37'),
+    _team(_38, 'CLE', '', '', '{} Indians', 'T38', '{}', '{}', '38'),
+    _team(_39, 'COL', '', '', '{} Rockies', 'T39', '{}', '{}', '39'),
+    _team(_40, 'DET', '', '', '{} Tigers', 'T40', '{}', '{}', '40'),
+    _team(_41, 'MIA', '', '', '{} Marlins', 'T41', '{}', '{}', '41'),
+    _team(_42, 'HOU', '', '', '{} Astros', 'T42', '{}', '{}', '42'),
+    _team(_43, 'KC', '', '', '{} Royals', 'T43', '{}', '{}', '43'),
+    _team(_la, 'LAA', 'TLA', 'T45', '{} Angels', 'T44', '{}', '', '44'),
+    _team(_la, 'LAD', 'TLA', 'T44', '{} Dodgers', 'T45', '{}', '', '45'),
+    _team(_46, 'MIL', '', '', '{} Brewers', 'T46', '{}', '{}', '46'),
+    _team(_47, 'MIN', '', '', '{} Twins', 'T47', '{}', '{}', '47'),
+    _team(_ny, 'NYY', 'TNY', 'T49', '{} Yankees', 'T48', '{}', '', '48'),
+    _team(_ny, 'NYM', 'TNY', 'T48', '{} Mets', 'T49', '{}', '', '49'),
+    _team(_50, 'OAK', '', '', '{} Athletics', 'T50', '{}', '{}', '50'),
+    _team(_51, 'PHI', '', '', '{} Phillies', 'T51', '{}', '{}', '51'),
+    _team(_52, 'PIT', '', '', '{} Pirates', 'T52', '{}', '{}', '52'),
+    _team(_53, 'SD', '', '', '{} Padres', 'T53', '{}', '{}', '53'),
+    _team(_54, 'SEA', '', '', '{} Mariners', 'T54', '{}', '{}', '54'),
+    _team(_55, 'SF', '', '', '{} Giants', 'T55', '{}', '{}', '55'),
+    _team(_56, 'STL', '', '', '{} Cardinals', 'T56', '{}', '{}', '56'),
+    _team(_57, 'TB', '', '', '{} Rays', 'T57', '{}', '{}', '57'),
+    _team(_58, 'TEX', '', '', '{} Rangers', 'T58', '{}', '{}', '58'),
+    _team(_59, 'TOR', '', '', '{} Blue Jays', 'T59', '{}', '{}', '59'),
+    _team(_60, 'WAS', '', '', '{} Nationals', 'T60', '{}', '{}', '60'),
+    _team(_ch, '', '', '', '{}', 'TCH', '', '{}', ''),
+    _team(_la, '', '', '', '{}', 'TLA', '', '{}', ''),
+    _team(_ny, '', '', '', '{}', 'TNY', '', '{}', ''),
 ]
 
 
@@ -70,7 +99,8 @@ def _sub(ks, f, s):
 
 
 _decodings = _map('decoding', ['encoding'])
-_encodings = _map('encoding', ['crosstown', 'decoding', 'precoding', 'teamid'])
+_encodings = _map('encoding',
+                  ['chlany', 'crosstown', 'decoding', 'precoding', 'teamid'])
 _precodings = _map('precoding', ['encoding'])
 _teamids = _map('teamid', ['abbreviation', 'decoding', 'encoding', 'hometown'])
 _img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
@@ -108,6 +138,10 @@ def divisions():
         ('NL Central', ('36', '37', '46', '52', '56')),
         ('NL West', ('31', '39', '45', '53', '55')),
     ]
+
+
+def encoding_to_chlany(encoding):
+    return _encodings.get(encoding, {}).get('chlany', '')
 
 
 def encoding_to_crosstown(encoding):

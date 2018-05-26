@@ -18,6 +18,7 @@ from util.team.team import decoding_to_encoding  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import decodings  # noqa
 from util.team.team import divisions  # noqa
+from util.team.team import encoding_to_chlany  # noqa
 from util.team.team import encoding_to_crosstown  # noqa
 from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_decoding_sub  # noqa
@@ -132,6 +133,41 @@ class TeamTest(unittest.TestCase):
             ('NL West', ('31', '39', '45', '53', '55')),
         ]
         self.assertEqual(actual, expected)
+
+    def test_encoding_to_chlany(self):
+        self.assertEqual(encoding_to_chlany('T31'), '')
+        self.assertEqual(encoding_to_chlany('T32'), '')
+        self.assertEqual(encoding_to_chlany('T33'), '')
+        self.assertEqual(encoding_to_chlany('T34'), '')
+        self.assertEqual(encoding_to_chlany('T35'), 'TCH')
+        self.assertEqual(encoding_to_chlany('T36'), 'TCH')
+        self.assertEqual(encoding_to_chlany('T37'), '')
+        self.assertEqual(encoding_to_chlany('T38'), '')
+        self.assertEqual(encoding_to_chlany('T39'), '')
+        self.assertEqual(encoding_to_chlany('T40'), '')
+        self.assertEqual(encoding_to_chlany('T41'), '')
+        self.assertEqual(encoding_to_chlany('T42'), '')
+        self.assertEqual(encoding_to_chlany('T43'), '')
+        self.assertEqual(encoding_to_chlany('T44'), 'TLA')
+        self.assertEqual(encoding_to_chlany('T45'), 'TLA')
+        self.assertEqual(encoding_to_chlany('T46'), '')
+        self.assertEqual(encoding_to_chlany('T47'), '')
+        self.assertEqual(encoding_to_chlany('T48'), 'TNY')
+        self.assertEqual(encoding_to_chlany('T49'), 'TNY')
+        self.assertEqual(encoding_to_chlany('T50'), '')
+        self.assertEqual(encoding_to_chlany('T51'), '')
+        self.assertEqual(encoding_to_chlany('T52'), '')
+        self.assertEqual(encoding_to_chlany('T53'), '')
+        self.assertEqual(encoding_to_chlany('T54'), '')
+        self.assertEqual(encoding_to_chlany('T55'), '')
+        self.assertEqual(encoding_to_chlany('T56'), '')
+        self.assertEqual(encoding_to_chlany('T57'), '')
+        self.assertEqual(encoding_to_chlany('T58'), '')
+        self.assertEqual(encoding_to_chlany('T59'), '')
+        self.assertEqual(encoding_to_chlany('T60'), '')
+        self.assertEqual(encoding_to_chlany('TCH'), '')
+        self.assertEqual(encoding_to_chlany('TLA'), '')
+        self.assertEqual(encoding_to_chlany('TNY'), '')
 
     def test_encoding_to_crosstown(self):
         self.assertEqual(encoding_to_crosstown('T31'), '')
