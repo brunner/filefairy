@@ -27,6 +27,9 @@ from util.standings.standings import standings_table  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import divisions  # noqa
+from util.team.team import encoding_to_chlany  # noqa
+from util.team.team import encoding_to_crosstown  # noqa
+from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_decoding_sub  # noqa
 from util.team.team import encoding_to_precoding  # noqa
 from util.team.team import encoding_to_teamid  # noqa
@@ -138,7 +141,8 @@ class Statsplus(Plugin, Renderable):
             if data['offseason'] and data['postseason']:
                 data['postseason'] = False
                 shadow = True
-            self._render(**kwargs)
+            if data['offseason']:
+                self._render(**kwargs)
             if self.data['started']:
                 self.data['started'] = False
                 chat_post_message(
@@ -153,6 +157,8 @@ class Statsplus(Plugin, Renderable):
             if data['offseason']:
                 data['offseason'] = False
                 shadow = True
+            else:
+                self._render(**kwargs)
 
         if shadow:
             response.shadow = self._shadow_internal(**kwargs)
@@ -225,7 +231,7 @@ class Statsplus(Plugin, Renderable):
             e = re.sub('\s{2,}', ' ', s).strip('\n').rsplit(' ', 1)
             if len(e) == 2:
                 team, wins = e
-                self.data['table'][encoded_date][team] = wins
+                self.data['table'][encoded_date][team] = int(wins)
 
     def _home(self, **kwargs):
         data = self.data
@@ -277,6 +283,12 @@ class Statsplus(Plugin, Renderable):
         for m in match:
             text = re.sub(re.escape(m), precoding_to_encoding_sub(m), text)
         return text
+
+    @staticmethod
+    def _wl(scores, encoding):
+        w = len(re.findall(r'\|' + re.escape(encoding), scores))
+        l = len(re.findall(r', ' + re.escape(encoding), scores))
+        return w, l
 
     def _forecast(self):
         forecast = {}
@@ -341,13 +353,51 @@ class Statsplus(Plugin, Renderable):
             body.append(inner)
         return body
 
+    def _lookup(self, date, encoding):
+        dates = list(self.data['table'].keys())
+        ret = None
+        for d in sorted(dates):
+            if d == date:
+                return ret
+            if encoding in self.data['table'][d]:
+                ret = self.data['table'][d][encoding]
+        return ret
+
+    def _narrow(self, encoding, date, tw, tl):
+        crosstown = encoding_to_crosstown(encoding)
+        table_ = self.data['table'].get(date, {})
+
+        if encoding in table_ and crosstown in table_:
+            ethen = self._lookup(date, encoding)
+            cthen = self._lookup(date, crosstown)
+            if ethen is not None and cthen is not None:
+                total = tw + tl
+                enow, cnow = table_[encoding], table_[crosstown]
+                ew, cw = enow - ethen, cnow - cthen
+                if total != 3:
+                    el, cl = total // 2 - ew, total // 2 - cw
+                else:
+                    el, cl = 0 if cw else 1, 0 if cw else 1
+                if ew + cw == tw and el + cl <= tl:
+                    return ew, el
+        elif encoding in table_:
+            return tw, tl
+
+        return 0, 0
+
     def _record(self, teamid):
         encoding = teamid_to_encoding(teamid)
-        hw, hl = 0, 0
+        chlany_ = encoding_to_chlany(encoding)
+        hw, hl, cw, cl = 0, 0, 0, 0
         for date in self.data['scores']:
             scores = '\n'.join(self.data['scores'][date])
-            hw += len(re.findall(r'\|' + re.escape(encoding), scores))
-            hl += len(re.findall(r', ' + re.escape(encoding), scores))
+            ew, el = self._wl(scores, encoding)
+            if chlany_:
+                tw, tl = self._wl(scores, chlany_)
+                if tw or tl:
+                    cw, cl = self._narrow(encoding, date, tw, tl)
+            hw += ew + cw
+            hl += el + cl
         return '{0}-{1}'.format(hw, hl)
 
     def _resolve_all(self, *args, **kwargs):

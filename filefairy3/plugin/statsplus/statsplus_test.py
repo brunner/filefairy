@@ -116,13 +116,21 @@ TABLE_TEXT = 'Cincinnati Reds 111\nSan Diego Padres 104\nBoston Red Sox ' + \
              'Baltimore Orioles 70\nLos Angeles Angels 70\nTexas Rangers ' + \
              '67\nTampa Bay Rays 65\nSan Francisco Giants 62\nPittsburgh ' + \
              'Pirates 53```'
-TABLE_ENCODED = {
-    'T45': '97',
-    'T49': '95',
-    'T48': '88',
-    'T35': '82',
-    'T36': '71',
-    'T44': '70'
+TABLE_ENCODED_THEN = {
+    'T35': 82,
+    'T36': 71,
+    'T44': 70,
+    'T45': 97,
+    'T48': 87,
+    'T49': 94
+}
+TABLE_ENCODED_NOW = {
+    'T35': 82,
+    'T36': 71,
+    'T44': 70,
+    'T45': 97,
+    'T48': 88,
+    'T49': 95
 }
 HOMETOWNS = [
     'Arizona', 'Los Angeles', 'Atlanta', 'Los Angeles', 'Cincinnati',
@@ -364,7 +372,7 @@ class StatsplusTest(Test):
         mock_clear.assert_called_once_with()
         mock_handle.assert_called_once_with(
             'scores', NOW_ENCODED, SCORES_NOW + scores, SCORES_PATTERN, False)
-        mock_render.assert_called_once_with(obj=obj)
+        mock_render.assert_not_called()
         mock_table.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -395,7 +403,7 @@ class StatsplusTest(Test):
         mock_clear.assert_not_called()
         mock_handle.assert_called_once_with(
             'scores', NOW_ENCODED, SCORES_NOW + scores, SCORES_PATTERN, False)
-        mock_render.assert_called_once_with(obj=obj)
+        mock_render.assert_not_called()
         mock_table.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -431,6 +439,32 @@ class StatsplusTest(Test):
         mock_table.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(Statsplus, '_handle_table')
+    @mock.patch.object(Statsplus, '_render')
+    @mock.patch.object(Statsplus, '_handle_key')
+    @mock.patch.object(Statsplus, '_clear')
+    def test_on_message__with_table(self, mock_clear, mock_handle, mock_render,
+                                    mock_table):
+        obj = {
+            'channel': 'C7JSGHW8G',
+            'text': TABLE_NOW + TABLE_TEXT,
+            'ts': '1000.789',
+            'user': 'U1234',
+            'bot_id': 'B7KJ3362Y'
+        }
+        read = DATA_CANONICAL
+        plugin = self.create_plugin(read)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        mock_clear.assert_not_called()
+        mock_handle.assert_not_called()
+        mock_render.assert_called_once_with(obj=obj)
+        mock_table.assert_called_once_with(NOW_ENCODED, TABLE_NOW + TABLE_TEXT)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
@@ -780,7 +814,9 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
-        self.assertEqual(plugin.data['table'], {THEN_ENCODED: TABLE_ENCODED})
+        self.assertEqual(plugin.data['table'], {
+            THEN_ENCODED: TABLE_ENCODED_NOW
+        })
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_table')
@@ -1070,12 +1106,83 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    def test_record(self):
-        read = _data(scores={THEN_ENCODED: SCORES_REGULAR_ENCODED})
+    def test_record__with_encoded(self):
+        read = _data(
+            scores={NOW_ENCODED: SCORES_REGULAR_ENCODED},
+            table={
+                THEN_ENCODED: TABLE_ENCODED_THEN,
+                NOW_ENCODED: TABLE_ENCODED_NOW
+            })
         plugin = self.create_plugin(read)
+        self.assertEqual(plugin._record('31'), '1-0')
+        self.assertEqual(plugin._record('32'), '1-0')
         self.assertEqual(plugin._record('33'), '0-1')
-        self.assertEqual(plugin._record('35'), '0-0')
+        self.assertEqual(plugin._record('34'), '0-1')
+        self.assertEqual(plugin._record('35'), '0-1')
+        self.assertEqual(plugin._record('36'), '0-1')
+        self.assertEqual(plugin._record('37'), '1-0')
+        self.assertEqual(plugin._record('38'), '0-1')
+        self.assertEqual(plugin._record('39'), '0-1')
+        self.assertEqual(plugin._record('40'), '1-0')
+        self.assertEqual(plugin._record('41'), '1-0')
         self.assertEqual(plugin._record('42'), '1-0')
+        self.assertEqual(plugin._record('43'), '1-0')
+        self.assertEqual(plugin._record('44'), '0-1')
+        self.assertEqual(plugin._record('45'), '0-1')
+        self.assertEqual(plugin._record('46'), '0-1')
+        self.assertEqual(plugin._record('47'), '0-1')
+        self.assertEqual(plugin._record('48'), '1-0')
+        self.assertEqual(plugin._record('49'), '1-0')
+        self.assertEqual(plugin._record('50'), '0-1')
+        self.assertEqual(plugin._record('51'), '1-0')
+        self.assertEqual(plugin._record('52'), '0-1')
+        self.assertEqual(plugin._record('53'), '1-0')
+        self.assertEqual(plugin._record('54'), '0-1')
+        self.assertEqual(plugin._record('55'), '0-1')
+        self.assertEqual(plugin._record('56'), '1-0')
+        self.assertEqual(plugin._record('57'), '1-0')
+        self.assertEqual(plugin._record('58'), '1-0')
+        self.assertEqual(plugin._record('59'), '1-0')
+        self.assertEqual(plugin._record('60'), '0-1')
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    def test_record__with_clarified(self):
+        read = _data(
+            scores={NOW_ENCODED: SCORES_REGULAR_CLARIFIED})
+        plugin = self.create_plugin(read)
+        self.assertEqual(plugin._record('31'), '1-0')
+        self.assertEqual(plugin._record('32'), '1-0')
+        self.assertEqual(plugin._record('33'), '0-1')
+        self.assertEqual(plugin._record('34'), '0-1')
+        self.assertEqual(plugin._record('35'), '0-1')
+        self.assertEqual(plugin._record('36'), '0-1')
+        self.assertEqual(plugin._record('37'), '1-0')
+        self.assertEqual(plugin._record('38'), '0-1')
+        self.assertEqual(plugin._record('39'), '0-1')
+        self.assertEqual(plugin._record('40'), '1-0')
+        self.assertEqual(plugin._record('41'), '1-0')
+        self.assertEqual(plugin._record('42'), '1-0')
+        self.assertEqual(plugin._record('43'), '1-0')
+        self.assertEqual(plugin._record('44'), '0-1')
+        self.assertEqual(plugin._record('45'), '0-1')
+        self.assertEqual(plugin._record('46'), '0-1')
+        self.assertEqual(plugin._record('47'), '0-1')
+        self.assertEqual(plugin._record('48'), '1-0')
+        self.assertEqual(plugin._record('49'), '1-0')
+        self.assertEqual(plugin._record('50'), '0-1')
+        self.assertEqual(plugin._record('51'), '1-0')
+        self.assertEqual(plugin._record('52'), '0-1')
+        self.assertEqual(plugin._record('53'), '1-0')
+        self.assertEqual(plugin._record('54'), '0-1')
+        self.assertEqual(plugin._record('55'), '0-1')
+        self.assertEqual(plugin._record('56'), '1-0')
+        self.assertEqual(plugin._record('57'), '1-0')
+        self.assertEqual(plugin._record('58'), '1-0')
+        self.assertEqual(plugin._record('59'), '1-0')
+        self.assertEqual(plugin._record('60'), '0-1')
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
