@@ -358,10 +358,7 @@ class StatsplusTest(Test):
         read = _data(finished=True)
         plugin = self.create_plugin(read)
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.STATSPLUS_SIM],
-                             shadow=plugin._shadow_internal()))
+        self.assertEqual(response, Response(notify=[Notify.STATSPLUS_SIM]))
 
         write = DATA_CANONICAL
         mock_clear.assert_called_once_with()

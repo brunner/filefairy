@@ -120,7 +120,6 @@ class Statsplus(Plugin, Renderable):
             self.data['finished'] = False
             self.data['started'] = True
             self._clear()
-            shadow = True
 
         highlights = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
         pattern = '<([^|]+)\|([^<]+)> (?:sets|ties)'
