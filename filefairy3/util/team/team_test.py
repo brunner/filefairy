@@ -18,6 +18,7 @@ from util.team.team import decoding_to_encoding  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import decodings  # noqa
 from util.team.team import divisions  # noqa
+from util.team.team import encoding_to_crosstown  # noqa
 from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_decoding_sub  # noqa
 from util.team.team import encoding_to_precoding  # noqa
@@ -131,6 +132,41 @@ class TeamTest(unittest.TestCase):
             ('NL West', ('31', '39', '45', '53', '55')),
         ]
         self.assertEqual(actual, expected)
+
+    def test_encoding_to_crosstown(self):
+        self.assertEqual(encoding_to_crosstown('T31'), '')
+        self.assertEqual(encoding_to_crosstown('T32'), '')
+        self.assertEqual(encoding_to_crosstown('T33'), '')
+        self.assertEqual(encoding_to_crosstown('T34'), '')
+        self.assertEqual(encoding_to_crosstown('T35'), 'T36')
+        self.assertEqual(encoding_to_crosstown('T36'), 'T35')
+        self.assertEqual(encoding_to_crosstown('T37'), '')
+        self.assertEqual(encoding_to_crosstown('T38'), '')
+        self.assertEqual(encoding_to_crosstown('T39'), '')
+        self.assertEqual(encoding_to_crosstown('T40'), '')
+        self.assertEqual(encoding_to_crosstown('T41'), '')
+        self.assertEqual(encoding_to_crosstown('T42'), '')
+        self.assertEqual(encoding_to_crosstown('T43'), '')
+        self.assertEqual(encoding_to_crosstown('T44'), 'T45')
+        self.assertEqual(encoding_to_crosstown('T45'), 'T44')
+        self.assertEqual(encoding_to_crosstown('T46'), '')
+        self.assertEqual(encoding_to_crosstown('T47'), '')
+        self.assertEqual(encoding_to_crosstown('T48'), 'T49')
+        self.assertEqual(encoding_to_crosstown('T49'), 'T48')
+        self.assertEqual(encoding_to_crosstown('T50'), '')
+        self.assertEqual(encoding_to_crosstown('T51'), '')
+        self.assertEqual(encoding_to_crosstown('T52'), '')
+        self.assertEqual(encoding_to_crosstown('T53'), '')
+        self.assertEqual(encoding_to_crosstown('T54'), '')
+        self.assertEqual(encoding_to_crosstown('T55'), '')
+        self.assertEqual(encoding_to_crosstown('T56'), '')
+        self.assertEqual(encoding_to_crosstown('T57'), '')
+        self.assertEqual(encoding_to_crosstown('T58'), '')
+        self.assertEqual(encoding_to_crosstown('T59'), '')
+        self.assertEqual(encoding_to_crosstown('T60'), '')
+        self.assertEqual(encoding_to_crosstown('TCH'), '')
+        self.assertEqual(encoding_to_crosstown('TLA'), '')
+        self.assertEqual(encoding_to_crosstown('TNY'), '')
 
     def test_encoding_to_decoding(self):
         self.assertEqual(encoding_to_decoding('T31'), 'Arizona Diamondbacks')
