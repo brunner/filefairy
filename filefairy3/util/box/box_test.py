@@ -40,8 +40,8 @@ VALID = '<html> ... <title>MLB Box Scores, {0} at {1}, {2}</title> ... ' + \
         '<b>0</b></td>\n\t</tr>\n\t</table>\n\t</td>\n\t</tr> ... </html'
 
 
-def _value(encoding, away, home):
-    return {'encoding': encoding, 'away': away, 'home': home}
+def _value(encoding, before, after):
+    return {'encoding': encoding, 'before': before, 'after': after}
 
 
 class BoxTest(unittest.TestCase):
@@ -52,7 +52,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 2')
-        expected = _value('T31 4, T45 2', 'T31', 'T45')
+        expected = _value('T31 4, T45 2', 'T31 @ TLA', 'T31 @ T45')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -64,7 +64,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, T31 2')
-        expected = _value('T45 4, T31 2', 'T45', 'T31')
+        expected = _value('T45 4, T31 2', 'TLA @ T31', 'T45 @ T31')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -76,7 +76,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, T31 2')
-        expected = _value('T45 4, T31 2', 'T31', 'T45')
+        expected = _value('T45 4, T31 2', 'T31 @ TLA', 'T31 @ T45')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -88,7 +88,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'T31 4, TLA 2')
-        expected = _value('T31 4, T45 2', 'T45', 'T31')
+        expected = _value('T31 4, T45 2', 'TLA @ T31', 'T45 @ T31')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -100,7 +100,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
-        expected = _value('T45 4, T44 2', 'T45', 'T44')
+        expected = _value('T45 4, T44 2', 'TLA @ TLA', 'T45 @ T44')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -112,7 +112,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
-        expected = _value('T44 4, T45 2', 'T44', 'T45')
+        expected = _value('T44 4, T45 2', 'TLA @ TLA', 'T44 @ T45')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -124,7 +124,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
-        expected = _value('T44 4, T45 2', 'T45', 'T44')
+        expected = _value('T44 4, T45 2', 'TLA @ TLA', 'T45 @ T44')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -136,7 +136,7 @@ class BoxTest(unittest.TestCase):
 
         link = _html + _game_box.format('2998')
         actual = clarify(DATE, link, 'TLA 4, TLA 2')
-        expected = _value('T45 4, T44 2', 'T44', 'T45')
+        expected = _value('T45 4, T44 2', 'TLA @ TLA', 'T44 @ T45')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)

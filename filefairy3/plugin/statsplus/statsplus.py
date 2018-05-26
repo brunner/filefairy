@@ -167,12 +167,6 @@ class Statsplus(Plugin, Renderable):
         data = self.data
         response = Response()
 
-        if data['updated']:
-            data['updated'] = False
-            self._render(**kwargs)
-            self.write()
-            response.notify = [Notify.BASE]
-
         if data['unresolved']:
             unresolved = copy.deepcopy(data)['unresolved']
             response.append_task(
@@ -360,22 +354,31 @@ class Statsplus(Plugin, Renderable):
         if len(args) != 1:
             return Response()
 
+        data = self.data
+        original = copy.deepcopy(data)
+
         unresolved = args[0]
         for encoded_date in unresolved:
             scores = self.data['scores'].get(encoded_date, [])
-            original = copy.deepcopy(scores)
             for i in range(len(scores)):
-                if any(e in scores[i] for e in _chlany):
-                    self._resolve(encoded_date, i)
+                self._resolve(encoded_date, i)
             scores = self.data['scores'].get(encoded_date, [])
             if not any(e in '\n'.join(scores) for e in _chlany):
                 self.data['unresolved'].remove(encoded_date)
-            if scores != original:
-                self.data['updated'] = True
+
+        if data != original:
+            self._render(**kwargs)
+            self.write()
+
         return Response()
 
     def _resolve(self, encoded_date, i):
-        score = self.data['scores'][encoded_date][i]
+        scores = self.data['scores'][encoded_date]
+        count = len([True for e in _chlany if e in scores[i]])
+        if count not in [1, 2]:
+            return
+
+        score = scores[i]
         pattern = '<([^|]+)\|([^<]+)>'
         match = re.findall(pattern, score)
         if match:
@@ -383,9 +386,15 @@ class Statsplus(Plugin, Renderable):
             ddate = decode_datetime(encoded_date)
             value = clarify(ddate, link.format(_html, _game_box), encoding)
             if encoding != value['encoding']:
-                encoding = value['encoding']
-                self.data['scores'][encoded_date][i] = '<{0}|{1}>'.format(
-                    link, encoding)
+                scores[i] = '<{0}|{1}>'.format(link, value['encoding'])
+            if count == 1 and value['before']:
+                before, after = value['before'], value['after']
+                for key in ['highlights', 'injuries']:
+                    lines = self.data[key].get(encoded_date, [])
+                    for i in range(len(lines)):
+                        if value['before'] in lines[i]:
+                            line = re.sub(before, after, lines[i])
+                            self.data[key][encoded_date][i] = line
 
     def _table(self, key, date, path):
         lines = self.data[key][date]

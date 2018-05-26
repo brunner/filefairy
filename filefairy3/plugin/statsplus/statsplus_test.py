@@ -89,6 +89,16 @@ SCORES_REGULAR_ENCODED = [
     '<{0}{1}2997.html|T57 12, T34 9>', '<{0}{1}2994.html|T58 5, T50 3>',
     '<{0}{1}2995.html|T59 8, T47 2>'
 ]
+SCORES_REGULAR_CLARIFIED = [
+    '<{0}{1}2998.html|T31 4, T45 2>', '<{0}{1}3003.html|T32 2, T44 1>',
+    '<{0}{1}2996.html|T37 7, T46 2>', '<{0}{1}3002.html|T40 11, T35 4>',
+    '<{0}{1}2993.html|T42 7, T54 2>', '<{0}{1}2991.html|T43 8, T38 2>',
+    '<{0}{1}14721.html|T41 6, T36 2>', '<{0}{1}3001.html|T49 1, T55 0>',
+    '<{0}{1}3000.html|T48 5, T33 3>', '<{0}{1}2992.html|T51 3, T60 1>',
+    '<{0}{1}2999.html|T53 8, T39 2>', '<{0}{1}2990.html|T56 5, T52 4>',
+    '<{0}{1}2997.html|T57 12, T34 9>', '<{0}{1}2994.html|T58 5, T50 3>',
+    '<{0}{1}2995.html|T59 8, T47 2>'
+]
 SCORES_FORECAST_NOW = [
     '<{0}{1}2998.html|T31 4, T45 2>', '<{0}{1}3003.html|T32 2, T44 1>'
 ]
@@ -124,16 +134,28 @@ HOMETOWNS = [
 ]
 INJURIES_DATE = '10/10/2022 '
 INJURIES_DELAY = '10/10/2022 Rain delay of 19 minutes in the 2nd inning. '
-INJURIES_TEXT = 'SS <{0}{1}29923.html|Jeremy Houston> was injured while ' + \
-                'running the bases (Seattle @ Boston)'
-INJURIES_TEXT_ENCODED = 'SS <{0}{1}29923.html|Jeremy Houston> was injured ' + \
-                'while running the bases (T54 @ T34)'
+INJURIES_TEXT = [
+    'SP <{0}{1}37102.html|Jairo Labourt> was injured while pitching (Seattle @ Boston)',
+    'SS <{0}{1}29923.html|Jeremy Houston> was injured while running the bases (Seattle @ Boston)',
+    'CF <{0}{1}1473.html|Jeren Kendall> was injured while running the bases (Arizona @ Los Angeles)'
+]
+INJURIES_TEXT_ENCODED = [
+    'SP <{0}{1}37102.html|Jairo Labourt> was injured while pitching (T54 @ T34)',
+    'SS <{0}{1}29923.html|Jeremy Houston> was injured while running the bases (T54 @ T34)',
+    'CF <{0}{1}1473.html|Jeren Kendall> was injured while running the bases (T31 @ TLA)'
+]
+INJURIES_TEXT_CLARIFIED = [
+    'SP <{0}{1}37102.html|Jairo Labourt> was injured while pitching (T54 @ T34)',
+    'SS <{0}{1}29923.html|Jeremy Houston> was injured while running the bases (T54 @ T34)',
+    'CF <{0}{1}1473.html|Jeren Kendall> was injured while running the bases (T31 @ T45)'
+]
 HIGHLIGHTS_DATE = '10/10/2022 '
-HIGHLIGHTS_TEXT = '<{0}{1}38868.html|Connor Harrell> ties the ' + \
-                  'BOS regular season game record for runs with 4 (Boston ' + \
-                  '@ Tampa Bay)'
-HIGHLIGHTS_TEXT_ENCODED = '<{0}{1}38868.html|Connor Harrell> ties the ' + \
-                  'BOS regular season game record for runs with 4 (T34 @ T57)'
+HIGHLIGHTS_TEXT = [
+    '<{0}{1}38868.html|Connor Harrell> ties the BOS regular season game record for runs with 4 (Boston @ Tampa Bay)'
+]
+HIGHLIGHTS_TEXT_ENCODED = [
+    '<{0}{1}38868.html|Connor Harrell> ties the BOS regular season game record for runs with 4 (T34 @ T57)'
+]
 COLS = [
     'class="position-relative text-truncate"', ' class="text-right w-55p"',
     ' class="text-right w-55p"'
@@ -212,8 +234,14 @@ def player(s):
 
 
 INJURIES_TABLE_BODY = [[
+    player('SP <a href="{0}{1}37102.html">Jairo Labourt</a> was injured '
+           'while pitching (Seattle Mariners @ Boston Red Sox)')
+], [
     player('SS <a href="{0}{1}29923.html">Jeremy Houston</a> was injured '
            'while running the bases (Seattle Mariners @ Boston Red Sox)')
+], [
+    player('CF <a href="{0}{1}1473.html">Jeren Kendall</a> was injured '
+           'while running the bases (Arizona Diamondbacks @ Los Angeles)')
 ]]
 HIGHLIGHTS_TABLE_BODY = [[
     player('<a href="{0}{1}38868.html">Connor Harrell</a> ties the BOS '
@@ -230,8 +258,7 @@ def _data(finished=False,
           scores={},
           started=False,
           table={},
-          unresolved=[],
-          updated=False):
+          unresolved=[]):
     return {
         'finished': finished,
         'highlights': highlights,
@@ -242,7 +269,6 @@ def _data(finished=False,
         'started': started,
         'table': table,
         'unresolved': unresolved,
-        'updated': updated
     }
 
 
@@ -446,7 +472,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_clear')
     def test_on_message__with_delay(self, mock_clear, mock_handle, mock_render,
                                     mock_table):
-        injuries = INJURIES_TEXT.format(_html, _player)
+        injuries = INJURIES_TEXT[0].format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
             'text': INJURIES_DELAY + injuries,
@@ -475,7 +501,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_clear')
     def test_on_message__with_injuries(self, mock_clear, mock_handle,
                                        mock_render, mock_table):
-        injuries = INJURIES_TEXT.format(_html, _player)
+        injuries = INJURIES_TEXT[0].format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
             'text': INJURIES_DATE + injuries,
@@ -504,7 +530,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_clear')
     def test_on_message__with_highlights(self, mock_clear, mock_handle,
                                          mock_render, mock_table):
-        highlights = HIGHLIGHTS_TEXT.format(_html, _player)
+        highlights = HIGHLIGHTS_TEXT[0].format(_html, _player)
         obj = {
             'channel': 'C7JSGHW8G',
             'text': HIGHLIGHTS_DATE + highlights,
@@ -632,20 +658,6 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch.object(Statsplus, '_render')
-    def test_run__with_updated(self, mock_render):
-        read = _data(updated=True)
-        plugin = self.create_plugin(read)
-
-        response = plugin._run_internal(date=NOW)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
-
-        write = DATA_CANONICAL
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-
     @mock.patch.object(Statsplus, '_home')
     def test_render(self, mock_home):
         mock_home.return_value = HOME
@@ -688,8 +700,8 @@ class StatsplusTest(Test):
 
     def test_clear(self):
         read = _data(
-            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
-            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED},
             scores={
                 THEN_ENCODED: SCORES_REGULAR_ENCODED
             })
@@ -706,7 +718,7 @@ class StatsplusTest(Test):
     def test_handle_key__delay(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        text = INJURIES_DELAY + INJURIES_TEXT.format(_html, _player)
+        text = INJURIES_DELAY + INJURIES_TEXT[0].format(_html, _player)
         plugin._handle_key('injuries', THEN_ENCODED, text, INJURIES_PATTERN,
                            True)
 
@@ -714,14 +726,14 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.assertEqual(plugin.data['injuries'], {
-            THEN_ENCODED: [INJURIES_TEXT_ENCODED]
+            THEN_ENCODED: INJURIES_TEXT_ENCODED[:1]
         })
         self.assertFalse(plugin.data['unresolved'])
 
     def test_handle_key__highlights(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT.format(_html, _player)
+        text = HIGHLIGHTS_DATE + HIGHLIGHTS_TEXT[0].format(_html, _player)
         plugin._handle_key('highlights', THEN_ENCODED, text,
                            HIGHLIGHTS_PATTERN, True)
 
@@ -729,14 +741,14 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.assertEqual(plugin.data['highlights'], {
-            THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]
+            THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED[:1]
         })
         self.assertFalse(plugin.data['unresolved'])
 
     def test_handle_key__injuries(self):
         read = DATA_CANONICAL
         plugin = self.create_plugin(read)
-        text = INJURIES_DATE + INJURIES_TEXT.format(_html, _player)
+        text = INJURIES_DATE + INJURIES_TEXT[0].format(_html, _player)
         plugin._handle_key('injuries', THEN_ENCODED, text, INJURIES_PATTERN,
                            True)
 
@@ -744,7 +756,7 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.assertEqual(plugin.data['injuries'], {
-            THEN_ENCODED: [INJURIES_TEXT_ENCODED]
+            THEN_ENCODED: INJURIES_TEXT_ENCODED[:1]
         })
         self.assertFalse(plugin.data['unresolved'])
 
@@ -789,8 +801,8 @@ class StatsplusTest(Test):
         ]
 
         read = _data(
-            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
-            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED},
             postseason=True,
             scores={
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
@@ -839,8 +851,8 @@ class StatsplusTest(Test):
         ]
 
         read = _data(
-            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
-            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED},
             scores={
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
                 NOW_ENCODED: SCORES_REGULAR_ENCODED
@@ -887,8 +899,8 @@ class StatsplusTest(Test):
 
         read = _data(
             finished=True,
-            highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]},
-            injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]},
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED},
             scores={
                 THEN_ENCODED: SCORES_REGULAR_ENCODED,
                 NOW_ENCODED: SCORES_REGULAR_ENCODED
@@ -1072,40 +1084,48 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.clarify')
-    def test_resolve_all(self, mock_clarify):
+    def test_resolve_all(self, mock_clarify, mock_render):
         mock_clarify.side_effect = [{
-            'encoding': 'T31 4 T45 2',
-            'away': 'T31',
-            'home': 'T45'
+            'encoding': 'T31 4, T45 2',
+            'before': 'T31 @ TLA',
+            'after': 'T31 @ T45'
         }, {
-            'encoding': 'T32 2 T44 1',
-            'away': 'T44',
-            'home': 'T32'
+            'encoding': 'T32 2, T44 1',
+            'before': 'TLA @ T32',
+            'after': 'T44 @ T32'
         }, {
-            'encoding': 'T40 11 T35 4',
-            'away': 'T40',
-            'home': 'T35'
+            'encoding': 'T40 11, T35 4',
+            'before': 'T40 @ TCH',
+            'after': 'T40 @ T35'
         }, {
-            'encoding': 'T41 6 T36 2',
-            'away': 'T36',
-            'home': 'T41'
+            'encoding': 'T41 6, T36 2',
+            'before': 'TCH @ T41',
+            'after': 'T36 @ T41'
         }, {
-            'encoding': 'T49 1 T55 0',
-            'away': 'T49',
-            'home': 'T55'
+            'encoding': 'T49 1, T55 0',
+            'before': 'TNY @ T55',
+            'after': 'T49 @ T55'
         }, {
-            'encoding': 'T48 5 T33 3',
-            'away': 'T48',
-            'home': 'T33'
+            'encoding': 'T48 5, T33 3',
+            'before': 'TNY @ T33',
+            'after': 'T48 @ T33'
         }]
         read = _data(
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED},
             scores={THEN_ENCODED: SCORES_REGULAR_ENCODED},
             unresolved=[THEN_ENCODED])
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all([THEN_ENCODED])
+        response = plugin._resolve_all([THEN_ENCODED], date=THEN)
         self.assertEqual(response, Response())
 
+        write = _data(
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_CLARIFIED},
+            scores={THEN_ENCODED: SCORES_REGULAR_CLARIFIED},
+            unresolved=[])
         calls = [
             mock.call(THEN, '{0}{1}2998.html'.format(_html, _game_box),
                       'T31 4, TLA 2'),
@@ -1121,14 +1141,14 @@ class StatsplusTest(Test):
                       'TNY 5, T33 3')
         ]
         mock_clarify.assert_has_calls(calls)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
+        mock_render.assert_called_once_with(date=THEN)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
         self.assertFalse(plugin.data['unresolved'])
-        self.assertTrue(plugin.data['updated'])
 
     def test_table__highlights(self):
-        read = _data(highlights={THEN_ENCODED: [HIGHLIGHTS_TEXT_ENCODED]})
+        read = _data(highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED})
         plugin = self.create_plugin(read)
 
         actual = plugin._table('highlights', THEN_ENCODED, _player)
@@ -1144,7 +1164,7 @@ class StatsplusTest(Test):
         self.mock_chat.assert_not_called()
 
     def test_table__injuries(self):
-        read = _data(injuries={THEN_ENCODED: [INJURIES_TEXT_ENCODED]})
+        read = _data(injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED})
         plugin = self.create_plugin(read)
 
         actual = plugin._table('injuries', THEN_ENCODED, _player)
