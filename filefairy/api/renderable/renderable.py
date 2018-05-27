@@ -41,7 +41,8 @@ class Renderable(Serializable):
         pass
 
     def _chat(self, channel, text):
-        chat_post_message(channel, text, attachments=self._attachments())
+        attachments = self._attachments()
+        return chat_post_message(channel, text, attachments=attachments)
 
     def _render(self, **kwargs):
         date = kwargs['date'].strftime('%Y-%m-%d %H:%M:%S') + ' PST'

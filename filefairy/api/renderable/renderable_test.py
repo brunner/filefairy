@@ -78,6 +78,24 @@ class RenderableTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             FakeRenderable()
 
+    @mock.patch('api.serializable.serializable.open', create=True)
+    @mock.patch('api.renderable.renderable.chat_post_message')
+    @mock.patch.object(FakeRenderable, '_attachments')
+    def test_chat(self, mock_attachments, mock_chat, mock_open):
+        attachments = [{'title': 'title', 'text': 'text'}]
+        mock_attachments.return_value = attachments
+        mock_chat.return_value = {'ok': True, 'message': {'text': 'foo'}}
+        data = '{"a": 1, "b": true}'
+        mo = mock.mock_open(read_data=data)
+        mock_open.side_effect = [mo.return_value]
+        plugin = FakeRenderable(e=env())
+        actual = plugin._chat('channel', 'foo')
+        expected = {'ok': True, 'message': {'text': 'foo'}}
+        self.assertEqual(actual, expected)
+        mock_attachments.assert_called_once_with()
+        mock_chat.assert_called_once_with(
+            'channel', 'foo', attachments=attachments)
+
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.serializable.serializable.log')
     @mock.patch('api.renderable.renderable.server')
@@ -186,9 +204,9 @@ class RenderableTest(unittest.TestCase):
     @mock.patch('api.renderable.renderable.os.makedirs')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('api.renderable.renderable.check_output')
-    def test_render__with_test(self, mock_check, mock_dump,
-                                      mock_makedirs, mock_open, mock_rlog,
-                                      mock_server, mock_slog, mock_stream):
+    def test_render__with_test(self, mock_check, mock_dump, mock_makedirs,
+                               mock_open, mock_rlog, mock_server, mock_slog,
+                               mock_stream):
         mock_server.return_value = 'server'
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -212,10 +230,8 @@ class RenderableTest(unittest.TestCase):
         rdyn = _root + '/html/fairylab/foo/dyn/dyn_{}.html'
         tdyn = there + '/html/fairylab/foo/dyn/dyn_{}.html'
         check_calls = [
-            mock.call(
-                ['scp', _root + foo, there + foo], timeout=8),
-            mock.call(
-                ['scp', _root + sub, there + sub], timeout=8),
+            mock.call(['scp', _root + foo, there + foo], timeout=8),
+            mock.call(['scp', _root + sub, there + sub], timeout=8),
             mock.call(
                 ['scp', rdyn.format(0), tdyn.format(0)], timeout=8),
             mock.call(
