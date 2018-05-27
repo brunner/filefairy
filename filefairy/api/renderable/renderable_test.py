@@ -32,6 +32,10 @@ class FakeRenderable(Renderable):
         return '/fairylab/foo/'
 
     @staticmethod
+    def _info():
+        return 'Description.'
+
+    @staticmethod
     def _title():
         return 'foo'
 
@@ -374,6 +378,25 @@ class RenderableTest(unittest.TestCase):
         ]
         mock_stream.assert_has_calls(stream_calls)
         self.assertEqual(renderable.data, {'a': 1, 'b': True})
+
+    @mock.patch('api.serializable.serializable.open', create=True)
+    def test_attachments(self, mock_open):
+        data = '{"a": 1, "b": true}'
+        mo = mock.mock_open(read_data=data)
+        mock_open.side_effect = [mo.return_value]
+        plugin = FakeRenderable(e=env())
+        actual = plugin._attachments()
+        expected = [{
+            'fallback':
+            'Description.',
+            'title':
+            'Fairylab | foo',
+            'title_link':
+            'http://orangeandblueleaguebaseball.com/fairylab/foo/',
+            'text':
+            'Description.'
+        }]
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':

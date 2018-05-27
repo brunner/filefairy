@@ -21,7 +21,6 @@ from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.secrets.secrets import server  # noqa
-from util.slack.slack import chat_post_message  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
 
 _size_pattern = '(\d+)'
@@ -49,7 +48,7 @@ class Leaguefile(Plugin, Renderable):
 
     @staticmethod
     def _info():
-        return 'Reports the progress of the file upload.'
+        return 'Reports current file upload progress.'
 
     @staticmethod
     def _title():
@@ -69,10 +68,7 @@ class Leaguefile(Plugin, Renderable):
         for size, date, name, fp in self._check():
             if '.filepart' in name:
                 if not data['fp']:
-                    chat_post_message(
-                        'fairylab',
-                        'File upload started.',
-                        attachments=self._attachments())
+                    self._chat('fairylab', 'Upload started.')
                     data['fp'] = {'start': date}
                     response.notify = [Notify.LEAGUEFILE_START]
                 if data['fp'].get('size', 0) != size:
@@ -87,11 +83,7 @@ class Leaguefile(Plugin, Renderable):
                     data['up'].insert(0, copy.deepcopy(data['fp']))
                     if len(data['up']) > 10:
                         data['up'] = data['up'][:10]
-                    chat_post_message('general', 'File is up.')
-                    chat_post_message(
-                        'fairylab',
-                        'File upload completed.',
-                        attachments=self._attachments())
+                    self._chat('fairylab', 'File is up.')
                     response.notify = [Notify.LEAGUEFILE_FINISH]
                 data['fp'] = None
 

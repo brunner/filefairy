@@ -75,7 +75,7 @@ class ExportsTest(Test):
         self.addCleanup(patch_urlopen.stop)
         self.mock_urlopen = patch_urlopen.start()
 
-        patch_chat = mock.patch('plugin.exports.exports.chat_post_message')
+        patch_chat = mock.patch.object(Exports, '_chat')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
@@ -676,10 +676,7 @@ class ExportsTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
-        self.mock_chat.assert_called_once_with(
-            'fairylab',
-            'Tracker locked and exports recorded.',
-            attachments=plugin._attachments())
+        self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
@@ -696,10 +693,7 @@ class ExportsTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
-        self.mock_chat.assert_called_once_with(
-            'fairylab',
-            'Tracker locked and exports recorded.',
-            attachments=plugin._attachments())
+        self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['ai'], ['32'])
         self.assertEqual(plugin.data['form'], form)

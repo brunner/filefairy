@@ -18,7 +18,6 @@ from core.shadow.shadow import Shadow  # noqa
 from util.box.box import records  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
-from util.slack.slack import chat_post_message  # noqa
 from util.standings.standings import standings_table  # noqa
 
 
@@ -40,7 +39,7 @@ class Recap(Plugin, Renderable):
 
     @staticmethod
     def _info():
-        return 'Displays news from around the league.'
+        return 'Surfaces league standings and logs.'
 
     @staticmethod
     def _title():
@@ -52,10 +51,7 @@ class Recap(Plugin, Renderable):
         if notify == Notify.DOWNLOAD_FINISH:
             self._standings()
             self._render(**kwargs)
-            chat_post_message(
-                'fairylab',
-                'League news updated.',
-                attachments=self._attachments())
+            self._chat('fairylab', 'News updated.')
             response.notify = [Notify.BASE]
             response.shadow = self._shadow_internal(**kwargs)
         return response

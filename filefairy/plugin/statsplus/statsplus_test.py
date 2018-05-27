@@ -289,7 +289,7 @@ class StatsplusTest(Test):
             'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
-        patch_chat = mock.patch('plugin.statsplus.statsplus.chat_post_message')
+        patch_chat = mock.patch.object(Statsplus, '_chat')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
@@ -376,10 +376,7 @@ class StatsplusTest(Test):
         mock_table.assert_not_called()
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_once_with(
-            'fairylab',
-            'Final scores updated.',
-            attachments=plugin._attachments())
+        self.mock_chat.assert_called_once_with('fairylab', 'Sim in progress.')
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -1150,8 +1147,7 @@ class StatsplusTest(Test):
         self.mock_chat.assert_not_called()
 
     def test_record__with_clarified(self):
-        read = _data(
-            scores={NOW_ENCODED: SCORES_REGULAR_CLARIFIED})
+        read = _data(scores={NOW_ENCODED: SCORES_REGULAR_CLARIFIED})
         plugin = self.create_plugin(read)
         self.assertEqual(plugin._record('31'), '1-0')
         self.assertEqual(plugin._record('32'), '1-0')

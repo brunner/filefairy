@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import abc
-import copy
 import os
 import re
 import sys
@@ -14,7 +13,6 @@ from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
-from util.abc_.abc_ import abstractstatic  # noqa
 
 
 class Plugin(Messageable, Runnable):
@@ -28,10 +26,6 @@ class Plugin(Messageable, Runnable):
     def enabled(self):
         pass
 
-    @abstractstatic
-    def _info():
-        pass
-
     @abc.abstractmethod
     def _notify_internal(self, **kwargs):
         pass
@@ -43,20 +37,6 @@ class Plugin(Messageable, Runnable):
     @abc.abstractmethod
     def _shadow_internal(self, **kwargs):
         pass
-
-    def _attachments(self):
-        if not isinstance(self, Renderable):
-            return []
-
-        info = self._info()
-        title = 'Fairylab | ' + self._title()
-        link = 'http://orangeandblueleaguebaseball.com' + self._href()
-        return [{
-            'fallback': info,
-            'title': title,
-            'title_link': link,
-            'text': info
-        }]
 
     def _notify(self, **kwargs):
         response = self._notify_internal(**kwargs)

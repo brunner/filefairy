@@ -54,6 +54,10 @@ class Fairylab(Messageable, Renderable):
     def _title():
         return 'home'
 
+    @staticmethod
+    def _info():
+        return 'Fairylab core framework.'
+
     def _setup(self):
         data = self.data
         original = copy.deepcopy(data)

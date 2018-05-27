@@ -133,7 +133,7 @@ class RecapTest(Test):
             'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
-        patch_chat = mock.patch('plugin.recap.recap.chat_post_message')
+        patch_chat = mock.patch.object(Recap, '_chat')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
@@ -175,10 +175,7 @@ class RecapTest(Test):
         mock_standings.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_called_once_with(
-            'fairylab',
-            'League news updated.',
-            attachments=plugin._attachments())
+        self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
 
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')

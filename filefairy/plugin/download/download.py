@@ -38,7 +38,7 @@ class Download(Plugin, Serializable):
 
     @staticmethod
     def _info():
-        return 'Manages file download and data extraction.'
+        return 'Handles file download and data extraction.'
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']

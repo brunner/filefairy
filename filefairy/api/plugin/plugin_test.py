@@ -101,31 +101,6 @@ class PluginTest(unittest.TestCase):
         self.assertTrue(isinstance(plugin, Messageable))
         self.assertTrue(isinstance(plugin, Runnable))
 
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_attachments__with_valid_input(self, mock_open):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        plugin = FakeRenderable(e=env())
-        actual = plugin._attachments()
-        expected = [{
-            'fallback':
-            'Description.',
-            'title':
-            'Fairylab | foo',
-            'title_link':
-            'http://orangeandblueleaguebaseball.com/fairylab/foo/',
-            'text':
-            'Description.'
-        }]
-        self.assertEqual(actual, expected)
-
-    def test_attachments__with_invalid_input(self):
-        plugin = FakePlugin()
-        actual = plugin._attachments()
-        expected = []
-        self.assertEqual(actual, expected)
-
     def test_notify__with_true(self):
         plugin = FakePlugin()
         response = plugin._notify(notify=Notify.OTHER)

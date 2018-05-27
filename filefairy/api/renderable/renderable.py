@@ -15,6 +15,7 @@ from api.serializable.serializable import Serializable  # noqa
 from util.abc_.abc_ import abstractstatic  # noqa
 from util.logger.logger import log  # noqa
 from util.secrets.secrets import server  # noqa
+from util.slack.slack import chat_post_message  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
 
 _server = server()
@@ -38,6 +39,9 @@ class Renderable(Serializable):
     @abstractstatic
     def _render_internal():
         pass
+
+    def _chat(self, channel, text):
+        chat_post_message(channel, text, attachments=self._attachments())
 
     def _render(self, **kwargs):
         date = kwargs['date'].strftime('%Y-%m-%d %H:%M:%S') + ' PST'
@@ -69,3 +73,14 @@ class Renderable(Serializable):
                 pass
             else:
                 raise
+
+    def _attachments(self):
+        info = self._info()
+        title = 'Fairylab | ' + self._title()
+        link = 'http://orangeandblueleaguebaseball.com' + self._href()
+        return [{
+            'fallback': info,
+            'title': title,
+            'title_link': link,
+            'text': info
+        }]

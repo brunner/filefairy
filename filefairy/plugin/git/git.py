@@ -24,7 +24,7 @@ class Git(Plugin):
 
     @staticmethod
     def _info():
-        return 'Exposes git commands to admins.'
+        return 'Exposes remote commands to admins.'
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']

@@ -83,8 +83,7 @@ class LeaguefileTest(Test):
             'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
-        patch_chat = mock.patch(
-            'plugin.leaguefile.leaguefile.chat_post_message')
+        patch_chat = mock.patch.object(Leaguefile, '_chat')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
@@ -147,10 +146,7 @@ class LeaguefileTest(Test):
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_with(
-            'fairylab',
-            'File upload started.',
-            attachments=plugin._attachments())
+        self.mock_chat.assert_called_with('fairylab', 'Upload started.')
 
     @mock.patch.object(Leaguefile, '_render')
     @mock.patch.object(Leaguefile, '_check')
@@ -199,14 +195,7 @@ class LeaguefileTest(Test):
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        calls = [
-            mock.call('general', 'File is up.'),
-            mock.call(
-                'fairylab',
-                'File upload completed.',
-                attachments=plugin._attachments())
-        ]
-        self.mock_chat.assert_has_calls(calls)
+        self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
 
     @mock.patch.object(Leaguefile, '_home')
     def test_render(self, mock_home):

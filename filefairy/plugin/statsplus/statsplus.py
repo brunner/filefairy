@@ -21,7 +21,6 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
-from util.slack.slack import chat_post_message  # noqa
 from util.standings.standings import sort  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.team.team import chlany  # noqa
@@ -77,7 +76,7 @@ class Statsplus(Plugin, Renderable):
 
     @staticmethod
     def _info():
-        return 'Collects sim results in real time.'
+        return 'Collects results from ongoing sim.'
 
     @staticmethod
     def _title():
@@ -145,10 +144,7 @@ class Statsplus(Plugin, Renderable):
                 self._render(**kwargs)
             if self.data['started']:
                 self.data['started'] = False
-                chat_post_message(
-                    'fairylab',
-                    'Final scores updated.',
-                    attachments=self._attachments())
+                self._chat('fairylab', 'Sim in progress.')
                 response.notify = [Notify.STATSPLUS_SIM]
 
         pattern = 'MAJOR LEAGUE BASEBALL Live Table'

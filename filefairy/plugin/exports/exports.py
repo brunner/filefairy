@@ -17,7 +17,6 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.logger.logger import log  # noqa
-from util.slack.slack import chat_post_message  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_abbreviation  # noqa
@@ -52,7 +51,7 @@ class Exports(Plugin, Renderable):
 
     @staticmethod
     def _info():
-        return 'Tracks how often each manager exports.'
+        return 'Displays recent manager export rate.'
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
@@ -200,10 +199,7 @@ class Exports(Plugin, Renderable):
     def _lock_internal(self):
         data = self.data
         data['locked'] = True
-        chat_post_message(
-            'fairylab',
-            'Tracker locked and exports recorded.',
-            attachments=self._attachments())
+        self._chat('fairylab', 'Tracker locked.')
 
         for teamid, status in self.exports:
             s = status.lower()[0]

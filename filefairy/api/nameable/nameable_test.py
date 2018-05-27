@@ -15,11 +15,21 @@ class FakeNameable(Nameable):
     def __init__(self, **kwargs):
         super(FakeNameable, self).__init__(**kwargs)
 
+    @staticmethod
+    def _info():
+        return 'Description.'
+
     def _name(self):
         return self.__class__.__name__
 
 
 class NameableTest(unittest.TestCase):
+    def test_info(self):
+        nameable = FakeNameable()
+        actual = nameable._info()
+        expected = 'Description.'
+        self.assertEqual(actual, expected)
+
     def test_name(self):
         nameable = FakeNameable()
         actual = nameable._name()
