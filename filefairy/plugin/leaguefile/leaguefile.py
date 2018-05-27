@@ -21,6 +21,7 @@ from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.secrets.secrets import server  # noqa
+from util.slack.slack import reactions_add  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
 
 _size_pattern = '(\d+)'
@@ -83,7 +84,11 @@ class Leaguefile(Plugin, Renderable):
                     data['up'].insert(0, copy.deepcopy(data['fp']))
                     if len(data['up']) > 10:
                         data['up'] = data['up'][:10]
-                    self._chat('fairylab', 'File is up.')
+                    obj = self._chat('fairylab', 'File is up.')
+                    if self._fast(date, data['fp']['end']):
+                        ts = obj.get('ts')
+                        if ts:
+                            reactions_add('zap', 'fairylab', ts)
                     response.notify = [Notify.LEAGUEFILE_FINISH]
                 data['fp'] = None
 
@@ -136,6 +141,16 @@ class Leaguefile(Plugin, Renderable):
         return []
 
     @staticmethod
+    def _decode(date):
+        return datetime.datetime.strptime(date, '%b %d %H:%M')
+
+    @staticmethod
+    def _fast(then, now):
+        diff = Leaguefile._decode(now) - Leaguefile._decode(then)
+        s, d = diff.seconds, diff.days
+        return not d and s < 10800
+
+    @staticmethod
     def _date(s):
         return s.rsplit(' ', 1)[0]
 
@@ -145,9 +160,7 @@ class Leaguefile(Plugin, Renderable):
 
     @staticmethod
     def _time(s, e):
-        sdate = datetime.datetime.strptime(s, '%b %d %H:%M')
-        edate = datetime.datetime.strptime(e, '%b %d %H:%M')
-        return elapsed(sdate, edate)
+        return elapsed(Leaguefile._decode(s), Leaguefile._decode(e))
 
     @staticmethod
     def _check():

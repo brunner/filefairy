@@ -17,6 +17,7 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.logger.logger import log  # noqa
+from util.slack.slack import reactions_add  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_abbreviation  # noqa
@@ -160,13 +161,8 @@ class Exports(Plugin, Renderable):
             'standings': []
         }
 
-        n, t = self._new()
-        title = '{:.0f}%'.format(float(100) * n / t) if t else '0%'
-        breakdown = ', '.join([
-            self._success(str(n) + ' new'),
-            str(t - n) + ' old',
-            self._secondary(str(len(data['ai'])) + ' ai')
-        ])
+        title = '{:.0f}%'.format(self._percent())
+        breakdown = self._breakdown()
         status = 'Ongoing' if data['locked'] else 'Upcoming'
         info = '{0} sim contains {1}.'.format(status, breakdown)
         ts = delta(decode_datetime(data['date']), kwargs['date'])
@@ -199,7 +195,15 @@ class Exports(Plugin, Renderable):
     def _lock_internal(self):
         data = self.data
         data['locked'] = True
-        self._chat('fairylab', 'Tracker locked.')
+        obj = self._chat('fairylab', 'Tracker locked.')
+
+        percent = self._percent()
+        ts = obj.get('ts')
+        if ts:
+            if percent == 100:
+                reactions_add('100', 'fairylab', ts)
+            elif percent < 50:
+                reactions_add('zzz', 'fairylab', ts)
 
         for teamid, status in self.exports:
             s = status.lower()[0]
@@ -219,6 +223,18 @@ class Exports(Plugin, Renderable):
                 if status == 'New':
                     n += 1
         return (n, t)
+
+    def _breakdown(self):
+        n, t = self._new()
+        return ', '.join([
+            self._success(str(n) + ' new'),
+            str(t - n) + ' old',
+            self._secondary(str(len(self.data['ai'])) + ' ai')
+        ])
+
+    def _percent(self):
+        n, t = self._new()
+        return (100 * n / t) if t else 0
 
     def _remove(self):
         for teamid, status in self.exports:
