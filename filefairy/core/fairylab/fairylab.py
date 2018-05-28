@@ -62,8 +62,7 @@ class Fairylab(Messageable, Renderable):
     def _info():
         return 'Fairylab core framework.'
 
-    def _setup(self):
-        date = datetime.datetime.now()
+    def _setup(self, date):
         kwargs = {'date': date, 'v': True}
         self.day = date.day
 
@@ -294,8 +293,9 @@ class Fairylab(Messageable, Renderable):
 
 
 if __name__ == '__main__':
+    date = datetime.datetime.now()
     env_ = env()
-    dashboard = Dashboard(e=env_)
+    dashboard = Dashboard(date=date, e=env_)
 
     handler = LoggingHandler(dashboard)
     logger_ = logging.getLogger('fairylab')
@@ -303,5 +303,5 @@ if __name__ == '__main__':
     logger_.setLevel(logging.DEBUG)
 
     fairylab = Fairylab(d=dashboard, e=env_)
-    fairylab._setup()
+    fairylab._setup(date)
     fairylab._start()

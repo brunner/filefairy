@@ -261,7 +261,7 @@ class FairylabTest(Test):
 
         program = self.create_program(registered=REGISTERED)
         program.day = THEN.day
-        program._setup()
+        program._setup(NOW)
 
         calls = [mock.call('plugin', 'internal', date=NOW, v=True)]
         mock_reload.assert_has_calls(calls)
@@ -272,7 +272,7 @@ class FairylabTest(Test):
             [mock.call('internal', '_setup', date=NOW, v=True)])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_called_once_with(
             'Fairylab', s='Completed setup.', date=NOW, v=True)
         self.assertEqual(program.day, NOW.day)
