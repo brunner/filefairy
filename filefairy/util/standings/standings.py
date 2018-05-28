@@ -27,11 +27,11 @@ def _decode(s, to_int=True):
 
 
 def _keys(k):
-    return [k + ey for ey in ['gb', 'mn']]
+    return [k + ey for ey in ['gb', 'mn', 'tn']]
 
 
 def _process_group(teams, ordered, i, k):
-    kgb, kmn = _keys(k)
+    kgb, kmn, ktn = _keys(k)
     ts = list(filter(lambda v: teams[v[0]][kgb] >= 0, ordered))
     if len(ts) == len(ordered):
         for t, tr in ordered:
@@ -49,9 +49,14 @@ def _process_group(teams, ordered, i, k):
                     continue
                 en = elimination_number(ur, tr)
                 teams[t][kmn].append(en)
+                teams[u][ktn].append(en)
         for u, ur in ordered:
             if teams[u][kmn]:
                 teams[u][kmn] = sorted(teams[u][kmn], reverse=True)[i]
+            elif teams[u][ktn]:
+                teams[u][ktn] = sorted(teams[u][ktn])[i]
+            if teams[u][kmn] and teams[u][ktn]:
+                teams[u][ktn] = []
 
 
 def _process_league(teams, league, abbr):
@@ -115,7 +120,7 @@ def sort(group):
     return sorted(group, key=_sort, reverse=True)
 
 
-def standings_table(records, num_wc):
+def standings_table(records):
     size = len(_divisions) // 2
     teams = {
         t: {
@@ -135,11 +140,11 @@ def standings_table(records, num_wc):
     for league in leagues:
         for group, ts, k in league:
             body = []
-            kgb, kmn = _keys(k)
+            kgb, kmn, ktn = _keys(k)
             for i, team_tuple in enumerate(sort(ts)):
-                if num_wc and k == 'w' and i >= num_wc:
-                    break
                 t, tr = team_tuple
+                if k == 'w' and (i > 7 or (i > 3 and teams[t].get(ktn) == 0)):
+                    break
                 tname = logo_absolute(t, teamid_to_hometown(t), 'left')
                 tw, tl = _decode(tr, to_int=False)
                 gb, mn = teams[t][kgb], teams[t][kmn]

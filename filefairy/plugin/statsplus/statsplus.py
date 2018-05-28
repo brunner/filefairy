@@ -262,7 +262,7 @@ class Statsplus(Plugin, Renderable):
             ret['scores'].append(self._table('scores', date, _game_box))
 
         if not (data['finished'] or data['offseason'] or data['postseason']):
-            ret['forecast'] = standings_table(self._forecast(), 4)
+            ret['forecast'] = standings_table(self._forecast())
 
         return ret
 

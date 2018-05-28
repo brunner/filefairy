@@ -614,7 +614,7 @@ class RecapTest(Test):
         }
         self.assertEqual(value, expected)
 
-        mock_standings.assert_called_once_with(STANDINGS_THEN, 0)
+        mock_standings.assert_called_once_with(STANDINGS_THEN)
         self.mock_open.assert_not_called()
         self.mock_handle.write.not_called()
         self.mock_chat.assert_not_called()

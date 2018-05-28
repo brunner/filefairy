@@ -215,11 +215,12 @@ class StandingsTest(unittest.TestCase):
         expected = [('32', '4-0'), ('31', '3-0'), ('33', '0-3'), ('34', '0-4')]
         self.assertEqual(actual, expected)
 
+    maxDiff = None
     @mock.patch('util.standings.standings.logo_absolute')
     def test_standings_table__with_empty(self, mock_logo):
         mock_logo.side_effect = _fake_logo
 
-        actual = standings_table({}, 4)
+        actual = standings_table({})
         expected = [
             _table('AL East', [
                 _row('33', '0', '0', '-', '163'),
@@ -246,7 +247,11 @@ class StandingsTest(unittest.TestCase):
                 _row('33', '0', '0', '-', '163'),
                 _row('34', '0', '0', '-', '163'),
                 _row('35', '0', '0', '-', '163'),
-                _row('38', '0', '0', '-', '163')
+                _row('38', '0', '0', '-', '163'),
+                _row('40', '0', '0', '-', '163'),
+                _row('42', '0', '0', '-', '163'),
+                _row('43', '0', '0', '-', '163'),
+                _row('44', '0', '0', '-', '163')
             ]),
             _table('NL East', [
                 _row('32', '0', '0', '-', '163'),
@@ -273,7 +278,11 @@ class StandingsTest(unittest.TestCase):
                 _row('31', '0', '0', '-', '163'),
                 _row('32', '0', '0', '-', '163'),
                 _row('36', '0', '0', '-', '163'),
-                _row('37', '0', '0', '-', '163')
+                _row('37', '0', '0', '-', '163'),
+                _row('39', '0', '0', '-', '163'),
+                _row('41', '0', '0', '-', '163'),
+                _row('45', '0', '0', '-', '163'),
+                _row('46', '0', '0', '-', '163')
             ])
         ]
         self.assertEqual(actual, expected)
@@ -282,7 +291,7 @@ class StandingsTest(unittest.TestCase):
     def test_standings_table__with_final(self, mock_logo):
         mock_logo.side_effect = _fake_logo
 
-        actual = standings_table(RECORDS_FINAL, 4)
+        actual = standings_table(RECORDS_FINAL)
         expected = [
             _table('AL East', [
                 _row('34', '99', '63', '-', 'X'),
@@ -345,7 +354,7 @@ class StandingsTest(unittest.TestCase):
     def test_standings_table__with_irregular(self, mock_logo):
         mock_logo.side_effect = _fake_logo
 
-        actual = standings_table(RECORDS_IRREGULAR, 4)
+        actual = standings_table(RECORDS_IRREGULAR)
         expected = [
             _table('AL East', [
                 _row('33', '26', '15', '-', '124'),
@@ -372,7 +381,11 @@ class StandingsTest(unittest.TestCase):
                 _row('34', '23', '13', '+1.0', '123'),
                 _row('38', '23', '15', '-', '123'),
                 _row('35', '24', '16', '-', '122'),
-                _row('40', '22', '17', '1.5', '')
+                _row('40', '22', '17', '1.5', ''),
+                _row('44', '21', '18', '2.5', ''),
+                _row('50', '19', '19', '4.0', ''),
+                _row('48', '17', '20', '5.5', ''),
+                _row('54', '17', '20', '5.5', ''),
             ]),
             _table('NL East', [
                 _row('32', '25', '12', '-', '121'),
@@ -399,7 +412,11 @@ class StandingsTest(unittest.TestCase):
                 _row('45', '22', '16', '-', '124'),
                 _row('31', '24', '18', '-', '122'),
                 _row('37', '22', '17', '0.5', ''),
-                _row('36', '23', '18', '0.5', '')
+                _row('36', '23', '18', '0.5', ''),
+                _row('41', '21', '17', '1.0', ''),
+                _row('46', '20', '20', '3.0', ''),
+                _row('49', '18', '19', '3.5', ''),
+                _row('53', '20', '23', '4.5', ''),
             ])
         ]
         self.assertEqual(actual, expected)
@@ -408,7 +425,7 @@ class StandingsTest(unittest.TestCase):
     def test_standings_table__with_midseason(self, mock_logo):
         mock_logo.side_effect = _fake_logo
 
-        actual = standings_table(RECORDS_MIDSEASON, 0)
+        actual = standings_table(RECORDS_MIDSEASON)
         expected = [
             _table('AL East', [
                 _row('59', '64', '47', '-', '45'),
@@ -439,11 +456,7 @@ class StandingsTest(unittest.TestCase):
                 _row('34', '55', '55', '1.5', ''),
                 _row('42', '54', '57', '3.0', ''),
                 _row('43', '54', '59', '4.0', ''),
-                _row('40', '53', '58', '4.0', ''),
-                _row('44', '53', '58', '4.0', ''),
-                _row('50', '46', '54', '5.5', ''),
-                _row('48', '50', '60', '6.5', ''),
-                _row('58', '37', '74', '20.0', '')
+                _row('40', '53', '58', '4.0', '')
             ]),
             _table('NL East', [
                 _row('49', '64', '47', '-', '45'),
@@ -474,11 +487,7 @@ class StandingsTest(unittest.TestCase):
                 _row('51', '57', '54', '7.0', ''),
                 _row('32', '56', '55', '8.0', ''),
                 _row('46', '52', '59', '12.0', ''),
-                _row('31', '50', '62', '14.5', ''),
-                _row('60', '49', '63', '15.5', ''),
-                _row('55', '48', '63', '16.0', ''),
-                _row('41', '36', '75', '28.0', ''),
-                _row('52', '34', '78', '30.5', '')
+                _row('31', '50', '62', '14.5', '')
             ])
         ]
         self.assertEqual(actual, expected)
@@ -487,7 +496,7 @@ class StandingsTest(unittest.TestCase):
     def test_standings_table__with_weak(self, mock_logo):
         mock_logo.side_effect = _fake_logo
 
-        actual = standings_table(RECORDS_WEAK, 6)
+        actual = standings_table(RECORDS_WEAK)
         expected = [
             _table('AL East', [
                 _row('59', '80', '55', '-', '19'),
@@ -516,7 +525,9 @@ class StandingsTest(unittest.TestCase):
                 _row('34', '70', '64', '4.0', ''),
                 _row('42', '70', '65', '4.5', ''),
                 _row('44', '71', '66', '4.5', ''),
-                _row('54', '67', '70', '8.5', '')
+                _row('54', '67', '70', '8.5', ''),
+                _row('35', '65', '70', '9.5', ''),
+                _row('48', '65', '70', '9.5', '')
             ]),
             _table('NL East', [
                 _row('41', '80', '57', '-', '13'),
@@ -545,7 +556,9 @@ class StandingsTest(unittest.TestCase):
                 _row('52', '74', '62', '2.5', ''),
                 _row('60', '67', '70', '10.0', ''),
                 _row('51', '64', '72', '12.5', ''),
-                _row('53', '63', '75', '14.5', '')
+                _row('53', '63', '75', '14.5', ''),
+                _row('39', '61', '75', '15.5', ''),
+                _row('37', '60', '76', '16.5', '')
             ])
         ]
         self.assertEqual(actual, expected)
