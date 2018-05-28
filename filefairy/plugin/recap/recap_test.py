@@ -28,72 +28,198 @@ _transactions = os.path.join(_leagues, 'league_100_transactions.txt')
 
 DATA = Recap._data()
 NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
-INJ_AFTER = '20220817\t<a href=\"../teams/team_47.html\">Minnesota Twins</a>: 1B <a href=\"../players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
-INJ_BEFORE = '20220815\t<a href=\"../teams/team_44.html\">Los Angeles Angels</a>: CF <a href=\"../players/player_0.html\">Alex Aristy</a> was injured while running the bases.  The Diagnosis: knee inflammation. He\'s expected to miss about 3 weeks.'
-INJ_CONTENT = '20220817\t<a href=\"../teams/team_57.html\">Tampa Bay Rays</a>: <a href=\"../players/player_1.html\">Zack Weiss</a> diagnosed with a strained hamstring, will miss 4 weeks.\n20220817\t<a href=\"../teams/team_39.html\">Colorado Rockies</a>: RF <a href=\"../players/player_24198.html\">Eddie Hoffman</a> was injured being hit by a pitch.  The Diagnosis: bruised knee. This is a day-to-day injury expected to last 5 days.'
-INJ_HASH = '965572a66c'
-INJ_UPDATE = {'content': INJ_CONTENT, 'hash': INJ_HASH}
-INJ_CALL = mock.call('injuries', _injuries)
-INJ_TABLE = table(
-    clazz='border mt-3',
-    hcols=[''],
-    bcols=[''],
-    head=['Wednesday, August 17th, 2022'],
-    body=[[
-        'Minnesota Twins: 1B <a href=\"/StatsLab/reports/news/html/players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
-    ]])
-NEWS_AFTER = '20220818\t<a href=\"../teams/team_41.html\">Miami Marlins</a>: <a href=\"../players/player_131.html\">Jake Ehret</a> got suspended 3 games after ejection following a brawl.'
-NEWS_BEFORE = '20220815\t<a href=\"../teams/team_57.html\">Tampa Bay Rays</a>: <a href=\"../players/player_27.html\">A.J. Reed</a> got suspended 4 games after ejection following arguing a strike call.'
-NEWS_CONTENT = '20220818\t<a href=\"../teams/team_42.html\">Houston Astros</a>: <a href=\"../players/player_39044.html\">Mark Appel</a> pitches a 2-hit shutout against the <a href=\"../teams/team_44.html\">Los Angeles Angels</a> with 8 strikeouts and 0 BB allowed!\n20220818\t<a href=\"../teams/team_39.html\">Colorado Rockies</a>: <a href=\"../players/player_30965.html\">Spencer Taylor</a> got suspended 3 games after ejection following a brawl.'
-NEWS_HASH = '2b9934d013'
-NEWS_UPDATE = {'content': NEWS_CONTENT, 'hash': NEWS_HASH}
-NEWS_CALL = mock.call('news', _news)
-NEWS_TABLE = table(
-    clazz='border mt-3',
-    hcols=[''],
-    bcols=[''],
-    head=['Thursday, August 18th, 2022'],
-    body=[[
-        'Miami Marlins: <a href=\"/StatsLab/reports/news/html/players/player_131.html\">Jake Ehret</a> got suspended 3 games after ejection following a brawl.'
-    ]])
-TRANS_AFTER = '20220815\t<a href=\"../teams/team_33.html\">Baltimore Orioles</a>: Placed C <a href=\"../players/player_31093.html\">Salvador Perez</a> on waivers.\n'
-TRANS_BEFORE = '20220815\t<a href=\"../teams/team_33.html\">Baltimore Orioles</a>: Placed 2B <a href=\"../players/player_292.html\">Austin Slater</a> on the 7-day disabled list, retroactive to 08/12/2022.\n'
-TRANS_CONTENT = '20220815\t<a href=\"../teams/team_33.html\">Baltimore Orioles</a>: Placed C <a href=\"../players/player_1439.html\">Evan Skoug</a> on the active roster.\n\n20220815\t<a href=\"../teams/team_33.html\">Baltimore Orioles</a>: Activated C <a href=\"../players/player_1439.html\">Evan Skoug</a> from the disabled list.\n'
-TRANS_HASH = 'a17f312e8e'
-TRANS_UPDATE = {'content': TRANS_CONTENT, 'hash': TRANS_HASH}
-TRANS_CALL = mock.call('transactions', _transactions)
-TRANS_TABLE = table(
-    clazz='border mt-3',
-    hcols=[''],
-    bcols=[''],
-    head=['Monday, August 15th, 2022'],
-    body=[[
-        'Baltimore Orioles: Placed C <a href=\"/StatsLab/reports/news/html/players/player_31093.html\">Salvador Perez</a> on waivers.'
-    ]])
-TABLE_MAP = {
-    'injuries': [INJ_TABLE],
-    'news': [NEWS_TABLE],
-    'transactions': [TRANS_TABLE]
+
+INJ_THEN = '20220815\t<a href=\"../teams/team_44.html\">Los Angeles Angels' + \
+           '</a>: CF <a href=\"../players/player_0.html\">Alex Aristy</a> ' + \
+           'was injured while running the bases.  The Diagnosis: knee ' + \
+           'inflammation. He\'s expected to miss about 3 weeks.'
+INJ_NOW = '20220815\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
+          '</a>: <a href=\"../players/player_1.html\">Zack Weiss</a> ' + \
+          'diagnosed with a strained hamstring, will miss 4 weeks.\n' + \
+          '20220817\t<a href=\"../teams/team_39.html\">Colorado Rockies' + \
+          '</a>: RF <a href=\"../players/player_24198.html\">Eddie ' + \
+          'Hoffman</a> was injured being hit by a pitch.  The Diagnosis: ' + \
+          'bruised knee. This is a day-to-day injury expected to last 5 ' + \
+          'days.\n20220817\t<a href=\"../teams/team_47.html\">Minnesota ' + \
+          'Twins</a>: 1B <a href=\"../players/player_34032.html\">Nick ' + \
+          'Castellanos</a> was injured while running the bases.  The ' + \
+          'Diagnosis: sprained ankle. This is a day-to-day injury ' + \
+          'expected to last 5 days.'
+INJ_TABLE_NOW = [
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Wednesday, August 17th, 2022'],
+        body=[[
+            'Colorado Rockies: RF <a href=\"/StatsLab/reports/news/html/' +
+            'players/player_24198.html\">Eddie Hoffman</a> was injured ' +
+            'being hit by a pitch.  The Diagnosis: bruised knee. This is ' +
+            'a day-to-day injury expected to last 5 days.'
+        ], [
+            'Minnesota Twins: 1B <a href=\"/StatsLab/reports/news/html/' +
+            'players/player_34032.html\">Nick Castellanos</a> was injured ' +
+            'while running the bases.  The Diagnosis: sprained ankle. ' +
+            'This is a day-to-day injury expected to last 5 days.'
+        ]]),
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Tampa Bay Rays: <a href=\"/StatsLab/reports/news/html/' +
+            'players/player_1.html\">Zack Weiss</a> diagnosed with a ' +
+            'strained hamstring, will miss 4 weeks.'
+        ]])
+]
+INJ_TABLE_THEN = [
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Los Angeles Angels: CF <a href=\"/StatsLab/reports/news/html/' +
+            'players/player_0.html\">Alex Aristy</a> was injured while ' +
+            'running the bases.  The Diagnosis: knee inflammation. He\'s ' +
+            'expected to miss about 3 weeks.'
+        ]])
+]
+INJ_ENCODED_THEN = '20220815\tT44: CF P0 was injured while running the ' + \
+                   'bases.  The Diagnosis: knee inflammation. He\'s ' + \
+                   'expected to miss about 3 weeks.'
+INJ_ENCODED_NOW = '20220817\tT47: 1B P34032 was injured while running the ' + \
+                  'bases.  The Diagnosis: sprained ankle. This is a ' + \
+                  'day-to-day injury expected to last 5 days.'
+
+NEWS_THEN = '20220815\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
+            '</a>: <a href=\"../players/player_27.html\">A.J. Reed</a> ' + \
+            'got suspended 4 games after ejection following arguing a ' + \
+            'strike call.'
+NEWS_NOW = '20220815\t<a href=\"../teams/team_42.html\">Houston Astros' + \
+           '</a>: <a href=\"../players/player_39044.html\">Mark Appel</a> ' + \
+           'pitches a 2-hit shutout against the <a href=\"../teams/team_44' + \
+           '.html\">Los Angeles Angels</a> with 8 strikeouts and 0 BB ' + \
+           'allowed!\n20220818\t<a href=\"../teams/team_39.html\">' + \
+           'Colorado Rockies</a>: <a href=\"../players/player_30965' + \
+           '.html\">Spencer Taylor</a> got suspended 3 games after ' + \
+           'ejection following a brawl.\n20220818\t<a href=\"../teams/' + \
+           'team_41.html\">Miami Marlins</a>: <a href=\"../players/' + \
+           'player_131.html\">Jake Ehret</a> got suspended 3 games after ' + \
+           'ejection following a brawl.'
+NEWS_TABLE_NOW = [
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Thursday, August 18th, 2022'],
+        body=[[
+            'Colorado Rockies: <a href=\"/StatsLab/reports/news/html/' +
+            'players/player_30965.html\">Spencer Taylor</a> got suspended ' +
+            '3 games after ejection following a brawl.'
+        ], [
+            'Miami Marlins: <a href=\"/StatsLab/reports/news/html/players/' +
+            'player_131.html\">Jake Ehret</a> got suspended 3 games after ' +
+            'ejection following a brawl.'
+        ]]),
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Houston Astros: <a href=\"/StatsLab/reports/news/html/' +
+            'players/player_39044.html\">Mark Appel</a> pitches a 2-hit ' +
+            'shutout against the Los Angeles Angels with 8 strikeouts and ' +
+            '0 BB allowed!'
+        ]])
+]
+NEWS_TABLE_THEN = [
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Tampa Bay Rays: <a href=\"/StatsLab/reports/news/html/players/' +
+            'player_27.html\">A.J. Reed</a> got suspended 4 games after ' +
+            'ejection following arguing a strike call.'
+        ]])
+]
+NEWS_ENCODED_THEN = '20220815\tT57: P27 got suspended 4 games after ' + \
+                    'ejection following arguing a strike call.'
+NEWS_ENCODED_NOW = '20220818\tT41: P131 got suspended 3 games after ' + \
+                   'ejection following a brawl.'
+
+TRANS_THEN = '20220815\t<a href=\"../teams/team_33.html\">Baltimore ' + \
+             'Orioles</a>: Placed 2B <a href=\"../players/player_292' + \
+             '.html\">Austin Slater</a> on the 7-day disabled list, ' + \
+             'retroactive to 08/12/2022.\n'
+TRANS_NOW = '20220815\t<a href=\"../teams/team_33.html\">Baltimore Orioles' + \
+            '</a>: Placed C <a href=\"../players/player_1439.html\">Evan ' + \
+            'Skoug</a> on the active roster.\n\n20220815\t<a href=\"../' + \
+            'teams/team_33.html\">Baltimore Orioles</a>: Activated C <a ' + \
+            'href=\"../players/player_1439.html\">Evan Skoug</a> from the ' + \
+            'disabled list.\n\n20220815\t<a href=\"../teams/team_33' + \
+            '.html\">Baltimore Orioles</a>: Placed C <a href=\"../players/' + \
+            'player_31093.html\">Salvador Perez</a> on waivers.\n'
+TRANS_TABLE_NOW = [
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Baltimore Orioles: Placed C <a href=\"/StatsLab/reports/news/' +
+            'html/players/player_1439.html\">Evan Skoug</a> on the active ' +
+            'roster.'
+        ], [
+            'Baltimore Orioles: Activated C <a href=\"/StatsLab/reports/' +
+            'news/html/players/player_1439.html\">Evan Skoug</a> from the ' +
+            'disabled list.'
+        ], [
+            'Baltimore Orioles: Placed C <a href=\"/StatsLab/reports/news/' +
+            'html/players/player_31093.html\">Salvador Perez</a> on waivers.'
+        ]])
+]
+TRANS_TABLE_THEN = [
+    table(
+        clazz='border mt-3',
+        hcols=[''],
+        bcols=[''],
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Baltimore Orioles: Placed 2B <a href=\"/StatsLab/reports/news/' +
+            'html/players/player_292.html\">Austin Slater</a> on the 7-day ' +
+            'disabled list, retroactive to 08/12/2022.'
+        ]])
+]
+TRANS_ENCODED_THEN = '20220815\tT33: Placed 2B P292 on the 7-day disabled ' + \
+                     'list, retroactive to 08/12/2022.'
+TRANS_ENCODED_NOW = '20220815\tT33: Placed C P31093 on waivers.'
+
+TABLE_NOW_MAP = {
+    'injuries': INJ_TABLE_NOW,
+    'news': NEWS_TABLE_NOW,
+    'transactions': TRANS_TABLE_NOW
 }
-UPDATE_MAP = {
-    'injuries': INJ_UPDATE,
-    'news': NEWS_UPDATE,
-    'transactions': TRANS_UPDATE
+TABLE_THEN_MAP = {
+    'injuries': INJ_TABLE_THEN,
+    'news': NEWS_TABLE_THEN,
+    'transactions': TRANS_TABLE_THEN
 }
-AFTER_MAP = {
-    'injuries': {
-        'content': INJ_AFTER,
-        'hash': INJ_HASH
-    },
-    'news': {
-        'content': NEWS_AFTER,
-        'hash': NEWS_HASH
-    },
-    'transactions': {
-        'content': TRANS_AFTER,
-        'hash': TRANS_HASH
-    }
+ENCODED_NOW_MAP = {
+    'injuries': INJ_ENCODED_NOW,
+    'news': NEWS_ENCODED_NOW,
+    'transactions': TRANS_ENCODED_NOW
 }
+ENCODED_THEN_MAP = {
+    'injuries': INJ_ENCODED_THEN,
+    'news': NEWS_ENCODED_THEN,
+    'transactions': TRANS_ENCODED_THEN
+}
+
 COLS = [
     'class="position-relative text-truncate"', ' class="text-right w-55p"',
     ' class="text-right w-55p"', ' class="text-right w-55p"',
@@ -108,9 +234,13 @@ STANDINGS_TABLE = [
               ['48', '0', '0', '-', '163'], ['57', '0', '0', '-', '163'],
               ['59', '0', '0', '-', '163']])
 ]
+
+DATE = '20220817'
 LINE = '<a href=\"../teams/team_47.html\">Minnesota Twins</a>: 1B <a href=\"../players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
+LINE_ENCODED = '20220817\tT47: 1B P34032 was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
 LINE_STRIPPED = 'Minnesota Twins: 1B <a href=\"../players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
 LINE_REWRITTEN = '<a href=\"../teams/team_47.html\">Minnesota Twins</a>: 1B <a href=\"/StatsLab/reports/news/html/players/player_34032.html\">Nick Castellanos</a> was injured while running the bases.  The Diagnosis: sprained ankle. This is a day-to-day injury expected to last 5 days.'
+
 HOME = {'breadcrumbs': [], 'injuries': [], 'news': [], 'transactions': []}
 INDEX = 'html/fairylab/recap/index.html'
 BREADCRUMBS = [{
@@ -182,37 +312,64 @@ class RecapTest(Test):
 
         return plugin
 
+    @mock.patch.object(Recap, '_tables')
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')
-    def test_notify__with_download(self, mock_render, mock_standings):
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+    def test_notify__with_download(self, mock_render, mock_standings,
+                                   mock_tables):
+        mock_tables.return_value = TABLE_NOW_MAP
+
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_THEN_MAP
         response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(response,
                          Response(
                              notify=[Notify.BASE],
                              shadow=plugin._shadow_internal()))
-
+        write = {
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_NOW_MAP
+        }
         mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
         mock_standings.assert_called_once_with()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
+        mock_tables.assert_called_once_with()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
+        self.assertEqual(plugin.tables, TABLE_NOW_MAP)
 
+    @mock.patch.object(Recap, '_tables')
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')
-    def test_notify__with_other(self, mock_render, mock_standings):
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+    def test_notify__with_other(self, mock_render, mock_standings,
+                                mock_tables):
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_THEN_MAP
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
         mock_render.assert_not_called()
         mock_standings.assert_not_called()
+        mock_tables.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
     def test_on_message(self):
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
         response = plugin._on_message_internal()
         self.assertEqual(response, Response())
 
@@ -221,7 +378,11 @@ class RecapTest(Test):
         self.mock_chat.assert_not_called()
 
     def test_run(self):
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
         response = plugin._run_internal()
         self.assertEqual(response, Response())
 
@@ -233,7 +394,11 @@ class RecapTest(Test):
     def test_render(self, mock_home):
         mock_home.return_value = HOME
 
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
         value = plugin._render_internal(date=NOW)
         self.assertEqual(value, [(INDEX, '', 'recap.html', HOME)])
 
@@ -242,19 +407,29 @@ class RecapTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    @mock.patch.object(Recap, '_tables')
     @mock.patch.object(Recap, '_render')
-    def test_setup(self, mock_render):
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+    def test_setup(self, mock_render, mock_tables):
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
         response = plugin._setup_internal(date=NOW)
         self.assertEqual(response, Response())
 
         mock_render.assert_called_once_with(date=NOW)
+        mock_tables.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
     def test_shadow(self):
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
         value = plugin._shadow_internal()
         self.assertEqual(value, [
             Shadow(
@@ -266,6 +441,11 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+
+    def test_encode(self):
+        actual = Recap._encode(DATE, LINE)
+        expected = LINE_ENCODED
+        self.assertEqual(actual, expected)
 
     def test_strip_teams(self):
         actual = Recap._strip_teams(LINE)
@@ -279,39 +459,32 @@ class RecapTest(Test):
 
     maxDiff = None
 
-    @mock.patch.object(Recap, '_tables')
     @mock.patch('plugin.recap.recap.standings_table')
-    def test_home(self, mock_standings, mock_tables):
+    def test_home(self, mock_standings):
         mock_standings.return_value = STANDINGS_TABLE
 
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
         plugin.shadow['statsplus.offseason'] = False
         plugin.shadow['statsplus.postseason'] = False
-
-        def fake_tables(*args, **kwargs):
-            key = args[0]
-            return TABLE_MAP.get(key)
-
-        mock_tables.side_effect = fake_tables
+        plugin.tables = TABLE_NOW_MAP
 
         value = plugin._home(date=NOW)
         expected = {
             'breadcrumbs': BREADCRUMBS,
-            'injuries': [INJ_TABLE],
-            'news': [NEWS_TABLE],
-            'transactions': [TRANS_TABLE],
+            'injuries': INJ_TABLE_NOW,
+            'news': NEWS_TABLE_NOW,
+            'transactions': TRANS_TABLE_NOW,
             'standings': STANDINGS_TABLE
         }
         self.assertEqual(value, expected)
 
         mock_standings.assert_called_once_with(STANDINGS_THEN, 0)
-        mock_tables.assert_has_calls([
-            mock.call('injuries'),
-            mock.call('news'),
-            mock.call('transactions')
-        ])
         self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
+        self.mock_handle.write.not_called()
         self.mock_chat.assert_not_called()
 
     @mock.patch('plugin.recap.recap.os.listdir')
@@ -342,13 +515,22 @@ class RecapTest(Test):
         self.mock_chat.assert_not_called()
 
     @mock.patch('plugin.recap.recap.open', create=True)
-    def test_tables__injuries(self, mock_open):
-        mo = mock.mock_open(read_data=INJ_AFTER)
+    def test_tables_internal__injuries(self, mock_open):
+        injuries = '\n'.join([INJ_THEN, INJ_NOW])
+        mo = mock.mock_open(read_data=injuries)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
-        actual = plugin._tables('injuries')
-        expected = [INJ_TABLE]
+        plugin = self.create_plugin({
+            'now': {
+                'injuries': ''
+            },
+            'standings': STANDINGS_THEN,
+            'then': {
+                'injuries': INJ_ENCODED_THEN
+            }
+        })
+        actual = plugin._tables_internal('injuries')
+        expected = INJ_TABLE_NOW
         self.assertEqual(actual, expected)
 
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
@@ -356,15 +538,25 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.assertEqual(plugin.data['now']['injuries'], INJ_ENCODED_NOW)
 
     @mock.patch('plugin.recap.recap.open', create=True)
-    def test_tables__news(self, mock_open):
-        mo = mock.mock_open(read_data=NEWS_AFTER)
+    def test_tables_internal__news(self, mock_open):
+        news = '\n'.join([NEWS_THEN, NEWS_NOW])
+        mo = mock.mock_open(read_data=news)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
-        actual = plugin._tables('news')
-        expected = [NEWS_TABLE]
+        plugin = self.create_plugin({
+            'now': {
+                'news': ''
+            },
+            'standings': STANDINGS_THEN,
+            'then': {
+                'news': NEWS_ENCODED_THEN
+            }
+        })
+        actual = plugin._tables_internal('news')
+        expected = NEWS_TABLE_NOW
         self.assertEqual(actual, expected)
 
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
@@ -372,15 +564,25 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.assertEqual(plugin.data['now']['news'], NEWS_ENCODED_NOW)
 
     @mock.patch('plugin.recap.recap.open', create=True)
-    def test_tables__transactions(self, mock_open):
-        mo = mock.mock_open(read_data=TRANS_AFTER)
+    def test_tables_internal__transactions(self, mock_open):
+        trans = '\n'.join([TRANS_THEN, TRANS_NOW])
+        mo = mock.mock_open(read_data=trans)
         mock_open.side_effect = [mo.return_value]
 
-        plugin = self.create_plugin({'standings': STANDINGS_THEN})
-        actual = plugin._tables('transactions')
-        expected = [TRANS_TABLE]
+        plugin = self.create_plugin({
+            'now': {
+                'transactions': ''
+            },
+            'standings': STANDINGS_THEN,
+            'then': {
+                'transactions': TRANS_ENCODED_THEN
+            }
+        })
+        actual = plugin._tables_internal('transactions')
+        expected = TRANS_TABLE_NOW
         self.assertEqual(actual, expected)
 
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
@@ -388,6 +590,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.assertEqual(plugin.data['now']['transactions'], TRANS_ENCODED_NOW)
 
 
 if __name__ in ['__main__', 'plugin.recap.recap_test']:

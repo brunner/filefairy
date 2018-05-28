@@ -50,9 +50,16 @@ class Recap(Plugin, Renderable):
         notify = kwargs['notify']
         response = Response()
         if notify == Notify.DOWNLOAD_FINISH:
+            data = self.data
+            data['then'] = copy.deepcopy(data['now'])
+
             self._standings()
+            self.tables = self._tables()
+            self.write()
+
             self._render(**kwargs)
             self._chat('fairylab', 'News updated.')
+
             response.notify = [Notify.BASE]
             response.shadow = self._shadow_internal(**kwargs)
         return response
@@ -69,6 +76,7 @@ class Recap(Plugin, Renderable):
         return [(html, '', 'recap.html', _home)]
 
     def _setup_internal(self, **kwargs):
+        self.tables = self._tables()
         self._render(**kwargs)
         return Response()
 
@@ -79,6 +87,14 @@ class Recap(Plugin, Renderable):
                 key='recap.standings',
                 data=self.data['standings'])
         ]
+
+    @staticmethod
+    def _encode(date, line):
+        line = re.sub(r'(<a href="../teams/team_)(\d+)(.html">[^<]+</a>)',
+                      'T' + r'\2', line)
+        line = re.sub(r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)',
+                      'P' + r'\2', line)
+        return '{}\t{}'.format(date, line)
 
     @staticmethod
     def _strip_teams(text):
@@ -108,7 +124,7 @@ class Recap(Plugin, Renderable):
             }]
         }
         for key in ['injuries', 'news', 'transactions']:
-            ret[key] = self._tables(key)
+            ret[key] = self.tables[key]
 
         offseason = self.shadow.get('statsplus.offseason', True)
         postseason = self.shadow.get('statsplus.postseason', True)
@@ -142,7 +158,13 @@ class Recap(Plugin, Renderable):
         if data != original:
             self.write()
 
-    def _tables(self, key):
+    def _tables(self):
+        ret = {}
+        for key in ['injuries', 'news', 'transactions']:
+            ret[key] = self._tables_internal(key)
+        return ret
+
+    def _tables_internal(self, key):
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         dname = dpath.format(key)
         with open(dname, 'r') as f:
@@ -150,19 +172,28 @@ class Recap(Plugin, Renderable):
 
         ret = []
 
+        date, line = '', ''
         cdate = ''
+        then = self.data['then'][key]
         match = re.findall('(\d{8})\t([^\n]+)\n', content.strip() + '\n')
         for m in match:
             if m:
                 date, line = m
                 if date != cdate:
+                    if cdate:
+                        then = ''
                     cdate = date
                     pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                     fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                         '{S}', suffix(pdate.day))
                     ret.insert(0, table(hcols=[''], bcols=[''], head=[fdate]))
-                body = self._rewrite_players(self._strip_teams(line))
                 if ret[0]['body'] is None:
                     ret[0]['body'] = []
-                ret[0]['body'].append([body])
+                if then and then == self._encode(date, line):
+                    ret[0]['body'] = []
+                else:
+                    body = self._rewrite_players(self._strip_teams(line))
+                    ret[0]['body'].append([body])
+
+        self.data['now'][key] = self._encode(date, line)
         return ret
