@@ -15,10 +15,11 @@ from api.renderable.renderable import Renderable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
-from util.box.box import records  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.standings.standings import standings_table  # noqa
+from util.statslab.statslab import box_score  # noqa
+from util.team.team import encoding_to_teamid  # noqa
 
 
 class Recap(Plugin, Renderable):
@@ -116,6 +117,12 @@ class Recap(Plugin, Renderable):
 
         return ret
 
+    def _record(self, teamid, record):
+        ntotal = self._total(record)
+        ttotal = self._total(self.data['standings'].get(teamid, ''))
+        if ntotal > ttotal:
+            self.data['standings'][teamid] = record
+
     def _standings(self):
         data = self.data
         original = copy.deepcopy(data)
@@ -123,13 +130,14 @@ class Recap(Plugin, Renderable):
         dpath = os.path.join(_root, 'resource/extract/box_scores')
         for box in os.listdir(dpath):
             bdname = os.path.join(dpath, box)
-            recs = records(bdname)
-            for t in recs:
-                record = recs[t]
-                ntotal = self._total(record)
-                ttotal = self._total(self.data['standings'].get(t, ''))
-                if ntotal > ttotal:
-                    self.data['standings'][t] = record
+            box_score_ = box_score(bdname)
+            if box_score_['ok']:
+                away_teamid = encoding_to_teamid(box_score_['away_team'])
+                away_record = box_score_['away_record']
+                self._record(away_teamid, away_record)
+                home_teamid = encoding_to_teamid(box_score_['home_team'])
+                home_record = box_score_['home_record']
+                self._record(home_teamid, home_record)
 
         if data != original:
             self.write()

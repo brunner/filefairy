@@ -122,6 +122,27 @@ BREADCRUMBS = [{
 }]
 STANDINGS_NOW = {'31': '76-86', '32': '77-85', '44': '70-92', '45': '97-65'}
 STANDINGS_THEN = {'31': '75-85', '32': '76-85', '44': '70-91', '45': '96-64'}
+BOX_SCORE1 = {
+    'away_record': '76-86',
+    'away_team': 'T31',
+    'home_record': '97-65',
+    'home_team': 'T45',
+    'ok': True
+}
+BOX_SCORE2 = {
+    'away_record': '77-85',
+    'away_team': 'T32',
+    'home_record': '70-92',
+    'home_team': 'T44',
+    'ok': True
+}
+BOX_SCORE3 = {
+    'away_record': '75-86',
+    'away_team': 'T31',
+    'home_record': '97-64',
+    'home_team': 'T45',
+    'ok': True
+}
 RECORDS1 = {'31': '76-86', '45': '97-65'}
 RECORDS2 = {'32': '77-85', '44': '70-92'}
 RECORDS3 = {'31': '75-86', '45': '97-64'}
@@ -293,14 +314,14 @@ class RecapTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch('plugin.recap.recap.records')
     @mock.patch('plugin.recap.recap.os.listdir')
-    def test_standings(self, mock_listdir, mock_records):
+    @mock.patch('plugin.recap.recap.box_score')
+    def test_standings(self, mock_box, mock_listdir):
         boxes = ['123', '456', '789']
         mock_listdir.return_value = [
             'game_box_{}.html'.format(b) for b in boxes
         ]
-        mock_records.side_effect = [RECORDS1, RECORDS2, RECORDS3]
+        mock_box.side_effect = [BOX_SCORE1, BOX_SCORE2, BOX_SCORE3]
 
         plugin = self.create_plugin({'standings': STANDINGS_THEN})
         plugin._standings()
@@ -315,7 +336,7 @@ class RecapTest(Test):
             mock.call(os.path.join(dpath, 'game_box_{}.html'.format(b)))
             for b in boxes
         ]
-        mock_records.assert_has_calls(calls)
+        mock_box.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()

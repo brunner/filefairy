@@ -16,13 +16,13 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
-from util.box.box import clarify  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.standings.standings import sort  # noqa
 from util.standings.standings import standings_table  # noqa
+from util.statslab.statslab import box_score  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import divisions  # noqa
@@ -281,6 +281,11 @@ class Statsplus(Plugin, Renderable):
         return text
 
     @staticmethod
+    def _unresolve(encoding):
+        chlany_ = encoding_to_chlany(encoding)
+        return chlany_ if chlany_ else encoding
+
+    @staticmethod
     def _wl(scores, encoding):
         w = len(re.findall(r'\|' + re.escape(encoding), scores))
         l = len(re.findall(r', ' + re.escape(encoding), scores))
@@ -424,23 +429,51 @@ class Statsplus(Plugin, Renderable):
         if count not in [1, 2]:
             return
 
-        score = scores[i]
-        pattern = '<([^|]+)\|([^<]+)>'
-        match = re.findall(pattern, score)
-        if match:
-            link, encoding = match[0]
-            ddate = decode_datetime(encoded_date)
-            value = clarify(ddate, link.format(_html, _game_box), encoding)
-            if encoding != value['encoding']:
-                scores[i] = '<{0}|{1}>'.format(link, value['encoding'])
-            if count == 1 and value['before']:
-                before, after = value['before'], value['after']
-                for key in ['highlights', 'injuries']:
-                    lines = self.data[key].get(encoded_date, [])
-                    for i in range(len(lines)):
-                        if value['before'] in lines[i]:
-                            line = re.sub(before, after, lines[i])
-                            self.data[key][encoded_date][i] = line
+        link_pattern = '<([^|]+)\|([^<]+)>'
+        score_pattern = '(\w+) (\d+), (\w+) (\d+)'
+        link_match = re.findall(link_pattern, scores[i])
+        if link_match:
+            link, content = link_match[0]
+            score_pattern = '(\w+) (\d+), (\w+) (\d+)'
+            score_match = re.findall(score_pattern, content)
+            if score_match:
+                cteam1, cruns1, cteam2, cruns2 = score_match[0]
+                box_score_ = box_score(link.format(_html, _game_box))
+                if box_score_['ok']:
+                    ddate = decode_datetime(encoded_date)
+                    if ddate != box_score_['date']:
+                        return
+                    bruns1 = box_score_['away_runs']
+                    bteam1 = box_score_['away_team']
+                    bruns2 = box_score_['home_runs']
+                    bteam2 = box_score_['home_team']
+                    swap = False
+                    if bruns1 < bruns2:
+                        bruns1, bruns2 = bruns2, bruns1
+                        bteam1, bteam2 = bteam2, bteam1
+                        swap = True
+                    if self._unresolve(bteam1) != cteam1:
+                        return
+                    if self._unresolve(bteam2) != cteam2:
+                        return
+                    if bruns1 != int(cruns1) or bruns2 != int(cruns2):
+                        return
+                    s = '{} {}, {} {}'
+                    score = s.format(bteam1, bruns1, bteam2, bruns2)
+                    scores[i] = '<{0}|{1}>'.format(link, score)
+                    if swap:
+                        bteam1, bteam2 = bteam2, bteam1
+                        cteam1, cteam2 = cteam2, cteam1
+                    a = '{} @ {}'
+                    before = a.format(cteam1, cteam2)
+                    after = a.format(bteam1, bteam2)
+                    for key in ['highlights', 'injuries']:
+                        lines = self.data[key].get(encoded_date, [])
+                        for i in range(len(lines)):
+                            if before in lines[i]:
+                                if count == 1:
+                                    line = re.sub(before, after, lines[i])
+                                    self.data[key][encoded_date][i] = line
 
     def _table(self, key, date, path):
         lines = self.data[key][date]

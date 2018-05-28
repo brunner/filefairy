@@ -89,6 +89,7 @@ SCORES_REGULAR_ENCODED = [
     '<{0}{1}2997.html|T57 12, T34 9>', '<{0}{1}2994.html|T58 5, T50 3>',
     '<{0}{1}2995.html|T59 8, T47 2>'
 ]
+SCORES_SIMPLE_ENCODED = ['<{0}{1}2998.html|T31 4, TLA 2>']
 SCORES_REGULAR_CLARIFIED = [
     '<{0}{1}2998.html|T31 4, T45 2>', '<{0}{1}3003.html|T32 2, T44 1>',
     '<{0}{1}2996.html|T37 7, T46 2>', '<{0}{1}3002.html|T40 11, T35 4>',
@@ -1185,32 +1186,50 @@ class StatsplusTest(Test):
         self.mock_chat.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.clarify')
-    def test_resolve_all(self, mock_clarify, mock_render):
-        mock_clarify.side_effect = [{
-            'encoding': 'T31 4, T45 2',
-            'before': 'T31 @ TLA',
-            'after': 'T31 @ T45'
+    @mock.patch('plugin.statsplus.statsplus.box_score')
+    def test_resolve_all__with_valid_box(self, mock_box, mock_render):
+        mock_box.side_effect = [{
+            'away_runs': 4,
+            'away_team': 'T31',
+            'date': THEN,
+            'home_runs': 2,
+            'home_team': 'T45',
+            'ok': True
         }, {
-            'encoding': 'T32 2, T44 1',
-            'before': 'TLA @ T32',
-            'after': 'T44 @ T32'
+            'away_runs': 1,
+            'away_team': 'T44',
+            'date': THEN,
+            'home_runs': 2,
+            'home_team': 'T32',
+            'ok': True
         }, {
-            'encoding': 'T40 11, T35 4',
-            'before': 'T40 @ TCH',
-            'after': 'T40 @ T35'
+            'away_runs': 11,
+            'away_team': 'T40',
+            'date': THEN,
+            'home_runs': 4,
+            'home_team': 'T35',
+            'ok': True
         }, {
-            'encoding': 'T41 6, T36 2',
-            'before': 'TCH @ T41',
-            'after': 'T36 @ T41'
+            'away_runs': 2,
+            'away_team': 'T36',
+            'date': THEN,
+            'home_runs': 6,
+            'home_team': 'T41',
+            'ok': True
         }, {
-            'encoding': 'T49 1, T55 0',
-            'before': 'TNY @ T55',
-            'after': 'T49 @ T55'
+            'away_runs': 1,
+            'away_team': 'T49',
+            'date': THEN,
+            'home_runs': 0,
+            'home_team': 'T55',
+            'ok': True
         }, {
-            'encoding': 'T48 5, T33 3',
-            'before': 'TNY @ T33',
-            'after': 'T48 @ T33'
+            'away_runs': 5,
+            'away_team': 'T48',
+            'date': THEN,
+            'home_runs': 3,
+            'home_team': 'T33',
+            'ok': True
         }]
         read = _data(
             highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
@@ -1227,25 +1246,97 @@ class StatsplusTest(Test):
             scores={THEN_ENCODED: SCORES_REGULAR_CLARIFIED},
             unresolved=[])
         calls = [
-            mock.call(THEN, '{0}{1}2998.html'.format(_html, _game_box),
-                      'T31 4, TLA 2'),
-            mock.call(THEN, '{0}{1}3003.html'.format(_html, _game_box),
-                      'T32 2, TLA 1'),
-            mock.call(THEN, '{0}{1}3002.html'.format(_html, _game_box),
-                      'T40 11, TCH 4'),
-            mock.call(THEN, '{0}{1}14721.html'.format(_html, _game_box),
-                      'T41 6, TCH 2'),
-            mock.call(THEN, '{0}{1}3001.html'.format(_html, _game_box),
-                      'TNY 1, T55 0'),
-            mock.call(THEN, '{0}{1}3000.html'.format(_html, _game_box),
-                      'TNY 5, T33 3')
+            mock.call('{0}{1}2998.html'.format(_html, _game_box)),
+            mock.call('{0}{1}3003.html'.format(_html, _game_box)),
+            mock.call('{0}{1}3002.html'.format(_html, _game_box)),
+            mock.call('{0}{1}14721.html'.format(_html, _game_box)),
+            mock.call('{0}{1}3001.html'.format(_html, _game_box)),
+            mock.call('{0}{1}3000.html'.format(_html, _game_box))
         ]
-        mock_clarify.assert_has_calls(calls)
+        mock_box.assert_has_calls(calls)
         mock_render.assert_called_once_with(date=THEN)
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
         self.assertFalse(plugin.data['unresolved'])
+
+    @mock.patch.object(Statsplus, '_render')
+    @mock.patch('plugin.statsplus.statsplus.box_score')
+    def test_resolve_all__with_invalid_date(self, mock_box, mock_render):
+        mock_box.return_value = {
+            'away_runs': 4,
+            'away_team': 'T31',
+            'date': NOW,
+            'home_runs': 2,
+            'home_team': 'T45',
+            'ok': True
+        }
+        read = _data(
+            scores={THEN_ENCODED: SCORES_SIMPLE_ENCODED},
+            unresolved=[THEN_ENCODED])
+        plugin = self.create_plugin(read)
+        response = plugin._resolve_all([THEN_ENCODED], date=THEN)
+        self.assertEqual(response, Response())
+
+        link = '{0}{1}2998.html'.format(_html, _game_box)
+        mock_box.assert_called_once_with(link)
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.assertCountEqual(plugin.data['unresolved'], [THEN_ENCODED])
+
+    @mock.patch.object(Statsplus, '_render')
+    @mock.patch('plugin.statsplus.statsplus.box_score')
+    def test_resolve_all__with_invalid_team(self, mock_box, mock_render):
+        mock_box.return_value = {
+            'away_runs': 4,
+            'away_team': 'T32',
+            'date': THEN,
+            'home_runs': 2,
+            'home_team': 'T45',
+            'ok': True
+        }
+        read = _data(
+            scores={THEN_ENCODED: SCORES_SIMPLE_ENCODED},
+            unresolved=[THEN_ENCODED])
+        plugin = self.create_plugin(read)
+        response = plugin._resolve_all([THEN_ENCODED], date=THEN)
+        self.assertEqual(response, Response())
+
+        link = '{0}{1}2998.html'.format(_html, _game_box)
+        mock_box.assert_called_once_with(link)
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.assertCountEqual(plugin.data['unresolved'], [THEN_ENCODED])
+
+    @mock.patch.object(Statsplus, '_render')
+    @mock.patch('plugin.statsplus.statsplus.box_score')
+    def test_resolve_all__with_invalid_runs(self, mock_box, mock_render):
+        mock_box.return_value = {
+            'away_runs': 5,
+            'away_team': 'T31',
+            'date': THEN,
+            'home_runs': 2,
+            'home_team': 'T45',
+            'ok': True
+        }
+        read = _data(
+            scores={THEN_ENCODED: SCORES_SIMPLE_ENCODED},
+            unresolved=[THEN_ENCODED])
+        plugin = self.create_plugin(read)
+        response = plugin._resolve_all([THEN_ENCODED], date=THEN)
+        self.assertEqual(response, Response())
+
+        link = '{0}{1}2998.html'.format(_html, _game_box)
+        mock_box.assert_called_once_with(link)
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.assertCountEqual(plugin.data['unresolved'], [THEN_ENCODED])
 
     def test_table__highlights(self):
         read = _data(highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED})
