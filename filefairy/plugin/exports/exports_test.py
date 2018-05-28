@@ -22,6 +22,7 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 DATA = Exports._data()
+ENV = env()
 EXPORTS_100 = [('31', 'New'), ('32', 'New'), ('33', 'New')]
 EXPORTS_LOCK = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
 EXPORTS_OLD = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
@@ -106,7 +107,7 @@ class ExportsTest(Test):
 
     def create_plugin(self, data, exports=None):
         self.init_mocks(data)
-        plugin = Exports(e=env())
+        plugin = Exports(date=NOW, e=ENV)
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
@@ -865,4 +866,4 @@ if __name__ in ['__main__', 'plugin.exports.exports_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugin.exports'
     _pth = 'plugin/exports'
-    main(ExportsTest, Exports, _pkg, _pth, {}, _main)
+    main(ExportsTest, Exports, _pkg, _pth, {}, _main, date=NOW, e=ENV)

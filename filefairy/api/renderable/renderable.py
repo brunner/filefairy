@@ -25,8 +25,10 @@ class Renderable(Serializable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
-        super(Renderable, self).__init__(**kwargs)
-        self.environment = kwargs['e']
+        e = kwargs.pop('e')
+        super().__init__(**kwargs)
+
+        self.environment = e
 
     @abstractstatic
     def _href():

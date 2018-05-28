@@ -71,7 +71,7 @@ class SnacksTest(unittest.TestCase):
 
     def create_plugin(self, data, cfds=None, names=None):
         self.init_mocks(data)
-        plugin = Snacks()
+        plugin = Snacks(date=NOW)
         plugin.loaded = True
 
         self.mock_open.assert_called_once_with(DATA, 'r')

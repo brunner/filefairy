@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import copy
 import datetime
 import json
 import importlib
+import logging
 import os
 import re
 import sys
@@ -18,13 +18,15 @@ _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
 
 from api.messageable.messageable import Messageable  # noqa
+from api.nameable.nameable import Nameable  # noqa
 from api.plugin.plugin import Plugin  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.dashboard.dashboard import Dashboard  # noqa
+from core.dashboard.dashboard import LoggingHandler  # noqa
 from core.notify.notify import Notify  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
-from util.datetime_.datetime_ import decode_datetime  # noqa
-from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.logger.logger import log  # noqa
 from util.slack.slack import rtm_connect  # noqa
@@ -32,12 +34,14 @@ from util.slack.slack import rtm_connect  # noqa
 
 class Fairylab(Messageable, Renderable):
     def __init__(self, **kwargs):
-        super(Fairylab, self).__init__(**dict(kwargs))
+        d = kwargs.pop('d')
+        super(Fairylab, self).__init__(**kwargs)
+
         self.bg = None
         self.day = None
-        self.pins = {}
         self.keep_running = True
         self.lock = threading.Lock()
+        self.registered = {'dashboard': d}
         self.sleep = 120
         self.tasks = []
         self.ws = None
@@ -59,9 +63,6 @@ class Fairylab(Messageable, Renderable):
         return 'Fairylab core framework.'
 
     def _setup(self):
-        data = self.data
-        original = copy.deepcopy(data)
-
         date = datetime.datetime.now()
         kwargs = {'date': date, 'v': True}
         self.day = date.day
@@ -73,9 +74,6 @@ class Fairylab(Messageable, Renderable):
 
         self._try_all('_setup', **kwargs)
         log(self._name(), **dict(kwargs, s='Completed setup.'))
-
-        if data != original:
-            self.write()
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -92,22 +90,17 @@ class Fairylab(Messageable, Renderable):
     def _package(path, name):
         return '{0}.{1}.{1}'.format(path, name)
 
-    def _plugin(self, p):
-        return self.data['plugins'].get(p, {})
-
     def _try_all(self, method, *args, **kwargs):
-        ps = sorted(self.data['plugins'].keys())
+        ps = sorted(self.registered.keys())
         for p in ps:
             self._try(p, method, *args, **kwargs)
 
     def _try(self, p, method, *args, **kwargs):
-        data = self.data
-        if p not in data['plugins']:
+        if p not in self.registered:
             return
 
-        plugin = self._plugin(p)
-        instance = self.pins.get(p, None)
-        if not plugin.get('ok') or not instance:
+        instance = self.registered.get(p)
+        if not isinstance(instance, Plugin) or not instance.ok:
             return
 
         item = getattr(instance, method, None)
@@ -115,12 +108,11 @@ class Fairylab(Messageable, Renderable):
             return
 
         date = kwargs.get('date') or datetime.datetime.now()
-        edate = encode_datetime(date)
 
         try:
             response = item(*args, **dict(kwargs, date=date))
             if response.notify:
-                data['plugins'][p]['date'] = edate
+                self.registered[p].date = date
             for n in response.notify:
                 if n != Notify.BASE:
                     self._try_all('_notify', **dict(kwargs, notify=n))
@@ -132,8 +124,8 @@ class Fairylab(Messageable, Renderable):
         except Exception:
             exc = traceback.format_exc()
             log(instance._name(), s='Exception.', c=exc, v=True)
-            data['plugins'][p]['ok'] = False
-            data['plugins'][p]['date'] = edate
+            self.registered[p].date = date
+            self.registered[p].ok = False
 
     def _background(self):
         while self.keep_running:
@@ -148,16 +140,10 @@ class Fairylab(Messageable, Renderable):
 
     def _recv(self, message):
         with self.lock:
-            data = self.data
-            original = copy.deepcopy(data)
-
             date = datetime.datetime.now()
             obj = json.loads(message)
             self._on_message(obj=obj, date=date)
             self._try_all('_on_message', obj=obj, date=date)
-
-            if data != original:
-                self.write()
 
     def _connect(self):
         def _recv(ws, message):
@@ -183,18 +169,12 @@ class Fairylab(Messageable, Renderable):
                 self._connect()
 
             with self.lock:
-                data = self.data
-                original = copy.deepcopy(data)
-
                 date = datetime.datetime.now()
                 self._try_all('_run', date=date)
 
                 if self.day != date.day:
                     self.day = date.day
                     self._try_all('_notify', notify=Notify.FAIRYLAB_DAY)
-
-                if data != original:
-                    self.write()
 
                 self._render(date=date)
 
@@ -204,7 +184,6 @@ class Fairylab(Messageable, Renderable):
             self.ws.close()
 
     def _home(self, **kwargs):
-        data = self.data
         ret = {
             'breadcrumbs': [{
                 'href': '',
@@ -215,12 +194,11 @@ class Fairylab(Messageable, Renderable):
         }
 
         date = kwargs['date']
-        ps = sorted(data['plugins'].keys())
+        ps = sorted(self.registered.keys())
         for p in ps:
-            plugin = self._plugin(p)
-            instance = self.pins.get(p, None)
+            instance = self.registered.get(p, None)
             info = ''
-            if isinstance(instance, Plugin):
+            if isinstance(instance, Nameable):
                 info = instance._info()
 
             href = ''
@@ -228,11 +206,12 @@ class Fairylab(Messageable, Renderable):
             if renderable:
                 href = instance._href()
 
-            pdate = plugin.get('date', datetime.datetime.now())
-            ts = delta(decode_datetime(pdate), date)
+            ts, success, danger = '', '', ''
+            if isinstance(instance, Registrable):
+                ts = delta(instance.date, date)
+                success = 'just now' if 's' in ts else ''
+                danger = 'error' if not instance.ok else ''
 
-            success = 'just now' if 's' in ts else ''
-            danger = 'error' if not plugin.get('ok') else ''
             c = card(
                 href=href,
                 title=p,
@@ -249,16 +228,10 @@ class Fairylab(Messageable, Renderable):
         return ret
 
     def reload(self, *args, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
         value = self._reload_internal(*args, **kwargs)
         if value:
             self._try_all('_setup', **kwargs)
             log(self._name(), **dict(kwargs, s='Completed setup.'))
-
-        if data != original:
-            self.write()
 
     def _reload_internal(self, *args, **kwargs):
         if len(args) != 2:
@@ -289,7 +262,10 @@ class Fairylab(Messageable, Renderable):
         try:
             date = kwargs['date']
             plugin = getattr(module, clazz)
-            instance = plugin(**dict(kwargs, e=self.environment))
+            if issubclass(plugin, Renderable):
+                instance = plugin(date=date, e=self.environment)
+            else:
+                instance = plugin(date=date)
             enabled = instance.enabled
             exc = None
         except Exception:
@@ -301,12 +277,10 @@ class Fairylab(Messageable, Renderable):
         s = 'Exception.' if exc else 'Installed.' if enabled else 'Disabled.'
         log(clazz, **dict(kwargs, s=s, c=exc))
 
-        if enabled:
-            self.data['plugins'][name] = {
-                'date': encode_datetime(date),
-                'ok': True,
-            }
-            self.pins[name] = instance
+        if isinstance(instance, Registrable):
+            instance.date = date
+            instance.ok = enabled
+            self.registered[name] = instance
 
         return enabled
 
@@ -320,6 +294,14 @@ class Fairylab(Messageable, Renderable):
 
 
 if __name__ == '__main__':
-    fairylab = Fairylab(e=env())
+    env_ = env()
+    dashboard = Dashboard(e=env_)
+
+    handler = LoggingHandler(dashboard)
+    logger_ = logging.getLogger('fairylab')
+    logger_.addHandler(handler)
+    logger_.setLevel(logging.DEBUG)
+
+    fairylab = Fairylab(d=dashboard, e=env_)
     fairylab._setup()
     fairylab._start()

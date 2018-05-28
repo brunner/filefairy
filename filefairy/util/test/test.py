@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
             return original
 
 
-def _gen_golden(case, _cls, _pkg, _pth, _read):
+def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
     @mock.patch.object(_cls, '_render_internal')
     @mock.patch('api.renderable.renderable.check_output')
     def test_golden(self, mock_check, mock_render):
@@ -47,19 +47,19 @@ def _gen_golden(case, _cls, _pkg, _pth, _read):
             getattr(module, attr) for attr in ['subtitle', 'tmpl', 'context']
         ]
         mock_render.return_value = [(golden, subtitle, tmpl, context)]
-        plugin = _cls(e=env())
+        plugin = _cls(**kwargs)
         plugin._render(date=date, test=True)
 
     return test_golden
 
 
-def main(_tst, _cls, _pkg, _pth, _read, _main):
+def main(_tst, _cls, _pkg, _pth, _read, _main, **kwargs):
     if issubclass(_cls, Renderable):
         d = os.path.join(_root, _pth, 'samples')
         cs = filter(lambda x: '_' not in x, os.listdir(d))
         for c in cs:
             case = re.sub('.py', '', c)
-            test_golden = _gen_golden(case, _cls, _pkg, _pth, _read)
+            test_golden = _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs)
             setattr(_tst, 'test_golden__{}'.format(case), test_golden)
 
     if _main:

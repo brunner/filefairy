@@ -17,7 +17,7 @@ class Messageable(Nameable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
-        super(Messageable, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def _name(self):
         return self.__class__.__name__

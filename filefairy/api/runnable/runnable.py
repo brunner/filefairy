@@ -4,11 +4,11 @@
 import abc
 
 
-class Runnable(object):
+class Runnable():
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
-        super(Runnable, self).__init__()
+        super().__init__(**kwargs)
 
     @abc.abstractmethod
     def _run_internal(self, **kwargs):

@@ -9,17 +9,19 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/plugin', '', _path))
 from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 
 
-class Plugin(Messageable, Runnable):
+class Plugin(Messageable, Registrable, Runnable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
-        super(Plugin, self).__init__(**kwargs)
+        super().__init__(**kwargs)
+
         self.shadow = {}
 
     @abc.abstractproperty

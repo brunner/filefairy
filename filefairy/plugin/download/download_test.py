@@ -93,7 +93,7 @@ class DownloadTest(unittest.TestCase):
 
     def create_plugin(self, data):
         self.init_mocks(data)
-        plugin = Download()
+        plugin = Download(date=NOW)
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()

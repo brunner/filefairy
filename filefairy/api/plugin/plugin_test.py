@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import datetime
 import os
 import re
 import sys
@@ -17,6 +18,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
+
+NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
 
 
 class FakePlugin(Plugin):
@@ -96,13 +99,13 @@ class FakeRenderable(Plugin, Renderable):
 
 class PluginTest(unittest.TestCase):
     def test_init(self):
-        plugin = FakePlugin()
+        plugin = FakePlugin(date=NOW)
         self.assertTrue(plugin.enabled)
         self.assertTrue(isinstance(plugin, Messageable))
         self.assertTrue(isinstance(plugin, Runnable))
 
     def test_notify__with_true(self):
-        plugin = FakePlugin()
+        plugin = FakePlugin(date=NOW)
         response = plugin._notify(notify=Notify.OTHER)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
@@ -111,12 +114,12 @@ class PluginTest(unittest.TestCase):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
-        plugin = FakeRenderable(e=env())
+        plugin = FakeRenderable(date=NOW, e=env())
         response = plugin._notify(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
     def test_setup(self):
-        plugin = FakePlugin()
+        plugin = FakePlugin(date=NOW)
         response = plugin._setup()
         self.assertEqual(
             response,
@@ -127,7 +130,7 @@ class PluginTest(unittest.TestCase):
     @mock.patch.object(FakePlugin, '_setup')
     def test_shadow(self, mock_setup):
         shadow = Shadow(destination='foo', key='plugin.bar', data='baz')
-        plugin = FakePlugin()
+        plugin = FakePlugin(date=NOW)
         self.assertEqual(plugin.shadow, {})
 
         response = plugin._shadow(shadow=shadow)

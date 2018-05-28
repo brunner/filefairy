@@ -27,6 +27,7 @@ _news = os.path.join(_leagues, 'league_100_news.txt')
 _transactions = os.path.join(_leagues, 'league_100_transactions.txt')
 
 DATA = Recap._data()
+ENV = env()
 NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
 
 INJ_THEN = '20220815\t<a href=\"../teams/team_44.html\">Los Angeles Angels' + \
@@ -317,7 +318,7 @@ class RecapTest(Test):
 
     def create_plugin(self, read):
         self.init_mocks(read)
-        plugin = Recap(e=env())
+        plugin = Recap(date=NOW, e=ENV)
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
@@ -754,4 +755,4 @@ if __name__ in ['__main__', 'plugin.recap.recap_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugin.recap'
     _pth = 'plugin/recap'
-    main(RecapTest, Recap, _pkg, _pth, {}, _main)
+    main(RecapTest, Recap, _pkg, _pth, {}, _main, date=NOW, e=ENV)

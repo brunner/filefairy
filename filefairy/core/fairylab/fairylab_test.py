@@ -15,6 +15,7 @@ _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
 from api.plugin.plugin import Plugin  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.dashboard.dashboard import Dashboard  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
@@ -29,7 +30,7 @@ from util.test.test import main  # noqa
 
 class Browsable(Plugin, Renderable):
     def __init__(self, **kwargs):
-        super(Browsable, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):
@@ -74,7 +75,7 @@ class Internal(Plugin):
     var = True
 
     def __init__(self, **kwargs):
-        super(Internal, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):
@@ -102,7 +103,7 @@ class Internal(Plugin):
 
 class Disabled(Plugin):
     def __init__(self, **kwargs):
-        super(Disabled, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):
@@ -158,17 +159,22 @@ DIR_PLUGINS = os.path.join(_root, 'plugin')
 HOME = {'breadcrumbs': [], 'browsable': [], 'internal': []}
 INDEX = 'html/fairylab/index.html'
 MODULES = {'plugin.internal.internal': None}
-PINS_BOTH = {'browsable': Browsable(e=env()), 'internal': Internal()}
-PINS_INTERNAL = {'internal': Internal()}
-PLUGIN_CANONICAL_ERROR = {'date': NOW_ENCODED, 'ok': False}
-PLUGIN_CANONICAL_THEN = {'date': THEN_ENCODED, 'ok': True}
-PLUGIN_CANONICAL_NOW = {'date': NOW_ENCODED, 'ok': True}
+ENV = env()
+BROWSABLE = Browsable(date=THEN, e=ENV)
+DASHBOARD = Dashboard(date=THEN, e=ENV)
+INTERNAL = Internal(date=THEN)
+REGISTERED = {
+    'browsable': BROWSABLE,
+    'dashboard': DASHBOARD,
+    'internal': INTERNAL
+}
 TRACEBACK = 'Traceback: ...'
 BREADCRUMBS = [{'href': '', 'name': 'Home'}]
 
 
 def set_date_now(program, *args, **kwargs):
-    program._plugin('internal')['date'] = NOW_ENCODED
+    p = args[0]
+    program.registered[p].date = NOW
 
 
 def set_running_false(program, *args, **kwargs):
@@ -195,6 +201,10 @@ class FairylabTest(Test):
         self.addCleanup(patch_traceback.stop)
         self.mock_traceback = patch_traceback.start()
 
+        for p in REGISTERED:
+            REGISTERED[p].date = THEN
+            REGISTERED[p].ok = True
+
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
@@ -209,22 +219,22 @@ class FairylabTest(Test):
         self.mock_log.reset_mock()
         self.mock_traceback.reset_mock()
 
-    def create_program(self, data, pins=None, tasks=None):
-        self.init_mocks(data)
-        program = Fairylab(e=env())
+    def create_program(self, registered=None, tasks=None):
+        self.init_mocks({})
+        program = Fairylab(d=DASHBOARD, e=ENV)
         program.day = NOW.day
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_traceback.assert_not_called()
-        self.assertEqual(program.data, data)
+        self.assertEqual(program.data, {})
 
         self.reset_mocks()
-        self.init_mocks(data)
+        self.init_mocks({})
 
-        if pins:
-            program.pins = pins
+        if registered:
+            program.registered = registered
 
         if tasks:
             program.tasks = tasks
@@ -232,12 +242,11 @@ class FairylabTest(Test):
         return program
 
     def test_init(self):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read)
+        program = self.create_program()
 
-        self.assertEqual(program.data, read)
+        self.assertEqual(program.data, {})
         self.assertEqual(program.day, NOW.day)
-        self.assertEqual(program.pins, {})
+        self.assertEqual(program.registered, {'dashboard': DASHBOARD})
         self.assertTrue(program.keep_running)
         self.assertEqual(program.sleep, 120)
         self.assertEqual(program.ws, None)
@@ -250,8 +259,7 @@ class FairylabTest(Test):
         mock_isdir.return_value = True
         mock_listdir.return_value = ['internal']
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
         program.day = THEN.day
         program._setup()
 
@@ -268,14 +276,18 @@ class FairylabTest(Test):
         self.mock_log.assert_called_once_with(
             'Fairylab', s='Completed setup.', date=NOW, v=True)
         self.assertEqual(program.day, NOW.day)
-        self.assertEqual(program.pins, PINS_INTERNAL)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
 
     @mock.patch.object(Fairylab, '_home')
     def test_render(self, mock_home):
         mock_home.return_value = HOME
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
         ret = program._render_internal(date=NOW)
         self.assertEqual(ret, [(INDEX, '', 'home.html', HOME)])
 
@@ -284,7 +296,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.pins, PINS_INTERNAL)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
 
     def test_package(self):
         actual = Fairylab._package('plugin', 'internal')
@@ -297,10 +314,7 @@ class FairylabTest(Test):
     def test_try__with_valid_input(self, mock_bnotify, mock_inotify, mock_run):
         mock_run.return_value = Response(notify=[Notify.BASE])
 
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -310,8 +324,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, NOW)
+        self.assertEqual(program.registered['internal'].ok, True)
 
     @mock.patch.object(Internal, '_run_internal')
     @mock.patch.object(Internal, '_notify')
@@ -320,10 +338,7 @@ class FairylabTest(Test):
         mock_bnotify.return_value = Response()
         mock_run.return_value = Response(notify=[Notify.OTHER])
 
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_called_once_with(notify=Notify.OTHER, date=NOW)
@@ -333,8 +348,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, NOW)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
@@ -348,10 +367,7 @@ class FairylabTest(Test):
         mock_bshadow.return_value = Response()
         mock_run.return_value = Response(shadow=[shadow])
 
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -363,8 +379,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
@@ -373,10 +393,7 @@ class FairylabTest(Test):
     def test_try__with_task(self, mock_bnotify, mock_inotify, mock_run):
         mock_run.return_value = Response(task=[Task(target='foo')])
 
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -386,8 +403,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [('internal', Task(target='foo'))])
 
     @mock.patch.object(Internal, '_run_internal')
@@ -396,10 +417,7 @@ class FairylabTest(Test):
     def test_try__with_no_change(self, mock_bnotify, mock_inotify, mock_run):
         mock_run.return_value = Response()
 
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -409,8 +427,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
@@ -419,10 +441,7 @@ class FairylabTest(Test):
     def test_try__without_date(self, mock_bnotify, mock_inotify, mock_run):
         mock_run.return_value = Response(notify=[Notify.BASE])
 
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_run_internal')
 
         mock_bnotify.assert_not_called()
@@ -432,8 +451,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, NOW)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
@@ -443,10 +466,7 @@ class FairylabTest(Test):
                                         mock_run):
         mock_run.side_effect = Exception()
 
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -457,8 +477,12 @@ class FairylabTest(Test):
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_called_once_with(
             'Internal', c='Traceback: ...', s='Exception.', v=True)
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_ERROR)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, NOW)
+        self.assertEqual(program.registered['internal'].ok, False)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
@@ -466,12 +490,8 @@ class FairylabTest(Test):
     @mock.patch.object(Browsable, '_notify')
     def test_try__with_plugin_error(self, mock_bnotify, mock_inotify,
                                     mock_run):
-        plugins = {
-            'browsable': copy.deepcopy(PLUGIN_CANONICAL_THEN),
-            'internal': copy.deepcopy(PLUGIN_CANONICAL_ERROR)
-        }
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
+        program.registered['internal'].ok = False
         program._try('internal', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -481,8 +501,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_ERROR)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, False)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_run_internal')
@@ -490,10 +514,7 @@ class FairylabTest(Test):
     @mock.patch.object(Browsable, '_notify')
     def test_try__with_plugin_not_found(self, mock_bnotify, mock_inotify,
                                         mock_run):
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('foo', '_run_internal', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -503,17 +524,18 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_notify')
     @mock.patch.object(Browsable, '_notify')
     def test_try__with_item_not_found(self, mock_bnotify, mock_inotify):
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', '_foo', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -522,17 +544,18 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Internal, '_notify')
     @mock.patch.object(Browsable, '_notify')
     def test_try__with_item_not_callable(self, mock_bnotify, mock_inotify):
-        keys = ['browsable', 'internal']
-        plugins = {k: copy.deepcopy(PLUGIN_CANONICAL_THEN) for k in keys}
-        read = {'plugins': plugins}
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         program._try('internal', 'var', date=NOW)
 
         mock_bnotify.assert_not_called()
@@ -541,8 +564,12 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('browsable'), PLUGIN_CANONICAL_THEN)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['browsable'].ok, True)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Fairylab, '_try')
@@ -551,9 +578,8 @@ class FairylabTest(Test):
         args = (True, False)
         kwargs = {'key': 'value'}
         task = Task(target='foo', args=args, kwargs=kwargs)
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         program = self.create_program(
-            read, pins=PINS_INTERNAL, tasks=[('internal', task)])
+            registered=REGISTERED, tasks=[('internal', task)])
 
         mock_sleep.side_effect = functools.partial(set_running_false, program)
         program._background()
@@ -569,39 +595,42 @@ class FairylabTest(Test):
     @mock.patch.object(Fairylab, '_try')
     @mock.patch.object(Fairylab, '_on_message')
     def test_recv__with_valid_input(self, mock_message, mock_try):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
 
         mock_try.side_effect = functools.partial(set_date_now, program)
         program._recv('{"type":"message","channel":"ABC","text":"foo"}')
 
-        write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_NOW)}}
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
         mock_message.assert_called_once_with(obj=obj, date=NOW)
-        mock_try.assert_called_once_with(
-            'internal', '_on_message', obj=obj, date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_datetime.datetime.now.assert_called_once_with()
-        self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
-
-    @mock.patch.object(Fairylab, '_try')
-    @mock.patch.object(Fairylab, '_on_message')
-    def test_recv__with_no_change(self, mock_message, mock_try):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
-        program._recv('{"type":"message","channel":"ABC","text":"foo"}')
-
-        obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
-        mock_message.assert_called_once_with(obj=obj, date=NOW)
-        mock_try.assert_called_once_with(
-            'internal', '_on_message', obj=obj, date=NOW)
+        calls = [
+            mock.call('browsable', '_on_message', obj=obj, date=NOW),
+            mock.call('dashboard', '_on_message', obj=obj, date=NOW),
+            mock.call('internal', '_on_message', obj=obj, date=NOW),
+        ]
+        mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+
+    @mock.patch.object(Fairylab, '_try')
+    @mock.patch.object(Fairylab, '_on_message')
+    def test_recv__with_no_change(self, mock_message, mock_try):
+        program = self.create_program(registered=REGISTERED)
+        program._recv('{"type":"message","channel":"ABC","text":"foo"}')
+
+        obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
+        mock_message.assert_called_once_with(obj=obj, date=NOW)
+        calls = [
+            mock.call('browsable', '_on_message', obj=obj, date=NOW),
+            mock.call('dashboard', '_on_message', obj=obj, date=NOW),
+            mock.call('internal', '_on_message', obj=obj, date=NOW),
+        ]
+        mock_try.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_log.assert_not_called()
 
     @mock.patch('core.fairylab.fairylab.websocket.WebSocketApp')
     @mock.patch('core.fairylab.fairylab.threading.Thread')
@@ -612,8 +641,7 @@ class FairylabTest(Test):
         mock_rtm.return_value = {'ok': True, 'url': 'wss://...'}
         mock_ws.side_effect = FakeWebSocketApp
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
         program._connect()
         program.ws.send('{"type":"message","channel":"ABC","text":"foo"}')
 
@@ -626,7 +654,6 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
         self.assertIsNotNone(program.ws)
 
     @mock.patch('core.fairylab.fairylab.websocket.WebSocketApp')
@@ -638,8 +665,7 @@ class FairylabTest(Test):
         mock_rtm.return_value = {'ok': False}
         mock_ws.side_effect = FakeWebSocketApp
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
         program._connect()
 
         mock_recv.assert_not_called()
@@ -649,7 +675,6 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
         self.assertIsNone(program.ws)
 
     @mock.patch.object(Fairylab, '_try')
@@ -660,24 +685,29 @@ class FairylabTest(Test):
     @mock.patch.object(Fairylab, '_background')
     def test_start__with_valid_input(self, mock_bg, mock_connect, mock_render,
                                      mock_sleep, mock_thread, mock_try):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
 
         mock_sleep.side_effect = functools.partial(set_running_false, program)
         mock_try.side_effect = functools.partial(set_date_now, program)
         program._start()
 
-        write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_NOW)}}
         mock_connect.assert_called_once_with()
         mock_sleep.assert_called_once_with(120)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
-        mock_try.assert_called_once_with('internal', '_run', date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        calls = [
+            mock.call('browsable', '_run', date=NOW),
+            mock.call('dashboard', '_run', date=NOW),
+            mock.call('internal', '_run', date=NOW),
+        ]
+        mock_try.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_NOW)
+        self.assertEqual(program.registered['browsable'].date, NOW)
+        self.assertEqual(program.registered['dashboard'].date, NOW)
+        self.assertEqual(program.registered['internal'].date, NOW)
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.threading.Thread')
@@ -687,8 +717,7 @@ class FairylabTest(Test):
     @mock.patch.object(Fairylab, '_background')
     def test_start__with_date_change(self, mock_bg, mock_connect, mock_render,
                                      mock_sleep, mock_thread, mock_try):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
         program.day = THEN.day
 
         mock_sleep.side_effect = functools.partial(set_running_false, program)
@@ -699,15 +728,21 @@ class FairylabTest(Test):
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
+            mock.call('browsable', '_run', date=NOW),
+            mock.call('dashboard', '_run', date=NOW),
             mock.call('internal', '_run', date=NOW),
-            mock.call('internal', '_notify', notify=Notify.FAIRYLAB_DAY)
+            mock.call('browsable', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('dashboard', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('internal', '_notify', notify=Notify.FAIRYLAB_DAY),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['internal'].date, THEN)
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.threading.Thread')
@@ -717,8 +752,7 @@ class FairylabTest(Test):
     @mock.patch.object(Fairylab, '_background')
     def test_start__with_no_change(self, mock_bg, mock_connect, mock_render,
                                    mock_sleep, mock_thread, mock_try):
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
 
         mock_sleep.side_effect = functools.partial(set_running_false, program)
         program._start()
@@ -727,73 +761,92 @@ class FairylabTest(Test):
         mock_sleep.assert_called_once_with(120)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
-        mock_try.assert_called_once_with('internal', '_run', date=NOW)
+        mock_try.assert_has_calls([mock.call('internal', '_run', date=NOW)])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertEqual(program.registered['browsable'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['internal'].date, THEN)
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_valid_input(self, mock_delta):
-        mock_delta.side_effect = ['2m ago', '2h ago']
+        mock_delta.side_effect = ['2m ago', '15m ago', '2h ago']
 
-        read = {
-            'plugins': {
-                k: copy.deepcopy(PLUGIN_CANONICAL_THEN)
-                for k in ['browsable', 'internal']
-            }
-        }
-        program = self.create_program(read, pins=PINS_BOTH)
+        program = self.create_program(registered=REGISTERED)
         ret = program._home(date=NOW)
         browsable = card(
             href='/fairylab/browsable/',
             title='browsable',
             info='Description of browsable.',
             ts='2m ago')
+        dashboard = card(
+            href='/fairylab/dashboard/',
+            title='dashboard',
+            info='Tails exceptions and log messages.',
+            ts='15m ago')
         internal = card(
             title='internal', info='Description of internal.', ts='2h ago')
         expected = {
             'breadcrumbs': BREADCRUMBS,
-            'browsable': [browsable],
+            'browsable': [browsable, dashboard],
             'internal': [internal],
         }
         self.assertEqual(ret, expected)
 
+    maxDiff = None
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_success(self, mock_delta):
-        mock_delta.return_value = '0s ago'
+        mock_delta.side_effect = ['0s ago', '15m ago', '2h ago']
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
         ret = program._home(date=THEN)
-        internal = card(
-            title='internal',
-            info='Description of internal.',
+        browsable = card(
+            href='/fairylab/browsable/',
+            title='browsable',
+            info='Description of browsable.',
             ts='0s ago',
             success='just now')
+        dashboard = card(
+            href='/fairylab/dashboard/',
+            title='dashboard',
+            info='Tails exceptions and log messages.',
+            ts='15m ago')
+        internal = card(
+            title='internal', info='Description of internal.', ts='2h ago')
         expected = {
             'breadcrumbs': BREADCRUMBS,
-            'browsable': [],
+            'browsable': [browsable, dashboard],
             'internal': [internal],
         }
         self.assertEqual(ret, expected)
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_danger(self, mock_delta):
-        mock_delta.return_value = '2m ago'
+        mock_delta.side_effect = ['2m ago', '15m ago', '2h ago']
 
-        read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_ERROR)}}
-        program = self.create_program(read, pins=PINS_INTERNAL)
+        program = self.create_program(registered=REGISTERED)
+        program.registered['internal'].ok = False
         ret = program._home(date=NOW)
+        browsable = card(
+            href='/fairylab/browsable/',
+            title='browsable',
+            info='Description of browsable.',
+            ts='2m ago')
+        dashboard = card(
+            href='/fairylab/dashboard/',
+            title='dashboard',
+            info='Tails exceptions and log messages.',
+            ts='15m ago')
         internal = card(
             title='internal',
             info='Description of internal.',
-            ts='2m ago',
+            ts='2h ago',
             danger='error')
         expected = {
             'breadcrumbs': BREADCRUMBS,
-            'browsable': [],
+            'browsable': [browsable, dashboard],
             'internal': [internal],
         }
         self.assertEqual(ret, expected)
@@ -807,24 +860,30 @@ class FairylabTest(Test):
 
         args = ('plugin', 'internal')
         kwargs = {'date': THEN, 'v': True}
-        read = {'plugins': {}}
-        program = self.create_program(read)
+        program = self.create_program()
         program.reload(*args, **kwargs)
 
-        write = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'Internal')
         mock_import.assert_called_once_with('plugin.internal.internal')
-        mock_try.assert_called_once_with('internal', '_setup', **dict(kwargs))
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        calls = [
+            mock.call('dashboard', '_setup', **dict(kwargs)),
+            mock.call('internal', '_setup', **dict(kwargs)),
+        ]
+        mock_try.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         calls = [
             mock.call('Internal', **dict(kwargs, s='Installed.', c=None)),
             mock.call('Fairylab', **dict(kwargs, s='Completed setup.'))
         ]
         self.mock_log.assert_has_calls(calls)
-        self.assertEqual(program._plugin('internal'), PLUGIN_CANONICAL_THEN)
+        self.assertNotIn('browsable', program.registered)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['internal'].date, THEN)
+        self.assertEqual(program.registered['internal'].ok, True)
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.importlib.import_module')
@@ -835,8 +894,7 @@ class FairylabTest(Test):
 
         args = ('plugin', 'internal')
         kwargs = {'date': THEN, 'v': True}
-        read = {'plugins': {}}
-        program = self.create_program(read)
+        program = self.create_program()
         program.reload(*args, **kwargs)
 
         module = mock_import.return_value
@@ -851,7 +909,10 @@ class FairylabTest(Test):
                                                   kwargs,
                                                   c=TRACEBACK,
                                                   s='Exception.'))
-        self.assertEqual(program.data, read)
+        self.assertNotIn('browsable', program.registered)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertNotIn('internal', program.registered)
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.importlib.import_module')
@@ -861,8 +922,7 @@ class FairylabTest(Test):
 
         args = ('plugin', 'disabled')
         kwargs = {'date': THEN, 'v': True}
-        read = {'plugins': {}}
-        program = self.create_program(read)
+        program = self.create_program()
         program.reload(*args, **kwargs)
 
         module = mock_import.return_value
@@ -877,12 +937,14 @@ class FairylabTest(Test):
                                                   kwargs,
                                                   s='Disabled.',
                                                   c=None))
-        self.assertEqual(program.data, read)
+        self.assertNotIn('browsable', program.registered)
+        self.assertEqual(program.registered['dashboard'].date, THEN)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertNotIn('internal', program.registered)
 
     @mock.patch('core.fairylab.fairylab.os.execv')
     def test_reboot(self, mock_execv):
-        read = {'plugins': {}}
-        program = self.create_program(read)
+        program = self.create_program()
         program.reboot(v=True)
 
         expected = ['python'] + sys.argv
@@ -894,8 +956,7 @@ class FairylabTest(Test):
             'Fairylab', s='Rebooting.', v=True)
 
     def test_shutdown(self):
-        read = {'plugins': {}}
-        program = self.create_program(read)
+        program = self.create_program()
         program.shutdown(v=True)
 
         self.mock_open.assert_not_called()
@@ -910,5 +971,4 @@ if __name__ in ['__main__', 'core.fairylab.fairylab_test']:
     _main = __name__ == '__main__'
     _pkg = 'core.fairylab'
     _pth = 'core/fairylab'
-    _read = {'plugins': {'internal': copy.deepcopy(PLUGIN_CANONICAL_THEN)}}
-    main(FairylabTest, Fairylab, _pkg, _pth, _read, _main)
+    main(FairylabTest, Fairylab, _pkg, _pth, {}, _main, d=DASHBOARD, e=ENV)

@@ -26,7 +26,7 @@ from util.logger.logger import log  # noqa
 
 class Download(Plugin, Serializable):
     def __init__(self, **kwargs):
-        super(Download, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):

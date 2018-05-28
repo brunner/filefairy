@@ -12,11 +12,11 @@ sys.path.append(re.sub(r'/api/nameable', '', _path))
 from util.abc_.abc_ import abstractstatic  # noqa
 
 
-class Nameable(object):
+class Nameable():
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
-        super(Nameable, self).__init__()
+        super().__init__(**kwargs)
 
     @abstractstatic
     def _info():

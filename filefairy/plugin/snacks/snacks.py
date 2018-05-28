@@ -59,7 +59,7 @@ _snacklist = [
 
 class Snacks(Plugin, Serializable):
     def __init__(self, **kwargs):
-        super(Snacks, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.loaded = False
 
     @property

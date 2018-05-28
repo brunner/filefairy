@@ -36,6 +36,7 @@ _lbpcols = [
 _lbrcols = [' class="td-sm position-relative text-center w-20"'] * 5
 
 DATA = Statsplus._data()
+ENV = env()
 NOW_ENCODED = '2022-10-10T00:00:00'
 THEN_ENCODED = '2022-10-09T00:00:00'
 HOME = {'breadcrumbs': [], 'live': []}
@@ -314,7 +315,7 @@ class StatsplusTest(Test):
 
     def create_plugin(self, data):
         self.init_mocks(data)
-        plugin = Statsplus(e=env())
+        plugin = Statsplus(date=NOW, e=ENV)
         plugin.shadow['download.now'] = NOW_ENCODED
 
         self.mock_open.assert_called_once_with(DATA, 'r')
@@ -1451,4 +1452,4 @@ if __name__ in ['__main__', 'plugin.statsplus.statsplus_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugin.statsplus'
     _pth = 'plugin/statsplus'
-    main(StatsplusTest, Statsplus, _pkg, _pth, {}, _main)
+    main(StatsplusTest, Statsplus, _pkg, _pth, {}, _main, date=NOW, e=ENV)

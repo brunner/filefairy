@@ -25,6 +25,7 @@ from util.test.test import main  # noqa
 _data = Leaguefile._data()
 _server = server()
 DATA = Leaguefile._data()
+ENV = env()
 CHECK_FILEPART = ('100000', 'Jan 29 16:00',
                   'orange_and_blue_league_baseball.tar.gz.filepart', True)
 CHECK_FAST_FALSE = ('328706052', 'Jan 29 15:55',
@@ -130,7 +131,7 @@ class LeaguefileTest(Test):
 
     def create_plugin(self, data):
         self.init_mocks(data)
-        plugin = Leaguefile(e=env())
+        plugin = Leaguefile(date=NOW, e=ENV)
 
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
@@ -386,9 +387,9 @@ class LeaguefileTest(Test):
         self.mock_chat.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    def test_date(self):
+    def test_filedate(self):
         s = 'Jan 29 15:55'
-        actual = Leaguefile._date(s)
+        actual = Leaguefile._filedate(s)
         expected = 'Jan 29'
         self.assertEqual(actual, expected)
 
@@ -485,4 +486,4 @@ if __name__ in ['__main__', 'plugin.leaguefile.leaguefile_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugin.leaguefile'
     _pth = 'plugin/leaguefile'
-    main(LeaguefileTest, Leaguefile, _pkg, _pth, {}, _main)
+    main(LeaguefileTest, Leaguefile, _pkg, _pth, {}, _main, date=NOW, e=ENV)

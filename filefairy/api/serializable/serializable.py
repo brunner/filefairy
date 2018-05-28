@@ -19,7 +19,8 @@ class Serializable(Nameable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
-        super(Serializable, self).__init__(**kwargs)
+        super().__init__(**kwargs)
+
         self.read()
 
     def _name(self):

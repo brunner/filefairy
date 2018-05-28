@@ -25,7 +25,7 @@ from util.team.team import encoding_to_teamid  # noqa
 
 class Recap(Plugin, Renderable):
     def __init__(self, **kwargs):
-        super(Recap, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):

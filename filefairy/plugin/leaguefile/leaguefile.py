@@ -33,7 +33,7 @@ _server = server()
 
 class Leaguefile(Plugin, Renderable):
     def __init__(self, **kwargs):
-        super(Leaguefile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):
@@ -153,7 +153,7 @@ class Leaguefile(Plugin, Renderable):
         return diff.total_seconds()
 
     @staticmethod
-    def _date(s):
+    def _filedate(s):
         return s.rsplit(' ', 1)[0]
 
     @staticmethod
@@ -198,7 +198,7 @@ class Leaguefile(Plugin, Renderable):
             danger = 'stalled' if 's' not in ts else ''
             cols = ['', ' class="w-100"']
             ret['fp'] = card(
-                title=self._date(data['fp']['start']),
+                title=self._filedate(data['fp']['start']),
                 table=table(
                     clazz='table-sm',
                     hcols=cols,
@@ -212,7 +212,7 @@ class Leaguefile(Plugin, Renderable):
         body = []
         for up in data['up']:
             body.append([
-                self._date(up['date']),
+                self._filedate(up['date']),
                 self._time(up['start'], up['end']),
                 self._size(up['size'])
             ])

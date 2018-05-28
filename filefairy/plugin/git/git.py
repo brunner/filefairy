@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/pluin/git', '', _path))
+sys.path.append(re.sub(r'/plugin/git', '', _path))
 from api.plugin.plugin import Plugin  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
-from util.logger.logger import log  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
+
+import core.dashboard.dashboard  # noqa
+logger_ = logging.getLogger('fairylab')
 
 
 class Git(Plugin):
     def __init__(self, **kwargs):
-        super(Git, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):
@@ -53,10 +56,10 @@ class Git(Plugin):
         if output.get('ok'):
             value = output.get('output', '').strip('\n')
             s = 'Call completed: \'{}\'.'.format(self._format(cmd))
-            log(self._name(), **dict(kwargs, c=value, s=s))
+            logger_.log(logging.INFO, s, extra=dict(kwargs, c=value, v=True))
         else:
             s = 'Call failed: \'{}\'.'.format(self._format(cmd))
-            log(self._name(), **dict(kwargs, c=output, s=s))
+            logger_.log(logging.WARNING, s, extra=dict(kwargs, c=output))
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], kwargs)

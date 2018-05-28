@@ -62,7 +62,7 @@ _lbrcols = [' class="td-sm position-relative text-center w-20"'] * 5
 
 class Statsplus(Plugin, Renderable):
     def __init__(self, **kwargs):
-        super(Statsplus, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):

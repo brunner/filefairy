@@ -32,7 +32,7 @@ _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
 class Exports(Plugin, Renderable):
     def __init__(self, **kwargs):
-        super(Exports, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def enabled(self):
