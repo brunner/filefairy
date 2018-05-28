@@ -85,10 +85,13 @@ class Leaguefile(Plugin, Renderable):
                     if len(data['up']) > 10:
                         data['up'] = data['up'][:10]
                     obj = self._chat('fairylab', 'File is up.')
-                    if self._fast(date, data['fp']['end']):
-                        ts = obj.get('ts')
-                        if ts:
+                    ts = obj.get('ts')
+                    if ts:
+                        seconds = self._seconds(date, data['fp']['end'])
+                        if seconds < 10800:
                             reactions_add('zap', 'fairylab', ts)
+                        elif seconds > 25200:
+                            reactions_add('timer_clock', 'fairylab', ts)
                     response.notify = [Notify.LEAGUEFILE_FINISH]
                 data['fp'] = None
 
@@ -145,10 +148,9 @@ class Leaguefile(Plugin, Renderable):
         return datetime.datetime.strptime(date, '%b %d %H:%M')
 
     @staticmethod
-    def _fast(then, now):
+    def _seconds(then, now):
         diff = Leaguefile._decode(now) - Leaguefile._decode(then)
-        s, d = diff.seconds, diff.days
-        return not d and s < 10800
+        return diff.total_seconds()
 
     @staticmethod
     def _date(s):

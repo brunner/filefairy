@@ -27,10 +27,12 @@ _server = server()
 DATA = Leaguefile._data()
 CHECK_FILEPART = ('100000', 'Jan 29 16:00',
                   'orange_and_blue_league_baseball.tar.gz.filepart', True)
-CHECK_UP_FALSE = ('328706052', 'Jan 29 15:55',
-                  'orange_and_blue_league_baseball.tar.gz', False)
-CHECK_SLOW_FALSE = ('328706052', 'Jan 29 12:55',
+CHECK_FAST_FALSE = ('328706052', 'Jan 29 15:55',
                     'orange_and_blue_league_baseball.tar.gz', False)
+CHECK_SLOW_FALSE = ('328706052', 'Jan 29 07:55',
+                    'orange_and_blue_league_baseball.tar.gz', False)
+CHECK_UP_FALSE = ('328706052', 'Jan 29 12:55',
+                  'orange_and_blue_league_baseball.tar.gz', False)
 CHECK_UP_TRUE = ('345678901', 'Jan 27 12:00',
                  'orange_and_blue_league_baseball.tar.gz', True)
 FILEPART = {
@@ -45,7 +47,7 @@ SETUP_FILEPART = {
     'end': 'Jan 29 16:00',
     'now': '2018-01-29T15:01:30'
 }
-UP_FILEPART = {
+FAST_FILEPART = {
     'start': 'Jan 29 16:00',
     'size': '328706052',
     'end': 'Jan 29 18:00',
@@ -55,13 +57,19 @@ SLOW_FILEPART = {
     'start': 'Jan 29 16:00',
     'size': '328706052',
     'end': 'Jan 29 18:00',
+    'date': 'Jan 29 07:55'
+}
+UP_FILEPART = {
+    'start': 'Jan 29 16:00',
+    'size': '328706052',
+    'end': 'Jan 29 18:00',
     'date': 'Jan 29 12:55'
 }
 UP_NOW = {
-    'start': 'Jan 29 15:55',
+    'start': 'Jan 29 12:55',
     'size': '328706052',
-    'end': 'Jan 29 15:55',
-    'date': 'Jan 29 15:55'
+    'end': 'Jan 29 12:55',
+    'date': 'Jan 29 12:55'
 }
 UP_THEN = {
     'start': 'Jan 27 12:00',
@@ -80,7 +88,7 @@ LS_WITH_FILEPART = """total 321012
 """
 LS_WITHOUT_FILEPART = """total 321012
 -rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html
--rwxrwxrwx 1 user user 328706052 Jan 29 15:55 orange_and_blue_league_baseball.tar.gz
+-rwxrwxrwx 1 user user 328706052 Jan 29 12:55 orange_and_blue_league_baseball.tar.gz
 """
 BREADCRUMBS = [{
     'href': '/fairylab/',
@@ -212,14 +220,14 @@ class LeaguefileTest(Test):
     @mock.patch.object(Leaguefile, '_render')
     @mock.patch.object(Leaguefile, '_check')
     def test_run__with_empty_filepart_fast(self, mock_check, mock_render):
-        mock_check.return_value = iter([CHECK_UP_FALSE])
+        mock_check.return_value = iter([CHECK_FAST_FALSE])
 
         read = {'fp': FILEPART, 'up': []}
         plugin = self.create_plugin(read)
         response = plugin._run_internal(date=NOW)
         self.assertEqual(response, Response(notify=[Notify.LEAGUEFILE_FINISH]))
 
-        write = {'fp': None, 'up': [UP_FILEPART]}
+        write = {'fp': None, 'up': [FAST_FILEPART]}
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')
@@ -238,6 +246,25 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(notify=[Notify.LEAGUEFILE_FINISH]))
 
         write = {'fp': None, 'up': [SLOW_FILEPART]}
+        mock_check.assert_called_once_with()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
+        timer = 'timer_clock'
+        self.mock_reactions.assert_called_once_with(timer, 'fairylab', TS)
+
+    @mock.patch.object(Leaguefile, '_render')
+    @mock.patch.object(Leaguefile, '_check')
+    def test_run__with_empty_filepart_typical(self, mock_check, mock_render):
+        mock_check.return_value = iter([CHECK_UP_FALSE])
+
+        read = {'fp': FILEPART, 'up': []}
+        plugin = self.create_plugin(read)
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, Response(notify=[Notify.LEAGUEFILE_FINISH]))
+
+        write = {'fp': None, 'up': [UP_FILEPART]}
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=NOW)
         self.mock_open.assert_called_once_with(DATA, 'w')

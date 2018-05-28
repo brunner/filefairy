@@ -35,7 +35,7 @@ INJ_THEN = '20220815\t<a href=\"../teams/team_44.html\">Los Angeles Angels' + \
            'inflammation. He\'s expected to miss about 3 weeks.'
 INJ_NOW = '20220815\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
           '</a>: <a href=\"../players/player_1.html\">Zack Weiss</a> ' + \
-          'diagnosed with a strained hamstring, will miss 4 weeks.\n' + \
+          'diagnosed with a strained hamstring, will miss 8 months.\n' + \
           '20220817\t<a href=\"../teams/team_39.html\">Colorado Rockies' + \
           '</a>: RF <a href=\"../players/player_24198.html\">Eddie ' + \
           'Hoffman</a> was injured being hit by a pitch.  The Diagnosis: ' + \
@@ -70,7 +70,7 @@ INJ_TABLE_NOW = [
         body=[[
             'Tampa Bay Rays: <a href=\"/StatsLab/reports/news/html/' +
             'players/player_1.html\">Zack Weiss</a> diagnosed with a ' +
-            'strained hamstring, will miss 4 weeks.'
+            'strained hamstring, will miss 8 months.'
         ]])
 ]
 INJ_TABLE_THEN = [
@@ -163,7 +163,11 @@ TRANS_NOW = '20220815\t<a href=\"../teams/team_33.html\">Baltimore Orioles' + \
             'href=\"../players/player_1439.html\">Evan Skoug</a> from the ' + \
             'disabled list.\n\n20220815\t<a href=\"../teams/team_33' + \
             '.html\">Baltimore Orioles</a>: Placed C <a href=\"../players/' + \
-            'player_31093.html\">Salvador Perez</a> on waivers.\n'
+            'player_31093.html\">Salvador Perez</a> on waivers.\n\n' + \
+            '20220815\t<a href="../teams/team_43.html">Kansas City Royals' + \
+            '</a>: Signed C <a href="../players/player_29806.html">Thomas ' + \
+            'Dillard</a> to a 7-year contract extension worth a total of ' + \
+            '$119,640,000.\n'
 TRANS_TABLE_NOW = [
     table(
         clazz='border mt-3',
@@ -181,6 +185,10 @@ TRANS_TABLE_NOW = [
         ], [
             'Baltimore Orioles: Placed C <a href=\"/StatsLab/reports/news/' +
             'html/players/player_31093.html\">Salvador Perez</a> on waivers.'
+        ], [
+            'Kansas City Royals: Signed C <a href=\"/StatsLab/reports/news/' +
+            'html/players/player_29806.html\">Thomas Dillard</a> to a ' +
+            '7-year contract extension worth a total of $119,640,000.'
         ]])
 ]
 TRANS_TABLE_THEN = [
@@ -197,7 +205,8 @@ TRANS_TABLE_THEN = [
 ]
 TRANS_ENCODED_THEN = '20220815\tT33: Placed 2B P292 on the 7-day disabled ' + \
                      'list, retroactive to 08/12/2022.'
-TRANS_ENCODED_NOW = '20220815\tT33: Placed C P31093 on waivers.'
+TRANS_ENCODED_NOW = '20220815\tT43: Signed C P29806 to a 7-year contract ' + \
+                    'extension worth a total of $119,640,000.'
 
 TABLE_NOW_MAP = {
     'injuries': INJ_TABLE_NOW,
@@ -276,6 +285,7 @@ BOX_SCORE3 = {
 RECORDS1 = {'31': '76-86', '45': '97-65'}
 RECORDS2 = {'32': '77-85', '44': '70-92'}
 RECORDS3 = {'31': '75-86', '45': '97-64'}
+TS = '123456789'
 
 
 class RecapTest(Test):
@@ -284,19 +294,26 @@ class RecapTest(Test):
             'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
+
         patch_chat = mock.patch.object(Recap, '_chat')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
+
+        patch_reactions = mock.patch('plugin.recap.recap.reactions_add')
+        self.addCleanup(patch_reactions.stop)
+        self.mock_reactions = patch_reactions.start()
 
     def init_mocks(self, read):
         mo = mock.mock_open(read_data=dumps(read))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
+        self.mock_chat.return_value = {'ok': True, 'ts': TS}
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
         self.mock_chat.reset_mock()
+        self.mock_reactions.reset_mock()
 
     def create_plugin(self, read):
         self.init_mocks(read)
@@ -305,6 +322,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data, read)
 
         self.reset_mocks()
@@ -315,8 +333,13 @@ class RecapTest(Test):
     @mock.patch.object(Recap, '_tables')
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')
-    def test_notify__with_download(self, mock_render, mock_standings,
-                                   mock_tables):
+    @mock.patch.object(Recap, '_money')
+    @mock.patch.object(Recap, '_death')
+    def test_notify__with_death_download(self, mock_death, mock_money,
+                                         mock_render, mock_standings,
+                                         mock_tables):
+        mock_death.return_value = True
+        mock_money.return_value = False
         mock_tables.return_value = TABLE_NOW_MAP
 
         plugin = self.create_plugin({
@@ -335,19 +358,102 @@ class RecapTest(Test):
             'standings': STANDINGS_THEN,
             'then': ENCODED_NOW_MAP
         }
+        mock_death.assert_called_once_with()
+        mock_money.assert_called_once_with()
         mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
         mock_standings.assert_called_once_with()
         mock_tables.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
+        self.mock_reactions.assert_called_once_with('skull', 'fairylab', TS)
         self.assertEqual(plugin.tables, TABLE_NOW_MAP)
 
     @mock.patch.object(Recap, '_tables')
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')
-    def test_notify__with_other(self, mock_render, mock_standings,
-                                mock_tables):
+    @mock.patch.object(Recap, '_money')
+    @mock.patch.object(Recap, '_death')
+    def test_notify__with_money_download(self, mock_death, mock_money,
+                                         mock_render, mock_standings,
+                                         mock_tables):
+        mock_death.return_value = False
+        mock_money.return_value = True
+        mock_tables.return_value = TABLE_NOW_MAP
+
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_THEN_MAP
+        response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
+        self.assertEqual(response,
+                         Response(
+                             notify=[Notify.BASE],
+                             shadow=plugin._shadow_internal()))
+        write = {
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_NOW_MAP
+        }
+        mock_death.assert_called_once_with()
+        mock_money.assert_called_once_with()
+        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
+        mock_standings.assert_called_once_with()
+        mock_tables.assert_called_once_with()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
+        self.mock_reactions.assert_called_once_with('moneybag', 'fairylab', TS)
+        self.assertEqual(plugin.tables, TABLE_NOW_MAP)
+
+    @mock.patch.object(Recap, '_tables')
+    @mock.patch.object(Recap, '_standings')
+    @mock.patch.object(Recap, '_render')
+    @mock.patch.object(Recap, '_money')
+    @mock.patch.object(Recap, '_death')
+    def test_notify__with_quiet_download(self, mock_death, mock_money,
+                                         mock_render, mock_standings,
+                                         mock_tables):
+        mock_death.return_value = False
+        mock_money.return_value = False
+        mock_tables.return_value = TABLE_NOW_MAP
+
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_THEN_MAP
+        response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
+        self.assertEqual(response,
+                         Response(
+                             notify=[Notify.BASE],
+                             shadow=plugin._shadow_internal()))
+        write = {
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_NOW_MAP
+        }
+        mock_death.assert_called_once_with()
+        mock_money.assert_called_once_with()
+        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
+        mock_standings.assert_called_once_with()
+        mock_tables.assert_called_once_with()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
+        self.mock_reactions.assert_not_called()
+        self.assertEqual(plugin.tables, TABLE_NOW_MAP)
+
+    @mock.patch.object(Recap, '_tables')
+    @mock.patch.object(Recap, '_standings')
+    @mock.patch.object(Recap, '_render')
+    @mock.patch.object(Recap, '_money')
+    @mock.patch.object(Recap, '_death')
+    def test_notify__with_other(self, mock_death, mock_money, mock_render,
+                                mock_standings, mock_tables):
         plugin = self.create_plugin({
             'now': ENCODED_NOW_MAP,
             'standings': STANDINGS_THEN,
@@ -357,12 +463,15 @@ class RecapTest(Test):
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
+        mock_death.assert_not_called()
+        mock_money.assert_not_called()
         mock_render.assert_not_called()
         mock_standings.assert_not_called()
         mock_tables.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     def test_on_message(self):
         plugin = self.create_plugin({
@@ -376,6 +485,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     def test_run(self):
         plugin = self.create_plugin({
@@ -389,6 +499,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Recap, '_home')
     def test_render(self, mock_home):
@@ -406,6 +517,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Recap, '_tables')
     @mock.patch.object(Recap, '_render')
@@ -423,6 +535,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     def test_shadow(self):
         plugin = self.create_plugin({
@@ -441,6 +554,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     def test_encode(self):
         actual = Recap._encode(DATE, LINE)
@@ -457,7 +571,25 @@ class RecapTest(Test):
         expected = LINE_REWRITTEN
         self.assertEqual(actual, expected)
 
-    maxDiff = None
+    def test_death__with_true(self):
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_NOW_MAP
+        value = plugin._death()
+        self.assertTrue(value)
+
+    def test_death__with_false(self):
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_THEN_MAP
+        value = plugin._death()
+        self.assertFalse(value)
 
     @mock.patch('plugin.recap.recap.standings_table')
     def test_home(self, mock_standings):
@@ -486,6 +618,27 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    def test_money__with_true(self):
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_NOW_MAP
+        value = plugin._money()
+        self.assertTrue(value)
+
+    def test_money__with_false(self):
+        plugin = self.create_plugin({
+            'now': ENCODED_NOW_MAP,
+            'standings': STANDINGS_THEN,
+            'then': ENCODED_THEN_MAP
+        })
+        plugin.tables = TABLE_THEN_MAP
+        value = plugin._money()
+        self.assertFalse(value)
 
     @mock.patch('plugin.recap.recap.os.listdir')
     @mock.patch('plugin.recap.recap.box_score')
@@ -513,6 +666,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     @mock.patch('plugin.recap.recap.open', create=True)
     def test_tables_internal__injuries(self, mock_open):
@@ -538,6 +692,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['now']['injuries'], INJ_ENCODED_NOW)
 
     @mock.patch('plugin.recap.recap.open', create=True)
@@ -564,6 +719,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['now']['news'], NEWS_ENCODED_NOW)
 
     @mock.patch('plugin.recap.recap.open', create=True)
@@ -590,6 +746,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['now']['transactions'], TRANS_ENCODED_NOW)
 
 

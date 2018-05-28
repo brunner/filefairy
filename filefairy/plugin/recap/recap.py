@@ -17,6 +17,7 @@ from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
+from util.slack.slack import reactions_add  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.statslab.statslab import box_score  # noqa
 from util.team.team import encoding_to_teamid  # noqa
@@ -58,7 +59,13 @@ class Recap(Plugin, Renderable):
             self.write()
 
             self._render(**kwargs)
-            self._chat('fairylab', 'News updated.')
+            obj = self._chat('fairylab', 'News updated.')
+            ts = obj.get('ts')
+            if ts:
+                if self._money():
+                    reactions_add('moneybag', 'fairylab', ts)
+                if self._death():
+                    reactions_add('skull', 'fairylab', ts)
 
             response.notify = [Notify.BASE]
             response.shadow = self._shadow_internal(**kwargs)
@@ -113,6 +120,19 @@ class Recap(Plugin, Renderable):
             return sum(int(n) for n in record.split('-'))
         return 0
 
+    def _death(self):
+        pattern = 'will miss ([\d-]+) months'
+        injuries = self.tables['injuries']
+        for table_ in injuries:
+            body = table_['body']
+            for row in body:
+                match = re.findall(pattern, row[0])
+                if match:
+                    for length in [int(m) for m in match[0].split('-')]:
+                        if length > 6:
+                            return True
+        return False
+
     def _home(self, **kwargs):
         ret = {
             'breadcrumbs': [{
@@ -132,6 +152,19 @@ class Recap(Plugin, Renderable):
             ret['standings'] = standings_table(self.data['standings'], 0)
 
         return ret
+
+    def _money(self):
+        pattern = 'worth a total of \$([\d,]+)'
+        transactions = self.tables['transactions']
+        for table_ in transactions:
+            body = table_['body']
+            for row in body:
+                match = re.findall(pattern, row[0])
+                if match:
+                    amount = int(match[0].replace(',', ''))
+                    if amount > 100000000:
+                        return True
+        return False
 
     def _record(self, teamid, record):
         ntotal = self._total(record)
