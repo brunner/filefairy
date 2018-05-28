@@ -195,5 +195,6 @@ class Recap(Plugin, Renderable):
                     body = self._rewrite_players(self._strip_teams(line))
                     ret[0]['body'].append([body])
 
+        ret = [table for table in ret if table['body']]
         self.data['now'][key] = self._encode(date, line)
         return ret
