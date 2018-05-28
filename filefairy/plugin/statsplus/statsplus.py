@@ -23,6 +23,7 @@ from util.datetime_.datetime_ import suffix  # noqa
 from util.standings.standings import sort  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.statslab.statslab import box_score  # noqa
+from util.statslab.statslab import player  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import divisions  # noqa
@@ -47,6 +48,7 @@ _player = 'players/player_'
 _shorten = '{}(?:{}|{})'.format(_html, _game_box, _player)
 _encodings = '|'.join(encodings())
 _precodings = '|'.join(precodings())
+_link_pattern = '<([^|]+)\|([^<]+)>'
 _chlany = chlany()
 _lhclazz = 'table-fixed border border-bottom-0 mt-3'
 _lhcols = [' class="text-center"']
@@ -423,15 +425,38 @@ class Statsplus(Plugin, Renderable):
 
         return Response()
 
+    def _clarify(self, key, encoded_date, before_team1, before_team2,
+                 after_team1, after_team2, count):
+        a = '{} @ {}'
+        before = a.format(before_team1, before_team2)
+        after = a.format(after_team1, after_team2)
+        lines = self.data[key].get(encoded_date, [])
+        for i in range(len(lines)):
+            if before in lines[i]:
+                if count == 1:
+                    line = re.sub(before, after, lines[i])
+                    self.data[key][encoded_date][i] = line
+                else:
+                    link_match = re.findall(_link_pattern, lines[i])
+                    if link_match:
+                        link, content = link_match[0]
+                        player_ = player(link.format(_html, _player))
+                        if player_['ok']:
+                            name = player_['name']
+                            team = player_['team']
+                            if name == content:
+                                if team == after_team1 or team == after_team2:
+                                    line = re.sub(before, after, lines[i])
+                                    self.data[key][encoded_date][i] = line
+
     def _resolve(self, encoded_date, i):
         scores = self.data['scores'][encoded_date]
         count = len([True for e in _chlany if e in scores[i]])
         if count not in [1, 2]:
             return
 
-        link_pattern = '<([^|]+)\|([^<]+)>'
         score_pattern = '(\w+) (\d+), (\w+) (\d+)'
-        link_match = re.findall(link_pattern, scores[i])
+        link_match = re.findall(_link_pattern, scores[i])
         if link_match:
             link, content = link_match[0]
             score_pattern = '(\w+) (\d+), (\w+) (\d+)'
@@ -464,16 +489,9 @@ class Statsplus(Plugin, Renderable):
                     if swap:
                         bteam1, bteam2 = bteam2, bteam1
                         cteam1, cteam2 = cteam2, cteam1
-                    a = '{} @ {}'
-                    before = a.format(cteam1, cteam2)
-                    after = a.format(bteam1, bteam2)
                     for key in ['highlights', 'injuries']:
-                        lines = self.data[key].get(encoded_date, [])
-                        for i in range(len(lines)):
-                            if before in lines[i]:
-                                if count == 1:
-                                    line = re.sub(before, after, lines[i])
-                                    self.data[key][encoded_date][i] = line
+                        self._clarify(key, encoded_date, cteam1, cteam2,
+                                      bteam1, bteam2, count)
 
     def _table(self, key, date, path):
         lines = self.data[key][date]

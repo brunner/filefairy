@@ -7,15 +7,19 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/box', '', _path))
+sys.path.append(re.sub(r'/util/statslab', '', _path))
 from util.team.team import decoding_to_encoding  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
 
-_title = '<title>MLB Box Scores, (.+?) at (.+?), (\d{2}\/\d{2}\/\d{4})</title>'
-_line = '<tr style=\"background-color:#FFFFFE;\">(.+?)</tr>'
-_line_team = '<td class="dl">(?:<b>)?([^<]+)(?:</b>)?</td>'
-_line_record = '([^(]+) \(([^)]+)\)'
-_line_runs = '<td class="dc"><b>(\d+)</b></td>'
+_game_box_title = '<title>MLB Box Scores, (.+?) at (.+?), ' + \
+                  '(\d{2}\/\d{2}\/\d{4})</title>'
+_game_box_line = '<tr style=\"background-color:#FFFFFE;\">(.+?)</tr>'
+_game_box_line_team = '<td class="dl">(?:<b>)?([^<]+)(?:</b>)?</td>'
+_game_box_line_record = '([^(]+) \(([^)]+)\)'
+_game_box_line_runs = '<td class="dc"><b>(\d+)</b></td>'
+_player_title = '<title>Player Report for #\d+  ([^<]+)</title>'
+_player_subtitle = '<div class="repsubtitle">(.+?)</div>'
+_player_team = 'href=\"..\/teams\/team_\d{2}.html">([^<]+)</a>'
 
 
 def _open(link):
@@ -31,7 +35,7 @@ def box_score(link):
     ret = {'ok': False}
 
     content = _open(link)
-    title = re.findall(_title, content, re.DOTALL)
+    title = re.findall(_game_box_title, content, re.DOTALL)
     if not title:
         return dict(ret, error='invalid_title')
 
@@ -42,21 +46,21 @@ def box_score(link):
     if not away_team or not home_team:
         return dict(ret, error='invalid_title')
 
-    lines = re.findall(_line, content, re.DOTALL)
+    lines = re.findall(_game_box_line, content, re.DOTALL)
     if len(lines) != 2:
         return dict(ret, error='invalid_line')
 
-    line_teams = [re.findall(_line_team, line)[0] for line in lines]
-    line_records = [re.findall(_line_record, line) for line in line_teams]
-    if line_records[0] and line_records[1]:
-        away_line = line_records[0][0][0]
-        away_record = line_records[0][0][1]
-        home_line = line_records[1][0][0]
-        home_record = line_records[1][0][1]
+    teams = [re.findall(_game_box_line_team, line)[0] for line in lines]
+    records = [re.findall(_game_box_line_record, line) for line in teams]
+    if records[0] and records[1]:
+        away_line = records[0][0][0]
+        away_record = records[0][0][1]
+        home_line = records[1][0][0]
+        home_record = records[1][0][1]
     else:
-        away_line = line_teams[0]
+        away_line = teams[0]
         away_record = ''
-        home_line = line_teams[1]
+        home_line = teams[1]
         home_record = ''
 
     away_line = decoding_to_encoding(away_line)
@@ -64,12 +68,12 @@ def box_score(link):
     if away_line != away_team or home_line != home_team:
         return dict(ret, error='invalid_line')
 
-    line_runs = [re.findall(_line_runs, line)[0] for line in lines]
-    if not line_runs[0] or not line_runs[1]:
+    runs = [re.findall(_game_box_line_runs, line)[0] for line in lines]
+    if not runs[0] or not runs[1]:
         return dict(ret, error='invalid_line')
 
-    away_runs = int(line_runs[0])
-    home_runs = int(line_runs[1])
+    away_runs = int(runs[0])
+    home_runs = int(runs[1])
 
     return {
         'away_record': away_record,
@@ -80,4 +84,31 @@ def box_score(link):
         'home_runs': home_runs,
         'home_team': home_team,
         'ok': True
+    }
+
+
+def player(link):
+    ret = {'ok': False}
+
+    content = _open(link)
+    title = re.findall(_player_title, content)
+    if not title:
+        return dict(ret, error='invalid_title')
+
+    name = title[0]
+
+    subtitle = re.findall(_player_subtitle, content, re.DOTALL)
+    if not subtitle:
+        return dict(ret, error='invalid_team')
+
+    team = re.findall(_player_team, subtitle[0])
+    if not team:
+        return dict(ret, error='invalid_team')
+
+    team = decoding_to_encoding(team[0])
+
+    return {
+        'name': name,
+        'ok': True,
+        'team': team
     }
