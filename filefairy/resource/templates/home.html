@@ -12,7 +12,7 @@
       {{ common.heading('globe', 'Browsable')|indent(6) }}
       <div class="row d-flex flex-wrap">
         {% for card in browsable %}
-        <div class="col-sm-6 col-md-4 col-lg-3 d-flex flex-column">
+        <div class="col-md-6 col-lg-4 d-flex flex-column">
           {{ common.card(card)|indent(10) }}
         </div>
         {% endfor %}
@@ -24,7 +24,7 @@
       {{ common.heading('shield', 'Internal')|indent(6) }}
       <div class="row d-flex flex-wrap">
         {% for card in internal %}
-        <div class="col-sm-6 col-md-4 col-lg-3 d-flex flex-column">
+        <div class="col-md-6 col-lg-4 d-flex flex-column">
           {{ common.card(card)|indent(10) }}
         </div>
         {% endfor %}
