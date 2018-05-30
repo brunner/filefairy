@@ -8,12 +8,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/statsplus/samples', '', _path)
 sys.path.append(_root)
+from util.component.component import table  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import logo_inline  # noqa
-
-subtitle = ''
-
-tmpl = 'statsplus.html'
 
 _l31 = logo_inline('31', '4-3')
 _l32 = logo_inline('32', '5-1')
@@ -86,61 +83,41 @@ _w45 = [logo_absolute('45', 'Los Angeles', 'left'), '97', '65', '+8.0', 'X']
 _w48 = [logo_absolute('48', 'New York', 'left'), '88', '74', '+2.0', 'X']
 _w56 = [logo_absolute('56', 'St. Louis', 'left'), '89', '73', '-', 'X']
 
-LIVE_BCOL = ' class="td-sm position-relative text-center w-20"'
-FORE_COLS = [
-    ' class="position-relative text-truncate"', ' class="text-right w-55p"',
-    ' class="text-right w-55p"', ' class="text-right w-55p"',
-    ' class="text-right w-55p"'
+_breadcrumbs = [{
+    'href': '/fairylab/',
+    'name': 'Home'
+}, {
+    'href': '',
+    'name': 'Statsplus'
+}]
+
+_al = [[_l48, _l34, _l57, _l59, _l33], [_l40, _l43, _l47, _l35, _l38],
+       [_l42, _l50, _l44, _l58, _l54]]
+_nl = [[_l32, _l49, _l51, _l41, _l60], [_l56, _l37, _l36, _l46, _l52],
+       [_l45, _l53, _l31, _l39, _l55]]
+_lcols = [' class="td-sm position-relative text-center w-20"'] * 5
+_live = [
+    table(
+        clazz='table-fixed border border-bottom-0 mt-3',
+        hcols=[' class="text-center"'],
+        head=['American League']),
+    table(
+        clazz='table-fixed border',
+        bcols=_lcols,
+        body=_al,
+    ),
+    table(
+        clazz='table-fixed border border-bottom-0 mt-3',
+        hcols=[' class="text-center"'],
+        head=['National League']),
+    table(clazz='table-fixed border', bcols=_lcols, body=_nl)
 ]
 
-context = {
-    'title':
-    'statsplus',
-    'breadcrumbs': [{
-        'href': '/fairylab/',
-        'name': 'Home'
-    }, {
-        'href': '',
-        'name': 'Statsplus'
-    }],
-    'live': [{
-        'clazz': 'table-fixed border border-bottom-0 mt-3',
-        'hcols': [' class="text-center"'],
-        'bcols': [],
-        'head': ['American League'],
-        'body': []
-    }, {
-        'clazz':
-        'table-fixed border',
-        'hcols': [],
-        'bcols': [LIVE_BCOL] * 5,
-        'head': [],
-        'body': [[_l48, _l34, _l57, _l59,
-                  _l33], [_l40, _l43, _l47, _l35, _l38],
-                 [_l42, _l50, _l44, _l58, _l54]]
-    }, {
-        'clazz': 'table-fixed border border-bottom-0 mt-3',
-        'hcols': [' class="text-center"'],
-        'bcols': [],
-        'head': ['National League'],
-        'body': []
-    }, {
-        'clazz':
-        'table-fixed border',
-        'hcols': [],
-        'bcols': [LIVE_BCOL] * 5,
-        'head': [],
-        'body': [[_l32, _l49, _l51, _l41,
-                  _l60], [_l56, _l37, _l36, _l46, _l52],
-                 [_l45, _l53, _l31, _l39, _l55]]
-    }],
-    'scores': [{
-        'clazz':
-        'border mt-3',
-        'hcols': [''],
-        'bcols': [''],
-        'head': ['Sunday, October 9th, 2022'],
-        'body': [[
+_scores = [
+    table(
+        clazz='border mt-3',
+        head=['Sunday, October 9th, 2022'],
+        body=[[
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2998.html">Arizona Diamondbacks 4, Los Angeles Dodgers 2</a>'
         ], [
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3003.html">Atlanta Braves 2, Los Angeles Angels 1</a>'
@@ -170,14 +147,11 @@ context = {
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2994.html">Texas Rangers 5, Oakland Athletics 3</a>'
         ], [
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2995.html">Toronto Blue Jays 8, Minnesota Twins 2</a>'
-        ]]
-    }, {
-        'clazz':
-        'border mt-3',
-        'hcols': [''],
-        'bcols': [''],
-        'head': ['Saturday, October 8th, 2022'],
-        'body': [[
+        ]]),
+    table(
+        clazz='border mt-3',
+        head=['Saturday, October 8th, 2022'],
+        body=[[
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2979.html">Atlanta Braves 10, Los Angeles Angels 5</a>'
         ], [
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2984.html">Boston Red Sox 10, Tampa Bay Rays 5</a>'
@@ -207,92 +181,107 @@ context = {
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2988.html">St. Louis Cardinals 4, Pittsburgh Pirates 1</a>'
         ], [
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2980.html">Texas Rangers 9, Oakland Athletics 1</a>'
-        ]]
-    }],
-    'injuries': [{
-        'clazz':
-        'border mt-3',
-        'hcols': [''],
-        'bcols': [''],
-        'head': ['Sunday, October 9th, 2022'],
-        'body': [[
+        ]])
+]
+
+_injuries = [
+    table(
+        clazz='border mt-3',
+        head=['Sunday, October 9th, 2022'],
+        body=[[
             'RF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_36649.html">Elier Hernandez</a> was injured while running the bases (Cleveland Indians @ Kansas City Royals)'
         ], [
             'RF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_34118.html">Gregory Polanco</a> was injured on a defensive play (Milwaukee Brewers @ Cincinnati Reds)'
         ], [
             'SS <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_30016.html">Austin Bodrato</a> was injured while running the bases (Milwaukee Brewers @ Cincinnati Reds)'
-        ]]
-    }, {
-        'clazz':
-        'border mt-3',
-        'hcols': [''],
-        'bcols': [''],
-        'head': ['Saturday, October 8th, 2022'],
-        'body': [[
+        ]]),
+    table(
+        clazz='border mt-3',
+        head=['Saturday, October 8th, 2022'],
+        body=[[
             '3B <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_33777.html">Kaleb Cowart</a> was injured in a collision at a base (Cleveland Indians @ Kansas City Royals)'
         ], [
             'LF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_29996.html">Keon Broxton</a> was injured while throwing the ball (Houston Astros @ Seattle Mariners)'
         ], [
             'LF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_26747.html">Desmond Lindsay</a> was injured on a defensive play (New York Yankees @ Baltimore Orioles)'
-        ]]
-    }],
-    'highlights': [{
-        'clazz':
-        'border mt-3',
-        'hcols': [''],
-        'bcols': [''],
-        'head': ['Saturday, October 8th, 2022'],
-        'body': [[
+        ]])
+]
+
+_highlights = [
+    table(
+        clazz='border mt-3',
+        head=['Saturday, October 8th, 2022'],
+        body=[[
             '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_38868.html">Connor Harrell</a> ties the BOS regular season game record for runs with 4 (Boston Red Sox @ Tampa Bay Rays)'
-        ]]
-    }],
-    'forecast': [{
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['AL East', 'W', 'L', 'GB', 'M#'],
-        'body': [_s34, _s48, _s59, _s33, _s57]
-    }, {
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['AL Central', 'W', 'L', 'GB', 'M#'],
-        'body': [_s47, _s40, _s35, _s38, _s43]
-    }, {
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['AL West', 'W', 'L', 'GB', 'M#'],
-        'body': [_s54, _s42, _s50, _s44, _s58]
-    }, {
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['AL Wild Card', 'W', 'L', 'GB', 'M#'],
-        'body': [_w48, _w40, _w42, _w35]
-    }, {
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['NL East', 'W', 'L', 'GB', 'M#'],
-        'body': [_s49, _s41, _s32, _s51, _s60]
-    }, {
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['NL Central', 'W', 'L', 'GB', 'M#'],
-        'body': [_s37, _s56, _s46, _s36, _s52]
-    }, {
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['NL West', 'W', 'L', 'GB', 'M#'],
-        'body': [_s53, _s45, _s39, _s31, _s55]
-    }, {
-        'clazz': 'table-fixed border mt-3',
-        'hcols': FORE_COLS,
-        'bcols': FORE_COLS,
-        'head': ['NL Wild Card', 'W', 'L', 'GB', 'M#'],
-        'body': [_w45, _w56, _w39, _w41]
-    }]
+        ]])
+]
+
+_fcols = [
+    ' class="position-relative text-truncate"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"'
+]
+_forecast = [
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['AL East', 'W', 'L', 'GB', 'M#'],
+        body=[_s34, _s48, _s59, _s33, _s57]),
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['AL Central', 'W', 'L', 'GB', 'M#'],
+        body=[_s47, _s40, _s35, _s38, _s43]),
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['AL West', 'W', 'L', 'GB', 'M#'],
+        body=[_s54, _s42, _s50, _s44, _s58]),
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['AL Wild Card', 'W', 'L', 'GB', 'M#'],
+        body=[_w48, _w40, _w42, _w35]),
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['NL East', 'W', 'L', 'GB', 'M#'],
+        body=[_s49, _s41, _s32, _s51, _s60]),
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['NL Central', 'W', 'L', 'GB', 'M#'],
+        body=[_s37, _s56, _s46, _s36, _s52]),
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['NL West', 'W', 'L', 'GB', 'M#'],
+        body=[_s53, _s45, _s39, _s31, _s55]),
+    table(
+        clazz='table-fixed border mt-3',
+        hcols=_fcols,
+        bcols=_fcols,
+        head=['NL Wild Card', 'W', 'L', 'GB', 'M#'],
+        body=[_w45, _w56, _w39, _w41])
+]
+
+subtitle = ''
+
+tmpl = 'statsplus.html'
+
+context = {
+    'title': 'statsplus',
+    'breadcrumbs': _breadcrumbs,
+    'live': _live,
+    'scores': _scores,
+    'injuries': _injuries,
+    'highlights': _highlights,
+    'forecast': _forecast
 }

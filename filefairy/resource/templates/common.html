@@ -105,7 +105,8 @@
   <thead class="thead-light">
     <tr>
       {% for cell in data.head %}
-      <td scope="col"{{ data.hcols[loop.index0] | safe }}>{{ cell }}</td>
+      {% set hcol = data.hcols[loop.index0] if data.hcols else '' %}
+      <td scope="col"{{ hcol | safe }}>{{ cell }}</td>
       {% endfor %}
     </tr>
   </thead>
@@ -116,7 +117,8 @@
     <tr>
       {% for cell in row %}
       {% if loop.first %}
-      <td scope="row"{{ data.bcols[loop.index0] | safe }}>{{ cell }}</td>
+      {% set bcol = data.bcols[loop.index0] if data.bcols else '' %}
+      <td scope="row"{{ bcol | safe }}>{{ cell }}</td>
       {% else %}
       <td{{ data.bcols[loop.index0] | safe }}>{{ cell }}</td>
       {% endif %}
