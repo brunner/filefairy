@@ -13,6 +13,7 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
+from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
@@ -120,16 +121,6 @@ class Exports(Plugin, Renderable):
     def _exports(text):
         return re.findall(r"team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
 
-    @staticmethod
-    def _secondary(text):
-        s = '<span class="text-secondary">{}</span>'
-        return s.format(text)
-
-    @staticmethod
-    def _success(text):
-        s = '<span class="text-success border px-1">{}</span>'
-        return s.format(text)
-
     def lock(self, **kwargs):
         self._lock_internal()
         log(self._name(), **dict(kwargs, s='Locked tracker.'))
@@ -227,9 +218,9 @@ class Exports(Plugin, Renderable):
     def _breakdown(self):
         n, t = self._new()
         return ', '.join([
-            self._success(str(n) + ' new'),
+            span(['text-success', 'border', 'px-1'], str(n) + ' new'),
             str(t - n) + ' old',
-            self._secondary(str(len(self.data['ai'])) + ' ai')
+            span(['text-secondary'], str(len(self.data['ai'])) + ' ai')
         ])
 
     def _percent(self):
@@ -275,9 +266,9 @@ class Exports(Plugin, Renderable):
             teamid, status = export
             text = teamid_to_abbreviation(teamid)
             if teamid in self.data['ai']:
-                text = self._secondary(text)
+                text = span(['text-secondary'], text)
             if status == 'New':
-                text = self._success(text)
+                text = span(['text-success', 'border', 'px-1'], text)
             body[i // size].append(text)
         return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 

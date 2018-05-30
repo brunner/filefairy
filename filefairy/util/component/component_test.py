@@ -9,6 +9,7 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/component', '', _path))
 from util.component.component import card  # noqa
+from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 
 
@@ -65,6 +66,11 @@ class ComponentTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
+    def test_span(self):
+        actual = span(['foo', 'bar'], 'text')
+        expected = '<span class="foo bar">text</span>'
+        self.assertEqual(actual, expected)
+
     def test_table__default(self):
         actual = table()
         expected = {
@@ -79,14 +85,12 @@ class ComponentTest(unittest.TestCase):
     def test_table__leaguefile(self):
         actual = table(
             clazz='table-sm',
-            hcols=['', '', ''],
-            bcols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=[['Jan 1', '5h 0m', '300,000,000']])
         expected = {
             'clazz': 'table-sm',
-            'hcols': ['', '', ''],
-            'bcols': ['', '', ''],
+            'hcols': None,
+            'bcols': None,
             'head': ['Date', 'Time', 'Size'],
             'body': [['Jan 1', '5h 0m', '300,000,000']]
         }

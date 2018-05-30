@@ -8,8 +8,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/exports/samples', '', _path)
 sys.path.append(_root)
-from plugin.exports.exports import Exports  # noqa
 from util.component.component import card  # noqa
+from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.team.team import logo_absolute  # noqa
 
@@ -59,32 +59,35 @@ _table = table(
     bcols=_tcols,
     body=[['AL East', 'BAL', 'BOS', 'NYY', 'TB', 'TOR'], [
         'AL Central',
-        Exports._success('CWS'), 'CLE',
-        Exports._success('DET'), 'KC',
-        Exports._success('MIN')
+        span(['text-success', 'border', 'px-1'], 'CWS'), 'CLE',
+        span(['text-success', 'border', 'px-1'], 'DET'), 'KC',
+        span(['text-success', 'border', 'px-1'], 'MIN')
     ], [
         'AL West', 'HOU',
-        Exports._success('LAA'), 'OAK',
-        Exports._success('SEA'),
-        Exports._success('TEX')
+        span(['text-success', 'border', 'px-1'], 'LAA'), 'OAK',
+        span(['text-success', 'border', 'px-1'], 'SEA'),
+        span(['text-success', 'border', 'px-1'], 'TEX')
     ], [
         'NL East',
-        Exports._success('ATL'), 'MIA',
-        Exports._success('NYM'), 'PHI',
-        Exports._success('WAS')
+        span(['text-success', 'border', 'px-1'], 'ATL'), 'MIA',
+        span(['text-success', 'border', 'px-1'], 'NYM'), 'PHI',
+        span(['text-success', 'border', 'px-1'], 'WAS')
     ], [
         'NL Central',
-        Exports._success('CHC'),
-        Exports._success('CIN'),
-        Exports._success('MIL'), 'PIT',
-        Exports._success('STL')
+        span(['text-success', 'border', 'px-1'], 'CHC'),
+        span(['text-success', 'border', 'px-1'], 'CIN'),
+        span(['text-success', 'border', 'px-1'], 'MIL'), 'PIT',
+        span(['text-success', 'border', 'px-1'], 'STL')
     ], [
         'NL West', 'ARI', 'COL',
-        Exports._success('LAD'),
-        Exports._success('SD'), 'SF'
+        span(['text-success', 'border', 'px-1'], 'LAD'),
+        span(['text-success', 'border', 'px-1'], 'SD'), 'SF'
     ]])
 
-_breakdown = [Exports._success('16 new'), '14 old', Exports._secondary('0 ai')]
+_breakdown = [
+    span(['text-success', 'border', 'px-1'], '16 new'), '14 old',
+    span(['text-secondary'], '0 ai')
+]
 _info = 'Upcoming sim contains ' + ', '.join(_breakdown) + '.'
 _live = card(title='53%', info=_info, table=_table, ts='30s ago')
 

@@ -14,6 +14,7 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.exports.exports import Exports  # noqa
 from util.component.component import card  # noqa
+from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
@@ -492,18 +493,6 @@ class ExportsTest(Test):
         expected = []
         self.assertEqual(actual, expected)
 
-    def test_secondary(self):
-        text = 'ATL'
-        actual = Exports._secondary(text)
-        expected = '<span class="text-secondary">ATL</span>'
-        self.assertEqual(actual, expected)
-
-    def test_success(self):
-        text = 'ATL'
-        actual = Exports._success(text)
-        expected = '<span class="text-success border px-1">ATL</span>'
-        self.assertEqual(actual, expected)
-
     @mock.patch.object(Exports, '_table')
     @mock.patch.object(Exports, '_sorted')
     @mock.patch('plugin.exports.exports.divisions')
@@ -835,13 +824,15 @@ class ExportsTest(Test):
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
         actual = plugin._table()
-        body = [['AL East',
-                 Exports._success('BAL'),
-                 Exports._success('BOS')], [
-                     'AL Central',
-                     Exports._success('CWS'),
-                     Exports._success('DET')
-                 ], ['AL West', 'HOU', 'LAA']]
+        body = [[
+            'AL East',
+            span(['text-success', 'border', 'px-1'], 'BAL'),
+            span(['text-success', 'border', 'px-1'], 'BOS')
+        ], [
+            'AL Central',
+            span(['text-success', 'border', 'px-1'], 'CWS'),
+            span(['text-success', 'border', 'px-1'], 'DET')
+        ], ['AL West', 'HOU', 'LAA']]
         expected = table(
             clazz='table-sm', hcols=TABLE_COLS, bcols=TABLE_COLS, body=body)
         self.assertEqual(actual, expected)
