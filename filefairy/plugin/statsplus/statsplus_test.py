@@ -1197,8 +1197,8 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.player')
     @mock.patch('plugin.statsplus.statsplus.box_score')
-    def test_resolve_all__with_valid_box(self, mock_box, mock_player,
-                                         mock_render):
+    def test_resolve_all__with_valid_box_finished_false(
+            self, mock_box, mock_player, mock_render):
         mock_box.side_effect = [{
             'away_runs': 4,
             'away_team': 'T31',
@@ -1275,8 +1275,95 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.player')
     @mock.patch('plugin.statsplus.statsplus.box_score')
-    def test_resolve_all__with_valid_player(self, mock_box, mock_player,
-                                            mock_render):
+    def test_resolve_all__with_valid_box_finished_true(
+            self, mock_box, mock_player, mock_render):
+        mock_box.side_effect = [{
+            'away_runs': 4,
+            'away_team': 'T31',
+            'date': THEN,
+            'home_runs': 2,
+            'home_team': 'T45',
+            'ok': True
+        }, {
+            'away_runs': 1,
+            'away_team': 'T44',
+            'date': THEN,
+            'home_runs': 2,
+            'home_team': 'T32',
+            'ok': True
+        }, {
+            'away_runs': 11,
+            'away_team': 'T40',
+            'date': THEN,
+            'home_runs': 4,
+            'home_team': 'T35',
+            'ok': True
+        }, {
+            'away_runs': 2,
+            'away_team': 'T36',
+            'date': THEN,
+            'home_runs': 6,
+            'home_team': 'T41',
+            'ok': True
+        }, {
+            'away_runs': 1,
+            'away_team': 'T49',
+            'date': THEN,
+            'home_runs': 0,
+            'home_team': 'T55',
+            'ok': True
+        }, {
+            'away_runs': 5,
+            'away_team': 'T48',
+            'date': THEN,
+            'home_runs': 3,
+            'home_team': 'T33',
+            'ok': True
+        }]
+        read = _data(
+            finished=True,
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED},
+            scores={THEN_ENCODED: SCORES_REGULAR_ENCODED},
+            unresolved=[THEN_ENCODED])
+        plugin = self.create_plugin(read)
+        response = plugin._resolve_all([THEN_ENCODED], date=THEN)
+        self.assertEqual(response, Response())
+
+        write = _data(
+            finished=True,
+            highlights={THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED},
+            injuries={THEN_ENCODED: INJURIES_TEXT_CLARIFIED},
+            scores={THEN_ENCODED: SCORES_REGULAR_CLARIFIED},
+            unresolved=[])
+        extract = _root + '/resource/extract/'
+        calls = [
+            mock.call('{0}{1}2998.html'.format(extract,
+                                               _game_box)),
+            mock.call('{0}{1}3003.html'.format(extract,
+                                               _game_box)),
+            mock.call('{0}{1}3002.html'.format(extract,
+                                               _game_box)),
+            mock.call('{0}{1}14721.html'.format(extract,
+                                                _game_box)),
+            mock.call('{0}{1}3001.html'.format(extract,
+                                               _game_box)),
+            mock.call('{0}{1}3000.html'.format(extract,
+                                               _game_box))
+        ]
+        mock_box.assert_has_calls(calls)
+        mock_player.assert_not_called()
+        mock_render.assert_called_once_with(date=THEN)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+        self.assertFalse(plugin.data['unresolved'])
+
+    @mock.patch.object(Statsplus, '_render')
+    @mock.patch('plugin.statsplus.statsplus.player')
+    @mock.patch('plugin.statsplus.statsplus.box_score')
+    def test_resolve_all__with_valid_player_finished_false(
+            self, mock_box, mock_player, mock_render):
         mock_box.return_value = {
             'away_runs': 4,
             'away_team': 'T35',
@@ -1303,6 +1390,49 @@ class StatsplusTest(Test):
             scores={THEN_ENCODED: SCORES_DOUBLE_CLARIFIED},
             unresolved=[])
         link = '{0}{1}2998.html'.format(_html, _game_box)
+        mock_box.assert_called_once_with(link)
+        link = '{0}{1}29663.html'.format(_html, _player)
+        mock_player.assert_called_once_with(link)
+        mock_render.assert_called_once_with(date=THEN)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+        self.assertFalse(plugin.data['unresolved'])
+
+    @mock.patch.object(Statsplus, '_render')
+    @mock.patch('plugin.statsplus.statsplus.player')
+    @mock.patch('plugin.statsplus.statsplus.box_score')
+    def test_resolve_all__with_valid_player_finished_true(
+            self, mock_box, mock_player, mock_render):
+        mock_box.return_value = {
+            'away_runs': 4,
+            'away_team': 'T35',
+            'date': THEN,
+            'home_runs': 2,
+            'home_team': 'T44',
+            'ok': True
+        }
+        mock_player.return_value = {
+            'name': 'Dakota Donovan',
+            'ok': True,
+            'team': 'T44'
+        }
+        read = _data(
+            finished=True,
+            injuries={THEN_ENCODED: INJURIES_DOUBLE_ENCODED},
+            scores={THEN_ENCODED: SCORES_DOUBLE_ENCODED},
+            unresolved=[THEN_ENCODED])
+        plugin = self.create_plugin(read)
+        response = plugin._resolve_all([THEN_ENCODED], date=THEN)
+        self.assertEqual(response, Response())
+
+        write = _data(
+            finished=True,
+            injuries={THEN_ENCODED: INJURIES_DOUBLE_CLARIFIED},
+            scores={THEN_ENCODED: SCORES_DOUBLE_CLARIFIED},
+            unresolved=[])
+        link = '{0}{1}2998.html'.format(_root + '/resource/extract/',
+                                        _game_box)
         mock_box.assert_called_once_with(link)
         link = '{0}{1}29663.html'.format(_html, _player)
         mock_player.assert_called_once_with(link)

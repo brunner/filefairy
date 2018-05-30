@@ -48,7 +48,7 @@ _player = 'players/player_'
 _shorten = '{}(?:{}|{})'.format(_html, _game_box, _player)
 _encodings = '|'.join(encodings())
 _precodings = '|'.join(precodings())
-_link_pattern = '<([^|]+)\|([^<]+)>'
+_url_pattern = '<([^|]+)\|([^<]+)>'
 _chlany = chlany()
 _lhclazz = 'table-fixed border border-bottom-0 mt-3'
 _lhcols = [' class="text-center"']
@@ -437,10 +437,11 @@ class Statsplus(Plugin, Renderable):
                     line = re.sub(before, after, lines[i])
                     self.data[key][encoded_date][i] = line
                 else:
-                    link_match = re.findall(_link_pattern, lines[i])
-                    if link_match:
-                        link, content = link_match[0]
-                        player_ = player(link.format(_html, _player))
+                    url_match = re.findall(_url_pattern, lines[i])
+                    if url_match:
+                        url, content = url_match[0]
+                        link = url.format(_html, _player)
+                        player_ = player(link)
                         if player_['ok']:
                             name = player_['name']
                             team = player_['team']
@@ -455,15 +456,20 @@ class Statsplus(Plugin, Renderable):
         if count not in [1, 2]:
             return
 
+        finished = self.data['finished']
         score_pattern = '(\w+) (\d+), (\w+) (\d+)'
-        link_match = re.findall(_link_pattern, scores[i])
-        if link_match:
-            link, content = link_match[0]
+        url_match = re.findall(_url_pattern, scores[i])
+        if url_match:
+            url, content = url_match[0]
             score_pattern = '(\w+) (\d+), (\w+) (\d+)'
             score_match = re.findall(score_pattern, content)
             if score_match:
                 cteam1, cruns1, cteam2, cruns2 = score_match[0]
-                box_score_ = box_score(link.format(_html, _game_box))
+                if finished:
+                    link = url.format(_root + '/resource/extract/', _game_box)
+                else:
+                    link = url.format(_html, _game_box)
+                box_score_ = box_score(link)
                 if box_score_['ok']:
                     ddate = decode_datetime(encoded_date)
                     if ddate != box_score_['date']:
@@ -485,7 +491,7 @@ class Statsplus(Plugin, Renderable):
                         return
                     s = '{} {}, {} {}'
                     score = s.format(bteam1, bruns1, bteam2, bruns2)
-                    scores[i] = '<{0}|{1}>'.format(link, score)
+                    scores[i] = '<{0}|{1}>'.format(url, score)
                     if swap:
                         bteam1, bteam2 = bteam2, bteam1
                         cteam1, cteam2 = cteam2, cteam1
