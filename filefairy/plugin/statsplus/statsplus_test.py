@@ -1338,18 +1338,12 @@ class StatsplusTest(Test):
             unresolved=[])
         extract = _root + '/resource/extract/'
         calls = [
-            mock.call('{0}{1}2998.html'.format(extract,
-                                               _game_box)),
-            mock.call('{0}{1}3003.html'.format(extract,
-                                               _game_box)),
-            mock.call('{0}{1}3002.html'.format(extract,
-                                               _game_box)),
-            mock.call('{0}{1}14721.html'.format(extract,
-                                                _game_box)),
-            mock.call('{0}{1}3001.html'.format(extract,
-                                               _game_box)),
-            mock.call('{0}{1}3000.html'.format(extract,
-                                               _game_box))
+            mock.call('{0}{1}2998.html'.format(extract, _game_box)),
+            mock.call('{0}{1}3003.html'.format(extract, _game_box)),
+            mock.call('{0}{1}3002.html'.format(extract, _game_box)),
+            mock.call('{0}{1}14721.html'.format(extract, _game_box)),
+            mock.call('{0}{1}3001.html'.format(extract, _game_box)),
+            mock.call('{0}{1}3000.html'.format(extract, _game_box))
         ]
         mock_box.assert_has_calls(calls)
         mock_player.assert_not_called()
