@@ -33,7 +33,7 @@ _s49 = [logo_absolute('49', 'New York', 'left'), '95', '67', '-', 'X']
 _s50 = [logo_absolute('50', 'Oakland', 'left'), '75', '87', '23.0', '']
 _s51 = [logo_absolute('51', 'Philadelphia', 'left'), '75', '87', '20.0', '']
 _s52 = [logo_absolute('52', 'Pittsburgh', 'left'), '53', '109', '58.0', '']
-_s53 = [logo_absolute('53', 'San Diego', 'left'), '104', '58.0', '-', 'X']
+_s53 = [logo_absolute('53', 'San Diego', 'left'), '104', '58', '-', 'X']
 _s54 = [logo_absolute('54', 'Seattle', 'left'), '98', '64', '-', 'X']
 _s55 = [logo_absolute('55', 'San Francisco', 'left'), '62', '100', '42.0', '']
 _s56 = [logo_absolute('56', 'St. Louis', 'left'), '89', '73', '22.0', '']
@@ -111,7 +111,7 @@ _transactions = [
 ]
 _scols = [
     ' class="position-relative text-truncate"', ' class="text-right w-55p"',
-    ' class="text-right w-55p"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"', ' class="text-right w-75p"',
     ' class="text-right w-55p"'
 ]
 _standings = [

@@ -218,7 +218,7 @@ _highlights = [
 
 _fcols = [
     ' class="position-relative text-truncate"', ' class="text-right w-55p"',
-    ' class="text-right w-55p"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"', ' class="text-right w-75p"',
     ' class="text-right w-55p"'
 ]
 _forecast = [

@@ -18,7 +18,7 @@ from util.team.team import logo_absolute  # noqa
 
 COLS = [
     'class="position-relative text-truncate"', ' class="text-right w-55p"',
-    ' class="text-right w-55p"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"', ' class="text-right w-75p"',
     ' class="text-right w-55p"'
 ]
 RECORDS_FINAL = {

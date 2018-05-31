@@ -15,7 +15,7 @@ from util.team.team import teamids  # noqa
 
 _cols = [
     'class="position-relative text-truncate"', ' class="text-right w-55p"',
-    ' class="text-right w-55p"', ' class="text-right w-55p"',
+    ' class="text-right w-55p"', ' class="text-right w-75p"',
     ' class="text-right w-55p"'
 ]
 _divisions = divisions()
