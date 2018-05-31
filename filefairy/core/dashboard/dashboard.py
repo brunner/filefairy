@@ -15,9 +15,15 @@ from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import files_upload  # noqa
 
 
+class StringFormatter(string.Formatter):
+    def get_value(self, key, args, kwargs):
+        return kwargs.get(key, '{{{0}}}'.format(key))
+
+
 class Dashboard(Registrable, Renderable):
     def __init__(self, **kwargs):
         super(Dashboard, self).__init__(**kwargs)
+        self.formatter = StringFormatter()
 
     @staticmethod
     def _data():
@@ -52,26 +58,21 @@ class Dashboard(Registrable, Renderable):
         }
         return ret
 
+    def _log(self, **kwargs):
+        s = '{pathname}#{lineno}: {msg}'
+        msg = self.formatter.format(s, **kwargs)
 
-class StringFormatter(string.Formatter):
-    def get_value(self, key, args, kwargs):
-        return kwargs.get(key, '{{{0}}}'.format(key))
+        if kwargs.get('v'):
+            chat_post_message('testing', msg)
+            if kwargs.get('c'):
+                flog = kwargs.get('module') + '.log.txt'
+                files_upload(kwargs['c'], flog, 'testing')
 
 
 class LoggingHandler(logging.Handler):
     def __init__(self, dashboard):
         super().__init__()
         self.dashboard = dashboard
-        self.formatter = StringFormatter()
 
     def emit(self, record):
-        vars_ = vars(record)
-
-        s = '{pathname}#{lineno}: {msg}'
-        msg = self.formatter.format(s, **vars(record))
-
-        if vars_.get('v'):
-            chat_post_message('testing', msg)
-            if vars_.get('c'):
-                flog = vars_.get('module') + '.log.txt'
-                files_upload(vars_['c'], flog, 'testing')
+        self.dashboard._log(**vars(record))

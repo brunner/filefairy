@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
+  <title>Fairylab | dashboard</title>
+  <style>
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+    body {
+      margin-bottom: 60px;
+    }
+    header {
+      background-color: #f5f5f5;
+      width: 100%;
+    }
+    footer {
+      background-color: #f5f5f5;
+      bottom: 0;
+      height: 60px;
+      line-height: 60px;
+      position: absolute;
+      width: 100%;
+    }
+    .alert, .form-control {
+      padding: .75rem;
+    }
+    .alert .oi {
+      line-height: 24px;
+      padding-right: .75rem;
+    }
+    .anchor {
+      padding-top: 0px;
+      margin-top: 0px;
+      transition: padding-top .35s ease, margin-top .35s ease;
+    }
+    .breadcrumb {
+      background-color: inherit;
+      line-height: 60px;
+    }
+    .flex-grow {
+      flex-grow: 1;
+    }
+    .left-8p {
+      left: 8px;
+    }
+    .navbar {
+      padding: 0;
+    }
+    .navbar-nav {
+      padding: .5rem 0;
+    }
+    .navbar .nav-link {
+      padding: .5rem;
+    }
+    .pl-24p {
+      padding-left: 24px;
+    }
+    .pr-24p {
+      padding-right: 24px;
+    }
+    .right-8p {
+      right: 8px;
+    }
+    .table, .table-sm {
+      margin-bottom: 0;
+      word-break: break-word;
+    }
+    .table .thead-light td {
+      background-color: #f5f5f5;
+    }
+    .table-fixed {
+      table-layout: fixed;
+    }
+    .table-sm td {
+      border-top: 0;
+      padding: 0 .3rem 0 0;
+    }
+    .table .td-sm {
+      padding: .75rem .25rem;
+    }
+    .top-14p {
+      top: 14px;
+    }
+    .w-10 {
+      width: 10%;
+    }
+    .w-20 {
+      width: 20%;
+    }
+    .w-40 {
+      width: 40%;
+    }
+    .w-55p {
+      width: 55px;
+    }
+    .w-75p {
+      width: 75px;
+    }
+    .w-105p {
+      width: 105px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="border-bottom sticky-top">
+    <div class="container">
+      <nav class="navbar navbar-light" aria-label="nav">
+        <ol class="breadcrumb m-0 p-0">
+          <li class="breadcrumb-item">
+            <a href="/fairylab/">Home</a>
+          </li>
+          <li class="breadcrumb-item active"
+              aria-current="page">Dashboard</li>
+        </ol>
+          <button class="navbar-toggler border-0" type="button"
+                data-toggle="collapse" data-target="#nav-dropdown"
+                aria-controls="#nav-dropdown" aria-expanded="false"
+                aria-label="nav toggler">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse border-top" id="nav-dropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#filter">Filter</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#logs">Logs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#error">Error</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#info">Info</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <main role="main" class="pb-3">
+    <div class="container anchor" id="filter">
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-magnifying-glass text-secondary"></span>Filter
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <nav class="navbar navbar-light bg-light mt-3 p-0">
+            <form class="w-100">
+              <input class="form-control mr-sm-2" type="search"
+                     placeholder="Search" aria-label="Search">
+            </form>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="container anchor" id="logs"s>
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-terminal text-secondary"></span>Logs
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <table class="table border mt-3 table-fixed">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Monday, July 4th, 2022</td>
+                <td scope="col" class="text-right w-105p"></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">plugin/snacks/snacks.py#L190: FileNotFoundError</td>
+                <td class="text-right w-105p"><span class="text-secondary">10m ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">plugin/git/git.py#L61: ConnectionError</td>
+                <td class="text-right w-105p"><span class="text-secondary">6h ago</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3 table-fixed">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">Sunday, July 3rd, 2022</td>
+                <td scope="col" class="text-right w-105p"></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">core/fairylab/fairylab.py#L252: ModuleReloadSuccess</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">core/fairylab/fairylab.py#L252: ModuleReloadSuccess</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">core/fairylab/fairylab.py#L252: ModuleReloadSuccess</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">core/fairylab/fairylab.py#L252: ModuleReloadSuccess</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">core/fairylab/fairylab.py#L252: ModuleReloadSuccess</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">core/fairylab/fairylab.py#L252: ModuleReloadSuccess</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">core/fairylab/fairylab.py#L252: ModuleReloadSuccess</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="container anchor" id="error"s>
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-warning text-secondary"></span>Error
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <table class="table border mt-3 table-fixed">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">plugin/snacks/snacks.py#190: FileNotFoundError</td>
+                <td scope="col" class="text-right w-105p">(1)</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">No such file or directory: '/home/pi/orangeandblueleague/filefairy3/resource/corpus'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10m ago</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table border mt-3 table-fixed">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">plugin/git/git.py#61: ConnectionError</td>
+                <td scope="col" class="text-right w-105p">(1)</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">Request timed out: 'git commit -m "Automated data push."'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">6h ago</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="container anchor" id="info"s>
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-secondary mt-3 mb-0">
+            <span class="oi oi-double-quote-serif-left text-secondary"></span>Info
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <table class="table border mt-3 table-fixed">
+            <thead class="thead-light">
+              <tr>
+                <td scope="col">core/fairylab/fairylab.py#252: ModuleReloadSuccess</td>
+                <td scope="col" class="text-right w-105p">(7)</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">Reloaded plugin: 'download'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">Reloaded plugin: 'exports'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">Reloaded plugin: 'git'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">Reloaded plugin: 'leaguefile'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">Reloaded plugin: 'recap'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">Reloaded plugin: 'snacks'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+              <tr>
+                <td scope="row">Reloaded plugin: 'statsplus'.</td>
+                <td class="text-right w-105p"><span class="text-secondary">10h ago</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="border-top">
+    <div class="container text-center">
+      <small class="text-muted">Last reloaded: 1985-10-26 06:02:30 PST</small>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+          integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+          integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+          crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+          integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+          crossorigin="anonymous"></script>
+  <script>
+    $('.navbar-toggler').one('click', function(e) {
+      setTimeout(function() {
+        var height = $('header').height() + 1;
+        var css = '<style> .anchor.offset { padding-top: %spx; margin-top: -%spx; } </style>';
+        $(css.replace(/%s/g, height)).appendTo('head');
+      }, 500);
+    });
+    $('.navbar-toggler').on('click', function(e) {
+      $('.anchor').toggleClass('offset');
+    });
+  </script>
+  <script>
+    var filter = '';
+    $('.form-control').on('change keyup paste mouseup', function(e) {
+      var val = $(this).val().toLowerCase();
+      if (val != filter) {
+        filter = val;
+        $.each(['logs'], function(i, v) {
+          container = $('#' + v);
+          $('tbody td', container).each(function(e) {
+            if ($(this).text().toLowerCase().indexOf(filter) != -1) {
+              $(this).removeClass('d-none');
+            } else {
+              $(this).addClass('d-none');
+            }
+          });
+          $('table', container).each(function(e) {
+            if ($(this).find('tbody td:not(.d-none)').length != 0) {
+              $(this).removeClass('d-none');
+            } else {
+              $(this).addClass('d-none');
+            }
+          });
+        })
+      }
+    });
+  </script>
+</body>
+
+</html>
