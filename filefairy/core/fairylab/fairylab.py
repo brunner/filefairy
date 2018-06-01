@@ -285,7 +285,7 @@ class Fairylab(Messageable, Renderable):
 
     def reboot(self, *args, **kwargs):
         log(self._name(), **dict(kwargs, s='Rebooting.'))
-        os.execv(sys.executable, ['python'] + sys.argv)
+        os.execv(sys.executable, ['python3'] + sys.argv)
 
     def shutdown(self, *args, **kwargs):
         log(self._name(), **dict(kwargs, s='Shutting down.'))

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import copy
 import datetime
 import functools
 import os
@@ -795,7 +794,6 @@ class FairylabTest(Test):
         }
         self.assertEqual(ret, expected)
 
-    maxDiff = None
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_success(self, mock_delta):
         mock_delta.side_effect = ['0s ago', '15m ago', '2h ago']
@@ -947,7 +945,7 @@ class FairylabTest(Test):
         program = self.create_program()
         program.reboot(v=True)
 
-        expected = ['python'] + sys.argv
+        expected = ['python3'] + sys.argv
         mock_execv.assert_called_once_with(sys.executable, expected)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
