@@ -8,12 +8,18 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/component', '', _path))
+from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 
 
 class ComponentTest(unittest.TestCase):
+    def test_anchor(self):
+        actual = anchor('http://url', 'content')
+        expected = '<a href="http://url">content</a>'
+        self.assertEqual(actual, expected)
+
     def test_card__default(self):
         actual = card()
         expected = {

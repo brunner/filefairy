@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 
+def anchor(url, content):
+    return '<a href="{}">{}</a>'.format(url, content)
+
+
 def card(href='', title='', info='', table=None, ts='', success='', danger=''):
     return {
         'href': href,
