@@ -14,7 +14,6 @@ from util.slack.slack import files_upload  # noqa
 def log(name, **kwargs):
     c, s, v = [kwargs.get(key, '') for key in ('c', 's', 'v')]
 
-    if v:
-        chat_post_message('testing', '(' + name + ') ' + s)
-        if c:
-            files_upload(c, name + '.log.txt', 'testing')
+    chat_post_message('testing', '(' + name + ') ' + s)
+    if c:
+        files_upload(c, name + '.log.txt', 'testing')
