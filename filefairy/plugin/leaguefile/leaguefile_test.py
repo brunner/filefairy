@@ -452,6 +452,8 @@ class LeaguefileTest(Test):
             title='Jan 29',
             table=table(
                 clazz='table-sm',
+                hcols=[' class="w-55p"', ''],
+                bcols=[' class="w-55p"', ''],
                 body=[['Time: ', '2h 0m'], ['Size: ', '100,000']]),
             ts='0s ago',
             success='ongoing')

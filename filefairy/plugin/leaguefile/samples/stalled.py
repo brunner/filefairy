@@ -19,8 +19,12 @@ _breadcrumbs = [{
     'name': 'Leaguefile'
 }]
 
+_cols = [' class="w-55p"', '']
 _table = table(
-    clazz='table-sm', body=[['Time: ', '1h 8m'], ['Size: ', '59,969,530']])
+    clazz='table-sm',
+    hcols=_cols,
+    bcols=_cols,
+    body=[['Time: ', '1h 8m'], ['Size: ', '59,969,530']])
 _fp = card(title='Mar 10', table=_table, ts='12m ago', danger='stalled')
 _up = table(
     clazz='border mt-3',

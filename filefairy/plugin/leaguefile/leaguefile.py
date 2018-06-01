@@ -194,12 +194,15 @@ class Leaguefile(Plugin, Renderable):
             time = self._time(data['fp']['start'], data['fp']['end'])
             ts = delta(decode_datetime(data['fp']['now']), kwargs['date'])
 
+            cols = [' class="w-55p"', '']
             success = 'ongoing' if 's' in ts else ''
             danger = 'stalled' if 's' not in ts else ''
             ret['fp'] = card(
                 title=self._filedate(data['fp']['start']),
                 table=table(
                     clazz='table-sm',
+                    hcols=cols,
+                    bcols=cols,
                     body=[['Time: ', time],
                           ['Size: ', self._size(data['fp']['size'])]]),
                 ts=ts,
