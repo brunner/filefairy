@@ -440,11 +440,7 @@ class LeaguefileTest(Test):
         read = {'fp': None, 'up': []}
         plugin = self.create_plugin(read)
         value = plugin._home(date=NOW)
-        up = table(
-            hcols=['', '', ''],
-            bcols=['', '', ''],
-            head=['Date', 'Time', 'Size'],
-            body=[])
+        up = table(head=['Date', 'Time', 'Size'], body=[])
         expected = {'breadcrumbs': BREADCRUMBS, 'fp': None, 'up': up}
         self.assertEqual(value, expected)
 
@@ -456,16 +452,10 @@ class LeaguefileTest(Test):
             title='Jan 29',
             table=table(
                 clazz='table-sm',
-                hcols=['', ' class="w-100"'],
-                bcols=['', ' class="w-100"'],
                 body=[['Time: ', '2h 0m'], ['Size: ', '100,000']]),
             ts='0s ago',
             success='ongoing')
-        up = table(
-            hcols=['', '', ''],
-            bcols=['', '', ''],
-            head=['Date', 'Time', 'Size'],
-            body=[])
+        up = table(head=['Date', 'Time', 'Size'], body=[])
         expected = {'breadcrumbs': BREADCRUMBS, 'fp': fp, 'up': up}
         self.assertEqual(value, expected)
 
@@ -474,8 +464,6 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(read)
         value = plugin._home(date=NOW)
         up = table(
-            hcols=['', '', ''],
-            bcols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=[['Jan 27', '0m', '345,678,901']])
         expected = {'breadcrumbs': BREADCRUMBS, 'fp': None, 'up': up}

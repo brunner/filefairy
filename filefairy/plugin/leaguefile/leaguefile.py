@@ -196,13 +196,10 @@ class Leaguefile(Plugin, Renderable):
 
             success = 'ongoing' if 's' in ts else ''
             danger = 'stalled' if 's' not in ts else ''
-            cols = ['', ' class="w-100"']
             ret['fp'] = card(
                 title=self._filedate(data['fp']['start']),
                 table=table(
                     clazz='table-sm',
-                    hcols=cols,
-                    bcols=cols,
                     body=[['Time: ', time],
                           ['Size: ', self._size(data['fp']['size'])]]),
                 ts=ts,
@@ -217,8 +214,6 @@ class Leaguefile(Plugin, Renderable):
                 self._size(up['size'])
             ])
         ret['up'] = table(
-            hcols=['', '', ''],
-            bcols=['', '', ''],
             head=['Date', 'Time', 'Size'],
             body=body)
 
