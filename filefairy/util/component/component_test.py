@@ -26,6 +26,7 @@ class ComponentTest(unittest.TestCase):
             'href': '',
             'title': '',
             'info': '',
+            'code': '',
             'table': None,
             'ts': '',
             'success': '',
@@ -44,6 +45,7 @@ class ComponentTest(unittest.TestCase):
             'href': '/fairylab/foo/',
             'title': 'foo',
             'info': 'Description of foo.',
+            'code': '',
             'table': None,
             'ts': '0s ago',
             'success': 'just now',
@@ -65,6 +67,7 @@ class ComponentTest(unittest.TestCase):
             'href': '',
             'title': 'Jan 1',
             'info': '',
+            'code': '',
             'table': table,
             'ts': '4m ago',
             'success': '',
@@ -81,7 +84,6 @@ class ComponentTest(unittest.TestCase):
         actual = table()
         expected = {
             'clazz': 'border mt-3',
-            'id': '',
             'hcols': None,
             'bcols': None,
             'head': None,
@@ -96,7 +98,6 @@ class ComponentTest(unittest.TestCase):
             body=[['Jan 1', '5h 0m', '300,000,000']])
         expected = {
             'clazz': 'table-sm',
-            'id': '',
             'hcols': None,
             'bcols': None,
             'head': ['Date', 'Time', 'Size'],

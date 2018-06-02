@@ -9,6 +9,7 @@ def anchor(url, content):
 def card(href='',
          title='',
          info='',
+         code='',
          table=None,
          ts='',
          success='',
@@ -17,6 +18,7 @@ def card(href='',
         'href': href,
         'title': title,
         'info': info,
+        'code': code,
         'table': table,
         'ts': ts,
         'success': success,
@@ -29,14 +31,12 @@ def span(classes, text):
 
 
 def table(clazz='border mt-3',
-          id_='',
           hcols=None,
           bcols=None,
           head=None,
           body=None):
     return {
         'clazz': clazz,
-        'id': id_,
         'hcols': hcols,
         'bcols': bcols,
         'head': head,

@@ -1,63 +1,81 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('filter', 'Filter')] %}
+{% set items = [] %}
+{% if exceptions %}
+{% do items.append(('exceptions', 'Exceptions')) %}
+{% endif %}
+{% if warnings %}
+{% do items.append(('warnings', 'Warnings')) %}
+{% endif %}
 {% if logs %}
+{% do items.append(('filter', 'Filter')) %}
 {% do items.append(('logs', 'Logs')) %}
 {% endif %}
-{% if error %}
-{% do items.append(('error', 'Error')) %}
-{% endif %}
-{% if info %}
-{% do items.append(('info', 'Info')) %}
-{% endif %}
 {% block nav %}
-          {{ common.nav(items)|indent(8) }}
+{{ common.nav(items)|indent(8) }}
 {% endblock %}
 
 {% block content %}
-    <div class="container anchor" id="filter">
-      {{ common.heading('magnifying-glass', 'Filter')|indent(6) }}
-      {{ common.form()|indent(6) }}
-    </div>
-    {% if logs %}
-    <div class="container anchor" id="logs"s>
-      {{ common.heading('terminal', 'Logs')|indent(6) }}
-      <div class="row">
-        <div class="col-12">
-          {% for table in logs %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if error %}
-    <div class="container anchor" id="error"s>
-      {{ common.heading('warning', 'Error')|indent(6) }}
-      <div class="row">
-        <div class="col-12">
-          {% for table in error %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if info %}
-    <div class="container anchor" id="info"s>
-      {{ common.heading('double-quote-serif-left', 'Info')|indent(6) }}
-      <div class="row">
-        <div class="col-12">
-          {% for table in info %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
+
+{% if exceptions %}
+<div class="container anchor" id="exceptions">
+{{ common.heading('fire', 'Exceptions') }}
+<div class="row">
+{% for card in exceptions %}
+<div class="col-12">
+{{ common.card(card) }}
+</div>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+{% if warnings %}
+<div class="container anchor" id="warnings">
+{{ common.heading('warning', 'Warnings') }}
+<div class="row">
+{% for card in warnings %}
+<div class="col-12">
+{{ common.card(card) }}
+</div>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+{% if logs %}
+<div class="container anchor" id="filter">
+{{ common.heading('magnifying-glass', 'Filter') }}
+{{ common.form() }}
+</div>
+<div class="container anchor" id="logs"s>
+{{ common.heading('timer', 'Logs') }}
+<div class="row">
+<div class="col-12">
+{% for table in logs %}
+{{ common.table(table) }}
+{% endfor %}
+</div>
+</div>
+</div>
+{% endif %}
+
+{% if info %}
+<div class="container anchor" id="info"s>
+{{ common.heading('double-quote-serif-left', 'Info') }}
+<div class="row">
+<div class="col-12">
+{% for table in info %}
+{{ common.table(table) }}
+{% endfor %}
+</div>
+</div>
+</div>
+{% endif %}
+
 {% endblock %}
 
 {% block script %}
-  {{ common.form_js(['logs'])|indent(2) }}
+{{ common.form_js(['logs'])|indent(2) }}
 {% endblock %}
