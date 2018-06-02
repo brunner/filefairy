@@ -17,7 +17,7 @@ class LoggerTest(unittest.TestCase):
     @mock.patch('util.logger.logger.chat_post_message')
     def test_log__with_string(self, mock_post, mock_upload):
         log('name', s='str')
-        mock_post.assert_called_once_with('testing', '(name) str')
+        mock_post.assert_not_called()
         mock_upload.assert_not_called()
 
     @mock.patch('util.logger.logger.files_upload')
@@ -31,8 +31,8 @@ class LoggerTest(unittest.TestCase):
     @mock.patch('util.logger.logger.chat_post_message')
     def test_log__with_return_string(self, mock_post, mock_upload):
         log('name', c='content', s='str')
-        mock_post.assert_called_once_with('testing', '(name) str')
-        mock_upload.assert_called_once_with('content', 'name.log.txt', 'testing')
+        mock_post.assert_not_called()
+        mock_upload.assert_not_called()
 
     @mock.patch('util.logger.logger.files_upload')
     @mock.patch('util.logger.logger.chat_post_message')
