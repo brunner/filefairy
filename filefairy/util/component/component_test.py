@@ -81,6 +81,7 @@ class ComponentTest(unittest.TestCase):
         actual = table()
         expected = {
             'clazz': 'border mt-3',
+            'id': '',
             'hcols': None,
             'bcols': None,
             'head': None,
@@ -95,6 +96,7 @@ class ComponentTest(unittest.TestCase):
             body=[['Jan 1', '5h 0m', '300,000,000']])
         expected = {
             'clazz': 'table-sm',
+            'id': '',
             'hcols': None,
             'bcols': None,
             'head': ['Date', 'Time', 'Size'],
