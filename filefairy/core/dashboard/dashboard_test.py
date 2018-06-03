@@ -14,6 +14,9 @@ _root = re.sub(r'/core/dashboard', '', _path)
 sys.path.append(_root)
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.dashboard.dashboard import LoggingHandler  # noqa
+from util.component.component import anchor  # noqa
+from util.component.component import card  # noqa
+from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -27,28 +30,75 @@ _now_date_encoded = '1985-10-26T20:18:45'
 _then = datetime.datetime(1985, 10, 26, 0, 2, 30)
 _then_date_encoded = '1985-10-26T00:02:30'
 _then_day_encoded = '1985-10-26T00:00:00'
+_yesterday = datetime.datetime(1985, 10, 25, 0, 2, 30)
+_yesterday_date_encoded = '1985-10-25T12:55:00'
+_yesterday_day_encoded = '1985-10-25T00:00:00'
 _details = {'trace': 'Lorem ipsum'}
 _record_error = {
-    'pathname': '/home/path/to/file.py',
+    'pathname': '/home/user/filefairy/path/to/file.py',
     'lineno': 123,
     'levelname': 'ERROR',
     'msg': 'foo',
     'exc': 'Traceback [foo] ...',
 }
 _record_info = {
-    'pathname': '/home/path/to/file.py',
+    'pathname': '/home/user/filefairy/path/to/file.py',
     'lineno': 456,
     'levelname': 'INFO',
     'msg': 'bar',
     'exc': '',
 }
 _record_warning = {
-    'pathname': '/home/path/to/file.py',
+    'pathname': '/home/user/filefairy/path/to/file.py',
     'lineno': 789,
     'levelname': 'WARNING',
     'msg': 'baz',
     'exc': 'Traceback [baz] ...',
 }
+_cols = ['', ' class="text-right w-75p"']
+_link = 'https://github.com/brunner/orangeandblueleague/blob/master/filefairy/'
+_breadcrumbs = [{
+    'href': '/fairylab/',
+    'name': 'Home'
+}, {
+    'href': '',
+    'name': 'Dashboard'
+}]
+_exceptions = [card(
+    href=(_link + 'path/to/file.py#L123'),
+    title='file.py#L123',
+    table=table(clazz='table-sm mb-2', bcols=_cols, body=[['foo', '(1)']]),
+    code='Traceback [foo] ...',
+    ts='1d ago')]
+_warnings = [card(
+    href=(_link + 'path/to/file.py#L789'),
+    title='file.py#L789',
+    table=table(clazz='table-sm mb-2', bcols=_cols, body=[['baz', '(2)']]),
+    code='Traceback [baz] ...',
+    ts='20h ago')]
+_logs = [
+    table(
+        clazz='border mt-3 table-fixed',
+        hcols=_cols,
+        bcols=_cols,
+        head=['Saturday, October 26th, 1985', ''],
+        body=[[
+            anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '<br>baz',
+            '00:02<br>(2)'
+        ]]),
+    table(
+        clazz='border mt-3 table-fixed',
+        hcols=_cols,
+        bcols=_cols,
+        head=['Friday, October 25th, 1985', ''],
+        body=[[
+            anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '<br>bar',
+            '12:55<br>(5)'
+        ], [
+            anchor(_link + 'path/to/file.py#L123', 'file.py#L123') + '<br>foo',
+            '12:55<br>(1)'
+        ]])
+]
 
 
 class DashboardTest(Test):
@@ -133,11 +183,31 @@ class DashboardTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    def test_home(self):
+        error = dict(_record_error, count=1, date=_yesterday_date_encoded)
+        info = dict(_record_info, count=5, date=_yesterday_date_encoded)
+        warning = dict(_record_warning, count=2, date=_then_date_encoded)
+        read = {
+            'records': {
+                _yesterday_day_encoded: [error, info],
+                _then_day_encoded: [warning]
+            }
+        }
+        dashboard = self.create_dashboard(read)
+        actual = dashboard._home(date=_now)
+        expected = {
+            'breadcrumbs': _breadcrumbs,
+            'exceptions': _exceptions,
+            'warnings': _warnings,
+            'logs': _logs
+        }
+        self.assertEqual(actual, expected)
+
     @mock.patch.object(Dashboard, '_record')
     @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
     @mock.patch('core.dashboard.dashboard.os.getcwd')
     def test_log__error(self, mock_cwd, mock_format, mock_record):
-        mock_cwd.return_value = '/home'
+        mock_cwd.return_value = '/home/user/filefairy'
         mock_format.return_value = 'Traceback [foo] ...'
 
         read = {'records': {}}
@@ -161,7 +231,7 @@ class DashboardTest(Test):
     @mock.patch('core.dashboard.dashboard.logging.Formatter')
     @mock.patch('core.dashboard.dashboard.os.getcwd')
     def test_log__info(self, mock_cwd, mock_formatter, mock_record):
-        mock_cwd.return_value = '/home'
+        mock_cwd.return_value = '/home/user/filefairy'
 
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
@@ -183,7 +253,7 @@ class DashboardTest(Test):
     @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
     @mock.patch('core.dashboard.dashboard.os.getcwd')
     def test_log__warning(self, mock_cwd, mock_format, mock_record):
-        mock_cwd.return_value = '/home'
+        mock_cwd.return_value = '/home/user/filefairy'
         mock_format.return_value = 'Traceback [baz] ...'
 
         read = {'records': {}}
@@ -203,17 +273,20 @@ class DashboardTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    def test_record__with_empty(self):
+    @mock.patch.object(Dashboard, '_render')
+    def test_record__with_empty(self, mock_render):
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
         dashboard._record(_then, _record_error)
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_new]}}
+        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_record__with_new(self):
+    @mock.patch.object(Dashboard, '_render')
+    def test_record__with_new(self, mock_render):
         record_old = dict(_record_info, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
@@ -221,10 +294,12 @@ class DashboardTest(Test):
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_old, record_new]}}
+        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_record__with_old(self):
+    @mock.patch.object(Dashboard, '_render')
+    def test_record__with_old(self, mock_render):
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
@@ -232,6 +307,7 @@ class DashboardTest(Test):
 
         record_new = dict(_record_error, count=2, date=_now_date_encoded)
         write = {'records': {_then_day_encoded: [record_new]}}
+        mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
