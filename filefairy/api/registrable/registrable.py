@@ -16,7 +16,6 @@ class Registrable():
         self.ok = True
 
     def __eq__(self, other):
-        print(self.__dict__, other.__dict__)
         return self.__dict__ == other.__dict__
 
     @staticmethod
