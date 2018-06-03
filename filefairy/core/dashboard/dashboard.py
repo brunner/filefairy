@@ -12,6 +12,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/dashboard', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
@@ -52,6 +53,9 @@ class Dashboard(Registrable, Renderable):
     @staticmethod
     def _title():
         return 'dashboard'
+
+    def _notify_internal(self, **kwargs):
+        return Response()
 
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/dashboard/index.html'

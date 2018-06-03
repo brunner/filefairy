@@ -29,22 +29,12 @@ class Plugin(Messageable, Registrable, Runnable):
         pass
 
     @abc.abstractmethod
-    def _notify_internal(self, **kwargs):
-        pass
-
-    @abc.abstractmethod
     def _setup_internal(self, **kwargs):
         pass
 
     @abc.abstractmethod
     def _shadow_internal(self, **kwargs):
         pass
-
-    def _notify(self, **kwargs):
-        response = self._notify_internal(**kwargs)
-        if response.notify:
-            response.notify = [Notify.BASE]
-        return response
 
     def _setup(self, **kwargs):
         response = self._setup_internal(**kwargs)

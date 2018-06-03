@@ -14,7 +14,6 @@ from api.plugin.plugin import Plugin  # noqa
 from api.messageable.messageable import Messageable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.renderable.renderable import Renderable  # noqa
-from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -33,9 +32,6 @@ class FakePlugin(Plugin):
     @staticmethod
     def _info():
         return 'Description.'
-
-    def _notify_internal(self, **kwargs):
-        return Response(notify=[Notify.BASE])
 
     def _on_message_internal(self, **kwargs):
         return Response()
@@ -78,9 +74,6 @@ class FakeRenderable(Plugin, Renderable):
     def _tmpl():
         return 'foo.html'
 
-    def _notify_internal(self, **kwargs):
-        return Response()
-
     def _on_message_internal(self, **kwargs):
         return Response()
 
@@ -103,20 +96,6 @@ class PluginTest(unittest.TestCase):
         self.assertTrue(plugin.enabled)
         self.assertTrue(isinstance(plugin, Messageable))
         self.assertTrue(isinstance(plugin, Runnable))
-
-    def test_notify__with_true(self):
-        plugin = FakePlugin(date=NOW)
-        response = plugin._notify(notify=Notify.OTHER)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
-
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_notify__with_false(self, mock_open):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        plugin = FakeRenderable(date=NOW, e=env())
-        response = plugin._notify(notify=Notify.OTHER)
-        self.assertEqual(response, Response())
 
     def test_setup(self):
         plugin = FakePlugin(date=NOW)

@@ -10,6 +10,8 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/registrable', '', _path))
 from api.registrable.registrable import Registrable  # noqa
+from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 
 NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
 THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
@@ -18,6 +20,9 @@ THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
 class FakeRegistrable(Registrable):
     def __init__(self, **kwargs):
         super(FakeRegistrable, self).__init__(**kwargs)
+
+    def _notify_internal(self, **kwargs):
+        return Response(notify=[Notify.BASE])
 
 
 class ResponseTest(unittest.TestCase):
@@ -46,6 +51,11 @@ class ResponseTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             registrable = FakeRegistrable(date=THEN)
             registrable.ok = [1]
+
+    def test_notify(self):
+        plugin = FakeRegistrable(date=NOW)
+        response = plugin._notify(notify=Notify.OTHER)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
 
 if __name__ == '__main__':

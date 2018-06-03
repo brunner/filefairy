@@ -99,7 +99,7 @@ class Fairylab(Messageable, Renderable):
             return
 
         instance = self.registered.get(p)
-        if not isinstance(instance, Plugin) or not instance.ok:
+        if not isinstance(instance, Registrable) or not instance.ok:
             return
 
         item = getattr(instance, method, None)
