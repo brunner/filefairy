@@ -28,8 +28,10 @@ _data = Dashboard._data()
 _env = env()
 _exc = Exception('foo')
 _now = datetime.datetime(1985, 10, 26, 20, 18, 45)
+_now_day = datetime.datetime(1985, 10, 26)
 _now_date_encoded = '1985-10-26T20:18:45'
 _then = datetime.datetime(1985, 10, 26, 0, 2, 30)
+_then_day = datetime.datetime(1985, 10, 26)
 _then_date_encoded = '1985-10-26T00:02:30'
 _then_day_encoded = '1985-10-26T00:00:00'
 _yesterday = datetime.datetime(1985, 10, 25, 0, 2, 30)
@@ -263,7 +265,6 @@ class DashboardTest(Test):
         dashboard = self.create_dashboard(read)
         e = (Exception, _exc, None)
         dashboard._log(
-            date=_then,
             exc_info=e,
             levelname='ERROR',
             lineno=123,
@@ -272,7 +273,7 @@ class DashboardTest(Test):
 
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
-        mock_record.assert_called_once_with(_then, _record_error)
+        mock_record.assert_called_once_with(_record_error)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -285,7 +286,6 @@ class DashboardTest(Test):
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
         dashboard._log(
-            date=_then,
             exc_info=None,
             levelname='INFO',
             lineno=456,
@@ -294,7 +294,7 @@ class DashboardTest(Test):
 
         mock_cwd.assert_called_once_with()
         mock_formatter.format_exception.assert_not_called()
-        mock_record.assert_called_once_with(_then, _record_info)
+        mock_record.assert_called_once_with(_record_info)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -309,7 +309,6 @@ class DashboardTest(Test):
         dashboard = self.create_dashboard(read)
         e = (Exception, _exc, None)
         dashboard._log(
-            date=_then,
             exc_info=e,
             levelname='WARNING',
             lineno=789,
@@ -318,44 +317,65 @@ class DashboardTest(Test):
 
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
-        mock_record.assert_called_once_with(_then, _record_warning)
+        mock_record.assert_called_once_with(_record_warning)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(Dashboard, '_render')
-    def test_record__with_empty(self, mock_render):
+    @mock.patch('core.dashboard.dashboard.datetime')
+    def test_record__with_empty(self, mock_datetime, mock_render):
+        mock_datetime.datetime.return_value = _then_day
+        mock_datetime.datetime.now.return_value = _then
+
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(_then, _record_error)
+        dashboard._record(_record_error)
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_new]}}
+        mock_datetime.datetime.assert_called_once_with(_then.year, _then.month,
+                                                       _then.day)
+        mock_datetime.datetime.now.assert_called_once_with()
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(Dashboard, '_render')
-    def test_record__with_new(self, mock_render):
+    @mock.patch('core.dashboard.dashboard.datetime')
+    def test_record__with_new(self, mock_datetime, mock_render):
+        mock_datetime.datetime.return_value = _then_day
+        mock_datetime.datetime.now.return_value = _then
+
         record_old = dict(_record_info, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(_then, _record_error)
+        dashboard._record(_record_error)
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_old, record_new]}}
+        mock_datetime.datetime.assert_called_once_with(_then.year, _then.month,
+                                                       _then.day)
+        mock_datetime.datetime.now.assert_called_once_with()
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(Dashboard, '_render')
-    def test_record__with_old(self, mock_render):
+    @mock.patch('core.dashboard.dashboard.datetime')
+    def test_record__with_old(self, mock_datetime, mock_render):
+        mock_datetime.datetime.return_value = _now_day
+        mock_datetime.datetime.now.return_value = _now
+
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(_now, _record_error)
+        dashboard._record(_record_error)
 
         record_new = dict(_record_error, count=2, date=_now_date_encoded)
         write = {'records': {_then_day_encoded: [record_new]}}
+        mock_datetime.datetime.assert_called_once_with(_now.year, _now.month,
+                                                       _now.day)
+        mock_datetime.datetime.now.assert_called_once_with()
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')

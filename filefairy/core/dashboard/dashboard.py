@@ -174,10 +174,10 @@ class Dashboard(Registrable, Renderable):
         exc = logging.Formatter.formatException(self, e) if e else ''
         record['exc'] = secrets_sub(exc)
 
-        date = kwargs.get('date') or datetime.datetime.now()
-        self._record(date, record)
+        self._record(record)
 
-    def _record(self, date, record):
+    def _record(self, record):
+        date = datetime.datetime.now()
         encoded_date = encode_datetime(date)
 
         day = datetime.datetime(date.year, date.month, date.day)
