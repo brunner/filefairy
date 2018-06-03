@@ -68,6 +68,7 @@ class Dashboard(Registrable, Renderable):
         return [(html, '', 'dashboard.html', _home)]
 
     def _setup_internal(self, **kwargs):
+        self._render(**kwargs)
         return Response()
 
     def _shadow_internal(self, **kwargs):

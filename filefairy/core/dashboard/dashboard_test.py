@@ -212,6 +212,26 @@ class DashboardTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    @mock.patch.object(Dashboard, '_render')
+    def test_setup(self, mock_render):
+        read = {'records': {}}
+        dashboard = self.create_dashboard(read)
+        response = dashboard._setup_internal(date=_now)
+        self.assertEqual(response, Response())
+
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    def test_shadow(self):
+        read = {'records': {}}
+        dashboard = self.create_dashboard(read)
+        value = dashboard._shadow_internal()
+        self.assertEqual(value, [])
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
     def test_home(self):
         error = dict(_record_error, count=1, date=_yesterday_date_encoded)
         info = dict(_record_info, count=5, date=_yesterday_date_encoded)
