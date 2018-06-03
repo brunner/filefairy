@@ -152,13 +152,11 @@ class DashboardTest(Test):
         try:
             raise _exc
         except:
-            extra = {'date': _then}
-            logger_.log(logging.ERROR, 'msg', exc_info=True, extra=extra)
+            logger_.log(logging.ERROR, 'msg', exc_info=True)
 
         self.assertTrue(mock_log.called)
         args, kwargs = mock_log.call_args
         self.assertFalse(args)
-        self.assertEqual(kwargs['date'], _then)
         e = (Exception, _exc, _exc.__traceback__)
         self.assertEqual(kwargs['exc_info'], e)
         self.assertEqual(kwargs['levelname'], 'ERROR')
@@ -178,12 +176,11 @@ class DashboardTest(Test):
         logger_.addHandler(handler)
         logger_.setLevel(logging.DEBUG)
 
-        logger_.log(logging.INFO, 'msg', extra={'date': _then})
+        logger_.log(logging.INFO, 'msg')
 
         self.assertTrue(mock_log.called)
         args, kwargs = mock_log.call_args
         self.assertFalse(args)
-        self.assertEqual(kwargs['date'], _then)
         self.assertFalse(kwargs['exc_info'])
         self.assertEqual(kwargs['levelname'], 'INFO')
         self.assertEqual(kwargs['msg'], 'msg')
