@@ -12,8 +12,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
 from core.notify.notify import Notify  # noqa
@@ -27,13 +29,9 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 
-class Browsable(Plugin, Renderable):
+class Browsable(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @property
-    def enabled(self):
-        return True
 
     @staticmethod
     def _data():
@@ -70,47 +68,15 @@ class Browsable(Plugin, Renderable):
         return []
 
 
-class Internal(Plugin):
+class Internal(Messageable, Registrable, Runnable):
     var = True
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    @property
-    def enabled(self):
-        return True
-
     @staticmethod
     def _info():
         return 'Description of internal.'
-
-    def _notify_internal(self, **kwargs):
-        pass
-
-    def _on_message_internal(self, **kwargs):
-        return Response(notify=[Notify.BASE])
-
-    def _run_internal(self, **kwargs):
-        return Response(notify=[Notify.BASE])
-
-    def _setup_internal(self, **kwargs):
-        pass
-
-    def _shadow_internal(self, **kwargs):
-        return []
-
-
-class Disabled(Plugin):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    @property
-    def enabled(self):
-        return False
-
-    @staticmethod
-    def _info():
-        return 'Description of disabled.'
 
     def _notify_internal(self, **kwargs):
         pass
@@ -907,34 +873,6 @@ class FairylabTest(Test):
                                                   kwargs,
                                                   c=TRACEBACK,
                                                   s='Exception.'))
-        self.assertNotIn('browsable', program.registered)
-        self.assertEqual(program.registered['dashboard'].date, THEN)
-        self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertNotIn('internal', program.registered)
-
-    @mock.patch.object(Fairylab, '_try')
-    @mock.patch('core.fairylab.fairylab.importlib.import_module')
-    @mock.patch('core.fairylab.fairylab.getattr')
-    def test_reload__with_disabled(self, mock_getattr, mock_import, mock_try):
-        mock_getattr.return_value = Disabled
-
-        args = ('plugin', 'disabled')
-        kwargs = {'date': THEN, 'v': True}
-        program = self.create_program()
-        program.reload(*args, **kwargs)
-
-        module = mock_import.return_value
-        mock_getattr.assert_called_once_with(module, 'Disabled')
-        mock_import.assert_called_once_with('plugin.disabled.disabled')
-        mock_try.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with('Disabled',
-                                              **dict(
-                                                  kwargs,
-                                                  s='Disabled.',
-                                                  c=None))
         self.assertNotIn('browsable', program.registered)
         self.assertEqual(program.registered['dashboard'].date, THEN)
         self.assertEqual(program.registered['dashboard'].ok, True)

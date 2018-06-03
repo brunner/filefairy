@@ -7,8 +7,10 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/exports', '', _path))
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
@@ -31,13 +33,9 @@ _unlock_values = [Notify.LEAGUEFILE_FINISH]
 _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
 
-class Exports(Plugin, Renderable):
+class Exports(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @property
-    def enabled(self):
-        return True
 
     @staticmethod
     def _data():
@@ -194,7 +192,7 @@ class Exports(Plugin, Renderable):
             if percent == 100:
                 reactions_add('100', 'fairylab', ts)
             elif percent < 50:
-                reactions_add('zzz', 'fairylab', ts)
+                reactions_add('palm_tree', 'fairylab', ts)
 
         for teamid, status in self.exports:
             s = status.lower()[0]

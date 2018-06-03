@@ -19,7 +19,6 @@ sys.path.append(_root)
 
 from api.messageable.messageable import Messageable  # noqa
 from api.nameable.nameable import Nameable  # noqa
-from api.plugin.plugin import Plugin  # noqa
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa
@@ -99,7 +98,7 @@ class Fairylab(Messageable, Renderable):
             return
 
         instance = self.registered.get(p)
-        if not isinstance(instance, Plugin) or not instance.ok:
+        if not isinstance(instance, Registrable) or not instance.ok:
             return
 
         item = getattr(instance, method, None)
@@ -265,23 +264,22 @@ class Fairylab(Messageable, Renderable):
                 instance = plugin(date=date, e=self.environment)
             else:
                 instance = plugin(date=date)
-            enabled = instance.enabled
             exc = None
         except Exception:
             date = None
             instance = None
-            enabled = False
             exc = traceback.format_exc()
 
-        s = 'Exception.' if exc else 'Installed.' if enabled else 'Disabled.'
+        s = 'Exception.' if exc else 'Installed.'
         log(clazz, **dict(kwargs, s=s, c=exc))
 
         if isinstance(instance, Registrable):
             instance.date = date
-            instance.ok = enabled
+            instance.ok = True
             self.registered[name] = instance
+            return True
 
-        return enabled
+        return False
 
     def reboot(self, *args, **kwargs):
         log(self._name(), **dict(kwargs, s='Rebooting.'))

@@ -10,8 +10,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
@@ -23,13 +25,9 @@ from util.statslab.statslab import box_score  # noqa
 from util.team.team import encoding_to_teamid  # noqa
 
 
-class Recap(Plugin, Renderable):
+class Recap(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @property
-    def enabled(self):
-        return True
 
     @staticmethod
     def _data():
@@ -219,7 +217,7 @@ class Recap(Plugin, Renderable):
                     pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                     fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                         '{S}', suffix(pdate.day))
-                    ret.insert(0, table(hcols=[''], bcols=[''], head=[fdate]))
+                    ret.insert(0, table(head=[fdate]))
                 if ret[0]['body'] is None:
                     ret[0]['body'] = []
                 if then and then == self._encode(date, line):

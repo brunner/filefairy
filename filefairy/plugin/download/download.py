@@ -10,7 +10,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/download', '', _path)
 sys.path.append(_root)
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from api.serializable.serializable import Serializable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
@@ -24,13 +26,9 @@ from util.file_.file_ import wget_file  # noqa
 from util.logger.logger import log  # noqa
 
 
-class Download(Plugin, Serializable):
+class Download(Messageable, Registrable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @property
-    def enabled(self):
-        return True
 
     @staticmethod
     def _data():

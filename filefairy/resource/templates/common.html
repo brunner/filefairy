@@ -42,6 +42,9 @@
     {% if data.table %}
     {{ table(data.table)|indent(4) }}
     {% endif %}
+    {% if data.code %}
+    <pre class="pre-scrollable d-flex"><code>{{- data.code -}}</code></pre>
+    {% endif %}
   </div>
   {% if data.ts %}
   <div class="card-footer text-muted text-truncate">
@@ -100,7 +103,8 @@
 {%- endmacro -%}
 
 {% macro table(data) -%}
-<table class="table {{ data.clazz }}">
+<table class="table{% if data.clazz %} {{ data.clazz }}{% endif %}"
+       {%- if data.id %}id="{{ data.id }}"{% endif %}>
   {% if data.head %}
   <thead class="thead-light">
     <tr>

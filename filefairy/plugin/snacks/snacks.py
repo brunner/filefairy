@@ -10,7 +10,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from api.serializable.serializable import Serializable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
@@ -57,14 +59,10 @@ _snacklist = [
 ]
 
 
-class Snacks(Plugin, Serializable):
+class Snacks(Messageable, Registrable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.loaded = False
-
-    @property
-    def enabled(self):
-        return True
 
     @staticmethod
     def _data():

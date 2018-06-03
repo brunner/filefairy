@@ -9,8 +9,10 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/leaguefile', '', _path))
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
@@ -31,13 +33,9 @@ _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 _server = server()
 
 
-class Leaguefile(Plugin, Renderable):
+class Leaguefile(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @property
-    def enabled(self):
-        return True
 
     @staticmethod
     def _data():

@@ -743,7 +743,7 @@ class ExportsTest(Test):
         self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, EXPORTS_100)
 
-    def test_lock_internal__with_zzz(self):
+    def test_lock_internal__with_palm_tree(self):
         form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
         read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
         plugin = self.create_plugin(read, exports=EXPORTS_OLD)
@@ -759,7 +759,8 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_called_once_with('zzz', 'fairylab', TS)
+        self.mock_reactions.assert_called_once_with('palm_tree', 'fairylab',
+                                                    TS)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
