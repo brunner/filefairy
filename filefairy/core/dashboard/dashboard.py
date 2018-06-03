@@ -19,6 +19,7 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
+from util.secrets.secrets import secrets_sub  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import files_upload  # noqa
 
@@ -154,7 +155,8 @@ class Dashboard(Registrable, Renderable):
         record['pathname'] = os.path.join(cwd, kwargs['pathname'])
 
         e = kwargs['exc_info']
-        record['exc'] = logging.Formatter.formatException(self, e) if e else ''
+        exc = logging.Formatter.formatException(self, e) if e else ''
+        record['exc'] = secrets_sub(exc)
 
         date = kwargs.get('date') or datetime.datetime.now()
         self._record(date, record)
