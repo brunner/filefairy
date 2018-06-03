@@ -251,12 +251,14 @@ class Fairylab(Messageable, Renderable):
 
         try:
             module = importlib.import_module(package)
+            self._try('dashboard', '_resolve', name, **kwargs)
 
             if path == 'plugin':
                 return self._install(name, module, clazz, **kwargs)
             else:
                 self._log_reloaded(name)
-        except Exception:
+        except Exception as e:
+            print(e)
             logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
 
         return False

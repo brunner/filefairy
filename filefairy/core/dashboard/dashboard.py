@@ -208,6 +208,19 @@ class Dashboard(Registrable, Renderable):
                 flog = record.get('module') + '.log.txt'
                 files_upload(record['c'], flog, 'testing')
 
+    def _resolve(self, module, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        for day in self.data['records']:
+            for r in self.data['records'][day]:
+                if module + '.py' in r['pathname']:
+                    r['levelname'] = 'INFO'
+
+        if data != original:
+            self.write()
+            self._render(**kwargs)
+
     def _retire(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
