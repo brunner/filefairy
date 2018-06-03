@@ -61,9 +61,12 @@ class Fairylab(Messageable, Renderable):
     def _info():
         return 'Fairylab core framework.'
 
-    def _setup(self, date):
-        kwargs = {'date': date, 'v': True}
+    def _setup(self, **kwargs):
+        kwargs['v'] = True
+        date = kwargs['date']
         self.day = date.day
+
+        self._try('dashboard', '_resolve', 'dashboard', **kwargs)
 
         d = os.path.join(_root, 'plugin')
         ps = filter(lambda x: self._is_plugin_dir(d, x), os.listdir(d))
@@ -304,5 +307,5 @@ if __name__ == '__main__':
     logger_.setLevel(logging.DEBUG)
 
     fairylab = Fairylab(d=dashboard, e=env_)
-    fairylab._setup(date)
+    fairylab._setup(date=date)
     fairylab._start()
