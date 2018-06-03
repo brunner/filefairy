@@ -34,7 +34,7 @@ class FakeMessageable(Messageable):
 class MessageableTest(unittest.TestCase):
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__with_no_arguments(self, mock_foo):
-        data = {'channel': 'G3SUFLMK4', 'text': 'fakemessageable.foo()'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo()'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
@@ -43,7 +43,7 @@ class MessageableTest(unittest.TestCase):
 
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__with_one_argument(self, mock_foo):
-        data = {'channel': 'G3SUFLMK4', 'text': 'fakemessageable.foo(a)'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo(a)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
@@ -52,7 +52,7 @@ class MessageableTest(unittest.TestCase):
 
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__with_two_arguments(self, mock_foo):
-        data = {'channel': 'G3SUFLMK4', 'text': 'fakemessageable.foo(a,b)'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo(a,b)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
@@ -61,7 +61,7 @@ class MessageableTest(unittest.TestCase):
 
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__with_response(self, mock_foo):
-        data = {'channel': 'G3SUFLMK4', 'text': 'fakemessageable.foo()'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo()'}
         messageable = FakeMessageable()
         mock_foo.return_value = Response(task=[Task(target='_bar')])
         actual = messageable._on_message(obj=data)
@@ -71,7 +71,7 @@ class MessageableTest(unittest.TestCase):
 
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__with_invalid_channel(self, mock_foo):
-        data = {'channel': 'ABCDEFGH1', 'text': 'fakemessageable.foo(a,b,c)'}
+        data = {'channel': 'ABCDEFGH1', 'text': 'FakeMessageable.foo(a,b,c)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response()
@@ -80,7 +80,7 @@ class MessageableTest(unittest.TestCase):
 
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__with_invalid_text(self, mock_foo):
-        data = {'channel': 'G3SUFLMK4', 'text': '!fakemessageable.foo(a,b,c)'}
+        data = {'channel': 'G3SUFLMK4', 'text': '!FakeMessageable.foo(a,b,c)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response()
@@ -89,7 +89,7 @@ class MessageableTest(unittest.TestCase):
 
     @mock.patch.object(FakeMessageable, '_bar')
     def test_on_message__with_invalid_private_attr(self, mock_bar):
-        data = {'channel': 'G3SUFLMK4', 'text': 'fakemessageable._bar(a,b,c)'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable._bar(a,b,c)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response()
@@ -97,7 +97,7 @@ class MessageableTest(unittest.TestCase):
         mock_bar.assert_not_called()
 
     def test_on_message__with_invalid_uncallable_attr(self):
-        data = {'channel': 'G3SUFLMK4', 'text': 'fakemessageable.var(a,b,c)'}
+        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.var(a,b,c)'}
         messageable = FakeMessageable()
         actual = messageable._on_message(obj=data)
         expected = Response()

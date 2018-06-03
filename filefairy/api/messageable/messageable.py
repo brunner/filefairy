@@ -20,7 +20,7 @@ class Messageable(Nameable):
         super().__init__(**kwargs)
 
     def _name(self):
-        return self.__class__.__name__.lower()
+        return self.__class__.__name__
 
     @abc.abstractmethod
     def _on_message_internal(self, **kwargs):
