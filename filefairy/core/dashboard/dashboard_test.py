@@ -22,21 +22,15 @@ from util.test.test import main  # noqa
 _data = Dashboard._data()
 _env = env()
 _exc = Exception('foo')
-_now = datetime.datetime(2018, 1, 29, 15, 1, 30)
-_now_encoded = '2018-01-29T15:01:30'
+_now = datetime.datetime(1985, 10, 26, 20, 18, 45)
+_now_date_encoded = '1985-10-26T20:18:45'
 _then = datetime.datetime(1985, 10, 26, 0, 2, 30)
-_then_encoded = '1985-10-26T00:02:30'
+_then_date_encoded = '1985-10-26T00:02:30'
+_then_day_encoded = '1985-10-26T00:00:00'
 _details = {'trace': 'Lorem ipsum'}
 _record_error = {
     'pathname': '/home/path/to/file.py',
     'lineno': 123,
-    'levelname': 'ERROR',
-    'msg': 'foo',
-    'exc': 'Traceback [foo] ...',
-}
-_record_error_encoded = {
-    'pathname': '/home/path/to/file.py',
-    'lineno': '123',
     'levelname': 'ERROR',
     'msg': 'foo',
     'exc': 'Traceback [foo] ...',
@@ -48,23 +42,9 @@ _record_info = {
     'msg': 'bar',
     'exc': '',
 }
-_record_info_encoded = {
-    'pathname': '/home/path/to/file.py',
-    'lineno': '456',
-    'levelname': 'INFO',
-    'msg': 'bar',
-    'exc': '',
-}
 _record_warning = {
     'pathname': '/home/path/to/file.py',
     'lineno': 789,
-    'levelname': 'WARNING',
-    'msg': 'baz',
-    'exc': 'Traceback [baz] ...',
-}
-_record_warning_encoded = {
-    'pathname': '/home/path/to/file.py',
-    'lineno': '789',
     'levelname': 'WARNING',
     'msg': 'baz',
     'exc': 'Traceback [baz] ...',
@@ -89,7 +69,7 @@ class DashboardTest(Test):
 
     def create_dashboard(self, data):
         self.init_mocks(data)
-        dashboard = Dashboard(date=_now, e=_env)
+        dashboard = Dashboard(date=_then, e=_env)
 
         self.mock_open.assert_called_once_with(_data, 'r')
         self.mock_handle.write.assert_not_called()
@@ -173,7 +153,7 @@ class DashboardTest(Test):
 
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
-        mock_record.assert_called_once_with(_record_error)
+        mock_record.assert_called_once_with(_then, _record_error)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -195,7 +175,7 @@ class DashboardTest(Test):
 
         mock_cwd.assert_called_once_with()
         mock_formatter.format_exception.assert_not_called()
-        mock_record.assert_called_once_with(_record_info)
+        mock_record.assert_called_once_with(_then, _record_info)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -219,13 +199,45 @@ class DashboardTest(Test):
 
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
-        mock_record.assert_called_once_with(_record_warning)
+        mock_record.assert_called_once_with(_then, _record_warning)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+
+    def test_record__with_empty(self):
+        read = {'records': {}}
+        dashboard = self.create_dashboard(read)
+        dashboard._record(_then, _record_error)
+
+        record_new = dict(_record_error, count=1, date=_then_date_encoded)
+        write = {'records': {_then_day_encoded: [record_new]}}
+        self.mock_open.assert_called_once_with(_data, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    def test_record__with_new(self):
+        record_old = dict(_record_info, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record_old]}}
+        dashboard = self.create_dashboard(read)
+        dashboard._record(_then, _record_error)
+
+        record_new = dict(_record_error, count=1, date=_then_date_encoded)
+        write = {'records': {_then_day_encoded: [record_old, record_new]}}
+        self.mock_open.assert_called_once_with(_data, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    def test_record__with_old(self):
+        record_old = dict(_record_error, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record_old]}}
+        dashboard = self.create_dashboard(read)
+        dashboard._record(_now, _record_error)
+
+        record_new = dict(_record_error, count=2, date=_now_date_encoded)
+        write = {'records': {_then_day_encoded: [record_new]}}
+        self.mock_open.assert_called_once_with(_data, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
 
 if __name__ in ['__main__', 'core.dashboard.dashboard_test']:
     _main = __name__ == '__main__'
     _pkg = 'core.dashboard'
     _pth = 'core/dashboard'
-    main(DashboardTest, Dashboard, _pkg, _pth, {}, _main, date=_now, e=_env)
+    main(DashboardTest, Dashboard, _pkg, _pth, {}, _main, date=_then, e=_env)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import datetime
 import logging
 import os
 import re
@@ -11,6 +12,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/dashboard', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import files_upload  # noqa
 
@@ -67,9 +69,31 @@ class Dashboard(Registrable, Renderable):
         e = kwargs['exc_info']
         record['exc'] = logging.Formatter.formatException(self, e) if e else ''
 
-        self._record(record)
+        date = kwargs.get('date') or datetime.datetime.now()
+        self._record(date, record)
 
-    def _record(self, record):
+    def _record(self, date, record):
+        encoded_date = encode_datetime(date)
+
+        day = datetime.datetime(date.year, date.month, date.day)
+        encoded_day = encode_datetime(day)
+        if encoded_day not in self.data['records']:
+            self.data['records'][encoded_day] = []
+
+        found = False
+        for r in self.data['records'][encoded_day]:
+            if record.items() <= r.items():
+                c = r.get('count', 0)
+                r['count'] = c + 1
+                r['date'] = encoded_date
+                found = True
+
+        if not found:
+            record.update({'count': 1, 'date': encoded_date})
+            self.data['records'][encoded_day].append(record)
+
+        self.write()
+
         s = '{pathname}#{lineno}: {msg}'
         msg = self.formatter.format(s, **record)
         if record.get('v'):
