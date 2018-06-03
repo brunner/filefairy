@@ -253,7 +253,7 @@ class DownloadTest(unittest.TestCase):
         response = plugin.download()
         self.assertEqual(response, Response())
 
-        self.mock_log.assert_called_once_with('Download', **{
+        self.mock_log.assert_called_once_with('download', **{
             'c': {
                 'ok': False
             },
@@ -279,7 +279,7 @@ class DownloadTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_called_once_with('Download', **{
+        self.mock_log.assert_called_once_with('download', **{
             's': 'Download started.'
         })
 
@@ -310,7 +310,7 @@ class DownloadTest(unittest.TestCase):
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_called_once_with('Download', **{
+        self.mock_log.assert_called_once_with('download', **{
             's': 'Download finished.',
             'v': True
         })
@@ -347,7 +347,7 @@ class DownloadTest(unittest.TestCase):
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_called_once_with('Download', **{
+        self.mock_log.assert_called_once_with('download', **{
             's': 'Download finished.',
             'v': True
         })

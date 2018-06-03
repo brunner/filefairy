@@ -661,7 +661,7 @@ class ExportsTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(
-            'Exports', date=NOW, s='Locked tracker.')
+            'exports', date=NOW, s='Locked tracker.')
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Exports, '_render')
@@ -678,7 +678,7 @@ class ExportsTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(
-            'Exports', date=NOW, s='Unlocked tracker.')
+            'exports', date=NOW, s='Unlocked tracker.')
         self.mock_reactions.assert_not_called()
 
     def test_lock_internal__with_truncation(self):
