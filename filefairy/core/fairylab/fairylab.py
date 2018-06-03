@@ -74,7 +74,7 @@ class Fairylab(Messageable, Renderable):
             self._reload_internal('plugin', p, **kwargs)
 
         self._try_all('_setup', **kwargs)
-        logger_.log(logging.INFO, 'Completed setup.')
+        self._log_setup()
 
     def _on_message_internal(self, **kwargs):
         pass
