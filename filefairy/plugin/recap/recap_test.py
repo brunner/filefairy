@@ -49,8 +49,6 @@ INJ_NOW = '20220815\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
 INJ_TABLE_NOW = [
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Wednesday, August 17th, 2022'],
         body=[[
             'Colorado Rockies: RF <a href=\"/StatsLab/reports/news/html/' +
@@ -65,8 +63,6 @@ INJ_TABLE_NOW = [
         ]]),
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Monday, August 15th, 2022'],
         body=[[
             'Tampa Bay Rays: <a href=\"/StatsLab/reports/news/html/' +
@@ -77,8 +73,6 @@ INJ_TABLE_NOW = [
 INJ_TABLE_THEN = [
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Monday, August 15th, 2022'],
         body=[[
             'Los Angeles Angels: CF <a href=\"/StatsLab/reports/news/html/' +
@@ -112,8 +106,6 @@ NEWS_NOW = '20220815\t<a href=\"../teams/team_42.html\">Houston Astros' + \
 NEWS_TABLE_NOW = [
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Thursday, August 18th, 2022'],
         body=[[
             'Colorado Rockies: <a href=\"/StatsLab/reports/news/html/' +
@@ -126,8 +118,6 @@ NEWS_TABLE_NOW = [
         ]]),
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Monday, August 15th, 2022'],
         body=[[
             'Houston Astros: <a href=\"/StatsLab/reports/news/html/' +
@@ -139,8 +129,6 @@ NEWS_TABLE_NOW = [
 NEWS_TABLE_THEN = [
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Monday, August 15th, 2022'],
         body=[[
             'Tampa Bay Rays: <a href=\"/StatsLab/reports/news/html/players/' +
@@ -172,8 +160,6 @@ TRANS_NOW = '20220815\t<a href=\"../teams/team_33.html\">Baltimore Orioles' + \
 TRANS_TABLE_NOW = [
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Monday, August 15th, 2022'],
         body=[[
             'Baltimore Orioles: Placed C <a href=\"/StatsLab/reports/news/' +
@@ -195,8 +181,6 @@ TRANS_TABLE_NOW = [
 TRANS_TABLE_THEN = [
     table(
         clazz='border mt-3',
-        hcols=[''],
-        bcols=[''],
         head=['Monday, August 15th, 2022'],
         body=[[
             'Baltimore Orioles: Placed 2B <a href=\"/StatsLab/reports/news/' +

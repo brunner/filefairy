@@ -219,7 +219,7 @@ class Recap(Plugin, Renderable):
                     pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                     fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                         '{S}', suffix(pdate.day))
-                    ret.insert(0, table(hcols=[''], bcols=[''], head=[fdate]))
+                    ret.insert(0, table(head=[fdate]))
                 if ret[0]['body'] is None:
                     ret[0]['body'] = []
                 if then and then == self._encode(date, line):
