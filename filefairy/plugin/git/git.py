@@ -8,7 +8,9 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/git', '', _path))
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
@@ -17,7 +19,7 @@ import core.dashboard.dashboard  # noqa
 logger_ = logging.getLogger('fairylab')
 
 
-class Git(Plugin):
+class Git(Messageable, Registrable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

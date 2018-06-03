@@ -19,7 +19,6 @@ sys.path.append(_root)
 
 from api.messageable.messageable import Messageable  # noqa
 from api.nameable.nameable import Nameable  # noqa
-from api.plugin.plugin import Plugin  # noqa
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa

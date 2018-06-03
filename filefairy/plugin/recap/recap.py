@@ -10,8 +10,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
@@ -23,7 +25,7 @@ from util.statslab.statslab import box_score  # noqa
 from util.team.team import encoding_to_teamid  # noqa
 
 
-class Recap(Plugin, Renderable):
+class Recap(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

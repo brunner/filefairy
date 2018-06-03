@@ -10,6 +10,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/registrable', '', _path))
 from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 
 
 class Registrable():
@@ -21,9 +22,14 @@ class Registrable():
 
         self.date = date
         self.ok = True
+        self.shadow = {}
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+
+    @abc.abstractproperty
+    def enabled(self):
+        pass
 
     @staticmethod
     def check_date_value(value):
@@ -56,8 +62,27 @@ class Registrable():
     def _notify_internal(self, **kwargs):
         pass
 
+    @abc.abstractmethod
+    def _setup_internal(self, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def _shadow_internal(self, **kwargs):
+        pass
+
     def _notify(self, **kwargs):
         response = self._notify_internal(**kwargs)
         if response.notify:
             response.notify = [Notify.BASE]
         return response
+
+    def _setup(self, **kwargs):
+        response = self._setup_internal(**kwargs)
+        response.shadow = self._shadow_internal(**kwargs)
+        return response
+
+    def _shadow(self, **kwargs):
+        shadow = kwargs['shadow']
+        self.shadow[shadow.key] = shadow.data
+        self._setup(**kwargs)
+        return Response()

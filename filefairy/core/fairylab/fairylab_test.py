@@ -12,8 +12,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
-from api.plugin.plugin import Plugin  # noqa
+from api.messageable.messageable import Messageable  # noqa
+from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
 from core.notify.notify import Notify  # noqa
@@ -27,7 +29,7 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 
-class Browsable(Plugin, Renderable):
+class Browsable(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -70,7 +72,7 @@ class Browsable(Plugin, Renderable):
         return []
 
 
-class Internal(Plugin):
+class Internal(Messageable, Registrable, Runnable):
     var = True
 
     def __init__(self, **kwargs):
@@ -100,7 +102,7 @@ class Internal(Plugin):
         return []
 
 
-class Disabled(Plugin):
+class Disabled(Messageable, Registrable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
