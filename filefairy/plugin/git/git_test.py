@@ -96,37 +96,55 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_call__with_ok_false(self):
-        self.mock_check.return_value = {'ok': False, 'error': 'timeout'}
+        output = {'ok': False, 'error': 'timeout'}
+        self.mock_check.return_value = output
 
         plugin = self.create_plugin()
-        plugin._call(['cmd'], {'a1': '', 'v': True})
+        plugin._call(['cmd'], **{})
 
         msg = 'Call failed: \'cmd\'.'
-        ext = {'a1': '', 'c': {'ok': False, 'error': 'timeout'}, 'v': True}
         self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_called_once_with(logging.WARNING, msg, extra=ext)
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, msg, extra={
+                'output': output
+            })
 
-    def test_call__with_ok_true(self):
+    def test_call__with_ok_true_silent(self):
         self.mock_check.return_value = {'ok': True, 'output': ''}
 
         plugin = self.create_plugin()
-        plugin._call(['cmd'], {'a1': '', 'v': True})
+        plugin._call(['cmd'], **{})
+
+        self.mock_check.assert_called_once_with(['cmd'])
+        self.mock_log.assert_not_called()
+
+    def test_call__with_ok_true_verbose(self):
+        output = {'ok': True, 'output': ''}
+        self.mock_check.return_value = output
+
+        plugin = self.create_plugin()
+        plugin._call(['cmd'], v=True)
 
         msg = 'Call completed: \'cmd\'.'
-        ext = {'a1': '', 'c': '', 'v': True}
         self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_called_once_with(logging.INFO, msg, extra=ext)
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, msg, extra={
+                'output': output
+            })
 
     def test_add(self):
-        self.mock_check.return_value = {'ok': True, 'output': ''}
+        output = {'ok': True, 'output': ''}
+        self.mock_check.return_value = output
 
         plugin = self.create_plugin()
-        plugin.add(**{'a1': '', 'v': True})
+        plugin.add(v=True)
 
         msg = 'Call completed: \'git add .\'.'
-        ext = {'a1': '', 'c': '', 'v': True}
         self.mock_check.assert_called_once_with(['git', 'add', '.'])
-        self.mock_log.assert_called_once_with(logging.INFO, msg, extra=ext)
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, msg, extra={
+                'output': output
+            })
 
     @mock.patch.object(Git, 'push')
     @mock.patch.object(Git, 'commit')
@@ -138,76 +156,82 @@ class GitTest(unittest.TestCase):
         mock_add.assert_called_once_with(date=NOW)
         mock_commit.assert_called_once_with(date=NOW)
         mock_push.assert_called_once_with(date=NOW)
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Automated data push.')
         self.mock_check.assert_not_called()
 
     def test_commit(self):
-        self.mock_check.return_value = {
-            'ok': True,
-            'output': '[master 0abcd0a] Auto...\n1 files\n'
-        }
+        output = {'ok': True, 'output': '[master 0abcd0a] Auto...\n1 files\n'}
+        self.mock_check.return_value = output
 
         plugin = self.create_plugin()
-        plugin.commit(**{'a1': '', 'v': True})
+        plugin.commit(v=True)
 
         msg = 'Call completed: \'git commit -m "Automated data push."\'.'
-        ext = {'a1': '', 'c': '[master 0abcd0a] Auto...\n1 files', 'v': True}
         self.mock_check.assert_called_once_with(
             ['git', 'commit', '-m', 'Automated data push.'])
-        self.mock_log.assert_called_once_with(logging.INFO, msg, extra=ext)
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, msg, extra={
+                'output': output
+            })
 
     def test_pull(self):
-        self.mock_check.return_value = {
-            'ok': True,
-            'output': 'remote: Counting...\nUnpacking...\n'
-        }
+        output = {'ok': True, 'output': 'remote: Counting...\nUnpacking...\n'}
+        self.mock_check.return_value = output
 
         plugin = self.create_plugin()
-        plugin.pull(**{'a1': '', 'v': True})
+        plugin.pull(v=True)
 
         msg = 'Call completed: \'git pull\'.'
-        ext = {'a1': '', 'c': 'remote: Counting...\nUnpacking...', 'v': True}
         self.mock_check.assert_called_once_with(['git', 'pull'])
-        self.mock_log.assert_called_once_with(logging.INFO, msg, extra=ext)
+        self.mock_log.assert_has_calls([
+            mock.call(logging.DEBUG, msg, extra={
+                'output': output
+            }),
+            mock.call(logging.INFO, 'Fetched latest changes.')
+        ])
 
     def test_push(self):
-        self.mock_check.return_value = {
-            'ok': True,
-            'output': 'Counting...\nCompressing...\n'
-        }
+        output = {'ok': True, 'output': 'Counting...\nCompressing...\n'}
+        self.mock_check.return_value = output
 
         plugin = self.create_plugin()
-        plugin.push(**{'a1': '', 'v': True})
+        plugin.push(v=True)
 
         msg = 'Call completed: \'git push\'.'
-        ext = {'a1': '', 'c': 'Counting...\nCompressing...', 'v': True}
         self.mock_check.assert_called_once_with(['git', 'push'])
-        self.mock_log.assert_called_once_with(logging.INFO, msg, extra=ext)
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, msg, extra={
+                'output': output
+            })
 
     def test_reset(self):
-        self.mock_check.return_value = {'ok': True, 'output': ''}
+        output = {'ok': True, 'output': ''}
+        self.mock_check.return_value = output
 
         plugin = self.create_plugin()
-        plugin.reset(**{'a1': '', 'v': True})
+        plugin.reset(v=True)
 
         msg = 'Call completed: \'git reset --hard\'.'
-        ext = {'a1': '', 'c': '', 'v': True}
         self.mock_check.assert_called_once_with(['git', 'reset', '--hard'])
-        self.mock_log.assert_called_once_with(logging.INFO, msg, extra=ext)
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, msg, extra={
+                'output': output
+            })
 
     def test_status(self):
-        self.mock_check.return_value = {
-            'ok': True,
-            'output': 'On branch master\nYour branch...\n'
-        }
+        output = {'ok': True, 'output': 'On branch master\nYour branch...\n'}
+        self.mock_check.return_value = output
 
         plugin = self.create_plugin()
-        plugin.status(**{'a1': '', 'v': True})
+        plugin.status(v=True)
 
         msg = 'Call completed: \'git status\'.'
-        ext = {'a1': '', 'c': 'On branch master\nYour branch...', 'v': True}
         self.mock_check.assert_called_once_with(['git', 'status'])
-        self.mock_log.assert_called_once_with(logging.INFO, msg, extra=ext)
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, msg, extra={
+                'output': output
+            })
 
 
 if __name__ == '__main__':

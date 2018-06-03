@@ -143,6 +143,30 @@ class DashboardTest(Test):
         return dashboard
 
     @mock.patch.object(Dashboard, '_log')
+    def test_emit__debug(self, mock_log):
+        read = {'records': {}}
+        dashboard = self.create_dashboard(read)
+
+        handler = LoggingHandler(dashboard)
+        logger_ = logging.getLogger('fairylab')
+        logger_.addHandler(handler)
+        logger_.setLevel(logging.DEBUG)
+
+        logger_.log(logging.DEBUG, 'msg', extra={'output': 'data'})
+
+        self.assertTrue(mock_log.called)
+        args, kwargs = mock_log.call_args
+        self.assertFalse(args)
+        self.assertFalse(kwargs['exc_info'])
+        self.assertEqual(kwargs['levelname'], 'DEBUG')
+        self.assertEqual(kwargs['msg'], 'msg')
+        self.assertEqual(kwargs['name'], 'fairylab')
+        self.assertEqual(kwargs['output'], 'data')
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_log')
     def test_emit__exception(self, mock_log):
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
@@ -254,10 +278,43 @@ class DashboardTest(Test):
         }
         self.assertEqual(actual, expected)
 
+    @mock.patch('core.dashboard.dashboard.files_upload')
     @mock.patch.object(Dashboard, '_record')
     @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
     @mock.patch('core.dashboard.dashboard.os.getcwd')
-    def test_log__error(self, mock_cwd, mock_format, mock_record):
+    @mock.patch('core.dashboard.dashboard.chat_post_message')
+    def test_log__debug(self, mock_chat, mock_cwd, mock_format, mock_record,
+                        mock_upload):
+        mock_cwd.return_value = '/home/user/filefairy'
+
+        read = {'records': {}}
+        dashboard = self.create_dashboard(read)
+        e = (Exception, _exc, None)
+        dashboard._log(
+            exc_info=e,
+            levelname='DEBUG',
+            lineno=123,
+            module='file',
+            msg='Call completed.',
+            pathname='path/to/file.py',
+            output='data')
+
+        mock_chat.assert_called_once_with('testing',
+                                          'file.py#L123: Call completed.')
+        mock_cwd.assert_called_once_with()
+        mock_format.assert_not_called()
+        mock_record.assert_not_called()
+        mock_upload.assert_called_once_with('data', 'file.log.txt', 'testing')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('core.dashboard.dashboard.files_upload')
+    @mock.patch.object(Dashboard, '_record')
+    @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
+    @mock.patch('core.dashboard.dashboard.os.getcwd')
+    @mock.patch('core.dashboard.dashboard.chat_post_message')
+    def test_log__error(self, mock_chat, mock_cwd, mock_format, mock_record,
+                        mock_upload):
         mock_cwd.return_value = '/home/user/filefairy'
         mock_format.return_value = 'Traceback [foo] ...'
 
@@ -268,19 +325,25 @@ class DashboardTest(Test):
             exc_info=e,
             levelname='ERROR',
             lineno=123,
+            module='file',
             msg='Disabled foo.',
             pathname='path/to/file.py')
 
+        mock_chat.assert_not_called()
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
         mock_record.assert_called_once_with(_record_error)
+        mock_upload.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    @mock.patch('core.dashboard.dashboard.files_upload')
     @mock.patch.object(Dashboard, '_record')
-    @mock.patch('core.dashboard.dashboard.logging.Formatter')
+    @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
     @mock.patch('core.dashboard.dashboard.os.getcwd')
-    def test_log__info(self, mock_cwd, mock_formatter, mock_record):
+    @mock.patch('core.dashboard.dashboard.chat_post_message')
+    def test_log__info(self, mock_chat, mock_cwd, mock_format, mock_record,
+                       mock_upload):
         mock_cwd.return_value = '/home/user/filefairy'
 
         read = {'records': {}}
@@ -289,19 +352,25 @@ class DashboardTest(Test):
             exc_info=None,
             levelname='INFO',
             lineno=456,
+            module='file',
             msg='bar',
             pathname='path/to/file.py')
 
+        mock_chat.assert_not_called()
         mock_cwd.assert_called_once_with()
-        mock_formatter.format_exception.assert_not_called()
+        mock_format.assert_not_called()
         mock_record.assert_called_once_with(_record_info)
+        mock_upload.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    @mock.patch('core.dashboard.dashboard.files_upload')
     @mock.patch.object(Dashboard, '_record')
     @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
     @mock.patch('core.dashboard.dashboard.os.getcwd')
-    def test_log__warning(self, mock_cwd, mock_format, mock_record):
+    @mock.patch('core.dashboard.dashboard.chat_post_message')
+    def test_log__warning(self, mock_chat, mock_cwd, mock_format, mock_record,
+                          mock_upload):
         mock_cwd.return_value = '/home/user/filefairy'
         mock_format.return_value = 'Traceback [baz] ...'
 
@@ -312,12 +381,15 @@ class DashboardTest(Test):
             exc_info=e,
             levelname='WARNING',
             lineno=789,
+            module='file',
             msg='baz',
             pathname='path/to/file.py')
 
+        mock_chat.assert_not_called()
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
         mock_record.assert_called_once_with(_record_warning)
+        mock_upload.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 

@@ -49,36 +49,45 @@ class Git(Messageable, Registrable, Runnable):
     def _format(cmd):
         return ' '.join(['"{}"'.format(c) if ' ' in c else c for c in cmd])
 
-    def _call(self, cmd, kwargs):
+    def _call(self, cmd, **kwargs):
         output = check_output(cmd)
-        if output.get('ok'):
-            value = output.get('output', '').strip('\n')
-            s = 'Call completed: \'{}\'.'.format(self._format(cmd))
-            logger_.log(logging.INFO, s, extra=dict(kwargs, c=value, v=True))
-        else:
-            s = 'Call failed: \'{}\'.'.format(self._format(cmd))
-            logger_.log(logging.WARNING, s, extra=dict(kwargs, c=output))
+        if kwargs.get('v') or not output.get('ok'):
+            status = 'completed' if output.get('ok') else 'failed'
+            fcmd = '\'{}\''.format(self._format(cmd))
+            s = 'Call {}: {}.'.format(status, fcmd)
+            logger_.log(logging.DEBUG, s, extra={'output': output})
+        return output
 
     def add(self, **kwargs):
-        return self._call(['git', 'add', '.'], kwargs)
+        return self._call(['git', 'add', '.'], **kwargs)
 
     def automate(self, **kwargs):
-        self.add(**kwargs)
-        self.commit(**kwargs)
-        self.push(**kwargs)
+        output = self.add(**kwargs)
+        if not output.get('ok'):
+            return
+
+        output = self.commit(**kwargs)
+        if not output.get('ok'):
+            return
+
+        output = self.push(**kwargs)
+        if output.get('ok'):
+            logger_.log(logging.INFO, 'Automated data push.')
 
     def commit(self, **kwargs):
         return self._call(['git', 'commit', '-m', 'Automated data push.'],
-                          kwargs)
+                          **kwargs)
 
     def pull(self, **kwargs):
-        return self._call(['git', 'pull'], kwargs)
+        output = self._call(['git', 'pull'], **kwargs)
+        if output.get('ok'):
+            logger_.log(logging.INFO, 'Fetched latest changes.')
 
     def push(self, **kwargs):
-        return self._call(['git', 'push'], kwargs)
+        return self._call(['git', 'push'], **kwargs)
 
     def reset(self, **kwargs):
-        return self._call(['git', 'reset', '--hard'], kwargs)
+        return self._call(['git', 'reset', '--hard'], **kwargs)
 
     def status(self, **kwargs):
-        return self._call(['git', 'status'], kwargs)
+        return self._call(['git', 'status'], **kwargs)

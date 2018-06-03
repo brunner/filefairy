@@ -170,11 +170,17 @@ class Dashboard(Registrable, Renderable):
         cwd = os.getcwd()
         record['pathname'] = os.path.join(cwd, kwargs['pathname'])
 
-        e = kwargs['exc_info']
-        exc = logging.Formatter.formatException(self, e) if e else ''
-        record['exc'] = secrets_sub(exc)
-
-        self._record(record)
+        if kwargs['levelname'] == 'DEBUG':
+            content = self._content(record)
+            chat_post_message('testing', content + ': ' + record['msg'])
+            if kwargs.get('output'):
+                flog = kwargs.get('module', 'unknown') + '.log.txt'
+                files_upload(kwargs['output'], flog, 'testing')
+        else:
+            e = kwargs['exc_info']
+            exc = logging.Formatter.formatException(self, e) if e else ''
+            record['exc'] = secrets_sub(exc)
+            self._record(record)
 
     def _record(self, record):
         date = datetime.datetime.now()
@@ -199,14 +205,6 @@ class Dashboard(Registrable, Renderable):
 
         self.write()
         self._render(date=date)
-
-        s = '{pathname}#{lineno}: {msg}'
-        msg = self.formatter.format(s, **record)
-        if record.get('v'):
-            chat_post_message('testing', msg)
-            if record.get('c'):
-                flog = record.get('module') + '.log.txt'
-                files_upload(record['c'], flog, 'testing')
 
     def _resolve(self, module, **kwargs):
         data = self.data
