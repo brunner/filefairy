@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import copy
 import datetime
 import logging
 import os
@@ -12,6 +13,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/dashboard', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import anchor  # noqa
@@ -55,6 +57,9 @@ class Dashboard(Registrable, Renderable):
         return 'dashboard'
 
     def _notify_internal(self, **kwargs):
+        notify = kwargs['notify']
+        if notify == Notify.FAIRYLAB_DAY:
+            self._retire(**kwargs)
         return Response()
 
     def _render_internal(self, **kwargs):
@@ -195,6 +200,23 @@ class Dashboard(Registrable, Renderable):
             if record.get('c'):
                 flog = record.get('module') + '.log.txt'
                 files_upload(record['c'], flog, 'testing')
+
+    def _retire(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
+        date = kwargs['date']
+        cut = date - datetime.timedelta(days=7)
+        cut = datetime.datetime(cut.year, cut.month, cut.day)
+
+        days = list(original['records'].keys())
+        for day in days:
+            if decode_datetime(day) <= cut:
+                del data['records'][day]
+
+        if data != original:
+            self.write()
+            self._render(**kwargs)
 
 
 class LoggingHandler(logging.Handler):
