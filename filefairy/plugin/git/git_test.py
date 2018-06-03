@@ -96,8 +96,8 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_call__with_ok_false(self):
-        output = {'ok': False, 'error': 'timeout'}
-        self.mock_check.return_value = output
+        output = 'ret'
+        self.mock_check.return_value = {'ok': False, 'output': output}
 
         plugin = self.create_plugin()
         plugin._call(['cmd'], **{})
@@ -119,8 +119,8 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_call__with_ok_true_verbose(self):
-        output = {'ok': True, 'output': ''}
-        self.mock_check.return_value = output
+        output = 'ret'
+        self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
         plugin._call(['cmd'], v=True)
@@ -133,8 +133,7 @@ class GitTest(unittest.TestCase):
             })
 
     def test_add(self):
-        output = {'ok': True, 'output': ''}
-        self.mock_check.return_value = output
+        self.mock_check.return_value = {'ok': True, 'output': ''}
 
         plugin = self.create_plugin()
         plugin.add(v=True)
@@ -143,7 +142,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_called_once_with(['git', 'add', '.'])
         self.mock_log.assert_called_once_with(
             logging.DEBUG, msg, extra={
-                'output': output
+                'output': ''
             })
 
     @mock.patch.object(Git, 'push')
@@ -161,8 +160,8 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_commit(self):
-        output = {'ok': True, 'output': '[master 0abcd0a] Auto...\n1 files\n'}
-        self.mock_check.return_value = output
+        output = '[master 0abcd0a] Auto...\n1 files\n'
+        self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
         plugin.commit(v=True)
@@ -176,8 +175,8 @@ class GitTest(unittest.TestCase):
             })
 
     def test_pull(self):
-        output = {'ok': True, 'output': 'remote: Counting...\nUnpacking...\n'}
-        self.mock_check.return_value = output
+        output = 'remote: Counting...\nUnpacking...\n'
+        self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
         plugin.pull(v=True)
@@ -192,8 +191,8 @@ class GitTest(unittest.TestCase):
         ])
 
     def test_push(self):
-        output = {'ok': True, 'output': 'Counting...\nCompressing...\n'}
-        self.mock_check.return_value = output
+        output = 'Counting...\nCompressing...\n'
+        self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
         plugin.push(v=True)
@@ -206,8 +205,7 @@ class GitTest(unittest.TestCase):
             })
 
     def test_reset(self):
-        output = {'ok': True, 'output': ''}
-        self.mock_check.return_value = output
+        self.mock_check.return_value = {'ok': True, 'output': ''}
 
         plugin = self.create_plugin()
         plugin.reset(v=True)
@@ -216,12 +214,12 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_called_once_with(['git', 'reset', '--hard'])
         self.mock_log.assert_called_once_with(
             logging.DEBUG, msg, extra={
-                'output': output
+                'output': ''
             })
 
     def test_status(self):
-        output = {'ok': True, 'output': 'On branch master\nYour branch...\n'}
-        self.mock_check.return_value = output
+        output = 'On branch master\nYour branch...\n'
+        self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
         plugin.status(v=True)

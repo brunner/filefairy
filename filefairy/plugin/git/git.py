@@ -55,7 +55,10 @@ class Git(Messageable, Registrable, Runnable):
             status = 'completed' if output.get('ok') else 'failed'
             fcmd = '\'{}\''.format(self._format(cmd))
             s = 'Call {}: {}.'.format(status, fcmd)
-            logger_.log(logging.DEBUG, s, extra={'output': output})
+            logger_.log(
+                logging.DEBUG, s, extra={
+                    'output': output.get('output', '')
+                })
         return output
 
     def add(self, **kwargs):
