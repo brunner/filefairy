@@ -57,9 +57,9 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
         notify = kwargs['notify']
         data = self.data
         if not data['locked'] and notify in _lock_values:
-            self._lock_internal()
+            self._lock()
         elif data['locked'] and notify in _unlock_values:
-            self._unlock_internal()
+            self._unlock()
         else:
             return Response()
 
@@ -90,7 +90,7 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
             response.notify = [Notify.BASE]
 
         if any([True for e in exports if e in _emails]):
-            self._lock_internal()
+            self._lock()
             response.notify = [Notify.EXPORTS_EMAILS]
 
         if response.notify:
@@ -118,20 +118,6 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
     @staticmethod
     def _exports(text):
         return re.findall(r"team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
-
-    def lock(self, **kwargs):
-        self._lock_internal()
-        log(self._name(), **dict(kwargs, s='Locked tracker.'))
-        self.data['date'] = encode_datetime(kwargs['date'])
-        self._render(**kwargs)
-        self.write()
-
-    def unlock(self, **kwargs):
-        self._unlock_internal()
-        log(self._name(), **dict(kwargs, s='Unlocked tracker.'))
-        self.data['date'] = encode_datetime(kwargs['date'])
-        self._render(**kwargs)
-        self.write()
 
     def _form(self, teamid):
         form = self.data['form'][teamid]
@@ -181,7 +167,7 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
 
         return ret
 
-    def _lock_internal(self):
+    def _lock(self):
         data = self.data
         data['locked'] = True
         obj = self._chat('fairylab', 'Tracker locked.')
@@ -216,9 +202,11 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
     def _breakdown(self):
         n, t = self._new()
         return ', '.join([
-            span(['text-success', 'border', 'px-1'], str(n) + ' new'),
+            span(['text-success', 'border', 'px-1'],
+                 str(n) + ' new'),
             str(t - n) + ' old',
-            span(['text-secondary'], str(len(self.data['ai'])) + ' ai')
+            span(['text-secondary'],
+                 str(len(self.data['ai'])) + ' ai')
         ])
 
     def _percent(self):
@@ -270,5 +258,5 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
             body[i // size].append(text)
         return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 
-    def _unlock_internal(self):
+    def _unlock(self):
         self.data['locked'] = False
