@@ -72,6 +72,42 @@
         "lineno": 74,
         "msg": "Completed setup.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-03T10:49:16.317982",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 57,
+        "msg": "Call completed: 'git add .'.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-03T10:49:18.290670",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 57,
+        "msg": "Call completed: 'git commit -m \"Automated data push.\"'.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-03T10:49:21.651127",
+        "exc": "",
+        "levelname": "WARNING",
+        "lineno": 60,
+        "msg": "Call failed: 'git push'.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-03T10:49:47.238368",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 57,
+        "msg": "Call completed: 'git pull'.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
       }
     ]
   }
