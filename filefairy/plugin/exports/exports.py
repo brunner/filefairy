@@ -194,7 +194,7 @@ class Exports(Plugin, Renderable):
             if percent == 100:
                 reactions_add('100', 'fairylab', ts)
             elif percent < 50:
-                reactions_add('zzz', 'fairylab', ts)
+                reactions_add('palm_tree', 'fairylab', ts)
 
         for teamid, status in self.exports:
             s = status.lower()[0]
