@@ -759,7 +759,8 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_called_once_with('palm_tree', 'fairylab', TS)
+        self.mock_reactions.assert_called_once_with('palm_tree', 'fairylab',
+                                                    TS)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
