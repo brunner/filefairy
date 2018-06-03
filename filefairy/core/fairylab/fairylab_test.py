@@ -3,6 +3,7 @@
 
 import datetime
 import functools
+import logging
 import os
 import re
 import sys
@@ -133,7 +134,6 @@ REGISTERED = {
     'dashboard': DASHBOARD,
     'internal': INTERNAL
 }
-TRACEBACK = 'Traceback: ...'
 BREADCRUMBS = [{'href': '', 'name': 'Home'}]
 
 
@@ -157,14 +157,9 @@ class FairylabTest(Test):
         self.addCleanup(patch_datetime.stop)
         self.mock_datetime = patch_datetime.start()
 
-        patch_log = mock.patch('core.fairylab.fairylab.log')
+        patch_log = mock.patch('core.fairylab.fairylab.logger_.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
-
-        patch_traceback = mock.patch(
-            'core.fairylab.fairylab.traceback.format_exc')
-        self.addCleanup(patch_traceback.stop)
-        self.mock_traceback = patch_traceback.start()
 
         for p in REGISTERED:
             REGISTERED[p].date = THEN
@@ -175,14 +170,12 @@ class FairylabTest(Test):
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
         self.mock_datetime.datetime.now.return_value = NOW
-        self.mock_traceback.return_value = TRACEBACK
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
         self.mock_datetime.reset_mock()
         self.mock_log.reset_mock()
-        self.mock_traceback.reset_mock()
 
     def create_program(self, registered=None, tasks=None):
         self.init_mocks({})
@@ -192,7 +185,6 @@ class FairylabTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_traceback.assert_not_called()
         self.assertEqual(program.data, {})
 
         self.reset_mocks()
@@ -238,8 +230,7 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'Fairylab', s='Completed setup.', date=NOW, v=True)
+        self.mock_log.assert_called_once_with(logging.INFO, 'Completed setup.')
         self.assertEqual(program.day, NOW.day)
         self.assertEqual(program.registered['browsable'].date, THEN)
         self.assertEqual(program.registered['browsable'].ok, True)
@@ -441,7 +432,7 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_called_once_with(
-            'Internal', c='Traceback: ...', s='Exception.', v=True)
+            logging.ERROR, 'Disabled internal.', exc_info=True)
         self.assertEqual(program.registered['browsable'].date, THEN)
         self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, THEN)
@@ -839,8 +830,8 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         calls = [
-            mock.call('Internal', **dict(kwargs, s='Installed.', c=None)),
-            mock.call('Fairylab', **dict(kwargs, s='Completed setup.'))
+            mock.call(logging.INFO, 'Reloaded internal.'),
+            mock.call(logging.INFO, 'Completed setup.')
         ]
         self.mock_log.assert_has_calls(calls)
         self.assertNotIn('browsable', program.registered)
@@ -868,11 +859,8 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with('Internal',
-                                              **dict(
-                                                  kwargs,
-                                                  c=TRACEBACK,
-                                                  s='Exception.'))
+        self.mock_log.assert_called_once_with(
+            logging.ERROR, 'Disabled internal.', exc_info=True)
         self.assertNotIn('browsable', program.registered)
         self.assertEqual(program.registered['dashboard'].date, THEN)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -888,8 +876,8 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'Fairylab', s='Rebooting.', v=True)
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Restarted fairylab.')
 
     def test_shutdown(self):
         program = self.create_program()
@@ -898,8 +886,7 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            'Fairylab', s='Shutting down.', v=True)
+        self.mock_log.assert_called_once_with(logging.INFO, 'Killed fairylab.')
         self.assertFalse(program.keep_running)
 
 

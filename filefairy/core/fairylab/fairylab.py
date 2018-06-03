@@ -10,13 +10,12 @@ import re
 import sys
 import threading
 import time
-import traceback
 import websocket
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
-
+import core.dashboard.dashboard  # noqa
 from api.messageable.messageable import Messageable  # noqa
 from api.nameable.nameable import Nameable  # noqa
 from api.registrable.registrable import Registrable  # noqa
@@ -27,8 +26,9 @@ from core.notify.notify import Notify  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
-from util.logger.logger import log  # noqa
 from util.slack.slack import rtm_connect  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 
 class Fairylab(Messageable, Renderable):
@@ -71,7 +71,7 @@ class Fairylab(Messageable, Renderable):
             self._reload_internal('plugin', p, **kwargs)
 
         self._try_all('_setup', **kwargs)
-        log(self._name(), **dict(kwargs, s='Completed setup.'))
+        logger_.log(logging.INFO, 'Completed setup.')
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -87,6 +87,14 @@ class Fairylab(Messageable, Renderable):
     @staticmethod
     def _package(path, name):
         return '{0}.{1}.{1}'.format(path, name)
+
+    @staticmethod
+    def _log_reloaded(name):
+        logger_.log(logging.INFO, 'Reloaded ' + name + '.')
+
+    @staticmethod
+    def _log_setup():
+        logger_.log(logging.INFO, 'Completed setup.')
 
     def _try_all(self, method, *args, **kwargs):
         ps = sorted(self.registered.keys())
@@ -120,8 +128,7 @@ class Fairylab(Messageable, Renderable):
             for t in response.task:
                 self.tasks.append((p, t))
         except Exception:
-            exc = traceback.format_exc()
-            log(instance._name(), s='Exception.', c=exc, v=True)
+            logger_.log(logging.ERROR, 'Disabled ' + p + '.', exc_info=True)
             self.registered[p].date = date
             self.registered[p].ok = False
 
@@ -229,7 +236,7 @@ class Fairylab(Messageable, Renderable):
         value = self._reload_internal(*args, **kwargs)
         if value:
             self._try_all('_setup', **kwargs)
-            log(self._name(), **dict(kwargs, s='Completed setup.'))
+            self._log_setup()
 
     def _reload_internal(self, *args, **kwargs):
         if len(args) != 2:
@@ -248,11 +255,9 @@ class Fairylab(Messageable, Renderable):
             if path == 'plugin':
                 return self._install(name, module, clazz, **kwargs)
             else:
-                s = 'Reloaded {}.'.format(name)
-                log(self._name(), **dict(kwargs, s=s))
+                self._log_reloaded(name)
         except Exception:
-            exc = traceback.format_exc()
-            log(clazz, **dict(kwargs, s='Exception.', c=exc))
+            logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
 
         return False
 
@@ -264,14 +269,11 @@ class Fairylab(Messageable, Renderable):
                 instance = plugin(date=date, e=self.environment)
             else:
                 instance = plugin(date=date)
-            exc = None
+            self._log_reloaded(name)
         except Exception:
             date = None
             instance = None
-            exc = traceback.format_exc()
-
-        s = 'Exception.' if exc else 'Installed.'
-        log(clazz, **dict(kwargs, s=s, c=exc))
+            logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
 
         if isinstance(instance, Registrable):
             instance.date = date
@@ -282,11 +284,11 @@ class Fairylab(Messageable, Renderable):
         return False
 
     def reboot(self, *args, **kwargs):
-        log(self._name(), **dict(kwargs, s='Rebooting.'))
+        logger_.log(logging.INFO, 'Restarted fairylab.')
         os.execv(sys.executable, ['python3'] + sys.argv)
 
     def shutdown(self, *args, **kwargs):
-        log(self._name(), **dict(kwargs, s='Shutting down.'))
+        logger_.log(logging.INFO, 'Killed fairylab.')
         self.keep_running = False
 
 
