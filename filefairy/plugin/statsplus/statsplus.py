@@ -66,10 +66,6 @@ class Statsplus(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    @property
-    def enabled(self):
-        return True
-
     @staticmethod
     def _data():
         return os.path.join(_path, 'data.json')

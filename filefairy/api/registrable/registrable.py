@@ -27,10 +27,6 @@ class Registrable():
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-    @abc.abstractproperty
-    def enabled(self):
-        pass
-
     @staticmethod
     def check_date_value(value):
         if not isinstance(value, datetime.datetime):

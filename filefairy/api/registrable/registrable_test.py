@@ -23,10 +23,6 @@ class FakeRegistrable(Registrable):
     def __init__(self, **kwargs):
         super(FakeRegistrable, self).__init__(**kwargs)
 
-    @property
-    def enabled(self):
-        return True
-
     def _notify_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 

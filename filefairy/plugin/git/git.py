@@ -23,10 +23,6 @@ class Git(Messageable, Registrable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    @property
-    def enabled(self):
-        return True
-
     @staticmethod
     def _info():
         return 'Exposes remote commands to admins.'

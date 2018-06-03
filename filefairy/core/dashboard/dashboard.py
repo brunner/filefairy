@@ -67,6 +67,12 @@ class Dashboard(Registrable, Renderable):
         _home = self._home(**kwargs)
         return [(html, '', 'dashboard.html', _home)]
 
+    def _setup_internal(self, **kwargs):
+        return Response()
+
+    def _shadow_internal(self, **kwargs):
+        return []
+
     @staticmethod
     def _line(record):
         lineno = record['lineno']

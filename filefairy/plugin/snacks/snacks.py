@@ -64,10 +64,6 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
         super().__init__(**kwargs)
         self.loaded = False
 
-    @property
-    def enabled(self):
-        return True
-
     @staticmethod
     def _data():
         return os.path.join(_path, 'data.json')

@@ -30,10 +30,6 @@ class Download(Messageable, Registrable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    @property
-    def enabled(self):
-        return True
-
     @staticmethod
     def _data():
         return os.path.join(_path, 'data.json')
