@@ -382,7 +382,9 @@ class DashboardTest(Test):
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._resolve('file', date=_now)
+        actual = dashboard._resolve('file', date=_now)
+        expected = Response()
+        self.assertEqual(actual, expected)
 
         record_new = dict(
             _record_error, count=1, date=_then_date_encoded, levelname='INFO')
@@ -396,7 +398,9 @@ class DashboardTest(Test):
         record_old = dict(_record_info, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._resolve('file', date=_now)
+        actual = dashboard._resolve('file', date=_now)
+        expected = Response()
+        self.assertEqual(actual, expected)
 
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()

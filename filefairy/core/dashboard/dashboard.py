@@ -221,6 +221,8 @@ class Dashboard(Registrable, Renderable):
             self.write()
             self._render(**kwargs)
 
+        return Response()
+
     def _retire(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
