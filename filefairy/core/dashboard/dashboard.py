@@ -216,6 +216,8 @@ class Dashboard(Registrable, Renderable):
             for r in self.data['records'][day]:
                 if module + '.py' in r['pathname']:
                     r['levelname'] = 'INFO'
+                if 'Disabled ' + module + '.' in r['msg']:
+                    r['levelname'] = 'INFO'
 
         if data != original:
             self.write()

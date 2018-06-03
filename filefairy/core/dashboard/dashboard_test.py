@@ -26,7 +26,7 @@ from util.test.test import main  # noqa
 
 _data = Dashboard._data()
 _env = env()
-_exc = Exception('foo')
+_exc = Exception('Disabled foo.')
 _now = datetime.datetime(1985, 10, 26, 20, 18, 45)
 _now_day = datetime.datetime(1985, 10, 26)
 _now_date_encoded = '1985-10-26T20:18:45'
@@ -43,7 +43,7 @@ _record_error = {
     'pathname': '/home/user/filefairy/path/to/file.py',
     'lineno': 123,
     'levelname': 'ERROR',
-    'msg': 'foo',
+    'msg': 'Disabled foo.',
     'exc': 'Traceback [foo] ...',
 }
 _record_info = {
@@ -73,7 +73,10 @@ _exceptions = [
     card(
         href=(_link + 'path/to/file.py#L123'),
         title='file.py#L123',
-        table=table(clazz='table-sm mb-2', bcols=_cols, body=[['foo', '(1)']]),
+        table=table(
+            clazz='table-sm mb-2',
+            bcols=_cols,
+            body=[['Disabled foo.', '(1)']]),
         code='Traceback [foo] ...',
         ts='1d ago')
 ]
@@ -104,8 +107,8 @@ _logs = [
             anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '<br>bar',
             '12:55<br>(5)'
         ], [
-            anchor(_link + 'path/to/file.py#L123', 'file.py#L123') + '<br>foo',
-            '12:55<br>(1)'
+            anchor(_link + 'path/to/file.py#L123', 'file.py#L123') +
+            '<br>Disabled foo.', '12:55<br>(1)'
         ]])
 ]
 
@@ -265,7 +268,7 @@ class DashboardTest(Test):
             exc_info=e,
             levelname='ERROR',
             lineno=123,
-            msg='foo',
+            msg='Disabled foo.',
             pathname='path/to/file.py')
 
         mock_cwd.assert_called_once_with()
@@ -382,7 +385,7 @@ class DashboardTest(Test):
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        actual = dashboard._resolve('file', date=_now)
+        actual = dashboard._resolve('foo', date=_now)
         expected = Response()
         self.assertEqual(actual, expected)
 
@@ -405,6 +408,25 @@ class DashboardTest(Test):
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_resolve__with_warning(self, mock_render):
+        record_old = dict(_record_warning, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record_old]}}
+        dashboard = self.create_dashboard(read)
+        actual = dashboard._resolve('file', date=_now)
+        expected = Response()
+        self.assertEqual(actual, expected)
+
+        record_new = dict(
+            _record_warning,
+            count=1,
+            date=_then_date_encoded,
+            levelname='INFO')
+        write = {'records': {_then_day_encoded: [record_new]}}
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(_data, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(Dashboard, '_render')
     def test_retire__with_cut(self, mock_render):

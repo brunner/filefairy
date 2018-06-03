@@ -127,7 +127,7 @@ class Fairylab(Messageable, Renderable):
                 self._try(s, '_shadow', **dict(kwargs, shadow=shadow))
             for t in response.task:
                 self.tasks.append((p, t))
-        except Exception:
+        except:
             logger_.log(logging.ERROR, 'Disabled ' + p + '.', exc_info=True)
             self.registered[p].date = date
             self.registered[p].ok = False
@@ -257,8 +257,7 @@ class Fairylab(Messageable, Renderable):
                 return self._install(name, module, clazz, **kwargs)
             else:
                 self._log_reloaded(name)
-        except Exception as e:
-            print(e)
+        except:
             logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
 
         return False
@@ -272,7 +271,7 @@ class Fairylab(Messageable, Renderable):
             else:
                 instance = plugin(date=date)
             self._log_reloaded(name)
-        except Exception:
+        except:
             date = None
             instance = None
             logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
