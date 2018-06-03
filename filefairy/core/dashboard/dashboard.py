@@ -59,14 +59,24 @@ class Dashboard(Registrable, Renderable):
         return ret
 
     def _log(self, **kwargs):
-        s = '{pathname}#{lineno}: {msg}'
-        msg = self.formatter.format(s, **kwargs)
+        record = {k: kwargs[k] for k in ['levelname', 'lineno', 'msg']}
 
-        if kwargs.get('v'):
+        cwd = os.getcwd()
+        record['pathname'] = os.path.join(cwd, kwargs['pathname'])
+
+        e = kwargs['exc_info']
+        record['exc'] = logging.Formatter.formatException(self, e) if e else ''
+
+        self._record(record)
+
+    def _record(self, record):
+        s = '{pathname}#{lineno}: {msg}'
+        msg = self.formatter.format(s, **record)
+        if record.get('v'):
             chat_post_message('testing', msg)
-            if kwargs.get('c'):
-                flog = kwargs.get('module') + '.log.txt'
-                files_upload(kwargs['c'], flog, 'testing')
+            if record.get('c'):
+                flog = record.get('module') + '.log.txt'
+                files_upload(record['c'], flog, 'testing')
 
 
 class LoggingHandler(logging.Handler):
