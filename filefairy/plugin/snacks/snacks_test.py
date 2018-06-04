@@ -126,7 +126,7 @@ class SnacksTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     @mock.patch('plugin.snacks.snacks.random.choice')
-    def test_on_message__with_choose_text(self, mock_random):
+    def test_on_message__with_choose_text_multiple(self, mock_random):
         mock_random.side_effect = ['{}. Did you even need to ask?', 'a']
 
         obj = {
@@ -148,6 +148,27 @@ class SnacksTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0',
                                                'A. Did you even need to ask?')
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    @mock.patch('plugin.snacks.snacks.random.choice')
+    def test_on_message__with_choose_text_single(self, mock_random):
+        obj = {
+            'channel': 'C9YE6NQG0',
+            'text': '<@U3ULC7DBP> choose a',
+            'ts': '1000.789',
+            'user': 'U1234',
+        }
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, Response())
+
+        mock_random.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
@@ -280,6 +301,33 @@ class SnacksTest(unittest.TestCase):
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with(
             'C9YE6NQG0', '<@U5678> doesn\'t know anything about topic.')
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    @mock.patch('plugin.snacks.snacks.discuss')
+    def test_on_message__with_imitate_topic_text_user(self, mock_discuss):
+        mock_discuss.return_value = 'response'
+
+        obj = {
+            'channel': 'C9YE6NQG0',
+            'text': '<@U3ULC7DBP> imitate <@U5678> <@U1234>',
+            'ts': '1000.789',
+            'user': 'U1234',
+        }
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(
+            read, cfds={'U5678': {}}, names={
+                'U5678': 'user'
+            })
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        write = {'members': MEMBERS_NOW}
+        mock_discuss.assert_called_once_with('<@U1234>', {}, 4, 8, 30)
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 

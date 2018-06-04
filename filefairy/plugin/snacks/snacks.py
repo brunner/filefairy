@@ -107,12 +107,15 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
         if ok:
             match = re.findall('^<@U3ULC7DBP> choose (.+)$', text)
             if match:
-                statement = random.choice(_chooselist)
-                choice = random.choice(match[0].split(' or '))
-                reply = re.sub('^([a-zA-Z])', lambda x: x.groups()[0].upper(),
-                               statement.format(choice), 1)
-                chat_post_message(channel, reply)
-                response.notify = [Notify.BASE]
+                choices = match[0].split(' or ')
+                if len(choices) > 1:
+                    statement = random.choice(_chooselist)
+                    choice = random.choice(choices)
+                    reply = re.sub('^([a-zA-Z])',
+                                   lambda x: x.groups()[0].upper(),
+                                   statement.format(choice), 1)
+                    chat_post_message(channel, reply)
+                    response.notify = [Notify.BASE]
 
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
@@ -124,7 +127,7 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
                 chat_post_message(channel, reply)
                 response.notify = [Notify.BASE]
 
-            match = re.findall('^<@U3ULC7DBP> imitate <@(.+)>$', text)
+            match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)>$', text)
             if match:
                 cfds = self.__dict__.get('cfds', {})
                 reply = ''
@@ -136,7 +139,7 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
                 chat_post_message(channel, reply)
                 response.notify = [Notify.BASE]
 
-            match = re.findall('^<@U3ULC7DBP> imitate <@(.+)> (.+)$', text)
+            match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$', text)
             if match:
                 target, topic = match[0]
                 cfds = self.__dict__.get('cfds', {})
