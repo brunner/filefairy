@@ -24,6 +24,7 @@ from util.nltk_.nltk_ import imitate  # noqa
 from util.slack.slack import channels_kick  # noqa
 from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
+from util.slack.slack import pins_add  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.slack.slack import users_list  # noqa
 
@@ -166,6 +167,8 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
             if text == '<@U3ULC7DBP> snack me':
                 for snack in self._snacks():
                     reactions_add(snack, channel, ts)
+                    if snack == 'star' and user == 'U3ULC7DBP':
+                        pins_add(channel, ts)
                 response.notify = [Notify.BASE]
 
         if response.notify:

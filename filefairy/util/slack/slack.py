@@ -74,6 +74,15 @@ def files_upload(content, filename, channel):
         })
 
 
+def pins_add(channel, timestamp):
+    return _call(
+        'pins.add', {
+            'token': _filefairy,
+            'channel': channel,
+            'timestamp': timestamp,
+        })
+
+
 def reactions_add(name, channel, timestamp):
     return _call(
         'reactions.add', {

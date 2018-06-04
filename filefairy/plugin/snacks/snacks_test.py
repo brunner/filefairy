@@ -28,6 +28,17 @@ FPATH = os.path.join(_root, 'resource/corpus', '{}.txt')
 FNAMES = [FPATH.format(u) for u in USERS]
 MEMBERS_THEN = {'U1234': {'latest': '100.123'}, 'U5678': {'latest': '100.456'}}
 MEMBERS_NOW = {'U1234': {'latest': '1000.789'}, 'U5678': {'latest': '100.456'}}
+MEMBERS_FILEFAIRY = {
+    'U1234': {
+        'latest': '100.123'
+    },
+    'U5678': {
+        'latest': '100.456'
+    },
+    'U3ULC7DBP': {
+        'latest': '1000.789'
+    },
+}
 NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
 THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
 
@@ -401,8 +412,40 @@ class SnacksTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Snacks, '_snacks')
-    def test_on_message__with_snack_me_text(self, mock_snacks):
-        mock_snacks.return_value = ['a', 'b']
+    @mock.patch('plugin.snacks.snacks.pins_add')
+    def test_on_message__with_snack_me_text_filefairy(self, mock_pins,
+                                                      mock_snacks):
+        mock_snacks.return_value = ['a', 'star']
+
+        obj = {
+            'channel': 'C9YE6NQG0',
+            'text': '<@U3ULC7DBP> snack me',
+            'ts': '1000.789',
+            'user': 'U3ULC7DBP',
+        }
+        read = {'members': MEMBERS_THEN}
+        plugin = self.create_plugin(read)
+        response = plugin._on_message_internal(obj=obj)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        write = {'members': MEMBERS_FILEFAIRY}
+        mock_pins.assert_called_once_with('C9YE6NQG0', '1000.789')
+        mock_snacks.assert_called_once_with()
+        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        calls = [
+            mock.call('a', 'C9YE6NQG0', '1000.789'),
+            mock.call('star', 'C9YE6NQG0', '1000.789')
+        ]
+        self.mock_reactions.assert_has_calls(calls)
+
+    @mock.patch.object(Snacks, '_snacks')
+    @mock.patch('plugin.snacks.snacks.pins_add')
+    def test_on_message__with_snack_me_text_user(self, mock_pins, mock_snacks):
+        mock_snacks.return_value = ['a', 'star']
 
         obj = {
             'channel': 'C9YE6NQG0',
@@ -416,6 +459,7 @@ class SnacksTest(unittest.TestCase):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         write = {'members': MEMBERS_NOW}
+        mock_pins.assert_not_called()
         mock_snacks.assert_called_once_with()
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -424,7 +468,7 @@ class SnacksTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         calls = [
             mock.call('a', 'C9YE6NQG0', '1000.789'),
-            mock.call('b', 'C9YE6NQG0', '1000.789')
+            mock.call('star', 'C9YE6NQG0', '1000.789')
         ]
         self.mock_reactions.assert_has_calls(calls)
 

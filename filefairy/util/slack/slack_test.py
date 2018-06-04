@@ -16,6 +16,7 @@ from util.slack.slack import channels_history  # noqa
 from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import files_upload  # noqa
+from util.slack.slack import pins_add  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.slack.slack import rtm_connect  # noqa
 from util.slack.slack import users_list  # noqa
@@ -108,6 +109,21 @@ class SlackTest(unittest.TestCase):
                 'content': 'content',
                 'filename': 'filename.txt',
                 'channels': 'channel',
+            })
+
+    @mock.patch('util.slack.slack.urlopen')
+    def test_pins_add(self, mock_urlopen):
+        mock_urlopen.return_value = bytes('{"ok":true}', 'utf-8')
+
+        actual = pins_add('C1234', 'timestamp')
+        expected = {'ok': True}
+        self.assertEqual(actual, expected)
+
+        mock_urlopen.assert_called_once_with(
+            'https://slack.com/api/pins.add', {
+                'token': _filefairy,
+                'channel': 'C1234',
+                'timestamp': 'timestamp',
             })
 
     @mock.patch('util.slack.slack.urlopen')
