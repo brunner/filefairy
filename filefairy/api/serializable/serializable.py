@@ -3,6 +3,7 @@
 
 import abc
 import json
+import logging
 import os
 import re
 import sys
@@ -12,7 +13,8 @@ sys.path.append(re.sub(r'/api/serializable', '', _path))
 from api.nameable.nameable import Nameable  # noqa
 from util.abc_.abc_ import abstractstatic  # noqa
 from util.json_.json_ import dumps  # noqa
-from util.logger.logger import log  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 
 class Serializable(Nameable):
@@ -33,13 +35,11 @@ class Serializable(Nameable):
     def read(self, *args, **kwargs):
         with open(self._data(), 'r') as f:
             self.data = json.loads(f.read())
-            log(self._name(), **dict(kwargs, s='Read completed.'))
 
     def write(self, *args, **kwargs):
         with open(self._data(), 'w') as f:
             f.write(dumps(self.data) + '\n')
-            log(self._name(), **dict(kwargs, s='Write completed.'))
 
     def dump(self, *args, **kwargs):
         d = dumps(self.data)
-        log(self._name(), **dict(kwargs, s='Dump completed.', c=d))
+        logger_._log(logging.DEBUG, 'Dump completed.', extra={'output': d})

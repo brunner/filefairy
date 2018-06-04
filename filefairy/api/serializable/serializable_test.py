@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import re
 import sys
@@ -22,7 +23,7 @@ class FakeSerializable(Serializable):
 
 
 class SerializableTest(unittest.TestCase):
-    @mock.patch('api.serializable.serializable.log')
+    @mock.patch('api.serializable.serializable.logger_._log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_init(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
@@ -30,12 +31,10 @@ class SerializableTest(unittest.TestCase):
         mock_open.side_effect = [mo.return_value]
         serializable = FakeSerializable()
         mock_open.assert_called_once_with(FakeSerializable._data(), 'r')
-        mock_log.assert_called_once_with(serializable._name(), **{
-            's': 'Read completed.',
-        })
+        mock_log.assert_not_called()
         self.assertEqual(serializable.data, {'a': 1, 'b': True})
 
-    @mock.patch('api.serializable.serializable.log')
+    @mock.patch('api.serializable.serializable.logger_._log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_read(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
@@ -49,12 +48,10 @@ class SerializableTest(unittest.TestCase):
         mock_log.reset_mock()
         serializable.read()
         mock_open.assert_called_once_with(FakeSerializable._data(), 'r')
-        mock_log.assert_called_once_with(serializable._name(), **{
-            's': 'Read completed.',
-        })
+        mock_log.assert_not_called()
         self.assertEqual(serializable.data, {'a': 2, 'b': False})
 
-    @mock.patch('api.serializable.serializable.log')
+    @mock.patch('api.serializable.serializable.logger_._log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_write(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
@@ -71,12 +68,10 @@ class SerializableTest(unittest.TestCase):
         handle = mo()
         calls = [mock.call('{\n  "a": 2,\n  "b": false\n}\n')]
         handle.write.assert_has_calls(calls)
-        mock_log.assert_called_once_with(serializable._name(), **{
-            's': 'Write completed.'
-        })
+        mock_log.assert_not_called()
         self.assertEqual(serializable.data, {'a': 2, 'b': False})
 
-    @mock.patch('api.serializable.serializable.log')
+    @mock.patch('api.serializable.serializable.logger_._log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_dump(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
@@ -86,10 +81,12 @@ class SerializableTest(unittest.TestCase):
         mock_log.reset_mock()
         mock_log.return_value = {'a': 1, 'b': True}
         serializable.dump()
-        mock_log.assert_called_once_with(serializable._name(), **{
-            'c': '{\n  "a": 1,\n  "b": true\n}',
-            's': 'Dump completed.'
-        })
+        mock_log.assert_called_once_with(
+            logging.DEBUG,
+            'Dump completed.',
+            extra={
+                'output': '{\n  "a": 1,\n  "b": true\n}'
+            })
 
 
 if __name__ == '__main__':
