@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import logging
 import os
 import re
 import sys
@@ -112,6 +113,10 @@ class LeaguefileTest(Test):
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
+        patch_log = mock.patch('plugin.leaguefile.leaguefile.logger_.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
+
         patch_reactions = mock.patch(
             'plugin.leaguefile.leaguefile.reactions_add')
         self.addCleanup(patch_reactions.stop)
@@ -127,6 +132,7 @@ class LeaguefileTest(Test):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
         self.mock_chat.reset_mock()
+        self.mock_log.reset_mock()
         self.mock_reactions.reset_mock()
 
     def create_plugin(self, data):
@@ -136,6 +142,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data, data)
 
@@ -153,6 +160,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_on_message(self):
@@ -164,6 +172,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -182,6 +191,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_with('fairylab', 'Upload started.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'Upload started.')
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -199,6 +209,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -216,6 +227,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -234,6 +246,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
         self.mock_reactions.assert_called_once_with('zap', 'fairylab', TS)
 
     @mock.patch.object(Leaguefile, '_render')
@@ -252,6 +265,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
         timer = 'timer_clock'
         self.mock_reactions.assert_called_once_with(timer, 'fairylab', TS)
 
@@ -271,6 +285,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_home')
@@ -286,6 +301,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -304,6 +320,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -321,6 +338,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -338,6 +356,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -356,6 +375,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Leaguefile, '_render')
@@ -374,6 +394,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_shadow(self):
@@ -385,6 +406,7 @@ class LeaguefileTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_filedate(self):
@@ -406,8 +428,9 @@ class LeaguefileTest(Test):
         expected = '2h 0m'
         self.assertEqual(actual, expected)
 
+    @mock.patch('plugin.leaguefile.leaguefile.logger_.log')
     @mock.patch('plugin.leaguefile.leaguefile.check_output')
-    def test_check__with_filepart(self, mock_check):
+    def test_check__with_filepart(self, mock_check, mock_log):
         mock_check.return_value = {'ok': True, 'output': LS_WITH_FILEPART}
 
         actual = Leaguefile._check()
@@ -420,9 +443,11 @@ class LeaguefileTest(Test):
                 'ls -l /var/www/html/StatsLab/league_file'
             ],
             timeout=8)
+        mock_log.assert_not_called()
 
+    @mock.patch('plugin.leaguefile.leaguefile.logger_.log')
     @mock.patch('plugin.leaguefile.leaguefile.check_output')
-    def test_check__without_filepart(self, mock_check):
+    def test_check__without_filepart(self, mock_check, mock_log):
         mock_check.return_value = {'ok': True, 'output': LS_WITHOUT_FILEPART}
 
         actual = Leaguefile._check()
@@ -435,6 +460,27 @@ class LeaguefileTest(Test):
                 'ls -l /var/www/html/StatsLab/league_file'
             ],
             timeout=8)
+        mock_log.assert_not_called()
+
+    @mock.patch('plugin.leaguefile.leaguefile.logger_.log')
+    @mock.patch('plugin.leaguefile.leaguefile.check_output')
+    def test_check__with_ok_false(self, mock_check, mock_log):
+        mock_check.return_value = {'ok': False, 'output': 'ret'}
+
+        actual = Leaguefile._check()
+        expected = iter([])
+        self.assertCountEqual(actual, expected)
+
+        mock_check.assert_called_once_with(
+            [
+                'ssh', 'brunnerj@' + _server,
+                'ls -l /var/www/html/StatsLab/league_file'
+            ],
+            timeout=8)
+        mock_log.assert_called_once_with(
+            logging.DEBUG, 'Check failed.', extra={
+                'output': 'ret'
+            })
 
     def test_home__with_empty(self):
         read = {'fp': None, 'up': []}

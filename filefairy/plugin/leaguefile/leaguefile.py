@@ -3,6 +3,7 @@
 
 import copy
 import datetime
+import logging
 import os
 import re
 import sys
@@ -25,6 +26,8 @@ from util.jinja2_.jinja2_ import env  # noqa
 from util.secrets.secrets import server  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 _size_pattern = '(\d+)'
 _date_pattern = '(\w+\s\d+\s\d+:\d+)'
@@ -68,6 +71,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
             if '.filepart' in name:
                 if not data['fp']:
                     self._chat('fairylab', 'Upload started.')
+                    logger_.log(logging.INFO, 'Upload started.')
                     data['fp'] = {'start': date}
                     response.notify = [Notify.LEAGUEFILE_START]
                 if data['fp'].get('size', 0) != size:
@@ -83,6 +87,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                     if len(data['up']) > 10:
                         data['up'] = data['up'][:10]
                     obj = self._chat('fairylab', 'File is up.')
+                    logger_.log(logging.INFO, 'File is up.')
                     ts = obj.get('ts')
                     if ts:
                         seconds = self._seconds(date, data['fp']['end'])
@@ -174,6 +179,11 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                 match = re.findall(_line_pattern, line)
                 if match:
                     yield match[0] + (fp, )
+        else:
+            logger_.log(
+                logging.DEBUG, 'Check failed.', extra={
+                    'output': output.get('output', '')
+                })
 
     def _home(self, **kwargs):
         data = self.data
