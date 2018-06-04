@@ -3,6 +3,7 @@
 
 import copy
 import datetime
+import logging
 import os
 import re
 import sys
@@ -43,6 +44,8 @@ from util.team.team import precodings  # noqa
 from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
 from util.team.team import teamids  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -145,6 +148,7 @@ class Statsplus(Messageable, Registrable, Renderable, Runnable):
             if self.data['started']:
                 self.data['started'] = False
                 self._chat('fairylab', 'Sim in progress.')
+                logger_.log(logging.INFO, 'Sim in progress.')
                 response.notify = [Notify.STATSPLUS_SIM]
 
         pattern = 'MAJOR LEAGUE BASEBALL Live Table'

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import logging
 import os
 import re
 import sys
@@ -284,6 +285,10 @@ class RecapTest(Test):
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
+        patch_log = mock.patch('plugin.recap.recap.logger_.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
+
         patch_reactions = mock.patch('plugin.recap.recap.reactions_add')
         self.addCleanup(patch_reactions.stop)
         self.mock_reactions = patch_reactions.start()
@@ -298,6 +303,7 @@ class RecapTest(Test):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
         self.mock_chat.reset_mock()
+        self.mock_log.reset_mock()
         self.mock_reactions.reset_mock()
 
     def create_plugin(self, read):
@@ -307,6 +313,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data, read)
 
@@ -351,6 +358,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
         self.mock_reactions.assert_called_once_with('skull', 'fairylab', TS)
         self.assertEqual(plugin.tables, TABLE_NOW_MAP)
 
@@ -390,6 +398,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
         self.mock_reactions.assert_called_once_with('moneybag', 'fairylab', TS)
         self.assertEqual(plugin.tables, TABLE_NOW_MAP)
 
@@ -429,6 +438,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.tables, TABLE_NOW_MAP)
 
@@ -456,6 +466,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_on_message(self):
@@ -470,6 +481,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_run(self):
@@ -484,6 +496,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Recap, '_home')
@@ -502,6 +515,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Recap, '_tables')
@@ -520,6 +534,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_shadow(self):
@@ -539,6 +554,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_encode(self):
@@ -603,6 +619,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     def test_money__with_true(self):
@@ -651,6 +668,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch('plugin.recap.recap.open', create=True)
@@ -677,6 +695,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['now']['injuries'], INJ_ENCODED_NOW)
 
@@ -704,6 +723,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['now']['news'], NEWS_ENCODED_NOW)
 
@@ -731,6 +751,7 @@ class RecapTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['now']['transactions'], TRANS_ENCODED_NOW)
 

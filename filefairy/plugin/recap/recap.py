@@ -3,6 +3,7 @@
 
 import copy
 import datetime
+import logging
 import os
 import re
 import sys
@@ -23,6 +24,8 @@ from util.slack.slack import reactions_add  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.statslab.statslab import box_score  # noqa
 from util.team.team import encoding_to_teamid  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 
 class Recap(Messageable, Registrable, Renderable, Runnable):
@@ -57,6 +60,7 @@ class Recap(Messageable, Registrable, Renderable, Runnable):
             self.write()
 
             self._render(**kwargs)
+            logger_.log(logging.INFO, 'News updated.')
             obj = self._chat('fairylab', 'News updated.')
             ts = obj.get('ts')
             if ts:

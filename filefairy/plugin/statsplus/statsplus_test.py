@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import logging
 import os
 import re
 import sys
@@ -299,9 +300,14 @@ class StatsplusTest(Test):
             'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
+
         patch_chat = mock.patch.object(Statsplus, '_chat')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
+        
+        patch_log = mock.patch('plugin.statsplus.statsplus.logger_.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
@@ -312,6 +318,7 @@ class StatsplusTest(Test):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
         self.mock_chat.reset_mock()
+        self.mock_log.reset_mock()
 
     def create_plugin(self, data):
         self.init_mocks(data)
@@ -321,6 +328,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
         self.reset_mocks()
         self.init_mocks(data)
@@ -337,6 +345,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_notify__with_year(self):
         read = DATA_CANONICAL
@@ -348,6 +357,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_notify__with_other(self):
         read = DATA_CANONICAL
@@ -358,6 +368,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -387,6 +398,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'Sim in progress.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'Sim in progress.')
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -415,6 +427,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -447,6 +460,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -473,6 +487,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -503,6 +518,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -532,6 +548,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -561,6 +578,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -590,6 +608,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -616,6 +635,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -643,6 +663,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')
@@ -670,6 +691,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
     def test_run__with_resolved(self, mock_render):
@@ -682,6 +704,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
     def test_run__with_unresolved(self, mock_render):
@@ -695,6 +718,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_home')
     def test_render(self, mock_home):
@@ -709,6 +733,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
     def test_setup(self, mock_render):
@@ -721,6 +746,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_shadow(self):
         read = DATA_CANONICAL
@@ -735,6 +761,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_clear(self):
         read = _data(
@@ -749,6 +776,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['highlights'], {})
         self.assertEqual(plugin.data['injuries'], {})
         self.assertEqual(plugin.data['scores'], {})
@@ -763,6 +791,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['injuries'], {
             THEN_ENCODED: INJURIES_TEXT_ENCODED[:1]
         })
@@ -778,6 +807,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['highlights'], {
             THEN_ENCODED: HIGHLIGHTS_TEXT_ENCODED[:1]
         })
@@ -793,6 +823,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['injuries'], {
             THEN_ENCODED: INJURIES_TEXT_ENCODED[:1]
         })
@@ -807,6 +838,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['scores'], {
             THEN_ENCODED: SCORES_REGULAR_ENCODED
         })
@@ -821,6 +853,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['table'], {
             THEN_ENCODED: TABLE_ENCODED_NOW
         })
@@ -873,6 +906,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_table')
     @mock.patch('plugin.statsplus.statsplus.standings_table')
@@ -922,6 +956,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_table')
     @mock.patch('plugin.statsplus.statsplus.standings_table')
@@ -970,6 +1005,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch('plugin.statsplus.statsplus.teamids')
     @mock.patch.object(Statsplus, '_record')
@@ -1031,6 +1067,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_live_postseason_series')
     @mock.patch.object(Statsplus, '_record')
@@ -1057,6 +1094,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_live_postseason_series(self):
         read = _data(
@@ -1071,6 +1109,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_live_regular_body')
     @mock.patch('plugin.statsplus.statsplus.divisions')
@@ -1089,6 +1128,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_record')
     @mock.patch('plugin.statsplus.statsplus.logo_inline')
@@ -1112,6 +1152,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_record__with_encoded(self):
         read = _data(
@@ -1155,6 +1196,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_record__with_clarified(self):
         read = _data(scores={NOW_ENCODED: SCORES_REGULAR_CLARIFIED})
@@ -1193,6 +1235,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.player')
@@ -1270,6 +1313,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
@@ -1351,6 +1395,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
@@ -1391,6 +1436,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
@@ -1434,6 +1480,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_once_with(DATA, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
@@ -1463,6 +1510,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertCountEqual(plugin.data['unresolved'], [THEN_ENCODED])
 
     @mock.patch.object(Statsplus, '_render')
@@ -1492,6 +1540,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertCountEqual(plugin.data['unresolved'], [THEN_ENCODED])
 
     @mock.patch.object(Statsplus, '_render')
@@ -1521,6 +1570,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
         self.assertCountEqual(plugin.data['unresolved'], [THEN_ENCODED])
 
     def test_table__highlights(self):
@@ -1538,6 +1588,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_table__injuries(self):
         read = _data(injuries={THEN_ENCODED: INJURIES_TEXT_ENCODED})
@@ -1554,6 +1605,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
     def test_table__scores(self):
         read = _data(scores={THEN_ENCODED: SCORES_REGULAR_ENCODED})
@@ -1570,6 +1622,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
 
 
 if __name__ in ['__main__', 'plugin.statsplus.statsplus_test']:
