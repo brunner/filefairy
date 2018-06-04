@@ -3,20 +3,21 @@
 
 import abc
 import errno
+import logging
 import os
 import re
 import sys
-import traceback
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.serializable.serializable import Serializable  # noqa
 from util.abc_.abc_ import abstractstatic  # noqa
-from util.logger.logger import log  # noqa
 from util.secrets.secrets import server  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 _server = server()
 
@@ -63,9 +64,8 @@ class Renderable(Serializable):
                 self._mkdir_p(here.rsplit('/', 1)[0])
                 ts.dump(here)
                 check_output(['scp', here, there], timeout=8)
-            except Exception:
-                exc = traceback.format_exc()
-                log(self._name(), s='Exception.', c=exc, v=True)
+            except:
+                logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
 
     @staticmethod
     def _mkdir_p(path):

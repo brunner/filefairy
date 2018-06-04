@@ -3,6 +3,7 @@
 
 import datetime
 import jinja2
+import logging
 import os
 import re
 import sys
@@ -98,7 +99,7 @@ class RenderableTest(unittest.TestCase):
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.server')
-    @mock.patch('api.renderable.renderable.log')
+    @mock.patch('api.renderable.renderable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     @mock.patch('api.renderable.renderable.os.makedirs')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
@@ -194,7 +195,7 @@ class RenderableTest(unittest.TestCase):
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.server')
-    @mock.patch('api.renderable.renderable.log')
+    @mock.patch('api.renderable.renderable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     @mock.patch('api.renderable.renderable.os.makedirs')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
@@ -287,16 +288,14 @@ class RenderableTest(unittest.TestCase):
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.server')
-    @mock.patch('api.renderable.renderable.log')
+    @mock.patch('api.renderable.renderable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     @mock.patch('api.renderable.renderable.os.makedirs')
-    @mock.patch('api.renderable.renderable.traceback.format_exc')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('api.renderable.renderable.check_output')
-    def test_render__with_thrown_exception(
-            self, mock_check, mock_dump, mock_exc, mock_makedirs, mock_open,
-            mock_rlog, mock_server, mock_stream):
-        mock_exc.return_value = 'Traceback: ...'
+    def test_render__with_thrown_exception(self, mock_check, mock_dump,
+                                           mock_makedirs, mock_open, mock_rlog,
+                                           mock_server, mock_stream):
         mock_dump.side_effect = Exception()
         mock_server.return_value = 'server'
         data = '{"a": 1, "b": true}'
@@ -337,16 +336,11 @@ class RenderableTest(unittest.TestCase):
         mock_makedirs.assert_has_calls(calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
         log_calls = [
-            mock.call(
-                'FakeRenderable', c='Traceback: ...', s='Exception.', v=True),
-            mock.call(
-                'FakeRenderable', c='Traceback: ...', s='Exception.', v=True),
-            mock.call(
-                'FakeRenderable', c='Traceback: ...', s='Exception.', v=True),
-            mock.call(
-                'FakeRenderable', c='Traceback: ...', s='Exception.', v=True),
-            mock.call(
-                'FakeRenderable', c='Traceback: ...', s='Exception.', v=True)
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True)
         ]
         mock_rlog.assert_has_calls(log_calls)
         stream_calls = [
