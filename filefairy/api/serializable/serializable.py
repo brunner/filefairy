@@ -42,4 +42,4 @@ class Serializable(Nameable):
 
     def dump(self, *args, **kwargs):
         d = dumps(self.data)
-        logger_._log(logging.DEBUG, 'Dump completed.', extra={'output': d})
+        logger_.log(logging.DEBUG, 'Dump completed.', extra={'output': d})

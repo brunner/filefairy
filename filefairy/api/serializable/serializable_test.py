@@ -23,7 +23,7 @@ class FakeSerializable(Serializable):
 
 
 class SerializableTest(unittest.TestCase):
-    @mock.patch('api.serializable.serializable.logger_._log')
+    @mock.patch('api.serializable.serializable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_init(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
@@ -34,7 +34,7 @@ class SerializableTest(unittest.TestCase):
         mock_log.assert_not_called()
         self.assertEqual(serializable.data, {'a': 1, 'b': True})
 
-    @mock.patch('api.serializable.serializable.logger_._log')
+    @mock.patch('api.serializable.serializable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_read(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
@@ -51,7 +51,7 @@ class SerializableTest(unittest.TestCase):
         mock_log.assert_not_called()
         self.assertEqual(serializable.data, {'a': 2, 'b': False})
 
-    @mock.patch('api.serializable.serializable.logger_._log')
+    @mock.patch('api.serializable.serializable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_write(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'
@@ -71,7 +71,7 @@ class SerializableTest(unittest.TestCase):
         mock_log.assert_not_called()
         self.assertEqual(serializable.data, {'a': 2, 'b': False})
 
-    @mock.patch('api.serializable.serializable.logger_._log')
+    @mock.patch('api.serializable.serializable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     def test_dump(self, mock_open, mock_log):
         data = '{"a": 1, "b": true}'

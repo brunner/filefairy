@@ -97,7 +97,6 @@ class RenderableTest(unittest.TestCase):
             'channel', 'foo', attachments=attachments)
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('api.serializable.serializable.log')
     @mock.patch('api.renderable.renderable.server')
     @mock.patch('api.renderable.renderable.log')
     @mock.patch('api.serializable.serializable.open', create=True)
@@ -106,7 +105,7 @@ class RenderableTest(unittest.TestCase):
     @mock.patch('api.renderable.renderable.check_output')
     def test_render__with_valid_input(self, mock_check, mock_dump,
                                       mock_makedirs, mock_open, mock_rlog,
-                                      mock_server, mock_slog, mock_stream):
+                                      mock_server, mock_stream):
         mock_server.return_value = 'server'
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -159,9 +158,6 @@ class RenderableTest(unittest.TestCase):
         ]
         mock_makedirs.assert_has_calls(calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
-        mock_slog.assert_called_once_with(renderable._name(), **{
-            's': 'Read completed.',
-        })
         stream_calls = [
             mock.call({
                 'date': '1985-10-26 00:02:30 PST',
@@ -197,7 +193,6 @@ class RenderableTest(unittest.TestCase):
         mock_rlog.assert_not_called()
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('api.serializable.serializable.log')
     @mock.patch('api.renderable.renderable.server')
     @mock.patch('api.renderable.renderable.log')
     @mock.patch('api.serializable.serializable.open', create=True)
@@ -205,8 +200,7 @@ class RenderableTest(unittest.TestCase):
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
     @mock.patch('api.renderable.renderable.check_output')
     def test_render__with_test(self, mock_check, mock_dump, mock_makedirs,
-                               mock_open, mock_rlog, mock_server, mock_slog,
-                               mock_stream):
+                               mock_open, mock_rlog, mock_server, mock_stream):
         mock_server.return_value = 'server'
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -257,9 +251,6 @@ class RenderableTest(unittest.TestCase):
         ]
         mock_makedirs.assert_has_calls(calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
-        mock_slog.assert_called_once_with(renderable._name(), **{
-            's': 'Read completed.',
-        })
         stream_calls = [
             mock.call({
                 'date': '1985-10-26 00:02:30 PST',
@@ -295,7 +286,6 @@ class RenderableTest(unittest.TestCase):
         mock_rlog.assert_not_called()
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('api.serializable.serializable.log')
     @mock.patch('api.renderable.renderable.server')
     @mock.patch('api.renderable.renderable.log')
     @mock.patch('api.serializable.serializable.open', create=True)
@@ -305,7 +295,7 @@ class RenderableTest(unittest.TestCase):
     @mock.patch('api.renderable.renderable.check_output')
     def test_render__with_thrown_exception(
             self, mock_check, mock_dump, mock_exc, mock_makedirs, mock_open,
-            mock_rlog, mock_server, mock_slog, mock_stream):
+            mock_rlog, mock_server, mock_stream):
         mock_exc.return_value = 'Traceback: ...'
         mock_dump.side_effect = Exception()
         mock_server.return_value = 'server'
@@ -359,9 +349,6 @@ class RenderableTest(unittest.TestCase):
                 'FakeRenderable', c='Traceback: ...', s='Exception.', v=True)
         ]
         mock_rlog.assert_has_calls(log_calls)
-        mock_slog.assert_called_once_with(renderable._name(), **{
-            's': 'Read completed.',
-        })
         stream_calls = [
             mock.call({
                 'date': '1985-10-26 00:02:30 PST',
