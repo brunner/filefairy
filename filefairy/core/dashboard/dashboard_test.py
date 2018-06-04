@@ -131,7 +131,7 @@ class DashboardTest(Test):
 
     def create_dashboard(self, data):
         self.init_mocks(data)
-        dashboard = Dashboard(date=_then, e=_env)
+        dashboard = Dashboard(date=_yesterday, e=_env)
 
         self.mock_open.assert_called_once_with(_data, 'r')
         self.mock_handle.write.assert_not_called()
@@ -411,6 +411,7 @@ class DashboardTest(Test):
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertEqual(dashboard.date, _then)
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime')
@@ -431,6 +432,7 @@ class DashboardTest(Test):
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertEqual(dashboard.date, _then)
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime')
@@ -451,6 +453,7 @@ class DashboardTest(Test):
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertEqual(dashboard.date, _now)
 
     @mock.patch.object(Dashboard, '_render')
     def test_resolve__with_error(self, mock_render):

@@ -203,6 +203,7 @@ class Dashboard(Registrable, Renderable):
             record.update({'count': 1, 'date': encoded_date})
             self.data['records'][encoded_day].append(record)
 
+        self.date = date
         self.write()
         self._render(date=date)
 
