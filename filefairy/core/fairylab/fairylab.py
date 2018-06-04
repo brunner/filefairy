@@ -28,8 +28,6 @@ from util.component.component import card  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.slack.slack import rtm_connect  # noqa
 
-logger_ = logging.getLogger('fairylab')
-
 
 class Fairylab(Messageable, Renderable):
     def __init__(self, **kwargs):
