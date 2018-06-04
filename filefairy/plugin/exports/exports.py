@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import re
 import sys
@@ -19,13 +20,14 @@ from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
-from util.logger.logger import log  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_abbreviation  # noqa
 from util.team.team import teamid_to_hometown  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
 _lock_values = [Notify.STATSPLUS_SIM, Notify.LEAGUEFILE_START]
@@ -87,6 +89,7 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
         if exports != self.exports:
             self.exports = exports
             self._remove()
+            logger_.log(logging.INFO, 'Tracker updated.')
             response.notify = [Notify.BASE]
 
         if any([True for e in exports if e in _emails]):
@@ -170,6 +173,7 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
     def _lock(self):
         data = self.data
         data['locked'] = True
+        logger_.log(logging.INFO, 'Tracker locked.')
         obj = self._chat('fairylab', 'Tracker locked.')
 
         percent = self._percent()

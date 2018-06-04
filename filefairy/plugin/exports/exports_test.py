@@ -3,6 +3,7 @@
 
 import copy
 import datetime
+import logging
 import os
 import re
 import sys
@@ -83,7 +84,7 @@ class ExportsTest(Test):
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
-        patch_log = mock.patch('plugin.exports.exports.log')
+        patch_log = mock.patch('plugin.exports.exports.logger_.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
@@ -308,7 +309,7 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(URL)
         self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_NEW)
 
@@ -365,7 +366,7 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(URL)
         self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_NEW)
 
@@ -420,7 +421,7 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(URL)
         self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
 
@@ -661,7 +662,7 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
@@ -679,7 +680,7 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.data['ai'], ['32'])
         self.assertEqual(plugin.data['form'], form)
@@ -701,7 +702,7 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
         self.mock_reactions.assert_called_once_with('100', 'fairylab', TS)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
@@ -723,7 +724,7 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
         self.mock_reactions.assert_called_once_with('palm_tree', 'fairylab',
                                                     TS)
         self.assertEqual(plugin.data['ai'], [])
