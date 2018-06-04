@@ -369,28 +369,6 @@ class SnacksTest(unittest.TestCase):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch('plugin.snacks.snacks.channels_kick')
-    def test_on_message__with_kick_text(self, mock_kick):
-        obj = {
-            'channel': 'C9YE6NQG0',
-            'text': '<@U3ULC7DBP> kick <@U5678>',
-            'ts': '1000.789',
-            'user': 'U1234',
-        }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read, names={'U5678': 'user'})
-        response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
-
-        write = {'members': MEMBERS_NOW}
-        mock_kick.assert_called_once_with('C9YE6NQG0', 'U5678')
-        self.mock_open.assert_called_once_with(DATA, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_collect.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
     def test_on_message__with_say_text(self):
         obj = {
             'channel': 'C9YE6NQG0',

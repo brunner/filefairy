@@ -9,9 +9,7 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/slack', '', _path))
-from util.secrets.secrets import brunnerj  # noqa
 from util.secrets.secrets import filefairy  # noqa
-from util.slack.slack import channels_kick  # noqa
 from util.slack.slack import channels_history  # noqa
 from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
@@ -21,26 +19,10 @@ from util.slack.slack import reactions_add  # noqa
 from util.slack.slack import rtm_connect  # noqa
 from util.slack.slack import users_list  # noqa
 
-_brunnerj = brunnerj()
 _filefairy = filefairy()
 
 
 class SlackTest(unittest.TestCase):
-    @mock.patch('util.slack.slack.urlopen')
-    def test_channels_kick(self, mock_urlopen):
-        mock_urlopen.return_value = bytes('{"ok":true}', 'utf-8')
-
-        actual = channels_kick('channel', 'U1234')
-        expected = {'ok': True}
-        self.assertEqual(actual, expected)
-
-        mock_urlopen.assert_called_once_with(
-            'https://slack.com/api/channels.kick', {
-                'token': _brunnerj,
-                'channel': 'channel',
-                'user': 'U1234',
-            })
-
     @mock.patch('util.slack.slack.urlopen')
     def test_channels_history(self, mock_urlopen):
         mock_urlopen.return_value = bytes('{"ok":true,"latest":"12000000"}',

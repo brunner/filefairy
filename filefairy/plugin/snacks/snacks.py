@@ -21,7 +21,6 @@ from util.corpus.corpus import collect  # noqa
 from util.nltk_.nltk_ import cfd  # noqa
 from util.nltk_.nltk_ import discuss  # noqa
 from util.nltk_.nltk_ import imitate  # noqa
-from util.slack.slack import channels_kick  # noqa
 from util.slack.slack import channels_list  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import pins_add  # noqa
@@ -152,11 +151,6 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
                     reply = '<@' + target + '> doesn\'t know anything ' \
                             'about ' + topic + '.'
                 chat_post_message(channel, reply)
-                response.notify = [Notify.BASE]
-
-            match = re.findall('^<@U3ULC7DBP> kick <@(.+)>$', text)
-            if match and match[0] in self.names:
-                channels_kick(channel, match[0])
                 response.notify = [Notify.BASE]
 
             match = re.findall('^<@U3ULC7DBP> say (.+)$', text)

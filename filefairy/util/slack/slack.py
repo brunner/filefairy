@@ -8,11 +8,9 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/slack', '', _path))
-from util.secrets.secrets import brunnerj  # noqa
 from util.secrets.secrets import filefairy  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
 
-_brunnerj = brunnerj()
 _filefairy = filefairy()
 
 
@@ -25,14 +23,6 @@ def _call(method, params):
     except:
         pass
     return obj
-
-
-def channels_kick(channel, user):
-    return _call('channels.kick', {
-        'token': _brunnerj,
-        'channel': channel,
-        'user': user,
-    })
 
 
 def channels_history(channel, latest):
