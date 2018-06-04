@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import logging
 import os
 import re
 import sys
@@ -77,7 +78,7 @@ class DownloadTest(unittest.TestCase):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
-        patch_log = mock.patch('plugin.download.download.log')
+        patch_log = mock.patch('plugin.download.download.logger_.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
@@ -241,7 +242,7 @@ class DownloadTest(unittest.TestCase):
 
     @mock.patch('plugin.download.download.ping')
     def test_download__with_ok_false(self, mock_ping):
-        mock_ping.return_value = {'ok': False}
+        mock_ping.return_value = {'ok': False, 'output': 'ret'}
 
         read = {
             'downloaded': False,
@@ -253,13 +254,10 @@ class DownloadTest(unittest.TestCase):
         response = plugin.download()
         self.assertEqual(response, Response())
 
-        self.mock_log.assert_called_once_with('Download', **{
-            'c': {
-                'ok': False
-            },
-            's': 'Download failed.',
-            'v': True
-        })
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, 'Download failed.', extra={
+                'output': 'ret'
+            })
 
     @mock.patch('plugin.download.download.ping')
     def test_download__with_ok_true(self, mock_ping):
@@ -279,9 +277,8 @@ class DownloadTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_called_once_with('Download', **{
-            's': 'Download started.'
-        })
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Download started.')
 
     @mock.patch.object(Download, '_leagues')
     @mock.patch('plugin.download.download.wget_file')
@@ -310,10 +307,8 @@ class DownloadTest(unittest.TestCase):
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_called_once_with('Download', **{
-            's': 'Download finished.',
-            'v': True
-        })
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Download finished.')
         self.assertTrue(plugin.data['downloaded'])
         self.assertEqual(plugin.data['now'], YEAR_ENCODED)
         self.assertEqual(plugin.data['then'], THEN_ENCODED)
@@ -347,10 +342,8 @@ class DownloadTest(unittest.TestCase):
         mock_leagues.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_called_once_with('Download', **{
-            's': 'Download finished.',
-            'v': True
-        })
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Download finished.')
         self.assertTrue(plugin.data['downloaded'])
         self.assertEqual(plugin.data['now'], NOW_ENCODED)
         self.assertEqual(plugin.data['then'], THEN_ENCODED)

@@ -3,6 +3,7 @@
 
 import copy
 import datetime
+import logging
 import os
 import re
 import sys
@@ -23,7 +24,8 @@ from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.file_.file_ import ping  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.file_.file_ import wget_file  # noqa
-from util.logger.logger import log  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 
 class Download(Messageable, Registrable, Runnable, Serializable):
@@ -83,12 +85,16 @@ class Download(Messageable, Registrable, Runnable, Serializable):
     def download(self, **kwargs):
         output = ping()
         if output.get('ok'):
-            log(self._name(), **dict(kwargs, s='Download started.'))
+            logger_.log(logging.INFO, 'Download started.')
             return Response(
                 task=[Task(target='_download_internal', kwargs=kwargs)])
         else:
-            log(self._name(),
-                **dict(kwargs, c=output, s='Download failed.', v=True))
+            logger_.log(
+                logging.DEBUG,
+                'Download failed.',
+                extra={
+                    'output': output.get('output', '')
+                })
             return Response()
 
     def _download_internal(self, *args, **kwargs):
@@ -100,7 +106,7 @@ class Download(Messageable, Registrable, Runnable, Serializable):
         self._leagues()
 
         data['downloaded'] = True
-        log(self._name(), **dict(kwargs, s='Download finished.'))
+        logger_.log(logging.INFO, 'Download finished.')
 
         dthen = decode_datetime(data['then'])
         dnow = decode_datetime(data['now'])
