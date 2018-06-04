@@ -220,16 +220,16 @@ class FairylabTest(Test):
         program.day = THEN.day
         program._setup(date=NOW)
 
-        calls = [mock.call('plugin', 'internal', date=NOW, v=True)]
+        calls = [mock.call('plugin', 'internal', date=NOW)]
         mock_reload.assert_has_calls(calls)
         calls = [mock.call(DIR_INTERNAL)]
         mock_isdir.assert_has_calls(calls)
         mock_listdir.assert_called_once_with(DIR_PLUGINS)
         mock_try.assert_has_calls([
-            mock.call('dashboard', '_resolve', 'dashboard', date=NOW, v=True),
-            mock.call('browsable', '_setup', date=NOW, v=True),
-            mock.call('dashboard', '_setup', date=NOW, v=True),
-            mock.call('internal', '_setup', date=NOW, v=True)
+            mock.call('dashboard', '_resolve', 'dashboard', date=NOW),
+            mock.call('browsable', '_setup', date=NOW),
+            mock.call('dashboard', '_setup', date=NOW),
+            mock.call('internal', '_setup', date=NOW)
         ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -836,7 +836,9 @@ class FairylabTest(Test):
         self.mock_datetime.datetime.now.assert_not_called()
         calls = [
             mock.call(logging.INFO, 'Reloaded internal.'),
-            mock.call(logging.INFO, 'Completed setup.')
+            mock.call(logging.DEBUG, 'Reloaded internal.'),
+            mock.call(logging.INFO, 'Completed setup.'),
+            mock.call(logging.DEBUG, 'Completed setup.')
         ]
         self.mock_log.assert_has_calls(calls)
         self.assertNotIn('browsable', program.registered)

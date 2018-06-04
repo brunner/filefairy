@@ -170,7 +170,8 @@ class Dashboard(Registrable, Renderable):
         cwd = os.getcwd()
         record['pathname'] = os.path.join(cwd, kwargs['pathname'])
 
-        if kwargs['levelname'] == 'DEBUG':
+        levelname = kwargs['levelname']
+        if levelname == 'DEBUG':
             content = self._content(record)
             chat_post_message('testing', content + ': ' + record['msg'])
             if kwargs.get('output'):
@@ -181,6 +182,12 @@ class Dashboard(Registrable, Renderable):
             exc = logging.Formatter.formatException(self, e) if e else ''
             record['exc'] = secrets_sub(exc)
             self._record(record)
+            if levelname == 'WARNING' or levelname == 'ERROR':
+                content = self._content(record)
+                chat_post_message('testing', content + ': ' + record['msg'])
+                flog = kwargs.get('module', 'unknown') + '.log.txt'
+                files_upload(record['exc'], flog, 'testing')
+
 
     def _record(self, record):
         date = datetime.datetime.now()

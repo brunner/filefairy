@@ -329,11 +329,13 @@ class DashboardTest(Test):
             msg='Disabled foo.',
             pathname='path/to/file.py')
 
-        mock_chat.assert_not_called()
+        mock_chat.assert_called_once_with('testing',
+                                          'file.py#L123: Disabled foo.')
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
         mock_record.assert_called_once_with(_record_error)
-        mock_upload.assert_not_called()
+        mock_upload.assert_called_once_with('Traceback [foo] ...',
+                                            'file.log.txt', 'testing')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -385,11 +387,12 @@ class DashboardTest(Test):
             msg='baz',
             pathname='path/to/file.py')
 
-        mock_chat.assert_not_called()
+        mock_chat.assert_called_once_with('testing', 'file.py#L789: baz')
         mock_cwd.assert_called_once_with()
         mock_format.assert_called_once_with(dashboard, e)
         mock_record.assert_called_once_with(_record_warning)
-        mock_upload.assert_not_called()
+        mock_upload.assert_called_once_with('Traceback [baz] ...',
+                                            'file.log.txt', 'testing')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 

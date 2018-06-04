@@ -62,7 +62,6 @@ class Fairylab(Messageable, Renderable):
         return 'Fairylab core framework.'
 
     def _setup(self, **kwargs):
-        kwargs['v'] = True
         date = kwargs['date']
         self.day = date.day
 
@@ -74,7 +73,7 @@ class Fairylab(Messageable, Renderable):
             self._reload_internal('plugin', p, **kwargs)
 
         self._try_all('_setup', **kwargs)
-        self._log_setup()
+        self._log_setup(**kwargs)
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -92,12 +91,16 @@ class Fairylab(Messageable, Renderable):
         return '{0}.{1}.{1}'.format(path, name)
 
     @staticmethod
-    def _log_reloaded(name):
+    def _log_reloaded(name, **kwargs):
         logger_.log(logging.INFO, 'Reloaded ' + name + '.')
+        if kwargs.get('v'):
+            logger_.log(logging.DEBUG, 'Reloaded ' + name + '.')
 
     @staticmethod
-    def _log_setup():
+    def _log_setup(**kwargs):
         logger_.log(logging.INFO, 'Completed setup.')
+        if kwargs.get('v'):
+            logger_.log(logging.DEBUG, 'Completed setup.')
 
     def _try_all(self, method, *args, **kwargs):
         ps = sorted(self.registered.keys())
@@ -239,7 +242,7 @@ class Fairylab(Messageable, Renderable):
         value = self._reload_internal(*args, **kwargs)
         if value:
             self._try_all('_setup', **kwargs)
-            self._log_setup()
+            self._log_setup(**kwargs)
 
     def _reload_internal(self, *args, **kwargs):
         if len(args) != 2:
@@ -259,7 +262,7 @@ class Fairylab(Messageable, Renderable):
             if path == 'plugin':
                 return self._install(name, module, clazz, **kwargs)
             else:
-                self._log_reloaded(name)
+                self._log_reloaded(name, **kwargs)
         except:
             logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
 
@@ -273,7 +276,7 @@ class Fairylab(Messageable, Renderable):
                 instance = plugin(date=date, e=self.environment)
             else:
                 instance = plugin(date=date)
-            self._log_reloaded(name)
+            self._log_reloaded(name, **kwargs)
         except:
             date = None
             instance = None
