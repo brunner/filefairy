@@ -175,8 +175,9 @@ class Dashboard(Registrable, Renderable):
             content = self._content(record)
             chat_post_message('testing', content + ': ' + record['msg'])
             if kwargs.get('output'):
+                output = secrets_sub(kwargs['output'])
                 flog = kwargs.get('module', 'unknown') + '.log.txt'
-                files_upload(kwargs['output'], flog, 'testing')
+                files_upload(output, flog, 'testing')
         else:
             e = kwargs['exc_info']
             exc = logging.Formatter.formatException(self, e) if e else ''
@@ -187,7 +188,6 @@ class Dashboard(Registrable, Renderable):
                 chat_post_message('testing', content + ': ' + record['msg'])
                 flog = kwargs.get('module', 'unknown') + '.log.txt'
                 files_upload(record['exc'], flog, 'testing')
-
 
     def _record(self, record):
         date = datetime.datetime.now()
