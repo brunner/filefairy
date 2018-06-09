@@ -434,6 +434,143 @@
         "msg": "Tracker updated.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
       }
+    ],
+    "2018-06-09T00:00:00": [
+      {
+        "count": 1,
+        "date": "2018-06-09T00:01:41.963173",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 77,
+        "msg": "Automated data push.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:37:49.419543",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 86,
+        "msg": "Fetched latest changes.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:37:51.529157",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 294,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:37:54.666730",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Reloaded download.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:37:56.971189",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:37:58.983397",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:38:01.011974",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:38:03.020361",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:38:06.155390",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:38:08.175046",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T01:38:33.096702",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 101,
+        "msg": "Completed setup.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 7,
+        "date": "2018-06-09T15:42:20.802447",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 92,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-06-09T14:53:24.300037",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 22,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-09T15:42:22.917648",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 176,
+        "msg": "Tracker locked.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-09T15:44:38.936282",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 22,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      }
     ]
   }
 }
