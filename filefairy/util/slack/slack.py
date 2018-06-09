@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import json
 import os
 import re
@@ -11,6 +12,7 @@ sys.path.append(re.sub(r'/util/slack', '', _path))
 from util.secrets.secrets import filefairy  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
 
+logger_ = logging.getLogger('fairylab')
 _filefairy = filefairy()
 
 
@@ -21,7 +23,7 @@ def _call(method, params):
         response = urlopen(url, params).decode('utf-8')
         obj = json.loads(response)
     except:
-        pass
+        logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
     return obj
 
 
@@ -65,12 +67,11 @@ def files_upload(content, filename, channel):
 
 
 def pins_add(channel, timestamp):
-    return _call(
-        'pins.add', {
-            'token': _filefairy,
-            'channel': channel,
-            'timestamp': timestamp,
-        })
+    return _call('pins.add', {
+        'token': _filefairy,
+        'channel': channel,
+        'timestamp': timestamp,
+    })
 
 
 def reactions_add(name, channel, timestamp):

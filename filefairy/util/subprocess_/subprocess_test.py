@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import re
 import subprocess
@@ -15,7 +16,8 @@ from util.subprocess_.subprocess_ import check_output  # noqa
 
 class SubprocessTest(unittest.TestCase):
     @mock.patch('util.subprocess_.subprocess_.subprocess.run')
-    def test_run__ok(self, mock_run):
+    @mock.patch('util.subprocess_.subprocess_.logger_.log')
+    def test_run__with_valid_input(self, mock_log, mock_run):
         cmd = ['cmd', 'foo', 'bar']
         t = 10
         mock_run.return_value = subprocess.CompletedProcess(
@@ -25,6 +27,7 @@ class SubprocessTest(unittest.TestCase):
         expected = {'ok': True, 'output': 'ret'}
         self.assertEqual(actual, expected)
 
+        mock_log.assert_not_called()
         mock_run.assert_called_once_with(
             cmd,
             stdout=subprocess.PIPE,
@@ -33,7 +36,8 @@ class SubprocessTest(unittest.TestCase):
             check=True)
 
     @mock.patch('util.subprocess_.subprocess_.subprocess.run')
-    def test_run__exception(self, mock_run):
+    @mock.patch('util.subprocess_.subprocess_.logger_.log')
+    def test_run__with_thrown_exception(self, mock_log, mock_run):
         cmd = ['cmd', 'foo', 'bar']
         t = 10
         mock_run.side_effect = subprocess.TimeoutExpired(cmd, t)
@@ -43,6 +47,8 @@ class SubprocessTest(unittest.TestCase):
         expected = {'ok': False, 'output': ret}
         self.assertEqual(actual, expected)
 
+        mock_log.assert_called_once_with(
+            logging.WARNING, 'Handled warning.', exc_info=True)
         mock_run.assert_called_once_with(
             cmd,
             stdout=subprocess.PIPE,

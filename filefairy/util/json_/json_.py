@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import json
+import logging
+
+logger_ = logging.getLogger('fairylab')
 
 
 class Encoder(json.JSONEncoder):
@@ -9,6 +12,7 @@ class Encoder(json.JSONEncoder):
         try:
             return json.JSONEncoder.default(self, obj)
         except:
+            logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
             return ''
 
 
