@@ -414,12 +414,13 @@ class Statsplus(Messageable, Registrable, Renderable, Runnable):
 
         unresolved = args[0]
         for encoded_date in unresolved:
-            scores = self.data['scores'].get(encoded_date, [])
+            scores = data['scores'].get(encoded_date, [])
             for i in range(len(scores)):
                 self._resolve(encoded_date, i)
             scores = self.data['scores'].get(encoded_date, [])
-            if not any(e in '\n'.join(scores) for e in _chlany):
-                self.data['unresolved'].remove(encoded_date)
+            if encoded_date in data['unresolved']:
+                if not any(e in '\n'.join(scores) for e in _chlany):
+                    data['unresolved'].remove(encoded_date)
 
         if data != original:
             self._render(**kwargs)
