@@ -22,13 +22,9 @@ _breadcrumbs = [{
 
 _link = 'https://github.com/brunner/orangeandblueleague/blob/master/filefairy/'
 
-_cols = ['', ' class="text-right w-75p"']
 _ehref = _link + 'core/fairylab/fairylab.py#L127'
 _etitle = 'fairylab.py#L127'
-_etable = table(
-    clazz='table-sm mb-2',
-    bcols=_cols,
-    body=[['Disabled snacks plugin.', '(1)']])
+_einfo = 'Disabled snacks plugin.'
 _etrace = """Traceback (most recent call last):
   File "core/fairylab/fairylab.py", line 117, in _try
     response = item(*args, **dict(kwargs, date=date))
@@ -39,16 +35,12 @@ _etrace = """Traceback (most recent call last):
 FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/orangeandblueleague/filefairy3/resource/corpus'
 """
 _exceptions = [
-    card(
-        href=_ehref, title=_etitle, table=_etable, code=_etrace, ts='43m ago')
+    card(href=_ehref, title=_etitle, info=_einfo, code=_etrace, ts='43m ago')
 ]
 
 _whref = _link + 'util/subprocess_/subprocess_.py#L19'
 _wtitle = 'subprocess_.py#L19'
-_wtable = table(
-    clazz='table-sm mb-2',
-    bcols=_cols,
-    body=[['Handled subprocess warning.', '(10)']])
+_winfo = 'Handled subprocess warning (10 times).'
 _wtrace = """Traceback (most recent call last):
   File "/home/jbrunner/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py", line 16, in check_output
     check=True)
@@ -57,33 +49,39 @@ _wtrace = """Traceback (most recent call last):
 subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' returned non-zero exit status 255
 """
 _warnings = [
-    card(href=_whref, title=_wtitle, table=_wtable, code=_wtrace, ts='3h ago')
+    card(href=_whref, title=_wtitle, info=_winfo, code=_wtrace, ts='3h ago')
 ]
 
 _dlink = _link + 'core/fairylab/fairylab.py#L127'
 _disabled_snacks = [
-    anchor(_dlink, 'fairylab.py#L127') + '<br>Disabled snacks plugin.',
-    '17:09<br>(1)'
+    '<div class="d-inline-block pr-1">' + anchor(_dlink, 'fairylab.py#L127') +
+    '</div><div class="d-inline-block">Disabled snacks plugin.</div>', '17:09'
 ]
 _slink = _link + 'util/subprocess_/subprocess_.py#L19'
 _subprocess = [
-    anchor(_slink, 'subprocess_.py#L19') + '<br>Handled subprocess warning.',
-    '14:47<br>(10)'
+    '<div class="d-inline-block pr-1">' +
+    anchor(_slink, 'subprocess_.py#L19') +
+    '</div><div class="d-inline-block">Handled subprocess warning (10 times).</div>',
+    '14:47'
 ]
 _tlink = _link + 'plugin/exports/exports.py#L92'
 _tracker = [
-    anchor(_tlink, 'exports.py#L92') + '<br>Tracker updated.', '14:21<br>(6)'
+    '<div class="d-inline-block pr-1">' + anchor(_tlink, 'exports.py#L92') +
+    '</div><div class="d-inline-block">Tracker updated (6 times).</div>',
+    '14:21'
 ]
 _rlink = _link + 'core/fairylab/fairylab.py#L252'
 _reloaded_download = [
-    anchor(_rlink, 'fairylab.py#L252') + '<br>Reloaded download plugin.',
-    '06:02<br>(1)'
+    '<div class="d-inline-block pr-1">' + anchor(_rlink, 'fairylab.py#L252') +
+    '</div><div class="d-inline-block">Reloaded download plugin.</div>',
+    '06:02'
 ]
 _reloaded_exports = [
-    anchor(_rlink, 'fairylab.py#L252') + '<br>Reloaded exports plugin.',
-    '06:02<br>(1)'
+    '<div class="d-inline-block pr-1">' + anchor(_rlink, 'fairylab.py#L252') +
+    '</div><div class="d-inline-block">Reloaded exports plugin.</div>', '06:02'
 ]
 
+_cols = ['', ' class="text-right w-75p"']
 _logs = [
     table(
         clazz='border mt-3 table-fixed',

@@ -73,10 +73,7 @@ _exceptions = [
     card(
         href=(_link + 'path/to/file.py#L123'),
         title='file.py#L123',
-        table=table(
-            clazz='table-sm mb-2',
-            bcols=_cols,
-            body=[['Disabled foo.', '(1)']]),
+        info='Disabled foo.',
         code='Traceback [foo] ...',
         ts='1d ago')
 ]
@@ -84,7 +81,7 @@ _warnings = [
     card(
         href=(_link + 'path/to/file.py#L789'),
         title='file.py#L789',
-        table=table(clazz='table-sm mb-2', bcols=_cols, body=[['baz', '(2)']]),
+        info='baz (2 times).',
         code='Traceback [baz] ...',
         ts='20h ago')
 ]
@@ -95,8 +92,9 @@ _logs = [
         bcols=_cols,
         head=['Saturday, October 26th, 1985', ''],
         body=[[
-            anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '<br>baz',
-            '00:02<br>(2)'
+            '<div class="d-inline-block pr-1">' +
+            anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
+            '<div class="d-inline-block">baz (2 times).</div>', '00:02'
         ]]),
     table(
         clazz='border mt-3 table-fixed',
@@ -104,11 +102,13 @@ _logs = [
         bcols=_cols,
         head=['Friday, October 25th, 1985', ''],
         body=[[
-            anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '<br>bar',
-            '12:55<br>(5)'
+            '<div class="d-inline-block pr-1">' +
+            anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '</div>' +
+            '<div class="d-inline-block">bar (5 times).</div>', '12:55'
         ], [
-            anchor(_link + 'path/to/file.py#L123', 'file.py#L123') +
-            '<br>Disabled foo.', '12:55<br>(1)'
+            '<div class="d-inline-block pr-1">' +
+            anchor(_link + 'path/to/file.py#L123', 'file.py#L123') + '</div>' +
+            '<div class="d-inline-block">Disabled foo.</div>', '12:55'
         ]])
 ]
 

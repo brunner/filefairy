@@ -98,27 +98,30 @@ class Dashboard(Registrable, Renderable):
         return end + Dashboard._line(record)
 
     @staticmethod
+    def _msg(record):
+        count = record['count']
+        times = ' (' + str(count) + ' times)' if count > 1 else ''
+        return record['msg'].strip('.') + times + '.'
+
+    @staticmethod
     def _card(date, record):
         href = Dashboard._url(record)
         title = Dashboard._content(record)
-        left = record['msg']
-        right = '(' + str(record['count']) + ')'
-        t = table(clazz='table-sm mb-2', bcols=_cols, body=[[left, right]])
-        trace = record['exc']
+        info = Dashboard._msg(record)
+        code = record['exc']
         ts = delta(decode_datetime(record['date']), date)
-        return card(href=href, title=title, table=t, code=trace, ts=ts)
+        return card(href=href, title=title, info=info, code=code, ts=ts)
 
     @staticmethod
     def _row(record):
-        msg = record['msg']
         a = anchor(Dashboard._url(record), Dashboard._content(record))
-        left = a + '<br>' + msg
+        msg = Dashboard._msg(record)
+        left = '<div class="d-inline-block pr-1">' + a + '</div>'
+        right = '<div class="d-inline-block">' + msg + '</div>'
         date = record['date']
         ddate = decode_datetime(date)
         fdate = ddate.strftime('%H:%M')
-        count = record['count']
-        right = fdate + '<br>(' + str(count) + ')'
-        return [left, right]
+        return [left + right, fdate]
 
     @staticmethod
     def _sort(record):
