@@ -40,7 +40,7 @@ _exceptions = [
 
 _whref = _link + 'util/subprocess_/subprocess_.py#L19'
 _wtitle = 'subprocess_.py#L19'
-_winfo = 'Handled subprocess warning (10 times).'
+_winfo = 'Handled subprocess warning (x6).'
 _wtrace = """Traceback (most recent call last):
   File "/home/jbrunner/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py", line 16, in check_output
     check=True)
@@ -61,13 +61,13 @@ _slink = _link + 'util/subprocess_/subprocess_.py#L19'
 _subprocess = [
     '<div class="d-inline-block pr-1">' +
     anchor(_slink, 'subprocess_.py#L19') +
-    '</div><div class="d-inline-block">Handled subprocess warning (10 times).</div>',
+    '</div><div class="d-inline-block">Handled subprocess warning (x10).</div>',
     '14:47'
 ]
 _tlink = _link + 'plugin/exports/exports.py#L92'
 _tracker = [
     '<div class="d-inline-block pr-1">' + anchor(_tlink, 'exports.py#L92') +
-    '</div><div class="d-inline-block">Tracker updated (6 times).</div>',
+    '</div><div class="d-inline-block">Tracker updated (x6).</div>',
     '14:21'
 ]
 _rlink = _link + 'core/fairylab/fairylab.py#L252'

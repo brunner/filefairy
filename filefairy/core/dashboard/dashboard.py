@@ -126,8 +126,8 @@ class Dashboard(Messageable, Registrable, Renderable):
     @staticmethod
     def _msg(record):
         count = record['count']
-        times = ' (' + str(count) + ' times)' if count > 1 else ''
-        return record['msg'].strip('.') + times + '.'
+        x = ' (x' + str(count) + ')' if count > 1 else ''
+        return record['msg'].strip('.') + x + '.'
 
     @staticmethod
     def _card(date, record):

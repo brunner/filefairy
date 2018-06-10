@@ -85,7 +85,7 @@ _warnings = [
     card(
         href=(_link + 'path/to/file.py#L789'),
         title='file.py#L789',
-        info='baz (6 times).',
+        info='baz (x6).',
         code='Traceback [baz] ...',
         ts='20h ago')
 ]
@@ -98,7 +98,7 @@ _logs = [
         body=[[
             '<div class="d-inline-block pr-1">' +
             anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
-            '<div class="d-inline-block">baz (6 times).</div>', '00:02'
+            '<div class="d-inline-block">baz (x6).</div>', '00:02'
         ]]),
     table(
         clazz='border mt-3 table-fixed',
@@ -108,11 +108,11 @@ _logs = [
         body=[[
             '<div class="d-inline-block pr-1">' +
             anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
-            '<div class="d-inline-block">baz (2 times).</div>', '12:55'
+            '<div class="d-inline-block">baz (x2).</div>', '12:55'
         ], [
             '<div class="d-inline-block pr-1">' +
             anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '</div>' +
-            '<div class="d-inline-block">bar (5 times).</div>', '12:55'
+            '<div class="d-inline-block">bar (x5).</div>', '12:55'
         ], [
             '<div class="d-inline-block pr-1">' +
             anchor(_link + 'path/to/file.py#L123', 'file.py#L123') + '</div>' +
