@@ -179,7 +179,7 @@ class Dashboard(Messageable, Registrable, Renderable):
             for r in records:
                 if r['levelname'] == 'ERROR':
                     ret['exceptions'].insert(0, self._card(date, r))
-                if r['levelname'] == 'WARNING':
+                if r['levelname'] == 'WARNING' and r['count'] >= 5:
                     ret['warnings'].insert(0, self._card(date, r))
                 body.insert(0, self._row(r))
 
@@ -211,8 +211,8 @@ class Dashboard(Messageable, Registrable, Renderable):
             e = kwargs['exc_info']
             exc = logging.Formatter.formatException(self, e) if e else ''
             record['exc'] = secrets_sub(exc)
-            self._record(record)
-            if levelname == 'WARNING' or levelname == 'ERROR':
+            count = self._record(record)
+            if levelname == 'ERROR' or (levelname == 'WARNING' and count == 5):
                 content = self._content(record)
                 chat_post_message('testing', content + ': ' + record['msg'])
                 flog = kwargs.get('module', 'unknown') + '.log.txt'
@@ -227,25 +227,26 @@ class Dashboard(Messageable, Registrable, Renderable):
         if encoded_day not in self.data['records']:
             self.data['records'][encoded_day] = []
 
-        found = False
+        count = 1
         for r in self.data['records'][encoded_day]:
             if record.items() <= r.items():
                 rdate = decode_datetime(r['date'])
                 diff = date - rdate
                 s, d = diff.seconds, diff.days
                 if d == 0 and s < 1000:
-                    c = r.get('count', 0)
-                    r['count'] = c + 1
+                    count = r['count'] + 1
+                    r['count'] = count
                     r['date'] = encoded_date
-                    found = True
 
-        if not found:
+        if count == 1:
             record.update({'count': 1, 'date': encoded_date})
             self.data['records'][encoded_day].append(record)
 
         self.date = date
         self.write()
         self._render(date=date)
+
+        return count
 
     def _retire(self, **kwargs):
         data = self.data

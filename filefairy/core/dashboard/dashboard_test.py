@@ -85,7 +85,7 @@ _warnings = [
     card(
         href=(_link + 'path/to/file.py#L789'),
         title='file.py#L789',
-        info='baz (2 times).',
+        info='baz (6 times).',
         code='Traceback [baz] ...',
         ts='20h ago')
 ]
@@ -98,7 +98,7 @@ _logs = [
         body=[[
             '<div class="d-inline-block pr-1">' +
             anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
-            '<div class="d-inline-block">baz (2 times).</div>', '00:02'
+            '<div class="d-inline-block">baz (6 times).</div>', '00:02'
         ]]),
     table(
         clazz='border mt-3 table-fixed',
@@ -106,6 +106,10 @@ _logs = [
         bcols=_cols,
         head=['Friday, October 25th, 1985', ''],
         body=[[
+            '<div class="d-inline-block pr-1">' +
+            anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
+            '<div class="d-inline-block">baz (2 times).</div>', '12:55'
+        ], [
             '<div class="d-inline-block pr-1">' +
             anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '</div>' +
             '<div class="d-inline-block">bar (5 times).</div>', '12:55'
@@ -322,11 +326,13 @@ class DashboardTest(Test):
     def test_home(self):
         error = dict(_record_error, count=1, date=_yesterday_date_encoded)
         info = dict(_record_info, count=5, date=_yesterday_date_encoded)
-        warning = dict(_record_warning, count=2, date=_then_date_encoded)
+        warning_yesterday = dict(
+            _record_warning, count=2, date=_yesterday_date_encoded)
+        warning_then = dict(_record_warning, count=6, date=_then_date_encoded)
         read = {
             'records': {
-                _yesterday_day_encoded: [error, info],
-                _then_day_encoded: [warning]
+                _yesterday_day_encoded: [error, info, warning_yesterday],
+                _then_day_encoded: [warning_then]
             }
         }
         dashboard = self.create_dashboard(read)
@@ -432,10 +438,41 @@ class DashboardTest(Test):
     @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
     @mock.patch('core.dashboard.dashboard.os.getcwd')
     @mock.patch('core.dashboard.dashboard.chat_post_message')
-    def test_log__warning(self, mock_chat, mock_cwd, mock_format, mock_record,
-                          mock_upload):
+    def test_log__warning_once(self, mock_chat, mock_cwd, mock_format,
+                               mock_record, mock_upload):
         mock_cwd.return_value = '/home/user/filefairy'
         mock_format.return_value = 'Traceback [baz] ...'
+        mock_record.return_value = 1
+
+        read = {'records': {}}
+        dashboard = self.create_dashboard(read)
+        e = (Exception, _exc, None)
+        dashboard._log(
+            exc_info=e,
+            levelname='WARNING',
+            lineno=789,
+            module='file',
+            msg='baz',
+            pathname='path/to/file.py')
+
+        mock_chat.assert_not_called()
+        mock_cwd.assert_called_once_with()
+        mock_format.assert_called_once_with(dashboard, e)
+        mock_record.assert_called_once_with(_record_warning)
+        mock_upload.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch('core.dashboard.dashboard.files_upload')
+    @mock.patch.object(Dashboard, '_record')
+    @mock.patch('core.dashboard.dashboard.logging.Formatter.formatException')
+    @mock.patch('core.dashboard.dashboard.os.getcwd')
+    @mock.patch('core.dashboard.dashboard.chat_post_message')
+    def test_log__warning_repeated(self, mock_chat, mock_cwd, mock_format,
+                                   mock_record, mock_upload):
+        mock_cwd.return_value = '/home/user/filefairy'
+        mock_format.return_value = 'Traceback [baz] ...'
+        mock_record.return_value = 5
 
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
@@ -465,7 +502,8 @@ class DashboardTest(Test):
 
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(copy.deepcopy(_record_error))
+        count = dashboard._record(copy.deepcopy(_record_error))
+        self.assertEqual(count, 1)
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_new]}}
@@ -486,7 +524,8 @@ class DashboardTest(Test):
         record_old = dict(_record_info, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(copy.deepcopy(_record_error))
+        count = dashboard._record(copy.deepcopy(_record_error))
+        self.assertEqual(count, 1)
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_old, record_new]}}
@@ -507,7 +546,8 @@ class DashboardTest(Test):
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(copy.deepcopy(_record_error))
+        count = dashboard._record(copy.deepcopy(_record_error))
+        self.assertEqual(count, 1)
 
         record_new = dict(_record_error, count=1, date=_now_date_encoded)
         write = {'records': {_then_day_encoded: [record_old, record_new]}}
@@ -528,7 +568,8 @@ class DashboardTest(Test):
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(copy.deepcopy(_record_error))
+        count = dashboard._record(copy.deepcopy(_record_error))
+        self.assertEqual(count, 2)
 
         record_soon = dict(_record_error, count=2, date=_soon_date_encoded)
         write = {'records': {_then_day_encoded: [record_soon]}}
