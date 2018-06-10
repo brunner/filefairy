@@ -104,10 +104,7 @@ class GitTest(unittest.TestCase):
 
         msg = 'Call failed: \'cmd\'.'
         self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, msg, extra={
-                'output': output
-            })
+        self.mock_log.assert_not_called()
 
     def test_call__with_ok_true_silent(self):
         self.mock_check.return_value = {'ok': True, 'output': ''}

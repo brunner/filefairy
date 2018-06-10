@@ -50,7 +50,7 @@ class Git(Messageable, Registrable, Runnable):
 
     def _call(self, cmd, **kwargs):
         output = check_output(cmd)
-        if kwargs.get('v') or not output.get('ok'):
+        if kwargs.get('v'):
             status = 'completed' if output.get('ok') else 'failed'
             fcmd = '\'{}\''.format(self._format(cmd))
             s = 'Call {}: {}.'.format(status, fcmd)

@@ -477,10 +477,7 @@ class LeaguefileTest(Test):
                 'ls -l /var/www/html/StatsLab/league_file'
             ],
             timeout=8)
-        mock_log.assert_called_once_with(
-            logging.DEBUG, 'Check failed.', extra={
-                'output': 'ret'
-            })
+        mock_log.assert_not_called()
 
     def test_home__with_empty(self):
         read = {'fp': None, 'up': []}

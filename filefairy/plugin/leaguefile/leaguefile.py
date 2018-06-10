@@ -179,11 +179,6 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                 match = re.findall(_line_pattern, line)
                 if match:
                     yield match[0] + (fp, )
-        else:
-            logger_.log(
-                logging.DEBUG, 'Check failed.', extra={
-                    'output': output.get('output', '')
-                })
 
     def _home(self, **kwargs):
         data = self.data
