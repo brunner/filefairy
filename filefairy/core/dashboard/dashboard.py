@@ -11,6 +11,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/dashboard', '', _path))
+from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.notify.notify import Notify  # noqa
@@ -35,7 +36,7 @@ class StringFormatter(string.Formatter):
         return kwargs.get(key, '{{{0}}}'.format(key))
 
 
-class Dashboard(Registrable, Renderable):
+class Dashboard(Messageable, Registrable, Renderable):
     def __init__(self, **kwargs):
         super(Dashboard, self).__init__(**kwargs)
         self.formatter = StringFormatter()
@@ -62,6 +63,9 @@ class Dashboard(Registrable, Renderable):
             self._retire(**kwargs)
         return Response()
 
+    def _on_message_internal(self, **kwargs):
+        return Response()
+
     def _render_internal(self, **kwargs):
         html = 'html/fairylab/dashboard/index.html'
         _home = self._home(**kwargs)
@@ -73,6 +77,28 @@ class Dashboard(Registrable, Renderable):
 
     def _shadow_internal(self, **kwargs):
         return []
+
+    def resolve(self, *args, **kwargs):
+        if len(args) != 1:
+            return Response()
+
+        module = args[0]
+
+        data = self.data
+        original = copy.deepcopy(data)
+
+        for day in self.data['records']:
+            for r in self.data['records'][day]:
+                if module + '.py' in r['pathname']:
+                    r['levelname'] = 'INFO'
+                if 'Disabled ' + module + '.' in r['msg']:
+                    r['levelname'] = 'INFO'
+
+        if data != original:
+            self.write()
+            self._render(**kwargs)
+
+        return Response()
 
     @staticmethod
     def _line(record):
@@ -204,10 +230,14 @@ class Dashboard(Registrable, Renderable):
         found = False
         for r in self.data['records'][encoded_day]:
             if record.items() <= r.items():
-                c = r.get('count', 0)
-                r['count'] = c + 1
-                r['date'] = encoded_date
-                found = True
+                rdate = decode_datetime(r['date'])
+                diff = date - rdate
+                s, d = diff.seconds, diff.days
+                if d == 0 and s < 1000:
+                    c = r.get('count', 0)
+                    r['count'] = c + 1
+                    r['date'] = encoded_date
+                    found = True
 
         if not found:
             record.update({'count': 1, 'date': encoded_date})
@@ -216,23 +246,6 @@ class Dashboard(Registrable, Renderable):
         self.date = date
         self.write()
         self._render(date=date)
-
-    def _resolve(self, module, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        for day in self.data['records']:
-            for r in self.data['records'][day]:
-                if module + '.py' in r['pathname']:
-                    r['levelname'] = 'INFO'
-                if 'Disabled ' + module + '.' in r['msg']:
-                    r['levelname'] = 'INFO'
-
-        if data != original:
-            self.write()
-            self._render(**kwargs)
-
-        return Response()
 
     def _retire(self, **kwargs):
         data = self.data

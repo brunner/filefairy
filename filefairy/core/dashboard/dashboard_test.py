@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import copy
 import datetime
 import logging
 import os
@@ -30,6 +31,9 @@ _exc = Exception('Disabled foo.')
 _now = datetime.datetime(1985, 10, 26, 20, 18, 45)
 _now_day = datetime.datetime(1985, 10, 26)
 _now_date_encoded = '1985-10-26T20:18:45'
+_soon = datetime.datetime(1985, 10, 26, 0, 2, 35)
+_soon_day = datetime.datetime(1985, 10, 26)
+_soon_date_encoded = '1985-10-26T00:02:35'
 _then = datetime.datetime(1985, 10, 26, 0, 2, 30)
 _then_day = datetime.datetime(1985, 10, 26)
 _then_date_encoded = '1985-10-26T00:02:30'
@@ -238,6 +242,15 @@ class DashboardTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    def test_on_message(self):
+        read = {'records': {}}
+        dashboard = self.create_dashboard(read)
+        response = dashboard._on_message_internal(date=_now)
+        self.assertEqual(response, Response())
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
     @mock.patch.object(Dashboard, '_render')
     def test_setup(self, mock_render):
         read = {'records': {}}
@@ -257,6 +270,54 @@ class DashboardTest(Test):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_resolve__with_error(self, mock_render):
+        record_old = dict(_record_error, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record_old]}}
+        dashboard = self.create_dashboard(read)
+        actual = dashboard.resolve('foo', date=_now)
+        expected = Response()
+        self.assertEqual(actual, expected)
+
+        record_new = dict(
+            _record_error, count=1, date=_then_date_encoded, levelname='INFO')
+        write = {'records': {_then_day_encoded: [record_new]}}
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(_data, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_resolve__with_info(self, mock_render):
+        record_old = dict(_record_info, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record_old]}}
+        dashboard = self.create_dashboard(read)
+        actual = dashboard.resolve('file', date=_now)
+        expected = Response()
+        self.assertEqual(actual, expected)
+
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_resolve__with_warning(self, mock_render):
+        record_old = dict(_record_warning, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record_old]}}
+        dashboard = self.create_dashboard(read)
+        actual = dashboard.resolve('file', date=_now)
+        expected = Response()
+        self.assertEqual(actual, expected)
+
+        record_new = dict(
+            _record_warning,
+            count=1,
+            date=_then_date_encoded,
+            levelname='INFO')
+        write = {'records': {_then_day_encoded: [record_new]}}
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(_data, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_home(self):
         error = dict(_record_error, count=1, date=_yesterday_date_encoded)
@@ -404,7 +465,7 @@ class DashboardTest(Test):
 
         read = {'records': {}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(_record_error)
+        dashboard._record(copy.deepcopy(_record_error))
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_new]}}
@@ -425,7 +486,7 @@ class DashboardTest(Test):
         record_old = dict(_record_info, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(_record_error)
+        dashboard._record(copy.deepcopy(_record_error))
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = {'records': {_then_day_encoded: [record_old, record_new]}}
@@ -439,17 +500,17 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime')
-    def test_record__with_old(self, mock_datetime, mock_render):
+    def test_record__with_old_now(self, mock_datetime, mock_render):
         mock_datetime.datetime.return_value = _now_day
         mock_datetime.datetime.now.return_value = _now
 
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        dashboard._record(_record_error)
+        dashboard._record(copy.deepcopy(_record_error))
 
-        record_new = dict(_record_error, count=2, date=_now_date_encoded)
-        write = {'records': {_then_day_encoded: [record_new]}}
+        record_new = dict(_record_error, count=1, date=_now_date_encoded)
+        write = {'records': {_then_day_encoded: [record_old, record_new]}}
         mock_datetime.datetime.assert_called_once_with(_now.year, _now.month,
                                                        _now.day)
         mock_datetime.datetime.now.assert_called_once_with()
@@ -459,52 +520,25 @@ class DashboardTest(Test):
         self.assertEqual(dashboard.date, _now)
 
     @mock.patch.object(Dashboard, '_render')
-    def test_resolve__with_error(self, mock_render):
+    @mock.patch('core.dashboard.dashboard.datetime')
+    def test_record__with_old_soon(self, mock_datetime, mock_render):
+        mock_datetime.datetime.return_value = _soon_day
+        mock_datetime.datetime.now.return_value = _soon
+
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
-        actual = dashboard._resolve('foo', date=_now)
-        expected = Response()
-        self.assertEqual(actual, expected)
+        dashboard._record(copy.deepcopy(_record_error))
 
-        record_new = dict(
-            _record_error, count=1, date=_then_date_encoded, levelname='INFO')
-        write = {'records': {_then_day_encoded: [record_new]}}
-        mock_render.assert_called_once_with(date=_now)
+        record_soon = dict(_record_error, count=2, date=_soon_date_encoded)
+        write = {'records': {_then_day_encoded: [record_soon]}}
+        mock_datetime.datetime.assert_called_once_with(_soon.year, _soon.month,
+                                                       _soon.day)
+        mock_datetime.datetime.now.assert_called_once_with()
+        mock_render.assert_called_once_with(date=_soon)
         self.mock_open.assert_called_once_with(_data, 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-
-    @mock.patch.object(Dashboard, '_render')
-    def test_resolve__with_info(self, mock_render):
-        record_old = dict(_record_info, count=1, date=_then_date_encoded)
-        read = {'records': {_then_day_encoded: [record_old]}}
-        dashboard = self.create_dashboard(read)
-        actual = dashboard._resolve('file', date=_now)
-        expected = Response()
-        self.assertEqual(actual, expected)
-
-        mock_render.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-
-    @mock.patch.object(Dashboard, '_render')
-    def test_resolve__with_warning(self, mock_render):
-        record_old = dict(_record_warning, count=1, date=_then_date_encoded)
-        read = {'records': {_then_day_encoded: [record_old]}}
-        dashboard = self.create_dashboard(read)
-        actual = dashboard._resolve('file', date=_now)
-        expected = Response()
-        self.assertEqual(actual, expected)
-
-        record_new = dict(
-            _record_warning,
-            count=1,
-            date=_then_date_encoded,
-            levelname='INFO')
-        write = {'records': {_then_day_encoded: [record_new]}}
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(_data, 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertEqual(dashboard.date, _soon)
 
     @mock.patch.object(Dashboard, '_render')
     def test_retire__with_cut(self, mock_render):

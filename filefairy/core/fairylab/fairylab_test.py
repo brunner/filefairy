@@ -226,7 +226,7 @@ class FairylabTest(Test):
         mock_isdir.assert_has_calls(calls)
         mock_listdir.assert_called_once_with(DIR_PLUGINS)
         mock_try.assert_has_calls([
-            mock.call('dashboard', '_resolve', 'dashboard', date=NOW),
+            mock.call('dashboard', 'resolve', 'dashboard', date=NOW),
             mock.call('browsable', '_setup', date=NOW),
             mock.call('dashboard', '_setup', date=NOW),
             mock.call('internal', '_setup', date=NOW)
@@ -826,7 +826,7 @@ class FairylabTest(Test):
         mock_getattr.assert_called_once_with(module, 'Internal')
         mock_import.assert_called_once_with('plugin.internal.internal')
         calls = [
-            mock.call('dashboard', '_resolve', 'internal', **dict(kwargs)),
+            mock.call('dashboard', 'resolve', 'internal', **dict(kwargs)),
             mock.call('dashboard', '_setup', **dict(kwargs)),
             mock.call('internal', '_setup', **dict(kwargs)),
         ]
@@ -862,7 +862,7 @@ class FairylabTest(Test):
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'Internal')
         mock_import.assert_called_once_with('plugin.internal.internal')
-        mock_try.assert_called_once_with('dashboard', '_resolve', 'internal',
+        mock_try.assert_called_once_with('dashboard', 'resolve', 'internal',
                                          **dict(kwargs))
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

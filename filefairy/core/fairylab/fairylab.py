@@ -65,7 +65,7 @@ class Fairylab(Messageable, Renderable):
         date = kwargs['date']
         self.day = date.day
 
-        self._try('dashboard', '_resolve', 'dashboard', **kwargs)
+        self._try('dashboard', 'resolve', 'dashboard', **kwargs)
 
         d = os.path.join(_root, 'plugin')
         ps = filter(lambda x: self._is_plugin_dir(d, x), os.listdir(d))
@@ -257,7 +257,7 @@ class Fairylab(Messageable, Renderable):
 
         try:
             module = importlib.import_module(package)
-            self._try('dashboard', '_resolve', name, **kwargs)
+            self._try('dashboard', 'resolve', name, **kwargs)
 
             if path == 'plugin':
                 return self._install(name, module, clazz, **kwargs)
