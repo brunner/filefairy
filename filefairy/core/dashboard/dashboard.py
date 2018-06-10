@@ -177,9 +177,12 @@ class Dashboard(Messageable, Registrable, Renderable):
             body = []
             records = sorted(self.data['records'][day], key=self._sort)
             for r in records:
-                if r['levelname'] == 'ERROR':
+                levelname = r['levelname']
+                if levelname == 'WARNING' and r['count'] < 5:
+                    continue
+                if levelname == 'ERROR':
                     ret['exceptions'].insert(0, self._card(date, r))
-                if r['levelname'] == 'WARNING' and r['count'] >= 5:
+                if levelname == 'WARNING':
                     ret['warnings'].insert(0, self._card(date, r))
                 body.insert(0, self._row(r))
 

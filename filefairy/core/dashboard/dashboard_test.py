@@ -107,10 +107,6 @@ _logs = [
         head=['Friday, October 25th, 1985', ''],
         body=[[
             '<div class="d-inline-block pr-1">' +
-            anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
-            '<div class="d-inline-block">baz (x2).</div>', '12:55'
-        ], [
-            '<div class="d-inline-block pr-1">' +
             anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '</div>' +
             '<div class="d-inline-block">bar (x5).</div>', '12:55'
         ], [
