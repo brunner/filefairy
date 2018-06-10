@@ -62,12 +62,13 @@ class Recap(Messageable, Registrable, Renderable, Runnable):
             self._render(**kwargs)
             logger_.log(logging.INFO, 'News updated.')
             obj = self._chat('fairylab', 'News updated.')
+            channel = obj.get('channel')
             ts = obj.get('ts')
-            if ts:
+            if channel and ts:
                 if self._money():
-                    reactions_add('moneybag', 'fairylab', ts)
+                    reactions_add('moneybag', channel, ts)
                 if self._death():
-                    reactions_add('skull', 'fairylab', ts)
+                    reactions_add('skull', channel, ts)
 
             response.notify = [Notify.BASE]
             response.shadow = self._shadow_internal(**kwargs)

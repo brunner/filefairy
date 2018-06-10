@@ -66,6 +66,7 @@ STANDINGS_COLS = [
     'class="position-relative"', ' class="text-center w-25"',
     ' class="text-center w-25"'
 ]
+CHANNEL = 'C1234'
 TS = '123456789'
 
 
@@ -97,7 +98,7 @@ class ExportsTest(Test):
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
         self.mock_urlopen.return_value = bytes(URLOPEN, 'utf-8')
-        self.mock_chat.return_value = {'ok': True, 'ts': TS}
+        self.mock_chat.return_value = {'ok': True, 'channel': CHANNEL, 'ts': TS}
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
@@ -725,7 +726,7 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_called_once_with('100', 'fairylab', TS)
+        self.mock_reactions.assert_called_once_with('100', CHANNEL, TS)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
@@ -747,7 +748,7 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_called_once_with('palm_tree', 'fairylab',
+        self.mock_reactions.assert_called_once_with('palm_tree', CHANNEL,
                                                     TS)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)

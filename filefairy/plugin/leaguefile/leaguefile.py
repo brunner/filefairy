@@ -88,13 +88,14 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                         data['up'] = data['up'][:10]
                     obj = self._chat('fairylab', 'File is up.')
                     logger_.log(logging.INFO, 'File is up.')
+                    channel = obj.get('channel')
                     ts = obj.get('ts')
-                    if ts:
+                    if channel and ts:
                         seconds = self._seconds(date, data['fp']['end'])
                         if seconds < 10800:
-                            reactions_add('zap', 'fairylab', ts)
+                            reactions_add('zap', channel, ts)
                         elif seconds > 25200:
-                            reactions_add('timer_clock', 'fairylab', ts)
+                            reactions_add('timer_clock', channel, ts)
                     response.notify = [Notify.LEAGUEFILE_FINISH]
                 data['fp'] = None
 
@@ -219,8 +220,6 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                 self._time(up['start'], up['end']),
                 self._size(up['size'])
             ])
-        ret['up'] = table(
-            head=['Date', 'Time', 'Size'],
-            body=body)
+        ret['up'] = table(head=['Date', 'Time', 'Size'], body=body)
 
         return ret

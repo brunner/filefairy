@@ -99,6 +99,7 @@ BREADCRUMBS = [{
     'href': '',
     'name': 'Leaguefile'
 }]
+CHANNEL = 'C1234'
 TS = '123456789'
 
 
@@ -126,7 +127,11 @@ class LeaguefileTest(Test):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-        self.mock_chat.return_value = {'ok': True, 'ts': TS}
+        self.mock_chat.return_value = {
+            'ok': True,
+            'channel': CHANNEL,
+            'ts': TS
+        }
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
@@ -247,7 +252,7 @@ class LeaguefileTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
         self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
-        self.mock_reactions.assert_called_once_with('zap', 'fairylab', TS)
+        self.mock_reactions.assert_called_once_with('zap', CHANNEL, TS)
 
     @mock.patch.object(Leaguefile, '_render')
     @mock.patch.object(Leaguefile, '_check')
@@ -267,7 +272,7 @@ class LeaguefileTest(Test):
         self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
         self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
         timer = 'timer_clock'
-        self.mock_reactions.assert_called_once_with(timer, 'fairylab', TS)
+        self.mock_reactions.assert_called_once_with(timer, CHANNEL, TS)
 
     @mock.patch.object(Leaguefile, '_render')
     @mock.patch.object(Leaguefile, '_check')

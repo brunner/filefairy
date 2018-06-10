@@ -178,12 +178,13 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
         obj = self._chat('fairylab', 'Tracker locked.')
 
         percent = self._percent()
+        channel = obj.get('channel')
         ts = obj.get('ts')
-        if ts:
+        if channel and ts:
             if percent == 100:
-                reactions_add('100', 'fairylab', ts)
+                reactions_add('100', channel, ts)
             elif percent < 50:
-                reactions_add('palm_tree', 'fairylab', ts)
+                reactions_add('palm_tree', channel, ts)
 
         for teamid, status in self.exports:
             s = status.lower()[0]

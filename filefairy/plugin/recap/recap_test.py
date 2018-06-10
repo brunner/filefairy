@@ -271,6 +271,7 @@ BOX_SCORE3 = {
 RECORDS1 = {'31': '76-86', '45': '97-65'}
 RECORDS2 = {'32': '77-85', '44': '70-92'}
 RECORDS3 = {'31': '75-86', '45': '97-64'}
+CHANNEL = 'C1234'
 TS = '123456789'
 
 
@@ -297,7 +298,7 @@ class RecapTest(Test):
         mo = mock.mock_open(read_data=dumps(read))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-        self.mock_chat.return_value = {'ok': True, 'ts': TS}
+        self.mock_chat.return_value = {'ok': True, 'channel': CHANNEL, 'ts': TS}
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
@@ -359,7 +360,7 @@ class RecapTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
         self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
-        self.mock_reactions.assert_called_once_with('skull', 'fairylab', TS)
+        self.mock_reactions.assert_called_once_with('skull', CHANNEL, TS)
         self.assertEqual(plugin.tables, TABLE_NOW_MAP)
 
     @mock.patch.object(Recap, '_tables')
@@ -399,7 +400,7 @@ class RecapTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
         self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
-        self.mock_reactions.assert_called_once_with('moneybag', 'fairylab', TS)
+        self.mock_reactions.assert_called_once_with('moneybag', CHANNEL, TS)
         self.assertEqual(plugin.tables, TABLE_NOW_MAP)
 
     @mock.patch.object(Recap, '_tables')
