@@ -425,6 +425,28 @@ class ExportsTest(Test):
         self.mock_reactions.assert_not_called()
         self.assertEqual(plugin.exports, EXPORTS_LOCK)
 
+    @mock.patch.object(Exports, '_render')
+    @mock.patch.object(Exports, '_lock')
+    @mock.patch.object(Exports, '_exports')
+    def test_run__with_locked(self, mock_exports, mock_lock, mock_render):
+        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
+        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        plugin = self.create_plugin(read, exports=EXPORTS_NEW)
+
+        response = plugin._run_internal(date=NOW)
+        self.assertEqual(response, Response())
+
+        mock_exports.assert_not_called()
+        mock_lock.assert_not_called()
+        mock_render.assert_called_once_with(date=NOW)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_reactions.assert_not_called()
+        self.assertEqual(plugin.exports, EXPORTS_NEW)
+
     @mock.patch.object(Exports, '_home')
     def test_render(self, mock_home):
         mock_home.return_value = HOME

@@ -78,6 +78,7 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
 
         data = self.data
         if data['locked']:
+            self._render(**kwargs)
             return response
 
         text = urlopen(_url).decode('utf-8')
