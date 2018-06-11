@@ -15,8 +15,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.git.git import Git  # noqa
 
-NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
-THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
+_now = datetime.datetime(1985, 10, 27, 0, 0, 0)
+_then = datetime.datetime(1985, 10, 26, 0, 2, 30)
 
 
 class GitTest(unittest.TestCase):
@@ -34,7 +34,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.reset_mock()
 
     def create_plugin(self, day=0):
-        plugin = Git(date=NOW)
+        plugin = Git(date=_now)
 
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
@@ -73,7 +73,7 @@ class GitTest(unittest.TestCase):
 
     def test_run(self):
         plugin = self.create_plugin()
-        response = plugin._run_internal(date=THEN)
+        response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response())
 
         self.mock_log.assert_not_called()
@@ -81,7 +81,7 @@ class GitTest(unittest.TestCase):
 
     def test_setup(self):
         plugin = self.create_plugin()
-        response = plugin._setup_internal(date=THEN)
+        response = plugin._setup_internal(date=_then)
         self.assertEqual(response, Response())
 
         self.mock_log.assert_not_called()
@@ -102,7 +102,6 @@ class GitTest(unittest.TestCase):
         plugin = self.create_plugin()
         plugin._call(['cmd'], **{})
 
-        msg = 'Call failed: \'cmd\'.'
         self.mock_check.assert_called_once_with(['cmd'])
         self.mock_log.assert_not_called()
 
@@ -147,11 +146,11 @@ class GitTest(unittest.TestCase):
     @mock.patch.object(Git, 'add')
     def test_automate(self, mock_add, mock_commit, mock_push):
         plugin = self.create_plugin()
-        plugin.automate(date=NOW)
+        plugin.automate(date=_now)
 
-        mock_add.assert_called_once_with(date=NOW)
-        mock_commit.assert_called_once_with(date=NOW)
-        mock_push.assert_called_once_with(date=NOW)
+        mock_add.assert_called_once_with(date=_now)
+        mock_commit.assert_called_once_with(date=_now)
+        mock_push.assert_called_once_with(date=_now)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Automated data push.')
         self.mock_check.assert_not_called()

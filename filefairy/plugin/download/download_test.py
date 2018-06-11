@@ -20,55 +20,15 @@ from core.task.task import Task  # noqa
 from plugin.download.download import Download  # noqa
 from util.json_.json_ import dumps  # noqa
 
-DATA = Download._data()
-BOX_NON_MLB = '<html>\n<head>\n<title>ABL Box Scores, Adelaide Bite at ' + \
-              'Melbourne Aces, 08/16/2022</title>'
-BOX_MLB_NOW = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners at ' + \
-              'Los Angeles Dodgers, 08/16/2022</title>'
-BOX_MLB_THEN = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners ' + \
-               'at Los Angeles Dodgers, 08/15/2022</title>'
-LOG = '[%T] Top of the 1st...'
-INJ_NOW = '20220817\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
-          '</a>: <a href=\"../players/player_1.html\">Zack Weiss</a> ' + \
-          'diagnosed with a strained hamstring, will miss 4 weeks.\n' + \
-          '20220817\t<a href=\"../teams/team_39.html\">Colorado ' + \
-          'Rockies</a>: RF <a href=\"../players/player_24198.html\">' + \
-          'Eddie Hoffman</a> was injured being hit by a pitch.  The ' + \
-          'Diagnosis: bruised knee. This is a day-to-day injury ' + \
-          'expected to last 5 days.'
-INJ_THEN = '20220814\t<a href=\"../teams/team_44.html\">Los Angeles ' + \
-           'Angels</a>: CF <a href=\"../players/player_0.html\">Alex ' + \
-           'Aristy</a> was injured while running the bases.  The ' + \
-           'Diagnosis: knee inflammation. He\'s expected to miss about ' + \
-           '3 weeks.'
-NEWS_NOW = '20220816\t<a href=\"../teams/team_42.html\">Houston ' + \
-           'Astros</a>: <a href=\"../players/player_39044.html\">Mark ' + \
-           'Appel</a> pitches a 2-hit shutout against the <a ' + \
-           'href=\"../teams/team_44.html\">Los Angeles Angels</a> ' + \
-           'with 8 strikeouts and 0 BB allowed!\n20220817\t<a ' + \
-           'href=\"../teams/team_39.html\">Colorado Rockies</a>: <a ' + \
-           'href=\"../players/player_30965.html\">Spencer Taylor</a> ' + \
-           'got suspended 3 games after ejection following a brawl.'
-NEWS_THEN = '20220815\t<a href=\"../teams/team_57.html\">Tampa Bay Rays' + \
-            '</a>: <a href=\"../players/player_27.html\">A.J. Reed</a> ' + \
-            'got suspended 4 games after ejection following arguing a ' + \
-            'strike call.'
-TRANS_NOW = '20220816\t<a href=\"../teams/team_33.html\">Baltimore ' + \
-            'Orioles</a>: Placed C <a href=\"../players/player_1439.' + \
-            'html\">Evan Skoug</a> on the active roster.\n\n20220816\t' + \
-            '<a href=\"../teams/team_33.html\">Baltimore Orioles</a>: ' + \
-            'Activated C <a href=\"../players/player_1439.html\">Evan ' + \
-            'Skoug</a> from the disabled list.\n'
-TRANS_THEN = '20220815\t<a href=\"../teams/team_33.html\">Baltimore ' + \
-             'Orioles</a>: Placed 2B <a href=\"../players/player_292.' + \
-             'html\">Austin Slater</a> on the 7-day disabled list, ' + \
-             'retroactive to 08/12/2022.\n'
-THEN = datetime.datetime(2022, 8, 16)
-THEN_ENCODED = '2022-08-16T00:00:00'
-NOW = datetime.datetime(2022, 8, 17)
-NOW_ENCODED = '2022-08-17T00:00:00'
-YEAR = datetime.datetime(2023, 1, 1)
-YEAR_ENCODED = '2023-01-01T00:00:00'
+_now = datetime.datetime(2022, 8, 17)
+_now_encoded = '2022-08-17T00:00:00'
+_then = datetime.datetime(2022, 8, 16)
+_then_encoded = '2022-08-16T00:00:00'
+_year_encoded = '2023-01-01T00:00:00'
+
+
+def _data(downloaded=False, now=_now_encoded, then=_then_encoded, year=False):
+    return {'downloaded': downloaded, 'now': now, 'then': then, 'year': year}
 
 
 class DownloadTest(unittest.TestCase):
@@ -94,9 +54,9 @@ class DownloadTest(unittest.TestCase):
 
     def create_plugin(self, data):
         self.init_mocks(data)
-        plugin = Download(date=NOW)
+        plugin = Download(date=_now)
 
-        self.mock_open.assert_called_once_with(DATA, 'r')
+        self.mock_open.assert_called_once_with(Download._data(), 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
 
@@ -109,13 +69,7 @@ class DownloadTest(unittest.TestCase):
     def test_notify__with_file(self, mock_download):
         mock_task = mock.MagicMock(spec=Task)
         mock_download.return_value = Response(task=[mock_task])
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._notify_internal(notify=Notify.LEAGUEFILE_FINISH)
         self.assertEqual(response,
                          Response(notify=[Notify.BASE], task=[mock_task]))
@@ -127,13 +81,7 @@ class DownloadTest(unittest.TestCase):
 
     @mock.patch.object(Download, 'download')
     def test_notify__with_other(self, mock_download):
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
@@ -143,13 +91,7 @@ class DownloadTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_on_message(self):
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal()
         self.assertEqual(response, Response())
 
@@ -158,14 +100,8 @@ class DownloadTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_run__with_downloaded(self):
-        read = {
-            'downloaded': True,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
-        response = plugin._run_internal(date=THEN)
+        plugin = self.create_plugin(_data(downloaded=True))
+        response = plugin._run_internal(date=_then)
         self.assertEqual(response,
                          Response(
                              notify=[Notify.DOWNLOAD_FINISH],
@@ -173,48 +109,36 @@ class DownloadTest(unittest.TestCase):
                                  Shadow(
                                      destination='statsplus',
                                      key='download.now',
-                                     data=NOW_ENCODED)
+                                     data=_now_encoded)
                              ]))
 
         write = {
             'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
+            'now': _now_encoded,
+            'then': _then_encoded,
             'year': False
         }
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Download._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_not_called()
 
     def test_run__with_year(self):
-        read = {
-            'downloaded': False,
-            'now': YEAR_ENCODED,
-            'then': THEN_ENCODED,
-            'year': True
-        }
-        plugin = self.create_plugin(read)
-        response = plugin._run_internal(date=THEN)
+        plugin = self.create_plugin(_data(now=_year_encoded, year=True))
+        response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response(notify=[Notify.DOWNLOAD_YEAR]))
 
         write = {
             'downloaded': False,
-            'now': YEAR_ENCODED,
-            'then': THEN_ENCODED,
+            'now': _year_encoded,
+            'then': _then_encoded,
             'year': False
         }
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Download._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_not_called()
 
     def test_setup(self):
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._setup_internal()
         self.assertEqual(response, Response())
 
@@ -223,17 +147,11 @@ class DownloadTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_shadow(self):
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         value = plugin._shadow_internal()
         self.assertEqual(value, [
             Shadow(
-                destination='statsplus', key='download.now', data=NOW_ENCODED)
+                destination='statsplus', key='download.now', data=_now_encoded)
         ])
 
         self.mock_open.assert_not_called()
@@ -244,13 +162,7 @@ class DownloadTest(unittest.TestCase):
     def test_download__with_ok_false(self, mock_ping):
         mock_ping.return_value = {'ok': False, 'output': 'ret'}
 
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin.download()
         self.assertEqual(response, Response())
 
@@ -263,13 +175,7 @@ class DownloadTest(unittest.TestCase):
     def test_download__with_ok_true(self, mock_ping):
         mock_ping.return_value = {'ok': True}
 
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin.download()
         self.assertEqual(
             response,
@@ -286,16 +192,11 @@ class DownloadTest(unittest.TestCase):
     def test_download_internal__with_new_year(self, mock_games, mock_file,
                                               mock_leagues):
         mock_file.return_value = {'ok': True}
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+
+        plugin = self.create_plugin(_data(now=_then_encoded))
 
         def fake_games(*args, **kwargs):
-            plugin.data['now'] = YEAR_ENCODED
+            plugin.data['now'] = _year_encoded
 
         mock_games.side_effect = fake_games
 
@@ -310,8 +211,8 @@ class DownloadTest(unittest.TestCase):
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
         self.assertTrue(plugin.data['downloaded'])
-        self.assertEqual(plugin.data['now'], YEAR_ENCODED)
-        self.assertEqual(plugin.data['then'], THEN_ENCODED)
+        self.assertEqual(plugin.data['now'], _year_encoded)
+        self.assertEqual(plugin.data['then'], _then_encoded)
         self.assertTrue(plugin.data['year'])
 
     @mock.patch.object(Download, '_leagues')
@@ -321,16 +222,10 @@ class DownloadTest(unittest.TestCase):
                                                mock_leagues):
         mock_file.return_value = {'ok': True}
 
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data(now=_then_encoded))
 
         def fake_games(*args, **kwargs):
-            plugin.data['now'] = NOW_ENCODED
+            plugin.data['now'] = _now_encoded
 
         mock_games.side_effect = fake_games
 
@@ -345,8 +240,8 @@ class DownloadTest(unittest.TestCase):
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
         self.assertTrue(plugin.data['downloaded'])
-        self.assertEqual(plugin.data['now'], NOW_ENCODED)
-        self.assertEqual(plugin.data['then'], THEN_ENCODED)
+        self.assertEqual(plugin.data['now'], _now_encoded)
+        self.assertEqual(plugin.data['then'], _then_encoded)
         self.assertFalse(plugin.data['year'])
 
     @mock.patch('plugin.download.download.recreate')
@@ -357,13 +252,7 @@ class DownloadTest(unittest.TestCase):
         mock_isfile.return_value = True
         mock_listdir.return_value = ['game_box_123.html', 'game_box_456.html']
 
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         plugin._games()
 
         box_scores = os.path.join(_root, 'resource/extract/box_scores')
@@ -402,9 +291,12 @@ class DownloadTest(unittest.TestCase):
 
     @mock.patch('plugin.download.download.open', create=True)
     def test_games_internal__mlb_now(self, mock_open):
-        bmo = mock.mock_open(read_data=BOX_MLB_NOW)
+        box = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners at ' + \
+              'Los Angeles Dodgers, 08/16/2022</title>'
+        bmo = mock.mock_open(read_data=box)
         mock_bhandle = bmo()
-        lmo = mock.mock_open(read_data=LOG)
+        log = '[%T] Top of the 1st...'
+        lmo = mock.mock_open(read_data=log)
         mock_lhandle = lmo()
         mock_open.side_effect = [
             bmo.return_value, lmo.return_value, bmo.return_value,
@@ -415,13 +307,7 @@ class DownloadTest(unittest.TestCase):
         bfname = 'resource/download/news/html/box_scores/game_box_12345.html'
         ldname = 'resource/extract/game_logs/log_12345.txt'
         lfname = 'resource/download/news/txt/leagues/log_12345.txt'
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data(now=_then_encoded))
         plugin._games_internal(bdname, bfname, ldname, lfname)
 
         calls = [
@@ -431,18 +317,21 @@ class DownloadTest(unittest.TestCase):
             mock.call(ldname, 'w')
         ]
         mock_open.assert_has_calls(calls)
-        mock_bhandle.write.assert_called_once_with(BOX_MLB_NOW)
-        mock_lhandle.write.assert_called_once_with(LOG)
+        mock_bhandle.write.assert_called_once_with(box)
+        mock_lhandle.write.assert_called_once_with(log)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], NOW_ENCODED)
+        self.assertEqual(plugin.data['now'], _now_encoded)
         self.mock_log.assert_not_called()
 
     @mock.patch('plugin.download.download.open', create=True)
     def test_games_internal__mlb_then(self, mock_open):
-        bmo = mock.mock_open(read_data=BOX_MLB_THEN)
+        box = '<html>\n<head>\n<title>MLB Box Scores, Seattle Mariners at ' + \
+              'Los Angeles Dodgers, 08/15/2022</title>'
+        bmo = mock.mock_open(read_data=box)
         mock_bhandle = bmo()
-        lmo = mock.mock_open(read_data=LOG)
+        log = '[%T] Top of the 1st...'
+        lmo = mock.mock_open(read_data=log)
         mock_lhandle = lmo()
         mock_open.side_effect = [bmo.return_value, lmo.return_value]
 
@@ -450,13 +339,7 @@ class DownloadTest(unittest.TestCase):
         bfname = 'resource/download/news/html/box_scores/game_box_12345.html'
         ldname = 'resource/extract/game_logs/log_12345.txt'
         lfname = 'resource/download/news/txt/leagues/log_12345.txt'
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data(now=_then_encoded))
         plugin._games_internal(bdname, bfname, ldname, lfname)
 
         calls = [
@@ -468,14 +351,17 @@ class DownloadTest(unittest.TestCase):
         mock_lhandle.write.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], THEN_ENCODED)
+        self.assertEqual(plugin.data['now'], _then_encoded)
         self.mock_log.assert_not_called()
 
     @mock.patch('plugin.download.download.open', create=True)
     def test_games_internal__non_mlb(self, mock_open):
-        bmo = mock.mock_open(read_data=BOX_NON_MLB)
+        box = '<html>\n<head>\n<title>ABL Box Scores, Adelaide Bite at Mel' + \
+              'bourne Aces, 08/16/2022</title>'
+        bmo = mock.mock_open(read_data=box)
         mock_bhandle = bmo()
-        lmo = mock.mock_open(read_data=LOG)
+        log = '[%T] Top of the 1st...'
+        lmo = mock.mock_open(read_data=log)
         mock_lhandle = lmo()
         mock_open.side_effect = [bmo.return_value, lmo.return_value]
 
@@ -483,13 +369,7 @@ class DownloadTest(unittest.TestCase):
         bfname = 'resource/download/news/html/box_scores/game_box_12345.html'
         ldname = 'resource/extract/game_logs/log_12345.txt'
         lfname = 'resource/download/news/txt/leagues/log_12345.txt'
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data(now=_then_encoded))
         plugin._games_internal(bdname, bfname, ldname, lfname)
 
         calls = [
@@ -501,7 +381,7 @@ class DownloadTest(unittest.TestCase):
         mock_lhandle.write.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], THEN_ENCODED)
+        self.assertEqual(plugin.data['now'], _then_encoded)
         self.mock_log.assert_not_called()
 
     @mock.patch.object(Download, '_leagues_internal')
@@ -509,13 +389,7 @@ class DownloadTest(unittest.TestCase):
     def test_leagues(self, mock_isfile, mock_leagues):
         mock_isfile.return_value = True
 
-        read = {
-            'downloaded': False,
-            'now': NOW_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         plugin._leagues()
 
         leagues = 'resource/download/news/txt/leagues'
@@ -548,7 +422,21 @@ class DownloadTest(unittest.TestCase):
 
     @mock.patch('plugin.download.download.open', create=True)
     def test_leagues_internal__injuries(self, mock_open):
-        data_a = '\n'.join([INJ_THEN, INJ_NOW])
+        injuries_new = '20220817\t<a href=\"../teams/team_57.html\">Tampa ' + \
+                       'Bay Rays</a>: <a href=\"../players/player_1.html\"' + \
+                       '>Zack Weiss</a> diagnosed with a strained hamstrin' + \
+                       'g, will miss 4 weeks.\n20220817\t<a href=\"../team' + \
+                       's/team_39.html\">Colorado Rockies</a>: RF <a href=' + \
+                       '\"../players/player_24198.html\">Eddie Hoffman</a>' + \
+                       ' was injured being hit by a pitch.  The Diagnosis:' + \
+                       ' bruised knee. This is a day-to-day injury expecte' + \
+                       'd to last 5 days.'
+        injuries_old = '20220814\t<a href=\"../teams/team_44.html\">Los An' + \
+                       'geles Angels</a>: CF <a href=\"../players/player_0' + \
+                       '.html\">Alex Aristy</a> was injured while running ' + \
+                       'the bases.  The Diagnosis: knee inflammation. He\'' + \
+                       's expected to miss about 3 weeks.'
+        data_a = '\n'.join([injuries_old, injuries_new])
         mo_a = mock.mock_open(read_data=data_a)
         mock_handle_a = mo_a()
         mo_b = mock.mock_open()
@@ -557,13 +445,7 @@ class DownloadTest(unittest.TestCase):
 
         dname = 'resource/extract/injuries.txt'
         fname = 'resource/download/news/txt/leagues/league_100_injuries.txt'
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data(now=_then_encoded))
         plugin._leagues_internal('injuries', dname, fname)
 
         calls = [
@@ -572,16 +454,28 @@ class DownloadTest(unittest.TestCase):
         ]
         mock_open.assert_has_calls(calls)
         mock_handle_a.write.assert_not_called()
-        calls = [mock.call(s + '\n') for s in INJ_NOW.split('\n') if s]
+        calls = [mock.call(s + '\n') for s in injuries_new.split('\n') if s]
         mock_handle_b.write.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], NOW_ENCODED)
+        self.assertEqual(plugin.data['now'], _now_encoded)
         self.mock_log.assert_not_called()
 
     @mock.patch('plugin.download.download.open', create=True)
     def test_leagues_internal__news(self, mock_open):
-        data_a = '\n'.join([NEWS_THEN, NEWS_NOW])
+        news_new = '20220816\t<a href=\"../teams/team_42.html\">Houston As' + \
+                   'tros</a>: <a href=\"../players/player_39044.html\">Mar' + \
+                   'k Appel</a> pitches a 2-hit shutout against the <a hre' + \
+                   'f=\"../teams/team_44.html\">Los Angeles Angels</a> wit' + \
+                   'h 8 strikeouts and 0 BB allowed!\n20220817\t<a href=\"' + \
+                   '../teams/team_39.html\">Colorado Rockies</a>: <a href=' + \
+                   '\"../players/player_30965.html\">Spencer Taylor</a> go' + \
+                   't suspended 3 games after ejection following a brawl.'
+        news_old = '20220815\t<a href=\"../teams/team_57.html\">Tampa Bay ' + \
+                   'Rays</a>: <a href=\"../players/player_27.html\">A.J. R' + \
+                   'eed</a> got suspended 4 games after ejection following' + \
+                   ' arguing a strike call.'
+        data_a = '\n'.join([news_old, news_new])
         mo_a = mock.mock_open(read_data=data_a)
         mock_handle_a = mo_a()
         mo_b = mock.mock_open()
@@ -590,13 +484,7 @@ class DownloadTest(unittest.TestCase):
 
         dname = 'resource/extract/news.txt'
         fname = 'resource/download/news/txt/leagues/league_100_news.txt'
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data(now=_then_encoded))
         plugin._leagues_internal('news', dname, fname)
 
         calls = [
@@ -605,16 +493,28 @@ class DownloadTest(unittest.TestCase):
         ]
         mock_open.assert_has_calls(calls)
         mock_handle_a.write.assert_not_called()
-        calls = [mock.call(s + '\n') for s in NEWS_NOW.split('\n') if s]
+        calls = [mock.call(s + '\n') for s in news_new.split('\n') if s]
         mock_handle_b.write.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], NOW_ENCODED)
+        self.assertEqual(plugin.data['now'], _now_encoded)
         self.mock_log.assert_not_called()
 
     @mock.patch('plugin.download.download.open', create=True)
     def test_leagues_internal__transactions(self, mock_open):
-        data_a = '\n'.join([TRANS_THEN, TRANS_NOW])
+        transactions_new = '20220816\t<a href=\"../teams/team_33.html\">Ba' + \
+                           'ltimore Orioles</a>: Placed C <a href=\"../pla' + \
+                           'yers/player_1439.html\">Evan Skoug</a> on the ' + \
+                           'active roster.\n\n20220816\t<a href=\"../teams' + \
+                           '/team_33.html\">Baltimore Orioles</a>: Activat' + \
+                           'ed C <a href=\"../players/player_1439.html\">E' + \
+                           'van Skoug</a> from the disabled list.\n'
+        transactions_old = '20220815\t<a href=\"../teams/team_33.html\">Ba' + \
+                           'ltimore Orioles</a>: Placed 2B <a href=\"../pl' + \
+                           'ayers/player_292.html\">Austin Slater</a> on t' + \
+                           'he 7-day disabled list, retroactive to 08/12/2' + \
+                           '022.\n'
+        data_a = '\n'.join([transactions_old, transactions_new])
         mo_a = mock.mock_open(read_data=data_a)
         mock_handle_a = mo_a()
         mo_b = mock.mock_open()
@@ -624,13 +524,7 @@ class DownloadTest(unittest.TestCase):
         dname = 'resource/extract/transactions.txt'
         fname = 'resource/download/transactions/txt/leagues/' + \
                 'league_100_transactions.txt'
-        read = {
-            'downloaded': False,
-            'now': THEN_ENCODED,
-            'then': THEN_ENCODED,
-            'year': False
-        }
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data(now=_then_encoded))
         plugin._leagues_internal('transactions', dname, fname)
 
         calls = [
@@ -639,11 +533,13 @@ class DownloadTest(unittest.TestCase):
         ]
         mock_open.assert_has_calls(calls)
         mock_handle_a.write.assert_not_called()
-        calls = [mock.call(s + '\n') for s in TRANS_NOW.split('\n') if s]
+        calls = [
+            mock.call(s + '\n') for s in transactions_new.split('\n') if s
+        ]
         mock_handle_b.write.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], THEN_ENCODED)
+        self.assertEqual(plugin.data['now'], _then_encoded)
         self.mock_log.assert_not_called()
 
 

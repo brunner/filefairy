@@ -20,15 +20,17 @@ from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
 from util.json_.json_ import dumps  # noqa
 
-COLLECT = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
-COLLECT_ENCODED = 'reply.\nfoo.\nbar.\nbaz.'
-DATA = Snacks._data()
-USERS = ['U1234', 'U5678']
-FPATH = os.path.join(_root, 'resource/corpus', '{}.txt')
-FNAMES = [FPATH.format(u) for u in USERS]
-MEMBERS_THEN = {'U1234': {'latest': '100.123'}, 'U5678': {'latest': '100.456'}}
-MEMBERS_NOW = {'U1234': {'latest': '1000.789'}, 'U5678': {'latest': '100.456'}}
-MEMBERS_FILEFAIRY = {
+_collect = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
+_members_new = {
+    'U1234': {
+        'latest': '1000.789'
+    },
+    'U5678': {
+        'latest': '100.456'
+    }
+}
+_members_old = {'U1234': {'latest': '100.123'}, 'U5678': {'latest': '100.456'}}
+_members_bot = {
     'U1234': {
         'latest': '100.123'
     },
@@ -39,8 +41,12 @@ MEMBERS_FILEFAIRY = {
         'latest': '1000.789'
     },
 }
-NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
-THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
+_now = datetime.datetime(1985, 10, 27, 0, 0, 0)
+_then = datetime.datetime(1985, 10, 26, 0, 2, 30)
+
+
+def _data(members=_members_old):
+    return {'members': members}
 
 
 class SnacksTest(unittest.TestCase):
@@ -70,7 +76,7 @@ class SnacksTest(unittest.TestCase):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-        self.mock_collect.return_value = COLLECT
+        self.mock_collect.return_value = _collect
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
@@ -82,10 +88,10 @@ class SnacksTest(unittest.TestCase):
 
     def create_plugin(self, data, cfds=None, names=None):
         self.init_mocks(data)
-        plugin = Snacks(date=NOW)
+        plugin = Snacks(date=_now)
         plugin.loaded = True
 
-        self.mock_open.assert_called_once_with(DATA, 'r')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -103,9 +109,8 @@ class SnacksTest(unittest.TestCase):
         return plugin
 
     def test_notify__with_day(self):
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
-        plugin._setup(date=THEN)
+        plugin = self.create_plugin(_data())
+        plugin._setup(date=_then)
 
         self.reset_mocks()
 
@@ -120,9 +125,8 @@ class SnacksTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     def test_notify__with_other(self):
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
-        plugin._setup(date=THEN)
+        plugin = self.create_plugin(_data())
+        plugin._setup(date=_then)
 
         self.reset_mocks()
 
@@ -146,15 +150,14 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
         mock_random.assert_has_calls(calls)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0',
@@ -170,8 +173,7 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response())
 
@@ -193,14 +195,13 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with(
@@ -218,14 +219,13 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
@@ -242,17 +242,15 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, cfds={'U5678': {}}, names={
-                'U5678': 'user'
-            })
+        cfds = {'U5678': {}}
+        names = {'U5678': 'user'}
+        plugin = self.create_plugin(_data(), cfds=cfds, names=names)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with(
@@ -270,17 +268,15 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, cfds={'U5678': {}}, names={
-                'U5678': 'user'
-            })
+        cfds = {'U5678': {}}
+        names = {'U5678': 'user'}
+        plugin = self.create_plugin(_data(), cfds=cfds, names=names)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
@@ -297,17 +293,15 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, cfds={'U5678': {}}, names={
-                'U5678': 'user'
-            })
+        cfds = {'U5678': {}}
+        names = {'U5678': 'user'}
+        plugin = self.create_plugin(_data(), cfds=cfds, names=names)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with(
@@ -325,17 +319,15 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, cfds={'U5678': {}}, names={
-                'U5678': 'user'
-            })
+        cfds = {'U5678': {}}
+        names = {'U5678': 'user'}
+        plugin = self.create_plugin(_data(), cfds=cfds, names=names)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('<@U1234>', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
@@ -352,17 +344,15 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, cfds={'U5678': {}}, names={
-                'U5678': 'user'
-            })
+        cfds = {'U5678': {}}
+        names = {'U5678': 'user'}
+        plugin = self.create_plugin(_data(), cfds=cfds, names=names)
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
@@ -376,13 +366,12 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        write = _data(members=_members_new)
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'topic')
@@ -401,15 +390,14 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U3ULC7DBP',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_FILEFAIRY}
+        write = _data(members=_members_bot)
         mock_pins.assert_called_once_with('C9YE6NQG0', '1000.789')
         mock_snacks.assert_called_once_with()
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -431,15 +419,14 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'members': MEMBERS_NOW}
+        write = _data(members=_members_new)
         mock_pins.assert_not_called()
         mock_snacks.assert_called_once_with()
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -457,8 +444,7 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response())
 
@@ -476,8 +462,7 @@ class SnacksTest(unittest.TestCase):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response())
 
@@ -495,8 +480,7 @@ class SnacksTest(unittest.TestCase):
             'ts': '105.456',
             'user': 'U1234',
         }
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._on_message_internal(obj=obj)
         self.assertEqual(response, Response())
 
@@ -508,8 +492,7 @@ class SnacksTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     def test_run(self):
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         response = plugin._run_internal()
         self.assertEqual(response, Response())
 
@@ -521,9 +504,8 @@ class SnacksTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     def test_setup(self):
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
-        response = plugin._setup_internal(date=THEN)
+        plugin = self.create_plugin(_data())
+        response = plugin._setup_internal(date=_then)
         self.assertEqual(
             response, Response(task=[Task(target='_load_internal')]))
 
@@ -535,8 +517,7 @@ class SnacksTest(unittest.TestCase):
         self.mock_reactions.assert_not_called()
 
     def test_shadow(self):
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(read)
+        plugin = self.create_plugin(_data())
         value = plugin._shadow_internal()
         self.assertEqual(value, [])
 
@@ -607,18 +588,14 @@ class SnacksTest(unittest.TestCase):
         mock_handle = mo()
         mock_open.side_effect = [mo.return_value]
 
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, names={
-                'U1234': 'foo',
-                'U5678': 'bar'
-            })
+        names = {'U1234': 'foo', 'U5678': 'bar'}
+        plugin = self.create_plugin(_data(), names=names)
         plugin._corpus()
 
         mock_channels.assert_called_once_with()
         mock_open.assert_called_once_with(
             os.path.join(_root, 'resource/corpus', 'U1234.txt'), 'w')
-        mock_handle.write.assert_called_once_with(COLLECT_ENCODED)
+        mock_handle.write.assert_called_once_with('reply.\nfoo.\nbar.\nbaz.')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -634,12 +611,8 @@ class SnacksTest(unittest.TestCase):
     def test_load(self, mock_corpus, mock_load_internal):
         mock_load_internal.return_value = Response()
 
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, names={
-                'U1234': 'foo',
-                'U5678': 'bar'
-            })
+        names = {'U1234': 'foo', 'U5678': 'bar'}
+        plugin = self.create_plugin(_data(), names=names)
         plugin.loaded = False
         response = plugin._load()
         self.assertEqual(response, Response())
@@ -657,14 +630,12 @@ class SnacksTest(unittest.TestCase):
     @mock.patch.object(Snacks, '_names')
     @mock.patch.object(Snacks, '_fnames')
     def test_load_internal(self, mock_fnames, mock_names):
-        mock_fnames.return_value = FNAMES
+        fpath = os.path.join(_root, 'resource/corpus', '{}.txt')
+        fnames = [fpath.format(u) for u in ['U1234', 'U5678']]
+        mock_fnames.return_value = fnames
 
-        read = {'members': MEMBERS_THEN}
-        plugin = self.create_plugin(
-            read, names={
-                'U1234': 'foo',
-                'U5678': 'bar'
-            })
+        names = {'U1234': 'foo', 'U5678': 'bar'}
+        plugin = self.create_plugin(_data(), names=names)
         plugin.loaded = False
         response = plugin._load_internal()
         self.assertEqual(response, Response())
@@ -674,9 +645,9 @@ class SnacksTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         calls = [
-            mock.call(4, *[FNAMES[0]]),
-            mock.call(4, *[FNAMES[1]]),
-            mock.call(4, *FNAMES)
+            mock.call(4, *[fnames[0]]),
+            mock.call(4, *[fnames[1]]),
+            mock.call(4, *fnames)
         ]
         self.mock_cfd.assert_has_calls(calls)
         self.mock_chat.assert_not_called()

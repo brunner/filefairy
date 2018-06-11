@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import copy
 import datetime
 import logging
 import os
@@ -23,51 +22,19 @@ from util.team.team import logo_absolute  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
-DATA = Exports._data()
-ENV = env()
-EXPORTS_100 = [('31', 'New'), ('32', 'New'), ('33', 'New')]
-EXPORTS_LOCK = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
-EXPORTS_OLD = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
-EXPORTS_NEW = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
-EXPORTS_NEW_HOME = [('33', 'New'), ('34', 'New'), ('35', 'New'), ('40', 'New'),
-                    ('42', 'New'), ('44', 'New')]
-EXPORTS_OLD_HOME = [('33', 'New'), ('34', 'New'), ('35', 'New'), ('40', 'New'),
-                    ('42', 'Old'), ('44', 'Old')]
-HOME = {'breadcrumbs': [], 'table': {}}
-INDEX = 'html/fairylab/exports/index.html'
-NOW = datetime.datetime(1985, 10, 26, 0, 2, 30)
-NOW_ENCODED = '1985-10-26T00:02:30'
-FORM_CANONICAL = ''
-FORM_TRUNCATED = 'nonnnonnno'
-FORM_ALIVE = 'ooooooooon'
-FORM_DEAD = 'nooooooooo'
-FORM_EMPTY = ''
-FORM_NEW = 'n'
-FORM_NEW_TRUNCATED = 'onnnonnnon'
-FORM_OLD = 'o'
-FORM_OLD_TRUNCATED = 'onnnonnnoo'
-INFO_LOCK = 'Ongoing sim contains <span class="text-success border px-1">4 new</span>, 2 old, <span class="text-secondary">0 ai</span>.'
-INFO_NEW = 'Upcoming sim contains <span class="text-success border px-1">6 new</span>, 0 old, <span class="text-secondary">0 ai</span>.'
-INFO_OLD = 'Upcoming sim contains <span class="text-success border px-1">4 new</span>, 2 old, <span class="text-secondary">0 ai</span>.'
-TABLE = table(body=[['AL East', 'BAL', 'BOS']])
-THEN = datetime.datetime(1985, 10, 26, 0, 0, 0)
-THEN_ENCODED = '1985-10-26T00:00:00'
-URL = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
-URLOPEN = '<html><head><title>Export Tracker - StatsLab for ...'
-BREADCRUMBS = [{
-    'href': '/fairylab/',
-    'name': 'Home'
-}, {
-    'href': '',
-    'name': 'Exports'
-}]
-TABLE_COLS = [''] + [' class="text-center"'] * 2
-STANDINGS_COLS = [
-    'class="position-relative"', ' class="text-center w-25"',
-    ' class="text-center w-25"'
-]
-CHANNEL = 'C1234'
-TS = '123456789'
+_channel = 'C1234'
+_env = env()
+_now = datetime.datetime(1985, 10, 26, 0, 2, 30)
+_now_encoded = '1985-10-26T00:02:30'
+_then = datetime.datetime(1985, 10, 26, 0, 0, 0)
+_then_encoded = '1985-10-26T00:00:00'
+_ts = '123456789'
+_url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
+_urlopen = '<html><head><title>Export Tracker - StatsLab for ...'
+
+
+def _data(ai=[], date=_then_encoded, form={}, locked=False):
+    return {'ai': ai, 'date': date, 'form': form, 'locked': locked}
 
 
 class ExportsTest(Test):
@@ -97,8 +64,12 @@ class ExportsTest(Test):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-        self.mock_urlopen.return_value = bytes(URLOPEN, 'utf-8')
-        self.mock_chat.return_value = {'ok': True, 'channel': CHANNEL, 'ts': TS}
+        self.mock_urlopen.return_value = bytes(_urlopen, 'utf-8')
+        self.mock_chat.return_value = {
+            'ok': True,
+            'channel': _channel,
+            'ts': _ts
+        }
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
@@ -110,9 +81,9 @@ class ExportsTest(Test):
 
     def create_plugin(self, data, exports=None):
         self.init_mocks(data)
-        plugin = Exports(date=NOW, e=ENV)
+        plugin = Exports(date=_now, e=_env)
 
-        self.mock_open.assert_called_once_with(DATA, 'r')
+        self.mock_open.assert_called_once_with(Exports._data(), 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
@@ -132,10 +103,9 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_lock')
     def test_notify__with_unlocked_other(self, mock_lock, mock_render,
                                          mock_unlock):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read)
-        response = plugin._notify_internal(notify=Notify.OTHER, date=NOW)
+        form = {k: '' for k in ['31', '32', '33']}
+        plugin = self.create_plugin(_data(form=form))
+        response = plugin._notify_internal(notify=Notify.OTHER, date=_now)
         self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
@@ -153,11 +123,10 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_lock')
     def test_notify__with_unlocked_sim(self, mock_lock, mock_render,
                                        mock_unlock):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read)
+        form = {k: '' for k in ['31', '32', '33']}
+        plugin = self.create_plugin(_data(form=form))
 
-        form = {k: copy.deepcopy(FORM_NEW) for k in ['31', '32', '33']}
+        form = {k: 'n' for k in ['31', '32', '33']}
 
         def fake_lock(*args, **kwargs):
             plugin.data['form'] = form
@@ -166,15 +135,15 @@ class ExportsTest(Test):
         mock_lock.side_effect = fake_lock
 
         response = plugin._notify_internal(
-            notify=Notify.STATSPLUS_SIM, date=NOW)
+            notify=Notify.STATSPLUS_SIM, date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
+        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': True}
         mock_lock.assert_called_once_with()
         mock_render.assert_called_once_with(
-            notify=Notify.STATSPLUS_SIM, date=NOW)
+            notify=Notify.STATSPLUS_SIM, date=_now)
         mock_unlock.assert_not_called()
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Exports._data(), 'w')
         self.mock_handle.write.assert_called_with(dumps(write) + '\n')
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -186,11 +155,10 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_lock')
     def test_notify__with_unlocked_file(self, mock_lock, mock_render,
                                         mock_unlock):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read)
+        form = {k: '' for k in ['31', '32', '33']}
+        plugin = self.create_plugin(_data(form=form))
         response = plugin._notify_internal(
-            notify=Notify.LEAGUEFILE_FINISH, date=NOW)
+            notify=Notify.LEAGUEFILE_FINISH, date=_now)
         self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
@@ -208,10 +176,10 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_lock')
     def test_notify__with_locked_other(self, mock_lock, mock_render,
                                        mock_unlock):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        form = {k: '' for k in ['31', '32', '33']}
+        read = _data(form=form, locked=True)
         plugin = self.create_plugin(read)
-        response = plugin._notify_internal(notify=Notify.OTHER, date=NOW)
+        response = plugin._notify_internal(notify=Notify.OTHER, date=_now)
         self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
@@ -229,11 +197,11 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_lock')
     def test_notify__with_locked_sim(self, mock_lock, mock_render,
                                      mock_unlock):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        form = {k: '' for k in ['31', '32', '33']}
+        read = _data(form=form, locked=True)
         plugin = self.create_plugin(read)
         response = plugin._notify_internal(
-            notify=Notify.STATSPLUS_SIM, date=NOW)
+            notify=Notify.STATSPLUS_SIM, date=_now)
         self.assertEqual(response, Response())
 
         mock_lock.assert_not_called()
@@ -251,8 +219,8 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_lock')
     def test_notify__with_locked_file(self, mock_lock, mock_render,
                                       mock_unlock):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
+        form = {k: '' for k in ['31', '32', '33']}
+        read = _data(form=form, locked=True)
         plugin = self.create_plugin(read)
 
         def fake_unlock(*args, **kwargs):
@@ -261,15 +229,15 @@ class ExportsTest(Test):
         mock_unlock.side_effect = fake_unlock
 
         response = plugin._notify_internal(
-            notify=Notify.LEAGUEFILE_FINISH, date=NOW)
+            notify=Notify.LEAGUEFILE_FINISH, date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
+        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': False}
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(
-            notify=Notify.LEAGUEFILE_FINISH, date=NOW)
+            notify=Notify.LEAGUEFILE_FINISH, date=_now)
         mock_unlock.assert_called_once_with()
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        self.mock_open.assert_called_once_with(Exports._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -277,9 +245,8 @@ class ExportsTest(Test):
         self.mock_reactions.assert_not_called()
 
     def test_on_message(self):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read)
+        form = {k: '' for k in ['31', '32', '33']}
+        plugin = self.create_plugin(_data(form=form))
         response = plugin._on_message_internal()
         self.assertEqual(response, Response())
 
@@ -294,82 +261,80 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_lock')
     @mock.patch.object(Exports, '_exports')
     def test_run__with_exports_new(self, mock_exports, mock_lock, mock_render):
-        mock_exports.return_value = EXPORTS_NEW
+        new = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
+        mock_exports.return_value = new
 
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        response = plugin._run_internal(date=NOW)
+        form = {k: '' for k in ['31', '32', '33']}
+        exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
+        response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': False}
-        mock_exports.assert_called_once_with(URLOPEN)
+        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': False}
+        mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(Exports._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_NEW)
+        self.assertEqual(plugin.exports, new)
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock')
     @mock.patch.object(Exports, '_exports')
     def test_run__with_exports_old(self, mock_exports, mock_lock, mock_render):
-        mock_exports.return_value = EXPORTS_OLD
+        old = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        mock_exports.return_value = old
 
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        response = plugin._run_internal(date=NOW)
+        form = {k: '' for k in ['31', '32', '33']}
+        plugin = self.create_plugin(_data(form=form), exports=old)
+        response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response())
 
-        mock_exports.assert_called_once_with(URLOPEN)
+        mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(date=NOW)
+        mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_OLD)
+        self.assertEqual(plugin.exports, old)
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock')
     @mock.patch.object(Exports, '_exports')
     def test_run__with_exports_ai(self, mock_exports, mock_lock, mock_render):
-        mock_exports.return_value = EXPORTS_NEW
+        new = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
+        mock_exports.return_value = new
 
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {
-            'ai': ['31', '32', '33'],
-            'date': THEN_ENCODED,
-            'form': form,
-            'locked': False
-        }
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        response = plugin._run_internal(date=NOW)
+        form = {k: '' for k in ['31', '32', '33']}
+        read = _data(ai=['31', '32', '33'], form=form)
+        exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(read, exports=exports)
+        response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         write = {
             'ai': ['32', '33'],
-            'date': NOW_ENCODED,
+            'date': _now_encoded,
             'form': form,
             'locked': False
         }
-        mock_exports.assert_called_once_with(URLOPEN)
+        mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(Exports._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_NEW)
+        self.assertEqual(plugin.exports, new)
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock')
@@ -378,120 +343,123 @@ class ExportsTest(Test):
                                      mock_render):
         mock_exports.return_value = []
 
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        response = plugin._run_internal(date=NOW)
+        form = {k: '' for k in ['31', '32', '33']}
+        exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
+        response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response())
 
-        mock_exports.assert_called_once_with(URLOPEN)
+        mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_OLD)
+        self.assertEqual(plugin.exports, exports)
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock')
     @mock.patch.object(Exports, '_exports')
     def test_run__with_exports_lock(self, mock_exports, mock_lock,
                                     mock_render):
-        mock_exports.return_value = EXPORTS_LOCK
+        lock = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
+        mock_exports.return_value = lock
 
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_NEW)
+        form = {k: '' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
 
         def fake_lock(*args, **kwargs):
             plugin.data['locked'] = True
 
         mock_lock.side_effect = fake_lock
 
-        response = plugin._run_internal(date=NOW)
+        response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.EXPORTS_EMAILS]))
 
-        write = {'ai': [], 'date': NOW_ENCODED, 'form': form, 'locked': True}
-        mock_exports.assert_called_once_with(URLOPEN)
+        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': True}
+        mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_called_once_with()
-        mock_render.assert_called_once_with(date=NOW)
-        self.mock_open.assert_called_once_with(DATA, 'w')
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(Exports._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_LOCK)
+        self.assertEqual(plugin.exports, lock)
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock')
     @mock.patch.object(Exports, '_exports')
     def test_run__with_locked(self, mock_exports, mock_lock, mock_render):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
-        plugin = self.create_plugin(read, exports=EXPORTS_NEW)
+        form = {k: '' for k in ['31', '32', '33']}
+        read = _data(form=form, locked=True)
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(read, exports=exports)
 
-        response = plugin._run_internal(date=NOW)
+        response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response())
 
         mock_exports.assert_not_called()
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(date=NOW)
+        mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_NEW)
+        self.assertEqual(plugin.exports, exports)
 
     @mock.patch.object(Exports, '_home')
     def test_render(self, mock_home):
-        mock_home.return_value = HOME
+        home = {'breadcrumbs': [], 'table': {}}
+        mock_home.return_value = home
 
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
-        value = plugin._render_internal(date=NOW)
-        self.assertEqual(value, [(INDEX, '', 'exports.html', HOME)])
+        form = {k: '' for k in ['31', '32', '33']}
+        exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
+        value = plugin._render_internal(date=_now)
+        index = 'html/fairylab/exports/index.html'
+        self.assertEqual(value, [(index, '', 'exports.html', home)])
 
-        mock_home.assert_called_once_with(date=NOW)
+        mock_home.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_OLD)
+        self.assertEqual(plugin.exports, exports)
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_exports')
     def test_setup(self, mock_exports, mock_render):
-        mock_exports.return_value = EXPORTS_OLD
+        exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        mock_exports.return_value = exports
 
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read)
+        form = {k: '' for k in ['31', '32', '33']}
+        plugin = self.create_plugin(_data(form=form))
         response = plugin._setup_internal()
         self.assertEqual(response, Response())
 
-        mock_exports.assert_called_once_with(URLOPEN)
+        mock_exports.assert_called_once_with(_urlopen)
         mock_render.assert_called_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_urlopen.assert_called_once_with(URL)
+        self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_OLD)
+        self.assertEqual(plugin.exports, exports)
 
     def test_shadow(self):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read)
+        form = {k: '' for k in ['31', '32', '33']}
+        plugin = self.create_plugin(_data(form=form))
         value = plugin._shadow_internal()
         self.assertEqual(value, [])
 
@@ -503,10 +471,10 @@ class ExportsTest(Test):
         self.mock_reactions.assert_not_called()
 
     def test_exports__with_valid_input(self):
-        text = '<td><a href="../teams/team_36.html">Chicago Cubs</a>' + \
-               '<br><span>February 3, 2018<br>New Export</span></td>' + \
-               '<td><a href="../teams/team_37.html">Cincinnati Reds</a>' + \
-               '<br><span>February 3, 2018<br>Old Export</span></td>'
+        text = '<td><a href="../teams/team_36.html">Chicago Cubs</a><br><s' + \
+               'pan>February 3, 2018<br>New Export</span></td><td><a href=' + \
+               '"../teams/team_37.html">Cincinnati Reds</a><br><span>Febru' + \
+               'ary 3, 2018<br>Old Export</span></td>'
         actual = Exports._exports(text)
         expected = [('36', 'New'), ('37', 'Old')]
         self.assertEqual(actual, expected)
@@ -521,38 +489,54 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_sorted')
     @mock.patch('plugin.exports.exports.divisions')
     def test_home__without_old(self, mock_divisions, mock_sorted, mock_table):
+        table_ = table(body=[['AL East', 'BAL', 'BOS']])
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
-        mock_table.return_value = TABLE
+        mock_table.return_value = table_
 
         keys = ['33', '34', '35', '40', '42', '44']
-        form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_NEW_HOME)
-        response = plugin._home(date=THEN)
-        l = card(title='100%', info=INFO_NEW, table=TABLE, ts='0s ago')
+        form = {k: 'n' for k in keys}
+        exports = [('33', 'New'), ('34', 'New'), ('35', 'New'), ('40', 'New'),
+                   ('42', 'New'), ('44', 'New')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
+        response = plugin._home(date=_then)
+        breadcrumbs = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Exports'
+        }]
+        info = 'Upcoming sim contains <span class="text-success border px-' + \
+               '1">6 new</span>, 0 old, <span class="text-secondary">0 ai<' + \
+               '/span>.'
+        l = card(title='100%', info=info, table=table_, ts='0s ago')
+        cols = [
+            'class="position-relative"', ' class="text-center w-25"',
+            ' class="text-center w-25"'
+        ]
         e = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL East', 'Last 10', 'Streak'],
             body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL Central', 'Last 10', 'Streak'],
             body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL West', 'Last 10', 'Streak'],
             body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
-            'breadcrumbs': BREADCRUMBS,
+            'breadcrumbs': breadcrumbs,
             'live': l,
             'standings': [e, c, w]
         }
@@ -572,38 +556,54 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_sorted')
     @mock.patch('plugin.exports.exports.divisions')
     def test_home__with_old(self, mock_divisions, mock_sorted, mock_table):
+        table_ = table(body=[['AL East', 'BAL', 'BOS']])
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
-        mock_table.return_value = TABLE
+        mock_table.return_value = table_
 
         keys = ['33', '34', '35', '40', '42', '44']
-        form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
-        response = plugin._home(date=THEN)
-        l = card(title='67%', info=INFO_OLD, table=TABLE, ts='0s ago')
+        form = {k: 'n' for k in keys}
+        exports = [('33', 'New'), ('34', 'New'), ('35', 'New'), ('40', 'New'),
+                   ('42', 'Old'), ('44', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
+        response = plugin._home(date=_then)
+        breadcrumbs = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Exports'
+        }]
+        info = 'Upcoming sim contains <span class="text-success border px-' + \
+               '1">4 new</span>, 2 old, <span class="text-secondary">0 ai<' + \
+               '/span>.'
+        l = card(title='67%', info=info, table=table_, ts='0s ago')
+        cols = [
+            'class="position-relative"', ' class="text-center w-25"',
+            ' class="text-center w-25"'
+        ]
         e = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL East', 'Last 10', 'Streak'],
             body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL Central', 'Last 10', 'Streak'],
             body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL West', 'Last 10', 'Streak'],
             body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
-            'breadcrumbs': BREADCRUMBS,
+            'breadcrumbs': breadcrumbs,
             'live': l,
             'standings': [e, c, w]
         }
@@ -623,38 +623,55 @@ class ExportsTest(Test):
     @mock.patch.object(Exports, '_sorted')
     @mock.patch('plugin.exports.exports.divisions')
     def test_home__with_lock(self, mock_divisions, mock_sorted, mock_table):
+        table_ = table(body=[['AL East', 'BAL', 'BOS']])
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
-        mock_table.return_value = TABLE
+        mock_table.return_value = table_
 
         keys = ['33', '34', '35', '40', '42', '44']
-        form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
-        response = plugin._home(date=THEN)
-        l = card(title='67%', info=INFO_LOCK, table=TABLE, ts='0s ago')
+        form = {k: 'n' for k in keys}
+        read = _data(form=form, locked=True)
+        exports = [('33', 'New'), ('34', 'New'), ('35', 'New'), ('40', 'New'),
+                   ('42', 'Old'), ('44', 'Old')]
+        plugin = self.create_plugin(read, exports=exports)
+        response = plugin._home(date=_then)
+        breadcrumbs = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Exports'
+        }]
+        info = 'Ongoing sim contains <span class="text-success border px-1' + \
+               '">4 new</span>, 2 old, <span class="text-secondary">0 ai</' + \
+               'span>.'
+        l = card(title='67%', info=info, table=table_, ts='0s ago')
+        cols = [
+            'class="position-relative"', ' class="text-center w-25"',
+            ' class="text-center w-25"'
+        ]
         e = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL East', 'Last 10', 'Streak'],
             body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
         c = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL Central', 'Last 10', 'Streak'],
             body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
         w = table(
-            hcols=STANDINGS_COLS,
-            bcols=STANDINGS_COLS,
+            hcols=cols,
+            bcols=cols,
             head=['AL West', 'Last 10', 'Streak'],
             body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
                   [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
-            'breadcrumbs': BREADCRUMBS,
+            'breadcrumbs': breadcrumbs,
             'live': l,
             'standings': [e, c, w]
         }
@@ -671,16 +688,12 @@ class ExportsTest(Test):
         self.mock_reactions.assert_not_called()
 
     def test_lock__with_truncation(self):
-        form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
+        form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
-        form = {
-            '31': FORM_NEW_TRUNCATED,
-            '32': FORM_OLD_TRUNCATED,
-            '33': FORM_NEW_TRUNCATED
-        }
+        form = {'31': 'onnnonnnon', '32': 'onnnonnnoo', '33': 'onnnonnnon'}
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
@@ -690,15 +703,15 @@ class ExportsTest(Test):
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
-        self.assertEqual(plugin.exports, EXPORTS_LOCK)
+        self.assertEqual(plugin.exports, exports)
 
     def test_lock__with_ai_added(self):
-        form = {k: copy.deepcopy(FORM_DEAD) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
+        form = {k: 'nooooooooo' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
-        form = {'31': FORM_ALIVE, '32': FORM_EMPTY, '33': FORM_ALIVE}
+        form = {'31': 'ooooooooon', '32': '', '33': 'ooooooooon'}
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
@@ -708,57 +721,48 @@ class ExportsTest(Test):
         self.assertEqual(plugin.data['ai'], ['32'])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
-        self.assertEqual(plugin.exports, EXPORTS_LOCK)
+        self.assertEqual(plugin.exports, exports)
 
     def test_lock__with_100(self):
-        form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_100)
+        form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'New'), ('33', 'New')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
-        form = {
-            '31': FORM_NEW_TRUNCATED,
-            '32': FORM_NEW_TRUNCATED,
-            '33': FORM_NEW_TRUNCATED
-        }
+        form = {k: 'onnnonnnon' for k in ['31', '32', '33']}
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_called_once_with('100', CHANNEL, TS)
+        self.mock_reactions.assert_called_once_with('100', _channel, _ts)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
-        self.assertEqual(plugin.exports, EXPORTS_100)
+        self.assertEqual(plugin.exports, exports)
 
     def test_lock__with_palm_tree(self):
-        form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
+        form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
+        exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
-        form = {
-            '31': FORM_OLD_TRUNCATED,
-            '32': FORM_OLD_TRUNCATED,
-            '33': FORM_OLD_TRUNCATED
-        }
+        form = {k: 'onnnonnnoo' for k in ['31', '32', '33']}
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_called_once_with('palm_tree', CHANNEL,
-                                                    TS)
+        self.mock_reactions.assert_called_once_with('palm_tree', _channel, _ts)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
-        self.assertEqual(plugin.exports, EXPORTS_OLD)
+        self.assertEqual(plugin.exports, exports)
 
     def test_new(self):
-        form = {k: copy.deepcopy(FORM_CANONICAL) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_NEW)
+        form = {k: '' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
 
         actual = plugin._new()
         expected = (1, 3)
@@ -772,9 +776,8 @@ class ExportsTest(Test):
         self.mock_reactions.assert_not_called()
 
     def test_streak(self):
-        form = {'31': FORM_NEW_TRUNCATED, '32': FORM_OLD_TRUNCATED}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read)
+        form = {'31': 'onnnonnnon', '32': 'onnnonnnoo'}
+        plugin = self.create_plugin(_data(form=form))
 
         actual = plugin._streak('31')
         expected = 'W1'
@@ -787,9 +790,9 @@ class ExportsTest(Test):
     def test_sorted(self, mock_name):
         mock_name.side_effect = ['ARI', 'ATL']
 
-        form = {'31': FORM_NEW_TRUNCATED, '32': FORM_OLD_TRUNCATED}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD)
+        form = {'31': 'onnnonnnon', '32': 'onnnonnnoo'}
+        exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
 
         actual = plugin._sorted('31')
         expected = [-0.7, -7, -1, -float(1) / 3, 'ARI']
@@ -810,9 +813,10 @@ class ExportsTest(Test):
                                        ('AL West', ['42', '44'])]
 
         keys = ['33', '34', '35', '40', '42', '44']
-        form = {k: copy.deepcopy(FORM_NEW) for k in keys}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': False}
-        plugin = self.create_plugin(read, exports=EXPORTS_OLD_HOME)
+        form = {k: 'n' for k in keys}
+        exports = [('33', 'New'), ('34', 'New'), ('35', 'New'), ('40', 'New'),
+                   ('42', 'Old'), ('44', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
         actual = plugin._table()
         body = [[
             'AL East',
@@ -823,14 +827,15 @@ class ExportsTest(Test):
             span(['text-success', 'border', 'px-1'], 'CWS'),
             span(['text-success', 'border', 'px-1'], 'DET')
         ], ['AL West', 'HOU', 'LAA']]
-        expected = table(
-            clazz='table-sm', hcols=TABLE_COLS, bcols=TABLE_COLS, body=body)
+        cols = [''] + [' class="text-center"'] * 2
+        expected = table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
         self.assertEqual(actual, expected)
 
     def test_unlock(self):
-        form = {k: copy.deepcopy(FORM_TRUNCATED) for k in ['31', '32', '33']}
-        read = {'ai': [], 'date': THEN_ENCODED, 'form': form, 'locked': True}
-        plugin = self.create_plugin(read, exports=EXPORTS_LOCK)
+        form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
+        read = _data(form=form, locked=True)
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
+        plugin = self.create_plugin(read, exports=exports)
         plugin._unlock()
 
         self.mock_open.assert_not_called()
@@ -839,7 +844,7 @@ class ExportsTest(Test):
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, EXPORTS_LOCK)
+        self.assertEqual(plugin.exports, exports)
         self.assertFalse(plugin.data['locked'])
 
 
@@ -847,4 +852,4 @@ if __name__ in ['__main__', 'plugin.exports.exports_test']:
     _main = __name__ == '__main__'
     _pkg = 'plugin.exports'
     _pth = 'plugin/exports'
-    main(ExportsTest, Exports, _pkg, _pth, {}, _main, date=NOW, e=ENV)
+    main(ExportsTest, Exports, _pkg, _pth, {}, _main, date=_now, e=_env)
