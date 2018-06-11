@@ -36,7 +36,7 @@ from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
 from util.team.team import teamids  # noqa
 
-DECODINGS = [
+_decodings = [
     'Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles',
     'Boston Red Sox', 'Chicago White Sox', 'Chicago Cubs', 'Cincinnati Reds',
     'Cleveland Indians', 'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins',
@@ -48,25 +48,25 @@ DECODINGS = [
     'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays',
     'Washington Nationals', 'Chicago', 'Los Angeles', 'New York'
 ]
-DE_ENCODINGS = [
+_de_encodings = [
     'T31', 'T32', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40',
     'T41', 'T42', 'T43', 'T44', 'T45', 'T46', 'T47', 'T48', 'T49', 'T50',
     'T51', 'T52', 'T53', 'T54', 'T55', 'T56', 'T57', 'T58', 'T59', 'T60',
     'TCH', 'TLA', 'TNY'
 ]
-PRE_ENCODINGS = [
+_pre_encodings = [
     'T31', 'T32', 'T33', 'T34', 'T37', 'T38', 'T39', 'T40', 'T41', 'T42',
     'T43', 'T46', 'T47', 'T50', 'T51', 'T52', 'T53', 'T54', 'T55', 'T56',
     'T57', 'T58', 'T59', 'T60', 'TCH', 'TLA', 'TNY'
 ]
-PRECODINGS = [
+_precodings = [
     'Arizona', 'Atlanta', 'Baltimore', 'Boston', 'Cincinnati', 'Cleveland',
     'Colorado', 'Detroit', 'Miami', 'Houston', 'Kansas City', 'Milwaukee',
     'Minnesota', 'Oakland', 'Philadelphia', 'Pittsburgh', 'San Diego',
     'Seattle', 'San Francisco', 'St. Louis', 'Tampa Bay', 'Texas', 'Toronto',
     'Washington', 'Chicago', 'Los Angeles', 'New York'
 ]
-TEAMIDS = [
+_teamids = [
     '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42',
     '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54',
     '55', '56', '57', '58', '59', '60'
@@ -115,12 +115,12 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(decoding_to_encoding('New York'), 'TNY')
 
     def test_decoding_to_encoding_sub(self):
-        decodings = ', '.join(DECODINGS)
-        encodings = ', '.join(DE_ENCODINGS)
+        decodings = ', '.join(_decodings)
+        encodings = ', '.join(_de_encodings)
         self.assertEqual(decoding_to_encoding_sub(decodings), encodings)
 
     def test_decodings(self):
-        self.assertEqual(decodings(), DECODINGS)
+        self.assertEqual(decodings(), _decodings)
 
     def test_divisions(self):
         actual = divisions()
@@ -240,8 +240,8 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(encoding_to_decoding('TNY'), 'New York')
 
     def test_encoding_to_decoding_sub(self):
-        encodings = ', '.join(DE_ENCODINGS)
-        decodings = ', '.join(DECODINGS)
+        encodings = ', '.join(_de_encodings)
+        decodings = ', '.join(_decodings)
         self.assertEqual(encoding_to_decoding_sub(encodings), decodings)
 
     def test_encoding_to_precoding(self):
@@ -306,7 +306,7 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(encoding_to_teamid('T60'), '60')
 
     def test_encodings(self):
-        self.assertEqual(encodings(), DE_ENCODINGS)
+        self.assertEqual(encodings(), _de_encodings)
 
     def test_precoding_to_encoding(self):
         self.assertEqual(precoding_to_encoding('Arizona'), 'T31')
@@ -338,11 +338,11 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(precoding_to_encoding('New York'), 'TNY')
 
     def test_precodings(self):
-        self.assertEqual(precodings(), PRECODINGS)
+        self.assertEqual(precodings(), _precodings)
 
     def test_precoding_to_encoding_sub(self):
-        precodings = ', '.join(PRECODINGS)
-        encodings = ', '.join(PRE_ENCODINGS)
+        precodings = ', '.join(_precodings)
+        encodings = ', '.join(_pre_encodings)
         self.assertEqual(precoding_to_encoding_sub(precodings), encodings)
 
     def test_logo_absolute(self):
@@ -488,7 +488,7 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(teamid_to_hometown('60'), 'Washington')
 
     def test_teamids(self):
-        self.assertEqual(teamids(), TEAMIDS)
+        self.assertEqual(teamids(), _teamids)
 
 
 if __name__ == '__main__':

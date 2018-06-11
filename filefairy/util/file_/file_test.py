@@ -19,16 +19,15 @@ _host = 'www.orangeandblueleaguebaseball.com'
 _name = 'orange_and_blue_league_baseball.tar.gz'
 _url = 'https://' + _host + '/StatsLab/league_file/' + _name
 
-OK = {'ok': True}
-
 
 class FileTest(unittest.TestCase):
     @mock.patch('util.file_.file_.check_output')
     def test_ping(self, mock_check):
-        mock_check.return_value = OK
+        ok = {'ok': True}
+        mock_check.return_value = ok
 
         output = ping()
-        self.assertEqual(output, OK)
+        self.assertEqual(output, ok)
 
         mock_check.assert_called_once_with(
             ['ping', '-c', '1', _host], timeout=8)
