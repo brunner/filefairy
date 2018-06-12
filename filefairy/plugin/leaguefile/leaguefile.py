@@ -364,7 +364,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
 
         body = []
         for c in data['completed']:
-            utime, dtime = '', ''
+            utime, dtime = '-', '-'
             if c['ustart'] and c['uend']:
                 utime = self._time(c['ustart'], c['uend'])
             if c['dstart'] and c['dend']:
