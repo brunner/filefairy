@@ -133,6 +133,13 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
         form = self.data['form'][teamid]
         return form.count('n'), form.count('o')
 
+    def _ghost(self):
+        for teamid in self.data['form']:
+            form = self.data['form'][teamid]
+            if form.endswith('ooooooo'):
+                return True
+        return False
+
     def _home(self, **kwargs):
         data = self.data
         ret = {
@@ -205,13 +212,20 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
         if data['channel'] and data['ts']:
             channel, ts = data['channel'], data['ts']
             reactions = self._reactions_get(channel, ts)
+
+            ghost = self._ghost()
+            if ghost and 'ghost' not in reactions:
+                reactions_add('ghost', channel, ts)
+            elif not ghost and 'ghost' in reactions:
+                reactions_remove('ghost', channel, ts)
+
             percent = self._percent()
             if percent == 100 and '100' not in reactions:
-                reactions_add('100', data['channel'], data['ts'])
+                reactions_add('100', channel, ts)
             elif percent < 50 and 'palm_tree' not in reactions:
-                reactions_add('palm_tree', data['channel'], data['ts'])
+                reactions_add('palm_tree', channel, ts)
             elif percent >= 50 and 'palm_tree' in reactions:
-                reactions_remove('palm_tree', data['channel'], data['ts'])
+                reactions_remove('palm_tree', channel, ts)
 
     def _new(self):
         n, t = 0, 0

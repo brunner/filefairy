@@ -827,7 +827,7 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_add.assert_called_once_with('ghost', _channel, _ts)
         self.mock_reactions_get.assert_not_called()
         self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.data['ai'], ['32'])
