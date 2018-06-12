@@ -291,11 +291,11 @@ class Fairylab(Messageable, Renderable):
         return False
 
     def reboot(self, *args, **kwargs):
-        logger_.log(logging.INFO, 'Restarted fairylab.')
+        logger_.log(logging.DEBUG, 'Rebooting fairylab.')
         os.execv(sys.executable, ['python3'] + sys.argv)
 
     def shutdown(self, *args, **kwargs):
-        logger_.log(logging.INFO, 'Killed fairylab.')
+        logger_.log(logging.DEBUG, 'Shutting down fairylab.')
         self.keep_running = False
 
 
@@ -308,6 +308,7 @@ if __name__ == '__main__':
     logger_ = logging.getLogger('fairylab')
     logger_.addHandler(handler)
     logger_.setLevel(logging.DEBUG)
+    logger_.log(logging.INFO, 'Restarted fairylab.')
 
     fairylab = Fairylab(d=dashboard, e=env_)
     fairylab._setup(date=date)

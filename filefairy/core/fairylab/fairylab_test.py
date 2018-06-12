@@ -880,8 +880,8 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(logging.INFO,
-                                              'Restarted fairylab.')
+        self.mock_log.assert_called_once_with(logging.DEBUG,
+                                              'Rebooting fairylab.')
 
     def test_shutdown(self):
         program = self.create_program()
@@ -890,7 +890,8 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(logging.INFO, 'Killed fairylab.')
+        self.mock_log.assert_called_once_with(logging.DEBUG,
+                                              'Shutting down fairylab.')
         self.assertFalse(program.keep_running)
 
 
