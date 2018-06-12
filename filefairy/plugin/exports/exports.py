@@ -21,6 +21,8 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.slack.slack import reactions_add  # noqa
+from util.slack.slack import reactions_get  # noqa
+from util.slack.slack import reactions_remove  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_abbreviation  # noqa
@@ -93,8 +95,8 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
             logger_.log(logging.INFO, 'Tracker updated.')
             response.notify = [Notify.BASE]
 
-        if any([True for e in exports if e in _emails]):
-            self._lock()
+        if not data['emails'] and any([True for e in exports if e in _emails]):
+            self._emails()
             response.notify = [Notify.EXPORTS_EMAILS]
 
         if response.notify:
@@ -122,6 +124,10 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
     @staticmethod
     def _exports(text):
         return re.findall(r"team_(\d+)(?:[\s\S]+?)(New|Old) Export", text)
+
+    def _emails(self):
+        self._lock_internal()
+        self.data['emails'] = True
 
     def _form(self, teamid):
         form = self.data['form'][teamid]
@@ -173,18 +179,9 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
 
     def _lock(self):
         data = self.data
-        data['locked'] = True
-        logger_.log(logging.INFO, 'Tracker locked.')
-        obj = self._chat('fairylab', 'Tracker locked.')
 
-        percent = self._percent()
-        channel = obj.get('channel')
-        ts = obj.get('ts')
-        if channel and ts:
-            if percent == 100:
-                reactions_add('100', channel, ts)
-            elif percent < 50:
-                reactions_add('palm_tree', channel, ts)
+        self._lock_internal()
+        self.data['locked'] = True
 
         for teamid, status in self.exports:
             s = status.lower()[0]
@@ -195,6 +192,26 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
             if 'n' not in data['form'][teamid]:
                 data['ai'].append(teamid)
                 data['form'][teamid] = ''
+
+    def _lock_internal(self):
+        data = self.data
+
+        if not data['emails']:
+            logger_.log(logging.INFO, 'Tracker locked.')
+            obj = self._chat('fairylab', 'Tracker locked.')
+            data['channel'] = obj.get('channel', '')
+            data['ts'] = obj.get('ts', '')
+
+        if data['channel'] and data['ts']:
+            channel, ts = data['channel'], data['ts']
+            reactions = self._reactions_get(channel, ts)
+            percent = self._percent()
+            if percent == 100 and '100' not in reactions:
+                reactions_add('100', data['channel'], data['ts'])
+            elif percent < 50 and 'palm_tree' not in reactions:
+                reactions_add('palm_tree', data['channel'], data['ts'])
+            elif percent >= 50 and 'palm_tree' in reactions:
+                reactions_remove('palm_tree', data['channel'], data['ts'])
 
     def _new(self):
         n, t = 0, 0
@@ -218,6 +235,17 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
     def _percent(self):
         n, t = self._new()
         return (100 * n / t) if t else 0
+
+    def _reactions_get(self, channel, ts):
+        obj = reactions_get(channel, ts)
+        value = []
+        if obj.get('ok'):
+            message = obj.get('message', {})
+            reactions = message.get('reactions', [])
+            for reaction in reactions:
+                if 'U3ULC7DBP' in reaction.get('users', []):
+                    value.append(reaction.get('name'))
+        return value
 
     def _remove(self):
         for teamid, status in self.exports:
@@ -265,4 +293,5 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
         return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 
     def _unlock(self):
+        self.data['emails'] = False
         self.data['locked'] = False

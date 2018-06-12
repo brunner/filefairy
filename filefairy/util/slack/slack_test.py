@@ -18,6 +18,8 @@ from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import files_upload  # noqa
 from util.slack.slack import pins_add  # noqa
 from util.slack.slack import reactions_add  # noqa
+from util.slack.slack import reactions_get  # noqa
+from util.slack.slack import reactions_remove  # noqa
 from util.slack.slack import rtm_connect  # noqa
 from util.slack.slack import users_list  # noqa
 
@@ -129,6 +131,33 @@ class SlackTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_call.assert_called_once_with(
             'reactions.add', {
+                'token': _filefairy,
+                'name': 'name',
+                'channel': 'C1234',
+                'timestamp': 'timestamp',
+            })
+
+    @mock.patch('util.slack.slack._call')
+    def test_reactions_get(self, mock_call):
+        mock_call.return_value = _ok
+        actual = reactions_get('C1234', 'timestamp')
+        expected = _ok
+        self.assertEqual(actual, expected)
+        mock_call.assert_called_once_with(
+            'reactions.get', {
+                'token': _filefairy,
+                'channel': 'C1234',
+                'timestamp': 'timestamp',
+            })
+
+    @mock.patch('util.slack.slack._call')
+    def test_reactions_remove(self, mock_call):
+        mock_call.return_value = _ok
+        actual = reactions_remove('name', 'C1234', 'timestamp')
+        expected = _ok
+        self.assertEqual(actual, expected)
+        mock_call.assert_called_once_with(
+            'reactions.remove', {
                 'token': _filefairy,
                 'name': 'name',
                 'channel': 'C1234',

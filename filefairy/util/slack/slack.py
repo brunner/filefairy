@@ -84,6 +84,25 @@ def reactions_add(name, channel, timestamp):
         })
 
 
+def reactions_get(channel, timestamp):
+    return _call(
+        'reactions.get', {
+            'token': _filefairy,
+            'channel': channel,
+            'timestamp': timestamp,
+        })
+
+
+def reactions_remove(name, channel, timestamp):
+    return _call(
+        'reactions.remove', {
+            'token': _filefairy,
+            'name': name,
+            'channel': channel,
+            'timestamp': timestamp,
+        })
+
+
 def rtm_connect():
     return _call('rtm.connect', {'token': _filefairy})
 

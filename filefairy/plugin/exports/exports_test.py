@@ -26,6 +26,18 @@ _channel = 'C1234'
 _env = env()
 _now = datetime.datetime(1985, 10, 26, 0, 2, 30)
 _now_encoded = '1985-10-26T00:02:30'
+_reactions = {
+    'message': {
+        'reactions': [{
+            'name': 'foo',
+            'users': ['U1234', 'U3ULC7DBP']
+        }, {
+            'name': 'bar',
+            'users': ['U5678']
+        }]
+    },
+    'ok': True
+}
 _then = datetime.datetime(1985, 10, 26, 0, 0, 0)
 _then_encoded = '1985-10-26T00:00:00'
 _ts = '123456789'
@@ -33,8 +45,22 @@ _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 _urlopen = '<html><head><title>Export Tracker - StatsLab for ...'
 
 
-def _data(ai=[], date=_then_encoded, form={}, locked=False):
-    return {'ai': ai, 'date': date, 'form': form, 'locked': locked}
+def _data(ai=[],
+          channel=_channel,
+          date=_then_encoded,
+          emails=False,
+          form={},
+          locked=False,
+          ts=_ts):
+    return {
+        'ai': ai,
+        'channel': channel,
+        'date': date,
+        'emails': emails,
+        'form': form,
+        'locked': locked,
+        'ts': ts
+    }
 
 
 class ExportsTest(Test):
@@ -56,9 +82,20 @@ class ExportsTest(Test):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
-        patch_reactions = mock.patch('plugin.exports.exports.reactions_add')
-        self.addCleanup(patch_reactions.stop)
-        self.mock_reactions = patch_reactions.start()
+        patch_reactions_add = mock.patch(
+            'plugin.exports.exports.reactions_add')
+        self.addCleanup(patch_reactions_add.stop)
+        self.mock_reactions_add = patch_reactions_add.start()
+
+        patch_reactions_get = mock.patch(
+            'plugin.exports.exports.reactions_get')
+        self.addCleanup(patch_reactions_get.stop)
+        self.mock_reactions_get = patch_reactions_get.start()
+
+        patch_reactions_remove = mock.patch(
+            'plugin.exports.exports.reactions_remove')
+        self.addCleanup(patch_reactions_remove.stop)
+        self.mock_reactions_remove = patch_reactions_remove.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
@@ -70,6 +107,7 @@ class ExportsTest(Test):
             'channel': _channel,
             'ts': _ts
         }
+        self.mock_reactions_get.return_value = _reactions
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
@@ -77,7 +115,9 @@ class ExportsTest(Test):
         self.mock_urlopen.reset_mock()
         self.mock_chat.reset_mock()
         self.mock_log.reset_mock()
-        self.mock_reactions.reset_mock()
+        self.mock_reactions_add.reset_mock()
+        self.mock_reactions_get.reset_mock()
+        self.mock_reactions_remove.reset_mock()
 
     def create_plugin(self, data, exports=None):
         self.init_mocks(data)
@@ -87,7 +127,9 @@ class ExportsTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.data, data)
 
         self.reset_mocks()
@@ -116,7 +158,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_unlock')
     @mock.patch.object(Exports, '_render')
@@ -138,7 +182,7 @@ class ExportsTest(Test):
             notify=Notify.STATSPLUS_SIM, date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': True}
+        write = _data(date=_now_encoded, form=form, locked=True)
         mock_lock.assert_called_once_with()
         mock_render.assert_called_once_with(
             notify=Notify.STATSPLUS_SIM, date=_now)
@@ -148,7 +192,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_unlock')
     @mock.patch.object(Exports, '_render')
@@ -169,7 +215,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_unlock')
     @mock.patch.object(Exports, '_render')
@@ -190,7 +238,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_unlock')
     @mock.patch.object(Exports, '_render')
@@ -212,7 +262,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_unlock')
     @mock.patch.object(Exports, '_render')
@@ -232,7 +284,7 @@ class ExportsTest(Test):
             notify=Notify.LEAGUEFILE_FINISH, date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': False}
+        write = _data(date=_now_encoded, form=form)
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(
             notify=Notify.LEAGUEFILE_FINISH, date=_now)
@@ -242,7 +294,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     def test_on_message(self):
         form = {k: '' for k in ['31', '32', '33']}
@@ -255,7 +309,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock')
@@ -270,7 +326,7 @@ class ExportsTest(Test):
         response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': False}
+        write = _data(date=_now_encoded, form=form)
         mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
@@ -279,7 +335,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, new)
 
     @mock.patch.object(Exports, '_render')
@@ -302,7 +360,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, old)
 
     @mock.patch.object(Exports, '_render')
@@ -319,12 +379,7 @@ class ExportsTest(Test):
         response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = {
-            'ai': ['32', '33'],
-            'date': _now_encoded,
-            'form': form,
-            'locked': False
-        }
+        write = _data(ai=['32', '33'], date=_now_encoded, form=form)
         mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
@@ -333,7 +388,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, new)
 
     @mock.patch.object(Exports, '_render')
@@ -357,40 +414,44 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, exports)
 
     @mock.patch.object(Exports, '_render')
-    @mock.patch.object(Exports, '_lock')
     @mock.patch.object(Exports, '_exports')
-    def test_run__with_exports_lock(self, mock_exports, mock_lock,
-                                    mock_render):
-        lock = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
-        mock_exports.return_value = lock
+    @mock.patch.object(Exports, '_emails')
+    def test_run__with_exports_emails(self, mock_emails, mock_exports,
+                                      mock_render):
+        emails = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
+        mock_exports.return_value = emails
 
         form = {k: '' for k in ['31', '32', '33']}
         exports = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
         plugin = self.create_plugin(_data(form=form), exports=exports)
 
-        def fake_lock(*args, **kwargs):
-            plugin.data['locked'] = True
+        def fake_emails(*args, **kwargs):
+            plugin.data['emails'] = True
 
-        mock_lock.side_effect = fake_lock
+        mock_emails.side_effect = fake_emails
 
         response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.EXPORTS_EMAILS]))
 
-        write = {'ai': [], 'date': _now_encoded, 'form': form, 'locked': True}
+        write = _data(date=_now_encoded, emails=True, form=form)
         mock_exports.assert_called_once_with(_urlopen)
-        mock_lock.assert_called_once_with()
+        mock_emails.assert_called_once_with()
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(Exports._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker updated.')
-        self.mock_reactions.assert_not_called()
-        self.assertEqual(plugin.exports, lock)
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
+        self.assertEqual(plugin.exports, emails)
 
     @mock.patch.object(Exports, '_render')
     @mock.patch.object(Exports, '_lock')
@@ -412,7 +473,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, exports)
 
     @mock.patch.object(Exports, '_home')
@@ -433,7 +496,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, exports)
 
     @mock.patch.object(Exports, '_render')
@@ -454,7 +519,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, exports)
 
     def test_shadow(self):
@@ -468,7 +535,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     def test_exports__with_valid_input(self):
         text = '<td><a href="../teams/team_36.html">Chicago Cubs</a><br><s' + \
@@ -550,7 +619,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_table')
     @mock.patch.object(Exports, '_sorted')
@@ -617,7 +688,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
     @mock.patch.object(Exports, '_table')
     @mock.patch.object(Exports, '_sorted')
@@ -685,75 +758,152 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
 
-    def test_lock__with_truncation(self):
+    @mock.patch.object(Exports, '_reactions_get')
+    def test_lock__with_emails(self, mock_reactions_get):
+        mock_reactions_get.return_value = []
+
+        form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
+        read = _data(emails=True, form=form)
+        plugin = self.create_plugin(read, exports=exports)
+        plugin._lock()
+
+        form = {'31': 'onnnonnnon', '32': 'onnnonnnoo', '33': 'onnnonnnon'}
+        mock_reactions_get.assert_called_once_with(_channel, _ts)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
+        self.assertEqual(plugin.data['ai'], [])
+        self.assertEqual(plugin.data['form'], form)
+        self.assertTrue(plugin.data['locked'], True)
+        self.assertEqual(plugin.exports, exports)
+
+    @mock.patch.object(Exports, '_reactions_get')
+    def test_lock__with_truncation(self, mock_reactions_get):
+        mock_reactions_get.return_value = []
+
         form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
         exports = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
         plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
         form = {'31': 'onnnonnnon', '32': 'onnnonnnoo', '33': 'onnnonnnon'}
+        mock_reactions_get.assert_called_once_with(_channel, _ts)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, exports)
 
-    def test_lock__with_ai_added(self):
+    @mock.patch.object(Exports, '_reactions_get')
+    def test_lock__with_ai_added(self, mock_reactions_get):
+        mock_reactions_get.return_value = []
+
         form = {k: 'nooooooooo' for k in ['31', '32', '33']}
         exports = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
         plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
         form = {'31': 'ooooooooon', '32': '', '33': 'ooooooooon'}
+        mock_reactions_get.assert_called_once_with(_channel, _ts)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.data['ai'], ['32'])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, exports)
 
-    def test_lock__with_100(self):
+    @mock.patch.object(Exports, '_reactions_get')
+    def test_lock__with_100(self, mock_reactions_get):
+        mock_reactions_get.return_value = []
+
         form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
         exports = [('31', 'New'), ('32', 'New'), ('33', 'New')]
         plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
         form = {k: 'onnnonnnon' for k in ['31', '32', '33']}
+        mock_reactions_get.assert_called_once_with(_channel, _ts)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_called_once_with('100', _channel, _ts)
+        self.mock_reactions_add.assert_called_once_with('100', _channel, _ts)
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
         self.assertEqual(plugin.exports, exports)
 
-    def test_lock__with_palm_tree(self):
+    @mock.patch.object(Exports, '_reactions_get')
+    def test_lock__with_palm_tree(self, mock_reactions_get):
+        mock_reactions_get.return_value = []
+
         form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
         exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
         plugin = self.create_plugin(_data(form=form), exports=exports)
         plugin._lock()
 
         form = {k: 'onnnonnnoo' for k in ['31', '32', '33']}
+        mock_reactions_get.assert_called_once_with(_channel, _ts)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
-        self.mock_reactions.assert_called_once_with('palm_tree', _channel, _ts)
+        self.mock_reactions_add.assert_called_once_with(
+            'palm_tree', _channel, _ts)
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
+        self.assertEqual(plugin.data['ai'], [])
+        self.assertEqual(plugin.data['form'], form)
+        self.assertTrue(plugin.data['locked'], True)
+        self.assertEqual(plugin.exports, exports)
+
+    @mock.patch.object(Exports, '_reactions_get')
+    def test_lock__without_palm_tree(self, mock_reactions_get):
+        mock_reactions_get.return_value = ['palm_tree']
+
+        form = {k: 'nonnnonnno' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'New')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
+        plugin._lock()
+
+        form = {'31': 'onnnonnnon', '32': 'onnnonnnoo', '33': 'onnnonnnon'}
+        mock_reactions_get.assert_called_once_with(_channel, _ts)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_called_once_with('fairylab', 'Tracker locked.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'Tracker locked.')
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_called_once_with(
+            'palm_tree', _channel, _ts)
         self.assertEqual(plugin.data['ai'], [])
         self.assertEqual(plugin.data['form'], form)
         self.assertTrue(plugin.data['locked'], True)
@@ -773,7 +923,27 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
+
+    def test_reactions_get(self):
+        form = {k: '' for k in ['31', '32', '33']}
+        exports = [('31', 'New'), ('32', 'Old'), ('33', 'Old')]
+        plugin = self.create_plugin(_data(form=form), exports=exports)
+
+        actual = plugin._reactions_get(_channel, _ts)
+        expected = ['foo']
+        self.assertEqual(actual, expected)
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_urlopen.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_called_once_with(_channel, _ts)
+        self.mock_reactions_remove.assert_not_called()
 
     def test_streak(self):
         form = {'31': 'onnnonnnon', '32': 'onnnonnnoo'}
@@ -843,7 +1013,9 @@ class ExportsTest(Test):
         self.mock_urlopen.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.mock_reactions_add.assert_not_called()
+        self.mock_reactions_get.assert_not_called()
+        self.mock_reactions_remove.assert_not_called()
         self.assertEqual(plugin.exports, exports)
         self.assertFalse(plugin.data['locked'])
 
