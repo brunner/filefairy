@@ -373,8 +373,15 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                 self._filedate(c['date']), utime, dtime,
                 self._size(c['size'])
             ])
+        cols = [
+            '', ' class="text-center"', ' class="text-center"',
+            ' class="text-right"'
+        ]
         ret['completed'] = table(
-            head=['Date', 'Upload', 'Download', 'Size'], body=body)
+            hcols=cols,
+            bcols=cols,
+            head=['Date', 'Upload', 'Download', 'Size'],
+            body=body)
 
         return ret
 

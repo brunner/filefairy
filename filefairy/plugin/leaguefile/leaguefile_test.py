@@ -1026,7 +1026,15 @@ class LeaguefileTest(Test):
             'href': '',
             'name': 'Leaguefile'
         }]
-        completed = table(head=['Date', 'Upload', 'Download', 'Size'], body=[])
+        cols = [
+            '', ' class="text-center"', ' class="text-center"',
+            ' class="text-right"'
+        ]
+        completed = table(
+            hcols=cols,
+            bcols=cols,
+            head=['Date', 'Upload', 'Download', 'Size'],
+            body=[])
         expected = {
             'breadcrumbs': breadcrumbs,
             'upload': None,
@@ -1060,7 +1068,15 @@ class LeaguefileTest(Test):
                 body=[['Time: ', '2h 0m'], ['Size: ', '100,000']]),
             ts='0s ago',
             success='ongoing')
-        completed = table(head=['Date', 'Upload', 'Download', 'Size'], body=[])
+        cols = [
+            '', ' class="text-center"', ' class="text-center"',
+            ' class="text-right"'
+        ]
+        completed = table(
+            hcols=cols,
+            bcols=cols,
+            head=['Date', 'Upload', 'Download', 'Size'],
+            body=[])
         expected = {
             'breadcrumbs': breadcrumbs,
             'upload': upload,
@@ -1109,7 +1125,15 @@ class LeaguefileTest(Test):
                 body=[['Time: ', '5m'], ['Size: ', '100,000']]),
             ts='0s ago',
             success='ongoing')
-        completed = table(head=['Date', 'Upload', 'Download', 'Size'], body=[])
+        cols = [
+            '', ' class="text-center"', ' class="text-center"',
+            ' class="text-right"'
+        ]
+        completed = table(
+            hcols=cols,
+            bcols=cols,
+            head=['Date', 'Upload', 'Download', 'Size'],
+            body=[])
         expected = {
             'breadcrumbs': breadcrumbs,
             'upload': upload,
@@ -1136,7 +1160,13 @@ class LeaguefileTest(Test):
             'href': '',
             'name': 'Leaguefile'
         }]
+        cols = [
+            '', ' class="text-center"', ' class="text-center"',
+            ' class="text-right"'
+        ]
         completed = table(
+            hcols=cols,
+            bcols=cols,
             head=['Date', 'Upload', 'Download', 'Size'],
             body=[['Jan 27', '0m', '0m', '345,678,901']])
         expected = {
