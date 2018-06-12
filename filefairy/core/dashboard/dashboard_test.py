@@ -612,6 +612,23 @@ class DashboardTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    @mock.patch.object(Dashboard, '_render')
+    def test_retire__with_warning(self, mock_render):
+        record_info = dict(_record_info, count=1, date=_then_day_encoded)
+        record_warning = dict(_record_warning, count=1, date=_then_day_encoded)
+        read = {
+            'records': {
+                _then_day_encoded: [record_info, record_warning]
+            }
+        }
+        dashboard = self.create_dashboard(read)
+        dashboard._retire(date=_now)
+
+        write = {'records': {_then_day_encoded: [record_info]}}
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(_data, 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
 
 if __name__ in ['__main__', 'core.dashboard.dashboard_test']:
     _main = __name__ == '__main__'

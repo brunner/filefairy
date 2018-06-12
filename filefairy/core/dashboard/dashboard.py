@@ -260,9 +260,15 @@ class Dashboard(Messageable, Registrable, Renderable):
         cut = datetime.datetime(cut.year, cut.month, cut.day)
 
         days = list(original['records'].keys())
+        records = data['records']
         for day in days:
             if decode_datetime(day) <= cut:
-                del data['records'][day]
+                del records[day]
+            else:
+                records[day] = [
+                    r for r in records[day]
+                    if r['levelname'] != "WARNING" or r['count'] >= 5
+                ]
 
         if data != original:
             self.write()
