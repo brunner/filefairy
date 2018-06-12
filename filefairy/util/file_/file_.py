@@ -29,6 +29,11 @@ def wget_file():
     recreate(_download)
     cwd = os.getcwd()
     os.chdir(_download)
-    check_output(['wget', _url])
-    check_output(['tar', '-xzf', _name])
+
+    output = check_output(['wget', _url], timeout=7200)
+    if not output.get('ok'):
+        return output
+
+    output = check_output(['tar', '-xzf', _name])
     os.chdir(cwd)
+    return output

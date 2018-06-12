@@ -34,6 +34,9 @@ class FileTest(unittest.TestCase):
 
     @mock.patch('util.file_.file_.check_output')
     def test_recreate(self, mock_check):
+        ok = {'ok': True}
+        mock_check.return_value = ok
+
         recreate(_download)
 
         calls = [
@@ -44,12 +47,15 @@ class FileTest(unittest.TestCase):
 
     @mock.patch('util.file_.file_.check_output')
     def test_wget(self, mock_check):
+        ok = {'ok': True}
+        mock_check.return_value = ok
+
         wget_file()
 
         calls = [
             mock.call(['rm', '-rf', _download]),
             mock.call(['mkdir', _download]),
-            mock.call(['wget', _url]),
+            mock.call(['wget', _url], timeout=7200),
             mock.call(['tar', '-xzf', _name])
         ]
         mock_check.assert_has_calls(calls)

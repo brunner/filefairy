@@ -196,6 +196,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                 match = re.findall(_line_pattern, line)
                 if match:
                     return match[0] + (fp, )
+        return ('0', '', '', False)
 
     @staticmethod
     def _check_upload():
@@ -255,23 +256,27 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
 
     def _download_internal(self, *args, **kwargs):
         data = self.data
+        original = copy.deepcopy(data)
         data['then'] = data['now']
 
-        wget_file()
-        self._games()
-        self._leagues()
+        response = Response()
+        output = wget_file()
+        if output.get('ok'):
+            self._games()
+            self._leagues()
+            logger_.log(logging.INFO, 'Download finished.')
+            response.append_notify(Notify.LEAGUEFILE_DOWNLOAD)
+            dthen = decode_datetime(data['then'])
+            dnow = decode_datetime(data['now'])
+            if dthen.year != dnow.year:
+                response.append_notify(Notify.LEAGUEFILE_YEAR)
+            response.shadow = self._shadow_internal(**kwargs)
+        else:
+            logger_.log(logging.INFO, 'Download failed.')
+            data['download'] = None
+            data['then'] = original['then']
 
-        logger_.log(logging.INFO, 'Download finished.')
-        response = Response(notify=[Notify.LEAGUEFILE_DOWNLOAD])
-
-        dthen = decode_datetime(data['then'])
-        dnow = decode_datetime(data['now'])
-        if dthen.year != dnow.year:
-            response.append_notify(Notify.LEAGUEFILE_YEAR)
-
-        response.shadow = self._shadow_internal(**kwargs)
         self.write()
-
         return response
 
     def _file_is_up(self, date):
