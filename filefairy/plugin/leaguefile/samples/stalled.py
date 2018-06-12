@@ -19,18 +19,24 @@ _breadcrumbs = [{
     'name': 'Leaguefile'
 }]
 
-_cols = [' class="w-55p"', '']
+_ucols = [' class="w-55p"', '']
 _table = table(
     clazz='table-sm',
-    hcols=_cols,
-    bcols=_cols,
+    hcols=_ucols,
+    bcols=_ucols,
     body=[['Time: ', '1h 8m'], ['Size: ', '59,969,530']])
-_fp = card(title='Mar 10', table=_table, ts='12m ago', danger='stalled')
-_up = table(
+_upload = card(title='Mar 10', table=_table, ts='12m ago', danger='stalled')
+
+_ccols = [
+    '', ' class="text-center"', ' class="text-center"', ' class="text-right"'
+]
+_completed = table(
     clazz='border mt-3',
-    head=['Date', 'Time', 'Size'],
-    body=[['Mar 8', '10h 11m', '358,347,534'],
-          ['Mar 6', '9h 34m', '356,922,996']])
+    hcols=_ccols,
+    bcols=_ccols,
+    head=['Date', 'Upload', 'Download', 'Size'],
+    body=[['Mar 8', '10h 11m', '11m', '358,347,534'],
+          ['Mar 6', '9h 34m', '6m', '356,922,996']])
 
 subtitle = ''
 
@@ -39,6 +45,6 @@ tmpl = 'leaguefile.html'
 context = {
     'title': 'leaguefile',
     'breadcrumbs': _breadcrumbs,
-    'fp': _fp,
-    'up': _up
+    'upload': _upload,
+    'completed': _completed
 }

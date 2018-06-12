@@ -233,7 +233,7 @@ class RecapTest(Test):
 
         plugin = self.create_plugin(_data())
         plugin.tables = _table_old
-        response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
+        response = plugin._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
         self.assertEqual(response,
                          Response(
                              notify=[Notify.BASE],
@@ -242,7 +242,7 @@ class RecapTest(Test):
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
         mock_money.assert_called_once_with()
-        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
+        mock_render.assert_called_once_with(notify=Notify.LEAGUEFILE_DOWNLOAD)
         mock_standings.assert_called_once_with()
         mock_tables.assert_called_once_with()
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
@@ -266,7 +266,7 @@ class RecapTest(Test):
 
         plugin = self.create_plugin(_data())
         plugin.tables = _table_old
-        response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
+        response = plugin._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
         self.assertEqual(response,
                          Response(
                              notify=[Notify.BASE],
@@ -275,7 +275,7 @@ class RecapTest(Test):
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
         mock_money.assert_called_once_with()
-        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
+        mock_render.assert_called_once_with(notify=Notify.LEAGUEFILE_DOWNLOAD)
         mock_standings.assert_called_once_with()
         mock_tables.assert_called_once_with()
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
@@ -299,7 +299,7 @@ class RecapTest(Test):
 
         plugin = self.create_plugin(_data())
         plugin.tables = _table_old
-        response = plugin._notify_internal(notify=Notify.DOWNLOAD_FINISH)
+        response = plugin._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
         self.assertEqual(response,
                          Response(
                              notify=[Notify.BASE],
@@ -308,7 +308,7 @@ class RecapTest(Test):
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
         mock_money.assert_called_once_with()
-        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
+        mock_render.assert_called_once_with(notify=Notify.LEAGUEFILE_DOWNLOAD)
         mock_standings.assert_called_once_with()
         mock_tables.assert_called_once_with()
         self.mock_open.assert_called_once_with(Recap._data(), 'w')

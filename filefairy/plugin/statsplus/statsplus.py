@@ -87,10 +87,10 @@ class Statsplus(Messageable, Registrable, Renderable, Runnable):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
-        if notify == Notify.DOWNLOAD_FINISH:
+        if notify == Notify.LEAGUEFILE_DOWNLOAD:
             self.data['finished'] = True
             self.write()
-        if notify == Notify.DOWNLOAD_YEAR:
+        if notify == Notify.LEAGUEFILE_YEAR:
             self.data['offseason'] = True
             self.write()
         return Response()
@@ -114,7 +114,7 @@ class Statsplus(Messageable, Registrable, Renderable, Runnable):
 
         ddate = datetime.datetime.strptime(date[0], '%m/%d/%Y')
         edate = encode_datetime(ddate)
-        ndate = decode_datetime(self.shadow.get('download.now', edate))
+        ndate = decode_datetime(self.shadow.get('leaguefile.now', edate))
         if ddate < ndate:
             return response
 

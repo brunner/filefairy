@@ -2,10 +2,13 @@
 {% import "common.html" as common %}
 
 {% set items = [] %}
-{% if fp %}
-{% do items.append(('progress', 'In Progress')) %}
+{% if upload %}
+{% do items.append(('upload', 'Upload')) %}
 {% endif %}
-{% if up %}
+{% if download %}
+{% do items.append(('download', 'Download')) %}
+{% endif %}
+{% if completed %}
 {% do items.append(('completed', 'Completed')) %}
 {% endif %}
 {% block nav %}
@@ -15,22 +18,32 @@
 {% endblock %}
 
 {% block content %}
-    {% if fp %}
-    <div class="container anchor" id="progress">
-      {{ common.heading('clock', 'In Progress')|indent(6) }}
+    {% if upload %}
+    <div class="container anchor" id="upload">
+      {{ common.heading('cloud-upload', 'Upload')|indent(6) }}
       <div class="row">
         <div class="col-12">
-          {{ common.card(fp)|indent(10) }}
+          {{ common.card(upload)|indent(10) }}
         </div>
       </div>
     </div>
     {% endif %}
-    {% if up %}
+    {% if download %}
+    <div class="container anchor" id="download">
+      {{ common.heading('cloud-download', 'Download')|indent(6) }}
+      <div class="row">
+        <div class="col-12">
+          {{ common.card(download)|indent(10) }}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if completed %}
     <div class="container anchor" id="completed">
       {{ common.heading('task', 'Completed')|indent(6) }}
       <div class="row">
         <div class="col-12">
-          {{ common.table(up)|indent(10) }}
+          {{ common.table(completed)|indent(10) }}
         </div>
       </div>
     </div>
