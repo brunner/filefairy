@@ -11,6 +11,7 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/git', '', _path))
+from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.git.git import Git  # noqa
@@ -100,53 +101,128 @@ class GitTest(unittest.TestCase):
         self.mock_check.return_value = {'ok': False, 'output': output}
 
         plugin = self.create_plugin()
-        plugin._call(['cmd'], **{})
+        response = plugin._call(['cmd'], **{})
+        msg = 'Call failed: \'cmd\'.'
+        extra = {'output': output}
+        expected = Response(debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
 
         self.mock_check.assert_called_once_with(['cmd'])
         self.mock_log.assert_not_called()
 
-    def test_call__with_ok_true_silent(self):
-        self.mock_check.return_value = {'ok': True, 'output': ''}
-
-        plugin = self.create_plugin()
-        plugin._call(['cmd'], **{})
-
-        self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_not_called()
-
-    def test_call__with_ok_true_verbose(self):
+    def test_call__with_ok_true(self):
         output = 'ret'
         self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
-        plugin._call(['cmd'], v=True)
-
+        response = plugin._call(['cmd'], **{})
         msg = 'Call completed: \'cmd\'.'
+        extra = {'output': output}
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
+
         self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, msg, extra={
-                'output': output
-            })
+        self.mock_log.assert_not_called()
 
     def test_add(self):
-        self.mock_check.return_value = {'ok': True, 'output': ''}
+        output = 'ret'
+        self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
-        plugin.add(v=True)
-
+        response = plugin.add(v=True)
         msg = 'Call completed: \'git add .\'.'
+        extra = {'output': output}
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
+
         self.mock_check.assert_called_once_with(['git', 'add', '.'])
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, msg, extra={
-                'output': ''
-            })
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Git, 'push')
     @mock.patch.object(Git, 'commit')
     @mock.patch.object(Git, 'add')
-    def test_automate(self, mock_add, mock_commit, mock_push):
+    def test_automate__with_failed_add(self, mock_add, mock_commit, mock_push):
+        adebug = Debug(msg='Call completed: \'git add .\'.')
+        mock_add.return_value = Response(debug=[adebug])
+
         plugin = self.create_plugin()
-        plugin.automate(date=_now)
+        response = plugin.automate(date=_now)
+        expected = Response(debug=[adebug])
+        self.assertEqual(response, expected)
+
+        mock_add.assert_called_once_with(date=_now)
+        mock_commit.assert_not_called()
+        mock_push.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch.object(Git, 'push')
+    @mock.patch.object(Git, 'commit')
+    @mock.patch.object(Git, 'add')
+    def test_automate__with_failed_commit(self, mock_add, mock_commit,
+                                          mock_push):
+        adebug = Debug(msg='Call completed: \'git add .\'.')
+        mock_add.return_value = Response(notify=[Notify.BASE], debug=[adebug])
+        cdebug = Debug(
+            msg='Call completed: \'git commit -m "Automated data push."\'.')
+        mock_commit.return_value = Response(debug=[cdebug])
+
+        plugin = self.create_plugin()
+        response = plugin.automate(date=_now)
+        expected = Response(debug=[cdebug])
+        self.assertEqual(response, expected)
+
+        mock_add.assert_called_once_with(date=_now)
+        mock_commit.assert_called_once_with(date=_now)
+        mock_push.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch.object(Git, 'push')
+    @mock.patch.object(Git, 'commit')
+    @mock.patch.object(Git, 'add')
+    def test_automate__with_failed_push(self, mock_add, mock_commit,
+                                        mock_push):
+        adebug = Debug(msg='Call completed: \'git add .\'.')
+        mock_add.return_value = Response(notify=[Notify.BASE], debug=[adebug])
+        cdebug = Debug(
+            msg='Call completed: \'git commit -m "Automated data push."\'.')
+        mock_commit.return_value = Response(
+            notify=[Notify.BASE], debug=[cdebug])
+        pdebug = Debug(msg='Call completed: \'git push\'.')
+        mock_push.return_value = Response(debug=[pdebug])
+
+        plugin = self.create_plugin()
+        response = plugin.automate(date=_now)
+        expected = Response(debug=[pdebug])
+        self.assertEqual(response, expected)
+
+        mock_add.assert_called_once_with(date=_now)
+        mock_commit.assert_called_once_with(date=_now)
+        mock_push.assert_called_once_with(date=_now)
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch.object(Git, 'push')
+    @mock.patch.object(Git, 'commit')
+    @mock.patch.object(Git, 'add')
+    def test_automate__with_success(self, mock_add, mock_commit, mock_push):
+        adebug = Debug(msg='Call completed: \'git add .\'.')
+        mock_add.return_value = Response(notify=[Notify.BASE], debug=[adebug])
+        cdebug = Debug(
+            msg='Call completed: \'git commit -m "Automated data push."\'.')
+        mock_commit.return_value = Response(
+            notify=[Notify.BASE], debug=[cdebug])
+        pdebug = Debug(msg='Call completed: \'git push\'.')
+        mock_push.return_value = Response(notify=[Notify.BASE], debug=[pdebug])
+
+        plugin = self.create_plugin()
+        response = plugin.automate(date=_now)
+        expected = Response(
+            notify=[Notify.BASE], debug=[adebug, cdebug, pdebug])
+        self.assertEqual(response, expected)
 
         mock_add.assert_called_once_with(date=_now)
         mock_commit.assert_called_once_with(date=_now)
@@ -160,72 +236,76 @@ class GitTest(unittest.TestCase):
         self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
-        plugin.commit(v=True)
-
+        response = plugin.commit(v=True)
         msg = 'Call completed: \'git commit -m "Automated data push."\'.'
+        extra = {'output': output}
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
+
         self.mock_check.assert_called_once_with(
             ['git', 'commit', '-m', 'Automated data push.'])
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, msg, extra={
-                'output': output
-            })
+        self.mock_log.assert_not_called()
 
     def test_pull(self):
         output = 'remote: Counting...\nUnpacking...\n'
         self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
-        plugin.pull(v=True)
-
+        response = plugin.pull(v=True)
         msg = 'Call completed: \'git pull\'.'
+        extra = {'output': output}
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
+
         self.mock_check.assert_called_once_with(['git', 'pull'])
-        self.mock_log.assert_has_calls([
-            mock.call(logging.DEBUG, msg, extra={
-                'output': output
-            }),
-            mock.call(logging.INFO, 'Fetched latest changes.')
-        ])
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Fetched latest changes.')
 
     def test_push(self):
         output = 'Counting...\nCompressing...\n'
         self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
-        plugin.push(v=True)
-
+        response = plugin.push(v=True)
         msg = 'Call completed: \'git push\'.'
+        extra = {'output': output}
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
+
         self.mock_check.assert_called_once_with(['git', 'push'])
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, msg, extra={
-                'output': output
-            })
+        self.mock_log.assert_not_called()
 
     def test_reset(self):
         self.mock_check.return_value = {'ok': True, 'output': ''}
 
         plugin = self.create_plugin()
-        plugin.reset(v=True)
-
+        response = plugin.reset(v=True)
         msg = 'Call completed: \'git reset --hard\'.'
+        extra = {'output': ''}
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
+
         self.mock_check.assert_called_once_with(['git', 'reset', '--hard'])
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, msg, extra={
-                'output': ''
-            })
+        self.mock_log.assert_not_called()
 
     def test_status(self):
         output = 'On branch master\nYour branch...\n'
         self.mock_check.return_value = {'ok': True, 'output': output}
 
         plugin = self.create_plugin()
-        plugin.status(v=True)
-
+        response = plugin.status(v=True)
         msg = 'Call completed: \'git status\'.'
+        extra = {'output': output}
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=extra)])
+        self.assertEqual(response, expected)
+
         self.mock_check.assert_called_once_with(['git', 'status'])
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, msg, extra={
-                'output': output
-            })
+        self.mock_log.assert_not_called()
 
 
 if __name__ == '__main__':

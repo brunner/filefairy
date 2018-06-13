@@ -11,6 +11,7 @@ sys.path.append(re.sub(r'/plugin/git', '', _path))
 from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
@@ -50,40 +51,56 @@ class Git(Messageable, Registrable, Runnable):
 
     def _call(self, cmd, **kwargs):
         output = check_output(cmd)
-        if kwargs.get('v'):
-            status = 'completed' if output.get('ok') else 'failed'
-            fcmd = '\'{}\''.format(self._format(cmd))
-            s = 'Call {}: {}.'.format(status, fcmd)
-            logger_.log(
-                logging.DEBUG, s, extra={
-                    'output': output.get('output', '')
-                })
-        return output
+        response = Response()
+
+        if output.get('ok'):
+            response.append_notify(Notify.BASE)
+            status = 'completed'
+        else:
+            status = 'failed'
+
+        fcmd = '\'{}\''.format(self._format(cmd))
+        msg = 'Call {}: {}.'.format(status, fcmd)
+        extra = {'output': output.get('output', '')}
+        response.append_debug(Debug(msg=msg, extra=extra))
+        return response
 
     def add(self, **kwargs):
         return self._call(['git', 'add', '.'], **kwargs)
 
     def automate(self, **kwargs):
-        output = self.add(**kwargs)
-        if not output.get('ok'):
-            return
+        response = Response(notify=[Notify.BASE])
 
-        output = self.commit(**kwargs)
-        if not output.get('ok'):
-            return
+        sub = self.add(**kwargs)
+        if not sub.notify:
+            return sub
+        for debug in sub.debug:
+            response.append_debug(debug)
 
-        output = self.push(**kwargs)
-        if output.get('ok'):
-            logger_.log(logging.INFO, 'Automated data push.')
+        sub = self.commit(**kwargs)
+        if not sub.notify:
+            return sub
+        for debug in sub.debug:
+            response.append_debug(debug)
+
+        sub = self.push(**kwargs)
+        if not sub.notify:
+            return sub
+        for debug in sub.debug:
+            response.append_debug(debug)
+
+        logger_.log(logging.INFO, 'Automated data push.')
+        return response
 
     def commit(self, **kwargs):
         return self._call(['git', 'commit', '-m', 'Automated data push.'],
                           **kwargs)
 
     def pull(self, **kwargs):
-        output = self._call(['git', 'pull'], **kwargs)
-        if output.get('ok'):
+        response = self._call(['git', 'pull'], **kwargs)
+        if response.notify:
             logger_.log(logging.INFO, 'Fetched latest changes.')
+        return response
 
     def push(self, **kwargs):
         return self._call(['git', 'push'], **kwargs)

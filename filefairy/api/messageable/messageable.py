@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import abc
+import logging
 import os
 import re
 import sys
@@ -11,6 +12,8 @@ sys.path.append(re.sub(r'/api/messageable', '', _path))
 from api.nameable.nameable import Nameable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+
+logger_ = logging.getLogger('fairylab')
 
 
 class Messageable(Nameable):
@@ -46,6 +49,9 @@ class Messageable(Nameable):
                     response = item(*args, **dict(kwargs, v=True))
                     if not isinstance(response, Response):
                         response = Response()
+                    for debug in response.debug:
+                        logger_.log(
+                            logging.DEBUG, debug.msg, extra=debug.extra)
                     response.notify = [Notify.BASE]
                     return response
 
