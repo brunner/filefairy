@@ -382,7 +382,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
             ts = delta(decode_datetime(download['now']), kwargs['date'])
             success = 'ongoing' if 's' in ts else ''
             danger = 'stalled' if 's' not in ts else ''
-            ret['download'] = self._card(download['start'], time,
+            ret['download'] = self._card(upload['start'], time,
                                          download['size'], ts, success, danger)
 
         body = []
