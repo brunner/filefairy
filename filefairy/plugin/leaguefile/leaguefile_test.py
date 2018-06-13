@@ -422,7 +422,7 @@ class LeaguefileTest(Test):
         updated = {
             'start': 'Jan 29 18:05',
             'size': '100000',
-            'end': 'Jan 29 18:10',
+            'end': 'Jan 29 00:00',
             'now': '2018-01-29T00:00:00'
         }
         write = _data(download=updated, upload=upload)

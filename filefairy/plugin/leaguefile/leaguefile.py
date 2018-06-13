@@ -103,8 +103,9 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
             size, date, name, fp = self._check_download()
             if fp:
                 if download.get('size', 0) != size:
+                    end = self._encode(kwargs['date'])
                     now = encode_datetime(kwargs['date'])
-                    download.update({'size': size, 'end': date, 'now': now})
+                    download.update({'size': size, 'end': end, 'now': now})
             elif upload['size'] == size:
                 completed = {
                     'size': upload['size'],
