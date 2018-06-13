@@ -358,7 +358,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                                        ts, success, danger)
 
         ret['download'] = None
-        if data['download']:
+        if data['download'] and data['download'].get('end'):
             download = data['download']
             time = self._time(download['start'], download['end'])
             ts = delta(decode_datetime(download['now']), kwargs['date'])
