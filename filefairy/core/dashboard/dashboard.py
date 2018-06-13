@@ -90,7 +90,8 @@ class Dashboard(Messageable, Registrable, Renderable):
         for day in self.data['records']:
             for r in self.data['records'][day]:
                 if module + '.py' in r['pathname']:
-                    r['levelname'] = 'INFO'
+                    if r['levelname'] != 'WARNING' or r['count'] >= 5:
+                        r['levelname'] = 'INFO'
                 if 'Disabled ' + module + '.' in r['msg']:
                     r['levelname'] = 'INFO'
 

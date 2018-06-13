@@ -301,8 +301,21 @@ class DashboardTest(Test):
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(Dashboard, '_render')
-    def test_resolve__with_warning(self, mock_render):
+    def test_resolve__with_warning_once(self, mock_render):
         record_old = dict(_record_warning, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record_old]}}
+        dashboard = self.create_dashboard(read)
+        actual = dashboard.resolve('file', date=_now)
+        expected = Response()
+        self.assertEqual(actual, expected)
+
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_resolve__with_warning_repeated(self, mock_render):
+        record_old = dict(_record_warning, count=5, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
         actual = dashboard.resolve('file', date=_now)
@@ -311,7 +324,7 @@ class DashboardTest(Test):
 
         record_new = dict(
             _record_warning,
-            count=1,
+            count=5,
             date=_then_date_encoded,
             levelname='INFO')
         write = {'records': {_then_day_encoded: [record_new]}}
