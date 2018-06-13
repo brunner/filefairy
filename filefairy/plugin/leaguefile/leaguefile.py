@@ -139,6 +139,12 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         data = self.data
         original = copy.deepcopy(data)
 
+        response = Response()
+
+        if data['download']:
+            task = Task(target='_download_internal', kwargs=kwargs)
+            response.append_task(task)
+
         for size, date, name, fp in self._check_upload():
             if not fp:
                 data['upload'] = None
@@ -148,12 +154,16 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                     now = encode_datetime(kwargs['date'])
                     u = {'start': date, 'size': size, 'end': date, 'now': now}
                     data['upload'] = u
-            elif not len(
-                    data['completed']) or data['completed'][0]['date'] != date:
-                c = {'date': date, 'start': date, 'size': size, 'end': date}
-                data['completed'].insert(0, c)
-
-        data['download'] = None
+            elif not data['download']:
+                empty = len(data['completed']) == 0
+                if empty or data['completed'][0]['date'] != date:
+                    c = {
+                        'date': date,
+                        'start': date,
+                        'size': size,
+                        'end': date
+                    }
+                    data['completed'].insert(0, c)
 
         if data != original:
             self.write()
