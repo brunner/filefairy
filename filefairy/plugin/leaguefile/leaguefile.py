@@ -173,7 +173,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
             self.write()
 
         self._render(**kwargs)
-        return Response()
+        return response
 
     def _shadow_internal(self, **kwargs):
         return [
