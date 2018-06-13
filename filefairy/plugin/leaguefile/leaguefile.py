@@ -144,19 +144,23 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         if data['download']:
             task = Task(target='_download_internal', kwargs=kwargs)
             response.append_task(task)
+        else:
+            for size, date, name, fp in self._check_upload():
+                if not fp:
+                    data['upload'] = None
 
-        for size, date, name, fp in self._check_upload():
-            if not fp:
-                data['upload'] = None
-
-            if '.filepart' in name:
-                if not data['upload']:
-                    now = encode_datetime(kwargs['date'])
-                    u = {'start': date, 'size': size, 'end': date, 'now': now}
-                    data['upload'] = u
-            elif not data['download']:
                 empty = len(data['completed']) == 0
-                if empty or data['completed'][0]['date'] != date:
+                if '.filepart' in name:
+                    if not data['upload']:
+                        now = encode_datetime(kwargs['date'])
+                        u = {
+                            'start': date,
+                            'size': size,
+                            'end': date,
+                            'now': now
+                        }
+                        data['upload'] = u
+                elif empty or data['completed'][0]['date'] != date:
                     c = {
                         'date': date,
                         'start': date,
