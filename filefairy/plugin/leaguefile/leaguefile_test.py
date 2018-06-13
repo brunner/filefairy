@@ -867,7 +867,7 @@ class LeaguefileTest(Test):
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download started.')
         self.assertEqual(plugin.data['download'], {
-            'start': 'Jan 27 12:00',
+            'start': 'Jan 29 00:00',
             'now': _now_encoded
         })
 

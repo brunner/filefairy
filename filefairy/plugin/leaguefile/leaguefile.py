@@ -230,6 +230,10 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         return datetime.datetime.strptime(date, '%b %d %H:%M')
 
     @staticmethod
+    def _encode(date):
+        return date.strftime('%b %d %H:%M')
+
+    @staticmethod
     def _seconds(then, now):
         diff = Leaguefile._decode(now) - Leaguefile._decode(then)
         return diff.total_seconds()
@@ -253,7 +257,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         if output.get('ok') and data['upload']:
             now = encode_datetime(kwargs['date'])
             self.data['download'] = {
-                'start': data['upload']['end'],
+                'start': self._encode(kwargs['date']),
                 'now': now
             }
             logger_.log(logging.INFO, 'Download started.')
@@ -378,7 +382,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
             ts = delta(decode_datetime(download['now']), kwargs['date'])
             success = 'ongoing' if 's' in ts else ''
             danger = 'stalled' if 's' not in ts else ''
-            ret['download'] = self._card(download['start'], time,
+            ret['download'] = self._card(upload['start'], time,
                                          download['size'], ts, success, danger)
 
         body = []
