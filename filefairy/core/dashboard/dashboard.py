@@ -15,6 +15,7 @@ from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
@@ -95,8 +96,9 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
         return []
 
     def resolve(self, *args, **kwargs):
+        response = Response()
         if len(args) != 1:
-            return Response()
+            return response
 
         module = args[0]
 
@@ -115,7 +117,8 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
             self.write()
             self._render(**kwargs)
 
-        return Response()
+        response.append_debug(Debug(msg='Resolved ' + module + '.'))
+        return response
 
     @staticmethod
     def _line(record):

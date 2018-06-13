@@ -19,6 +19,7 @@ from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
+from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
@@ -225,7 +226,7 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(logging.INFO, 'Completed setup.')
+        self.mock_log.assert_not_called()
         self.assertEqual(program.day, _now.day)
         self.assertEqual(program.registered['browsable'].date, _then)
         self.assertEqual(program.registered['browsable'].ok, True)
@@ -816,7 +817,10 @@ class FairylabTest(Test):
         args = ('plugin', 'internal')
         kwargs = {'date': _then, 'v': True}
         program = self.create_program()
-        program.reload(*args, **kwargs)
+        response = program.reload(*args, **kwargs)
+        debug = Debug(msg='Reloaded internal.')
+        expected = Response(notify=[Notify.BASE], debug=[debug])
+        self.assertEqual(response, expected)
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'Internal')
@@ -830,13 +834,8 @@ class FairylabTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        calls = [
-            mock.call(logging.INFO, 'Reloaded internal.'),
-            mock.call(logging.DEBUG, 'Reloaded internal.'),
-            mock.call(logging.INFO, 'Completed setup.'),
-            mock.call(logging.DEBUG, 'Completed setup.')
-        ]
-        self.mock_log.assert_has_calls(calls)
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Reloaded internal.')
         self.assertNotIn('browsable', program.registered)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -853,7 +852,8 @@ class FairylabTest(Test):
         args = ('plugin', 'internal')
         kwargs = {'date': _then, 'v': True}
         program = self.create_program()
-        program.reload(*args, **kwargs)
+        response = program.reload(*args, **kwargs)
+        self.assertEqual(response, Response())
 
         module = mock_import.return_value
         mock_getattr.assert_called_once_with(module, 'Internal')

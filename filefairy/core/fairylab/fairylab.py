@@ -22,7 +22,9 @@ from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.dashboard.dashboard import LoggingHandler  # noqa
+from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
+from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
 from util.component.component import card  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -64,16 +66,12 @@ class Fairylab(Messageable, Renderable):
     def _setup(self, **kwargs):
         date = kwargs['date']
         self.day = date.day
-
         self._try('dashboard', 'resolve', 'dashboard', **kwargs)
-
         d = os.path.join(_root, 'plugin')
         ps = filter(lambda x: self._is_plugin_dir(d, x), os.listdir(d))
         for p in sorted(ps):
             self._reload_internal('plugin', p, **kwargs)
-
         self._try_all('_setup', **kwargs)
-        self._log_setup(**kwargs)
 
     def _on_message_internal(self, **kwargs):
         pass
@@ -89,18 +87,6 @@ class Fairylab(Messageable, Renderable):
     @staticmethod
     def _package(path, name):
         return '{0}.{1}.{1}'.format(path, name)
-
-    @staticmethod
-    def _log_reloaded(name, **kwargs):
-        logger_.log(logging.INFO, 'Reloaded ' + name + '.')
-        if kwargs.get('v'):
-            logger_.log(logging.DEBUG, 'Reloaded ' + name + '.')
-
-    @staticmethod
-    def _log_setup(**kwargs):
-        logger_.log(logging.INFO, 'Completed setup.')
-        if kwargs.get('v'):
-            logger_.log(logging.DEBUG, 'Completed setup.')
 
     def _try_all(self, method, *args, **kwargs):
         ps = sorted(self.registered.keys())
@@ -239,14 +225,15 @@ class Fairylab(Messageable, Renderable):
         return ret
 
     def reload(self, *args, **kwargs):
-        value = self._reload_internal(*args, **kwargs)
-        if value:
+        response = self._reload_internal(*args, **kwargs)
+        if response.notify:
             self._try_all('_setup', **kwargs)
-            self._log_setup(**kwargs)
+        return response
 
     def _reload_internal(self, *args, **kwargs):
+        response = Response()
         if len(args) != 2:
-            return False
+            return response
 
         path, name = args
         clazz = name.capitalize()
@@ -256,17 +243,18 @@ class Fairylab(Messageable, Renderable):
             del sys.modules[package]
 
         try:
-            module = importlib.import_module(package)
+            module, ok = importlib.import_module(package), True
             self._try('dashboard', 'resolve', name, **kwargs)
-
             if path == 'plugin':
-                return self._install(name, module, clazz, **kwargs)
-            else:
-                self._log_reloaded(name, **kwargs)
+                ok = self._install(name, module, clazz, **kwargs)
+            if ok:
+                response.append_notify(Notify.BASE)
+                response.append_debug(Debug(msg='Reloaded ' + name + '.'))
+                logger_.log(logging.INFO, 'Reloaded ' + name + '.')
         except:
             logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
 
-        return False
+        return response
 
     def _install(self, name, module, clazz, **kwargs):
         try:
@@ -276,7 +264,6 @@ class Fairylab(Messageable, Renderable):
                 instance = plugin(date=date, e=self.environment)
             else:
                 instance = plugin(date=date)
-            self._log_reloaded(name, **kwargs)
         except:
             date = None
             instance = None

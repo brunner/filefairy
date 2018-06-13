@@ -15,6 +15,7 @@ _root = re.sub(r'/core/dashboard', '', _path)
 sys.path.append(_root)
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.dashboard.dashboard import LoggingHandler  # noqa
+from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
@@ -325,7 +326,7 @@ class DashboardTest(Test):
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
         actual = dashboard.resolve('foo', date=_now)
-        expected = Response()
+        expected = Response(debug=[Debug(msg='Resolved foo.')])
         self.assertEqual(actual, expected)
 
         record_new = dict(
@@ -341,7 +342,7 @@ class DashboardTest(Test):
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
         actual = dashboard.resolve('file', date=_now)
-        expected = Response()
+        expected = Response(debug=[Debug(msg='Resolved file.')])
         self.assertEqual(actual, expected)
 
         mock_render.assert_not_called()
@@ -354,7 +355,7 @@ class DashboardTest(Test):
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
         actual = dashboard.resolve('file', date=_now)
-        expected = Response()
+        expected = Response(debug=[Debug(msg='Resolved file.')])
         self.assertEqual(actual, expected)
 
         mock_render.assert_not_called()
@@ -367,7 +368,7 @@ class DashboardTest(Test):
         read = {'records': {_then_day_encoded: [record_old]}}
         dashboard = self.create_dashboard(read)
         actual = dashboard.resolve('file', date=_now)
-        expected = Response()
+        expected = Response(debug=[Debug(msg='Resolved file.')])
         self.assertEqual(actual, expected)
 
         record_new = dict(
