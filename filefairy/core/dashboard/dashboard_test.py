@@ -252,6 +252,54 @@ class DashboardTest(Test):
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(Dashboard, '_render')
+    def test_run__with_error(self, mock_render):
+        record = dict(_record_error, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record]}}
+        dashboard = self.create_dashboard(read)
+        response = dashboard._run_internal(date=_now)
+        self.assertEqual(response, Response())
+
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_run__with_info(self, mock_render):
+        record = dict(_record_info, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record]}}
+        dashboard = self.create_dashboard(read)
+        response = dashboard._run_internal(date=_now)
+        self.assertEqual(response, Response())
+
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_run__with_warning_once(self, mock_render):
+        record = dict(_record_warning, count=1, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record]}}
+        dashboard = self.create_dashboard(read)
+        response = dashboard._run_internal(date=_now)
+        self.assertEqual(response, Response())
+
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
+    def test_run__with_warning_repeated(self, mock_render):
+        record = dict(_record_warning, count=5, date=_then_date_encoded)
+        read = {'records': {_then_day_encoded: [record]}}
+        dashboard = self.create_dashboard(read)
+        response = dashboard._run_internal(date=_now)
+        self.assertEqual(response, Response())
+
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Dashboard, '_render')
     def test_setup(self, mock_render):
         read = {'records': {}}
         dashboard = self.create_dashboard(read)

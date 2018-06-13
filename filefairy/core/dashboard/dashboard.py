@@ -14,6 +14,7 @@ sys.path.append(re.sub(r'/core/dashboard', '', _path))
 from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
@@ -36,7 +37,7 @@ class StringFormatter(string.Formatter):
         return kwargs.get(key, '{{{0}}}'.format(key))
 
 
-class Dashboard(Messageable, Registrable, Renderable):
+class Dashboard(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super(Dashboard, self).__init__(**kwargs)
         self.formatter = StringFormatter()
@@ -70,6 +71,21 @@ class Dashboard(Messageable, Registrable, Renderable):
         html = 'html/fairylab/dashboard/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'dashboard.html', _home)]
+
+    def _run_internal(self, **kwargs):
+        found = False
+        for day in self.data['records']:
+            for r in self.data['records'][day]:
+                levelname = r['levelname']
+                if levelname == 'WARNING' and r['count'] < 5:
+                    continue
+                if levelname == 'ERROR' or levelname == 'WARNING':
+                    found = True
+
+        if found:
+            self._render(**kwargs)
+
+        return Response()
 
     def _setup_internal(self, **kwargs):
         self._render(**kwargs)
