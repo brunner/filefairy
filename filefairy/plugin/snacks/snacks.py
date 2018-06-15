@@ -156,8 +156,8 @@ _snackdict = {
 }
 
 _snacklist = list(_snackdict.keys())
-del _snacklist['star']
-del _snacklist['trophy']
+_snacklist.remove('star')
+_snacklist.remove('trophy')
 
 
 class Snacks(Messageable, Registrable, Renderable, Runnable):
