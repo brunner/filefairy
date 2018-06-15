@@ -18,12 +18,14 @@ from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
 from util.component.component import card  # noqa
+from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 _collect = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
+_cols = ['', ' class="text-right"']
 _env = env()
 _members_new = {'U1234': '1000.789', 'U5678': '100.456'}
 _members_old = {'U1234': '100.123', 'U5678': '100.456'}
@@ -638,6 +640,7 @@ class SnacksTest(Test):
         self.mock_reactions.assert_not_called()
 
     maxDiff = None
+
     def test_home__with_empty(self):
         read = _data(members=_members_old)
         plugin = self.create_plugin(read)
@@ -653,10 +656,7 @@ class SnacksTest(Test):
         stars = card(title='0', info='Total stars awarded.', ts='never')
         trophies = card(title='0', info='Total trophies lifted.', ts='never')
         statistics = [servings, stars, trophies]
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'statistics': statistics
-        }
+        expected = {'breadcrumbs': breadcrumbs, 'statistics': statistics}
         self.assertEqual(actual, expected)
 
     def test_home__with_servings(self):
@@ -676,9 +676,23 @@ class SnacksTest(Test):
         stars = card(title='0', info='Total stars awarded.', ts='never')
         trophies = card(title='0', info='Total trophies lifted.', ts='never')
         statistics = [servings, stars, trophies]
+        count = table(
+            clazz='border mt-3',
+            hcols=_cols,
+            bcols=_cols,
+            head=['Name', 'Count'],
+            body=[['a', '6'], ['b', '3']])
+        recent = table(
+            clazz='border mt-3',
+            hcols=_cols,
+            bcols=_cols,
+            head=['Name', 'Last activity'],
+            body=[['a', '0s ago'], ['b', '23h ago']])
         expected = {
             'breadcrumbs': breadcrumbs,
-            'statistics': statistics
+            'statistics': statistics,
+            'count': count,
+            'recent': recent
         }
         self.assertEqual(actual, expected)
 
@@ -699,15 +713,33 @@ class SnacksTest(Test):
         stars = card(title='1', info='Total stars awarded.', ts='23h ago')
         trophies = card(title='0', info='Total trophies lifted.', ts='never')
         statistics = [servings, stars, trophies]
+        count = table(
+            clazz='border mt-3',
+            hcols=_cols,
+            bcols=_cols,
+            head=['Name', 'Count'],
+            body=[['a', '6'], ['b', '2'], ['star', '1']])
+        recent = table(
+            clazz='border mt-3',
+            hcols=_cols,
+            bcols=_cols,
+            head=['Name', 'Last activity'],
+            body=[['a', '0s ago'], ['b', '23h ago'], ['star', '23h ago']])
         expected = {
             'breadcrumbs': breadcrumbs,
-            'statistics': statistics
+            'statistics': statistics,
+            'count': count,
+            'recent': recent
         }
         self.assertEqual(actual, expected)
 
     def test_home__with_trophies(self):
         count = {'a': 1, 'star': 1, 'trophy': 1}
-        last = {'a': _now_encoded, 'star': _now_encoded, 'trophy': _now_encoded}
+        last = {
+            'a': _now_encoded,
+            'star': _now_encoded,
+            'trophy': _now_encoded
+        }
         read = _data(count=count, last=last, members=_members_old)
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
@@ -722,9 +754,23 @@ class SnacksTest(Test):
         stars = card(title='1', info='Total stars awarded.', ts='0s ago')
         trophies = card(title='1', info='Total trophies lifted.', ts='0s ago')
         statistics = [servings, stars, trophies]
+        count = table(
+            clazz='border mt-3',
+            hcols=_cols,
+            bcols=_cols,
+            head=['Name', 'Count'],
+            body=[['a', '1'], ['star', '1'], ['trophy', '1']])
+        recent = table(
+            clazz='border mt-3',
+            hcols=_cols,
+            bcols=_cols,
+            head=['Name', 'Last activity'],
+            body=[['a', '0s ago'], ['star', '0s ago'], ['trophy', '0s ago']])
         expected = {
             'breadcrumbs': breadcrumbs,
-            'statistics': statistics
+            'statistics': statistics,
+            'count': count,
+            'recent': recent
         }
         self.assertEqual(actual, expected)
 

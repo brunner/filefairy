@@ -31,12 +31,11 @@ _pineapple = '\U0001F34D'
 _ramen = '\U0001F35C'
 _strawberry = '\U0001F353'
 
-_hcols = [' class="text-center w-75p"', '', ' class="text-right"']
-_bcols = [' class="text-center w-75p"', '', ' class="text-right"']
+_cols = [' class="text-center w-75p"', '', ' class="text-right"']
 _count = table(
     clazz='border mt-3',
-    hcols=_hcols,
-    bcols=_bcols,
+    hcols=_cols,
+    bcols=_cols,
     head=['Emoji', 'Name', 'Count'],
     body=[[_strawberry, 'strawberry', '21'], [_avocado, 'avocado', '13'],
           [_pie, 'pie', '12'], [_ramen, 'ramen', '9'],
@@ -44,8 +43,8 @@ _count = table(
 
 _recent = table(
     clazz='border mt-3',
-    hcols=_hcols,
-    bcols=_bcols,
+    hcols=_cols,
+    bcols=_cols,
     head=['Emoji', 'Name', 'Last activity'],
     body=[[_pineapple, 'pineapple', '5m ago'], [_avocado, 'avocado', '5m ago'],
           [_ramen, 'ramen', '5m ago'], [_green_salad, 'green_salad', '3d ago'],

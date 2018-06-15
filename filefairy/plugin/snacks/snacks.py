@@ -20,6 +20,7 @@ from core.task.task import Task  # noqa
 from util.ago.ago import delta  # noqa
 from util.corpus.corpus import collect  # noqa
 from util.component.component import card  # noqa
+from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.nltk_.nltk_ import cfd  # noqa
@@ -211,6 +212,16 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         return []
 
     @staticmethod
+    def _flip(s):
+        r = ''
+        for c in s:
+            if c.isdigit():
+                r += str(abs(9 - int(c)))
+            else:
+                r += c
+        return r
+
+    @staticmethod
     def _fnames():
         d = os.path.join(_root, 'resource/corpus')
         return [os.path.join(d, c) for c in os.listdir(d)]
@@ -234,6 +245,24 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         elif snacks[1] == snacks[2]:
             snacks[2] = 'star'
         return snacks
+
+    def _body_count(self):
+        body = []
+        count = self.data['count']
+        for snack in sorted(count, key=lambda x: (-count[x], x)):
+            body.append([snack, str(count[snack])])
+            if len(body) == 15:
+                break
+        return body
+
+    def _body_recent(self, now):
+        body = []
+        last = self.data['last']
+        for snack in sorted(last, key=lambda x: (self._flip(last[x]), x)):
+            body.append([snack, self._ts(last[snack], now)])
+            if len(body) == 15:
+                break
+        return body
 
     def _corpus(self):
         channels = channels_list()
@@ -283,6 +312,23 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         trophies = card(title=str(count), info='Total trophies lifted.', ts=ts)
 
         ret['statistics'] = [servings, stars, trophies]
+
+        cols = ['', ' class="text-right"']
+        if data['count']:
+            ret['count'] = table(
+                clazz='border mt-3',
+                hcols=cols,
+                bcols=cols,
+                head=['Name', 'Count'],
+                body=self._body_count())
+
+        if data['last']:
+            ret['recent'] = table(
+                clazz='border mt-3',
+                hcols=cols,
+                bcols=cols,
+                head=['Name', 'Last activity'],
+                body=self._body_recent(date))
 
         return ret
 
