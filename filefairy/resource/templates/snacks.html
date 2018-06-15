@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "common.html" as common %}
+
+{% set items = [('statistics', 'Statistics'), ('leaderboard', 'Leaderboard')] %}
+{% block nav %}
+{{ common.nav(items) }}
+{% endblock %}
+
+{% block content %}
+<div class="container anchor" id="statistics">
+{{ common.heading('pie-chart', 'Statistics') }}
+<div class="row d-flex flex-wrap">
+{% for card in statistics %}
+<div class="col-md-12 col-lg-4 d-flex flex-column">
+{{ common.card(card) }}
+</div>
+{% endfor %}
+</div>
+</div>
+<div class="container anchor" id="leaderboard">
+{{ common.heading('bar-chart', 'Leaderboard') }}
+<div class="row">
+<div class="col-md-6">
+{{ common.table(count) }}
+</div>
+<div class="col-md-6">
+{{ common.table(recent) }}
+</div>
+</div>
+</div>
+{% endblock %}

@@ -5,7 +5,6 @@ import datetime
 import os
 import re
 import sys
-import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
@@ -18,9 +17,13 @@ from core.task.task import Task  # noqa
 from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
+from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
+from util.test.test import Test  # noqa
+from util.test.test import main  # noqa
 
 _collect = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
+_env = env()
 _members_new = {
     'U1234': {
         'latest': '1000.789'
@@ -49,7 +52,7 @@ def _data(members=_members_old):
     return {'members': members}
 
 
-class SnacksTest(unittest.TestCase):
+class SnacksTest(Test):
     def setUp(self):
         patch_open = mock.patch(
             'api.serializable.serializable.open', create=True)
@@ -88,7 +91,7 @@ class SnacksTest(unittest.TestCase):
 
     def create_plugin(self, data, cfds=None, names=None):
         self.init_mocks(data)
-        plugin = Snacks(date=_now)
+        plugin = Snacks(date=_now, e=_env)
         plugin.loaded = True
 
         self.mock_open.assert_called_once_with(Snacks._data(), 'r')
@@ -656,5 +659,8 @@ class SnacksTest(unittest.TestCase):
         self.assertTrue(plugin.loaded)
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ in ['__main__', 'plugin.snacks.snacks_test']:
+    _main = __name__ == '__main__'
+    _pkg = 'plugin.snacks'
+    _pth = 'plugin/snacks'
+    main(SnacksTest, Snacks, _pkg, _pth, {}, _main, date=_now, e=_env)

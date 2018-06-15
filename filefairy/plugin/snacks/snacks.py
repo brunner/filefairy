@@ -12,8 +12,8 @@ _root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
 from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
-from api.serializable.serializable import Serializable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.task.task import Task  # noqa
@@ -59,7 +59,7 @@ _snacklist = [
 ]
 
 
-class Snacks(Messageable, Registrable, Runnable, Serializable):
+class Snacks(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.loaded = False
@@ -69,8 +69,16 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
         return os.path.join(_path, 'data.json')
 
     @staticmethod
+    def _href():
+        return '/fairylab/snacks/'
+
+    @staticmethod
     def _info():
         return 'Feeds the masses bread and circuses.'
+
+    @staticmethod
+    def _title():
+        return 'snacks'
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
@@ -173,6 +181,11 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
 
         return response
 
+    def _render_internal(self, **kwargs):
+        html = 'html/fairylab/snacks/index.html'
+        _home = self._home(**kwargs)
+        return [(html, '', 'snacks.html', _home)]
+
     def _run_internal(self, **kwargs):
         return Response()
 
@@ -221,6 +234,9 @@ class Snacks(Messageable, Registrable, Runnable, Serializable):
             fname = os.path.join(_root, 'resource/corpus', user + '.txt')
             with open(fname, 'w') as f:
                 f.write('\n'.join(collected[user]))
+
+    def _home(self, **kwargs):
+        return {}
 
     def _load(self, *args, **kwargs):
         self._corpus()
