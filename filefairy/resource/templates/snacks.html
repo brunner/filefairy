@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('statistics', 'Statistics'), ('leaderboard', 'Leaderboard')] %}
+{% set items = [('statistics', 'Statistics')] %}
+{% if count and recent %}
+{% do items.append(('leaderboard', 'Leaderboard')) %}
+{% endif %}
 {% block nav %}
 {{ common.nav(items) }}
 {% endblock %}
 
 {% block content %}
+
 <div class="container anchor" id="statistics">
 {{ common.heading('pie-chart', 'Statistics') }}
 <div class="row d-flex flex-wrap">
@@ -17,6 +21,8 @@
 {% endfor %}
 </div>
 </div>
+
+{% if count and recent %}
 <div class="container anchor" id="leaderboard">
 {{ common.heading('bar-chart', 'Leaderboard') }}
 <div class="row">
@@ -28,4 +34,6 @@
 </div>
 </div>
 </div>
+{% endif %}
+
 {% endblock %}
