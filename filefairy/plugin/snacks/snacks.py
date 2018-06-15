@@ -156,6 +156,8 @@ _snackdict = {
 }
 
 _snacklist = list(_snackdict.keys())
+del _snacklist['star']
+del _snacklist['trophy']
 
 
 class Snacks(Messageable, Registrable, Renderable, Runnable):
