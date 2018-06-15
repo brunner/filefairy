@@ -440,6 +440,24 @@
         "lineno": 22,
         "msg": "Handled warning.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-15T11:05:37.733382",
+        "exc": "Traceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 398, in run\n    output=stdout, stderr=stderr)\nsubprocess.CalledProcessError: Command '['git', 'push']' returned non-zero exit status 1",
+        "levelname": "WARNING",
+        "lineno": 22,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-15T11:05:52.709542",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 102,
+        "msg": "Fetched latest changes.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
       }
     ]
   }
