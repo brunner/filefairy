@@ -48,27 +48,112 @@ _chooselist = [
     'Why not both?',
 ]
 
-_snacklist = [
-    'amphora', 'apple', 'avocado', 'baby_bottle', 'bacon', 'baguette_bread',
-    'banana', 'beer', 'beers', 'bento', 'birthday', 'bowl_with_spoon', 'bread',
-    'broccoli', 'burrito', 'cake', 'candy', 'canned_food', 'carrot',
-    'champagne', 'cheese_wedge', 'cherries', 'chestnut', 'chocolate_bar',
-    'chopsticks', 'clinking_glasses', 'cocktail', 'coconut', 'coffee',
-    'cookie', 'corn', 'croissant', 'cucumber', 'cup_with_straw', 'cut_of_meat',
-    'curry', 'custard', 'dango', 'doughnut', 'dumpling', 'egg', 'eggplant',
-    'fish_cake', 'fork_and_knife', 'fortune_cookie', 'fried_egg',
-    'fried_shrimp', 'fries', 'glass_of_milk', 'grapes', 'green_apple',
-    'green_salad', 'hamburger', 'hocho', 'honey_pot', 'hot_pepper', 'hotdog',
-    'ice_cream', 'icecream', 'kiwifruit', 'knife_fork_plate', 'lemon',
-    'lollipop', 'meat_on_bone', 'melon', 'mushroom', 'oden', 'pancakes',
-    'peach', 'peanuts', 'pear', 'pie', 'pineapple', 'pizza', 'popcorn',
-    'potato', 'poultry_leg', 'pretzel', 'ramen', 'rice', 'rice_ball',
-    'rice_cracker', 'sake', 'sandwich', 'shallow_pan_of_food', 'shaved_ice',
-    'spaghetti', 'spoon', 'star', 'stew', 'strawberry', 'stuffed_flatbread',
-    'sushi', 'sweet_potato', 'taco', 'takeout_box', 'tangerine', 'tea',
-    'tomato', 'trophy', 'tropical_drink', 'tumbler_glass', 'watermelon',
-    'wine_glass'
-]
+_snackdict = {
+    'amphora': '\U0001F3FA',
+    'apple': '\U0001F34E',
+    'avocado': '\U0001F951',
+    'baby_bottle': '\U0001F37C',
+    'bacon': '\U0001F953',
+    'baguette_bread': '\U0001F956',
+    'banana': '\U0001F34C',
+    'beer': '\U0001F37A',
+    'beers': '\U0001F37B',
+    'bento': '\U0001F371',
+    'birthday': '\U0001F382',
+    'bowl_with_spoon': '\U0001F963',
+    'bread': '\U0001F35E',
+    'broccoli': '\U0001F966',
+    'burrito': '\U0001F32F',
+    'cake': '\U0001F370',
+    'candy': '\U0001F36C',
+    'canned_food': '\U0001F96B',
+    'carrot': '\U0001F955',
+    'champagne': '\U0001F37E',
+    'cheese_wedge': '\U0001F9C0',
+    'cherries': '\U0001F352',
+    'chestnut': '\U0001F330',
+    'chocolate_bar': '\U0001F36B',
+    'chopsticks': '\U0001F962',
+    'clinking_glasses': '\U0001F942',
+    'cocktail': '\U0001F378',
+    'coconut': '\U0001F965',
+    'coffee': '\u2615',
+    'cookie': '\U0001F36A',
+    'corn': '\U0001F33D',
+    'croissant': '\U0001F950',
+    'cucumber': '\U0001F952',
+    'cup_with_straw': '\U0001F964',
+    'cut_of_meat': '\U0001F969',
+    'curry': '\U0001F35B',
+    'custard': '\U0001F36E',
+    'dango': '\U0001F361',
+    'doughnut': '\U0001F369',
+    'dumpling': '\U0001F95F',
+    'egg': '\U0001F95A',
+    'eggplant': '\U0001F346',
+    'fish_cake': '\U0001F365',
+    'fork_and_knife': '\U0001F374',
+    'fortune_cookie': '\U0001F960',
+    'fried_egg': '\U0001F373',
+    'fried_shrimp': '\U0001F364',
+    'fries': '\U0001F35F',
+    'glass_of_milk': '\U0001F95B',
+    'grapes': '\U0001F347',
+    'green_apple': '\U0001F34F',
+    'green_salad': '\U0001F957',
+    'hamburger': '\U0001F354',
+    'hocho': '\U0001F52A',
+    'honey_pot': '\U0001F36F',
+    'hot_pepper': '\U0001F336',
+    'hotdog': '\U0001F32D',
+    'ice_cream': '\U0001F368',
+    'icecream': '\U0001F366',
+    'kiwifruit': '\U0001F95D',
+    'knife_fork_plate': '\U0001F37D',
+    'lemon': '\U0001F34B',
+    'lollipop': '\U0001F36D',
+    'meat_on_bone': '\U0001F356',
+    'melon': '\U0001F348',
+    'mushroom': '\U0001F344',
+    'oden': '\U0001F362',
+    'pancakes': '\U0001F95E',
+    'peach': '\U0001F351',
+    'peanuts': '\U0001F95C',
+    'pear': '\U0001F350',
+    'pie': '\U0001F967',
+    'pineapple': '\U0001F34D',
+    'pizza': '\U0001F355',
+    'popcorn': '\U0001F37F',
+    'potato': '\U0001F954',
+    'poultry_leg': '\U0001F357',
+    'pretzel': '\U0001F968',
+    'ramen': '\U0001F35C',
+    'rice': '\U0001F35A',
+    'rice_ball': '\U0001F359',
+    'rice_cracker': '\U0001F358',
+    'sake': '\U0001F376',
+    'sandwich': '\U0001F96A',
+    'shallow_pan_of_food': '\U0001F958',
+    'shaved_ice': '\U0001F367',
+    'spaghetti': '\U0001F35D',
+    'spoon': '\U0001F944',
+    'star': '\u2B50',
+    'stew': '\U0001F372',
+    'strawberry': '\U0001F353',
+    'stuffed_flatbread': '\U0001F959',
+    'sushi': '\U0001F363',
+    'sweet_potato': '\U0001F360',
+    'taco': '\U0001F32E',
+    'takeout_box': '\U0001F961',
+    'tangerine': '\U0001F34A',
+    'tea': '\U0001F375',
+    'tomato': '\U0001F345',
+    'trophy': '\U0001F3C6',
+    'tropical_drink': '\U0001F379',
+    'tumbler_glass': '\U0001F943',
+    'watermelon': '\U0001F349',
+    'wine_glass': '\U0001F377'
+}
 
 
 class Snacks(Messageable, Registrable, Renderable, Runnable):
@@ -239,7 +324,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
 
     @staticmethod
     def _snacks():
-        snacks = [random.choice(_snacklist) for _ in range(3)]
+        snacks = [random.choice(_snackdict.keys()) for _ in range(3)]
         if snacks[0] == snacks[1]:
             if snacks[1] == snacks[2]:
                 snacks[2] = 'trophy'
@@ -252,7 +337,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         body = []
         count = self.data['count']
         for snack in sorted(count, key=lambda x: (-count[x], x)):
-            body.append([snack, str(count[snack])])
+            body.append([_snackdict[snack], snack, str(count[snack])])
             if len(body) == 15:
                 break
         return body
@@ -261,7 +346,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         body = []
         last = self.data['last']
         for snack in sorted(last, key=lambda x: (self._flip(last[x]), x)):
-            body.append([snack, self._ts(last[snack], now)])
+            body.append([_snackdict[snack], snack, self._ts(last[snack], now)])
             if len(body) == 15:
                 break
         return body
@@ -315,13 +400,13 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
 
         ret['statistics'] = [servings, stars, trophies]
 
-        cols = ['', ' class="text-right"']
+        cols = [' class="text-center w-75p"', '', ' class="text-right"']
         if data['count']:
             ret['count'] = table(
                 clazz='border mt-3',
                 hcols=cols,
                 bcols=cols,
-                head=['Name', 'Count'],
+                head=['Emoji', 'Name', 'Count'],
                 body=self._body_count())
 
         if data['last']:
@@ -329,7 +414,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
                 clazz='border mt-3',
                 hcols=cols,
                 bcols=cols,
-                head=['Name', 'Last activity'],
+                head=['Emoji', 'Name', 'Last activity'],
                 body=self._body_recent(date))
 
         return ret

@@ -16,7 +16,7 @@ from core.response.response import Response  # noqa
 from core.task.task import Task  # noqa
 from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
-from plugin.snacks.snacks import _snacklist  # noqa
+from plugin.snacks.snacks import _snackdict  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -25,7 +25,7 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 _collect = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
-_cols = ['', ' class="text-right"']
+_cols = [' class="text-center w-75p"', '', ' class="text-right"']
 _env = env()
 _members_new = {'U1234': '1000.789', 'U5678': '100.456'}
 _members_old = {'U1234': '100.123', 'U5678': '100.456'}
@@ -580,7 +580,7 @@ class SnacksTest(Test):
         expected = ['a', 'b', 'c']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -591,7 +591,7 @@ class SnacksTest(Test):
         expected = ['a', 'star', 'b']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -602,7 +602,7 @@ class SnacksTest(Test):
         expected = ['a', 'b', 'star']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -613,7 +613,7 @@ class SnacksTest(Test):
         expected = ['a', 'b', 'star']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -624,7 +624,7 @@ class SnacksTest(Test):
         expected = ['a', 'star', 'trophy']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.open', create=True)
@@ -679,8 +679,8 @@ class SnacksTest(Test):
         self.assertEqual(actual, expected)
 
     def test_home__with_servings(self):
-        count = {'a': 6, 'b': 3}
-        last = {'a': _now_encoded, 'b': _then_encoded}
+        count = {'apple': 6, 'bacon': 3}
+        last = {'apple': _now_encoded, 'bacon': _then_encoded}
         read = _data(count=count, last=last, members=_members_old)
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
@@ -699,14 +699,15 @@ class SnacksTest(Test):
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Name', 'Count'],
-            body=[['a', '6'], ['b', '3']])
+            head=['Emoji', 'Name', 'Count'],
+            body=[['\U0001F34E', 'apple', '6'], ['\U0001F953', 'bacon', '3']])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Name', 'Last activity'],
-            body=[['a', '0s ago'], ['b', '23h ago']])
+            head=['Emoji', 'Name', 'Last activity'],
+            body=[['\U0001F34E', 'apple', '0s ago'],
+                  ['\U0001F953', 'bacon', '23h ago']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -716,8 +717,12 @@ class SnacksTest(Test):
         self.assertEqual(actual, expected)
 
     def test_home__with_stars(self):
-        count = {'a': 6, 'b': 2, 'star': 1}
-        last = {'a': _now_encoded, 'b': _then_encoded, 'star': _then_encoded}
+        count = {'apple': 6, 'bacon': 2, 'star': 1}
+        last = {
+            'apple': _now_encoded,
+            'bacon': _then_encoded,
+            'star': _then_encoded
+        }
         read = _data(count=count, last=last, members=_members_old)
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
@@ -736,14 +741,17 @@ class SnacksTest(Test):
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Name', 'Count'],
-            body=[['a', '6'], ['b', '2'], ['star', '1']])
+            head=['Emoji', 'Name', 'Count'],
+            body=[['\U0001F34E', 'apple', '6'], ['\U0001F953', 'bacon', '2'],
+                  ['\u2B50', 'star', '1']])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Name', 'Last activity'],
-            body=[['a', '0s ago'], ['b', '23h ago'], ['star', '23h ago']])
+            head=['Emoji', 'Name', 'Last activity'],
+            body=[['\U0001F34E', 'apple',
+                   '0s ago'], ['\U0001F953', 'bacon', '23h ago'],
+                  ['\u2B50', 'star', '23h ago']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -753,9 +761,9 @@ class SnacksTest(Test):
         self.assertEqual(actual, expected)
 
     def test_home__with_trophies(self):
-        count = {'a': 1, 'star': 1, 'trophy': 1}
+        count = {'apple': 1, 'star': 1, 'trophy': 1}
         last = {
-            'a': _now_encoded,
+            'apple': _now_encoded,
             'star': _now_encoded,
             'trophy': _now_encoded
         }
@@ -777,14 +785,17 @@ class SnacksTest(Test):
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Name', 'Count'],
-            body=[['a', '1'], ['star', '1'], ['trophy', '1']])
+            head=['Emoji', 'Name', 'Count'],
+            body=[['\U0001F34E', 'apple', '1'], ['\u2B50', 'star', '1'],
+                  ['\U0001F3C6', 'trophy', '1']])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Name', 'Last activity'],
-            body=[['a', '0s ago'], ['star', '0s ago'], ['trophy', '0s ago']])
+            head=['Emoji', 'Name', 'Last activity'],
+            body=[['\U0001F34E', 'apple',
+                   '0s ago'], ['\u2B50', 'star', '0s ago'],
+                  ['\U0001F3C6', 'trophy', '0s ago']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
