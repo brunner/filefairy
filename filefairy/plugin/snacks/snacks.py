@@ -188,7 +188,6 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
                     data['count'][snack] = c
                     data['last'][snack] = edate
                 response.notify = [Notify.BASE]
-                self._render(**kwargs)
 
         if response.notify:
             data['members'][user] = ts
@@ -204,6 +203,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         return [(html, '', 'snacks.html', _home)]
 
     def _run_internal(self, **kwargs):
+        self._render(**kwargs)
         return Response()
 
     def _setup_internal(self, **kwargs):

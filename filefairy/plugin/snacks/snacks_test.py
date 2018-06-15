@@ -145,9 +145,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.random.choice')
-    def test_on_message__with_choose_text_multiple(self, mock_random, mock_render):
+    def test_on_message__with_choose_text_multiple(self, mock_random):
         mock_random.side_effect = ['{}. Did you even need to ask?', 'a']
 
         obj = {
@@ -163,7 +162,6 @@ class SnacksTest(Test):
         write = _data(members=_members_new)
         calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
         mock_random.assert_has_calls(calls)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -172,9 +170,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.random.choice')
-    def test_on_message__with_choose_text_single(self, mock_random, mock_render):
+    def test_on_message__with_choose_text_single(self, mock_random):
         obj = {
             'channel': 'C9YE6NQG0',
             'text': '<@U3ULC7DBP> choose a',
@@ -186,7 +183,6 @@ class SnacksTest(Test):
         self.assertEqual(response, Response())
 
         mock_random.assert_not_called()
-        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -194,9 +190,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.discuss')
-    def test_on_message__with_discuss_text_empty(self, mock_discuss, mock_render):
+    def test_on_message__with_discuss_text_empty(self, mock_discuss):
         mock_discuss.return_value = ''
 
         obj = {
@@ -211,7 +206,6 @@ class SnacksTest(Test):
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -220,9 +214,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.discuss')
-    def test_on_message__with_discuss_text_valid(self, mock_discuss, mock_render):
+    def test_on_message__with_discuss_text_valid(self, mock_discuss):
         mock_discuss.return_value = 'response'
 
         obj = {
@@ -237,7 +230,6 @@ class SnacksTest(Test):
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -245,9 +237,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.imitate')
-    def test_on_message__with_imitate_text_empty(self, mock_imitate, mock_render):
+    def test_on_message__with_imitate_text_empty(self, mock_imitate):
         mock_imitate.return_value = ''
 
         obj = {
@@ -265,7 +256,6 @@ class SnacksTest(Test):
 
         write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -274,9 +264,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.imitate')
-    def test_on_message__with_imitate_text_valid(self, mock_imitate, mock_render):
+    def test_on_message__with_imitate_text_valid(self, mock_imitate):
         mock_imitate.return_value = 'response'
 
         obj = {
@@ -294,7 +283,6 @@ class SnacksTest(Test):
 
         write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -302,9 +290,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.discuss')
-    def test_on_message__with_imitate_topic_text_empty(self, mock_discuss, mock_render):
+    def test_on_message__with_imitate_topic_text_empty(self, mock_discuss):
         mock_discuss.return_value = ''
 
         obj = {
@@ -322,7 +309,6 @@ class SnacksTest(Test):
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -331,9 +317,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.discuss')
-    def test_on_message__with_imitate_topic_text_user(self, mock_discuss, mock_render):
+    def test_on_message__with_imitate_topic_text_user(self, mock_discuss):
         mock_discuss.return_value = 'response'
 
         obj = {
@@ -351,7 +336,6 @@ class SnacksTest(Test):
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('<@U1234>', {}, 4, 8, 30)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -359,9 +343,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.discuss')
-    def test_on_message__with_imitate_topic_text_valid(self, mock_discuss, mock_render):
+    def test_on_message__with_imitate_topic_text_valid(self, mock_discuss):
         mock_discuss.return_value = 'response'
 
         obj = {
@@ -379,7 +362,6 @@ class SnacksTest(Test):
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -387,8 +369,7 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
-    def test_on_message__with_say_text(self, mock_render):
+    def test_on_message__with_say_text(self):
         obj = {
             'channel': 'C9YE6NQG0',
             'text': '<@U3ULC7DBP> say topic',
@@ -400,7 +381,6 @@ class SnacksTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         write = _data(members=_members_new)
-        mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_cfd.assert_not_called()
@@ -409,9 +389,8 @@ class SnacksTest(Test):
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Snacks, '_snacks')
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.pins_add')
-    def test_on_message__with_snack_me_text_pin(self, mock_pins, mock_render, mock_snacks):
+    def test_on_message__with_snack_me_text_pin(self, mock_pins, mock_snacks):
         mock_snacks.return_value = ['a', 'star', 'b']
 
         obj = {
@@ -428,7 +407,6 @@ class SnacksTest(Test):
         last = {'a': _now_encoded, 'star': _now_encoded, 'b': _now_encoded}
         write = _data(count=count, last=last, members=_members_bot)
         mock_pins.assert_called_once_with('C9YE6NQG0', '1000.789')
-        mock_render.assert_called_once_with(date=_now, obj=obj)
         mock_snacks.assert_called_once_with()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -443,9 +421,8 @@ class SnacksTest(Test):
         self.mock_reactions.assert_has_calls(calls)
 
     @mock.patch.object(Snacks, '_snacks')
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.pins_add')
-    def test_on_message__with_snack_me_text_star(self, mock_pins, mock_render, mock_snacks):
+    def test_on_message__with_snack_me_text_star(self, mock_pins, mock_snacks):
         mock_snacks.return_value = ['a', 'star', 'b']
 
         obj = {
@@ -462,7 +439,6 @@ class SnacksTest(Test):
         last = {'a': _now_encoded, 'star': _now_encoded, 'b': _now_encoded}
         write = _data(count=count, last=last, members=_members_new)
         mock_pins.assert_not_called()
-        mock_render.assert_called_once_with(date=_now, obj=obj)
         mock_snacks.assert_called_once_with()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -476,8 +452,7 @@ class SnacksTest(Test):
         ]
         self.mock_reactions.assert_has_calls(calls)
 
-    @mock.patch.object(Snacks, '_render')
-    def test_on_message__with_invalid_channel(self, mock_render):
+    def test_on_message__with_invalid_channel(self):
         obj = {
             'channel': 'C1234',
             'text': '<@U3ULC7DBP> discuss topic',
@@ -488,7 +463,6 @@ class SnacksTest(Test):
         response = plugin._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -496,8 +470,7 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
-    def test_on_message__with_invalid_text(self, mock_render):
+    def test_on_message__with_invalid_text(self):
         obj = {
             'channel': 'C9YE6NQG0',
             'text': 'invalid',
@@ -508,7 +481,6 @@ class SnacksTest(Test):
         response = plugin._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -516,8 +488,7 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
-    def test_on_message__with_invalid_timestamp(self, mock_render):
+    def test_on_message__with_invalid_timestamp(self):
         obj = {
             'channel': 'C9YE6NQG0',
             'text': '<@U3ULC7DBP> discuss topic',
@@ -528,7 +499,6 @@ class SnacksTest(Test):
         response = plugin._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -536,11 +506,13 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    def test_run(self):
+    @mock.patch.object(Snacks, '_render')
+    def test_run(self, mock_render):
         plugin = self.create_plugin(_data(members=_members_old))
-        response = plugin._run_internal()
+        response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response())
 
+        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
