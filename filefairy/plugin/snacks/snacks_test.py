@@ -601,7 +601,7 @@ class SnacksTest(Test):
         self.assertEqual(actual, expected)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
-    def test_snacks__with_different_values(self, mock_random):
+    def test_snacks__with_all_different_values(self, mock_random):
         mock_random.side_effect = ['a', 'b', 'c']
 
         actual = Snacks._snacks()
@@ -612,7 +612,7 @@ class SnacksTest(Test):
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
-    def test_snacks__with_same_first_values(self, mock_random):
+    def test_snacks__with_same_same_different(self, mock_random):
         mock_random.side_effect = ['a', 'a', 'b']
 
         actual = Snacks._snacks()
@@ -623,7 +623,7 @@ class SnacksTest(Test):
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
-    def test_snacks__with_same_second_values(self, mock_random):
+    def test_snacks__with_different_same_same(self, mock_random):
         mock_random.side_effect = ['a', 'b', 'b']
 
         actual = Snacks._snacks()
@@ -634,7 +634,18 @@ class SnacksTest(Test):
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
-    def test_snacks__with_same_all_values(self, mock_random):
+    def test_snacks__with_same_different_same(self, mock_random):
+        mock_random.side_effect = ['a', 'b', 'a']
+
+        actual = Snacks._snacks()
+        expected = ['a', 'b', 'star']
+        self.assertEqual(actual, expected)
+
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
+        mock_random.assert_has_calls(calls)
+
+    @mock.patch('plugin.snacks.snacks.random.choice')
+    def test_snacks__with_all_same_values(self, mock_random):
         mock_random.side_effect = ['a', 'a', 'a']
 
         actual = Snacks._snacks()

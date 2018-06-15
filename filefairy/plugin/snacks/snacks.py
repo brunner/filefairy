@@ -244,7 +244,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
             if snacks[1] == snacks[2]:
                 snacks[2] = 'trophy'
             snacks[1] = 'star'
-        elif snacks[1] == snacks[2]:
+        elif snacks[0] == snacks[2] or snacks[1] == snacks[2]:
             snacks[2] = 'star'
         return snacks
 
