@@ -17,7 +17,9 @@ from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.task.task import Task  # noqa
+from util.ago.ago import delta  # noqa
 from util.corpus.corpus import collect  # noqa
+from util.component.component import card  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.nltk_.nltk_ import cfd  # noqa
@@ -253,7 +255,36 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
                 f.write('\n'.join(collected[user]))
 
     def _home(self, **kwargs):
-        return {}
+        data = self.data
+        ret = {
+            'breadcrumbs': [{
+                'href': '/fairylab/',
+                'name': 'Home'
+            }, {
+                'href': '',
+                'name': 'Snacks'
+            }]
+        }
+
+        date = kwargs['date']
+
+        count, last = self._servings()
+        ts = self._ts(last, date)
+        servings = card(title=str(count), info='Total snacks served.', ts=ts)
+
+        count = data['count'].get('star', 0)
+        last = data['last'].get('star', '')
+        ts = self._ts(last, date)
+        stars = card(title=str(count), info='Total stars awarded.', ts=ts)
+
+        count = data['count'].get('trophy', 0)
+        last = data['last'].get('trophy', '')
+        ts = self._ts(last, date)
+        trophies = card(title=str(count), info='Total trophies lifted.', ts=ts)
+
+        ret['statistics'] = [servings, stars, trophies]
+
+        return ret
 
     def _load(self, *args, **kwargs):
         self._corpus()
@@ -274,3 +305,19 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         self.loaded = True
 
         return Response()
+
+    def _servings(self):
+        data = self.data
+        count = 0
+        for snack in data['count']:
+            count += data['count'][snack]
+        last = ''
+        for snack in data['last']:
+            if not last or last < data['last'][snack]:
+                last = data['last'][snack]
+        return count // 3, last
+
+    def _ts(self, then, now):
+        if then:
+            return delta(decode_datetime(then), now)
+        return 'never'

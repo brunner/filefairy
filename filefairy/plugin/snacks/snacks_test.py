@@ -17,6 +17,7 @@ from core.task.task import Task  # noqa
 from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
+from util.component.component import card  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -34,6 +35,7 @@ _members_bot = {
 _now = datetime.datetime(1985, 10, 27, 0, 0, 0)
 _now_encoded = '1985-10-27T00:00:00'
 _then = datetime.datetime(1985, 10, 26, 0, 2, 30)
+_then_encoded = '1985-10-26T00:02:30'
 
 
 def _data(count=None, last=None, members=None):
@@ -634,6 +636,97 @@ class SnacksTest(Test):
             'U5678': 'bar'
         })
         self.mock_reactions.assert_not_called()
+
+    maxDiff = None
+    def test_home__with_empty(self):
+        read = _data(members=_members_old)
+        plugin = self.create_plugin(read)
+        actual = plugin._home(date=_now)
+        breadcrumbs = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Snacks'
+        }]
+        servings = card(title='0', info='Total snacks served.', ts='never')
+        stars = card(title='0', info='Total stars awarded.', ts='never')
+        trophies = card(title='0', info='Total trophies lifted.', ts='never')
+        statistics = [servings, stars, trophies]
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'statistics': statistics
+        }
+        self.assertEqual(actual, expected)
+
+    def test_home__with_servings(self):
+        count = {'a': 6, 'b': 3}
+        last = {'a': _now_encoded, 'b': _then_encoded}
+        read = _data(count=count, last=last, members=_members_old)
+        plugin = self.create_plugin(read)
+        actual = plugin._home(date=_now)
+        breadcrumbs = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Snacks'
+        }]
+        servings = card(title='3', info='Total snacks served.', ts='0s ago')
+        stars = card(title='0', info='Total stars awarded.', ts='never')
+        trophies = card(title='0', info='Total trophies lifted.', ts='never')
+        statistics = [servings, stars, trophies]
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'statistics': statistics
+        }
+        self.assertEqual(actual, expected)
+
+    def test_home__with_stars(self):
+        count = {'a': 6, 'b': 2, 'star': 1}
+        last = {'a': _now_encoded, 'b': _then_encoded, 'star': _then_encoded}
+        read = _data(count=count, last=last, members=_members_old)
+        plugin = self.create_plugin(read)
+        actual = plugin._home(date=_now)
+        breadcrumbs = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Snacks'
+        }]
+        servings = card(title='3', info='Total snacks served.', ts='0s ago')
+        stars = card(title='1', info='Total stars awarded.', ts='23h ago')
+        trophies = card(title='0', info='Total trophies lifted.', ts='never')
+        statistics = [servings, stars, trophies]
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'statistics': statistics
+        }
+        self.assertEqual(actual, expected)
+
+    def test_home__with_trophies(self):
+        count = {'a': 1, 'star': 1, 'trophy': 1}
+        last = {'a': _now_encoded, 'star': _now_encoded, 'trophy': _now_encoded}
+        read = _data(count=count, last=last, members=_members_old)
+        plugin = self.create_plugin(read)
+        actual = plugin._home(date=_now)
+        breadcrumbs = [{
+            'href': '/fairylab/',
+            'name': 'Home'
+        }, {
+            'href': '',
+            'name': 'Snacks'
+        }]
+        servings = card(title='1', info='Total snacks served.', ts='0s ago')
+        stars = card(title='1', info='Total stars awarded.', ts='0s ago')
+        trophies = card(title='1', info='Total trophies lifted.', ts='0s ago')
+        statistics = [servings, stars, trophies]
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'statistics': statistics
+        }
+        self.assertEqual(actual, expected)
 
     @mock.patch.object(Snacks, '_load_internal')
     @mock.patch.object(Snacks, '_corpus')
