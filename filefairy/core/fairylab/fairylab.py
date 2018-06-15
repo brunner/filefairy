@@ -106,7 +106,6 @@ class Fairylab(Messageable, Renderable):
             return
 
         date = kwargs.get('date') or datetime.datetime.now()
-
         try:
             response = item(*args, **dict(kwargs, date=date))
             if response.notify:
