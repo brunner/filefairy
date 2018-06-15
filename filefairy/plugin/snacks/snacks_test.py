@@ -16,7 +16,7 @@ from core.response.response import Response  # noqa
 from core.task.task import Task  # noqa
 from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
-from plugin.snacks.snacks import _snackdict  # noqa
+from plugin.snacks.snacks import _snacklist  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -580,7 +580,7 @@ class SnacksTest(Test):
         expected = ['a', 'b', 'c']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -591,7 +591,7 @@ class SnacksTest(Test):
         expected = ['a', 'star', 'b']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -602,7 +602,7 @@ class SnacksTest(Test):
         expected = ['a', 'b', 'star']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -613,7 +613,7 @@ class SnacksTest(Test):
         expected = ['a', 'b', 'star']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -624,7 +624,7 @@ class SnacksTest(Test):
         expected = ['a', 'star', 'trophy']
         self.assertEqual(actual, expected)
 
-        calls = [mock.call(_snackdict.keys()), mock.call(_snackdict.keys())]
+        calls = [mock.call(_snacklist), mock.call(_snacklist)]
         mock_random.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.open', create=True)

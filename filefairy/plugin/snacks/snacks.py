@@ -155,6 +155,8 @@ _snackdict = {
     'wine_glass': '\U0001F377'
 }
 
+_snacklist = list(_snackdict.keys())
+
 
 class Snacks(Messageable, Registrable, Renderable, Runnable):
     def __init__(self, **kwargs):
@@ -324,7 +326,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
 
     @staticmethod
     def _snacks():
-        snacks = [random.choice(_snackdict.keys()) for _ in range(3)]
+        snacks = [random.choice(_snacklist) for _ in range(3)]
         if snacks[0] == snacks[1]:
             if snacks[1] == snacks[2]:
                 snacks[2] = 'trophy'
