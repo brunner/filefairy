@@ -25,24 +25,14 @@ from util.test.test import main  # noqa
 _collect = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
 _env = env()
 _members_new = {
-    'U1234': {
-        'latest': '1000.789'
-    },
-    'U5678': {
-        'latest': '100.456'
-    }
+    'U1234': '1000.789',
+    'U5678': '100.456'
 }
-_members_old = {'U1234': {'latest': '100.123'}, 'U5678': {'latest': '100.456'}}
+_members_old = {'U1234': '100.123', 'U5678': '100.456'}
 _members_bot = {
-    'U1234': {
-        'latest': '100.123'
-    },
-    'U5678': {
-        'latest': '100.456'
-    },
-    'U3ULC7DBP': {
-        'latest': '1000.789'
-    },
+    'U1234': '100.123',
+    'U5678': '100.456',
+    'U3ULC7DBP': '1000.789'
 }
 _now = datetime.datetime(1985, 10, 27, 0, 0, 0)
 _then = datetime.datetime(1985, 10, 26, 0, 2, 30)

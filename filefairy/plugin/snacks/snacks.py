@@ -108,9 +108,9 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
 
         ok = True
         if user not in data['members']:
-            data['members'][user] = {'latest': ts}
+            data['members'][user] = ts
         else:
-            ok = float(ts) - float(data['members'][user]['latest']) > 10
+            ok = float(ts) - float(data['members'][user]) > 10
 
         if ok:
             match = re.findall('^<@U3ULC7DBP> choose (.+)$', text)
@@ -174,7 +174,7 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
                 response.notify = [Notify.BASE]
 
         if response.notify:
-            data['members'][user]['latest'] = ts
+            data['members'][user] = ts
 
         if data != original:
             self.write()
