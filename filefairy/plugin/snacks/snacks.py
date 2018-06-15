@@ -18,6 +18,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.task.task import Task  # noqa
 from util.corpus.corpus import collect  # noqa
+from util.datetime_.datetime_ import decode_datetime  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.nltk_.nltk_ import cfd  # noqa
 from util.nltk_.nltk_ import discuss  # noqa
 from util.nltk_.nltk_ import imitate  # noqa
@@ -44,18 +46,25 @@ _chooselist = [
 ]
 
 _snacklist = [
-    'green_apple', 'apple', 'pear', 'tangerine', 'lemon', 'banana',
-    'watermelon', 'grapes', 'strawberry', 'melon', 'cherries', 'peach',
-    'pineapple', 'tomato', 'eggplant', 'hot_pepper', 'corn', 'sweet_potato',
-    'honey_pot', 'bread', 'cheese_wedge', 'poultry_leg', 'meat_on_bone',
-    'fried_shrimp', 'egg', 'hamburger', 'fries', 'hotdog', 'pizza',
-    'spaghetti', 'taco', 'burrito', 'ramen', 'stew', 'fish_cake', 'sushi',
-    'bento', 'curry', 'rice_ball', 'rice', 'rice_cracker', 'oden', 'dango',
-    'shaved_ice', 'ice_cream', 'icecream', 'cake', 'birthday', 'custard',
-    'candy', 'lollipop', 'chocolate_bar', 'popcorn', 'doughnut', 'cookie',
-    'beer', 'beers', 'wine_glass', 'cocktail', 'tropical_drink', 'champagne',
-    'sake', 'tea', 'coffee', 'baby_bottle', 'fork_and_knife',
-    'knife_fork_plate'
+    'amphora', 'apple', 'avocado', 'baby_bottle', 'bacon', 'baguette_bread',
+    'banana', 'beer', 'beers', 'bento', 'birthday', 'bowl_with_spoon', 'bread',
+    'broccoli', 'burrito', 'cake', 'candy', 'canned_food', 'carrot',
+    'champagne', 'cheese_wedge', 'cherries', 'chestnut', 'chocolate_bar',
+    'chopsticks', 'clinking_glasses', 'cocktail', 'coconut', 'coffee',
+    'cookie', 'corn', 'croissant', 'cucumber', 'cup_with_straw', 'cut_of_meat',
+    'curry', 'custard', 'dango', 'doughnut', 'dumpling', 'egg', 'eggplant',
+    'fish_cake', 'fork_and_knife', 'fortune_cookie', 'fried_egg',
+    'fried_shrimp', 'fries', 'glass_of_milk', 'grapes', 'green_apple',
+    'green_salad', 'hamburger', 'hocho', 'honey_pot', 'hot_pepper', 'hotdog',
+    'ice_cream', 'icecream', 'kiwifruit', 'knife_fork_plate', 'lemon',
+    'lollipop', 'meat_on_bone', 'melon', 'mushroom', 'oden', 'pancakes',
+    'peach', 'peanuts', 'pear', 'pie', 'pineapple', 'pizza', 'popcorn',
+    'potato', 'poultry_leg', 'pretzel', 'ramen', 'rice', 'rice_ball',
+    'rice_cracker', 'sake', 'sandwich', 'shallow_pan_of_food', 'shaved_ice',
+    'spaghetti', 'spoon', 'star', 'stew', 'strawberry', 'stuffed_flatbread',
+    'sushi', 'sweet_potato', 'taco', 'takeout_box', 'tangerine', 'tea',
+    'tomato', 'trophy', 'tropical_drink', 'tumbler_glass', 'watermelon',
+    'wine_glass'
 ]
 
 
@@ -167,10 +176,14 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
                 response.notify = [Notify.BASE]
 
             if text == '<@U3ULC7DBP> snack me':
+                edate = encode_datetime(kwargs['date'])
                 for snack in self._snacks():
                     reactions_add(snack, channel, ts)
                     if snack == 'star' and user == 'U3ULC7DBP':
                         pins_add(channel, ts)
+                    c = data['count'].get(snack, 0) + 1
+                    data['count'][snack] = c
+                    data['last'][snack] = edate
                 response.notify = [Notify.BASE]
 
         if response.notify:
@@ -211,9 +224,13 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
 
     @staticmethod
     def _snacks():
-        snacks = [random.choice(_snacklist) for _ in range(2)]
+        snacks = [random.choice(_snacklist) for _ in range(3)]
         if snacks[0] == snacks[1]:
+            if snacks[1] == snacks[2]:
+                snacks[2] = 'trophy'
             snacks[1] = 'star'
+        elif snacks[1] == snacks[2]:
+            snacks[2] = 'star'
         return snacks
 
     def _corpus(self):
