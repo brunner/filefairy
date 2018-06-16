@@ -167,7 +167,9 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'output': output, 'stderr': ''}
         self.mock_check.return_value = ret
 
-        first, last = Git._firstlast('abcdefg..nopqrst')
+        text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefg..' + \
+               'nopqrst  master -> master'
+        first, last = Git._firstlast(text)
         self.assertEqual(first, 'abcdefghijklm')
         self.assertEqual(last, 'nopqrstuvwxyz')
 
@@ -179,7 +181,9 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'output': '', 'stderr': ''}
         self.mock_check.return_value = ret
 
-        first, last = Git._firstlast('abcdefg..nopqrst')
+        text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefg..' + \
+               'nopqrst  master -> master'
+        first, last = Git._firstlast(text)
         self.assertEqual(first, 'abcdefg')
         self.assertEqual(last, 'nopqrst')
 
