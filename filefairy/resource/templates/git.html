@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import "common.html" as common %}
+
+{% set items = [] %}
+{% if pull %}
+{% do items.append(('pull', 'Pull')) %}
+{% endif %}
+{% if push %}
+{% do items.append(('push', 'Push')) %}
+{% endif %}
+{% block nav %}
+{{ common.nav(items) }}
+{% endblock %}
+
+{% block content %}
+
+{% if pull %}
+<div class="container anchor" id="pull">
+{{ common.heading('data-transfer-download', 'Pull') }}
+<div class="row">
+<div class="col-12">
+{{ common.table(pull) }}
+</div>
+</div>
+</div>
+{% endif %}
+
+{% if push %}
+<div class="container anchor" id="push">
+{{ common.heading('data-transfer-upload', 'Push') }}
+<div class="row">
+<div class="col-12">
+{{ common.table(push) }}
+</div>
+</div>
+</div>
+{% endif %}
+
+{% endblock %}

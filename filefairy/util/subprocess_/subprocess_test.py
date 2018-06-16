@@ -21,10 +21,10 @@ class SubprocessTest(unittest.TestCase):
         cmd = ['cmd', 'foo', 'bar']
         t = 10
         mock_run.return_value = subprocess.CompletedProcess(
-            args=cmd, returncode=0, stdout=b'ret', stderr=None)
+            args=cmd, returncode=0, stdout=b'out', stderr=b'err')
 
         actual = check_output(cmd, timeout=t)
-        expected = {'ok': True, 'output': 'ret'}
+        expected = {'ok': True, 'output': 'out', 'stderr': 'err'}
         self.assertEqual(actual, expected)
 
         mock_log.assert_not_called()
@@ -44,7 +44,7 @@ class SubprocessTest(unittest.TestCase):
 
         actual = check_output(cmd, timeout=t)
         ret = 'Command \'{0}\' timed out after {1} seconds'.format(cmd, t)
-        expected = {'ok': False, 'output': ret}
+        expected = {'ok': False, 'output': ret, 'stderr': ret}
         self.assertEqual(actual, expected)
 
         mock_log.assert_called_once_with(
