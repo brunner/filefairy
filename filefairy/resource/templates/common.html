@@ -1,135 +1,162 @@
 {% macro nav(items) -%}
-<button class="navbar-toggler border-0" type="button"
-        data-toggle="collapse" data-target="#nav-dropdown"
-        aria-controls="#nav-dropdown" aria-expanded="false"
-        aria-label="nav toggler">
-  <span class="navbar-toggler-icon"></span>
+<!-- ^(common.nav) -->
+<button class="navbar-toggler border-0" type="button" data-toggle="collapse"
+        data-target="#nav-dropdown" aria-controls="#nav-dropdown"
+        aria-expanded="false" aria-label="nav toggler">
+<span class="navbar-toggler-icon"></span>
 </button>
 <div class="collapse navbar-collapse border-top" id="nav-dropdown">
-  <ul class="navbar-nav">
-    {% for item in items %}
-    <li class="nav-item">
-      <a class="nav-link" href="#{{ item[0] }}">{{ item[1] }}</a>
-    </li>
-    {% endfor %}
-  </ul>
+<ul class="navbar-nav">
+{% for item in items %}
+<li class="nav-item">
+<a class="nav-link" href="#{{ item[0] }}">{{ item[1] }}</a>
+</li>
+{% endfor %}
+</ul>
 </div>
+<!-- $(common.nav) -->
 {%- endmacro -%}
 
 {% macro heading(icon, text) -%}
+<!-- ^(common.heading) -->
 <div class="row">
-  <div class="col-12">
-    <div class="alert alert-secondary mt-3 mb-0">
-      <span class="oi oi-{{ icon }} text-secondary"></span>{{ text }}
-    </div>
-  </div>
+<div class="col-12">
+<div class="alert alert-secondary mt-3 mb-0">
+<span class="oi oi-{{ icon }} text-secondary"></span>{{ text }}
 </div>
+</div>
+</div>
+<!-- $(common.heading) -->
 {%- endmacro -%}
 
 {% macro card(data) -%}
+<!-- ^(common.card) -->
 <div class="card d-flex flex-column flex-grow mt-3">
-  <div class="card-body d-flex flex-column">
-    <h5 class="card-title">
-      {% if data.href %}
-      <a href="{{ data.href }}">{{ data.title }}</a>
-      {% else %}
-      {{ data.title }}
-      {% endif %}
-    </h5>
-    {% if data.info %}
-    <p class="card-text flex-grow">{{ data.info }}</p>
-    {% endif %}
-    {% if data.table %}
-    {{ table(data.table)|indent(4) }}
-    {% endif %}
-    {% if data.code %}
-    <pre class="pre-scrollable d-flex"><code>{{- data.code -}}</code></pre>
-    {% endif %}
-  </div>
-  {% if data.ts %}
-  <div class="card-footer text-muted text-truncate">
-    <small>Last activity: {{ data.ts }}
-      {%- if data.success -%}
-      <span class="text-success"> ({{ data.success }})</span>
-      {%- elif data.danger -%}
-      <span class="text-danger"> ({{ data.danger }})</span>
-      {%- endif -%}
-    </small>
-  </div>
-  {% endif %}
+
+<!-- ^(common.card.body) -->
+<div class="card-body d-flex flex-column">
+<h5 class="card-title">
+{% if data.href %}
+<a href="{{ data.href }}">{{ data.title }}</a>
+{% else %}
+{{ data.title }}
+{% endif %}
+</h5>
+{% if data.info %}
+<p class="card-text flex-grow">{{ data.info }}</p>
+{% endif %}
+{% if data.table %}
+
+{{ table(data.table) }}
+
+{% endif %}
+{% if data.code %}
+<pre class="pre-scrollable d-flex"><code>{{- data.code -}}</code></pre>
+{% endif %}
 </div>
+<!-- $(common.card.body) -->
+{% if data.ts %}
+
+<!-- ^(common.card.footer) -->
+<div class="card-footer text-muted text-truncate">
+<small>Last activity: {{ data.ts }}
+{%- if data.success -%}
+<span class="text-success"> ({{ data.success }})</span>
+{%- elif data.danger -%}
+<span class="text-danger"> ({{ data.danger }})</span>
+{%- endif -%}
+</small>
+</div>
+<!-- $(common.card.footer) -->
+{% endif %}
+
+</div>
+<!-- $(common.card) -->
 {%- endmacro -%}
 
 {% macro form() -%}
+<!-- ^(common.form) -->
 <div class="row">
-  <div class="col-12">
-    <nav class="navbar navbar-light bg-light mt-3 p-0">
-      <form class="w-100">
-        <input class="form-control mr-sm-2" type="search"
-               placeholder="Search" aria-label="Search">
-      </form>
-    </nav>
-  </div>
+<div class="col-12">
+<nav class="navbar navbar-light bg-light mt-3 p-0">
+<form class="w-100">
+<input class="form-control mr-sm-2" type="search" placeholder="Search"
+       aria-label="Search">
+</form>
+</nav>
 </div>
+</div>
+<!-- $(common.form) -->
 {%- endmacro -%}
 
 {% macro form_js(ids) -%}
+<!-- ^(common.form_js) -->
 <script>
-  var filter = '';
-  $('.form-control').on('change keyup paste mouseup', function(e) {
-    var val = $(this).val().toLowerCase();
-    if (val != filter) {
-      filter = val;
-      $.each({{ ids }}, function(i, v) {
-        container = $('#' + v);
-        $('tbody td', container).each(function(e) {
-          if ($(this).text().toLowerCase().indexOf(filter) != -1) {
-            $(this).removeClass('d-none');
-          } else {
-            $(this).addClass('d-none');
-          }
-        });
-        $('table', container).each(function(e) {
-          if ($(this).find('tbody td:not(.d-none)').length != 0) {
-            $(this).removeClass('d-none');
-          } else {
-            $(this).addClass('d-none');
-          }
-        });
-      })
-    }
-  });
+var filter = '';
+$('.form-control').on('change keyup paste mouseup', function(e) {
+  var val = $(this).val().toLowerCase();
+  if (val != filter) {
+    filter = val;
+    $.each({{ ids }}, function(i, v) {
+      container = $('#' + v);
+      $('tbody td', container).each(function(e) {
+        if ($(this).text().toLowerCase().indexOf(filter) != -1) {
+          $(this).removeClass('d-none');
+        } else {
+          $(this).addClass('d-none');
+        }
+      });
+      $('table', container).each(function(e) {
+        if ($(this).find('tbody td:not(.d-none)').length != 0) {
+          $(this).removeClass('d-none');
+        } else {
+          $(this).addClass('d-none');
+        }
+      });
+    })
+  }
+});
 </script>
+<!-- $(common.form_js) -->
 {%- endmacro -%}
 
 {% macro table(data) -%}
+<!-- ^(common.table) -->
 <table class="table{% if data.clazz %} {{ data.clazz }}{% endif %}"
        {%- if data.id %}id="{{ data.id }}"{% endif %}>
-  {% if data.head %}
-  <thead class="thead-light">
-    <tr>
-      {% for cell in data.head %}
-      {% set hcol = data.hcols[loop.index0] if data.hcols else '' %}
-      <td scope="col"{{ hcol | safe }}>{{ cell }}</td>
-      {% endfor %}
-    </tr>
-  </thead>
-  {% endif %}
-  {% if data.body %}
-  <tbody>
-    {% for row in data.body %}
-    <tr>
-      {% for cell in row %}
-      {% if loop.first %}
-      {% set bcol = data.bcols[loop.index0] if data.bcols else '' %}
-      <td scope="row"{{ bcol | safe }}>{{ cell }}</td>
-      {% else %}
-      <td{{ data.bcols[loop.index0] | safe }}>{{ cell }}</td>
-      {% endif %}
-      {% endfor %}
-    </tr>
-    {% endfor %}
-  </tbody>
-  {% endif %}
+{% if data.head %}
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+{% for cell in data.head %}
+{% set hcol = data.hcols[loop.index0] if data.hcols else '' %}
+<td scope="col"{{ hcol | safe }}>{{ cell }}</td>
+{% endfor %}
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+{% endif %}
+{% if data.body %}
+
+<!-- ^(common.table.body) -->
+<tbody>
+{% for row in data.body %}
+<tr>
+{% for cell in row %}
+{% if loop.first %}
+{% set bcol = data.bcols[loop.index0] if data.bcols else '' %}
+<td scope="row"{{ bcol | safe }}>{{ cell }}</td>
+{% else %}
+<td{{ data.bcols[loop.index0] | safe }}>{{ cell }}</td>
+{% endif %}
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+<!-- $(common.table.body) -->
+{% endif %}
+
 </table>
+<!-- $(common.table) -->
 {%- endmacro -%}

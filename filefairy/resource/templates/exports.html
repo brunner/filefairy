@@ -3,32 +3,66 @@
 
 {% set items = [('tracker', 'Tracker'), ('recorded', 'Recorded')] %}
 {% block nav %}
-          {{ common.nav(items)|indent(8) }}
+{{ common.nav(items) }}
 {% endblock %}
 
 {% block content %}
-    <div class="container anchor" id="tracker">
-      {{ common.heading('cloudy', 'Tracker')|indent(6) }}
-      <div class="row">
-        <div class="col-12">
-          {{ common.card(live)|indent(10) }}
-        </div>
-      </div>
-    </div>
-    <div class="container anchor" id="recorded">
-      {{ common.heading('target', 'Recorded')|indent(6) }}
-      <div class="row">
-        {% set n = standings|length() // 2 %}
-        <div class="col-md-6">
-          {% for table in standings[:n] %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-        <div class="col-md-6">
-          {% for table in standings[n:] %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
+
+<!-- ^(exports.tracker) -->
+<div class="container anchor" id="tracker">
+
+{{ common.heading('cloudy', 'Tracker') }}
+
+<!-- ^(exports.row) -->
+<div class="row">
+
+<!-- ^(exports.column) -->
+<div class="col-12">
+
+{{ common.card(live) }}
+
+</div>
+<!-- $(exports.column) -->
+
+</div>
+<!-- $(exports.row) -->
+
+</div>
+<!-- $(exports.tracker) -->
+
+<!-- ^(exports.recorded) -->
+<div class="container anchor" id="recorded">
+
+{{ common.heading('target', 'Recorded') }}
+
+<!-- ^(exports.row) -->
+<div class="row">
+{% set n = standings|length() // 2 %}
+
+<!-- ^(exports.column) -->
+<div class="col-md-6">
+
+{% for table in standings[:n] %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(exports.column) -->
+
+<!-- ^(exports.column) -->
+<div class="col-md-6">
+
+{% for table in standings[n:] %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(exports.column) -->
+
+</div>
+<!-- $(exports.row) -->
+
+</div>
+<!-- $(exports.recorded) -->
+
 {% endblock %}

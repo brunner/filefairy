@@ -2,174 +2,195 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-  <title>Fairylab | dashboard</title>
-  <style>
-    html {
-      position: relative;
-      min-height: 100%;
-    }
-    body {
-      margin-bottom: 60px;
-    }
-    header {
-      background-color: #f5f5f5;
-      width: 100%;
-    }
-    footer {
-      background-color: #f5f5f5;
-      bottom: 0;
-      height: 60px;
-      line-height: 60px;
-      position: absolute;
-      width: 100%;
-    }
-    .alert, .form-control {
-      padding: .75rem;
-    }
-    .alert .oi {
-      line-height: 24px;
-      padding-right: .75rem;
-    }
-    .anchor {
-      padding-top: 0px;
-      margin-top: 0px;
-      transition: padding-top .35s ease, margin-top .35s ease;
-    }
-    .breadcrumb {
-      background-color: inherit;
-      line-height: 60px;
-    }
-    .flex-grow {
-      flex-grow: 1;
-    }
-    .left-8p {
-      left: 8px;
-    }
-    .navbar {
-      padding: 0;
-    }
-    .navbar-nav {
-      padding: .5rem 0;
-    }
-    .navbar .nav-link {
-      padding: .5rem;
-    }
-    .pl-24p {
-      padding-left: 24px;
-    }
-    .pr-24p {
-      padding-right: 24px;
-    }
-    .right-8p {
-      right: 8px;
-    }
-    .table, .table-sm {
-      margin-bottom: 0;
-      word-break: break-word;
-    }
-    .table .thead-light td {
-      background-color: #f5f5f5;
-    }
-    .table-fixed {
-      table-layout: fixed;
-    }
-    .table-sm td {
-      border-top: 0;
-      padding: 0 .3rem 0 0;
-    }
-    .table .td-sm {
-      padding: .75rem .25rem;
-    }
-    .top-14p {
-      top: 14px;
-    }
-    .w-10 {
-      width: 10%;
-    }
-    .w-20 {
-      width: 20%;
-    }
-    .w-40 {
-      width: 40%;
-    }
-    .w-55p {
-      width: 55px;
-    }
-    .w-65p {
-      width: 65px;
-    }
-    .w-75p {
-      width: 75px;
-    }
-    .w-105p {
-      width: 105px;
-    }
-  </style>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
+<title>Fairylab | dashboard</title>
+
+<style>
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 60px;
+}
+header {
+  background-color: #f5f5f5;
+  width: 100%;
+}
+footer {
+  background-color: #f5f5f5;
+  bottom: 0;
+  height: 60px;
+  line-height: 60px;
+  position: absolute;
+  width: 100%;
+}
+.alert, .form-control {
+  padding: .75rem;
+}
+.alert .oi {
+  line-height: 24px;
+  padding-right: .75rem;
+}
+.anchor {
+  padding-top: 0px;
+  margin-top: 0px;
+  transition: padding-top .35s ease, margin-top .35s ease;
+}
+.breadcrumb {
+  background-color: inherit;
+  line-height: 60px;
+}
+.flex-grow {
+  flex-grow: 1;
+}
+.left-8p {
+  left: 8px;
+}
+.navbar {
+  padding: 0;
+}
+.navbar-nav {
+  padding: .5rem 0;
+}
+.navbar .nav-link {
+  padding: .5rem;
+}
+.pl-24p {
+  padding-left: 24px;
+}
+.pr-24p {
+  padding-right: 24px;
+}
+.right-8p {
+  right: 8px;
+}
+.table, .table-sm {
+  margin-bottom: 0;
+  word-break: break-word;
+}
+.table .thead-light td {
+  background-color: #f5f5f5;
+}
+.table-fixed {
+  table-layout: fixed;
+}
+.table-sm td {
+  border-top: 0;
+  padding: 0 .3rem 0 0;
+}
+.table .td-sm {
+  padding: .75rem .25rem;
+}
+.top-14p {
+  top: 14px;
+}
+.w-10 {
+  width: 10%;
+}
+.w-20 {
+  width: 20%;
+}
+.w-40 {
+  width: 40%;
+}
+.w-55p {
+  width: 55px;
+}
+.w-65p {
+  width: 65px;
+}
+.w-75p {
+  width: 75px;
+}
+.w-105p {
+  width: 105px;
+}
+</style>
 </head>
 
 <body>
-  <header class="border-bottom sticky-top">
-    <div class="container">
-      <nav class="navbar navbar-light" aria-label="nav">
-        <ol class="breadcrumb m-0 p-0">
-          <li class="breadcrumb-item">
-            <a href="/fairylab/">Home</a>
-          </li>
-          <li class="breadcrumb-item active"
-              aria-current="page">Dashboard</li>
-        </ol>
-<button class="navbar-toggler border-0" type="button"
-                data-toggle="collapse" data-target="#nav-dropdown"
-                aria-controls="#nav-dropdown" aria-expanded="false"
-                aria-label="nav toggler">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse border-top" id="nav-dropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="#exceptions">Exceptions</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#warnings">Warnings</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#filter">Filter</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#logs">Logs</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  </header>
-  <main role="main" class="pb-3">
 
-<div class="container anchor" id="exceptions">
-<div class="row">
-  <div class="col-12">
-    <div class="alert alert-secondary mt-3 mb-0">
-      <span class="oi oi-fire text-secondary"></span>Exceptions
-    </div>
-  </div>
+<!-- ^(base.header) -->
+<header class="border-bottom sticky-top">
+<div class="container">
+<nav class="navbar navbar-light" aria-label="nav">
+<ol class="breadcrumb m-0 p-0">
+<li class="breadcrumb-item">
+<a href="/fairylab/">Home</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+</ol>
+
+<!-- ^(common.nav) -->
+<button class="navbar-toggler border-0" type="button" data-toggle="collapse"
+        data-target="#nav-dropdown" aria-controls="#nav-dropdown"
+        aria-expanded="false" aria-label="nav toggler">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse border-top" id="nav-dropdown">
+<ul class="navbar-nav">
+<li class="nav-item">
+<a class="nav-link" href="#exceptions">Exceptions</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#warnings">Warnings</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#filter">Filter</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#logs">Logs</a>
+</li>
+</ul>
 </div>
+<!-- $(common.nav) -->
+
+</nav>
+</div>
+</header>
+<!-- $(base.header) -->
+
+<!-- ^(base.main) -->
+<main role="main" class="pb-3">
+
+<!-- ^(dashboard.exceptions) -->
+<div class="container anchor" id="exceptions">
+
+<!-- ^(common.heading) -->
 <div class="row">
 <div class="col-12">
+<div class="alert alert-secondary mt-3 mb-0">
+<span class="oi oi-fire text-secondary"></span>Exceptions
+</div>
+</div>
+</div>
+<!-- $(common.heading) -->
+
+<!-- ^(dashboard.row) -->
+<div class="row">
+
+<!-- ^(dashboard.column) -->
+<div class="col-12">
+
+<!-- ^(common.card) -->
 <div class="card d-flex flex-column flex-grow mt-3">
-  <div class="card-body d-flex flex-column">
-    <h5 class="card-title">
-      <a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L127">fairylab.py#L127</a>
-    </h5>
-    <p class="card-text flex-grow">Disabled snacks plugin.</p>
-    <pre class="pre-scrollable d-flex"><code>Traceback (most recent call last):
+
+<!-- ^(common.card.body) -->
+<div class="card-body d-flex flex-column">
+<h5 class="card-title">
+<a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L127">fairylab.py#L127</a>
+</h5>
+<p class="card-text flex-grow">Disabled snacks plugin.</p>
+<pre class="pre-scrollable d-flex"><code>Traceback (most recent call last):
   File "core/fairylab/fairylab.py", line 117, in _try
     response = item(*args, **dict(kwargs, date=date))
   File "/home/pi/orangeandblueleague/filefairy3/plugin/snacks/snacks.py", line 234, in _load_internal
@@ -178,175 +199,261 @@
     return [os.path.join(d, c) for c in os.listdir(d)]
 FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/orangeandblueleague/filefairy3/resource/corpus'
 </code></pre>
-  </div>
-  <div class="card-footer text-muted text-truncate">
-    <small>Last activity: 43m ago</small>
-  </div>
 </div>
-</div>
-</div>
-</div>
+<!-- $(common.card.body) -->
 
-<div class="container anchor" id="warnings">
-<div class="row">
-  <div class="col-12">
-    <div class="alert alert-secondary mt-3 mb-0">
-      <span class="oi oi-warning text-secondary"></span>Warnings
-    </div>
-  </div>
+<!-- ^(common.card.footer) -->
+<div class="card-footer text-muted text-truncate">
+<small>Last activity: 43m ago</small>
 </div>
+<!-- $(common.card.footer) -->
+
+</div>
+<!-- $(common.card) -->
+
+</div>
+<!-- $(dashboard.column) -->
+
+</div>
+<!-- $(dashboard.row) -->
+
+</div>
+<!-- $(dashboard.exceptions) -->
+
+<!-- ^(dashboard.warnings) -->
+<div class="container anchor" id="warnings">
+
+<!-- ^(common.heading) -->
 <div class="row">
 <div class="col-12">
+<div class="alert alert-secondary mt-3 mb-0">
+<span class="oi oi-warning text-secondary"></span>Warnings
+</div>
+</div>
+</div>
+<!-- $(common.heading) -->
+
+<!-- ^(dashboard.row) -->
+<div class="row">
+
+<!-- ^(dashboard.column) -->
+<div class="col-12">
+
+<!-- ^(common.card) -->
 <div class="card d-flex flex-column flex-grow mt-3">
-  <div class="card-body d-flex flex-column">
-    <h5 class="card-title">
-      <a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/util/subprocess_/subprocess_.py#L19">subprocess_.py#L19</a>
-    </h5>
-    <p class="card-text flex-grow">Handled subprocess warning (x6).</p>
-    <pre class="pre-scrollable d-flex"><code>Traceback (most recent call last):
+
+<!-- ^(common.card.body) -->
+<div class="card-body d-flex flex-column">
+<h5 class="card-title">
+<a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/util/subprocess_/subprocess_.py#L19">subprocess_.py#L19</a>
+</h5>
+<p class="card-text flex-grow">Handled subprocess warning (x6).</p>
+<pre class="pre-scrollable d-flex"><code>Traceback (most recent call last):
   File "/home/jbrunner/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py", line 16, in check_output
     check=True)
   File "/usr/lib/python3.5/subprocess.py", line 708, in run
     output=stdout, stderr=stderr)
 subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' returned non-zero exit status 255
 </code></pre>
-  </div>
-  <div class="card-footer text-muted text-truncate">
-    <small>Last activity: 3h ago</small>
-  </div>
 </div>
-</div>
-</div>
-</div>
+<!-- $(common.card.body) -->
 
+<!-- ^(common.card.footer) -->
+<div class="card-footer text-muted text-truncate">
+<small>Last activity: 3h ago</small>
+</div>
+<!-- $(common.card.footer) -->
+
+</div>
+<!-- $(common.card) -->
+
+</div>
+<!-- $(dashboard.column) -->
+
+</div>
+<!-- $(dashboard.row) -->
+
+</div>
+<!-- $(dashboard.warnings) -->
+
+<!-- ^(dashboard.filter) -->
 <div class="container anchor" id="filter">
-<div class="row">
-  <div class="col-12">
-    <div class="alert alert-secondary mt-3 mb-0">
-      <span class="oi oi-magnifying-glass text-secondary"></span>Filter
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-12">
-    <nav class="navbar navbar-light bg-light mt-3 p-0">
-      <form class="w-100">
-        <input class="form-control mr-sm-2" type="search"
-               placeholder="Search" aria-label="Search">
-      </form>
-    </nav>
-  </div>
-</div>
-</div>
-<div class="container anchor" id="logs"s>
-<div class="row">
-  <div class="col-12">
-    <div class="alert alert-secondary mt-3 mb-0">
-      <span class="oi oi-timer text-secondary"></span>Logs
-    </div>
-  </div>
-</div>
+
+<!-- ^(common.heading) -->
 <div class="row">
 <div class="col-12">
+<div class="alert alert-secondary mt-3 mb-0">
+<span class="oi oi-magnifying-glass text-secondary"></span>Filter
+</div>
+</div>
+</div>
+<!-- $(common.heading) -->
+
+<!-- ^(common.form) -->
+<div class="row">
+<div class="col-12">
+<nav class="navbar navbar-light bg-light mt-3 p-0">
+<form class="w-100">
+<input class="form-control mr-sm-2" type="search" placeholder="Search"
+       aria-label="Search">
+</form>
+</nav>
+</div>
+</div>
+<!-- $(common.form) -->
+
+</div>
+<!-- $(dashboard.filter) -->
+
+<!-- ^(dashboard.logs) -->
+<div class="container anchor" id="logs">
+
+<!-- ^(common.heading) -->
+<div class="row">
+<div class="col-12">
+<div class="alert alert-secondary mt-3 mb-0">
+<span class="oi oi-timer text-secondary"></span>Logs
+</div>
+</div>
+</div>
+<!-- $(common.heading) -->
+
+<!-- ^(dashboard.row) -->
+<div class="row">
+
+<!-- ^(dashboard.column) -->
+<div class="col-12">
+
+<!-- ^(common.table) -->
 <table class="table border mt-3 table-fixed">
-  <thead class="thead-light">
-    <tr>
-      <td scope="col">Monday, July 4th, 2022</td>
-      <td scope="col" class="text-right w-75p"></td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L127">fairylab.py#L127</a></div><div class="d-inline-block">Disabled snacks plugin.</div></td>
-      <td class="text-right w-75p">17:09</td>
-    </tr>
-    <tr>
-      <td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/util/subprocess_/subprocess_.py#L19">subprocess_.py#L19</a></div><div class="d-inline-block">Handled subprocess warning (x10).</div></td>
-      <td class="text-right w-75p">14:47</td>
-    </tr>
-    <tr>
-      <td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/plugin/exports/exports.py#L92">exports.py#L92</a></div><div class="d-inline-block">Tracker updated (x6).</div></td>
-      <td class="text-right w-75p">14:21</td>
-    </tr>
-  </tbody>
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col">Monday, July 4th, 2022</td>
+<td scope="col" class="text-right w-75p"></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L127">fairylab.py#L127</a></div><div class="d-inline-block">Disabled snacks plugin.</div></td>
+<td class="text-right w-75p">17:09</td>
+</tr>
+<tr>
+<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/util/subprocess_/subprocess_.py#L19">subprocess_.py#L19</a></div><div class="d-inline-block">Handled subprocess warning (x10).</div></td>
+<td class="text-right w-75p">14:47</td>
+</tr>
+<tr>
+<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/plugin/exports/exports.py#L92">exports.py#L92</a></div><div class="d-inline-block">Tracker updated (x6).</div></td>
+<td class="text-right w-75p">14:21</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
 </table>
+<!-- $(common.table) -->
+<!-- ^(common.table) -->
 <table class="table border mt-3 table-fixed">
-  <thead class="thead-light">
-    <tr>
-      <td scope="col">Sunday, July 3rd, 2022</td>
-      <td scope="col" class="text-right w-75p"></td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L252">fairylab.py#L252</a></div><div class="d-inline-block">Reloaded exports plugin.</div></td>
-      <td class="text-right w-75p">06:02</td>
-    </tr>
-    <tr>
-      <td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L252">fairylab.py#L252</a></div><div class="d-inline-block">Reloaded download plugin.</div></td>
-      <td class="text-right w-75p">06:02</td>
-    </tr>
-  </tbody>
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col">Sunday, July 3rd, 2022</td>
+<td scope="col" class="text-right w-75p"></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L252">fairylab.py#L252</a></div><div class="d-inline-block">Reloaded exports plugin.</div></td>
+<td class="text-right w-75p">06:02</td>
+</tr>
+<tr>
+<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/orangeandblueleague/blob/master/filefairy/core/fairylab/fairylab.py#L252">fairylab.py#L252</a></div><div class="d-inline-block">Reloaded download plugin.</div></td>
+<td class="text-right w-75p">06:02</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
 </table>
-</div>
-</div>
-</div>
+<!-- $(common.table) -->
 
+</div>
+<!-- $(dashboard.column) -->
 
-  </main>
-  <footer class="border-top">
-    <div class="container text-center">
-      <small class="text-muted">Last reloaded: 1985-10-26 06:02:30 PST</small>
-    </div>
-  </footer>
+</div>
+<!-- $(dashboard.row) -->
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-          integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-          crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-          integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-          crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
-          integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
-          crossorigin="anonymous"></script>
-  <script>
-    $('.navbar-toggler').one('click', function(e) {
-      setTimeout(function() {
-        var height = $('header').height() + 1;
-        var css = '<style> .anchor.offset { padding-top: %spx; margin-top: -%spx; } </style>';
-        $(css.replace(/%s/g, height)).appendTo('head');
-      }, 500);
-    });
-    $('.navbar-toggler').on('click', function(e) {
-      $('.anchor').toggleClass('offset');
-    });
-  </script>
+</div>
+<!-- $(dashboard.logs) -->
+
+</main>
+<!-- $(base.main) -->
+
+<!-- ^(base.footer) -->
+<footer class="border-top">
+<div class="container text-center">
+<small class="text-muted">Last reloaded: 1985-10-26 06:02:30 PST</small>
+</div>
+</footer>
+<!-- $(base.footer) -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
 <script>
-    var filter = '';
-    $('.form-control').on('change keyup paste mouseup', function(e) {
-      var val = $(this).val().toLowerCase();
-      if (val != filter) {
-        filter = val;
-        $.each(['logs'], function(i, v) {
-          container = $('#' + v);
-          $('tbody td', container).each(function(e) {
-            if ($(this).text().toLowerCase().indexOf(filter) != -1) {
-              $(this).removeClass('d-none');
-            } else {
-              $(this).addClass('d-none');
-            }
-          });
-          $('table', container).each(function(e) {
-            if ($(this).find('tbody td:not(.d-none)').length != 0) {
-              $(this).removeClass('d-none');
-            } else {
-              $(this).addClass('d-none');
-            }
-          });
-        })
-      }
-    });
-  </script>
+$('.navbar-toggler').one('click', function(e) {
+  setTimeout(function() {
+    var height = $('header').height() + 1;
+    var css = '<style> .anchor.offset { padding-top: %spx; margin-top: -%spx; } </style>';
+    $(css.replace(/%s/g, height)).appendTo('head');
+  }, 500);
+});
+$('.navbar-toggler').on('click', function(e) {
+  $('.anchor').toggleClass('offset');
+});
+</script>
+
+<!-- ^(common.form_js) -->
+<script>
+var filter = '';
+$('.form-control').on('change keyup paste mouseup', function(e) {
+  var val = $(this).val().toLowerCase();
+  if (val != filter) {
+    filter = val;
+    $.each(['logs'], function(i, v) {
+      container = $('#' + v);
+      $('tbody td', container).each(function(e) {
+        if ($(this).text().toLowerCase().indexOf(filter) != -1) {
+          $(this).removeClass('d-none');
+        } else {
+          $(this).addClass('d-none');
+        }
+      });
+      $('table', container).each(function(e) {
+        if ($(this).find('tbody td:not(.d-none)').length != 0) {
+          $(this).removeClass('d-none');
+        } else {
+          $(this).addClass('d-none');
+        }
+      });
+    })
+  }
+});
+</script>
+<!-- $(common.form_js) -->
+
 </body>
 
 </html>

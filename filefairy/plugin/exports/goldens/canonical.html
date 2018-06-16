@@ -2,485 +2,613 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-  <title>Fairylab | exports</title>
-  <style>
-    html {
-      position: relative;
-      min-height: 100%;
-    }
-    body {
-      margin-bottom: 60px;
-    }
-    header {
-      background-color: #f5f5f5;
-      width: 100%;
-    }
-    footer {
-      background-color: #f5f5f5;
-      bottom: 0;
-      height: 60px;
-      line-height: 60px;
-      position: absolute;
-      width: 100%;
-    }
-    .alert, .form-control {
-      padding: .75rem;
-    }
-    .alert .oi {
-      line-height: 24px;
-      padding-right: .75rem;
-    }
-    .anchor {
-      padding-top: 0px;
-      margin-top: 0px;
-      transition: padding-top .35s ease, margin-top .35s ease;
-    }
-    .breadcrumb {
-      background-color: inherit;
-      line-height: 60px;
-    }
-    .flex-grow {
-      flex-grow: 1;
-    }
-    .left-8p {
-      left: 8px;
-    }
-    .navbar {
-      padding: 0;
-    }
-    .navbar-nav {
-      padding: .5rem 0;
-    }
-    .navbar .nav-link {
-      padding: .5rem;
-    }
-    .pl-24p {
-      padding-left: 24px;
-    }
-    .pr-24p {
-      padding-right: 24px;
-    }
-    .right-8p {
-      right: 8px;
-    }
-    .table, .table-sm {
-      margin-bottom: 0;
-      word-break: break-word;
-    }
-    .table .thead-light td {
-      background-color: #f5f5f5;
-    }
-    .table-fixed {
-      table-layout: fixed;
-    }
-    .table-sm td {
-      border-top: 0;
-      padding: 0 .3rem 0 0;
-    }
-    .table .td-sm {
-      padding: .75rem .25rem;
-    }
-    .top-14p {
-      top: 14px;
-    }
-    .w-10 {
-      width: 10%;
-    }
-    .w-20 {
-      width: 20%;
-    }
-    .w-40 {
-      width: 40%;
-    }
-    .w-55p {
-      width: 55px;
-    }
-    .w-65p {
-      width: 65px;
-    }
-    .w-75p {
-      width: 75px;
-    }
-    .w-105p {
-      width: 105px;
-    }
-  </style>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
+<title>Fairylab | exports</title>
+
+<style>
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 60px;
+}
+header {
+  background-color: #f5f5f5;
+  width: 100%;
+}
+footer {
+  background-color: #f5f5f5;
+  bottom: 0;
+  height: 60px;
+  line-height: 60px;
+  position: absolute;
+  width: 100%;
+}
+.alert, .form-control {
+  padding: .75rem;
+}
+.alert .oi {
+  line-height: 24px;
+  padding-right: .75rem;
+}
+.anchor {
+  padding-top: 0px;
+  margin-top: 0px;
+  transition: padding-top .35s ease, margin-top .35s ease;
+}
+.breadcrumb {
+  background-color: inherit;
+  line-height: 60px;
+}
+.flex-grow {
+  flex-grow: 1;
+}
+.left-8p {
+  left: 8px;
+}
+.navbar {
+  padding: 0;
+}
+.navbar-nav {
+  padding: .5rem 0;
+}
+.navbar .nav-link {
+  padding: .5rem;
+}
+.pl-24p {
+  padding-left: 24px;
+}
+.pr-24p {
+  padding-right: 24px;
+}
+.right-8p {
+  right: 8px;
+}
+.table, .table-sm {
+  margin-bottom: 0;
+  word-break: break-word;
+}
+.table .thead-light td {
+  background-color: #f5f5f5;
+}
+.table-fixed {
+  table-layout: fixed;
+}
+.table-sm td {
+  border-top: 0;
+  padding: 0 .3rem 0 0;
+}
+.table .td-sm {
+  padding: .75rem .25rem;
+}
+.top-14p {
+  top: 14px;
+}
+.w-10 {
+  width: 10%;
+}
+.w-20 {
+  width: 20%;
+}
+.w-40 {
+  width: 40%;
+}
+.w-55p {
+  width: 55px;
+}
+.w-65p {
+  width: 65px;
+}
+.w-75p {
+  width: 75px;
+}
+.w-105p {
+  width: 105px;
+}
+</style>
 </head>
 
 <body>
-  <header class="border-bottom sticky-top">
-    <div class="container">
-      <nav class="navbar navbar-light" aria-label="nav">
-        <ol class="breadcrumb m-0 p-0">
-          <li class="breadcrumb-item">
-            <a href="/fairylab/">Home</a>
-          </li>
-          <li class="breadcrumb-item active"
-              aria-current="page">Exports</li>
-        </ol>
-          <button class="navbar-toggler border-0" type="button"
-                data-toggle="collapse" data-target="#nav-dropdown"
-                aria-controls="#nav-dropdown" aria-expanded="false"
-                aria-label="nav toggler">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse border-top" id="nav-dropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="#tracker">Tracker</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#recorded">Recorded</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  </header>
-  <main role="main" class="pb-3">
-    <div class="container anchor" id="tracker">
-      <div class="row">
-        <div class="col-12">
-          <div class="alert alert-secondary mt-3 mb-0">
-            <span class="oi oi-cloudy text-secondary"></span>Tracker
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12">
-          <div class="card d-flex flex-column flex-grow mt-3">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">
-                53%
-              </h5>
-              <p class="card-text flex-grow">Upcoming sim contains <span class="text-success border px-1">16 new</span>, 14 old, <span class="text-secondary">0 ai</span>.</p>
-              <table class="table table-sm">
-                <tbody>
-                  <tr>
-                    <td scope="row">AL East</td>
-                    <td class="text-center">BAL</td>
-                    <td class="text-center">BOS</td>
-                    <td class="text-center">NYY</td>
-                    <td class="text-center">TB</td>
-                    <td class="text-center">TOR</td>
-                  </tr>
-                  <tr>
-                    <td scope="row">AL Central</td>
-                    <td class="text-center"><span class="text-success border px-1">CWS</span></td>
-                    <td class="text-center">CLE</td>
-                    <td class="text-center"><span class="text-success border px-1">DET</span></td>
-                    <td class="text-center">KC</td>
-                    <td class="text-center"><span class="text-success border px-1">MIN</span></td>
-                  </tr>
-                  <tr>
-                    <td scope="row">AL West</td>
-                    <td class="text-center">HOU</td>
-                    <td class="text-center"><span class="text-success border px-1">LAA</span></td>
-                    <td class="text-center">OAK</td>
-                    <td class="text-center"><span class="text-success border px-1">SEA</span></td>
-                    <td class="text-center"><span class="text-success border px-1">TEX</span></td>
-                  </tr>
-                  <tr>
-                    <td scope="row">NL East</td>
-                    <td class="text-center"><span class="text-success border px-1">ATL</span></td>
-                    <td class="text-center">MIA</td>
-                    <td class="text-center"><span class="text-success border px-1">NYM</span></td>
-                    <td class="text-center">PHI</td>
-                    <td class="text-center"><span class="text-success border px-1">WAS</span></td>
-                  </tr>
-                  <tr>
-                    <td scope="row">NL Central</td>
-                    <td class="text-center"><span class="text-success border px-1">CHC</span></td>
-                    <td class="text-center"><span class="text-success border px-1">CIN</span></td>
-                    <td class="text-center"><span class="text-success border px-1">MIL</span></td>
-                    <td class="text-center">PIT</td>
-                    <td class="text-center"><span class="text-success border px-1">STL</span></td>
-                  </tr>
-                  <tr>
-                    <td scope="row">NL West</td>
-                    <td class="text-center">ARI</td>
-                    <td class="text-center">COL</td>
-                    <td class="text-center"><span class="text-success border px-1">LAD</span></td>
-                    <td class="text-center"><span class="text-success border px-1">SD</span></td>
-                    <td class="text-center">SF</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="card-footer text-muted text-truncate">
-              <small>Last activity: 30s ago</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container anchor" id="recorded">
-      <div class="row">
-        <div class="col-12">
-          <div class="alert alert-secondary mt-3 mb-0">
-            <span class="oi oi-target text-secondary"></span>Recorded
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <table class="table border mt-3">
-            <thead class="thead-light">
-              <tr>
-                <td scope="col"class="position-relative">AL East</td>
-                <td scope="col" class="text-center w-25">Last 10</td>
-                <td scope="col" class="text-center w-25">Streak</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/boston_red_sox_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Boston</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_yankees_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">New York</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/tampa_bay_rays_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Tampa Bay</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/toronto_blue_jays_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Toronto</span></td>
-                <td class="text-center w-25">9 - 1</td>
-                <td class="text-center w-25">W4</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/baltimore_orioles_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Baltimore</span></td>
-                <td class="text-center w-25">6 - 4</td>
-                <td class="text-center w-25">W1</td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table border mt-3">
-            <thead class="thead-light">
-              <tr>
-                <td scope="col"class="position-relative">AL Central</td>
-                <td scope="col" class="text-center w-25">Last 10</td>
-                <td scope="col" class="text-center w-25">Streak</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/detroit_tigers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Detroit</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/minnesota_twins_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Minnesota</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/kansas_city_royals_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Kansas City</span></td>
-                <td class="text-center w-25">9 - 1</td>
-                <td class="text-center w-25">W5</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_white_sox_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Chicago</span></td>
-                <td class="text-center w-25">9 - 1</td>
-                <td class="text-center w-25">L1</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cleveland_indians_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Cleveland</span></td>
-                <td class="text-center w-25">8 - 2</td>
-                <td class="text-center w-25">W2</td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table border mt-3">
-            <thead class="thead-light">
-              <tr>
-                <td scope="col"class="position-relative">AL West</td>
-                <td scope="col" class="text-center w-25">Last 10</td>
-                <td scope="col" class="text-center w-25">Streak</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/houston_astros_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Houston</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/seattle_mariners_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Seattle</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/texas_rangers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Texas</span></td>
-                <td class="text-center w-25">9 - 1</td>
-                <td class="text-center w-25">W9</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_angels_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Los Angeles</span></td>
-                <td class="text-center w-25">7 - 3</td>
-                <td class="text-center w-25">L1</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/oakland_athletics_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Oakland</span></td>
-                <td class="text-center w-25">7 - 3</td>
-                <td class="text-center w-25">L3</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-6">
-          <table class="table border mt-3">
-            <thead class="thead-light">
-              <tr>
-                <td scope="col"class="position-relative">NL East</td>
-                <td scope="col" class="text-center w-25">Last 10</td>
-                <td scope="col" class="text-center w-25">Streak</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/atlanta_braves_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Atlanta</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_mets_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">New York</span></td>
-                <td class="text-center w-25">8 - 2</td>
-                <td class="text-center w-25">L1</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/washington_nationals_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Washington</span></td>
-                <td class="text-center w-25">5 - 5</td>
-                <td class="text-center w-25">L1</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/miami_marlins_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Miami</span></td>
-                <td class="text-center w-25">4 - 6</td>
-                <td class="text-center w-25">W1</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/philadelphia_phillies_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Philadelphia</span></td>
-                <td class="text-center w-25">3 - 7</td>
-                <td class="text-center w-25">L5</td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table border mt-3">
-            <thead class="thead-light">
-              <tr>
-                <td scope="col"class="position-relative">NL Central</td>
-                <td scope="col" class="text-center w-25">Last 10</td>
-                <td scope="col" class="text-center w-25">Streak</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cincinnati_reds_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Cincinnati</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/milwaukee_brewers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Milwaukee</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/st_louis_cardinals_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">St. Louis</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_cubs_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Chicago</span></td>
-                <td class="text-center w-25">8 - 2</td>
-                <td class="text-center w-25">L1</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/pittsburgh_pirates_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Pittsburgh</span></td>
-                <td class="text-center w-25">6 - 4</td>
-                <td class="text-center w-25">L1</td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table border mt-3">
-            <thead class="thead-light">
-              <tr>
-                <td scope="col"class="position-relative">NL West</td>
-                <td scope="col" class="text-center w-25">Last 10</td>
-                <td scope="col" class="text-center w-25">Streak</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/colorado_rockies_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Colorado</span></td>
-                <td class="text-center w-25">10 - 0</td>
-                <td class="text-center w-25">W10</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_diego_padres_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">San Diego</span></td>
-                <td class="text-center w-25">9 - 1</td>
-                <td class="text-center w-25">W8</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_dodgers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Los Angeles</span></td>
-                <td class="text-center w-25">5 - 5</td>
-                <td class="text-center w-25">W2</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/arizona_diamondbacks_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Arizona</span></td>
-                <td class="text-center w-25">5 - 5</td>
-                <td class="text-center w-25">W1</td>
-              </tr>
-              <tr>
-                <td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_francisco_giants_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">San Francisco</span></td>
-                <td class="text-center w-25">2 - 8</td>
-                <td class="text-center w-25">L4</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </main>
-  <footer class="border-top">
-    <div class="container text-center">
-      <small class="text-muted">Last reloaded: 1985-10-26 06:02:30 PST</small>
-    </div>
-  </footer>
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-          integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-          crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-          integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-          crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
-          integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
-          crossorigin="anonymous"></script>
-  <script>
-    $('.navbar-toggler').one('click', function(e) {
-      setTimeout(function() {
-        var height = $('header').height() + 1;
-        var css = '<style> .anchor.offset { padding-top: %spx; margin-top: -%spx; } </style>';
-        $(css.replace(/%s/g, height)).appendTo('head');
-      }, 500);
-    });
-    $('.navbar-toggler').on('click', function(e) {
-      $('.anchor').toggleClass('offset');
-    });
-  </script>
+<!-- ^(base.header) -->
+<header class="border-bottom sticky-top">
+<div class="container">
+<nav class="navbar navbar-light" aria-label="nav">
+<ol class="breadcrumb m-0 p-0">
+<li class="breadcrumb-item">
+<a href="/fairylab/">Home</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">Exports</li>
+</ol>
+
+<!-- ^(common.nav) -->
+<button class="navbar-toggler border-0" type="button" data-toggle="collapse"
+        data-target="#nav-dropdown" aria-controls="#nav-dropdown"
+        aria-expanded="false" aria-label="nav toggler">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse border-top" id="nav-dropdown">
+<ul class="navbar-nav">
+<li class="nav-item">
+<a class="nav-link" href="#tracker">Tracker</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#recorded">Recorded</a>
+</li>
+</ul>
+</div>
+<!-- $(common.nav) -->
+
+</nav>
+</div>
+</header>
+<!-- $(base.header) -->
+
+<!-- ^(base.main) -->
+<main role="main" class="pb-3">
+
+<!-- ^(exports.tracker) -->
+<div class="container anchor" id="tracker">
+
+<!-- ^(common.heading) -->
+<div class="row">
+<div class="col-12">
+<div class="alert alert-secondary mt-3 mb-0">
+<span class="oi oi-cloudy text-secondary"></span>Tracker
+</div>
+</div>
+</div>
+<!-- $(common.heading) -->
+
+<!-- ^(exports.row) -->
+<div class="row">
+
+<!-- ^(exports.column) -->
+<div class="col-12">
+
+<!-- ^(common.card) -->
+<div class="card d-flex flex-column flex-grow mt-3">
+
+<!-- ^(common.card.body) -->
+<div class="card-body d-flex flex-column">
+<h5 class="card-title">
+53%
+</h5>
+<p class="card-text flex-grow">Upcoming sim contains <span class="text-success border px-1">16 new</span>, 14 old, <span class="text-secondary">0 ai</span>.</p>
+
+<!-- ^(common.table) -->
+<table class="table table-sm">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row">AL East</td>
+<td class="text-center">BAL</td>
+<td class="text-center">BOS</td>
+<td class="text-center">NYY</td>
+<td class="text-center">TB</td>
+<td class="text-center">TOR</td>
+</tr>
+<tr>
+<td scope="row">AL Central</td>
+<td class="text-center"><span class="text-success border px-1">CWS</span></td>
+<td class="text-center">CLE</td>
+<td class="text-center"><span class="text-success border px-1">DET</span></td>
+<td class="text-center">KC</td>
+<td class="text-center"><span class="text-success border px-1">MIN</span></td>
+</tr>
+<tr>
+<td scope="row">AL West</td>
+<td class="text-center">HOU</td>
+<td class="text-center"><span class="text-success border px-1">LAA</span></td>
+<td class="text-center">OAK</td>
+<td class="text-center"><span class="text-success border px-1">SEA</span></td>
+<td class="text-center"><span class="text-success border px-1">TEX</span></td>
+</tr>
+<tr>
+<td scope="row">NL East</td>
+<td class="text-center"><span class="text-success border px-1">ATL</span></td>
+<td class="text-center">MIA</td>
+<td class="text-center"><span class="text-success border px-1">NYM</span></td>
+<td class="text-center">PHI</td>
+<td class="text-center"><span class="text-success border px-1">WAS</span></td>
+</tr>
+<tr>
+<td scope="row">NL Central</td>
+<td class="text-center"><span class="text-success border px-1">CHC</span></td>
+<td class="text-center"><span class="text-success border px-1">CIN</span></td>
+<td class="text-center"><span class="text-success border px-1">MIL</span></td>
+<td class="text-center">PIT</td>
+<td class="text-center"><span class="text-success border px-1">STL</span></td>
+</tr>
+<tr>
+<td scope="row">NL West</td>
+<td class="text-center">ARI</td>
+<td class="text-center">COL</td>
+<td class="text-center"><span class="text-success border px-1">LAD</span></td>
+<td class="text-center"><span class="text-success border px-1">SD</span></td>
+<td class="text-center">SF</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(common.card.body) -->
+
+<!-- ^(common.card.footer) -->
+<div class="card-footer text-muted text-truncate">
+<small>Last activity: 30s ago</small>
+</div>
+<!-- $(common.card.footer) -->
+
+</div>
+<!-- $(common.card) -->
+
+</div>
+<!-- $(exports.column) -->
+
+</div>
+<!-- $(exports.row) -->
+
+</div>
+<!-- $(exports.tracker) -->
+
+<!-- ^(exports.recorded) -->
+<div class="container anchor" id="recorded">
+
+<!-- ^(common.heading) -->
+<div class="row">
+<div class="col-12">
+<div class="alert alert-secondary mt-3 mb-0">
+<span class="oi oi-target text-secondary"></span>Recorded
+</div>
+</div>
+</div>
+<!-- $(common.heading) -->
+
+<!-- ^(exports.row) -->
+<div class="row">
+
+<!-- ^(exports.column) -->
+<div class="col-md-6">
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col"class="position-relative">AL East</td>
+<td scope="col" class="text-center w-25">Last 10</td>
+<td scope="col" class="text-center w-25">Streak</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/boston_red_sox_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Boston</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_yankees_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">New York</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/tampa_bay_rays_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Tampa Bay</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/toronto_blue_jays_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Toronto</span></td>
+<td class="text-center w-25">9 - 1</td>
+<td class="text-center w-25">W4</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/baltimore_orioles_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Baltimore</span></td>
+<td class="text-center w-25">6 - 4</td>
+<td class="text-center w-25">W1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col"class="position-relative">AL Central</td>
+<td scope="col" class="text-center w-25">Last 10</td>
+<td scope="col" class="text-center w-25">Streak</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/detroit_tigers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Detroit</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/minnesota_twins_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Minnesota</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/kansas_city_royals_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Kansas City</span></td>
+<td class="text-center w-25">9 - 1</td>
+<td class="text-center w-25">W5</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_white_sox_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Chicago</span></td>
+<td class="text-center w-25">9 - 1</td>
+<td class="text-center w-25">L1</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cleveland_indians_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Cleveland</span></td>
+<td class="text-center w-25">8 - 2</td>
+<td class="text-center w-25">W2</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col"class="position-relative">AL West</td>
+<td scope="col" class="text-center w-25">Last 10</td>
+<td scope="col" class="text-center w-25">Streak</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/houston_astros_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Houston</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/seattle_mariners_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Seattle</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/texas_rangers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Texas</span></td>
+<td class="text-center w-25">9 - 1</td>
+<td class="text-center w-25">W9</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_angels_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Los Angeles</span></td>
+<td class="text-center w-25">7 - 3</td>
+<td class="text-center w-25">L1</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/oakland_athletics_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Oakland</span></td>
+<td class="text-center w-25">7 - 3</td>
+<td class="text-center w-25">L3</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(exports.column) -->
+
+<!-- ^(exports.column) -->
+<div class="col-md-6">
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col"class="position-relative">NL East</td>
+<td scope="col" class="text-center w-25">Last 10</td>
+<td scope="col" class="text-center w-25">Streak</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/atlanta_braves_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Atlanta</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/new_york_mets_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">New York</span></td>
+<td class="text-center w-25">8 - 2</td>
+<td class="text-center w-25">L1</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/washington_nationals_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Washington</span></td>
+<td class="text-center w-25">5 - 5</td>
+<td class="text-center w-25">L1</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/miami_marlins_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Miami</span></td>
+<td class="text-center w-25">4 - 6</td>
+<td class="text-center w-25">W1</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/philadelphia_phillies_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Philadelphia</span></td>
+<td class="text-center w-25">3 - 7</td>
+<td class="text-center w-25">L5</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col"class="position-relative">NL Central</td>
+<td scope="col" class="text-center w-25">Last 10</td>
+<td scope="col" class="text-center w-25">Streak</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/cincinnati_reds_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Cincinnati</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/milwaukee_brewers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Milwaukee</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/st_louis_cardinals_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">St. Louis</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/chicago_cubs_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Chicago</span></td>
+<td class="text-center w-25">8 - 2</td>
+<td class="text-center w-25">L1</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/pittsburgh_pirates_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Pittsburgh</span></td>
+<td class="text-center w-25">6 - 4</td>
+<td class="text-center w-25">L1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col"class="position-relative">NL West</td>
+<td scope="col" class="text-center w-25">Last 10</td>
+<td scope="col" class="text-center w-25">Streak</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/colorado_rockies_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Colorado</span></td>
+<td class="text-center w-25">10 - 0</td>
+<td class="text-center w-25">W10</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_diego_padres_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">San Diego</span></td>
+<td class="text-center w-25">9 - 1</td>
+<td class="text-center w-25">W8</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/los_angeles_dodgers_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Los Angeles</span></td>
+<td class="text-center w-25">5 - 5</td>
+<td class="text-center w-25">W2</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/arizona_diamondbacks_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">Arizona</span></td>
+<td class="text-center w-25">5 - 5</td>
+<td class="text-center w-25">W1</td>
+</tr>
+<tr>
+<td scope="row"class="position-relative"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_francisco_giants_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">San Francisco</span></td>
+<td class="text-center w-25">2 - 8</td>
+<td class="text-center w-25">L4</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(exports.column) -->
+
+</div>
+<!-- $(exports.row) -->
+
+</div>
+<!-- $(exports.recorded) -->
+
+</main>
+<!-- $(base.main) -->
+
+<!-- ^(base.footer) -->
+<footer class="border-top">
+<div class="container text-center">
+<small class="text-muted">Last reloaded: 1985-10-26 06:02:30 PST</small>
+</div>
+</footer>
+<!-- $(base.footer) -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
+<script>
+$('.navbar-toggler').one('click', function(e) {
+  setTimeout(function() {
+    var height = $('header').height() + 1;
+    var css = '<style> .anchor.offset { padding-top: %spx; margin-top: -%spx; } </style>';
+    $(css.replace(/%s/g, height)).appendTo('head');
+  }, 500);
+});
+$('.navbar-toggler').on('click', function(e) {
+  $('.anchor').toggleClass('offset');
+});
+</script>
+
+
 </body>
 
 </html>

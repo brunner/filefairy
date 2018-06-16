@@ -13,69 +13,101 @@
 {% do items.append(('logs', 'Logs')) %}
 {% endif %}
 {% block nav %}
-{{ common.nav(items)|indent(8) }}
+{{ common.nav(items) }}
 {% endblock %}
 
 {% block content %}
 
 {% if exceptions %}
+<!-- ^(dashboard.exceptions) -->
 <div class="container anchor" id="exceptions">
+
 {{ common.heading('fire', 'Exceptions') }}
+
+<!-- ^(dashboard.row) -->
 <div class="row">
+
 {% for card in exceptions %}
+<!-- ^(dashboard.column) -->
 <div class="col-12">
+
 {{ common.card(card) }}
+
 </div>
+<!-- $(dashboard.column) -->
+
 {% endfor %}
 </div>
+<!-- $(dashboard.row) -->
+
 </div>
+<!-- $(dashboard.exceptions) -->
 {% endif %}
 
 {% if warnings %}
+<!-- ^(dashboard.warnings) -->
 <div class="container anchor" id="warnings">
+
 {{ common.heading('warning', 'Warnings') }}
+
+<!-- ^(dashboard.row) -->
 <div class="row">
+
 {% for card in warnings %}
+<!-- ^(dashboard.column) -->
 <div class="col-12">
+
 {{ common.card(card) }}
+
 </div>
+<!-- $(dashboard.column) -->
+
 {% endfor %}
 </div>
+<!-- $(dashboard.row) -->
+
 </div>
+<!-- $(dashboard.warnings) -->
 {% endif %}
 
 {% if logs %}
+<!-- ^(dashboard.filter) -->
 <div class="container anchor" id="filter">
+
 {{ common.heading('magnifying-glass', 'Filter') }}
+
 {{ common.form() }}
+
 </div>
-<div class="container anchor" id="logs"s>
+<!-- $(dashboard.filter) -->
+
+<!-- ^(dashboard.logs) -->
+<div class="container anchor" id="logs">
+
 {{ common.heading('timer', 'Logs') }}
+
+<!-- ^(dashboard.row) -->
 <div class="row">
+
+<!-- ^(dashboard.column) -->
 <div class="col-12">
+
 {% for table in logs %}
 {{ common.table(table) }}
 {% endfor %}
-</div>
-</div>
-</div>
-{% endif %}
 
-{% if info %}
-<div class="container anchor" id="info"s>
-{{ common.heading('double-quote-serif-left', 'Info') }}
-<div class="row">
-<div class="col-12">
-{% for table in info %}
-{{ common.table(table) }}
-{% endfor %}
 </div>
+<!-- $(dashboard.column) -->
+
 </div>
+<!-- $(dashboard.row) -->
+
 </div>
+<!-- $(dashboard.logs) -->
 {% endif %}
 
 {% endblock %}
 
 {% block script %}
-{{ common.form_js(['logs'])|indent(2) }}
+{{ common.form_js(['logs']) }}
 {% endblock %}

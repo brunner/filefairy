@@ -15,70 +15,138 @@
 {% do items.append(('standings', 'Standings')) %}
 {% endif %}
 {% block nav %}
-          {{ common.nav(items)|indent(8) }}
+{{ common.nav(items)|indent(8) }}
 {% endblock %}
 
 {% block content %}
-    <div class="container anchor" id="filter">
-      {{ common.heading('magnifying-glass', 'Filter')|indent(6) }}
-      {{ common.form()|indent(6) }}
-    </div>
-    {% if injuries %}
-    <div class="container anchor" id="injuries"s>
-      {{ common.heading('pulse', 'Injuries')|indent(6) }}
-      <div class="row">
-        <div class="col-12">
-          {% for table in injuries %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if news %}
-    <div class="container anchor" id="news">
-      {{ common.heading('rss', 'News')|indent(6) }}
-      <div class="row">
-        <div class="col-12">
-          {% for table in news %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if transactions %}
-    <div class="container anchor" id="transactions">
-      {{ common.heading('loop-circular', 'Transactions')|indent(6) }}
-      <div class="row">
-        <div class="col-12">
-          {% for table in transactions %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if standings %}
-    <div class="container anchor" id="standings">
-      {{ common.heading('book', 'Standings')|indent(6) }}
-      <div class="row">
-        {% set n = standings|length() // 2 %}
-        <div class="col-md-6">
-          {% for table in standings[:n] %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-        <div class="col-md-6">
-          {% for table in standings[n:] %}
-          {{ common.table(table)|indent(10) }}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
+
+<!-- ^(recap.filter) -->
+<div class="container anchor" id="filter">
+
+{{ common.heading('magnifying-glass', 'Filter') }}
+
+{{ common.form() }}
+
+</div>
+<!-- $(recap.filter) -->
+
+{% if injuries %}
+<!-- ^(recap.injuries) -->
+<div class="container anchor" id="injuries"s>
+
+{{ common.heading('pulse', 'Injuries') }}
+
+<!-- ^(recap.row) -->
+<div class="row">
+
+<!-- ^(recap.column) -->
+<div class="col-12">
+
+{% for table in injuries %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(recap.column) -->
+
+</div>
+<!-- $(recap.row) -->
+
+</div>
+<!-- $(recap.injuries) -->
+{% endif %}
+
+{% if news %}
+<!-- ^(recap.news) -->
+<div class="container anchor" id="news">
+
+{{ common.heading('rss', 'News') }}
+
+<!-- ^(recap.row) -->
+<div class="row">
+
+<!-- ^(recap.column) -->
+<div class="col-12">
+
+{% for table in news %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(recap.column) -->
+
+</div>
+<!-- $(recap.row) -->
+
+</div>
+<!-- $(recap.news) -->
+{% endif %}
+
+{% if transactions %}
+<!-- ^(recap.transactions) -->
+<div class="container anchor" id="transactions">
+
+{{ common.heading('loop-circular', 'Transactions') }}
+
+<!-- ^(recap.row) -->
+<div class="row">
+
+<!-- ^(recap.column) -->
+<div class="col-12">
+
+{% for table in transactions %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(recap.column) -->
+
+</div>
+<!-- $(recap.row) -->
+
+</div>
+<!-- $(recap.transactions) -->
+{% endif %}
+
+{% if standings %}
+<!-- ^(recap.standings) -->
+<div class="container anchor" id="standings">
+
+{{ common.heading('book', 'Standings') }}
+
+<!-- ^(recap.row) -->
+<div class="row">
+{% set n = standings|length() // 2 %}
+
+<!-- ^(recap.column) -->
+<div class="col-md-6">
+
+{% for table in standings[:n] %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(recap.column) -->
+
+<!-- ^(recap.column) -->
+<div class="col-md-6">
+
+{% for table in standings[n:] %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(recap.column) -->
+
+</div>
+<!-- $(recap.row) -->
+
+</div>
+<!-- $(recap.transactions) -->
+{% endif %}
+
 {% endblock %}
 
 {% block script %}
-  {{ common.form_js(['injuries', 'news', 'transactions'])|indent(2) }}
+{{ common.form_js(['injuries', 'news', 'transactions']) }}
 {% endblock %}
