@@ -163,7 +163,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_firstlast__with_gitlog(self):
-        output = 'abcdefghijklm\nnopqrstuvwxyz'
+        output = '"abcdefghijklm"\n"nopqrstuvwxyz"'
         ret = {'ok': True, 'output': output, 'stderr': ''}
         self.mock_check.return_value = ret
 

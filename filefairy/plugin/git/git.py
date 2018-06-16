@@ -85,6 +85,7 @@ class Git(Messageable, Registrable, Renderable, Runnable):
         response = Git._call(['git', 'log', '-20', '--format="%H"'])
         stdout = Git._stdout(response)
         for line in stdout.splitlines():
+            line = line.replace('"', '')
             if line.startswith(first):
                 first = line
             if line.startswith(last):
@@ -99,7 +100,6 @@ class Git(Messageable, Registrable, Renderable, Runnable):
     @staticmethod
     def _stderr(response):
         stderr = response.debug[0].extra.get('stderr', '')
-        print(stderr)
         return stderr
 
     @staticmethod
