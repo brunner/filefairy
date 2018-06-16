@@ -599,7 +599,7 @@ class SnacksTest(Test):
         mock_random.side_effect = ['a', 'b', 'b']
 
         actual = Snacks._snacks()
-        expected = ['a', 'b', 'star']
+        expected = ['b', 'star', 'a']
         self.assertEqual(actual, expected)
 
         calls = [mock.call(_snacklist), mock.call(_snacklist)]
@@ -610,7 +610,7 @@ class SnacksTest(Test):
         mock_random.side_effect = ['a', 'b', 'a']
 
         actual = Snacks._snacks()
-        expected = ['a', 'b', 'star']
+        expected = ['a', 'star', 'b']
         self.assertEqual(actual, expected)
 
         calls = [mock.call(_snacklist), mock.call(_snacklist)]
@@ -679,8 +679,8 @@ class SnacksTest(Test):
         self.assertEqual(actual, expected)
 
     def test_home__with_servings(self):
-        count = {'apple': 6, 'bacon': 3}
-        last = {'apple': _now_encoded, 'bacon': _then_encoded}
+        count = {'apple': 6, 'baguette_bread': 3}
+        last = {'apple': _now_encoded, 'baguette_bread': _then_encoded}
         read = _data(count=count, last=last, members=_members_old)
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
@@ -700,14 +700,15 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Count'],
-            body=[['\U0001F34E', 'apple', '6'], ['\U0001F953', 'bacon', '3']])
+            body=[['\U0001F34E', 'apple', '6'],
+                  ['\U0001f956', 'baguette bread', '3']])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
             body=[['\U0001F34E', 'apple', '0s ago'],
-                  ['\U0001F953', 'bacon', '23h ago']])
+                  ['\U0001f956', 'baguette bread', '23h ago']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -717,10 +718,10 @@ class SnacksTest(Test):
         self.assertEqual(actual, expected)
 
     def test_home__with_stars(self):
-        count = {'apple': 6, 'bacon': 2, 'star': 1}
+        count = {'apple': 6, 'baguette_bread': 2, 'star': 1}
         last = {
             'apple': _now_encoded,
-            'bacon': _then_encoded,
+            'baguette_bread': _then_encoded,
             'star': _then_encoded
         }
         read = _data(count=count, last=last, members=_members_old)
@@ -742,7 +743,8 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Count'],
-            body=[['\U0001F34E', 'apple', '6'], ['\U0001F953', 'bacon', '2'],
+            body=[['\U0001F34E', 'apple',
+                   '6'], ['\U0001f956', 'baguette bread', '2'],
                   ['\u2B50', 'star', '1']])
         recent = table(
             clazz='border mt-3',
@@ -750,7 +752,7 @@ class SnacksTest(Test):
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
             body=[['\U0001F34E', 'apple',
-                   '0s ago'], ['\U0001F953', 'bacon', '23h ago'],
+                   '0s ago'], ['\U0001f956', 'baguette bread', '23h ago'],
                   ['\u2B50', 'star', '23h ago']])
         expected = {
             'breadcrumbs': breadcrumbs,

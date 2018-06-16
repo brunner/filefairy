@@ -333,15 +333,21 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
             if snacks[1] == snacks[2]:
                 snacks[2] = 'trophy'
             snacks[1] = 'star'
-        elif snacks[0] == snacks[2] or snacks[1] == snacks[2]:
-            snacks[2] = 'star'
+        elif snacks[0] == snacks[2]:
+            snacks[1], snacks[2] = 'star', snacks[1]
+        elif snacks[1] == snacks[2]:
+            snacks[0], snacks[1], snacks[2] = snacks[1], 'star', snacks[0]
         return snacks
 
     def _body_count(self):
         body = []
         count = self.data['count']
         for snack in sorted(count, key=lambda x: (-count[x], x)):
-            body.append([_snackdict[snack], snack, str(count[snack])])
+            body.append([
+                _snackdict[snack],
+                snack.replace('_', ' '),
+                str(count[snack])
+            ])
             if len(body) == 15:
                 break
         return body
@@ -350,7 +356,11 @@ class Snacks(Messageable, Registrable, Renderable, Runnable):
         body = []
         last = self.data['last']
         for snack in sorted(last, key=lambda x: (self._flip(last[x]), x)):
-            body.append([_snackdict[snack], snack, self._ts(last[snack], now)])
+            body.append([
+                _snackdict[snack],
+                snack.replace('_', ' '),
+                self._ts(last[snack], now)
+            ])
             if len(body) == 15:
                 break
         return body
