@@ -98,7 +98,9 @@ class Git(Messageable, Registrable, Renderable, Runnable):
 
     @staticmethod
     def _stderr(response):
-        return response.debug[0].extra.get('stderr', '')
+        stderr = response.debug[0].extra.get('stderr', '')
+        print(stderr)
+        return stderr
 
     @staticmethod
     def _stdout(response):
