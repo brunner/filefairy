@@ -114,6 +114,22 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
+    @mock.patch.object(Git, '_home')
+    def test_render(self, mock_home):
+        home = {'breadcrumbs': [], 'pull': [], 'push': []}
+        mock_home.return_value = home
+
+        plugin = self.create_plugin(_data())
+        response = plugin._render_internal(date=_now)
+        index = 'html/fairylab/git/index.html'
+        self.assertEqual(response, [(index, '', 'git.html', home)])
+
+        mock_home.assert_called_once_with(date=_now)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
     def test_run(self):
         plugin = self.create_plugin(_data())
         response = plugin._run_internal(date=_then)

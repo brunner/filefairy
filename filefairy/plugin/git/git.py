@@ -60,9 +60,9 @@ class Git(Messageable, Registrable, Renderable, Runnable):
         return Response()
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/snacks/index.html'
+        html = 'html/fairylab/git/index.html'
         _home = self._home(**kwargs)
-        return [(html, '', 'snacks.html', _home)]
+        return [(html, '', 'git.html', _home)]
 
     def _run_internal(self, **kwargs):
         return Response()

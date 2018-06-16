@@ -506,6 +506,23 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
+    @mock.patch.object(Snacks, '_home')
+    def test_render(self, mock_home):
+        home = {'breadcrumbs': [], 'statistics': {}}
+        mock_home.return_value = home
+
+        plugin = self.create_plugin(_data())
+        response = plugin._render_internal(date=_now)
+        index = 'html/fairylab/snacks/index.html'
+        self.assertEqual(response, [(index, '', 'snacks.html', home)])
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
     @mock.patch.object(Snacks, '_render')
     def test_run(self, mock_render):
         plugin = self.create_plugin(_data(members=_members_old))
