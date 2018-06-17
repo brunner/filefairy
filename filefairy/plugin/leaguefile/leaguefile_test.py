@@ -514,12 +514,19 @@ class LeaguefileTest(Test):
                    'orange_and_blue_league_baseball.tar.gz', True)
         mock_check.return_value = iter([check_u, check_c])
 
-        plugin = self.create_plugin(_data())
+        upload = {
+            'start': 'Jan 29 15:00',
+            'size': '50000',
+            'end': 'Jan 29 15:00',
+            'now': '2018-01-28T23:55:00'
+        }
+        read = _data(upload=upload)
+        plugin = self.create_plugin(read)
         response = plugin._setup_internal(date=_now)
         self.assertEqual(response, Response())
 
         upload = {
-            'start': 'Jan 29 16:00',
+            'start': 'Jan 29 15:00',
             'size': '100000',
             'end': 'Jan 29 16:00',
             'now': '2018-01-29T00:00:00'
@@ -535,27 +542,19 @@ class LeaguefileTest(Test):
 
     @mock.patch.object(Leaguefile, '_render')
     @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_no_filepart_change(self, mock_check, mock_render):
-        check_u = ('100000', 'Jan 29 16:00',
-                   'orange_and_blue_league_baseball.tar.gz.filepart', True)
-        check_c = ('345678901', 'Jan 27 12:00',
-                   'orange_and_blue_league_baseball.tar.gz', True)
-        mock_check.return_value = iter([check_u, check_c])
+    def test_setup__with_no_change(self, mock_check, mock_render):
+        check = ('345678901', 'Jan 27 12:00',
+                 'orange_and_blue_league_baseball.tar.gz', False)
+        mock_check.return_value = iter([check])
 
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00'
-        }
         completed = {
             'start': 'Jan 27 12:00',
             'size': '345678901',
             'end': 'Jan 27 12:00',
             'date': 'Jan 27 12:00'
         }
-        plugin = self.create_plugin(
-            _data(upload=upload, completed=[completed]))
+        read = _data(completed=[completed])
+        plugin = self.create_plugin(read)
         response = plugin._setup_internal(date=_now)
         self.assertEqual(response, Response())
 
@@ -569,40 +568,15 @@ class LeaguefileTest(Test):
 
     @mock.patch.object(Leaguefile, '_render')
     @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_no_up_change(self, mock_check, mock_render):
-        check_c = ('345678901', 'Jan 27 12:00',
-                   'orange_and_blue_league_baseball.tar.gz', True)
-        mock_check.return_value = iter([check_c])
-
-        completed = {
-            'start': 'Jan 27 12:00',
-            'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
-        }
-        plugin = self.create_plugin(_data(completed=[completed]))
-        response = plugin._setup_internal(date=_now)
-        self.assertEqual(response, Response())
-
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_empty_filepart(self, mock_check, mock_render):
-        check_c = ('328706052', 'Jan 29 12:55',
-                   'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check.return_value = iter([check_c])
+    def test_setup__with_no_upload(self, mock_check, mock_render):
+        check = ('345678901', 'Jan 27 12:00',
+                 'orange_and_blue_league_baseball.tar.gz', False)
+        mock_check.return_value = iter([check])
 
         upload = {
             'start': 'Jan 29 16:00',
             'size': '100000',
-            'end': 'Jan 29 18:00',
+            'end': 'Jan 29 16:00',
             'now': '2018-01-29T00:00:00'
         }
         completed = {
@@ -611,7 +585,8 @@ class LeaguefileTest(Test):
             'end': 'Jan 27 12:00',
             'date': 'Jan 27 12:00'
         }
-        plugin = self.create_plugin(_data(upload=upload, completed=[completed]))
+        read = _data(upload=upload, completed=[completed])
+        plugin = self.create_plugin(read)
         response = plugin._setup_internal(date=_now)
         self.assertEqual(response, Response())
 
@@ -622,6 +597,42 @@ class LeaguefileTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    @mock.patch.object(Leaguefile, '_render')
+    @mock.patch.object(Leaguefile, '_check_upload')
+    def test_setup__with_download(self, mock_check, mock_render):
+        check = ('345678901', 'Jan 27 12:00',
+                 'orange_and_blue_league_baseball.tar.gz', False)
+        mock_check.return_value = iter([check])
+
+        upload = {
+            'start': 'Jan 29 16:00',
+            'size': '100000',
+            'end': 'Jan 29 16:00',
+            'now': '2018-01-28T23:55:00'
+        }
+        download = {'start': 'Jan 28 12:00', 'now': '2018-01-28T12:00:00'}
+        read = _data(upload=upload, download=download)
+        plugin = self.create_plugin(read)
+        response = plugin._setup_internal(date=_now)
+        self.assertEqual(
+            response,
+            Response(task=[
+                Task(target='_download_internal', kwargs={
+                    'date': _now
+                })
+            ]))
+
+        download = {'start': 'Jan 29 00:00', 'now': '2018-01-29T00:00:00'}
+        write = _data(upload=upload, download=download)
+        mock_check.assert_not_called()
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Download started.')
         self.mock_reactions.assert_not_called()
 
     def test_shadow(self):
@@ -857,8 +868,8 @@ class LeaguefileTest(Test):
     @mock.patch('plugin.leaguefile.leaguefile.leagues')
     @mock.patch('plugin.leaguefile.leaguefile.wget_file')
     @mock.patch('plugin.leaguefile.leaguefile.box_scores')
-    def test_download_internal__with_same_year(self, mock_box_scores, mock_file,
-                                               mock_leagues):
+    def test_download_internal__with_same_year(self, mock_box_scores,
+                                               mock_file, mock_leagues):
         mock_box_scores.return_value = _now
         mock_file.return_value = {'ok': True}
         mock_leagues.return_value = _now

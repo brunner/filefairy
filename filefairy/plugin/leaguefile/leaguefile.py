@@ -130,7 +130,6 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         original = copy.deepcopy(data)
 
         response = Response()
-
         if data['download']:
             response = self._download_start(**kwargs)
         else:
