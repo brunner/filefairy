@@ -506,8 +506,10 @@ class GitTest(unittest.TestCase):
         flast = span(_r, anchor(_commit + 'nopqrstuvwxyz', 'nopqrst'))
         pull = table(
             clazz='border mt-3',
-            head=['Range', 'Date', 'Time'],
-            body=[[ffirst + ' ... ' + flast, 'Oct 27', '00:00']])
+            head=['Range'],
+            hcols=[' colspan="2"'],
+            bcols=['', ' class="text-right"'],
+            body=[[ffirst + ' ... ' + flast, 'Oct 27 00:00']])
         expected = {'breadcrumbs': breadcrumbs, 'pull': pull}
         self.assertEqual(actual, expected)
 
@@ -531,8 +533,10 @@ class GitTest(unittest.TestCase):
         flast = span(_r, anchor(_commit + 'nopqrstuvwxyz', 'nopqrst'))
         push = table(
             clazz='border mt-3',
-            head=['Range', 'Date', 'Time'],
-            body=[[ffirst + ' ... ' + flast, 'Oct 27', '00:00']])
+            head=['Range'],
+            hcols=[' colspan="2"'],
+            bcols=['', ' class="text-right"'],
+            body=[[ffirst + ' ... ' + flast, 'Oct 27 00:00']])
         expected = {'breadcrumbs': breadcrumbs, 'push': push}
         self.assertEqual(actual, expected)
 

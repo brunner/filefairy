@@ -31,13 +31,17 @@ _r = ['d-inline-block', 'text-right', 'w-65p']
 
 _pull = table(
     clazz='border mt-3',
-    head=['Range', 'Date', 'Time'],
-    body=[[span(_l, _ebf) + ' ... ' + span(_r, _4ce), 'Jun 14', '22:11']])
+    head=['Range'],
+    hcols=[' colspan="2"'],
+    bcols=['', ' class="text-right"'],
+    body=[[span(_l, _ebf) + ' ... ' + span(_r, _4ce), 'Jun 14 22:11']])
 
 _push = table(
     clazz='border mt-3',
-    head=['Range', 'Date', 'Time'],
-    body=[[span(_l, _d03) + ' ... ' + span(_r, _fd1), 'Jun 14', '00:01']])
+    head=['Range'],
+    hcols=[' colspan="2"'],
+    bcols=['', ' class="text-right"'],
+    body=[[span(_l, _d03) + ' ... ' + span(_r, _fd1), 'Jun 14 00:01']])
 
 subtitle = ''
 

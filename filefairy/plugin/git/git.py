@@ -184,7 +184,7 @@ class Git(Messageable, Registrable, Renderable, Runnable):
             ddate = decode_datetime(value['date'])
             date = ddate.strftime('%b %d')
             time = ddate.strftime('%H:%M')
-            body.append([range_, date, time])
+            body.append([range_, date + ' ' + time])
         return body
 
     def _home(self, **kwargs):
@@ -202,13 +202,17 @@ class Git(Messageable, Registrable, Renderable, Runnable):
         if data['pull']:
             ret['pull'] = table(
                 clazz='border mt-3',
-                head=['Range', 'Date', 'Time'],
+                head=['Range'],
+                hcols=[' colspan="2"'],
+                bcols=['', ' class="text-right"'],
                 body=self._body('pull'))
 
         if data['push']:
             ret['push'] = table(
                 clazz='border mt-3',
-                head=['Range', 'Date', 'Time'],
+                head=['Range'],
+                hcols=[' colspan="2"'],
+                bcols=['', ' class="text-right"'],
                 body=self._body('push'))
 
         return ret
