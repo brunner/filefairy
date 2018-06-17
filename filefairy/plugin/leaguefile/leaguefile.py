@@ -74,34 +74,11 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         data = self.data
         original = copy.deepcopy(data)
 
+        notify = Notify.BASE
         response = Response()
-        for size, date, name, fp in self._check_upload():
-            if '.filepart' in name:
-                if not data['upload']:
-                    data['upload'] = {'start': date}
-                    self._chat('fairylab', 'Upload started.')
-                    logger_.log(logging.INFO, 'Upload started.')
-                    response.notify = [Notify.LEAGUEFILE_START]
-                if data['upload'].get('size', 0) != size:
-                    now = encode_datetime(kwargs['date'])
-                    u = {'size': size, 'end': date, 'now': now}
-                    data['upload'].update(u)
-            elif data['upload'] and not data['download'] and not fp:
-                if data['upload'].get('size', 0) != size:
-                    now = encode_datetime(kwargs['date'])
-                    data['upload'].update({
-                        'size': size,
-                        'date': date,
-                        'now': now
-                    })
-                    self._file_is_up(date)
-                    response.notify = [Notify.LEAGUEFILE_FINISH]
-                if not data['download']:
-                    response.task = self.download(**kwargs).task
 
-        if data['upload'] and data['download']:
-            upload = data['upload']
-            download = data['download']
+        if data['download'] and data['upload']:
+            download, upload = data['download'], data['upload']
             size, date, name, fp = self._check_download()
             if fp:
                 if download.get('size', 0) != size:
@@ -109,27 +86,37 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                     now = encode_datetime(kwargs['date'])
                     download.update({'size': size, 'end': end, 'now': now})
             elif upload['size'] == size:
-                completed = {
-                    'size': upload['size'],
-                    'date': upload['date'],
-                    'ustart': upload['start'],
-                    'uend': upload['end'],
-                    'dstart': download['start'],
-                    'dend': download['end']
-                }
-                data['completed'].insert(0, copy.deepcopy(completed))
+                data['completed'].insert(0, self._completed(download, upload))
                 if len(data['completed']) > 10:
                     data['completed'] = data['completed'][:10]
-                data['upload'] = None
-                data['download'] = None
+                data['download'], data['upload'] = None, None
+        else:
+            for size, date, name, fp in self._check_upload():
+                if '.filepart' in name:
+                    if not data['upload']:
+                        data['upload'] = {'start': date}
+                        self._chat('fairylab', 'Upload started.')
+                        logger_.log(logging.INFO, 'Upload started.')
+                        notify = Notify.LEAGUEFILE_START
+                    if data['upload'].get('size', 0) != size:
+                        now = encode_datetime(kwargs['date'])
+                        u = {'size': size, 'end': date, 'now': now}
+                        data['upload'].update(u)
+                elif data['upload'] and not fp:
+                    upload = data['upload']
+                    if upload.get('size', 0) != size:
+                        now = encode_datetime(kwargs['date'])
+                        upload.update({'size': size, 'date': date, 'now': now})
+                        self._file_is_up(date)
+                        notify = Notify.LEAGUEFILE_FINISH
+                    response = self.download(**kwargs)
 
         if data != original:
             self.write()
 
         if data != original or data['upload']:
+            response.append_notify(notify)
             self._render(**kwargs)
-            if not response.notify:
-                response.notify = [Notify.BASE]
 
         return response
 
@@ -145,32 +132,18 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         response = Response()
 
         if data['download']:
-            task = Task(target='_download_internal', kwargs=kwargs)
-            response.append_task(task)
+            response = self._download_start(**kwargs)
         else:
             for size, date, name, fp in self._check_upload():
                 if not fp:
                     data['upload'] = None
-
-                empty = len(data['completed']) == 0
-                if '.filepart' in name:
+                elif '.filepart' in name:
                     if not data['upload']:
+                        data['upload'] = {'start': date}
+                    if data['upload'].get('size', 0) != size:
                         now = encode_datetime(kwargs['date'])
-                        u = {
-                            'start': date,
-                            'size': size,
-                            'end': date,
-                            'now': now
-                        }
-                        data['upload'] = u
-                elif empty or data['completed'][0]['date'] != date:
-                    c = {
-                        'date': date,
-                        'start': date,
-                        'size': size,
-                        'end': date
-                    }
-                    data['completed'].insert(0, c)
+                        u = {'size': size, 'end': date, 'now': now}
+                        data['upload'].update(u)
 
         if data != original:
             self.write()
@@ -229,6 +202,17 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                     yield match[0] + (fp, )
 
     @staticmethod
+    def _completed(download, upload):
+        return {
+            'size': upload['size'],
+            'date': upload['date'],
+            'ustart': upload['start'],
+            'uend': upload['end'],
+            'dstart': download['start'],
+            'dend': download['end']
+        }
+
+    @staticmethod
     def _decode(date):
         return datetime.datetime.strptime(date, '%b %d %H:%M')
 
@@ -258,14 +242,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
 
         output = ping()
         if output.get('ok') and data['upload']:
-            now = encode_datetime(kwargs['date'])
-            self.data['download'] = {
-                'start': self._encode(kwargs['date']),
-                'now': now
-            }
-            logger_.log(logging.INFO, 'Download started.')
-            return Response(
-                task=[Task(target='_download_internal', kwargs=kwargs)])
+            return self._download_start(**kwargs)
         else:
             logger_.log(
                 logging.WARNING,
@@ -304,6 +281,16 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
 
         self.write()
         return response
+
+    def _download_start(self, **kwargs):
+        now = encode_datetime(kwargs['date'])
+        self.data['download'] = {
+            'start': self._encode(kwargs['date']),
+            'now': now
+        }
+        logger_.log(logging.INFO, 'Download started.')
+        return Response(
+            task=[Task(target='_download_internal', kwargs=kwargs)])
 
     def _file_is_up(self, date):
         obj = self._chat('fairylab', 'File is up.')

@@ -188,7 +188,7 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_check_download.assert_called_once_with()
-        mock_check_upload.assert_called_once_with()
+        mock_check_upload.assert_not_called()
         mock_download.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
@@ -428,7 +428,7 @@ class LeaguefileTest(Test):
         }
         write = _data(download=updated, upload=upload)
         mock_check_download.assert_called_once_with()
-        mock_check_upload.assert_called_once_with()
+        mock_check_upload.assert_not_called()
         mock_download.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
@@ -479,7 +479,7 @@ class LeaguefileTest(Test):
         }
         write = _data(completed=[completed])
         mock_check_download.assert_called_once_with()
-        mock_check_upload.assert_called_once_with()
+        mock_check_upload.assert_not_called()
         mock_download.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
@@ -524,13 +524,7 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 16:00',
             'now': '2018-01-29T00:00:00'
         }
-        completed = {
-            'start': 'Jan 27 12:00',
-            'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
-        }
-        write = _data(upload=upload, completed=[completed])
+        write = _data(upload=upload)
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
@@ -611,56 +605,17 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 18:00',
             'now': '2018-01-29T00:00:00'
         }
-        plugin = self.create_plugin(_data(upload=upload))
-        response = plugin._setup_internal(date=_now)
-        self.assertEqual(response, Response())
-
-        completed = {
-            'start': 'Jan 29 12:55',
-            'size': '328706052',
-            'end': 'Jan 29 12:55',
-            'date': 'Jan 29 12:55'
-        }
-        write = _data(completed=[completed])
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_new_up(self, mock_check, mock_render):
-        check_c = ('328706052', 'Jan 29 12:55',
-                   'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check.return_value = iter([check_c])
-
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00'
-        }
         completed = {
             'start': 'Jan 27 12:00',
             'size': '345678901',
             'end': 'Jan 27 12:00',
             'date': 'Jan 27 12:00'
         }
-        plugin = self.create_plugin(
-            _data(upload=upload, completed=[completed]))
+        plugin = self.create_plugin(_data(upload=upload, completed=[completed]))
         response = plugin._setup_internal(date=_now)
         self.assertEqual(response, Response())
 
-        new = {
-            'start': 'Jan 29 12:55',
-            'size': '328706052',
-            'end': 'Jan 29 12:55',
-            'date': 'Jan 29 12:55'
-        }
-        write = _data(completed=[new, completed])
+        write = _data(completed=[completed])
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=_now)
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
