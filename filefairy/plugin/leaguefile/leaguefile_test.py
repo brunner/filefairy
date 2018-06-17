@@ -872,13 +872,14 @@ class LeaguefileTest(Test):
             'now': _now_encoded
         })
 
-    @mock.patch.object(Leaguefile, '_leagues')
+    @mock.patch('plugin.leaguefile.leaguefile.leagues')
     @mock.patch('plugin.leaguefile.leaguefile.wget_file')
     @mock.patch('plugin.leaguefile.leaguefile.box_scores')
     def test_download_internal__with_new_year(self, mock_box_scores, mock_file,
                                               mock_leagues):
-        mock_box_scores.return_value = _year
+        mock_box_scores.return_value = _then
         mock_file.return_value = {'ok': True}
+        mock_leagues.return_value = _year
 
         download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00'}
         plugin = self.create_plugin(
@@ -892,19 +893,20 @@ class LeaguefileTest(Test):
         write = _data(download=download, now=_year_encoded)
         mock_box_scores.assert_called_once_with(_then)
         mock_file.assert_called_once_with()
-        mock_leagues.assert_called_once_with()
+        mock_leagues.assert_called_once_with(_then)
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch.object(Leaguefile, '_leagues')
+    @mock.patch('plugin.leaguefile.leaguefile.leagues')
     @mock.patch('plugin.leaguefile.leaguefile.wget_file')
     @mock.patch('plugin.leaguefile.leaguefile.box_scores')
     def test_download_internal__with_same_year(self, mock_box_scores, mock_file,
                                                mock_leagues):
         mock_box_scores.return_value = _now
         mock_file.return_value = {'ok': True}
+        mock_leagues.return_value = _now
 
         download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00'}
         plugin = self.create_plugin(
@@ -918,13 +920,13 @@ class LeaguefileTest(Test):
         write = _data(download=download, now=_now_encoded)
         mock_box_scores.assert_called_once_with(_then)
         mock_file.assert_called_once_with()
-        mock_leagues.assert_called_once_with()
+        mock_leagues.assert_called_once_with(_then)
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch.object(Leaguefile, '_leagues')
+    @mock.patch('plugin.leaguefile.leaguefile.leagues')
     @mock.patch('plugin.leaguefile.leaguefile.wget_file')
     @mock.patch('plugin.leaguefile.leaguefile.box_scores')
     def test_download_internal__with_ok_false(self, mock_box_scores, mock_file,
@@ -1106,164 +1108,6 @@ class LeaguefileTest(Test):
             'completed': completed
         }
         self.assertEqual(actual, expected)
-
-    @mock.patch.object(Leaguefile, '_leagues_internal')
-    @mock.patch('plugin.leaguefile.leaguefile.os.path.isfile')
-    def test_leagues(self, mock_isfile, mock_leagues):
-        mock_isfile.return_value = True
-
-        plugin = self.create_plugin(_data())
-        plugin._leagues()
-
-        leagues = 'resource/download/news/txt/leagues'
-        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
-        dinjuries = dpath.format('injuries')
-        dnews = dpath.format('news')
-        dtransactions = dpath.format('transactions')
-        fpath = os.path.join(_root, leagues, 'league_100_{}.txt')
-        finjuries = fpath.format('injuries')
-        fnews = fpath.format('news')
-        ftransactions = fpath.format('transactions')
-        calls = [
-            mock.call(dinjuries),
-            mock.call(finjuries),
-            mock.call(dnews),
-            mock.call(fnews),
-            mock.call(dtransactions),
-            mock.call(ftransactions),
-        ]
-        mock_isfile.assert_has_calls(calls)
-        calls = [
-            mock.call('injuries', dinjuries, finjuries),
-            mock.call('news', dnews, fnews),
-            mock.call('transactions', dtransactions, ftransactions)
-        ]
-        mock_leagues.assert_has_calls(calls)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-
-    @mock.patch('plugin.leaguefile.leaguefile.open', create=True)
-    def test_leagues_internal__injuries(self, mock_open):
-        injuries_new = '20180129\t<a href=\"../teams/team_57.html\">Tampa ' + \
-                       'Bay Rays</a>: <a href=\"../players/player_1.html\"' + \
-                       '>Zack Weiss</a> diagnosed with a strained hamstrin' + \
-                       'g, will miss 4 weeks.\n20180129\t<a href=\"../team' + \
-                       's/team_39.html\">Colorado Rockies</a>: RF <a href=' + \
-                       '\"../players/player_24198.html\">Eddie Hoffman</a>' + \
-                       ' was injured being hit by a pitch.  The Diagnosis:' + \
-                       ' bruised knee. This is a day-to-day injury expecte' + \
-                       'd to last 5 days.'
-        injuries_old = '20180126\t<a href=\"../teams/team_44.html\">Los An' + \
-                       'geles Angels</a>: CF <a href=\"../players/player_0' + \
-                       '.html\">Alex Aristy</a> was injured while running ' + \
-                       'the bases.  The Diagnosis: knee inflammation. He\'' + \
-                       's expected to miss about 3 weeks.'
-        data_a = '\n'.join([injuries_old, injuries_new])
-        mo_a = mock.mock_open(read_data=data_a)
-        mock_handle_a = mo_a()
-        mo_b = mock.mock_open()
-        mock_handle_b = mo_b()
-        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
-
-        dname = 'resource/extract/injuries.txt'
-        fname = 'resource/download/news/txt/leagues/league_100_injuries.txt'
-        plugin = self.create_plugin(_data(now=_then_encoded))
-        plugin._leagues_internal('injuries', dname, fname)
-
-        calls = [
-            mock.call(fname, 'r', encoding='iso-8859-1'),
-            mock.call(dname, 'w')
-        ]
-        mock_open.assert_has_calls(calls)
-        mock_handle_a.write.assert_not_called()
-        calls = [mock.call(s + '\n') for s in injuries_new.split('\n') if s]
-        mock_handle_b.write.assert_has_calls(calls)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], _now_encoded)
-        self.mock_log.assert_not_called()
-
-    @mock.patch('plugin.leaguefile.leaguefile.open', create=True)
-    def test_leagues_internal__news(self, mock_open):
-        news_new = '20180128\t<a href=\"../teams/team_42.html\">Houston As' + \
-                   'tros</a>: <a href=\"../players/player_39044.html\">Mar' + \
-                   'k Appel</a> pitches a 2-hit shutout against the <a hre' + \
-                   'f=\"../teams/team_44.html\">Los Angeles Angels</a> wit' + \
-                   'h 8 strikeouts and 0 BB allowed!\n20180129\t<a href=\"' + \
-                   '../teams/team_39.html\">Colorado Rockies</a>: <a href=' + \
-                   '\"../players/player_30965.html\">Spencer Taylor</a> go' + \
-                   't suspended 3 games after ejection following a brawl.'
-        news_old = '20180127\t<a href=\"../teams/team_57.html\">Tampa Bay ' + \
-                   'Rays</a>: <a href=\"../players/player_27.html\">A.J. R' + \
-                   'eed</a> got suspended 4 games after ejection following' + \
-                   ' arguing a strike call.'
-        data_a = '\n'.join([news_old, news_new])
-        mo_a = mock.mock_open(read_data=data_a)
-        mock_handle_a = mo_a()
-        mo_b = mock.mock_open()
-        mock_handle_b = mo_b()
-        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
-
-        dname = 'resource/extract/news.txt'
-        fname = 'resource/download/news/txt/leagues/league_100_news.txt'
-        plugin = self.create_plugin(_data(now=_then_encoded))
-        plugin._leagues_internal('news', dname, fname)
-
-        calls = [
-            mock.call(fname, 'r', encoding='iso-8859-1'),
-            mock.call(dname, 'w')
-        ]
-        mock_open.assert_has_calls(calls)
-        mock_handle_a.write.assert_not_called()
-        calls = [mock.call(s + '\n') for s in news_new.split('\n') if s]
-        mock_handle_b.write.assert_has_calls(calls)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], _now_encoded)
-        self.mock_log.assert_not_called()
-
-    @mock.patch('plugin.leaguefile.leaguefile.open', create=True)
-    def test_leagues_internal__transactions(self, mock_open):
-        transactions_new = '20180128\t<a href=\"../teams/team_33.html\">Ba' + \
-                           'ltimore Orioles</a>: Placed C <a href=\"../pla' + \
-                           'yers/player_1439.html\">Evan Skoug</a> on the ' + \
-                           'active roster.\n\n20180128\t<a href=\"../teams' + \
-                           '/team_33.html\">Baltimore Orioles</a>: Activat' + \
-                           'ed C <a href=\"../players/player_1439.html\">E' + \
-                           'van Skoug</a> from the disabled list.\n'
-        transactions_old = '20180127\t<a href=\"../teams/team_33.html\">Ba' + \
-                           'ltimore Orioles</a>: Placed 2B <a href=\"../pl' + \
-                           'ayers/player_292.html\">Austin Slater</a> on t' + \
-                           'he 7-day disabled list, retroactive to 08/12/2' + \
-                           '022.\n'
-        data_a = '\n'.join([transactions_old, transactions_new])
-        mo_a = mock.mock_open(read_data=data_a)
-        mock_handle_a = mo_a()
-        mo_b = mock.mock_open()
-        mock_handle_b = mo_b()
-        mock_open.side_effect = [mo_a.return_value, mo_b.return_value]
-
-        dname = 'resource/extract/transactions.txt'
-        fname = 'resource/download/transactions/txt/leagues/' + \
-                'league_100_transactions.txt'
-        plugin = self.create_plugin(_data(now=_then_encoded))
-        plugin._leagues_internal('transactions', dname, fname)
-
-        calls = [
-            mock.call(fname, 'r', encoding='iso-8859-1'),
-            mock.call(dname, 'w')
-        ]
-        mock_open.assert_has_calls(calls)
-        mock_handle_a.write.assert_not_called()
-        calls = [
-            mock.call(s + '\n') for s in transactions_new.split('\n') if s
-        ]
-        mock_handle_b.write.assert_has_calls(calls)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.assertEqual(plugin.data['now'], _then_encoded)
-        self.mock_log.assert_not_called()
 
 
 if __name__ in ['__main__', 'plugin.leaguefile.leaguefile_test']:

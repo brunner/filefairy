@@ -30,6 +30,7 @@ from util.file_.file_ import recreate  # noqa
 from util.file_.file_ import wget_file  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.news.news import box_scores  # noqa
+from util.news.news import leagues  # noqa
 from util.secrets.secrets import server  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
@@ -275,28 +276,31 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
             return Response()
 
     def _download_internal(self, *args, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-        data['then'] = data['now']
-
         response = Response()
         output = wget_file()
-        if output.get('ok'):
-            then = decode_datetime(self.data['then'])
-            data['now'] = encode_datetime(box_scores(then))
 
-            self._leagues()
+        if output.get('ok'):
+            now = decode_datetime(self.data['now'])
+            then = now
+
+            box_scores_now = box_scores(then)
+            leagues_now = leagues(then)
+            if box_scores_now > now:
+                now = box_scores_now
+            if leagues_now > then:
+                now = leagues_now
+
+            self.data['now'] = encode_datetime(now)
+            self.data['then'] = encode_datetime(then)
+
             logger_.log(logging.INFO, 'Download finished.')
             response.append_notify(Notify.LEAGUEFILE_DOWNLOAD)
-            dthen = decode_datetime(data['then'])
-            dnow = decode_datetime(data['now'])
-            if dthen.year != dnow.year:
+            if then.year != now.year:
                 response.append_notify(Notify.LEAGUEFILE_YEAR)
             response.shadow = self._shadow_internal(**kwargs)
         else:
             logger_.log(logging.INFO, 'Download failed.')
-            data['download'] = None
-            data['then'] = original['then']
+            self.data['download'] = None
 
         self.write()
         return response
@@ -370,32 +374,3 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
             body=body)
 
         return ret
-
-    def _leagues(self):
-        leagues = 'resource/download/news/txt/leagues'
-        dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
-        fpath = os.path.join(_root, leagues, 'league_100_{}.txt')
-        for key in ['injuries', 'news', 'transactions']:
-            dname = dpath.format(key)
-            fname = fpath.format(key)
-            if not os.path.isfile(dname) or not os.path.isfile(fname):
-                continue
-            self._leagues_internal(key, dname, fname)
-
-    def _leagues_internal(self, key, dname, fname):
-        then = decode_datetime(self.data['then'])
-        now = decode_datetime(self.data['now'])
-
-        with open(fname, 'r', encoding='iso-8859-1') as ff:
-            content = ff.read()
-
-        with open(dname, 'w') as df:
-            match = re.findall('\d{8}\t[^\n]+\n', content.strip() + '\n')
-            for m in match:
-                date = datetime.datetime.strptime(m[:8], '%Y%m%d')
-                if date >= then:
-                    df.write(m)
-                if date > now:
-                    now = date
-
-        self.data['now'] = encode_datetime(now)
