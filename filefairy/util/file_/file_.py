@@ -30,7 +30,7 @@ def wget_file():
     cwd = os.getcwd()
     os.chdir(_download)
 
-    output = check_output(['wget', _url], timeout=7200)
+    output = check_output(['wget', _url], timeout=4800)
     if not output.get('ok'):
         return output
 

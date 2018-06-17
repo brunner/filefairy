@@ -55,7 +55,7 @@ class FileTest(unittest.TestCase):
         calls = [
             mock.call(['rm', '-rf', _download]),
             mock.call(['mkdir', _download]),
-            mock.call(['wget', _url], timeout=7200),
+            mock.call(['wget', _url], timeout=4800),
             mock.call(['tar', '-xzf', _name])
         ]
         mock_check.assert_has_calls(calls)
