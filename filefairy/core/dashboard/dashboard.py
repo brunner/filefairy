@@ -265,10 +265,11 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
             record.update({'count': 1, 'date': encoded_date})
             self.data['records'][encoded_day].append(record)
 
-        self.date = date
-        self.write()
-        self._render(date=date)
+        if record['levelname'] != 'WARNING' or count >= 5:
+            self.date = date
+            self._render(date=date)
 
+        self.write()
         return count
 
     def _retire(self, **kwargs):
