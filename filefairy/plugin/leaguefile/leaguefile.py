@@ -29,6 +29,7 @@ from util.file_.file_ import ping  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.file_.file_ import wget_file  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
+from util.news.news import box_scores  # noqa
 from util.secrets.secrets import server  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
@@ -281,7 +282,9 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         response = Response()
         output = wget_file()
         if output.get('ok'):
-            self._games()
+            then = decode_datetime(self.data['then'])
+            data['now'] = encode_datetime(box_scores(then))
+
             self._leagues()
             logger_.log(logging.INFO, 'Download finished.')
             response.append_notify(Notify.LEAGUEFILE_DOWNLOAD)
@@ -309,47 +312,6 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                 reactions_add('zap', channel, ts)
             elif seconds > 25200:
                 reactions_add('timer_clock', channel, ts)
-
-    def _games(self):
-        box_scores = os.path.join(_root, 'resource/extract/box_scores')
-        game_logs = os.path.join(_root, 'resource/extract/game_logs')
-        recreate(box_scores)
-        recreate(game_logs)
-
-        boxes = 'resource/download/news/html/box_scores'
-        leagues = 'resource/download/news/txt/leagues'
-        for box in os.listdir(os.path.join(_root, boxes)):
-            bdname = os.path.join(box_scores, box)
-            bfname = os.path.join(_root, boxes, box)
-            log_ = box.replace('game_box', 'log').replace('html', 'txt')
-            ldname = os.path.join(game_logs, log_)
-            lfname = os.path.join(_root, leagues, log_)
-            if not os.path.isfile(bfname) or not os.path.isfile(lfname):
-                continue
-            self._games_internal(bdname, bfname, ldname, lfname)
-
-    def _games_internal(self, bdname, bfname, ldname, lfname):
-        then = decode_datetime(self.data['then'])
-        now = decode_datetime(self.data['now'])
-
-        with open(bfname, 'r', encoding='iso-8859-1') as bff:
-            bcontent = bff.read()
-        with open(lfname, 'r', encoding='iso-8859-1') as lff:
-            lcontent = lff.read()
-
-        pattern = 'MLB Box Scores[^\d]+(\d{2}\/\d{2}\/\d{4})'
-        match = re.findall(pattern, bcontent)
-        if match:
-            date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
-            if date >= then:
-                with open(bdname, 'w') as bdf:
-                    bdf.write(bcontent)
-                with open(ldname, 'w') as ldf:
-                    ldf.write(lcontent)
-            if date >= now:
-                now = date + datetime.timedelta(days=1)
-
-        self.data['now'] = encode_datetime(now)
 
     def _home(self, **kwargs):
         data = self.data
