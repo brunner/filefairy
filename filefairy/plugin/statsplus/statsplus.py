@@ -383,7 +383,7 @@ class Statsplus(Messageable, Registrable, Renderable, Runnable):
                     el, cl = total // 2 - ew, total // 2 - cw
                 else:
                     el, cl = 0 if ew else 1, 0 if cw else 1
-                if ew + cw == tw and el + cl <= tl:
+                if ew + cw == tw and el + cl <= tl and ew >= 0 and el >= 0:
                     return ew, el
         elif encoding in table_:
             return tw, tl
