@@ -98,7 +98,7 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                         self._chat('fairylab', 'Upload started.')
                         logger_.log(logging.INFO, 'Upload started.')
                         notify = Notify.LEAGUEFILE_START
-                    if data['upload'].get('size', 0) != size:
+                    if data['upload'].get('size') != size:
                         now = encode_datetime(kwargs['date'])
                         u = {'size': size, 'end': date, 'now': now}
                         data['upload'].update(u)
