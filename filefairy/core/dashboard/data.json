@@ -1,232 +1,5 @@
 {
   "records": {
-    "2018-06-17T00:00:00": [
-      {
-        "count": 1,
-        "date": "2018-06-17T00:01:36.285955",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 167,
-        "msg": "Automated data push.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T03:05:06.293240",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 95,
-        "msg": "Tracker updated.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T09:09:58.702370",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 95,
-        "msg": "Tracker updated.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T11:15:38.750440",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 158,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T11:15:46.307460",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded dashboard.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T11:16:26.935988",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T11:23:46.012854",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 95,
-        "msg": "Tracker updated.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 2,
-        "date": "2018-06-17T12:43:59.275607",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 95,
-        "msg": "Tracker updated.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-06-17T17:34:44.250367",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 95,
-        "msg": "Tracker updated.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T17:32:29.732716",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 207,
-        "msg": "Tracker locked.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T18:32:26.013741",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 151,
-        "msg": "Sim in progress.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T18:41:03.569353",
-        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 110, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py\", line 426, in _resolve_all\n    self._render(**kwargs)\n  File \"/home/pi/orangeandblueleague/filefairy/api/renderable/renderable.py\", line 55, in _render\n    for html, subtitle, tmpl, context in self._render_internal(**kwargs):\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py\", line 184, in _render_internal\n    _home = self._home(**kwargs)\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py\", line 255, in _home\n    ret['live'] = self._live_regular()\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py\", line 344, in _live_regular\n    lrbn = self._live_regular_body(nl)\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py\", line 357, in _live_regular_body\n    inner = [logo_inline(*team_tuple) for team_tuple in sort(group)]\n  File \"/home/pi/orangeandblueleague/filefairy/util/standings/standings.py\", line 120, in sort\n    return sorted(group, key=_sort, reverse=True)\n  File \"/home/pi/orangeandblueleague/filefairy/util/standings/standings.py\", line 114, in _sort\n    gb = abs(min([games_behind(tr, u[1]) for u in group]))\n  File \"/home/pi/orangeandblueleague/filefairy/util/standings/standings.py\", line 114, in <listcomp>\n    gb = abs(min([games_behind(tr, u[1]) for u in group]))\n  File \"/home/pi/orangeandblueleague/filefairy/util/standings/standings.py\", line 100, in games_behind\n    uw, ul = _decode(u)\n  File \"/home/pi/orangeandblueleague/filefairy/util/standings/standings.py\", line 26, in _decode\n    return [int(n) if to_int else n for n in s.split('-')]\n  File \"/home/pi/orangeandblueleague/filefairy/util/standings/standings.py\", line 26, in <listcomp>\n    return [int(n) if to_int else n for n in s.split('-')]\nValueError: invalid literal for int() with base 10: ''",
-        "levelname": "INFO",
-        "lineno": 122,
-        "msg": "Disabled statsplus.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T18:46:01.819197",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 167,
-        "msg": "Manual data push.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T18:53:15.510188",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 2,
-        "date": "2018-06-17T19:18:40.646254",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 158,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T19:10:27.052246",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T19:11:59.706053",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 99,
-        "msg": "Upload started.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T19:18:47.353028",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T22:44:22.730290",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 297,
-        "msg": "Restarted fairylab.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T22:44:25.286195",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded exports.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T22:44:27.371261",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T22:44:29.527399",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T22:44:31.650657",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T22:44:35.348890",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-06-17T22:44:37.665496",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      }
-    ],
     "2018-06-18T00:00:00": [
       {
         "count": 1,
@@ -694,6 +467,116 @@
         "lineno": 95,
         "msg": "Tracker updated.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      }
+    ],
+    "2018-06-23T00:00:00": [
+      {
+        "count": 1,
+        "date": "2018-06-23T00:02:16.537158",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 167,
+        "msg": "Automated data push.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T01:47:49.198144",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T06:01:31.548232",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T08:02:17.407447",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T09:30:36.959294",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T13:03:53.598206",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T14:53:52.179218",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 3,
+        "date": "2018-06-23T15:26:16.719704",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T15:21:57.857071",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 207,
+        "msg": "Tracker locked.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T16:03:13.368506",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T16:08:49.827101",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 151,
+        "msg": "Sim in progress.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-06-23T18:45:52.064772",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 99,
+        "msg": "Upload started.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
       }
     ]
   }
