@@ -7,7 +7,7 @@ import subprocess
 logger_ = logging.getLogger('fairylab')
 
 
-def check_output(cmd, timeout=None):
+def check_output(cmd, log=True, timeout=None):
     output = {'ok': True}
     try:
         proc = subprocess.run(
@@ -20,7 +20,8 @@ def check_output(cmd, timeout=None):
             output.update({'output': proc.stdout.decode('utf-8')})
             output.update({'stderr': proc.stderr.decode('utf-8')})
     except subprocess.SubprocessError as e:
-        logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
+        if log:
+            logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
         output.update({'ok': False, 'output': str(e), 'stderr': str(e)})
 
     return output

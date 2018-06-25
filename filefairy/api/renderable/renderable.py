@@ -50,6 +50,7 @@ class Renderable(Serializable):
     def _render(self, **kwargs):
         date = kwargs['date'].strftime('%Y-%m-%d %H:%M:%S') + ' PST'
         test = kwargs.get('test')
+        log = kwargs.get('log', True)
 
         _title = self._title()
         for html, subtitle, tmpl, context in self._render_internal(**kwargs):
@@ -63,9 +64,11 @@ class Renderable(Serializable):
                 there = 'brunnerj@' + _server + ':/var/www/' + html
                 self._mkdir_p(here.rsplit('/', 1)[0])
                 ts.dump(here)
-                check_output(['scp', here, there], timeout=8)
+                check_output(['scp', here, there], log=log, timeout=8)
             except:
-                logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
+                if log:
+                    logger_.log(
+                        logging.WARNING, 'Handled warning.', exc_info=True)
 
     @staticmethod
     def _mkdir_p(path):

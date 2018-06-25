@@ -129,22 +129,22 @@ class RenderableTest(unittest.TestCase):
         sub = '/html/fairylab/foo/sub/index.html'
         rdyn = _root + '/resource/html/fairylab/foo/dyn/dyn_{}.html'
         tdyn = there + '/html/fairylab/foo/dyn/dyn_{}.html'
+        resource = _root + '/resource'
+        kwargs = {'log': True, 'timeout': 8}
         check_calls = [
+            mock.call(['scp', resource + foo, there + foo], **kwargs),
+            mock.call(['scp', resource + sub, there + sub], **kwargs),
             mock.call(
-                ['scp', _root + '/resource' + foo, there + foo], timeout=8),
+                ['scp', rdyn.format(0), tdyn.format(0)], **kwargs),
             mock.call(
-                ['scp', _root + '/resource' + sub, there + sub], timeout=8),
+                ['scp', rdyn.format(1), tdyn.format(1)], **kwargs),
             mock.call(
-                ['scp', rdyn.format(0), tdyn.format(0)], timeout=8),
-            mock.call(
-                ['scp', rdyn.format(1), tdyn.format(1)], timeout=8),
-            mock.call(
-                ['scp', rdyn.format(2), tdyn.format(2)], timeout=8),
+                ['scp', rdyn.format(2), tdyn.format(2)], **kwargs),
         ]
         mock_check.assert_has_calls(check_calls)
         dump_calls = [
-            mock.call(_root + '/resource' + foo),
-            mock.call(_root + '/resource' + sub),
+            mock.call(resource + foo),
+            mock.call(resource + sub),
             mock.call(rdyn.format(0)),
             mock.call(rdyn.format(1)),
             mock.call(rdyn.format(2))
@@ -224,15 +224,16 @@ class RenderableTest(unittest.TestCase):
         sub = '/html/fairylab/foo/sub/index.html'
         rdyn = _root + '/html/fairylab/foo/dyn/dyn_{}.html'
         tdyn = there + '/html/fairylab/foo/dyn/dyn_{}.html'
+        kwargs = {'log': True, 'timeout': 8}
         check_calls = [
-            mock.call(['scp', _root + foo, there + foo], timeout=8),
-            mock.call(['scp', _root + sub, there + sub], timeout=8),
+            mock.call(['scp', _root + foo, there + foo], **kwargs),
+            mock.call(['scp', _root + sub, there + sub], **kwargs),
             mock.call(
-                ['scp', rdyn.format(0), tdyn.format(0)], timeout=8),
+                ['scp', rdyn.format(0), tdyn.format(0)], **kwargs),
             mock.call(
-                ['scp', rdyn.format(1), tdyn.format(1)], timeout=8),
+                ['scp', rdyn.format(1), tdyn.format(1)], **kwargs),
             mock.call(
-                ['scp', rdyn.format(2), tdyn.format(2)], timeout=8),
+                ['scp', rdyn.format(2), tdyn.format(2)], **kwargs),
         ]
         mock_check.assert_has_calls(check_calls)
         dump_calls = [

@@ -84,12 +84,12 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
                     found = True
 
         if found:
-            self._render(**kwargs)
+            self._render(**dict(kwargs, log=False))
 
         return Response()
 
     def _setup_internal(self, **kwargs):
-        self._render(**kwargs)
+        self._render(**dict(kwargs, log=False))
         return Response()
 
     def _shadow_internal(self, **kwargs):
@@ -115,7 +115,7 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
 
         if data != original:
             self.write()
-            self._render(**kwargs)
+            self._render(**dict(kwargs, log=False))
 
         response.append_debug(Debug(msg='Resolved ' + module + '.'))
         return response
@@ -267,7 +267,7 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
 
         if record['levelname'] != 'WARNING' or count >= 5:
             self.date = date
-            self._render(date=date)
+            self._render(date=date, log=False)
 
         self.write()
         return count
@@ -293,7 +293,7 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
 
         if data != original:
             self.write()
-            self._render(**kwargs)
+            self._render(**dict(kwargs, log=False))
 
 
 class LoggingHandler(logging.Handler):

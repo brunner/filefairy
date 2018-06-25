@@ -259,7 +259,7 @@ class DashboardTest(Test):
         response = dashboard._run_internal(date=_now)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -295,7 +295,7 @@ class DashboardTest(Test):
         response = dashboard._run_internal(date=_now)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -305,7 +305,7 @@ class DashboardTest(Test):
         response = dashboard._setup_internal(date=_now)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -329,7 +329,7 @@ class DashboardTest(Test):
         record_new = dict(
             _record_error, count=1, date=_then_date_encoded, levelname='INFO')
         write = {'records': {_then_day_encoded: [record_new]}}
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -374,7 +374,7 @@ class DashboardTest(Test):
             date=_then_date_encoded,
             levelname='INFO')
         write = {'records': {_then_day_encoded: [record_new]}}
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -559,7 +559,7 @@ class DashboardTest(Test):
         mock_datetime.datetime.assert_called_once_with(_then.year, _then.month,
                                                        _then.day)
         mock_datetime.datetime.now.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_then)
+        mock_render.assert_called_once_with(date=_then, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _then)
@@ -601,7 +601,7 @@ class DashboardTest(Test):
         mock_datetime.datetime.assert_called_once_with(_then.year, _then.month,
                                                        _then.day)
         mock_datetime.datetime.now.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_then)
+        mock_render.assert_called_once_with(date=_then, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _then)
@@ -623,7 +623,7 @@ class DashboardTest(Test):
         mock_datetime.datetime.assert_called_once_with(_now.year, _now.month,
                                                        _now.day)
         mock_datetime.datetime.now.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _now)
@@ -645,7 +645,7 @@ class DashboardTest(Test):
         mock_datetime.datetime.assert_called_once_with(_soon.year, _soon.month,
                                                        _soon.day)
         mock_datetime.datetime.now.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_soon)
+        mock_render.assert_called_once_with(date=_soon, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _soon)
@@ -662,7 +662,7 @@ class DashboardTest(Test):
         dashboard._retire(date=_now)
 
         write = {'records': {_then_day_encoded: [record_new]}}
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -692,7 +692,7 @@ class DashboardTest(Test):
         dashboard._retire(date=_now)
 
         write = {'records': {_then_day_encoded: [record_info]}}
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
