@@ -22,6 +22,7 @@ from util.team.team import encoding_to_chlany  # noqa
 from util.team.team import encoding_to_crosstown  # noqa
 from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_decoding_sub  # noqa
+from util.team.team import encoding_to_nickname  # noqa
 from util.team.team import encoding_to_precoding  # noqa
 from util.team.team import encoding_to_teamid  # noqa
 from util.team.team import encodings  # noqa
@@ -243,6 +244,35 @@ class TeamTest(unittest.TestCase):
         encodings = ', '.join(_de_encodings)
         decodings = ', '.join(_decodings)
         self.assertEqual(encoding_to_decoding_sub(encodings), decodings)
+
+    def test_encoding_to_nickname(self):
+        self.assertEqual(encoding_to_nickname('T31'), 'Diamondbacks')
+        self.assertEqual(encoding_to_nickname('T32'), 'Braves')
+        self.assertEqual(encoding_to_nickname('T33'), 'Orioles')
+        self.assertEqual(encoding_to_nickname('T34'), 'Red Sox')
+        self.assertEqual(encoding_to_nickname('T37'), 'Reds')
+        self.assertEqual(encoding_to_nickname('T38'), 'Indians')
+        self.assertEqual(encoding_to_nickname('T39'), 'Rockies')
+        self.assertEqual(encoding_to_nickname('T40'), 'Tigers')
+        self.assertEqual(encoding_to_nickname('T41'), 'Marlins')
+        self.assertEqual(encoding_to_nickname('T42'), 'Astros')
+        self.assertEqual(encoding_to_nickname('T43'), 'Royals')
+        self.assertEqual(encoding_to_nickname('T46'), 'Brewers')
+        self.assertEqual(encoding_to_nickname('T47'), 'Twins')
+        self.assertEqual(encoding_to_nickname('T50'), 'Athletics')
+        self.assertEqual(encoding_to_nickname('T51'), 'Phillies')
+        self.assertEqual(encoding_to_nickname('T52'), 'Pirates')
+        self.assertEqual(encoding_to_nickname('T53'), 'Padres')
+        self.assertEqual(encoding_to_nickname('T54'), 'Mariners')
+        self.assertEqual(encoding_to_nickname('T55'), 'Giants')
+        self.assertEqual(encoding_to_nickname('T56'), 'Cardinals')
+        self.assertEqual(encoding_to_nickname('T57'), 'Rays')
+        self.assertEqual(encoding_to_nickname('T58'), 'Rangers')
+        self.assertEqual(encoding_to_nickname('T59'), 'Blue Jays')
+        self.assertEqual(encoding_to_nickname('T60'), 'Nationals')
+        self.assertEqual(encoding_to_nickname('TCH'), '')
+        self.assertEqual(encoding_to_nickname('TLA'), '')
+        self.assertEqual(encoding_to_nickname('TNY'), '')
 
     def test_encoding_to_precoding(self):
         self.assertEqual(encoding_to_precoding('T31'), 'Arizona')

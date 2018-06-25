@@ -5,81 +5,82 @@ import re
 from functools import partial
 
 
-def _team(_, abbr, chlany, cross, decoding, encoding, home, precoding, teamid):
+def _team(_1, _2, abbr, chlany, cross, de, en, hn, pre, teamid):
     return {
         'abbreviation': abbr,
         'chlany': chlany,
         'crosstown': cross,
-        'decoding': decoding.format(_),
-        'encoding': encoding,
-        'hometown': home.format(_),
-        'precoding': precoding.format(_),
+        'decoding': de.format(_1, _2),
+        'encoding': en,
+        'hometown': hn.format(_1),
+        'nickname': hn.format(_2),
+        'precoding': pre.format(_1),
         'teamid': teamid,
     }
 
 
-_31 = 'Arizona'
-_32 = 'Atlanta'
-_33 = 'Baltimore'
-_34 = 'Boston'
-_37 = 'Cincinnati'
-_38 = 'Cleveland'
-_39 = 'Colorado'
-_40 = 'Detroit'
-_41 = 'Miami'
-_42 = 'Houston'
-_43 = 'Kansas City'
-_46 = 'Milwaukee'
-_47 = 'Minnesota'
-_50 = 'Oakland'
-_51 = 'Philadelphia'
-_52 = 'Pittsburgh'
-_53 = 'San Diego'
-_54 = 'Seattle'
-_55 = 'San Francisco'
-_56 = 'St. Louis'
-_57 = 'Tampa Bay'
-_58 = 'Texas'
-_59 = 'Toronto'
-_60 = 'Washington'
-_ch = 'Chicago'
-_la = 'Los Angeles'
-_ny = 'New York'
+_h31, _n31 = 'Arizona', 'Diamondbacks'
+_h32, _n32 = 'Atlanta', 'Braves'
+_h33, _n33 = 'Baltimore', 'Orioles'
+_h34, _n34 = 'Boston', 'Red Sox'
+_h37, _n37 = 'Cincinnati', 'Reds'
+_h38, _n38 = 'Cleveland', 'Indians'
+_h39, _n39 = 'Colorado', 'Rockies'
+_h40, _n40 = 'Detroit', 'Tigers'
+_h41, _n41 = 'Miami', 'Marlins'
+_h42, _n42 = 'Houston', 'Astros'
+_h43, _n43 = 'Kansas City', 'Royals'
+_h46, _n46 = 'Milwaukee', 'Brewers'
+_h47, _n47 = 'Minnesota', 'Twins'
+_h50, _n50 = 'Oakland', 'Athletics'
+_h51, _n51 = 'Philadelphia', 'Phillies'
+_h52, _n52 = 'Pittsburgh', 'Pirates'
+_h53, _n53 = 'San Diego', 'Padres'
+_h54, _n54 = 'Seattle', 'Mariners'
+_h55, _n55 = 'San Francisco', 'Giants'
+_h56, _n56 = 'St. Louis', 'Cardinals'
+_h57, _n57 = 'Tampa Bay', 'Rays'
+_h58, _n58 = 'Texas', 'Rangers'
+_h59, _n59 = 'Toronto', 'Blue Jays'
+_h60, _n60 = 'Washington', 'Nationals'
+_hch, _n35, _n36 = 'Chicago', 'White Sox', 'Cubs'
+_hla, _n44, _n45 = 'Los Angeles', 'Angels', 'Dodgers'
+_hny, _n48, _n49 = 'New York', 'Yankees', 'Mets'
 
 _teams = [
-    _team(_31, 'ARI', '', '', '{} Diamondbacks', 'T31', '{}', '{}', '31'),
-    _team(_32, 'ATL', '', '', '{} Braves', 'T32', '{}', '{}', '32'),
-    _team(_33, 'BAL', '', '', '{} Orioles', 'T33', '{}', '{}', '33'),
-    _team(_34, 'BOS', '', '', '{} Red Sox', 'T34', '{}', '{}', '34'),
-    _team(_ch, 'CWS', 'TCH', 'T36', '{} White Sox', 'T35', '{}', '', '35'),
-    _team(_ch, 'CHC', 'TCH', 'T35', '{} Cubs', 'T36', '{}', '', '36'),
-    _team(_37, 'CIN', '', '', '{} Reds', 'T37', '{}', '{}', '37'),
-    _team(_38, 'CLE', '', '', '{} Indians', 'T38', '{}', '{}', '38'),
-    _team(_39, 'COL', '', '', '{} Rockies', 'T39', '{}', '{}', '39'),
-    _team(_40, 'DET', '', '', '{} Tigers', 'T40', '{}', '{}', '40'),
-    _team(_41, 'MIA', '', '', '{} Marlins', 'T41', '{}', '{}', '41'),
-    _team(_42, 'HOU', '', '', '{} Astros', 'T42', '{}', '{}', '42'),
-    _team(_43, 'KC', '', '', '{} Royals', 'T43', '{}', '{}', '43'),
-    _team(_la, 'LAA', 'TLA', 'T45', '{} Angels', 'T44', '{}', '', '44'),
-    _team(_la, 'LAD', 'TLA', 'T44', '{} Dodgers', 'T45', '{}', '', '45'),
-    _team(_46, 'MIL', '', '', '{} Brewers', 'T46', '{}', '{}', '46'),
-    _team(_47, 'MIN', '', '', '{} Twins', 'T47', '{}', '{}', '47'),
-    _team(_ny, 'NYY', 'TNY', 'T49', '{} Yankees', 'T48', '{}', '', '48'),
-    _team(_ny, 'NYM', 'TNY', 'T48', '{} Mets', 'T49', '{}', '', '49'),
-    _team(_50, 'OAK', '', '', '{} Athletics', 'T50', '{}', '{}', '50'),
-    _team(_51, 'PHI', '', '', '{} Phillies', 'T51', '{}', '{}', '51'),
-    _team(_52, 'PIT', '', '', '{} Pirates', 'T52', '{}', '{}', '52'),
-    _team(_53, 'SD', '', '', '{} Padres', 'T53', '{}', '{}', '53'),
-    _team(_54, 'SEA', '', '', '{} Mariners', 'T54', '{}', '{}', '54'),
-    _team(_55, 'SF', '', '', '{} Giants', 'T55', '{}', '{}', '55'),
-    _team(_56, 'STL', '', '', '{} Cardinals', 'T56', '{}', '{}', '56'),
-    _team(_57, 'TB', '', '', '{} Rays', 'T57', '{}', '{}', '57'),
-    _team(_58, 'TEX', '', '', '{} Rangers', 'T58', '{}', '{}', '58'),
-    _team(_59, 'TOR', '', '', '{} Blue Jays', 'T59', '{}', '{}', '59'),
-    _team(_60, 'WAS', '', '', '{} Nationals', 'T60', '{}', '{}', '60'),
-    _team(_ch, '', '', '', '{}', 'TCH', '', '{}', ''),
-    _team(_la, '', '', '', '{}', 'TLA', '', '{}', ''),
-    _team(_ny, '', '', '', '{}', 'TNY', '', '{}', ''),
+    _team(_h31, _n31, 'ARI', '', '', '{} {}', 'T31', '{}', '{}', '31'),
+    _team(_h32, _n32, 'ATL', '', '', '{} {}', 'T32', '{}', '{}', '32'),
+    _team(_h33, _n33, 'BAL', '', '', '{} {}', 'T33', '{}', '{}', '33'),
+    _team(_h34, _n34, 'BOS', '', '', '{} {}', 'T34', '{}', '{}', '34'),
+    _team(_hch, _n35, 'CWS', 'TCH', 'T36', '{} {}', 'T35', '{}', '', '35'),
+    _team(_hch, _n36, 'CHC', 'TCH', 'T35', '{} {}', 'T36', '{}', '', '36'),
+    _team(_h37, _n37, 'CIN', '', '', '{} {}', 'T37', '{}', '{}', '37'),
+    _team(_h38, _n38, 'CLE', '', '', '{} {}', 'T38', '{}', '{}', '38'),
+    _team(_h39, _n39, 'COL', '', '', '{} {}', 'T39', '{}', '{}', '39'),
+    _team(_h40, _n40, 'DET', '', '', '{} {}', 'T40', '{}', '{}', '40'),
+    _team(_h41, _n41, 'MIA', '', '', '{} {}', 'T41', '{}', '{}', '41'),
+    _team(_h42, _n42, 'HOU', '', '', '{} {}', 'T42', '{}', '{}', '42'),
+    _team(_h43, _n43, 'KC', '', '', '{} {}', 'T43', '{}', '{}', '43'),
+    _team(_hla, _n44, 'LAA', 'TLA', 'T45', '{} {}', 'T44', '{}', '', '44'),
+    _team(_hla, _n45, 'LAD', 'TLA', 'T44', '{} {}', 'T45', '{}', '', '45'),
+    _team(_h46, _n46, 'MIL', '', '', '{} {}', 'T46', '{}', '{}', '46'),
+    _team(_h47, _n47, 'MIN', '', '', '{} {}', 'T47', '{}', '{}', '47'),
+    _team(_hny, _n48, 'NYY', 'TNY', 'T49', '{} {}', 'T48', '{}', '', '48'),
+    _team(_hny, _n49, 'NYM', 'TNY', 'T48', '{} {}', 'T49', '{}', '', '49'),
+    _team(_h50, _n50, 'OAK', '', '', '{} {}', 'T50', '{}', '{}', '50'),
+    _team(_h51, _n51, 'PHI', '', '', '{} {}', 'T51', '{}', '{}', '51'),
+    _team(_h52, _n52, 'PIT', '', '', '{} {}', 'T52', '{}', '{}', '52'),
+    _team(_h53, _n53, 'SD', '', '', '{} {}', 'T53', '{}', '{}', '53'),
+    _team(_h54, _n54, 'SEA', '', '', '{} {}', 'T54', '{}', '{}', '54'),
+    _team(_h55, _n55, 'SF', '', '', '{} {}', 'T55', '{}', '{}', '55'),
+    _team(_h56, _n56, 'STL', '', '', '{} {}', 'T56', '{}', '{}', '56'),
+    _team(_h57, _n57, 'TB', '', '', '{} {}', 'T57', '{}', '{}', '57'),
+    _team(_h58, _n58, 'TEX', '', '', '{} {}', 'T58', '{}', '{}', '58'),
+    _team(_h59, _n59, 'TOR', '', '', '{} {}', 'T59', '{}', '{}', '59'),
+    _team(_h60, _n60, 'WAS', '', '', '{} {}', 'T60', '{}', '{}', '60'),
+    _team(_hch, '', '', '', '', '{}', 'TCH', '', '{}', ''),
+    _team(_hla, '', '', '', '', '{}', 'TLA', '', '{}', ''),
+    _team(_hny, '', '', '', '', '{}', 'TNY', '', '{}', ''),
 ]
 
 
@@ -99,8 +100,9 @@ def _sub(ks, f, s):
 
 
 _decodings = _map('decoding', ['encoding'])
-_encodings = _map('encoding',
-                  ['chlany', 'crosstown', 'decoding', 'precoding', 'teamid'])
+_encodings = _map(
+    'encoding',
+    ['chlany', 'crosstown', 'decoding', 'nickname', 'precoding', 'teamid'])
 _precodings = _map('precoding', ['encoding'])
 _teamids = _map('teamid', ['abbreviation', 'decoding', 'encoding', 'hometown'])
 _img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
@@ -154,6 +156,10 @@ def encoding_to_decoding(encoding):
 
 def encoding_to_decoding_sub(text):
     return _sub(_encodings_keys, encoding_to_decoding, text)
+
+
+def encoding_to_nickname(encoding):
+    return _encodings.get(encoding, {}).get('nickname', '')
 
 
 def encoding_to_precoding(encoding):
