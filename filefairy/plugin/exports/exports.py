@@ -297,13 +297,15 @@ class Exports(Messageable, Registrable, Renderable, Runnable):
         cols = [''] + [' class="text-center"'] * size
         body = [[t[0]] for t in div]
         for i, export in enumerate(self.exports):
+            row = i // size
             teamid, status = export
             text = teamid_to_abbreviation(teamid)
             if teamid in self.data['ai']:
                 text = span(['text-secondary'], text)
             if status == 'New':
                 text = span(['text-success', 'border', 'px-1'], text)
-            body[i // size].append(text)
+            if row < len(body):
+                body[row].append(text)
         return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 
     def _unlock(self):
