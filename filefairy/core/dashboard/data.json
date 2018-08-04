@@ -830,6 +830,152 @@
         "msg": "Tracker updated.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
       }
+    ],
+    "2018-08-03T00:00:00": [
+      {
+        "count": 1,
+        "date": "2018-08-03T00:00:39.596066",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 167,
+        "msg": "Automated data push.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 4,
+        "date": "2018-08-03T03:49:49.802293",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/urllib/request.py\", line 1254, in do_open\n    h.request(req.get_method(), req.selector, req.data, headers)\n  File \"/usr/lib/python3.5/http/client.py\", line 1107, in request\n    self._send_request(method, url, body, headers)\n  File \"/usr/lib/python3.5/http/client.py\", line 1152, in _send_request\n    self.endheaders(body)\n  File \"/usr/lib/python3.5/http/client.py\", line 1103, in endheaders\n    self._send_output(message_body)\n  File \"/usr/lib/python3.5/http/client.py\", line 934, in _send_output\n    self.send(msg)\n  File \"/usr/lib/python3.5/http/client.py\", line 877, in send\n    self.connect()\n  File \"/usr/lib/python3.5/http/client.py\", line 1253, in connect\n    super().connect()\n  File \"/usr/lib/python3.5/http/client.py\", line 849, in connect\n    (self.host,self.port), self.timeout, self.source_address)\n  File \"/usr/lib/python3.5/socket.py\", line 694, in create_connection\n    for res in getaddrinfo(host, port, 0, SOCK_STREAM):\n  File \"/usr/lib/python3.5/socket.py\", line 733, in getaddrinfo\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\nsocket.gaierror: [Errno -3] Temporary failure in name resolution\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/urllib_/urllib_.py\", line 14, in urlopen\n    with request.urlopen(url, data=data, timeout=8) as f:\n  File \"/usr/lib/python3.5/urllib/request.py\", line 163, in urlopen\n    return opener.open(url, data, timeout)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 466, in open\n    response = self._open(req, data)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 484, in _open\n    '_open', req)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 444, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 1297, in https_open\n    context=self._context, check_hostname=self._check_hostname)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 1256, in do_open\n    raise URLError(err)\nurllib.error.URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+        "levelname": "WARNING",
+        "lineno": 17,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/urllib_/urllib_.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-08-03T03:47:23.740603",
+        "exc": "Traceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/slack/slack.py\", line 24, in _call\n    obj = json.loads(response)\n  File \"/usr/lib/python3.5/json/__init__.py\", line 319, in loads\n    return _default_decoder.decode(s)\n  File \"/usr/lib/python3.5/json/decoder.py\", line 339, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n  File \"/usr/lib/python3.5/json/decoder.py\", line 357, in raw_decode\n    raise JSONDecodeError(\"Expecting value\", s, err.value) from None\njson.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "levelname": "WARNING",
+        "lineno": 26,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/slack/slack.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-08-03T03:49:57.893132",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-08-03T03:52:08.368641",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/snacks/index.html', 'brunnerj@server:/var/www/html/fairylab/snacks/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/snacks/index.html', 'brunnerj@server:/var/www/html/fairylab/snacks/index.html']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T03:45:08.528483",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/index.html', 'brunnerj@server:/var/www/html/fairylab/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/index.html', 'brunnerj@server:/var/www/html/fairylab/index.html']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T04:07:33.006375",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T04:31:41.955935",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T08:29:15.375885",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T09:19:54.294900",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T15:24:06.448035",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T16:27:47.475437",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 95,
+        "msg": "Tracker updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T17:48:11.294128",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 151,
+        "msg": "Sim in progress.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T17:48:13.749952",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 207,
+        "msg": "Tracker locked.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-08-03T17:51:52.164134",
+        "exc": "Traceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/urllib_/urllib_.py\", line 14, in urlopen\n    with request.urlopen(url, data=data, timeout=8) as f:\n  File \"/usr/lib/python3.5/urllib/request.py\", line 163, in urlopen\n    return opener.open(url, data, timeout)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 472, in open\n    response = meth(req, response)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 582, in http_response\n    'http', request, response, code, msg, hdrs)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 510, in error\n    return self._call_chain(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 444, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 590, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 403: Forbidden",
+        "levelname": "WARNING",
+        "lineno": 17,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/util/urllib_/urllib_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-03T18:03:09.371796",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 158,
+        "msg": "Fetched latest changes.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      }
     ]
   }
 }
