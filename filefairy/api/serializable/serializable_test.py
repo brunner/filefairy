@@ -85,7 +85,7 @@ class SerializableTest(unittest.TestCase):
             logging.DEBUG,
             'Dump completed.',
             extra={
-                'output': '{\n  "a": 1,\n  "b": true\n}'
+                'stdout': '{\n  "a": 1,\n  "b": true\n}'
             })
 
 

@@ -619,7 +619,7 @@ class LeaguefileTest(Test):
         ls = 'total 60224\n' + \
              '-rw-rw-r-- 1 user user 100000 Jan 29 16:00 ' + \
              'orange_and_blue_league_baseball.tar.gz'
-        mock_check.return_value = {'ok': True, 'output': ls}
+        mock_check.return_value = {'ok': True, 'stdout': ls}
 
         actual = Leaguefile._check_download()
         expected = ('100000', 'Jan 29 16:00',
@@ -637,7 +637,7 @@ class LeaguefileTest(Test):
              'drwxrwxr-x 4 user user      4096 Jan 29 00:00 news\n' + \
              '-rw-rw-r-- 1 user user 345678901 Jan 29 16:00 ' + \
              'orange_and_blue_league_baseball.tar.gz'
-        mock_check.return_value = {'ok': True, 'output': ls}
+        mock_check.return_value = {'ok': True, 'stdout': ls}
 
         actual = Leaguefile._check_download()
         expected = ('345678901', 'Jan 29 16:00',
@@ -670,7 +670,7 @@ class LeaguefileTest(Test):
              'orange_and_blue_league_baseball.tar.gz\n' + \
              '-rwxrwxrwx 1 user user 100000 Jan 29 16:00 ' + \
              'orange_and_blue_league_baseball.tar.gz.filepart'
-        mock_check.return_value = {'ok': True, 'output': ls}
+        mock_check.return_value = {'ok': True, 'stdout': ls}
 
         actual = Leaguefile._check_upload()
         check_u = ('100000', 'Jan 29 16:00',
@@ -695,7 +695,7 @@ class LeaguefileTest(Test):
              '-rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html\n' + \
              '-rwxrwxrwx 1 user user 328706052 Jan 29 12:55 ' + \
              'orange_and_blue_league_baseball.tar.gz'
-        mock_check.return_value = {'ok': True, 'output': ls}
+        mock_check.return_value = {'ok': True, 'stdout': ls}
 
         actual = Leaguefile._check_upload()
         check_c = ('328706052', 'Jan 29 12:55',
@@ -714,7 +714,11 @@ class LeaguefileTest(Test):
     @mock.patch('plugin.leaguefile.leaguefile.logger_.log')
     @mock.patch('plugin.leaguefile.leaguefile.check_output')
     def test_check_upload__with_ok_false(self, mock_check, mock_log):
-        mock_check.return_value = {'ok': False, 'output': 'ret'}
+        mock_check.return_value = {
+            'ok': False,
+            'stdout': 'out',
+            'stderr': 'err'
+        }
 
         actual = Leaguefile._check_upload()
         expected = iter([])
@@ -730,7 +734,11 @@ class LeaguefileTest(Test):
 
     @mock.patch('plugin.leaguefile.leaguefile.ping')
     def test_download__with_ok_false(self, mock_ping):
-        mock_ping.return_value = {'ok': False, 'output': 'ret'}
+        mock_ping.return_value = {
+            'ok': False,
+            'stdout': 'out',
+            'stderr': 'err'
+        }
 
         completed = {
             'start': 'Jan 27 12:00',
@@ -743,8 +751,11 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response())
 
         self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Download failed.', extra={
-                'output': 'ret'
+            logging.WARNING,
+            'Download failed.',
+            extra={
+                'stdout': 'out',
+                'stderr': 'err'
             })
         self.assertFalse(plugin.data['download'])
 

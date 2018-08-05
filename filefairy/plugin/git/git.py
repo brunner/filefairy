@@ -104,7 +104,7 @@ class Git(Messageable, Registrable, Renderable, Runnable):
 
     @staticmethod
     def _stdout(response):
-        return response.debug[0].extra.get('output', '')
+        return response.debug[0].extra.get('stdout', '')
 
     @staticmethod
     def _call(cmd, **kwargs):

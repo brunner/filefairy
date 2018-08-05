@@ -161,7 +161,7 @@ class DashboardTest(Test):
         logger_.addHandler(handler)
         logger_.setLevel(logging.DEBUG)
 
-        logger_.log(logging.DEBUG, 'msg', extra={'output': 'data'})
+        logger_.log(logging.DEBUG, 'msg', extra={'stdout': 'data'})
 
         self.assertTrue(mock_log.called)
         args, kwargs = mock_log.call_args
@@ -170,7 +170,7 @@ class DashboardTest(Test):
         self.assertEqual(kwargs['levelname'], 'DEBUG')
         self.assertEqual(kwargs['msg'], 'msg')
         self.assertEqual(kwargs['name'], 'fairylab')
-        self.assertEqual(kwargs['output'], 'data')
+        self.assertEqual(kwargs['stdout'], 'data')
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -418,14 +418,14 @@ class DashboardTest(Test):
             module='file',
             msg='Call completed.',
             pathname='path/to/file.py',
-            output='data')
+            stdout='data')
 
         mock_chat.assert_called_once_with('testing',
                                           'file.py#L123: Call completed.')
         mock_cwd.assert_called_once_with()
         mock_format.assert_not_called()
         mock_record.assert_not_called()
-        mock_upload.assert_called_once_with('data', 'file.log.txt', 'testing')
+        mock_upload.assert_called_once_with('data', 'file.out.txt', 'testing')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -455,7 +455,7 @@ class DashboardTest(Test):
         mock_format.assert_called_once_with(dashboard, e)
         mock_record.assert_called_once_with(_record_error)
         mock_upload.assert_called_once_with('Traceback [foo] ...',
-                                            'file.log.txt', 'testing')
+                                            'file.err.txt', 'testing')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -540,7 +540,7 @@ class DashboardTest(Test):
         mock_format.assert_called_once_with(dashboard, e)
         mock_record.assert_called_once_with(_record_warning)
         mock_upload.assert_called_once_with('Traceback [baz] ...',
-                                            'file.log.txt', 'testing')
+                                            'file.err.txt', 'testing')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 

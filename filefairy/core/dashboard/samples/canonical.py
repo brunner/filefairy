@@ -45,7 +45,7 @@ _wtrace = """Traceback (most recent call last):
   File "/home/jbrunner/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py", line 16, in check_output
     check=True)
   File "/usr/lib/python3.5/subprocess.py", line 708, in run
-    output=stdout, stderr=stderr)
+    stdout=stdout, stderr=stderr)
 subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' returned non-zero exit status 255
 """
 _warnings = [

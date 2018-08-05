@@ -226,10 +226,11 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
         if levelname == 'DEBUG':
             content = self._content(record)
             chat_post_message('testing', content + ': ' + record['msg'])
-            if kwargs.get('output'):
-                output = secrets_sub(kwargs['output'])
-                flog = kwargs.get('module', 'unknown') + '.log.txt'
-                files_upload(output, flog, 'testing')
+            for key in ['err', 'out']:
+                if kwargs.get('std' + key):
+                    value = secrets_sub(kwargs['std' + key])
+                    flog = kwargs.get('module', 'unknown') + '.' + key + '.txt'
+                    files_upload(value, flog, 'testing')
         else:
             e = kwargs['exc_info']
             exc = logging.Formatter.formatException(self, e) if e else ''
@@ -238,7 +239,7 @@ class Dashboard(Messageable, Registrable, Renderable, Runnable):
             if levelname == 'ERROR' or (levelname == 'WARNING' and count == 5):
                 content = self._content(record)
                 chat_post_message('testing', content + ': ' + record['msg'])
-                flog = kwargs.get('module', 'unknown') + '.log.txt'
+                flog = kwargs.get('module', 'unknown') + '.err.txt'
                 files_upload(record['exc'], flog, 'testing')
 
     def _record(self, record):

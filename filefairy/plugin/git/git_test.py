@@ -163,8 +163,8 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_firstlast__with_gitlog(self):
-        output = '"abcdefghijklm"\n"nopqrstuvwxyz"'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = '"abcdefghijklm"\n"nopqrstuvwxyz"'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefg..' + \
@@ -178,7 +178,7 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_firstlast__with_match(self):
-        ret = {'ok': True, 'output': '', 'stderr': ''}
+        ret = {'ok': True, 'stdout': '', 'stderr': ''}
         self.mock_check.return_value = ret
 
         text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefg..' + \
@@ -200,8 +200,8 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_call__with_ok_false(self):
-        output = 'ret'
-        ret = {'ok': False, 'output': output}
+        stdout = 'ret'
+        ret = {'ok': False, 'stdout': stdout}
         self.mock_check.return_value = ret
 
         response = Git._call(['cmd'], **{})
@@ -213,8 +213,8 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_call__with_ok_true(self):
-        output = 'ret'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = 'ret'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         response = Git._call(['cmd'], **{})
@@ -227,8 +227,8 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_add(self):
-        output = 'ret'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = 'ret'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -342,8 +342,8 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_commit__with_automated(self):
-        output = '[master 0abcd0a] Auto...\n1 files\n'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = '[master 0abcd0a] Auto...\n1 files\n'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -360,8 +360,8 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_commit__with_manual(self):
-        output = '[master 0abcd0a] Auto...\n1 files\n'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = '[master 0abcd0a] Auto...\n1 files\n'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -379,8 +379,8 @@ class GitTest(unittest.TestCase):
 
     @mock.patch.object(Git, '_save')
     def test_pull(self, mock_save):
-        output = 'remote: Counting...\nUnpacking...\n'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = 'remote: Counting...\nUnpacking...\n'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -400,8 +400,8 @@ class GitTest(unittest.TestCase):
 
     @mock.patch.object(Git, '_save')
     def test_push__with_automated(self, mock_save):
-        output = 'To github.com...\n'
-        ret = {'ok': True, 'output': '', 'stderr': output}
+        stderr = 'To github.com...\n'
+        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -421,8 +421,8 @@ class GitTest(unittest.TestCase):
 
     @mock.patch.object(Git, '_save')
     def test_push__with_manual(self, mock_save):
-        output = 'To github.com...\n'
-        ret = {'ok': True, 'output': '', 'stderr': output}
+        stderr = 'To github.com...\n'
+        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -441,7 +441,7 @@ class GitTest(unittest.TestCase):
                                               'Manual data push.')
 
     def test_reset(self):
-        ret = {'ok': True, 'output': ''}
+        ret = {'ok': True, 'stdout': ''}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -457,8 +457,8 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     def test_status(self):
-        output = 'On branch master\nYour branch...\n'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = 'On branch master\nYour branch...\n'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
@@ -546,8 +546,8 @@ class GitTest(unittest.TestCase):
         first, last = 'abcdefghijklm', 'nopqrstuvwxyz'
         mock_firstlast.return_value = (first, last)
 
-        output = 'remote: Counting...\nUnpacking...\n'
-        ret = {'ok': True, 'output': output, 'stderr': ''}
+        stdout = 'remote: Counting...\nUnpacking...\n'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         msg = 'Call completed: \'git pull\'.'
         response = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -560,7 +560,7 @@ class GitTest(unittest.TestCase):
             'first': first,
             'last': last
         }])
-        mock_firstlast.assert_called_once_with(output)
+        mock_firstlast.assert_called_once_with(stdout)
         mock_render.assert_called_once_with(date=_now, v=True)
         self.mock_open.assert_called_once_with(Git._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -573,8 +573,8 @@ class GitTest(unittest.TestCase):
         first, last = 'abcdefghijklm', 'nopqrstuvwxyz'
         mock_firstlast.return_value = (first, last)
 
-        output = 'To github.com...\n'
-        ret = {'ok': True, 'output': '', 'stderr': output}
+        stderr = 'To github.com...\n'
+        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
         msg = 'Call completed: \'git pull\'.'
         response = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -587,7 +587,7 @@ class GitTest(unittest.TestCase):
             'first': first,
             'last': last
         }])
-        mock_firstlast.assert_called_once_with(output)
+        mock_firstlast.assert_called_once_with(stderr)
         mock_render.assert_called_once_with(date=_now, v=True)
         self.mock_open.assert_called_once_with(Git._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')

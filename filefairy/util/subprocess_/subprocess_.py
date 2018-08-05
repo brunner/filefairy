@@ -17,11 +17,11 @@ def check_output(cmd, log=True, timeout=None):
             timeout=timeout,
             check=True)
         if isinstance(proc, subprocess.CompletedProcess):
-            output.update({'output': proc.stdout.decode('utf-8')})
+            output.update({'stdout': proc.stdout.decode('utf-8')})
             output.update({'stderr': proc.stderr.decode('utf-8')})
     except subprocess.SubprocessError as e:
         if log:
             logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
-        output.update({'ok': False, 'output': str(e), 'stderr': str(e)})
+        output.update({'ok': False, 'stdout': str(e), 'stderr': str(e)})
 
     return output

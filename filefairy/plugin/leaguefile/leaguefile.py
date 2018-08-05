@@ -178,9 +178,9 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         download = os.path.join(_root, 'resource/download')
         output = check_output(['ls', '-l', download], timeout=8)
         if output.get('ok'):
-            value = output.get('output', '')
-            fp = 'news' not in value
-            for line in value.splitlines():
+            stdout = output.get('stdout', '')
+            fp = 'news' not in stdout
+            for line in stdout.splitlines():
                 line = re.sub(r'\s+', ' ', line)
                 match = re.findall(_line_pattern, line)
                 if match:
@@ -192,9 +192,9 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
         ls = 'ls -l /var/www/html/StatsLab/league_file'
         output = check_output(['ssh', 'brunnerj@' + _server, ls], timeout=8)
         if output.get('ok'):
-            value = output.get('output', '')
-            fp = '.filepart' in value
-            for line in value.splitlines():
+            stdout = output.get('stdout', '')
+            fp = '.filepart' in stdout
+            for line in stdout.splitlines():
                 line = re.sub(r'\s+', ' ', line)
                 match = re.findall(_line_pattern, line)
                 if match:
@@ -247,7 +247,8 @@ class Leaguefile(Messageable, Registrable, Renderable, Runnable):
                 logging.WARNING,
                 'Download failed.',
                 extra={
-                    'output': output.get('output', '')
+                    'stdout': output.get('stdout', ''),
+                    'stderr': output.get('stderr', '')
                 })
             return Response()
 
