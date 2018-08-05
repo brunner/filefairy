@@ -185,8 +185,7 @@ class Fairylab(Messageable, Renderable):
                 'href': '',
                 'name': 'Home'
             }],
-            'browsable': [],
-            'internal': []
+            'registered': [],
         }
 
         date = kwargs['date']
@@ -215,11 +214,7 @@ class Fairylab(Messageable, Renderable):
                 ts=ts,
                 success=success,
                 danger=danger)
-
-            if renderable:
-                ret['browsable'].append(c)
-            else:
-                ret['internal'].append(c)
+            ret['registered'].append(c)
 
         return ret
 
@@ -259,22 +254,14 @@ class Fairylab(Messageable, Renderable):
         try:
             date = kwargs['date']
             plugin = getattr(module, clazz)
-            if issubclass(plugin, Renderable):
-                instance = plugin(date=date, e=self.environment)
-            else:
-                instance = plugin(date=date)
-        except:
-            date = None
-            instance = None
-            logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
-
-        if isinstance(instance, Registrable):
+            instance = plugin(date=date, e=self.environment)
             instance.date = date
             instance.ok = True
             self.registered[name] = instance
             return True
-
-        return False
+        except:
+            logger_.log(logging.ERROR, 'Disabled ' + name + '.', exc_info=True)
+            return False
 
     def reboot(self, *args, **kwargs):
         logger_.log(logging.DEBUG, 'Rebooting fairylab.')

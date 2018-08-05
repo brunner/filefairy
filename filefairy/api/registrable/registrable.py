@@ -9,11 +9,13 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/registrable', '', _path))
+from api.messageable.messageable import Messageable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 
 
-class Registrable():
+class Registrable(Messageable, Renderable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
@@ -59,6 +61,10 @@ class Registrable():
         pass
 
     @abc.abstractmethod
+    def _run_internal(self, **kwargs):
+        pass
+
+    @abc.abstractmethod
     def _setup_internal(self, **kwargs):
         pass
 
@@ -71,6 +77,9 @@ class Registrable():
         if response.notify:
             response.notify = [Notify.BASE]
         return response
+
+    def _run(self, **kwargs):
+        return self._run_internal(**kwargs)
 
     def _setup(self, **kwargs):
         response = self._setup_internal(**kwargs)

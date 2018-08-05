@@ -8,10 +8,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/exports', '', _path))
-from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import delta  # noqa
@@ -37,7 +34,7 @@ _unlock_values = [Notify.LEAGUEFILE_FINISH]
 _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 
 
-class Exports(Messageable, Registrable, Renderable, Runnable):
+class Exports(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

@@ -9,10 +9,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/git', '', _path))
-from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.runnable.runnable import Runnable  # noqa
 from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
@@ -30,7 +27,7 @@ _l = ['d-inline-block', 'w-65p']
 _r = ['d-inline-block', 'text-right', 'w-65p']
 
 
-class Git(Messageable, Registrable, Renderable, Runnable):
+class Git(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

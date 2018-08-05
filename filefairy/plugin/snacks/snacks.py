@@ -10,10 +10,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
-from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.task.task import Task  # noqa
@@ -160,7 +157,7 @@ _snacklist.remove('star')
 _snacklist.remove('trophy')
 
 
-class Snacks(Messageable, Registrable, Renderable, Runnable):
+class Snacks(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.loaded = False

@@ -11,10 +11,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/dashboard', '', _path))
-from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.runnable.runnable import Runnable  # noqa
 from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
@@ -38,7 +35,7 @@ class StringFormatter(string.Formatter):
         return kwargs.get(key, '{{{0}}}'.format(key))
 
 
-class Dashboard(Messageable, Registrable, Renderable, Runnable):
+class Dashboard(Registrable):
     def __init__(self, **kwargs):
         super(Dashboard, self).__init__(**kwargs)
         self.formatter = StringFormatter()

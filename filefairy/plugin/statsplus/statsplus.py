@@ -11,10 +11,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/statsplus', '', _path)
 sys.path.append(_root)
-from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.runnable.runnable import Runnable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
@@ -65,7 +62,7 @@ _lbpcols = [
 _lbrcols = [' class="td-sm position-relative text-center w-20"'] * 5
 
 
-class Statsplus(Messageable, Registrable, Renderable, Runnable):
+class Statsplus(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

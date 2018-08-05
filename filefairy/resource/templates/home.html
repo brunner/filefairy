@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('browsable', 'Browsable'), ('internal', 'Internal')] %}
+{% set items = [('directory', 'Directory')] %}
 {% block nav %}
 {{ common.nav(items) }}
 {% endblock %}
 
 {% block content %}
 
-{% if browsable %}
-<!-- ^(home.browsable) -->
-<div class="container anchor" id="browsable">
+{% if registered %}
+<!-- ^(home.registered) -->
+<div class="container anchor" id="registered">
 
-{{ common.heading('globe', 'Browsable') }}
+{{ common.heading('globe', 'Directory') }}
 
 <!-- ^(home.row) -->
 <div class="row d-flex flex-wrap">
 
-{% for card in browsable %}
+{% for card in registered %}
 <!-- ^(home.column) -->
 <div class="col-md-6 col-lg-4 d-flex flex-column">
 
@@ -31,33 +31,7 @@
 <!-- $(home.row) -->
 
 </div>
-<!-- $(home.browsable) -->
-{% endif %}
-
-{% if internal %}
-<!-- ^(home.internal) -->
-<div class="container anchor" id="internal">
-
-{{ common.heading('shield', 'Internal') }}
-
-<!-- ^(home.row) -->
-<div class="row d-flex flex-wrap">
-
-{% for card in internal %}
-<!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
-
-{{ common.card(card) }}
-
-</div>
-<!-- $(home.column) -->
-
-{% endfor %}
-</div>
-<!-- $(home.row) -->
-
-</div>
-<!-- $(home.internal) -->
+<!-- $(home.registered) -->
 {% endif %}
 
 {% endblock %}

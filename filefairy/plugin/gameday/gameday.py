@@ -7,15 +7,12 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/gameday', '', _path))
-from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.runnable.runnable import Runnable  # noqa
 from core.response.response import Response  # noqa
 from util.team.team import encoding_to_nickname  # noqa
 
 
-class Gameday(Messageable, Registrable, Renderable, Runnable):
+class Gameday(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

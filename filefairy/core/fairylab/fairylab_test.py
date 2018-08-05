@@ -13,10 +13,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
-from api.messageable.messageable import Messageable  # noqa
 from api.registrable.registrable import Registrable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.runnable.runnable import Runnable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
 from core.debug.debug import Debug  # noqa
@@ -31,60 +28,34 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 
-class Browsable(Messageable, Registrable, Renderable, Runnable):
+class FakeRegistrable(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return os.path.join(_root, 'plugin/exports/data.json')
 
     @staticmethod
     def _href():
-        return '/fairylab/browsable/'
+        return '/fairylab/foo/'
 
     @staticmethod
     def _info():
-        return 'Description of browsable.'
+        return 'Description of foo.'
 
     @staticmethod
     def _title():
         return 'foo'
 
-    def _notify_internal(self, **kwargs):
-        pass
-
     def _on_message_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
-    def _run_internal(self, **kwargs):
-        return Response(notify=[Notify.BASE])
+    def _notify_internal(self, **kwargs):
+        pass
 
     def _render_internal(self, **kwargs):
-        return [('html/fairylab/browsable/index.html', '', 'browse.html', {})]
-
-    def _setup_internal(self, **kwargs):
-        pass
-
-    def _shadow_internal(self, **kwargs):
-        return []
-
-
-class Internal(Messageable, Registrable, Runnable):
-    var = True
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    @staticmethod
-    def _info():
-        return 'Description of internal.'
-
-    def _notify_internal(self, **kwargs):
-        pass
-
-    def _on_message_internal(self, **kwargs):
-        return Response(notify=[Notify.BASE])
+        return [('html/fairylab/foo/index.html', '', 'foo.html', {})]
 
     def _run_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
@@ -122,9 +93,8 @@ _then = datetime.datetime(1985, 10, 25, 0, 0, 0)
 
 _dashboard = Dashboard(date=_then, e=_env)
 _registered = {
-    'browsable': Browsable(date=_then, e=_env),
     'dashboard': _dashboard,
-    'internal': Internal(date=_then)
+    'foo': FakeRegistrable(date=_then, e=_env)
 }
 
 
@@ -205,39 +175,36 @@ class FairylabTest(Test):
     @mock.patch('core.fairylab.fairylab.os.path.isdir')
     def test_setup(self, mock_isdir, mock_listdir, mock_reload, mock_try):
         mock_isdir.return_value = True
-        mock_listdir.return_value = ['internal']
+        mock_listdir.return_value = ['foo']
 
         program = self.create_program(registered=_registered)
         program.day = _then.day
         program._setup(date=_now)
 
-        calls = [mock.call('plugin', 'internal', date=_now)]
+        calls = [mock.call('plugin', 'foo', date=_now)]
         mock_reload.assert_has_calls(calls)
-        dir_internal = os.path.join(_root, 'plugin', 'internal')
-        mock_isdir.assert_called_once_with(dir_internal)
+        dir_foo = os.path.join(_root, 'plugin', 'foo')
+        mock_isdir.assert_called_once_with(dir_foo)
         dir_plugin = os.path.join(_root, 'plugin')
         mock_listdir.assert_called_once_with(dir_plugin)
         mock_try.assert_has_calls([
             mock.call('dashboard', 'resolve', 'dashboard', date=_now),
-            mock.call('browsable', '_setup', date=_now),
             mock.call('dashboard', '_setup', date=_now),
-            mock.call('internal', '_setup', date=_now)
+            mock.call('foo', '_setup', date=_now)
         ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.day, _now.day)
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
 
     @mock.patch.object(Fairylab, '_home')
     def test_render(self, mock_home):
-        home = {'breadcrumbs': [], 'browsable': [], 'internal': []}
+        home = {'breadcrumbs': [], 'foo': []}
         mock_home.return_value = home
 
         program = self.create_program(registered=_registered)
@@ -250,280 +217,228 @@ class FairylabTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
 
     def test_package(self):
-        actual = Fairylab._package('plugin', 'internal')
-        expected = 'plugin.internal.internal'
+        actual = Fairylab._package('plugin', 'foo')
+        expected = 'plugin.foo.foo'
         self.assertEqual(actual, expected)
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_valid_input(self, mock_bnotify, mock_inotify, mock_run):
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_valid_input(self, mock_notify, mock_run):
         mock_run.return_value = Response(notify=[Notify.BASE])
 
         program = self.create_program(registered=_registered)
-        program._try('internal', '_run_internal', date=_now)
+        program._try('foo', '_run_internal', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _now)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _now)
+        self.assertEqual(program.registered['foo'].ok, True)
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_notify(self, mock_bnotify, mock_inotify, mock_run):
-        mock_bnotify.return_value = Response()
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_notify(self, mock_notify, mock_run):
+        mock_notify.return_value = Response()
         mock_run.return_value = Response(notify=[Notify.OTHER])
 
         program = self.create_program(registered=_registered)
-        program._try('internal', '_run_internal', date=_now)
+        program._try('foo', '_run_internal', date=_now)
 
-        mock_bnotify.assert_called_once_with(notify=Notify.OTHER, date=_now)
-        mock_inotify.assert_called_once_with(notify=Notify.OTHER, date=_now)
+        mock_notify.assert_called_once_with(notify=Notify.OTHER, date=_now)
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _now)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _now)
+        self.assertEqual(program.registered['foo'].ok, True)
         self.assertEqual(program.tasks, [])
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_shadow')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_shadow')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_shadow(self, mock_bnotify, mock_bshadow, mock_inotify,
-                              mock_ishadow, mock_run):
-        shadow = Shadow(destination='browsable', key='internal.foo')
-        mock_bshadow.return_value = Response()
+    @mock.patch.object(Dashboard, '_shadow')
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_shadow(self, mock_notify, mock_run, mock_shadow):
+        shadow = Shadow(destination='dashboard', key='foo.a')
         mock_run.return_value = Response(shadow=[shadow])
+        mock_shadow.return_value = Response()
 
         program = self.create_program(registered=_registered)
-        program._try('internal', '_run_internal', date=_now)
+        program._try('foo', '_run_internal', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_bshadow.assert_called_once_with(shadow=shadow, date=_now)
-        mock_inotify.assert_not_called()
-        mock_ishadow.assert_not_called()
+        mock_notify.assert_not_called()
+        mock_shadow.assert_called_once_with(shadow=shadow, date=_now)
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
         self.assertEqual(program.tasks, [])
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_task(self, mock_bnotify, mock_inotify, mock_run):
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_task(self, mock_notify, mock_run):
         mock_run.return_value = Response(task=[Task(target='foo')])
 
         program = self.create_program(registered=_registered)
-        program._try('internal', '_run_internal', date=_now)
+        program._try('foo', '_run_internal', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
-        self.assertEqual(program.tasks, [('internal', Task(target='foo'))])
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
+        self.assertEqual(program.tasks, [('foo', Task(target='foo'))])
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_no_change(self, mock_bnotify, mock_inotify, mock_run):
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_no_change(self, mock_notify, mock_run):
         mock_run.return_value = Response()
 
         program = self.create_program(registered=_registered)
-        program._try('internal', '_run_internal', date=_now)
+        program._try('foo', '_run_internal', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
         self.assertEqual(program.tasks, [])
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__without_date(self, mock_bnotify, mock_inotify, mock_run):
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__without_date(self, mock_notify, mock_run):
         mock_run.return_value = Response(notify=[Notify.BASE])
 
         program = self.create_program(registered=_registered)
-        program._try('internal', '_run_internal')
+        program._try('foo', '_run_internal')
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _now)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _now)
+        self.assertEqual(program.registered['foo'].ok, True)
         self.assertEqual(program.tasks, [])
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_thrown_exception(self, mock_bnotify, mock_inotify,
-                                        mock_run):
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_thrown_exception(self, mock_notify, mock_run):
         mock_run.side_effect = Exception()
 
         program = self.create_program(registered=_registered)
-        program._try('internal', '_run_internal', date=_now)
+        program._try('foo', '_run_internal', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_called_once_with(
-            logging.ERROR, 'Disabled internal.', exc_info=True)
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
+            logging.ERROR, 'Disabled foo.', exc_info=True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _now)
-        self.assertEqual(program.registered['internal'].ok, False)
+        self.assertEqual(program.registered['foo'].date, _now)
+        self.assertEqual(program.registered['foo'].ok, False)
         self.assertEqual(program.tasks, [])
 
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_plugin_error(self, mock_bnotify, mock_inotify,
-                                    mock_run):
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_plugin_error(self, mock_notify, mock_run):
         program = self.create_program(registered=_registered)
-        program.registered['internal'].ok = False
-        program._try('internal', '_run_internal', date=_now)
-
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
-        mock_run.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
-        self.assertEqual(program.registered['dashboard'].date, _then)
-        self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, False)
-        self.assertEqual(program.tasks, [])
-
-    @mock.patch.object(Internal, '_run_internal')
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_plugin_not_found(self, mock_bnotify, mock_inotify,
-                                        mock_run):
-        program = self.create_program(registered=_registered)
+        program.registered['foo'].ok = False
         program._try('foo', '_run_internal', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
         mock_run.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, False)
         self.assertEqual(program.tasks, [])
 
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_item_not_found(self, mock_bnotify, mock_inotify):
+    @mock.patch.object(FakeRegistrable, '_run_internal')
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_plugin_not_found(self, mock_notify, mock_run):
         program = self.create_program(registered=_registered)
-        program._try('internal', '_foo', date=_now)
+        program._try('bar', '_run_internal', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
+        mock_run.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
         self.assertEqual(program.tasks, [])
 
-    @mock.patch.object(Internal, '_notify')
-    @mock.patch.object(Browsable, '_notify')
-    def test_try__with_item_not_callable(self, mock_bnotify, mock_inotify):
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_item_not_found(self, mock_notify):
         program = self.create_program(registered=_registered)
-        program._try('internal', 'var', date=_now)
+        program._try('foo', '_foo', date=_now)
 
-        mock_bnotify.assert_not_called()
-        mock_inotify.assert_not_called()
+        mock_notify.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
-        self.assertEqual(program.registered['browsable'].ok, True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
+        self.assertEqual(program.tasks, [])
+
+    @mock.patch.object(FakeRegistrable, '_notify')
+    def test_try__with_item_not_callable(self, mock_notify):
+        program = self.create_program(registered=_registered)
+        program._try('foo', 'var', date=_now)
+
+        mock_notify.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.assertEqual(program.registered['dashboard'].date, _then)
+        self.assertEqual(program.registered['dashboard'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
         self.assertEqual(program.tasks, [])
 
     @mock.patch.object(Fairylab, '_try')
@@ -533,13 +448,13 @@ class FairylabTest(Test):
         kwargs = {'key': 'value'}
         task = Task(target='foo', args=args, kwargs=kwargs)
         program = self.create_program(
-            registered=_registered, tasks=[('internal', task)])
+            registered=_registered, tasks=[('foo', task)])
 
         mock_sleep.side_effect = functools.partial(set_running_false, program)
         program._background()
 
         mock_sleep.assert_called_once_with(120)
-        mock_try.assert_called_once_with('internal', 'foo', *args, **kwargs)
+        mock_try.assert_called_once_with('foo', 'foo', *args, **kwargs)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
@@ -557,9 +472,8 @@ class FairylabTest(Test):
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
         mock_message.assert_called_once_with(obj=obj, date=_now)
         calls = [
-            mock.call('browsable', '_on_message', obj=obj, date=_now),
             mock.call('dashboard', '_on_message', obj=obj, date=_now),
-            mock.call('internal', '_on_message', obj=obj, date=_now),
+            mock.call('foo', '_on_message', obj=obj, date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -576,9 +490,8 @@ class FairylabTest(Test):
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
         mock_message.assert_called_once_with(obj=obj, date=_now)
         calls = [
-            mock.call('browsable', '_on_message', obj=obj, date=_now),
             mock.call('dashboard', '_on_message', obj=obj, date=_now),
-            mock.call('internal', '_on_message', obj=obj, date=_now),
+            mock.call('foo', '_on_message', obj=obj, date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -650,18 +563,16 @@ class FairylabTest(Test):
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
-            mock.call('browsable', '_run', date=_now),
             mock.call('dashboard', '_run', date=_now),
-            mock.call('internal', '_run', date=_now),
+            mock.call('foo', '_run', date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _now)
         self.assertEqual(program.registered['dashboard'].date, _now)
-        self.assertEqual(program.registered['internal'].date, _now)
+        self.assertEqual(program.registered['foo'].date, _now)
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.threading.Thread')
@@ -682,21 +593,18 @@ class FairylabTest(Test):
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
-            mock.call('browsable', '_run', date=_now),
             mock.call('dashboard', '_run', date=_now),
-            mock.call('internal', '_run', date=_now),
-            mock.call('browsable', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('foo', '_run', date=_now),
             mock.call('dashboard', '_notify', notify=Notify.FAIRYLAB_DAY),
-            mock.call('internal', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('foo', '_notify', notify=Notify.FAIRYLAB_DAY),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
         self.assertEqual(program.registered['dashboard'].date, _then)
-        self.assertEqual(program.registered['internal'].date, _then)
+        self.assertEqual(program.registered['foo'].date, _then)
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.threading.Thread')
@@ -715,95 +623,86 @@ class FairylabTest(Test):
         mock_sleep.assert_called_once_with(120)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
-        mock_try.assert_has_calls([mock.call('internal', '_run', date=_now)])
+        mock_try.assert_has_calls([mock.call('foo', '_run', date=_now)])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_called_once_with()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.registered['browsable'].date, _then)
         self.assertEqual(program.registered['dashboard'].date, _then)
-        self.assertEqual(program.registered['internal'].date, _then)
+        self.assertEqual(program.registered['foo'].date, _then)
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_valid_input(self, mock_delta):
-        mock_delta.side_effect = ['2m ago', '15m ago', '2h ago']
+        mock_delta.side_effect = ['15m ago', '2m ago']
 
         program = self.create_program(registered=_registered)
         ret = program._home(date=_now)
-        browsable = card(
-            href='/fairylab/browsable/',
-            title='browsable',
-            info='Description of browsable.',
-            ts='2m ago')
         dashboard = card(
             href='/fairylab/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
             ts='15m ago')
-        internal = card(
-            title='internal', info='Description of internal.', ts='2h ago')
+        foo = card(
+            href='/fairylab/foo/',
+            title='foo',
+            info='Description of foo.',
+            ts='2m ago')
         breadcrumbs = [{'href': '', 'name': 'Home'}]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'browsable': [browsable, dashboard],
-            'internal': [internal],
+            'registered': [dashboard, foo],
         }
         self.assertEqual(ret, expected)
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_success(self, mock_delta):
-        mock_delta.side_effect = ['0s ago', '15m ago', '2h ago']
+        mock_delta.side_effect = [
+            '15m ago',
+            '0s ago',
+        ]
 
         program = self.create_program(registered=_registered)
         ret = program._home(date=_then)
-        browsable = card(
-            href='/fairylab/browsable/',
-            title='browsable',
-            info='Description of browsable.',
-            ts='0s ago',
-            success='just now')
         dashboard = card(
             href='/fairylab/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
             ts='15m ago')
-        internal = card(
-            title='internal', info='Description of internal.', ts='2h ago')
+        foo = card(
+            href='/fairylab/foo/',
+            title='foo',
+            info='Description of foo.',
+            ts='0s ago',
+            success='just now')
         breadcrumbs = [{'href': '', 'name': 'Home'}]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'browsable': [browsable, dashboard],
-            'internal': [internal],
+            'registered': [dashboard, foo],
         }
         self.assertEqual(ret, expected)
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_danger(self, mock_delta):
-        mock_delta.side_effect = ['2m ago', '15m ago', '2h ago']
+        mock_delta.side_effect = ['15m ago', '2h ago']
 
         program = self.create_program(registered=_registered)
-        program.registered['internal'].ok = False
+        program.registered['foo'].ok = False
         ret = program._home(date=_now)
-        browsable = card(
-            href='/fairylab/browsable/',
-            title='browsable',
-            info='Description of browsable.',
-            ts='2m ago')
         dashboard = card(
             href='/fairylab/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
             ts='15m ago')
-        internal = card(
-            title='internal',
-            info='Description of internal.',
+        foo = card(
+            href='/fairylab/foo/',
+            title='foo',
+            info='Description of foo.',
             ts='2h ago',
             danger='error')
         breadcrumbs = [{'href': '', 'name': 'Home'}]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'browsable': [browsable, dashboard],
-            'internal': [internal],
+            'registered': [dashboard, foo],
         }
         self.assertEqual(ret, expected)
 
@@ -812,35 +711,33 @@ class FairylabTest(Test):
     @mock.patch('core.fairylab.fairylab.getattr')
     def test_reload__with_valid_input(self, mock_getattr, mock_import,
                                       mock_try):
-        mock_getattr.return_value = Internal
+        mock_getattr.return_value = FakeRegistrable
 
-        args = ('plugin', 'internal')
+        args = ('plugin', 'foo')
         kwargs = {'date': _then, 'v': True}
         program = self.create_program()
         response = program.reload(*args, **kwargs)
-        debug = Debug(msg='Reloaded internal.')
+        debug = Debug(msg='Reloaded foo.')
         expected = Response(notify=[Notify.BASE], debug=[debug])
         self.assertEqual(response, expected)
 
         module = mock_import.return_value
-        mock_getattr.assert_called_once_with(module, 'Internal')
-        mock_import.assert_called_once_with('plugin.internal.internal')
+        mock_getattr.assert_called_once_with(module, 'Foo')
+        mock_import.assert_called_once_with('plugin.foo.foo')
         calls = [
-            mock.call('dashboard', 'resolve', 'internal', **dict(kwargs)),
+            mock.call('dashboard', 'resolve', 'foo', **dict(kwargs)),
             mock.call('dashboard', '_setup', **dict(kwargs)),
-            mock.call('internal', '_setup', **dict(kwargs)),
+            mock.call('foo', '_setup', **dict(kwargs)),
         ]
         mock_try.assert_has_calls(calls)
-        self.mock_open.assert_not_called()
+        self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
-        self.mock_log.assert_called_once_with(logging.INFO,
-                                              'Reloaded internal.')
-        self.assertNotIn('browsable', program.registered)
+        self.mock_log.assert_called_once_with(logging.INFO, 'Reloaded foo.')
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertEqual(program.registered['internal'].date, _then)
-        self.assertEqual(program.registered['internal'].ok, True)
+        self.assertEqual(program.registered['foo'].date, _then)
+        self.assertEqual(program.registered['foo'].ok, True)
 
     @mock.patch.object(Fairylab, '_try')
     @mock.patch('core.fairylab.fairylab.importlib.import_module')
@@ -849,26 +746,25 @@ class FairylabTest(Test):
                                            mock_try):
         mock_getattr.side_effect = Exception()
 
-        args = ('plugin', 'internal')
+        args = ('plugin', 'foo')
         kwargs = {'date': _then, 'v': True}
         program = self.create_program()
         response = program.reload(*args, **kwargs)
         self.assertEqual(response, Response())
 
         module = mock_import.return_value
-        mock_getattr.assert_called_once_with(module, 'Internal')
-        mock_import.assert_called_once_with('plugin.internal.internal')
-        mock_try.assert_called_once_with('dashboard', 'resolve', 'internal',
+        mock_getattr.assert_called_once_with(module, 'Foo')
+        mock_import.assert_called_once_with('plugin.foo.foo')
+        mock_try.assert_called_once_with('dashboard', 'resolve', 'foo',
                                          **dict(kwargs))
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_datetime.datetime.now.assert_not_called()
         self.mock_log.assert_called_once_with(
-            logging.ERROR, 'Disabled internal.', exc_info=True)
-        self.assertNotIn('browsable', program.registered)
+            logging.ERROR, 'Disabled foo.', exc_info=True)
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
-        self.assertNotIn('internal', program.registered)
+        self.assertNotIn('foo', program.registered)
 
     @mock.patch('core.fairylab.fairylab.os.execv')
     def test_reboot(self, mock_execv):
