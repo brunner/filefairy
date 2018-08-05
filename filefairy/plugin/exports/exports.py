@@ -89,7 +89,6 @@ class Exports(Registrable):
         if exports != self.exports:
             self.exports = exports
             self._remove()
-            logger_.log(logging.INFO, 'Tracker updated.')
             response.notify = [Notify.BASE]
 
         if not data['emails'] and any([True for e in exports if e in _emails]):
