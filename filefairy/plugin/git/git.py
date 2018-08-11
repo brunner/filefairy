@@ -73,6 +73,7 @@ class Git(Registrable):
 
     @staticmethod
     def _firstlast(text):
+        print(text)
         match = re.findall('(\w{7})\.\.(\w{7})', text)
         if match:
             first, last = match[0]
