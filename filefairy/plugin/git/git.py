@@ -73,12 +73,11 @@ class Git(Registrable):
 
     @staticmethod
     def _firstlast(text):
-        print(text)
-        match = re.findall('(\w{7})\.\.(\w{7})', text)
+        match = re.findall('(\w+)\.\.(\w+)', text)
         if match:
             first, last = match[0]
         else:
-            return '#######', '???????'
+            return '???????', '???????'
 
         response = Git._call(['git', 'log', '-20', '--format="%H"'])
         stdout = Git._stdout(response)
