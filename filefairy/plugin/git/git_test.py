@@ -167,8 +167,8 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
-        text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefg..' + \
-               'nopqrst  master -> master'
+        text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefgh.' + \
+               '.nopqrstu  master -> master'
         first, last = Git._firstlast(text)
         self.assertEqual(first, 'abcdefghijklm')
         self.assertEqual(last, 'nopqrstuvwxyz')
@@ -181,11 +181,11 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': '', 'stderr': ''}
         self.mock_check.return_value = ret
 
-        text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefg..' + \
-               'nopqrst  master -> master'
+        text = 'To github.com:brunner/orangeandblueleague.git\n  abcdefgh.' + \
+               '.nopqrstu  master -> master'
         first, last = Git._firstlast(text)
-        self.assertEqual(first, 'abcdefg')
-        self.assertEqual(last, 'nopqrst')
+        self.assertEqual(first, 'abcdefgh')
+        self.assertEqual(last, 'nopqrstu')
 
         self.mock_check.assert_called_once_with(
             ['git', 'log', '-20', '--format="%H"'])
