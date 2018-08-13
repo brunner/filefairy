@@ -1,43 +1,5 @@
 {
   "records": {
-    "2018-08-06T00:00:00": [
-      {
-        "count": 1,
-        "date": "2018-08-06T00:01:04.146609",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 164,
-        "msg": "Automated data push.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-06T18:24:12.356575",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 148,
-        "msg": "Sim in progress.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/statsplus/statsplus.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-06T18:24:14.563717",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 203,
-        "msg": "Tracker locked.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-06T18:54:44.673414",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 96,
-        "msg": "Upload started.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
-      }
-    ],
     "2018-08-07T00:00:00": [
       {
         "count": 1,
@@ -442,6 +404,143 @@
         "lineno": 60,
         "msg": "News updated.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/recap/recap.py"
+      }
+    ],
+    "2018-08-12T00:00:00": [
+      {
+        "count": 1,
+        "date": "2018-08-12T00:02:02.781826",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 164,
+        "msg": "Automated data push.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T17:30:03.884238",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 203,
+        "msg": "Tracker locked.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T18:26:52.132339",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 96,
+        "msg": "Upload started.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T19:32:46.899284",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 294,
+        "msg": "File is up.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T19:32:52.031560",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 288,
+        "msg": "Download started.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T19:46:13.229863",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 270,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T19:46:18.005357",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 60,
+        "msg": "News updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/recap/recap.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:32.083347",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 284,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:34.691611",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 247,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:36.947648",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 247,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:39.190108",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 247,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:41.438495",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 247,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:43.626580",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 247,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:47.450625",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 247,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-12T20:28:49.671709",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 247,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
       }
     ]
   }
