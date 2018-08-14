@@ -182,19 +182,20 @@ class Exports(Registrable):
 
     def _lock(self):
         data = self.data
+        form = data['form']
 
         self._lock_internal()
-        self.data['locked'] = True
+        data['locked'] = True
 
         for teamid, status in self.exports:
             s = status.lower()[0]
-            data['form'][teamid] += s
-            while len(data['form'][teamid]) > 10:
-                data['form'][teamid] = data['form'][teamid][1:]
+            form[teamid] += s
+            while len(form[teamid]) > 10:
+                form[teamid] = form[teamid][1:]
 
-            if 'n' not in data['form'][teamid]:
+            if 'n' not in form[teamid] and teamid not in data['ai']:
                 data['ai'].append(teamid)
-                data['form'][teamid] = ''
+                form[teamid] = ''
 
     def _lock_internal(self):
         data = self.data
