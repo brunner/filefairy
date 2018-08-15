@@ -40,9 +40,7 @@ _chooselist = [
     'I suppose {}, if I had to pick one.',
     'It\'s not ideal, but I\'ll go with {}.',
     '{}... I guess?',
-    'That\'s a tough one. Maybe {}?',
-    'Neither seems like a good option to me.',
-    'Why not both?',
+    'That\'s a tough one. Maybe {}?'
 ]
 
 _snackdict = {
@@ -156,6 +154,11 @@ _snacklist = list(_snackdict.keys())
 _snacklist.remove('star')
 _snacklist.remove('trophy')
 
+_wafflelist = [
+    'Neither seems like a good option to me.',
+    'Why not both?',
+]
+
 
 class Snacks(Registrable):
     def __init__(self, **kwargs):
@@ -215,7 +218,7 @@ class Snacks(Registrable):
             if match:
                 choices = match[0].split(' or ')
                 if len(choices) > 1:
-                    statement = random.choice(_chooselist)
+                    statement = random.choice(_chooselist + _wafflelist)
                     choice = random.choice(choices)
                     reply = re.sub('^([a-zA-Z])',
                                    lambda x: x.groups()[0].upper(),
@@ -273,6 +276,15 @@ class Snacks(Registrable):
                     c = data['count'].get(snack, 0) + 1
                     data['count'][snack] = c
                     data['last'][snack] = edate
+                response.notify = [Notify.BASE]
+
+            match = re.findall('^<@U3ULC7DBP> who .+$', text)
+            if match:
+                choices = sorted(self._names().values())
+                statement = random.choice(_chooselist)
+                choice = random.choice(choices)
+                reply = statement.format(choice)
+                chat_post_message(channel, reply)
                 response.notify = [Notify.BASE]
 
         if response.notify:

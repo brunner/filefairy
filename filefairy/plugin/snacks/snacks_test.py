@@ -17,6 +17,7 @@ from core.task.task import Task  # noqa
 from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
+from plugin.snacks.snacks import _wafflelist  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -160,7 +161,7 @@ class SnacksTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         write = _data(members=_members_new)
-        calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
+        calls = [mock.call(_chooselist + _wafflelist), mock.call(['a', 'b'])]
         mock_random.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -451,6 +452,34 @@ class SnacksTest(Test):
             mock.call('b', 'C9YE6NQG0', '1000.789')
         ]
         self.mock_reactions.assert_has_calls(calls)
+
+    @mock.patch('plugin.snacks.snacks.random.choice')
+    @mock.patch.object(Snacks, '_names')
+    def test_on_message__with_who_text(self, mock_names, mock_random):
+        mock_names.return_value = {'U1234': 'a', 'U5678': 'b'}
+        mock_random.side_effect = ['{}. Did you even need to ask?', 'a']
+
+        obj = {
+            'channel': 'C9YE6NQG0',
+            'text': '<@U3ULC7DBP> who deserves a star?',
+            'ts': '1000.789',
+            'user': 'U1234',
+        }
+        plugin = self.create_plugin(_data(members=_members_old))
+        response = plugin._on_message_internal(date=_now, obj=obj)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        write = _data(members=_members_new)
+        calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
+        mock_names.assert_called_once_with()
+        mock_random.assert_has_calls(calls)
+        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_cfd.assert_not_called()
+        self.mock_chat.assert_called_once_with('C9YE6NQG0',
+                                               'a. Did you even need to ask?')
+        self.mock_collect.assert_not_called()
+        self.mock_reactions.assert_not_called()
 
     def test_on_message__with_invalid_channel(self):
         obj = {
