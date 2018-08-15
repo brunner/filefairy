@@ -180,10 +180,12 @@ class LeaguefileTest(Test):
             'now': '2018-01-29T00:00:00'
         }
         completed = {
-            'start': 'Jan 27 12:00',
             'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 12:00',
+            'uend': 'Jan 27 12:00'
         }
         plugin = self.create_plugin(
             _data(upload=upload, completed=[completed]))
@@ -219,7 +221,16 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 18:00',
             'now': '2018-01-29T00:00:00'
         }
-        plugin = self.create_plugin(_data(upload=upload))
+        completed = {
+            'size': '345678901',
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 8:00',
+            'uend': 'Jan 27 12:00'
+        }
+        plugin = self.create_plugin(
+            _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
         self.assertEqual(response,
                          Response(
@@ -232,7 +243,7 @@ class LeaguefileTest(Test):
             'date': 'Jan 29 15:55',
             'now': '2018-01-29T00:00:00'
         }
-        write = _data(upload=upload)
+        write = _data(upload=upload, completed=[completed])
         mock_check_download.assert_not_called()
         mock_check_upload.assert_called_once_with()
         mock_download.assert_called_once_with(date=_now)
@@ -262,7 +273,16 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 18:00',
             'now': '2018-01-29T00:00:00'
         }
-        plugin = self.create_plugin(_data(upload=upload))
+        completed = {
+            'size': '345678901',
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 11:00',
+            'uend': 'Jan 27 12:00'
+        }
+        plugin = self.create_plugin(
+            _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
         self.assertEqual(response,
                          Response(
@@ -275,7 +295,7 @@ class LeaguefileTest(Test):
             'date': 'Jan 29 07:55',
             'now': '2018-01-29T00:00:00'
         }
-        write = _data(upload=upload)
+        write = _data(upload=upload, completed=[completed])
         mock_check_download.assert_not_called()
         mock_check_upload.assert_called_once_with()
         mock_download.assert_called_once_with(date=_now)
@@ -306,7 +326,16 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 18:00',
             'now': '2018-01-29T00:00:00'
         }
-        plugin = self.create_plugin(_data(upload=upload))
+        completed = {
+            'size': '345678901',
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 10:00',
+            'uend': 'Jan 27 12:00'
+        }
+        plugin = self.create_plugin(
+            _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
         self.assertEqual(response,
                          Response(
@@ -319,7 +348,7 @@ class LeaguefileTest(Test):
             'date': 'Jan 29 12:55',
             'now': '2018-01-29T00:00:00'
         }
-        write = _data(upload=upload)
+        write = _data(upload=upload, completed=[completed])
         mock_check_download.assert_not_called()
         mock_check_upload.assert_called_once_with()
         mock_download.assert_called_once_with(date=_now)
@@ -487,10 +516,12 @@ class LeaguefileTest(Test):
         mock_check.return_value = iter([check])
 
         completed = {
-            'start': 'Jan 27 12:00',
             'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 12:00',
+            'uend': 'Jan 27 12:00'
         }
         read = _data(completed=[completed])
         plugin = self.create_plugin(read)
@@ -519,10 +550,12 @@ class LeaguefileTest(Test):
             'now': '2018-01-29T00:00:00'
         }
         completed = {
-            'start': 'Jan 27 12:00',
             'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 12:00',
+            'uend': 'Jan 27 12:00'
         }
         read = _data(upload=upload, completed=[completed])
         plugin = self.create_plugin(read)
@@ -576,10 +609,12 @@ class LeaguefileTest(Test):
 
     def test_shadow(self):
         completed = {
-            'start': 'Jan 27 12:00',
             'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 12:00',
+            'uend': 'Jan 27 12:00'
         }
         plugin = self.create_plugin(_data(completed=[completed]))
         value = plugin._shadow_internal()
@@ -741,10 +776,12 @@ class LeaguefileTest(Test):
         }
 
         completed = {
-            'start': 'Jan 27 12:00',
             'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 12:00',
+            'uend': 'Jan 27 12:00'
         }
         plugin = self.create_plugin(_data(upload=completed))
         response = plugin.download(date=_now)
@@ -764,10 +801,12 @@ class LeaguefileTest(Test):
         mock_ping.return_value = {'ok': True}
 
         completed = {
-            'start': 'Jan 27 12:00',
             'size': '345678901',
-            'end': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
+            'date': 'Jan 27 12:00',
+            'dstart': 'Jan 27 12:00',
+            'dend': 'Jan 27 12:00',
+            'ustart': 'Jan 27 12:00',
+            'uend': 'Jan 27 12:00'
         }
         plugin = self.create_plugin(_data(upload=completed))
         response = plugin.download(date=_now)

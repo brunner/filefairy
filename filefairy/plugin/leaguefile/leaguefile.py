@@ -104,7 +104,7 @@ class Leaguefile(Registrable):
                     if upload.get('size', 0) != size:
                         now = encode_datetime(kwargs['date'])
                         upload.update({'size': size, 'date': date, 'now': now})
-                        self._file_is_up(date)
+                        self._file_is_up()
                         notify = Notify.LEAGUEFILE_FINISH
                     response = self.download(**kwargs)
 
@@ -289,16 +289,24 @@ class Leaguefile(Registrable):
         return Response(
             task=[Task(target='_download_internal', kwargs=kwargs)])
 
-    def _file_is_up(self, date):
+    def _file_is_up(self):
         obj = self._chat('fairylab', 'File is up.')
         logger_.log(logging.INFO, 'File is up.')
         channel = obj.get('channel')
+        upload = self.data['upload']
         ts = obj.get('ts')
         if channel and ts:
-            seconds = self._seconds(date, self.data['upload']['end'])
-            if seconds < 10800:
+            max_, min_ = 0, 0
+            for c in self.data['completed']:
+                seconds = self._seconds(c['ustart'], c['uend'])
+                if not max_ or max_ < seconds:
+                    max_ = seconds
+                if not min_ or min_ > seconds:
+                    min_ = seconds
+            seconds = self._seconds(upload['start'], upload['end'])
+            if seconds < min_:
                 reactions_add('zap', channel, ts)
-            elif seconds > 25200:
+            elif seconds > max_:
                 reactions_add('timer_clock', channel, ts)
 
     def _home(self, **kwargs):
