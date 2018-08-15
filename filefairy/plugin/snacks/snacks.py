@@ -332,7 +332,8 @@ class Snacks(Registrable):
         members = {}
         if users['ok']:
             for member in users['members']:
-                members[member['id']] = member['name']
+                if not member['deleted']:
+                    members[member['id']] = member['name']
         return members
 
     @staticmethod

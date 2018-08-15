@@ -607,15 +607,21 @@ class SnacksTest(Test):
     @mock.patch('plugin.snacks.snacks.users_list')
     def test_names(self, mock_users):
         mock_users.return_value = {
-            'ok': True,
+            'ok':
+            True,
             'members': [{
+                'deleted': False,
                 'id': 'U1234',
-                'name': 'user'
+                'name': 'foo'
+            }, {
+                'deleted': True,
+                'id': 'U5678',
+                'name': 'bar'
             }]
         }
 
         actual = Snacks._names()
-        expected = {'U1234': 'user'}
+        expected = {'U1234': 'foo'}
         self.assertEqual(actual, expected)
 
     @mock.patch('plugin.snacks.snacks.random.choice')

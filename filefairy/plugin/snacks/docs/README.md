@@ -67,6 +67,16 @@ Hungry?
 
 ![Example](images/snack_me.png?raw=true)
 
+### Who
+
+Need some help making a choice between users?
+
+```
+@filefairy who <foo>
+```
+
+![Example](images/who.png?raw=true)
+
 ## FAQ
 
 Answers to the questions you didn't know you had.
