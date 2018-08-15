@@ -249,7 +249,7 @@ class SnacksTest(Test):
             'user': 'U1234',
         }
         cfds = {'U5678': {}}
-        names = {'U5678': 'user'}
+        names = ['user']
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
@@ -276,7 +276,7 @@ class SnacksTest(Test):
             'user': 'U1234',
         }
         cfds = {'U5678': {}}
-        names = {'U5678': 'user'}
+        names = ['user']
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
@@ -302,7 +302,7 @@ class SnacksTest(Test):
             'user': 'U1234',
         }
         cfds = {'U5678': {}}
-        names = {'U5678': 'user'}
+        names = ['user']
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
@@ -329,7 +329,7 @@ class SnacksTest(Test):
             'user': 'U1234',
         }
         cfds = {'U5678': {}}
-        names = {'U5678': 'user'}
+        names = ['user']
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
@@ -355,7 +355,7 @@ class SnacksTest(Test):
             'user': 'U1234',
         }
         cfds = {'U5678': {}}
-        names = {'U5678': 'user'}
+        names = ['user']
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
@@ -454,9 +454,7 @@ class SnacksTest(Test):
         self.mock_reactions.assert_has_calls(calls)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
-    @mock.patch.object(Snacks, '_names')
-    def test_on_message__with_who_text(self, mock_names, mock_random):
-        mock_names.return_value = {'U1234': 'a', 'U5678': 'b'}
+    def test_on_message__with_who_text(self, mock_random):
         mock_random.side_effect = ['{}. Did you even need to ask?', 'a']
 
         obj = {
@@ -465,13 +463,15 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        plugin = self.create_plugin(_data(members=_members_old))
+        cfds = {'U5678': {}}
+        names = ['a', 'b']
+        plugin = self.create_plugin(
+            _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         write = _data(members=_members_new)
         calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
-        mock_names.assert_called_once_with()
         mock_random.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -612,16 +612,20 @@ class SnacksTest(Test):
             'members': [{
                 'deleted': False,
                 'id': 'U1234',
-                'name': 'foo'
+                'profile': {
+                    'display_name': 'foo'
+                }
             }, {
                 'deleted': True,
                 'id': 'U5678',
-                'name': 'bar'
+                'profile': {
+                    'display_name': 'bar'
+                }
             }]
         }
 
         actual = Snacks._names()
-        expected = {'U1234': 'foo'}
+        expected = ['foo']
         self.assertEqual(actual, expected)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
@@ -704,10 +708,7 @@ class SnacksTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
-        self.mock_collect.assert_called_once_with('C1234', {
-            'U1234': 'foo',
-            'U5678': 'bar'
-        })
+        self.mock_collect.assert_called_once_with('C1234')
         self.mock_reactions.assert_not_called()
 
     maxDiff = None
@@ -886,7 +887,7 @@ class SnacksTest(Test):
         fnames = [fpath.format(u) for u in ['U1234', 'U5678']]
         mock_fnames.return_value = fnames
 
-        names = {'U1234': 'foo', 'U5678': 'bar'}
+        names = ['foo', 'bar']
         plugin = self.create_plugin(_data(members=_members_old), names=names)
         plugin.loaded = False
         response = plugin._load_internal()

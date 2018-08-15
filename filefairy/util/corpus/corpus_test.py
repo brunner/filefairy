@@ -12,7 +12,6 @@ sys.path.append(re.sub(r'/util/corpus', '', _path))
 from util.corpus.corpus import _rewrite  # noqa
 from util.corpus.corpus import collect  # noqa
 
-_members = {'U1234': 'user'}
 _messages = [
     {
         'user': 'U1234',
@@ -45,27 +44,27 @@ _messages = [
 
 class CorpusTest(unittest.TestCase):
     def test_rewrite__with_http_url(self):
-        actual = _rewrite('foo: <http://foo>', _members)
+        actual = _rewrite('foo: <http://foo>')
         expected = 'foo:'
         self.assertEqual(actual, expected)
 
     def test_rewrite__with_https_url(self):
-        actual = _rewrite('foo: <https://foo>', _members)
+        actual = _rewrite('foo: <https://foo>')
         expected = 'foo:'
         self.assertEqual(actual, expected)
 
     def test_rewrite__with_announcement(self):
-        actual = _rewrite('<!channel> foo', _members)
+        actual = _rewrite('<!channel> foo')
         expected = 'foo'
         self.assertEqual(actual, expected)
 
     def test_rewrite__with_parens(self):
-        actual = _rewrite('foo (bar) baz', _members)
+        actual = _rewrite('foo (bar) baz')
         expected = 'foo bar baz'
         self.assertEqual(actual, expected)
 
     def test_rewrite__with_escaped_html(self):
-        actual = _rewrite('&gt; foo', _members)
+        actual = _rewrite('&gt; foo')
         expected = '> foo'
         self.assertEqual(actual, expected)
 
@@ -82,7 +81,7 @@ class CorpusTest(unittest.TestCase):
             'messages': []
         }]
 
-        actual = collect('C1234', _members)
+        actual = collect('C1234')
         expected = {
             'U1234': ['reply.', 'foo.', 'bar.', 'baz.'],
             'U5678': ['abc!']

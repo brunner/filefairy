@@ -280,9 +280,8 @@ class Snacks(Registrable):
 
             match = re.findall('^<@U3ULC7DBP> who .+$', text)
             if match:
-                choices = sorted(self._names().values())
                 statement = random.choice(_chooselist)
-                choice = random.choice(choices)
+                choice = random.choice(self.names)
                 reply = statement.format(choice)
                 chat_post_message(channel, reply)
                 response.notify = [Notify.BASE]
@@ -328,13 +327,13 @@ class Snacks(Registrable):
 
     @staticmethod
     def _names():
+        names = []
         users = users_list()
-        members = {}
         if users['ok']:
             for member in users['members']:
                 if not member['deleted']:
-                    members[member['id']] = member['name']
-        return members
+                    names.append(member['profile']['display_name'])
+        return sorted(names)
 
     @staticmethod
     def _snacks():
@@ -383,7 +382,7 @@ class Snacks(Registrable):
         collected = {}
         for c in channels['channels']:
             channelid = c['id']
-            _collect = collect(channelid, self.names)
+            _collect = collect(channelid)
             for user in _collect:
                 if user not in collected:
                     collected[user] = []

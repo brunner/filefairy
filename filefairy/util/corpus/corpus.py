@@ -17,13 +17,13 @@ _subtypes = [
 ]
 
 
-def _rewrite(text, members):
+def _rewrite(text):
     text = re.sub('(<https?://[^>]+>)|(<![^>]+>)|([()])', '', text)
     text = html.unescape(text).strip(' \t\n\r')
     return text
 
 
-def collect(channelid, members):
+def collect(channelid):
     messages = {}
 
     latest = ''
@@ -42,7 +42,7 @@ def collect(channelid, members):
                     continue
 
                 for text in reversed(m['text'].splitlines()):
-                    text = _rewrite(text, members)
+                    text = _rewrite(text)
                     if text:
                         match = re.findall('[?.!:]$', text)
                         if not match:
