@@ -612,20 +612,29 @@ class SnacksTest(Test):
             'members': [{
                 'deleted': False,
                 'id': 'U1234',
+                'name': 'foo',
                 'profile': {
-                    'display_name': 'foo'
+                    'display_name': 'foo1'
                 }
             }, {
                 'deleted': True,
                 'id': 'U5678',
+                'name': 'bar',
                 'profile': {
-                    'display_name': 'bar'
+                    'display_name': 'bar1'
+                }
+            }, {
+                'deleted': False,
+                'id': 'U9012',
+                'name': 'baz',
+                'profile': {
+                    'display_name': ''
                 }
             }]
         }
 
         actual = Snacks._names()
-        expected = ['foo']
+        expected = ['baz', 'foo1']
         self.assertEqual(actual, expected)
 
     @mock.patch('plugin.snacks.snacks.random.choice')
