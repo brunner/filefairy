@@ -331,8 +331,12 @@ class Snacks(Registrable):
         users = users_list()
         if users['ok']:
             for member in users['members']:
-                if not member['deleted']:
+                if member['deleted']:
+                    continue
+                if member['profile']['display_name']:
                     names.append(member['profile']['display_name'])
+                else:
+                    names.append(member['name'])
         return sorted(names)
 
     @staticmethod
