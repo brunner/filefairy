@@ -1,16 +1,5 @@
 {
   "records": {
-    "2018-08-13T00:00:00": [
-      {
-        "count": 1,
-        "date": "2018-08-13T00:01:55.060609",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 164,
-        "msg": "Automated data push.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      }
-    ],
     "2018-08-14T00:00:00": [
       {
         "count": 1,
@@ -437,51 +426,6 @@
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
       },
       {
-        "count": 2,
-        "date": "2018-08-19T00:46:00.029374",
-        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-19T01:05:28.491889",
-        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-19T05:28:11.392832",
-        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/snacks/index.html', 'brunnerj@server:/var/www/html/fairylab/snacks/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/snacks/index.html', 'brunnerj@server:/var/www/html/fairylab/snacks/index.html']' timed out after 8 seconds",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-19T07:57:24.135569",
-        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-19T15:27:38.895388",
-        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
-      },
-      {
         "count": 1,
         "date": "2018-08-19T18:43:55.649709",
         "exc": "",
@@ -489,15 +433,6 @@
         "lineno": 204,
         "msg": "Tracker locked.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-08-19T21:25:24.495075",
-        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/exports/index.html', 'brunnerj@server:/var/www/html/fairylab/exports/index.html']' timed out after 8 seconds",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
       },
       {
         "count": 11,
@@ -521,15 +456,6 @@
         "count": 10,
         "date": "2018-08-19T23:10:53.567137",
         "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/index.html', 'brunnerj@server:/var/www/html/fairylab/index.html']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['scp', '/home/pi/orangeandblueleague/filefairy/resource/html/fairylab/index.html', 'brunnerj@server:/var/www/html/fairylab/index.html']' timed out after 8 seconds",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
-      },
-      {
-        "count": 4,
-        "date": "2018-08-19T22:36:01.793553",
-        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
         "levelname": "WARNING",
         "lineno": 24,
         "msg": "Handled warning.",
@@ -563,15 +489,6 @@
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
       },
       {
-        "count": 3,
-        "date": "2018-08-19T23:36:08.515838",
-        "exc": "Traceback (most recent call last):\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 398, in run\n    output=stdout, stderr=stderr)\nsubprocess.CalledProcessError: Command '['git', 'commit', '-m', 'Manual data push.']' returned non-zero exit status 1",
-        "levelname": "WARNING",
-        "lineno": 24,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py"
-      },
-      {
         "count": 1,
         "date": "2018-08-19T23:31:46.150996",
         "exc": "",
@@ -579,6 +496,24 @@
         "lineno": 155,
         "msg": "Fetched latest changes.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-19T23:48:21.331175",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 270,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-08-19T23:48:25.997759",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 60,
+        "msg": "News updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/recap/recap.py"
       }
     ]
   }
