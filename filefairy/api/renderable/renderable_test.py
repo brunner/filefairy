@@ -16,7 +16,8 @@ sys.path.append(_root)
 from api.renderable.renderable import Renderable  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 
-_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab', _root)
+_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab/static',
+                        _root)
 
 
 class FakeRenderable(Renderable):
@@ -343,14 +344,10 @@ class RenderableTest(unittest.TestCase):
         plugin = FakeRenderable(e=env())
         actual = plugin._attachments()
         expected = [{
-            'fallback':
-            'Description.',
-            'title':
-            'Fairylab | foo',
-            'title_link':
-            'http://fairylab.surge.sh/foo/',
-            'text':
-            'Description.'
+            'fallback': 'Description.',
+            'title': 'Fairylab | foo',
+            'title_link': 'http://fairylab.surge.sh/foo/',
+            'text': 'Description.'
         }]
         self.assertEqual(actual, expected)
 

@@ -17,7 +17,8 @@ from util.slack.slack import chat_post_message  # noqa
 
 logger_ = logging.getLogger('fairylab')
 
-_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab', _root)
+_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab/static',
+                        _root)
 
 
 class Renderable(Serializable):

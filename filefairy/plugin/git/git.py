@@ -27,7 +27,8 @@ _commit = 'https://github.com/brunner/orangeandblueleague/commit/'
 _l = ['d-inline-block', 'w-65p']
 _r = ['d-inline-block', 'text-right', 'w-65p']
 
-_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab', _root)
+_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab/static',
+                        _root)
 
 
 class Git(Registrable):
