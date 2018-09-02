@@ -43,7 +43,7 @@ class Fairylab(Messageable, Renderable):
         self.keep_running = True
         self.lock = threading.Lock()
         self.registered = {'dashboard': d}
-        self.sleep = 120
+        self.sleep = 300
         self.tasks = []
         self.ws = None
 

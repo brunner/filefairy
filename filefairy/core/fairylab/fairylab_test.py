@@ -166,7 +166,7 @@ class FairylabTest(Test):
         self.assertEqual(program.day, _now.day)
         self.assertEqual(program.registered, {'dashboard': _dashboard})
         self.assertTrue(program.keep_running)
-        self.assertEqual(program.sleep, 120)
+        self.assertEqual(program.sleep, 300)
         self.assertEqual(program.ws, None)
 
     @mock.patch.object(Fairylab, '_try')
@@ -453,7 +453,7 @@ class FairylabTest(Test):
         mock_sleep.side_effect = functools.partial(set_running_false, program)
         program._background()
 
-        mock_sleep.assert_called_once_with(120)
+        mock_sleep.assert_called_once_with(300)
         mock_try.assert_called_once_with('foo', 'foo', *args, **kwargs)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -559,7 +559,7 @@ class FairylabTest(Test):
         program._start()
 
         mock_connect.assert_called_once_with()
-        mock_sleep.assert_called_once_with(120)
+        mock_sleep.assert_called_once_with(300)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
@@ -589,7 +589,7 @@ class FairylabTest(Test):
         program._start()
 
         mock_connect.assert_called_once_with()
-        mock_sleep.assert_called_once_with(120)
+        mock_sleep.assert_called_once_with(300)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
@@ -620,7 +620,7 @@ class FairylabTest(Test):
         program._start()
 
         mock_connect.assert_called_once_with()
-        mock_sleep.assert_called_once_with(120)
+        mock_sleep.assert_called_once_with(300)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         mock_try.assert_has_calls([mock.call('foo', '_run', date=_now)])
