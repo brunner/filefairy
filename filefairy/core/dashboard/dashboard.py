@@ -46,7 +46,7 @@ class Dashboard(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/dashboard/'
+        return '/dashboard/'
 
     @staticmethod
     def _info():
@@ -66,7 +66,7 @@ class Dashboard(Registrable):
         return Response()
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/dashboard/index.html'
+        html = 'dashboard/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'dashboard.html', _home)]
 

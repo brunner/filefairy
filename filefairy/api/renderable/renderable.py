@@ -13,13 +13,11 @@ _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.serializable.serializable import Serializable  # noqa
 from util.abc_.abc_ import abstractstatic  # noqa
-from util.secrets.secrets import server  # noqa
 from util.slack.slack import chat_post_message  # noqa
-from util.subprocess_.subprocess_ import check_output  # noqa
 
 logger_ = logging.getLogger('fairylab')
 
-_server = server()
+_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab', _root)
 
 
 class Renderable(Serializable):
@@ -59,12 +57,10 @@ class Renderable(Serializable):
                 title = _title + subtitle
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(dict(context, title=title, date=date))
-                hroot = _root if test else os.path.join(_root, 'resource')
-                here = os.path.join(hroot, html)
-                there = 'brunnerj@' + _server + ':/var/www/' + html
-                self._mkdir_p(here.rsplit('/', 1)[0])
-                ts.dump(here)
-                check_output(['scp', here, there], log=log, timeout=8)
+                root = _root if test else _fairylab_root
+                path = os.path.join(root, html)
+                self._mkdir_p(path.rsplit('/', 1)[0])
+                ts.dump(path)
             except:
                 if log:
                     logger_.log(
@@ -83,7 +79,7 @@ class Renderable(Serializable):
     def _attachments(self):
         info = self._info()
         title = 'Fairylab | ' + self._title()
-        link = 'http://orangeandblueleaguebaseball.com' + self._href()
+        link = 'http://fairylab.surge.sh' + self._href()
         return [{
             'fallback': info,
             'title': title,

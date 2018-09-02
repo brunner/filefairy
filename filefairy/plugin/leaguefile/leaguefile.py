@@ -51,7 +51,7 @@ class Leaguefile(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/leaguefile/'
+        return '/leaguefile/'
 
     @staticmethod
     def _info():
@@ -118,7 +118,7 @@ class Leaguefile(Registrable):
         return response
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/leaguefile/index.html'
+        html = 'leaguefile/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'leaguefile.html', _home)]
 

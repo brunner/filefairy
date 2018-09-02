@@ -38,7 +38,7 @@ class FakeRegistrable(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/foo/'
+        return '/foo/'
 
     @staticmethod
     def _info():
@@ -189,8 +189,8 @@ class FairylabTest(Test):
         mock_listdir.assert_called_once_with(dir_plugin)
         mock_try.assert_has_calls([
             mock.call('dashboard', 'resolve', 'dashboard', date=_now),
+            mock.call('foo', '_setup', date=_now),
             mock.call('dashboard', '_setup', date=_now),
-            mock.call('foo', '_setup', date=_now)
         ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -209,7 +209,7 @@ class FairylabTest(Test):
 
         program = self.create_program(registered=_registered)
         ret = program._render_internal(date=_now)
-        index = 'html/fairylab/index.html'
+        index = 'index.html'
         self.assertEqual(ret, [(index, '', 'home.html', home)])
 
         mock_home.assert_called_once_with(date=_now)
@@ -472,8 +472,8 @@ class FairylabTest(Test):
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
         mock_message.assert_called_once_with(obj=obj, date=_now)
         calls = [
-            mock.call('dashboard', '_on_message', obj=obj, date=_now),
             mock.call('foo', '_on_message', obj=obj, date=_now),
+            mock.call('dashboard', '_on_message', obj=obj, date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -490,8 +490,8 @@ class FairylabTest(Test):
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
         mock_message.assert_called_once_with(obj=obj, date=_now)
         calls = [
-            mock.call('dashboard', '_on_message', obj=obj, date=_now),
             mock.call('foo', '_on_message', obj=obj, date=_now),
+            mock.call('dashboard', '_on_message', obj=obj, date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -563,8 +563,8 @@ class FairylabTest(Test):
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
-            mock.call('dashboard', '_run', date=_now),
             mock.call('foo', '_run', date=_now),
+            mock.call('dashboard', '_run', date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -593,10 +593,10 @@ class FairylabTest(Test):
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
-            mock.call('dashboard', '_run', date=_now),
             mock.call('foo', '_run', date=_now),
-            mock.call('dashboard', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('dashboard', '_run', date=_now),
             mock.call('foo', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('dashboard', '_notify', notify=Notify.FAIRYLAB_DAY),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -638,12 +638,12 @@ class FairylabTest(Test):
         program = self.create_program(registered=_registered)
         ret = program._home(date=_now)
         dashboard = card(
-            href='/fairylab/dashboard/',
+            href='/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
             ts='15m ago')
         foo = card(
-            href='/fairylab/foo/',
+            href='/foo/',
             title='foo',
             info='Description of foo.',
             ts='2m ago')
@@ -664,12 +664,12 @@ class FairylabTest(Test):
         program = self.create_program(registered=_registered)
         ret = program._home(date=_then)
         dashboard = card(
-            href='/fairylab/dashboard/',
+            href='/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
             ts='15m ago')
         foo = card(
-            href='/fairylab/foo/',
+            href='/foo/',
             title='foo',
             info='Description of foo.',
             ts='0s ago',
@@ -689,12 +689,12 @@ class FairylabTest(Test):
         program.registered['foo'].ok = False
         ret = program._home(date=_now)
         dashboard = card(
-            href='/fairylab/dashboard/',
+            href='/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
             ts='15m ago')
         foo = card(
-            href='/fairylab/foo/',
+            href='/foo/',
             title='foo',
             info='Description of foo.',
             ts='2h ago',
@@ -726,8 +726,8 @@ class FairylabTest(Test):
         mock_import.assert_called_once_with('plugin.foo.foo')
         calls = [
             mock.call('dashboard', 'resolve', 'foo', **dict(kwargs)),
-            mock.call('dashboard', '_setup', **dict(kwargs)),
             mock.call('foo', '_setup', **dict(kwargs)),
+            mock.call('dashboard', '_setup', **dict(kwargs)),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')

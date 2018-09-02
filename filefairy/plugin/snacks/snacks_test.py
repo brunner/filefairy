@@ -542,7 +542,7 @@ class SnacksTest(Test):
 
         plugin = self.create_plugin(_data())
         response = plugin._render_internal(date=_now)
-        index = 'html/fairylab/snacks/index.html'
+        index = 'snacks/index.html'
         self.assertEqual(response, [(index, '', 'snacks.html', home)])
 
         self.mock_open.assert_not_called()

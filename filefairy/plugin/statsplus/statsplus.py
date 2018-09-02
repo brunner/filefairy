@@ -72,7 +72,7 @@ class Statsplus(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/statsplus/'
+        return '/statsplus/'
 
     @staticmethod
     def _info():
@@ -177,7 +177,7 @@ class Statsplus(Registrable):
         return response
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/statsplus/index.html'
+        html = 'statsplus/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'statsplus.html', _home)]
 

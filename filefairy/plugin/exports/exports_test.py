@@ -487,7 +487,7 @@ class ExportsTest(Test):
         exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
         plugin = self.create_plugin(_data(form=form), exports=exports)
         value = plugin._render_internal(date=_now)
-        index = 'html/fairylab/exports/index.html'
+        index = 'exports/index.html'
         self.assertEqual(value, [(index, '', 'exports.html', home)])
 
         mock_home.assert_called_once_with(date=_now)

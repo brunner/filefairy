@@ -375,7 +375,7 @@ class RecapTest(Test):
 
         plugin = self.create_plugin(_data())
         value = plugin._render_internal(date=_now)
-        index = 'html/fairylab/recap/index.html'
+        index = 'recap/index.html'
         self.assertEqual(value, [(index, '', 'recap.html', home)])
 
         mock_home.assert_called_once_with(date=_now)

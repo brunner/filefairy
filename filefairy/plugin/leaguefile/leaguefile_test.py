@@ -463,7 +463,7 @@ class LeaguefileTest(Test):
 
         plugin = self.create_plugin(_data())
         response = plugin._render_internal(date=_now)
-        index = 'html/fairylab/leaguefile/index.html'
+        index = 'leaguefile/index.html'
         self.assertEqual(response, [(index, '', 'leaguefile.html', home)])
 
         mock_home.assert_called_once_with(date=_now)

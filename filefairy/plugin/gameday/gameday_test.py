@@ -78,7 +78,7 @@ class GamedayTest(unittest.TestCase):
 
         plugin = self.create_plugin(_data())
         response = plugin._render_internal(date=_now)
-        index = 'html/fairylab/gameday/diamondbacks/index.html'
+        index = 'gameday/diamondbacks/index.html'
         self.assertEqual(response,
                          [(index, 'diamondbacks', 'game.html', game)])
 

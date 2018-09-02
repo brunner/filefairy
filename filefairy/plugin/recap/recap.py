@@ -35,7 +35,7 @@ class Recap(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/recap/'
+        return '/recap/'
 
     @staticmethod
     def _info():
@@ -78,7 +78,7 @@ class Recap(Registrable):
         return Response()
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/recap/index.html'
+        html = 'recap/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'recap.html', _home)]
 

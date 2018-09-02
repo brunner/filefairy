@@ -53,7 +53,7 @@ class Fairylab(Messageable, Renderable):
 
     @staticmethod
     def _href():
-        return '/fairylab/'
+        return '/'
 
     @staticmethod
     def _title():
@@ -69,7 +69,7 @@ class Fairylab(Messageable, Renderable):
         self._try('dashboard', 'resolve', 'dashboard', **kwargs)
         d = os.path.join(_root, 'plugin')
         ps = filter(lambda x: self._is_plugin_dir(d, x), os.listdir(d))
-        for p in sorted(ps):
+        for p in self._sort(ps):
             self._reload_internal('plugin', p, **kwargs)
         self._try_all('_setup', **kwargs)
 
@@ -78,7 +78,7 @@ class Fairylab(Messageable, Renderable):
 
     def _render_internal(self, **kwargs):
         _home = self._home(**kwargs)
-        return [('html/fairylab/index.html', '', 'home.html', _home)]
+        return [('index.html', '', 'home.html', _home)]
 
     @staticmethod
     def _is_plugin_dir(d, x):
@@ -88,8 +88,13 @@ class Fairylab(Messageable, Renderable):
     def _package(path, name):
         return '{0}.{1}.{1}'.format(path, name)
 
+    @staticmethod
+    def _sort(keys):
+        last = ['dashboard', 'git']
+        return sorted(keys, key=lambda x: '~' + x if x in last else x)
+
     def _try_all(self, method, *args, **kwargs):
-        ps = sorted(self.registered.keys())
+        ps = self._sort(self.registered.keys())
         for p in ps:
             self._try(p, method, *args, **kwargs)
 

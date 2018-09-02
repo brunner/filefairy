@@ -44,7 +44,7 @@ class Exports(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/exports/'
+        return '/exports/'
 
     @staticmethod
     def _title():
@@ -103,7 +103,7 @@ class Exports(Registrable):
         return response
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/exports/index.html'
+        html = 'exports/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'exports.html', _home)]
 

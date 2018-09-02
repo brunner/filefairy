@@ -171,7 +171,7 @@ class Snacks(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/snacks/'
+        return '/snacks/'
 
     @staticmethod
     def _info():
@@ -295,7 +295,7 @@ class Snacks(Registrable):
         return response
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/snacks/index.html'
+        html = 'snacks/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'snacks.html', _home)]
 

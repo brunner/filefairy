@@ -8,7 +8,8 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugin/git', '', _path))
+_root = re.sub(r'/plugin/git', '', _path)
+sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
 from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
@@ -26,6 +27,8 @@ _commit = 'https://github.com/brunner/orangeandblueleague/commit/'
 _l = ['d-inline-block', 'w-65p']
 _r = ['d-inline-block', 'text-right', 'w-65p']
 
+_fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab', _root)
+
 
 class Git(Registrable):
     def __init__(self, **kwargs):
@@ -37,7 +40,7 @@ class Git(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/git/'
+        return '/git/'
 
     @staticmethod
     def _info():
@@ -50,18 +53,23 @@ class Git(Registrable):
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == Notify.FAIRYLAB_DAY:
-            self.automate(**kwargs)
+            self.automate('filefairy', **kwargs)
         return Response()
 
     def _on_message_internal(self, **kwargs):
         return Response()
 
     def _render_internal(self, **kwargs):
-        html = 'html/fairylab/git/index.html'
+        html = 'git/index.html'
         _home = self._home(**kwargs)
         return [(html, '', 'git.html', _home)]
 
     def _run_internal(self, **kwargs):
+        response = self.status('fairylab', **kwargs)
+        stdout = self._stdout(response)
+        if 'Changes not staged for commit' in stdout:
+            self.automate('fairylab', **kwargs)
+
         return Response()
 
     def _setup_internal(self, **kwargs):
@@ -104,10 +112,15 @@ class Git(Registrable):
         return response.debug[0].extra.get('stdout', '')
 
     @staticmethod
-    def _call(cmd, **kwargs):
-        output = check_output(cmd)
-        response = Response()
+    def _call(cmd, *args, **kwargs):
+        cwd = os.getcwd()
+        if len(args) == 1 and args[0] == 'fairylab':
+            os.chdir(_fairylab_root)
 
+        output = check_output(cmd)
+        os.chdir(cwd)
+
+        response = Response()
         if output.get('ok'):
             response.append_notify(Notify.BASE)
             status = 'completed'
@@ -119,25 +132,25 @@ class Git(Registrable):
         response.append_debug(Debug(msg=msg, extra=output))
         return response
 
-    def add(self, **kwargs):
-        return self._call(['git', 'add', '.'], **kwargs)
+    def add(self, *args, **kwargs):
+        return self._call(['git', 'add', '.'], *args, **kwargs)
 
-    def automate(self, **kwargs):
+    def automate(self, *args, **kwargs):
         response = Response(notify=[Notify.BASE])
 
-        sub = self.add(**kwargs)
+        sub = self.add(*args, **kwargs)
         if not sub.notify:
             return sub
         for debug in sub.debug:
             response.append_debug(debug)
 
-        sub = self.commit(**kwargs)
+        sub = self.commit(*args, **kwargs)
         if not sub.notify:
             return sub
         for debug in sub.debug:
             response.append_debug(debug)
 
-        sub = self.push(**kwargs)
+        sub = self.push(*args, **kwargs)
         if not sub.notify:
             return sub
         for debug in sub.debug:
@@ -145,32 +158,39 @@ class Git(Registrable):
 
         return response
 
-    def commit(self, **kwargs):
+    def commit(self, *args, **kwargs):
         s = 'Manual' if kwargs.get('v') else 'Automated'
-        return self._call(['git', 'commit', '-m', s + ' data push.'], **kwargs)
+        return self._call(['git', 'commit', '-m', s + ' push.'], *args,
+                          **kwargs)
 
-    def pull(self, **kwargs):
-        response = self._call(['git', 'pull'], **kwargs)
-        if response.notify:
+    def pull(self, *args, **kwargs):
+        response = self._call(['git', 'pull'], *args, **kwargs)
+
+        if len(args) == 1 and args[0] == 'fairylab':
+            pass
+        elif response.notify:
             logger_.log(logging.INFO, 'Fetched latest changes.')
-            self._save(response, 'pull', self._stdout, **kwargs)
+            self._save(response, 'pull', self._stdout, *args, **kwargs)
 
         return response
 
-    def push(self, **kwargs):
+    def push(self, *args, **kwargs):
         response = self._call(['git', 'push'], **kwargs)
-        if response.notify:
+
+        if len(args) == 1 and args[0] == 'fairylab':
+            pass
+        elif response.notify:
             s = 'Manual' if kwargs.get('v') else 'Automated'
-            logger_.log(logging.INFO, s + ' data push.')
+            logger_.log(logging.INFO, s + ' push.')
             self._save(response, 'push', self._stderr, **kwargs)
 
         return response
 
-    def reset(self, **kwargs):
-        return self._call(['git', 'reset', '--hard'], **kwargs)
+    def reset(self, *args, **kwargs):
+        return self._call(['git', 'reset', '--hard'], *args, **kwargs)
 
-    def status(self, **kwargs):
-        return self._call(['git', 'status'], **kwargs)
+    def status(self, *args, **kwargs):
+        return self._call(['git', 'status'], *args, **kwargs)
 
     def _body(self, key):
         body = []

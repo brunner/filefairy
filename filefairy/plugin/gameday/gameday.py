@@ -22,7 +22,7 @@ class Gameday(Registrable):
 
     @staticmethod
     def _href():
-        return '/fairylab/gameday/'
+        return '/gameday/'
 
     @staticmethod
     def _info():
@@ -46,7 +46,7 @@ class Gameday(Registrable):
             for encoding in games[date]:
                 nickname = encoding_to_nickname(encoding)
                 subtitle = nickname.lower().replace(' ', '')
-                html = 'html/fairylab/gameday/{}/index.html'.format(subtitle)
+                html = 'gameday/{}/index.html'.format(subtitle)
                 _game = self._game(nickname, **kwargs)
                 ret.append((html, subtitle, 'game.html', _game))
 
