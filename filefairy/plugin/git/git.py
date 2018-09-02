@@ -176,7 +176,7 @@ class Git(Registrable):
         return response
 
     def push(self, *args, **kwargs):
-        response = self._call(['git', 'push'], **kwargs)
+        response = self._call(['git', 'push'], *args, **kwargs)
 
         if len(args) == 1 and args[0] == 'fairylab':
             pass
