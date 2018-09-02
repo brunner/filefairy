@@ -458,7 +458,7 @@ class GitTest(unittest.TestCase):
         self.assertEqual(response, expected)
 
         mock_save.assert_called_once_with(
-            response, 'pull', Git._stdout, 'filefairy', date=_now, v=True)
+            response, 'pull', Git._stdout, date=_now, v=True)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_check.assert_called_once_with(['git', 'pull'])

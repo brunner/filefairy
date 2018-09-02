@@ -171,12 +171,12 @@ class Git(Registrable):
             pass
         elif response.notify:
             logger_.log(logging.INFO, 'Fetched latest changes.')
-            self._save(response, 'pull', self._stdout, *args, **kwargs)
+            self._save(response, 'pull', self._stdout, **kwargs)
 
         return response
 
     def push(self, *args, **kwargs):
-        response = self._call(['git', 'push'], *args, **kwargs)
+        response = self._call(['git', 'push'], **kwargs)
 
         if len(args) == 1 and args[0] == 'fairylab':
             pass
