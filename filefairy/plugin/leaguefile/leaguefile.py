@@ -127,7 +127,8 @@ class Leaguefile(Registrable):
         if data != original:
             self.write()
 
-        if render or decode_datetime(data['date']) < kwargs['date'] - td:
+        wait = decode_datetime(data['date']) < kwargs['date'] - td
+        if render or data['upload'] and wait:
             data['date'] = now
             response.append_notify(notify)
             self._render(**kwargs)
