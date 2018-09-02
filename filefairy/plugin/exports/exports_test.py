@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
 import logging
 import os
 import re
@@ -16,6 +15,7 @@ from plugin.exports.exports import Exports  # noqa
 from util.component.component import card  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.team.team import logo_absolute  # noqa
@@ -24,8 +24,8 @@ from util.test.test import main  # noqa
 
 _channel = 'C1234'
 _env = env()
-_now = datetime.datetime(1985, 10, 26, 0, 2, 30)
-_now_encoded = '1985-10-26T00:02:30'
+_now = datetime_datetime(1985, 10, 26, 0, 2, 30)
+_now_encoded = '1985-10-26T00:02:30-04:00'
 _reactions = {
     'message': {
         'reactions': [{
@@ -38,8 +38,8 @@ _reactions = {
     },
     'ok': True
 }
-_then = datetime.datetime(1985, 10, 26, 0, 0, 0)
-_then_encoded = '1985-10-26T00:00:00'
+_then = datetime_datetime(1985, 10, 26, 0, 0, 0)
+_then_encoded = '1985-10-26T00:00:00-04:00'
 _ts = '123456789'
 _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 _urlopen = '<html><head><title>Export Tracker - StatsLab for ...'
@@ -354,7 +354,7 @@ class ExportsTest(Test):
 
         mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(_url)
@@ -467,7 +467,7 @@ class ExportsTest(Test):
 
         mock_exports.assert_not_called()
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
+        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_not_called()
@@ -573,7 +573,7 @@ class ExportsTest(Test):
         response = plugin._home(date=_then)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Exports'
@@ -581,7 +581,11 @@ class ExportsTest(Test):
         info = 'Upcoming sim contains <span class="text-success border px-' + \
                '1">6 new</span>, 0 old, <span class="text-secondary">0 ai<' + \
                '/span>.'
-        l = card(title='100%', info=info, table=table_, ts='0s ago')
+        l = card(
+            title='100%',
+            info=info,
+            table=table_,
+            ts='00:00:00 EDT (1985-10-26)')
         cols = [
             'class="position-relative"', ' class="text-center w-25"',
             ' class="text-center w-25"'
@@ -642,7 +646,7 @@ class ExportsTest(Test):
         response = plugin._home(date=_then)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Exports'
@@ -650,7 +654,11 @@ class ExportsTest(Test):
         info = 'Upcoming sim contains <span class="text-success border px-' + \
                '1">4 new</span>, 2 old, <span class="text-secondary">0 ai<' + \
                '/span>.'
-        l = card(title='67%', info=info, table=table_, ts='0s ago')
+        l = card(
+            title='67%',
+            info=info,
+            table=table_,
+            ts='00:00:00 EDT (1985-10-26)')
         cols = [
             'class="position-relative"', ' class="text-center w-25"',
             ' class="text-center w-25"'
@@ -712,7 +720,7 @@ class ExportsTest(Test):
         response = plugin._home(date=_then)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Exports'
@@ -720,7 +728,11 @@ class ExportsTest(Test):
         info = 'Ongoing sim contains <span class="text-success border px-1' + \
                '">4 new</span>, 2 old, <span class="text-secondary">0 ai</' + \
                'span>.'
-        l = card(title='67%', info=info, table=table_, ts='0s ago')
+        l = card(
+            title='67%',
+            info=info,
+            table=table_,
+            ts='00:00:00 EDT (1985-10-26)')
         cols = [
             'class="position-relative"', ' class="text-center w-25"',
             ' class="text-center w-25"'

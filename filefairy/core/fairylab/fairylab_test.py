@@ -22,6 +22,7 @@ from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from util.component.component import card  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.test.test import Test  # noqa
@@ -115,9 +116,9 @@ class FairylabTest(Test):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
-        patch_datetime = mock.patch('core.fairylab.fairylab.datetime')
-        self.addCleanup(patch_datetime.stop)
-        self.mock_datetime = patch_datetime.start()
+        patch_now = mock.patch('core.fairylab.fairylab.datetime_now')
+        self.addCleanup(patch_now.stop)
+        self.mock_now = patch_now.start()
 
         patch_log = mock.patch('core.fairylab.fairylab.logger_.log')
         self.addCleanup(patch_log.stop)
@@ -131,26 +132,27 @@ class FairylabTest(Test):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-        self.mock_datetime.datetime.now.return_value = _now
+        self.mock_now.return_value = _now
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
-        self.mock_datetime.reset_mock()
+        self.mock_now.reset_mock()
         self.mock_log.reset_mock()
 
     def create_program(self, registered=None, tasks=None):
-        self.init_mocks({})
+        data = {'date': encode_datetime(_now)}
+        self.init_mocks(data)
         program = Fairylab(d=_dashboard, e=_env)
         program.day = _now.day
 
         self.mock_open.assert_called_once_with(Fairylab._data(), 'r')
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(program.data, {})
+        self.assertEqual(program.data, data)
 
         self.reset_mocks()
-        self.init_mocks({})
+        self.init_mocks(data)
 
         if registered:
             program.registered = registered
@@ -163,11 +165,10 @@ class FairylabTest(Test):
     def test_init(self):
         program = self.create_program()
 
-        self.assertEqual(program.data, {})
         self.assertEqual(program.day, _now.day)
         self.assertEqual(program.registered, {'dashboard': _dashboard})
         self.assertTrue(program.keep_running)
-        self.assertEqual(program.sleep, 300)
+        self.assertEqual(program.sleep, 60)
         self.assertEqual(program.ws, None)
 
     @mock.patch.object(Fairylab, '_try')
@@ -195,7 +196,7 @@ class FairylabTest(Test):
         ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.day, _now.day)
         self.assertEqual(program.registered['dashboard'].date, _then)
@@ -216,7 +217,7 @@ class FairylabTest(Test):
         mock_home.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -240,7 +241,7 @@ class FairylabTest(Test):
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -265,7 +266,7 @@ class FairylabTest(Test):
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -289,7 +290,7 @@ class FairylabTest(Test):
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -309,7 +310,7 @@ class FairylabTest(Test):
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -329,7 +330,7 @@ class FairylabTest(Test):
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -349,7 +350,7 @@ class FairylabTest(Test):
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_now.assert_called_once_with()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -369,7 +370,7 @@ class FairylabTest(Test):
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_called_once_with(
             logging.ERROR, 'Disabled foo.', exc_info=True)
         self.assertEqual(program.registered['dashboard'].date, _then)
@@ -389,7 +390,7 @@ class FairylabTest(Test):
         mock_run.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -407,7 +408,7 @@ class FairylabTest(Test):
         mock_run.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -423,7 +424,7 @@ class FairylabTest(Test):
         mock_notify.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -439,7 +440,7 @@ class FairylabTest(Test):
         mock_notify.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -459,11 +460,11 @@ class FairylabTest(Test):
         mock_sleep.side_effect = functools.partial(set_running_false, program)
         program._background()
 
-        mock_sleep.assert_called_once_with(300)
+        mock_sleep.assert_called_once_with(60)
         mock_try.assert_called_once_with('foo', 'foo', *args, **kwargs)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertEqual(program.tasks, [])
 
@@ -484,7 +485,7 @@ class FairylabTest(Test):
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_now.assert_called_once_with()
         self.mock_log.assert_not_called()
 
     @mock.patch.object(Fairylab, '_try')
@@ -502,7 +503,7 @@ class FairylabTest(Test):
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_now.assert_called_once_with()
         self.mock_log.assert_not_called()
 
     @mock.patch('core.fairylab.fairylab.websocket.WebSocketApp')
@@ -525,7 +526,7 @@ class FairylabTest(Test):
         mock_thread.return_value.start.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertIsNotNone(program.ws)
 
@@ -546,7 +547,7 @@ class FairylabTest(Test):
         mock_thread.return_value.start.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_not_called()
         self.assertIsNone(program.ws)
 
@@ -565,7 +566,7 @@ class FairylabTest(Test):
         program._start()
 
         mock_connect.assert_called_once_with()
-        mock_sleep.assert_called_once_with(300)
+        mock_sleep.assert_called_once_with(60)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
@@ -575,7 +576,7 @@ class FairylabTest(Test):
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_now.assert_called_once_with()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _now)
         self.assertEqual(program.registered['foo'].date, _now)
@@ -595,7 +596,7 @@ class FairylabTest(Test):
         program._start()
 
         mock_connect.assert_called_once_with()
-        mock_sleep.assert_called_once_with(300)
+        mock_sleep.assert_called_once_with(60)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
@@ -605,12 +606,43 @@ class FairylabTest(Test):
             mock.call('dashboard', '_notify', notify=Notify.FAIRYLAB_DAY),
             mock.call('foo', '_notify', notify=Notify.FAIRYLAB_DAY),
             mock.call('git', '_notify', notify=Notify.FAIRYLAB_DAY),
+        ]
+        mock_try.assert_has_calls(calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_now.assert_called_once_with()
+        self.mock_log.assert_not_called()
+        self.assertEqual(program.registered['dashboard'].date, _then)
+        self.assertEqual(program.registered['foo'].date, _then)
+
+    @mock.patch.object(Fairylab, '_try')
+    @mock.patch('core.fairylab.fairylab.threading.Thread')
+    @mock.patch('core.fairylab.fairylab.time.sleep')
+    @mock.patch.object(Fairylab, '_render')
+    @mock.patch.object(Fairylab, '_connect')
+    @mock.patch.object(Fairylab, '_background')
+    def test_start__with_deploy(self, mock_bg, mock_connect, mock_render,
+                                mock_sleep, mock_thread, mock_try):
+        program = self.create_program(registered=_registered)
+        program.data['date'] = _then
+
+        mock_sleep.side_effect = functools.partial(set_running_false, program)
+        program._start()
+
+        mock_connect.assert_called_once_with()
+        mock_sleep.assert_called_once_with(60)
+        mock_thread.assert_called_once_with(target=mock_bg)
+        mock_thread.return_value.start.assert_called_once_with()
+        calls = [
+            mock.call('dashboard', '_run', date=_now),
+            mock.call('foo', '_run', date=_now),
+            mock.call('git', '_run', date=_now),
             mock.call('git', '_notify', notify=Notify.FAIRYLAB_DEPLOY),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_now.assert_called_once_with()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['foo'].date, _then)
@@ -629,20 +661,20 @@ class FairylabTest(Test):
         program._start()
 
         mock_connect.assert_called_once_with()
-        mock_sleep.assert_called_once_with(300)
+        mock_sleep.assert_called_once_with(60)
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         mock_try.assert_has_calls([mock.call('foo', '_run', date=_now)])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_called_once_with()
+        self.mock_now.assert_called_once_with()
         self.mock_log.assert_not_called()
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['foo'].date, _then)
 
-    @mock.patch('core.fairylab.fairylab.delta')
-    def test_home__with_valid_input(self, mock_delta):
-        mock_delta.side_effect = ['15m ago', '2m ago', '1d ago']
+    @mock.patch('core.fairylab.fairylab.timestamp')
+    def test_home__with_valid_input(self, mock_timestamp):
+        mock_timestamp.return_value = '1985-10-31 06:02:30 PST'
 
         program = self.create_program(registered=_registered)
         ret = program._home(date=_now)
@@ -650,56 +682,27 @@ class FairylabTest(Test):
             href='/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
-            ts='15m ago')
+            ts='1985-10-31 06:02:30 PST')
         foo = card(
             href='/foo/',
             title='foo',
             info='Description of foo.',
-            ts='2m ago')
+            ts='1985-10-31 06:02:30 PST')
         git = card(
             href='/foo/',
             title='git',
             info='Description of foo.',
-            ts='1d ago')
-        breadcrumbs = [{'href': '', 'name': 'Home'}]
+            ts='1985-10-31 06:02:30 PST')
+        breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
         expected = {
             'breadcrumbs': breadcrumbs,
             'registered': [dashboard, foo, git],
         }
         self.assertEqual(ret, expected)
 
-    @mock.patch('core.fairylab.fairylab.delta')
-    def test_home__with_success(self, mock_delta):
-        mock_delta.side_effect = ['15m ago', '0s ago', '1d ago']
-
-        program = self.create_program(registered=_registered)
-        ret = program._home(date=_then)
-        dashboard = card(
-            href='/dashboard/',
-            title='dashboard',
-            info='Tails exceptions and log messages.',
-            ts='15m ago')
-        foo = card(
-            href='/foo/',
-            title='foo',
-            info='Description of foo.',
-            ts='0s ago',
-            success='just now')
-        git = card(
-            href='/foo/',
-            title='git',
-            info='Description of foo.',
-            ts='1d ago')
-        breadcrumbs = [{'href': '', 'name': 'Home'}]
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'registered': [dashboard, foo, git],
-        }
-        self.assertEqual(ret, expected)
-
-    @mock.patch('core.fairylab.fairylab.delta')
-    def test_home__with_danger(self, mock_delta):
-        mock_delta.side_effect = ['15m ago', '2h ago', '1d ago']
+    @mock.patch('core.fairylab.fairylab.timestamp')
+    def test_home__with_danger(self, mock_timestamp):
+        mock_timestamp.return_value = '1985-10-31 06:02:30 PST'
 
         program = self.create_program(registered=_registered)
         program.registered['foo'].ok = False
@@ -708,19 +711,19 @@ class FairylabTest(Test):
             href='/dashboard/',
             title='dashboard',
             info='Tails exceptions and log messages.',
-            ts='15m ago')
+            ts='1985-10-31 06:02:30 PST')
         foo = card(
             href='/foo/',
             title='foo',
             info='Description of foo.',
-            ts='2h ago',
-            danger='error')
+            ts='1985-10-31 06:02:30 PST',
+            danger='disabled')
         git = card(
             href='/foo/',
             title='git',
             info='Description of foo.',
-            ts='1d ago')
-        breadcrumbs = [{'href': '', 'name': 'Home'}]
+            ts='1985-10-31 06:02:30 PST')
+        breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
         expected = {
             'breadcrumbs': breadcrumbs,
             'registered': [dashboard, foo, git],
@@ -753,7 +756,7 @@ class FairylabTest(Test):
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_called_once_with(logging.INFO, 'Reloaded foo.')
         self.assertEqual(program.registered['dashboard'].date, _then)
         self.assertEqual(program.registered['dashboard'].ok, True)
@@ -780,7 +783,7 @@ class FairylabTest(Test):
                                          **dict(kwargs))
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_called_once_with(
             logging.ERROR, 'Disabled foo.', exc_info=True)
         self.assertEqual(program.registered['dashboard'].date, _then)
@@ -796,7 +799,7 @@ class FairylabTest(Test):
         mock_execv.assert_called_once_with(sys.executable, expected)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_called_once_with(logging.DEBUG,
                                               'Rebooting fairylab.')
 
@@ -806,7 +809,7 @@ class FairylabTest(Test):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-        self.mock_datetime.datetime.now.assert_not_called()
+        self.mock_now.assert_not_called()
         self.mock_log.assert_called_once_with(logging.DEBUG,
                                               'Shutting down fairylab.')
         self.assertFalse(program.keep_running)

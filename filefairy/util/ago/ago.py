@@ -39,3 +39,7 @@ def elapsed(then, now):
     hm.append('{}m'.format(m))
 
     return ' '.join(hm)
+
+
+def timestamp(date):
+    return date.strftime('%H:%M:%S %Z (%Y-%m-%d)')

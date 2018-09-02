@@ -16,10 +16,11 @@ from core.notify.notify import Notify  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from core.response.response import Response  # noqa
-from util.ago.ago import delta  # noqa
 from util.ago.ago import elapsed  # noqa
+from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.file_.file_ import ping  # noqa
@@ -39,6 +40,8 @@ _date_pattern = '(\w+\s\d+\s\d+:\d+)'
 _name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 _server = server()
+_td10 = datetime.timedelta(minutes=10)
+_td20 = datetime.timedelta(minutes=20)
 
 
 class Leaguefile(Registrable):
@@ -74,44 +77,58 @@ class Leaguefile(Registrable):
         notify = Notify.BASE
         response = Response()
 
+        render = False
+        now = encode_datetime(kwargs['date'])
+
         if data['download'] and data['upload']:
+            td = _td10
             download, upload = data['download'], data['upload']
             size, date, name, fp = self._check_download()
             if fp:
                 if download.get('size', 0) != size:
                     end = self._encode(kwargs['date'])
-                    now = encode_datetime(kwargs['date'])
                     download.update({'size': size, 'end': end, 'now': now})
             elif upload['size'] == size:
+                render = True
                 data['completed'].insert(0, self._completed(download, upload))
                 if len(data['completed']) > 10:
                     data['completed'] = data['completed'][:10]
                 data['download'], data['upload'] = None, None
         else:
+            td = _td20
             for size, date, name, fp in self._check_upload():
+                ddate = self._decode(date, kwargs['date'])
                 if '.filepart' in name:
                     if not data['upload']:
+                        render = True
                         data['upload'] = {'start': date}
                         self._chat('fairylab', 'Upload started.')
                         logger_.log(logging.INFO, 'Upload started.')
                         notify = Notify.LEAGUEFILE_START
                     if data['upload'].get('size') != size:
-                        now = encode_datetime(kwargs['date'])
                         u = {'size': size, 'end': date, 'now': now}
                         data['upload'].update(u)
+                        if data['stalled']:
+                            render = True
+                            data['stalled'] = False
+                    elif ddate < kwargs['date'] - _td10:
+                        if not data['stalled']:
+                            render = True
+                            data['stalled'] = True
                 elif data['upload'] and not fp:
+                    render = True
                     upload = data['upload']
                     if upload.get('size', 0) != size:
-                        now = encode_datetime(kwargs['date'])
                         upload.update({'size': size, 'date': date, 'now': now})
-                        self._file_is_up()
+                        self._file_is_up(**kwargs)
                         notify = Notify.LEAGUEFILE_FINISH
                     response = self.download(**kwargs)
 
         if data != original:
             self.write()
 
-        if data != original or data['upload']:
+        if render or decode_datetime(data['date']) < kwargs['date'] - td:
+            data['date'] = now
             response.append_notify(notify)
             self._render(**kwargs)
 
@@ -209,16 +226,17 @@ class Leaguefile(Registrable):
         }
 
     @staticmethod
-    def _decode(date):
-        return datetime.datetime.strptime(date, '%b %d %H:%M')
+    def _decode(date, n):
+        d = datetime.datetime.strptime(date, '%b %d %H:%M')
+        return datetime_datetime(n.year, d.month, d.day, d.hour, d.minute)
 
     @staticmethod
     def _encode(date):
         return date.strftime('%b %d %H:%M')
 
     @staticmethod
-    def _seconds(then, now):
-        diff = Leaguefile._decode(now) - Leaguefile._decode(then)
+    def _seconds(then, now, n):
+        diff = Leaguefile._decode(now, n) - Leaguefile._decode(then, n)
         return diff.total_seconds()
 
     @staticmethod
@@ -230,8 +248,8 @@ class Leaguefile(Registrable):
         return '{:,}'.format(int(s))
 
     @staticmethod
-    def _time(s, e):
-        return elapsed(Leaguefile._decode(s), Leaguefile._decode(e))
+    def _time(s, e, n):
+        return elapsed(Leaguefile._decode(s, n), Leaguefile._decode(e, n))
 
     def download(self, **kwargs):
         data = self.data
@@ -289,7 +307,7 @@ class Leaguefile(Registrable):
         return Response(
             task=[Task(target='_download_internal', kwargs=kwargs)])
 
-    def _file_is_up(self):
+    def _file_is_up(self, **kwargs):
         obj = self._chat('fairylab', 'File is up.')
         logger_.log(logging.INFO, 'File is up.')
         channel = obj.get('channel')
@@ -298,12 +316,12 @@ class Leaguefile(Registrable):
         if channel and ts:
             max_, min_ = 0, 0
             for c in self.data['completed']:
-                seconds = self._seconds(c['ustart'], c['uend'])
+                seconds = self._seconds(c['ustart'], c['uend'], kwargs['date'])
                 if not max_ or max_ < seconds:
                     max_ = seconds
                 if not min_ or min_ > seconds:
                     min_ = seconds
-            seconds = self._seconds(upload['start'], upload['end'])
+            seconds = self._seconds(upload['start'], upload['end'], kwargs['date'])
             if seconds < min_:
                 reactions_add('zap', channel, ts)
             elif seconds > max_:
@@ -314,7 +332,7 @@ class Leaguefile(Registrable):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
-                'name': 'Home'
+                'name': 'Fairylab'
             }, {
                 'href': '',
                 'name': 'Leaguefile'
@@ -324,33 +342,31 @@ class Leaguefile(Registrable):
         ret['upload'] = None
         if data['upload']:
             upload = data['upload']
-            time = self._time(upload['start'], upload['end'])
-            ts = delta(decode_datetime(upload['now']), kwargs['date'])
+            time = self._time(upload['start'], upload['end'], kwargs['date'])
+            ts = timestamp(decode_datetime(upload['now']))
             if data['download']:
                 success, danger = 'completed', ''
             else:
-                success = 'ongoing' if 's' in ts else ''
-                danger = 'stalled' if 's' not in ts else ''
+                success = 'ongoing' if not data['stalled'] else ''
+                danger = 'stalled' if data['stalled'] else ''
             ret['upload'] = self._card(upload['start'], time, upload['size'],
                                        ts, success, danger)
 
         ret['download'] = None
         if data['download'] and data['download'].get('end'):
             download = data['download']
-            time = self._time(download['start'], download['end'])
-            ts = delta(decode_datetime(download['now']), kwargs['date'])
-            success = 'ongoing' if 's' in ts else ''
-            danger = 'stalled' if 's' not in ts else ''
+            time = self._time(download['start'], download['end'], kwargs['date'])
+            ts = timestamp(decode_datetime(download['now']))
             ret['download'] = self._card(upload['start'], time,
-                                         download['size'], ts, success, danger)
+                                         download['size'], ts, 'ongoing', '')
 
         body = []
         for c in data['completed']:
             utime, dtime = '-', '-'
             if c['ustart'] and c['uend']:
-                utime = self._time(c['ustart'], c['uend'])
+                utime = self._time(c['ustart'], c['uend'], kwargs['date'])
             if c['dstart'] and c['dend']:
-                dtime = self._time(c['dstart'], c['dend'])
+                dtime = self._time(c['dstart'], c['dend'], kwargs['date'])
             body.append([
                 self._filedate(c['date']), utime, dtime,
                 self._size(c['size'])

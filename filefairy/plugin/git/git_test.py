@@ -581,7 +581,7 @@ class GitTest(unittest.TestCase):
         actual = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Git'
@@ -600,7 +600,7 @@ class GitTest(unittest.TestCase):
         actual = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Git'
@@ -627,7 +627,7 @@ class GitTest(unittest.TestCase):
         actual = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Git'

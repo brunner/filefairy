@@ -3,10 +3,10 @@
 
 
 _breadcrumbs = [{
-    'href': '/fairylab/',
-    'name': 'Home'
+    'href': '/',
+    'name': 'Fairylab'
 }, {
-    'href': '/fairylab/gameday/',
+    'href': '/gameday/',
     'name': 'Gameday'
 }, {
     'href': '',

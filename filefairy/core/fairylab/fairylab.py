@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
+import copy
 import json
 import importlib
 import logging
@@ -25,8 +25,10 @@ from core.dashboard.dashboard import LoggingHandler  # noqa
 from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
-from util.ago.ago import delta  # noqa
+from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
+from util.datetime_.datetime_ import datetime_now  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.slack.slack import rtm_connect  # noqa
 
@@ -42,8 +44,9 @@ class Fairylab(Messageable, Renderable):
         self.day = None
         self.keep_running = True
         self.lock = threading.Lock()
+        self.original = copy.deepcopy(self.data)
         self.registered = {'dashboard': d}
-        self.sleep = 300
+        self.sleep = 60
         self.tasks = []
         self.ws = None
 
@@ -105,10 +108,11 @@ class Fairylab(Messageable, Renderable):
         if not item or not callable(item):
             return
 
-        date = kwargs.get('date') or datetime.datetime.now()
+        date = kwargs.get('date') or datetime_now()
         try:
             response = item(*args, **dict(kwargs, date=date))
             if response.notify:
+                self.data['date'] = encode_datetime(date)
                 self.registered[p].date = date
             for n in response.notify:
                 if n != Notify.BASE:
@@ -136,7 +140,7 @@ class Fairylab(Messageable, Renderable):
 
     def _recv(self, message):
         with self.lock:
-            date = datetime.datetime.now()
+            date = datetime_now()
             obj = json.loads(message)
             self._on_message(obj=obj, date=date)
             self._try_all('_on_message', obj=obj, date=date)
@@ -165,17 +169,19 @@ class Fairylab(Messageable, Renderable):
                 self._connect()
 
             with self.lock:
-                date = datetime.datetime.now()
+                date = datetime_now()
                 self._try_all('_run', date=date)
 
                 if self.day != date.day:
                     self.day = date.day
                     self._try_all('_notify', notify=Notify.FAIRYLAB_DAY)
 
-                self._render(date=date)
-
-                if 'git' in self.registered.keys():
-                    self._try('git', '_notify', notify=Notify.FAIRYLAB_DEPLOY)
+                if self.data != self.original:
+                    self._render(date=date)
+                    if 'git' in self.registered.keys():
+                        self._try(
+                            'git', '_notify', notify=Notify.FAIRYLAB_DEPLOY)
+                    self.original = copy.deepcopy(self.data)
 
             time.sleep(self.sleep)
 
@@ -186,12 +192,11 @@ class Fairylab(Messageable, Renderable):
         ret = {
             'breadcrumbs': [{
                 'href': '',
-                'name': 'Home'
+                'name': 'Fairylab'
             }],
             'registered': [],
         }
 
-        date = kwargs['date']
         ps = sorted(self.registered.keys())
         for p in ps:
             instance = self.registered.get(p, None)
@@ -204,19 +209,12 @@ class Fairylab(Messageable, Renderable):
             if renderable:
                 href = instance._href()
 
-            ts, success, danger = '', '', ''
+            ts, danger = '', ''
             if isinstance(instance, Registrable):
-                ts = delta(instance.date, date)
-                success = 'just now' if 's' in ts else ''
-                danger = 'error' if not instance.ok else ''
+                ts = timestamp(instance.date)
+                danger = 'disabled' if not instance.ok else ''
 
-            c = card(
-                href=href,
-                title=p,
-                info=info,
-                ts=ts,
-                success=success,
-                danger=danger)
+            c = card(href=href, title=p, info=info, ts=ts, danger=danger)
             ret['registered'].append(c)
 
         return ret
@@ -276,7 +274,7 @@ class Fairylab(Messageable, Renderable):
 
 
 if __name__ == '__main__':
-    date = datetime.datetime.now()
+    date = datetime_now()
     env_ = env()
     dashboard = Dashboard(date=date, e=env_)
 

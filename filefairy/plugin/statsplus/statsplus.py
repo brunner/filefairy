@@ -17,6 +17,7 @@ from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
@@ -109,7 +110,8 @@ class Statsplus(Registrable):
         if not date:
             return response
 
-        ddate = datetime.datetime.strptime(date[0], '%m/%d/%Y')
+        d = datetime.datetime.strptime(date[0], '%m/%d/%Y')
+        ddate = datetime_datetime(d.year, d.month, d.day)
         edate = encode_datetime(ddate)
         ndate = decode_datetime(self.shadow.get('leaguefile.now', edate))
         if ddate < ndate:
@@ -235,7 +237,7 @@ class Statsplus(Registrable):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
-                'name': 'Home'
+                'name': 'Fairylab'
             }, {
                 'href': '',
                 'name': 'Statsplus'

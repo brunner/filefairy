@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
 import os
 import re
 import sys
@@ -20,6 +19,7 @@ from plugin.snacks.snacks import _snacklist  # noqa
 from plugin.snacks.snacks import _wafflelist  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -35,20 +35,20 @@ _members_bot = {
     'U5678': '100.456',
     'U3ULC7DBP': '1000.789'
 }
-_now = datetime.datetime(1985, 10, 27, 0, 0, 0)
-_now_encoded = '1985-10-27T00:00:00'
-_then = datetime.datetime(1985, 10, 26, 0, 2, 30)
-_then_encoded = '1985-10-26T00:02:30'
+_now = datetime_datetime(1985, 10, 27, 0, 0, 0)
+_now_encoded = '1985-10-27T00:00:00-04:00'
+_then = datetime_datetime(1985, 10, 26, 0, 2, 30)
+_then_encoded = '1985-10-26T00:02:30-04:00'
 
 
-def _data(count=None, last=None, members=None):
+def _data(count=None, date=_then_encoded, last=None, members=None):
     if count is None:
         count = {}
     if last is None:
         last = {}
     if members is None:
         members = {}
-    return {'count': count, 'last': last, 'members': members}
+    return {'count': count, 'date': date, 'last': last, 'members': members}
 
 
 class SnacksTest(Test):
@@ -158,7 +158,7 @@ class SnacksTest(Test):
         }
         plugin = self.create_plugin(_data(members=_members_old))
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         calls = [mock.call(_chooselist + _wafflelist), mock.call(['a', 'b'])]
@@ -203,7 +203,7 @@ class SnacksTest(Test):
         }
         plugin = self.create_plugin(_data(members=_members_old))
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
@@ -227,7 +227,7 @@ class SnacksTest(Test):
         }
         plugin = self.create_plugin(_data(members=_members_old))
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
@@ -253,7 +253,7 @@ class SnacksTest(Test):
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
@@ -280,7 +280,7 @@ class SnacksTest(Test):
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
@@ -306,7 +306,7 @@ class SnacksTest(Test):
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
@@ -333,7 +333,7 @@ class SnacksTest(Test):
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('<@U1234>', {}, 4, 8, 30)
@@ -359,7 +359,7 @@ class SnacksTest(Test):
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
@@ -379,7 +379,7 @@ class SnacksTest(Test):
         }
         plugin = self.create_plugin(_data(members=_members_old))
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
@@ -390,8 +390,10 @@ class SnacksTest(Test):
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Snacks, '_snacks')
+    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.pins_add')
-    def test_on_message__with_snack_me_text_pin(self, mock_pins, mock_snacks):
+    def test_on_message__with_snack_me_text_pin(self, mock_pins, mock_render,
+                                                mock_snacks):
         mock_snacks.return_value = ['a', 'star', 'b']
 
         obj = {
@@ -408,6 +410,7 @@ class SnacksTest(Test):
         last = {'a': _now_encoded, 'star': _now_encoded, 'b': _now_encoded}
         write = _data(count=count, last=last, members=_members_bot)
         mock_pins.assert_called_once_with('C9YE6NQG0', '1000.789')
+        mock_render.assert_called_once_with(date=_now, obj=obj)
         mock_snacks.assert_called_once_with()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -422,8 +425,10 @@ class SnacksTest(Test):
         self.mock_reactions.assert_has_calls(calls)
 
     @mock.patch.object(Snacks, '_snacks')
+    @mock.patch.object(Snacks, '_render')
     @mock.patch('plugin.snacks.snacks.pins_add')
-    def test_on_message__with_snack_me_text_star(self, mock_pins, mock_snacks):
+    def test_on_message__with_snack_me_text_star(self, mock_pins, mock_render,
+                                                 mock_snacks):
         mock_snacks.return_value = ['a', 'star', 'b']
 
         obj = {
@@ -440,6 +445,7 @@ class SnacksTest(Test):
         last = {'a': _now_encoded, 'star': _now_encoded, 'b': _now_encoded}
         write = _data(count=count, last=last, members=_members_new)
         mock_pins.assert_not_called()
+        mock_render.assert_called_once_with(date=_now, obj=obj)
         mock_snacks.assert_called_once_with()
         self.mock_open.assert_called_once_with(Snacks._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -468,7 +474,7 @@ class SnacksTest(Test):
         plugin = self.create_plugin(
             _data(members=_members_old), cfds=cfds, names=names)
         response = plugin._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(members=_members_new)
         calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
@@ -552,13 +558,11 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
-    def test_run(self, mock_render):
+    def test_run(self):
         plugin = self.create_plugin(_data(members=_members_old))
         response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -720,15 +724,13 @@ class SnacksTest(Test):
         self.mock_collect.assert_called_once_with('C1234')
         self.mock_reactions.assert_not_called()
 
-    maxDiff = None
-
     def test_home__with_empty(self):
         read = _data(members=_members_old)
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Snacks'
@@ -748,12 +750,15 @@ class SnacksTest(Test):
         actual = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Snacks'
         }]
-        servings = card(title='3', info='Total snacks served.', ts='0s ago')
+        servings = card(
+            title='3',
+            info='Total snacks served.',
+            ts='00:00:00 EDT (1985-10-27)')
         stars = card(title='0', info='Total stars awarded.', ts='never')
         trophies = card(title='0', info='Total trophies lifted.', ts='never')
         statistics = [servings, stars, trophies]
@@ -769,8 +774,9 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple', '0s ago'],
-                  ['\U0001f956', 'baguette bread', '23h ago']])
+            body=[['\U0001F34E', 'apple', '00:00:00 EDT (1985-10-27)'], [
+                '\U0001f956', 'baguette bread', '00:02:30 EDT (1985-10-26)'
+            ]])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -791,13 +797,19 @@ class SnacksTest(Test):
         actual = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Snacks'
         }]
-        servings = card(title='3', info='Total snacks served.', ts='0s ago')
-        stars = card(title='1', info='Total stars awarded.', ts='23h ago')
+        servings = card(
+            title='3',
+            info='Total snacks served.',
+            ts='00:00:00 EDT (1985-10-27)')
+        stars = card(
+            title='1',
+            info='Total stars awarded.',
+            ts='00:02:30 EDT (1985-10-26)')
         trophies = card(title='0', info='Total trophies lifted.', ts='never')
         statistics = [servings, stars, trophies]
         count = table(
@@ -813,9 +825,9 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple',
-                   '0s ago'], ['\U0001f956', 'baguette bread', '23h ago'],
-                  ['\u2B50', 'star', '23h ago']])
+            body=[['\U0001F34E', 'apple', '00:00:00 EDT (1985-10-27)'], [
+                '\U0001f956', 'baguette bread', '00:02:30 EDT (1985-10-26)'
+            ], ['\u2B50', 'star', '00:02:30 EDT (1985-10-26)']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -836,14 +848,23 @@ class SnacksTest(Test):
         actual = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Snacks'
         }]
-        servings = card(title='1', info='Total snacks served.', ts='0s ago')
-        stars = card(title='1', info='Total stars awarded.', ts='0s ago')
-        trophies = card(title='1', info='Total trophies lifted.', ts='0s ago')
+        servings = card(
+            title='1',
+            info='Total snacks served.',
+            ts='00:00:00 EDT (1985-10-27)')
+        stars = card(
+            title='1',
+            info='Total stars awarded.',
+            ts='00:00:00 EDT (1985-10-27)')
+        trophies = card(
+            title='1',
+            info='Total trophies lifted.',
+            ts='00:00:00 EDT (1985-10-27)')
         statistics = [servings, stars, trophies]
         count = table(
             clazz='border mt-3',
@@ -857,9 +878,9 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple',
-                   '0s ago'], ['\u2B50', 'star', '0s ago'],
-                  ['\U0001F3C6', 'trophy', '0s ago']])
+            body=[['\U0001F34E', 'apple', '00:00:00 EDT (1985-10-27)'],
+                  ['\u2B50', 'star', '00:00:00 EDT (1985-10-27)'],
+                  ['\U0001F3C6', 'trophy', '00:00:00 EDT (1985-10-27)']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,

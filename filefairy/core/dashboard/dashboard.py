@@ -15,10 +15,12 @@ from api.registrable.registrable import Registrable  # noqa
 from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
-from util.ago.ago import delta  # noqa
+from util.ago.ago import timestamp  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_now  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
@@ -71,18 +73,6 @@ class Dashboard(Registrable):
         return [(html, '', 'dashboard.html', _home)]
 
     def _run_internal(self, **kwargs):
-        found = False
-        for day in self.data['records']:
-            for r in self.data['records'][day]:
-                levelname = r['levelname']
-                if levelname == 'WARNING' and r['count'] < 5:
-                    continue
-                if levelname == 'ERROR' or levelname == 'WARNING':
-                    found = True
-
-        if found:
-            self._render(**dict(kwargs, log=False))
-
         return Response()
 
     def _setup_internal(self, **kwargs):
@@ -152,7 +142,7 @@ class Dashboard(Registrable):
         title = Dashboard._content(record)
         info = Dashboard._msg(record)
         code = record['exc']
-        ts = delta(decode_datetime(record['date']), date)
+        ts = timestamp(decode_datetime(record['date']))
         return card(href=href, title=title, info=info, code=code, ts=ts)
 
     @staticmethod
@@ -174,7 +164,7 @@ class Dashboard(Registrable):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
-                'name': 'Home'
+                'name': 'Fairylab'
             }, {
                 'href': '',
                 'name': 'Dashboard'
@@ -240,10 +230,10 @@ class Dashboard(Registrable):
                 files_upload(record['exc'], flog, 'testing')
 
     def _record(self, record):
-        date = datetime.datetime.now()
+        date = datetime_now()
         encoded_date = encode_datetime(date)
 
-        day = datetime.datetime(date.year, date.month, date.day)
+        day = datetime_datetime(date.year, date.month, date.day)
         encoded_day = encode_datetime(day)
         if encoded_day not in self.data['records']:
             self.data['records'][encoded_day] = []
@@ -276,7 +266,7 @@ class Dashboard(Registrable):
 
         date = kwargs['date']
         cut = date - datetime.timedelta(days=7)
-        cut = datetime.datetime(cut.year, cut.month, cut.day)
+        cut = datetime_datetime(cut.year, cut.month, cut.day)
 
         days = list(original['records'].keys())
         records = data['records']

@@ -13,6 +13,7 @@ _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.serializable.serializable import Serializable  # noqa
 from util.abc_.abc_ import abstractstatic  # noqa
+from util.ago.ago import timestamp  # noqa
 from util.slack.slack import chat_post_message  # noqa
 
 logger_ = logging.getLogger('fairylab')
@@ -47,7 +48,7 @@ class Renderable(Serializable):
         return chat_post_message(channel, text, attachments=attachments)
 
     def _render(self, **kwargs):
-        date = kwargs['date'].strftime('%Y-%m-%d %H:%M:%S') + ' PST'
+        date = timestamp(kwargs['date'])
         test = kwargs.get('test')
         log = kwargs.get('log', True)
 

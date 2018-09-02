@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
 import logging
 import os
 import re
@@ -17,6 +16,7 @@ from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from plugin.recap.recap import Recap  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -24,7 +24,7 @@ from util.test.test import main  # noqa
 
 _channel = 'C1234'
 _env = env()
-_now = datetime.datetime(1985, 10, 26, 0, 2, 30)
+_now = datetime_datetime(1985, 10, 26, 0, 2, 30)
 _standings = {'31': '75-85', '32': '76-85', '44': '70-91', '45': '96-64'}
 _ts = '123456789'
 
@@ -495,7 +495,7 @@ class RecapTest(Test):
         value = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
-            'name': 'Home'
+            'name': 'Fairylab'
         }, {
             'href': '',
             'name': 'Recap'

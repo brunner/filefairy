@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import copy
 import logging
 import os
 import re
@@ -11,7 +12,7 @@ sys.path.append(re.sub(r'/plugin/exports', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
-from util.ago.ago import delta  # noqa
+from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
@@ -77,11 +78,11 @@ class Exports(Registrable):
 
         data = self.data
         if data['locked']:
-            self._render(**kwargs)
             return response
 
         text = urlopen(_url).decode('utf-8')
         exports = self._exports(text)
+        original = copy.deepcopy(data)
 
         if not exports:
             return response
@@ -99,7 +100,9 @@ class Exports(Registrable):
             data['date'] = encode_datetime(kwargs['date'])
             self.write()
 
-        self._render(**kwargs)
+        if data != original:
+            self._render(**kwargs)
+
         return response
 
     def _render_internal(self, **kwargs):
@@ -141,7 +144,7 @@ class Exports(Registrable):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
-                'name': 'Home'
+                'name': 'Fairylab'
             }, {
                 'href': '',
                 'name': 'Exports'
@@ -153,7 +156,7 @@ class Exports(Registrable):
         breakdown = self._breakdown()
         status = 'Ongoing' if data['locked'] else 'Upcoming'
         info = '{0} sim contains {1}.'.format(status, breakdown)
-        ts = delta(decode_datetime(data['date']), kwargs['date'])
+        ts = timestamp(decode_datetime(data['date']))
         ret['live'] = card(title=title, info=info, table=self._table(), ts=ts)
 
         for division, teamids in divisions():

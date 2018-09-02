@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import copy
-import datetime
 import logging
 import os
 import re
@@ -21,6 +20,7 @@ from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -28,20 +28,20 @@ from util.test.test import main  # noqa
 
 _env = env()
 _exc = Exception('Disabled foo.')
-_now = datetime.datetime(1985, 10, 26, 20, 18, 45)
-_now_day = datetime.datetime(1985, 10, 26)
-_now_date_encoded = '1985-10-26T20:18:45'
-_soon = datetime.datetime(1985, 10, 26, 0, 2, 35)
-_soon_day = datetime.datetime(1985, 10, 26)
-_soon_date_encoded = '1985-10-26T00:02:35'
-_then = datetime.datetime(1985, 10, 26, 0, 2, 30)
-_then_day = datetime.datetime(1985, 10, 26)
-_then_date_encoded = '1985-10-26T00:02:30'
-_then_day_encoded = '1985-10-26T00:00:00'
-_yesterday = datetime.datetime(1985, 10, 25, 0, 2, 30)
-_yesterday_date_encoded = '1985-10-25T12:55:00'
-_yesterday_day_encoded = '1985-10-25T00:00:00'
-_cut_day_encoded = '1985-10-19T00:00:00'
+_now = datetime_datetime(1985, 10, 26, 20, 18, 45)
+_now_day = datetime_datetime(1985, 10, 26)
+_now_date_encoded = '1985-10-26T20:18:45-04:00'
+_soon = datetime_datetime(1985, 10, 26, 0, 2, 35)
+_soon_day = datetime_datetime(1985, 10, 26)
+_soon_date_encoded = '1985-10-26T00:02:35-04:00'
+_then = datetime_datetime(1985, 10, 26, 0, 2, 30)
+_then_day = datetime_datetime(1985, 10, 26)
+_then_date_encoded = '1985-10-26T00:02:30-04:00'
+_then_day_encoded = '1985-10-26T00:00:00-04:00'
+_yesterday = datetime_datetime(1985, 10, 25, 0, 2, 30)
+_yesterday_date_encoded = '1985-10-25T12:55:00-04:00'
+_yesterday_day_encoded = '1985-10-25T00:00:00-04:00'
+_cut_day_encoded = '1985-10-19T00:00:00-04:00'
 _details = {'trace': 'Lorem ipsum'}
 _record_error = {
     'pathname': '/home/user/filefairy/path/to/file.py',
@@ -68,7 +68,7 @@ _cols = ['', ' class="text-right w-75p"']
 _link = 'https://github.com/brunner/orangeandblueleague/blob/master/filefairy/'
 _breadcrumbs = [{
     'href': '/',
-    'name': 'Home'
+    'name': 'Fairylab'
 }, {
     'href': '',
     'name': 'Dashboard'
@@ -79,7 +79,7 @@ _exceptions = [
         title='file.py#L123',
         info='Disabled foo.',
         code='Traceback [foo] ...',
-        ts='1d ago')
+        ts='12:55:00 EDT (1985-10-25)')
 ]
 _warnings = [
     card(
@@ -87,7 +87,7 @@ _warnings = [
         title='file.py#L789',
         info='baz (x6).',
         code='Traceback [baz] ...',
-        ts='20h ago')
+        ts='00:02:30 EDT (1985-10-26)')
 ]
 _logs = [
     table(
@@ -96,8 +96,8 @@ _logs = [
         bcols=_cols,
         head=['Saturday, October 26th, 1985', ''],
         body=[[
-            '<div class="d-inline-block pr-1">' +
-            anchor(_link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
+            '<div class="d-inline-block pr-1">' + anchor(
+                _link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
             '<div class="d-inline-block">baz (x6).</div>', '00:02'
         ]]),
     table(
@@ -106,12 +106,12 @@ _logs = [
         bcols=_cols,
         head=['Friday, October 25th, 1985', ''],
         body=[[
-            '<div class="d-inline-block pr-1">' +
-            anchor(_link + 'path/to/file.py#L456', 'file.py#L456') + '</div>' +
+            '<div class="d-inline-block pr-1">' + anchor(
+                _link + 'path/to/file.py#L456', 'file.py#L456') + '</div>' +
             '<div class="d-inline-block">bar (x5).</div>', '12:55'
         ], [
-            '<div class="d-inline-block pr-1">' +
-            anchor(_link + 'path/to/file.py#L123', 'file.py#L123') + '</div>' +
+            '<div class="d-inline-block pr-1">' + anchor(
+                _link + 'path/to/file.py#L123', 'file.py#L123') + '</div>' +
             '<div class="d-inline-block">Disabled foo.</div>', '12:55'
         ]])
 ]
@@ -251,51 +251,13 @@ class DashboardTest(Test):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(Dashboard, '_render')
-    def test_run__with_error(self, mock_render):
+    def test_run(self):
         record = dict(_record_error, count=1, date=_then_date_encoded)
         read = {'records': {_then_day_encoded: [record]}}
         dashboard = self.create_dashboard(read)
         response = dashboard._run_internal(date=_now)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_now, log=False)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-
-    @mock.patch.object(Dashboard, '_render')
-    def test_run__with_info(self, mock_render):
-        record = dict(_record_info, count=1, date=_then_date_encoded)
-        read = {'records': {_then_day_encoded: [record]}}
-        dashboard = self.create_dashboard(read)
-        response = dashboard._run_internal(date=_now)
-        self.assertEqual(response, Response())
-
-        mock_render.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-
-    @mock.patch.object(Dashboard, '_render')
-    def test_run__with_warning_once(self, mock_render):
-        record = dict(_record_warning, count=1, date=_then_date_encoded)
-        read = {'records': {_then_day_encoded: [record]}}
-        dashboard = self.create_dashboard(read)
-        response = dashboard._run_internal(date=_now)
-        self.assertEqual(response, Response())
-
-        mock_render.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-
-    @mock.patch.object(Dashboard, '_render')
-    def test_run__with_warning_repeated(self, mock_render):
-        record = dict(_record_warning, count=5, date=_then_date_encoded)
-        read = {'records': {_then_day_encoded: [record]}}
-        dashboard = self.create_dashboard(read)
-        response = dashboard._run_internal(date=_now)
-        self.assertEqual(response, Response())
-
-        mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -545,10 +507,11 @@ class DashboardTest(Test):
         self.mock_handle.write.assert_not_called()
 
     @mock.patch.object(Dashboard, '_render')
-    @mock.patch('core.dashboard.dashboard.datetime')
-    def test_record__with_error(self, mock_datetime, mock_render):
-        mock_datetime.datetime.return_value = _then_day
-        mock_datetime.datetime.now.return_value = _then
+    @mock.patch('core.dashboard.dashboard.datetime_now')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    def test_record__with_error(self, mock_datetime, mock_now, mock_render):
+        mock_datetime.return_value = _then_day
+        mock_now.return_value = _then
 
         dashboard = self.create_dashboard(_data())
         count = dashboard._record(copy.deepcopy(_record_error))
@@ -556,19 +519,20 @@ class DashboardTest(Test):
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = _data(records={_then_day_encoded: [record_new]})
-        mock_datetime.datetime.assert_called_once_with(_then.year, _then.month,
-                                                       _then.day)
-        mock_datetime.datetime.now.assert_called_once_with()
+        mock_datetime.assert_called_once_with(_then.year, _then.month,
+                                              _then.day)
+        mock_now.assert_called_once_with()
         mock_render.assert_called_once_with(date=_then, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _then)
 
     @mock.patch.object(Dashboard, '_render')
-    @mock.patch('core.dashboard.dashboard.datetime')
-    def test_record__with_warning(self, mock_datetime, mock_render):
-        mock_datetime.datetime.return_value = _then_day
-        mock_datetime.datetime.now.return_value = _then
+    @mock.patch('core.dashboard.dashboard.datetime_now')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    def test_record__with_warning(self, mock_datetime, mock_now, mock_render):
+        mock_datetime.return_value = _then_day
+        mock_now.return_value = _then
 
         dashboard = self.create_dashboard(_data())
         count = dashboard._record(copy.deepcopy(_record_warning))
@@ -576,19 +540,20 @@ class DashboardTest(Test):
 
         record_new = dict(_record_warning, count=1, date=_then_date_encoded)
         write = _data(records={_then_day_encoded: [record_new]})
-        mock_datetime.datetime.assert_called_once_with(_then.year, _then.month,
-                                                       _then.day)
-        mock_datetime.datetime.now.assert_called_once_with()
+        mock_datetime.assert_called_once_with(_then.year, _then.month,
+                                              _then.day)
+        mock_now.assert_called_once_with()
         mock_render.assert_not_called()
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _yesterday)
 
     @mock.patch.object(Dashboard, '_render')
-    @mock.patch('core.dashboard.dashboard.datetime')
-    def test_record__with_new(self, mock_datetime, mock_render):
-        mock_datetime.datetime.return_value = _then_day
-        mock_datetime.datetime.now.return_value = _then
+    @mock.patch('core.dashboard.dashboard.datetime_now')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    def test_record__with_new(self, mock_datetime, mock_now, mock_render):
+        mock_datetime.return_value = _then_day
+        mock_now.return_value = _then
 
         record_old = dict(_record_info, count=1, date=_then_date_encoded)
         read = _data(records={_then_day_encoded: [record_old]})
@@ -598,19 +563,20 @@ class DashboardTest(Test):
 
         record_new = dict(_record_error, count=1, date=_then_date_encoded)
         write = _data(records={_then_day_encoded: [record_old, record_new]})
-        mock_datetime.datetime.assert_called_once_with(_then.year, _then.month,
-                                                       _then.day)
-        mock_datetime.datetime.now.assert_called_once_with()
+        mock_datetime.assert_called_once_with(_then.year, _then.month,
+                                              _then.day)
+        mock_now.assert_called_once_with()
         mock_render.assert_called_once_with(date=_then, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _then)
 
     @mock.patch.object(Dashboard, '_render')
-    @mock.patch('core.dashboard.dashboard.datetime')
-    def test_record__with_old_now(self, mock_datetime, mock_render):
-        mock_datetime.datetime.return_value = _now_day
-        mock_datetime.datetime.now.return_value = _now
+    @mock.patch('core.dashboard.dashboard.datetime_now')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    def test_record__with_old_now(self, mock_datetime, mock_now, mock_render):
+        mock_datetime.return_value = _now_day
+        mock_now.return_value = _now
 
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = _data(records={_then_day_encoded: [record_old]})
@@ -620,19 +586,19 @@ class DashboardTest(Test):
 
         record_new = dict(_record_error, count=1, date=_now_date_encoded)
         write = {'records': {_then_day_encoded: [record_old, record_new]}}
-        mock_datetime.datetime.assert_called_once_with(_now.year, _now.month,
-                                                       _now.day)
-        mock_datetime.datetime.now.assert_called_once_with()
+        mock_datetime.assert_called_once_with(_now.year, _now.month, _now.day)
+        mock_now.assert_called_once_with()
         mock_render.assert_called_once_with(date=_now, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertEqual(dashboard.date, _now)
 
     @mock.patch.object(Dashboard, '_render')
-    @mock.patch('core.dashboard.dashboard.datetime')
-    def test_record__with_old_soon(self, mock_datetime, mock_render):
-        mock_datetime.datetime.return_value = _soon_day
-        mock_datetime.datetime.now.return_value = _soon
+    @mock.patch('core.dashboard.dashboard.datetime_now')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    def test_record__with_old_soon(self, mock_datetime, mock_now, mock_render):
+        mock_datetime.return_value = _soon_day
+        mock_now.return_value = _soon
 
         record_old = dict(_record_error, count=1, date=_then_date_encoded)
         read = _data(records={_then_day_encoded: [record_old]})
@@ -642,9 +608,9 @@ class DashboardTest(Test):
 
         record_soon = dict(_record_error, count=2, date=_soon_date_encoded)
         write = _data(records={_then_day_encoded: [record_soon]})
-        mock_datetime.datetime.assert_called_once_with(_soon.year, _soon.month,
-                                                       _soon.day)
-        mock_datetime.datetime.now.assert_called_once_with()
+        mock_datetime.assert_called_once_with(_soon.year, _soon.month,
+                                              _soon.day)
+        mock_now.assert_called_once_with()
         mock_render.assert_called_once_with(date=_soon, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -685,9 +651,8 @@ class DashboardTest(Test):
     def test_retire__with_warning(self, mock_render):
         record_info = dict(_record_info, count=1, date=_then_day_encoded)
         record_warning = dict(_record_warning, count=1, date=_then_day_encoded)
-        read = _data(records={
-            _then_day_encoded: [record_info, record_warning]
-        })
+        read = _data(
+            records={_then_day_encoded: [record_info, record_warning]})
         dashboard = self.create_dashboard(read)
         dashboard._retire(date=_now)
 

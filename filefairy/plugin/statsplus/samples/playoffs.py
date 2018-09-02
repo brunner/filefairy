@@ -26,8 +26,8 @@ context = {
     'title':
     'statsplus',
     'breadcrumbs': [{
-        'href': '/fairylab/',
-        'name': 'Home'
+        'href': '/',
+        'name': 'Fairylab'
     }, {
         'href': '',
         'name': 'Statsplus'

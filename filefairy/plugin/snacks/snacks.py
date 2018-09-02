@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import copy
+import datetime
 import os
 import random
 import re
@@ -14,7 +15,7 @@ from api.registrable.registrable import Registrable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.task.task import Task  # noqa
-from util.ago.ago import delta  # noqa
+from util.ago.ago import timestamp  # noqa
 from util.corpus.corpus import collect  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
@@ -31,6 +32,7 @@ from util.slack.slack import users_list  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
 _n = 4
+_td20 = datetime.timedelta(minutes=20)
 
 _chooselist = [
     '{}. Did you even need to ask?',
@@ -224,7 +226,7 @@ class Snacks(Registrable):
                                    lambda x: x.groups()[0].upper(),
                                    statement.format(choice), 1)
                     chat_post_message(channel, reply)
-                    response.notify = [Notify.BASE]
+                    data['members'][user] = ts
 
             match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
             if match:
@@ -234,7 +236,7 @@ class Snacks(Registrable):
                 if not reply:
                     reply = 'I don\'t know anything about ' + match[0] + '.'
                 chat_post_message(channel, reply)
-                response.notify = [Notify.BASE]
+                data['members'][user] = ts
 
             match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)>$', text)
             if match:
@@ -246,7 +248,7 @@ class Snacks(Registrable):
                 if not reply:
                     reply = '<@' + match[0] + '> doesn\'t know anything.'
                 chat_post_message(channel, reply)
-                response.notify = [Notify.BASE]
+                data['members'][user] = ts
 
             match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$', text)
             if match:
@@ -260,12 +262,12 @@ class Snacks(Registrable):
                     reply = '<@' + target + '> doesn\'t know anything ' \
                             'about ' + topic + '.'
                 chat_post_message(channel, reply)
-                response.notify = [Notify.BASE]
+                data['members'][user] = ts
 
             match = re.findall('^<@U3ULC7DBP> say (.+)$', text)
             if match:
                 chat_post_message(channel, match[0])
-                response.notify = [Notify.BASE]
+                data['members'][user] = ts
 
             if text == '<@U3ULC7DBP> snack me':
                 edate = encode_datetime(kwargs['date'])
@@ -276,6 +278,7 @@ class Snacks(Registrable):
                     c = data['count'].get(snack, 0) + 1
                     data['count'][snack] = c
                     data['last'][snack] = edate
+                data['members'][user] = ts
                 response.notify = [Notify.BASE]
 
             match = re.findall('^<@U3ULC7DBP> who .+$', text)
@@ -284,15 +287,18 @@ class Snacks(Registrable):
                 choice = random.choice(self.names)
                 reply = statement.format(choice)
                 chat_post_message(channel, reply)
-                response.notify = [Notify.BASE]
-
-        if response.notify:
-            data['members'][user] = ts
+                data['members'][user] = ts
 
         if data != original:
             self.write()
 
-        return response
+        ddate = decode_datetime(self.data['date'])
+        if response.notify and ddate < kwargs['date'] - _td20:
+            self.data['date'] = encode_datetime(kwargs['date'])
+            self._render(**kwargs)
+            return response
+
+        return Response()
 
     def _render_internal(self, **kwargs):
         html = 'snacks/index.html'
@@ -300,7 +306,6 @@ class Snacks(Registrable):
         return [(html, '', 'snacks.html', _home)]
 
     def _run_internal(self, **kwargs):
-        self._render(**kwargs)
         return Response()
 
     def _setup_internal(self, **kwargs):
@@ -372,7 +377,7 @@ class Snacks(Registrable):
             body.append([
                 _snackdict[snack],
                 snack.replace('_', ' '),
-                self._ts(last[snack], now)
+                self._ts(last[snack])
             ])
             if len(body) == 15:
                 break
@@ -402,7 +407,7 @@ class Snacks(Registrable):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
-                'name': 'Home'
+                'name': 'Fairylab'
             }, {
                 'href': '',
                 'name': 'Snacks'
@@ -412,17 +417,17 @@ class Snacks(Registrable):
         date = kwargs['date']
 
         count, last = self._servings()
-        ts = self._ts(last, date)
+        ts = self._ts(last)
         servings = card(title=str(count), info='Total snacks served.', ts=ts)
 
         count = data['count'].get('star', 0)
         last = data['last'].get('star', '')
-        ts = self._ts(last, date)
+        ts = self._ts(last)
         stars = card(title=str(count), info='Total stars awarded.', ts=ts)
 
         count = data['count'].get('trophy', 0)
         last = data['last'].get('trophy', '')
-        ts = self._ts(last, date)
+        ts = self._ts(last)
         trophies = card(title=str(count), info='Total trophies lifted.', ts=ts)
 
         ret['statistics'] = [servings, stars, trophies]
@@ -477,7 +482,7 @@ class Snacks(Registrable):
                 last = data['last'][snack]
         return count // 3, last
 
-    def _ts(self, then, now):
+    def _ts(self, then):
         if then:
-            return delta(decode_datetime(then), now)
+            return timestamp(decode_datetime(then))
         return 'never'

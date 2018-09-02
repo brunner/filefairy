@@ -84,8 +84,8 @@ _w48 = [logo_absolute('48', 'New York', 'left'), '88', '74', '+2.0', 'X']
 _w56 = [logo_absolute('56', 'St. Louis', 'left'), '89', '73', '-', 'X']
 
 _breadcrumbs = [{
-    'href': '/fairylab/',
-    'name': 'Home'
+    'href': '/',
+    'name': 'Fairylab'
 }, {
     'href': '',
     'name': 'Statsplus'

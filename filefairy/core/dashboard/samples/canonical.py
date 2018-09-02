@@ -13,8 +13,8 @@ from util.component.component import card  # noqa
 from util.component.component import table  # noqa
 
 _breadcrumbs = [{
-    'href': '/fairylab/',
-    'name': 'Home'
+    'href': '/',
+    'name': 'Fairylab'
 }, {
     'href': '',
     'name': 'Dashboard'
@@ -35,7 +35,7 @@ _etrace = """Traceback (most recent call last):
 FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/orangeandblueleague/filefairy3/resource/corpus'
 """
 _exceptions = [
-    card(href=_ehref, title=_etitle, info=_einfo, code=_etrace, ts='43m ago')
+    card(href=_ehref, title=_etitle, info=_einfo, code=_etrace, ts='06:02:30 EDT (1985-10-26)')
 ]
 
 _whref = _link + 'util/subprocess_/subprocess_.py#L19'
@@ -49,7 +49,7 @@ _wtrace = """Traceback (most recent call last):
 subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' returned non-zero exit status 255
 """
 _warnings = [
-    card(href=_whref, title=_wtitle, info=_winfo, code=_wtrace, ts='3h ago')
+    card(href=_whref, title=_wtitle, info=_winfo, code=_wtrace, ts='06:02:30 EDT (1985-10-26)')
 ]
 
 _dlink = _link + 'core/fairylab/fairylab.py#L127'

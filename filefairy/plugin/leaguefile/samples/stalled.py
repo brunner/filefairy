@@ -12,8 +12,8 @@ from util.component.component import card  # noqa
 from util.component.component import table  # noqa
 
 _breadcrumbs = [{
-    'href': '/fairylab/',
-    'name': 'Home'
+    'href': '/',
+    'name': 'Fairylab'
 }, {
     'href': '',
     'name': 'Leaguefile'
@@ -25,7 +25,11 @@ _table = table(
     hcols=_ucols,
     bcols=_ucols,
     body=[['Time: ', '1h 8m'], ['Size: ', '59,969,530']])
-_upload = card(title='Mar 10', table=_table, ts='12m ago', danger='stalled')
+_upload = card(
+    title='Mar 10',
+    table=_table,
+    ts='06:02:30 EDT (1985-10-26)',
+    danger='stalled')
 
 _ccols = [
     '', ' class="text-center"', ' class="text-center"', ' class="text-right"'

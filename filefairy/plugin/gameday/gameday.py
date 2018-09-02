@@ -66,7 +66,7 @@ class Gameday(Registrable):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
-                'name': 'Home'
+                'name': 'Fairylab'
             }, {
                 'href': '/gameday/',
                 'name': 'Gameday'

@@ -11,8 +11,8 @@ sys.path.append(_root)
 from util.component.component import table  # noqa
 
 _breadcrumbs = [{
-    'href': '/fairylab/',
-    'name': 'Home'
+    'href': '/',
+    'name': 'Fairylab'
 }, {
     'href': '',
     'name': 'Leaguefile'

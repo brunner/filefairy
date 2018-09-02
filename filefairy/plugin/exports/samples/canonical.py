@@ -45,8 +45,8 @@ _t59 = [logo_absolute('59', 'Toronto', 'left'), '9 - 1', 'W4']
 _t60 = [logo_absolute('60', 'Washington', 'left'), '5 - 5', 'L1']
 
 _breadcrumbs = [{
-    'href': '/fairylab/',
-    'name': 'Home'
+    'href': '/',
+    'name': 'Fairylab'
 }, {
     'href': '',
     'name': 'Exports'
@@ -89,7 +89,8 @@ _breakdown = [
     span(['text-secondary'], '0 ai')
 ]
 _info = 'Upcoming sim contains ' + ', '.join(_breakdown) + '.'
-_live = card(title='53%', info=_info, table=_table, ts='30s ago')
+_live = card(
+    title='53%', info=_info, table=_table, ts='06:02:30 EDT (1985-10-26)')
 
 _scols = [
     'class="position-relative"', ' class="text-center w-25"',

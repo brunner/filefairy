@@ -9,6 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/news', '', _path)
 sys.path.append(_root)
+from util.datetime_.datetime_ import datetime_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
 
 _box_here = os.path.join(_root, 'resource/download/news/html/box_scores')
@@ -43,7 +44,8 @@ def box_scores(then):
         if not match:
             continue
 
-        date = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+        d = datetime.datetime.strptime(match[0], '%m/%d/%Y')
+        date = datetime_datetime(d.year, d.month, d.day)
         if date < then:
             continue
 
@@ -77,7 +79,8 @@ def leagues(then):
         with open(there_fname, 'w') as f:
             match = re.findall('\d{8}\t[^\n]+\n', read.strip() + '\n')
             for m in match:
-                date = datetime.datetime.strptime(m[:8], '%Y%m%d')
+                d = datetime.datetime.strptime(m[:8], '%Y%m%d')
+                date = datetime_datetime(d.year, d.month, d.day)
                 if date < then:
                     continue
                 elif date > now:
