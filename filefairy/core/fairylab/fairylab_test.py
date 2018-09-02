@@ -94,7 +94,8 @@ _then = datetime.datetime(1985, 10, 25, 0, 0, 0)
 _dashboard = Dashboard(date=_then, e=_env)
 _registered = {
     'dashboard': _dashboard,
-    'foo': FakeRegistrable(date=_then, e=_env)
+    'foo': FakeRegistrable(date=_then, e=_env),
+    'git': FakeRegistrable(date=_then, e=_env)
 }
 
 
@@ -189,8 +190,8 @@ class FairylabTest(Test):
         mock_listdir.assert_called_once_with(dir_plugin)
         mock_try.assert_has_calls([
             mock.call('dashboard', 'resolve', 'dashboard', date=_now),
-            mock.call('foo', '_setup', date=_now),
             mock.call('dashboard', '_setup', date=_now),
+            mock.call('foo', '_setup', date=_now),
         ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -255,7 +256,12 @@ class FairylabTest(Test):
         program = self.create_program(registered=_registered)
         program._try('foo', '_run_internal', date=_now)
 
-        mock_notify.assert_called_once_with(notify=Notify.OTHER, date=_now)
+        mock_notify.assert_has_calls([
+            mock.call.__bool__(),
+            mock.call(notify=Notify.OTHER, date=_now),
+            mock.call.__bool__(),
+            mock.call(notify=Notify.OTHER, date=_now),
+        ])
         mock_run.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -472,8 +478,8 @@ class FairylabTest(Test):
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
         mock_message.assert_called_once_with(obj=obj, date=_now)
         calls = [
-            mock.call('foo', '_on_message', obj=obj, date=_now),
             mock.call('dashboard', '_on_message', obj=obj, date=_now),
+            mock.call('foo', '_on_message', obj=obj, date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -490,8 +496,8 @@ class FairylabTest(Test):
         obj = {'type': 'message', 'channel': 'ABC', 'text': 'foo'}
         mock_message.assert_called_once_with(obj=obj, date=_now)
         calls = [
-            mock.call('foo', '_on_message', obj=obj, date=_now),
             mock.call('dashboard', '_on_message', obj=obj, date=_now),
+            mock.call('foo', '_on_message', obj=obj, date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -563,8 +569,8 @@ class FairylabTest(Test):
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
-            mock.call('foo', '_run', date=_now),
             mock.call('dashboard', '_run', date=_now),
+            mock.call('foo', '_run', date=_now),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -593,10 +599,13 @@ class FairylabTest(Test):
         mock_thread.assert_called_once_with(target=mock_bg)
         mock_thread.return_value.start.assert_called_once_with()
         calls = [
-            mock.call('foo', '_run', date=_now),
             mock.call('dashboard', '_run', date=_now),
-            mock.call('foo', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('foo', '_run', date=_now),
+            mock.call('git', '_run', date=_now),
             mock.call('dashboard', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('foo', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('git', '_notify', notify=Notify.FAIRYLAB_DAY),
+            mock.call('git', '_notify', notify=Notify.FAIRYLAB_DEPLOY),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_not_called()
@@ -633,7 +642,7 @@ class FairylabTest(Test):
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_valid_input(self, mock_delta):
-        mock_delta.side_effect = ['15m ago', '2m ago']
+        mock_delta.side_effect = ['15m ago', '2m ago', '1d ago']
 
         program = self.create_program(registered=_registered)
         ret = program._home(date=_now)
@@ -647,19 +656,21 @@ class FairylabTest(Test):
             title='foo',
             info='Description of foo.',
             ts='2m ago')
+        git = card(
+            href='/foo/',
+            title='git',
+            info='Description of foo.',
+            ts='1d ago')
         breadcrumbs = [{'href': '', 'name': 'Home'}]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'registered': [dashboard, foo],
+            'registered': [dashboard, foo, git],
         }
         self.assertEqual(ret, expected)
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_success(self, mock_delta):
-        mock_delta.side_effect = [
-            '15m ago',
-            '0s ago',
-        ]
+        mock_delta.side_effect = ['15m ago', '0s ago', '1d ago']
 
         program = self.create_program(registered=_registered)
         ret = program._home(date=_then)
@@ -674,16 +685,21 @@ class FairylabTest(Test):
             info='Description of foo.',
             ts='0s ago',
             success='just now')
+        git = card(
+            href='/foo/',
+            title='git',
+            info='Description of foo.',
+            ts='1d ago')
         breadcrumbs = [{'href': '', 'name': 'Home'}]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'registered': [dashboard, foo],
+            'registered': [dashboard, foo, git],
         }
         self.assertEqual(ret, expected)
 
     @mock.patch('core.fairylab.fairylab.delta')
     def test_home__with_danger(self, mock_delta):
-        mock_delta.side_effect = ['15m ago', '2h ago']
+        mock_delta.side_effect = ['15m ago', '2h ago', '1d ago']
 
         program = self.create_program(registered=_registered)
         program.registered['foo'].ok = False
@@ -699,10 +715,15 @@ class FairylabTest(Test):
             info='Description of foo.',
             ts='2h ago',
             danger='error')
+        git = card(
+            href='/foo/',
+            title='git',
+            info='Description of foo.',
+            ts='1d ago')
         breadcrumbs = [{'href': '', 'name': 'Home'}]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'registered': [dashboard, foo],
+            'registered': [dashboard, foo, git],
         }
         self.assertEqual(ret, expected)
 
@@ -726,8 +747,8 @@ class FairylabTest(Test):
         mock_import.assert_called_once_with('plugin.foo.foo')
         calls = [
             mock.call('dashboard', 'resolve', 'foo', **dict(kwargs)),
-            mock.call('foo', '_setup', **dict(kwargs)),
             mock.call('dashboard', '_setup', **dict(kwargs)),
+            mock.call('foo', '_setup', **dict(kwargs)),
         ]
         mock_try.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')

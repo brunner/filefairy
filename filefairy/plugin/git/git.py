@@ -55,6 +55,11 @@ class Git(Registrable):
         notify = kwargs['notify']
         if notify == Notify.FAIRYLAB_DAY:
             self.automate('filefairy', **kwargs)
+        elif notify == Notify.FAIRYLAB_DEPLOY:
+            response = self.status('fairylab', **kwargs)
+            stdout = self._stdout(response)
+            if 'Changes not staged for commit' in stdout:
+                self.automate('fairylab', **kwargs)
         return Response()
 
     def _on_message_internal(self, **kwargs):
@@ -66,11 +71,6 @@ class Git(Registrable):
         return [(html, '', 'git.html', _home)]
 
     def _run_internal(self, **kwargs):
-        response = self.status('fairylab', **kwargs)
-        stdout = self._stdout(response)
-        if 'Changes not staged for commit' in stdout:
-            self.automate('fairylab', **kwargs)
-
         return Response()
 
     def _setup_internal(self, **kwargs):

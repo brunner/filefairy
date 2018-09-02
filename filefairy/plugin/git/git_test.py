@@ -80,26 +80,73 @@ class GitTest(unittest.TestCase):
 
         return plugin
 
+    @mock.patch.object(Git, 'status')
     @mock.patch.object(Git, 'automate')
-    def test_notify__with_day(self, mock_automate):
+    def test_notify__with_day(self, mock_automate, mock_status):
         plugin = self.create_plugin(_data())
         response = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
         self.assertEqual(response, Response())
 
         mock_automate.assert_called_once_with(
             'filefairy', notify=Notify.FAIRYLAB_DAY)
+        mock_status.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
+    @mock.patch.object(Git, 'status')
     @mock.patch.object(Git, 'automate')
-    def test_notify__with_other(self, mock_automate):
+    def test_notify__with_deploy_false(self, mock_automate, mock_status):
+        debug = Debug(
+            msg='Call completed: \'git status\'.',
+            extra={'stdout': 'nothing to commit'})
+        mock_status.return_value = Response(
+            notify=[Notify.BASE], debug=[debug])
+
+        plugin = self.create_plugin(_data())
+        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DEPLOY)
+        self.assertEqual(response, Response())
+
+        mock_automate.assert_not_called()
+        mock_status.assert_called_once_with(
+            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch.object(Git, 'status')
+    @mock.patch.object(Git, 'automate')
+    def test_run__with_deploy_true(self, mock_automate, mock_status):
+        debug = Debug(
+            msg='Call completed: \'git status\'.',
+            extra={'stdout': 'Changes not staged for commit'})
+        mock_status.return_value = Response(
+            notify=[Notify.BASE], debug=[debug])
+
+        plugin = self.create_plugin(_data())
+        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DEPLOY)
+        self.assertEqual(response, Response())
+
+        mock_automate.assert_called_once_with(
+            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+        mock_status.assert_called_once_with(
+            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch.object(Git, 'status')
+    @mock.patch.object(Git, 'automate')
+    def test_notify__with_other(self, mock_automate, mock_status):
         plugin = self.create_plugin(_data())
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
         mock_automate.assert_not_called()
+        mock_status.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -131,41 +178,11 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
-    @mock.patch.object(Git, 'status')
-    @mock.patch.object(Git, 'automate')
-    def test_run__with_changes(self, mock_automate, mock_status):
-        debug = Debug(
-            msg='Call completed: \'git status\'.',
-            extra={'stdout': 'nothing to commit'})
-        mock_status.return_value = Response(
-            notify=[Notify.BASE], debug=[debug])
-
+    def test_run(self):
         plugin = self.create_plugin(_data())
         response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response())
 
-        mock_automate.assert_not_called()
-        mock_status.assert_called_once_with('fairylab', date=_then)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
-
-    @mock.patch.object(Git, 'status')
-    @mock.patch.object(Git, 'automate')
-    def test_run__without_changes(self, mock_automate, mock_status):
-        debug = Debug(
-            msg='Call completed: \'git status\'.',
-            extra={'stdout': 'Changes not staged for commit'})
-        mock_status.return_value = Response(
-            notify=[Notify.BASE], debug=[debug])
-
-        plugin = self.create_plugin(_data())
-        response = plugin._run_internal(date=_then)
-        self.assertEqual(response, Response())
-
-        mock_automate.assert_called_once_with('fairylab', date=_then)
-        mock_status.assert_called_once_with('fairylab', date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -639,8 +656,7 @@ class GitTest(unittest.TestCase):
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
 
         plugin = self.create_plugin(_data())
-        plugin._save(
-            response, 'pull', Git._stdout, date=_now, v=True)
+        plugin._save(response, 'pull', Git._stdout, date=_now, v=True)
 
         write = _data(pull=[{
             'date': _now_encoded,
@@ -667,8 +683,7 @@ class GitTest(unittest.TestCase):
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
 
         plugin = self.create_plugin(_data())
-        plugin._save(
-            response, 'push', Git._stderr, date=_now, v=True)
+        plugin._save(response, 'push', Git._stderr, date=_now, v=True)
 
         write = _data(push=[{
             'date': _now_encoded,
