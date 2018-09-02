@@ -907,7 +907,7 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(_data())
         actual = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
@@ -940,7 +940,7 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(_data(upload=upload))
         actual = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
@@ -988,7 +988,7 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(_data(download=download, upload=upload))
         actual = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
@@ -1041,7 +1041,7 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(_data(completed=[completed]))
         actual = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',

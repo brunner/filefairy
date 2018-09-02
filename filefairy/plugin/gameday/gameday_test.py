@@ -116,10 +116,10 @@ class GamedayTest(unittest.TestCase):
         plugin = self.create_plugin(_data())
         actual = plugin._game('Diamondbacks', date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
-            'href': '/fairylab/gameday/',
+            'href': '/gameday/',
             'name': 'Gameday'
         }, {
             'href': '',

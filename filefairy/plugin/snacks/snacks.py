@@ -401,7 +401,7 @@ class Snacks(Registrable):
         data = self.data
         ret = {
             'breadcrumbs': [{
-                'href': '/fairylab/',
+                'href': '/',
                 'name': 'Home'
             }, {
                 'href': '',

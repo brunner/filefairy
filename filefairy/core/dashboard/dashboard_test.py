@@ -67,7 +67,7 @@ _record_warning = {
 _cols = ['', ' class="text-right w-75p"']
 _link = 'https://github.com/brunner/orangeandblueleague/blob/master/filefairy/'
 _breadcrumbs = [{
-    'href': '/fairylab/',
+    'href': '/',
     'name': 'Home'
 }, {
     'href': '',

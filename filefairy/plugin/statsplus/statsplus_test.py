@@ -747,7 +747,7 @@ class StatsplusTest(Test):
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
@@ -817,7 +817,7 @@ class StatsplusTest(Test):
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
@@ -874,7 +874,7 @@ class StatsplusTest(Test):
         plugin = self.create_plugin(read)
         actual = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',

@@ -136,7 +136,7 @@ class Recap(Registrable):
     def _home(self, **kwargs):
         ret = {
             'breadcrumbs': [{
-                'href': '/fairylab/',
+                'href': '/',
                 'name': 'Home'
             }, {
                 'href': '',

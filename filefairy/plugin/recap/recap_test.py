@@ -494,7 +494,7 @@ class RecapTest(Test):
 
         value = plugin._home(date=_now)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',

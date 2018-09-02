@@ -65,10 +65,10 @@ class Gameday(Registrable):
     def _game(self, nickname, **kwargs):
         ret = {
             'breadcrumbs': [{
-                'href': '/fairylab/',
+                'href': '/',
                 'name': 'Home'
             }, {
-                'href': '/fairylab/gameday/',
+                'href': '/gameday/',
                 'name': 'Gameday'
             }, {
                 'href': '',

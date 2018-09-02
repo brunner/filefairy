@@ -572,7 +572,7 @@ class ExportsTest(Test):
         plugin = self.create_plugin(_data(form=form), exports=exports)
         response = plugin._home(date=_then)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
@@ -641,7 +641,7 @@ class ExportsTest(Test):
         plugin = self.create_plugin(_data(form=form), exports=exports)
         response = plugin._home(date=_then)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
@@ -711,7 +711,7 @@ class ExportsTest(Test):
         plugin = self.create_plugin(read, exports=exports)
         response = plugin._home(date=_then)
         breadcrumbs = [{
-            'href': '/fairylab/',
+            'href': '/',
             'name': 'Home'
         }, {
             'href': '',
