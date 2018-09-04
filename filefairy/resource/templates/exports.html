@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('tracker', 'Tracker'), ('recorded', 'Recorded')] %}
+{% set items = [('tracker', 'Tracker')] %}
 {% block nav %}
 {{ common.nav(items) }}
 {% endblock %}
@@ -12,28 +12,6 @@
 <div class="container anchor" id="tracker">
 
 {{ common.heading('cloudy', 'Tracker') }}
-
-<!-- ^(exports.row) -->
-<div class="row">
-
-<!-- ^(exports.column) -->
-<div class="col-12">
-
-{{ common.card(live) }}
-
-</div>
-<!-- $(exports.column) -->
-
-</div>
-<!-- $(exports.row) -->
-
-</div>
-<!-- $(exports.tracker) -->
-
-<!-- ^(exports.recorded) -->
-<div class="container anchor" id="recorded">
-
-{{ common.heading('target', 'Recorded') }}
 
 <!-- ^(exports.row) -->
 <div class="row">
@@ -63,6 +41,6 @@
 <!-- $(exports.row) -->
 
 </div>
-<!-- $(exports.recorded) -->
+<!-- $(exports.tracker) -->
 
 {% endblock %}

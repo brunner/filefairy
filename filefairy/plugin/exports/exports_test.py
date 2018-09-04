@@ -47,7 +47,6 @@ _urlopen = '<html><head><title>Export Tracker - StatsLab for ...'
 
 def _data(ai=[],
           channel=_channel,
-          date=_then_encoded,
           emails=False,
           form={},
           locked=False,
@@ -55,7 +54,6 @@ def _data(ai=[],
     return {
         'ai': ai,
         'channel': channel,
-        'date': date,
         'emails': emails,
         'form': form,
         'locked': locked,
@@ -182,7 +180,7 @@ class ExportsTest(Test):
             notify=Notify.STATSPLUS_SIM, date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = _data(date=_now_encoded, form=form, locked=True)
+        write = _data(form=form, locked=True)
         mock_lock.assert_called_once_with()
         mock_render.assert_called_once_with(
             notify=Notify.STATSPLUS_SIM, date=_now)
@@ -284,7 +282,7 @@ class ExportsTest(Test):
             notify=Notify.LEAGUEFILE_FINISH, date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = _data(date=_now_encoded, form=form)
+        write = _data(form=form)
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(
             notify=Notify.LEAGUEFILE_FINISH, date=_now)
@@ -326,12 +324,11 @@ class ExportsTest(Test):
         response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = _data(date=_now_encoded, form=form)
         mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Exports._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_urlopen.assert_called_once_with(_url)
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
@@ -379,7 +376,7 @@ class ExportsTest(Test):
         response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        write = _data(ai=['32', '33'], date=_now_encoded, form=form)
+        write = _data(ai=['32', '33'], form=form)
         mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
@@ -439,7 +436,7 @@ class ExportsTest(Test):
         response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.EXPORTS_EMAILS]))
 
-        write = _data(date=_now_encoded, emails=True, form=form)
+        write = _data(emails=True, form=form)
         mock_exports.assert_called_once_with(_urlopen)
         mock_emails.assert_called_once_with()
         mock_render.assert_called_once_with(date=_now)
@@ -554,16 +551,13 @@ class ExportsTest(Test):
         expected = []
         self.assertEqual(actual, expected)
 
-    @mock.patch.object(Exports, '_table')
     @mock.patch.object(Exports, '_sorted')
     @mock.patch('plugin.exports.exports.divisions')
-    def test_home__without_old(self, mock_divisions, mock_sorted, mock_table):
-        table_ = table(body=[['AL East', 'BAL', 'BOS']])
+    def test_home__without_old(self, mock_divisions, mock_sorted):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
-        mock_table.return_value = table_
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: 'n' for k in keys}
@@ -578,14 +572,6 @@ class ExportsTest(Test):
             'href': '',
             'name': 'Exports'
         }]
-        info = 'Upcoming sim contains <span class="text-success border px-' + \
-               '1">6 new</span>, 0 old, <span class="text-secondary">0 ai<' + \
-               '/span>.'
-        l = card(
-            title='100%',
-            info=info,
-            table=table_,
-            ts='00:00:00 PDT (1985-10-26)')
         cols = [
             'class="position-relative"', ' class="text-center w-25"',
             ' class="text-center w-25"'
@@ -610,7 +596,6 @@ class ExportsTest(Test):
                   [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': breadcrumbs,
-            'live': l,
             'standings': [e, c, w]
         }
         self.assertEqual(response, expected)
@@ -627,16 +612,13 @@ class ExportsTest(Test):
         self.mock_reactions_get.assert_not_called()
         self.mock_reactions_remove.assert_not_called()
 
-    @mock.patch.object(Exports, '_table')
     @mock.patch.object(Exports, '_sorted')
     @mock.patch('plugin.exports.exports.divisions')
-    def test_home__with_old(self, mock_divisions, mock_sorted, mock_table):
-        table_ = table(body=[['AL East', 'BAL', 'BOS']])
+    def test_home__with_old(self, mock_divisions, mock_sorted):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
-        mock_table.return_value = table_
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: 'n' for k in keys}
@@ -651,14 +633,6 @@ class ExportsTest(Test):
             'href': '',
             'name': 'Exports'
         }]
-        info = 'Upcoming sim contains <span class="text-success border px-' + \
-               '1">4 new</span>, 2 old, <span class="text-secondary">0 ai<' + \
-               '/span>.'
-        l = card(
-            title='67%',
-            info=info,
-            table=table_,
-            ts='00:00:00 PDT (1985-10-26)')
         cols = [
             'class="position-relative"', ' class="text-center w-25"',
             ' class="text-center w-25"'
@@ -683,7 +657,6 @@ class ExportsTest(Test):
                   [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': breadcrumbs,
-            'live': l,
             'standings': [e, c, w]
         }
         self.assertEqual(response, expected)
@@ -700,16 +673,13 @@ class ExportsTest(Test):
         self.mock_reactions_get.assert_not_called()
         self.mock_reactions_remove.assert_not_called()
 
-    @mock.patch.object(Exports, '_table')
     @mock.patch.object(Exports, '_sorted')
     @mock.patch('plugin.exports.exports.divisions')
-    def test_home__with_lock(self, mock_divisions, mock_sorted, mock_table):
-        table_ = table(body=[['AL East', 'BAL', 'BOS']])
+    def test_home__with_lock(self, mock_divisions, mock_sorted):
         mock_divisions.return_value = [('AL East', ['33', '34']),
                                        ('AL Central', ['35', '40']),
                                        ('AL West', ['42', '44'])]
         mock_sorted.side_effect = ['BAL', 'BOS', 'CWS', 'DET', 'HOU', 'LAA']
-        mock_table.return_value = table_
 
         keys = ['33', '34', '35', '40', '42', '44']
         form = {k: 'n' for k in keys}
@@ -725,14 +695,6 @@ class ExportsTest(Test):
             'href': '',
             'name': 'Exports'
         }]
-        info = 'Ongoing sim contains <span class="text-success border px-1' + \
-               '">4 new</span>, 2 old, <span class="text-secondary">0 ai</' + \
-               'span>.'
-        l = card(
-            title='67%',
-            info=info,
-            table=table_,
-            ts='00:00:00 PDT (1985-10-26)')
         cols = [
             'class="position-relative"', ' class="text-center w-25"',
             ' class="text-center w-25"'
@@ -757,7 +719,6 @@ class ExportsTest(Test):
                   [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
         expected = {
             'breadcrumbs': breadcrumbs,
-            'live': l,
             'standings': [e, c, w]
         }
         self.assertEqual(response, expected)
@@ -986,31 +947,6 @@ class ExportsTest(Test):
         actual = plugin._sorted('32')
         expected = [-0.6, -6, 2, -0.25, 'ATL']
         mock_name.assert_called_once_with('32')
-        self.assertEqual(actual, expected)
-
-    @mock.patch('plugin.exports.exports.divisions')
-    def test_table(self, mock_divisions):
-        mock_divisions.return_value = [('AL East', ['33', '34']),
-                                       ('AL Central', ['35', '40']),
-                                       ('AL West', ['42', '44'])]
-
-        keys = ['33', '34', '35', '40', '42', '44']
-        form = {k: 'n' for k in keys}
-        exports = [('33', 'New'), ('34', 'New'), ('35', 'New'), ('40', 'New'),
-                   ('42', 'Old'), ('44', 'Old')]
-        plugin = self.create_plugin(_data(form=form), exports=exports)
-        actual = plugin._table()
-        body = [[
-            'AL East',
-            span(['text-success', 'border', 'px-1'], 'BAL'),
-            span(['text-success', 'border', 'px-1'], 'BOS')
-        ], [
-            'AL Central',
-            span(['text-success', 'border', 'px-1'], 'CWS'),
-            span(['text-success', 'border', 'px-1'], 'DET')
-        ], ['AL West', 'HOU', 'LAA']]
-        cols = [''] + [' class="text-center"'] * 2
-        expected = table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
         self.assertEqual(actual, expected)
 
     def test_unlock(self):

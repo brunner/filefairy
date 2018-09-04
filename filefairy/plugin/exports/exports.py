@@ -16,7 +16,6 @@ from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.slack.slack import reactions_get  # noqa
@@ -65,7 +64,6 @@ class Exports(Registrable):
         else:
             return Response()
 
-        data['date'] = encode_datetime(kwargs['date'])
         self._render(**kwargs)
         self.write()
         return Response(notify=[Notify.BASE])
@@ -96,11 +94,8 @@ class Exports(Registrable):
             self._emails()
             response.notify = [Notify.EXPORTS_EMAILS]
 
-        if response.notify:
-            data['date'] = encode_datetime(kwargs['date'])
-            self.write()
-
         if data != original:
+            self.write()
             self._render(**kwargs)
 
         return response
@@ -151,13 +146,6 @@ class Exports(Registrable):
             }],
             'standings': []
         }
-
-        title = '{:.0f}%'.format(self._percent())
-        breakdown = self._breakdown()
-        status = 'Ongoing' if data['locked'] else 'Upcoming'
-        info = '{0} sim contains {1}.'.format(status, breakdown)
-        ts = timestamp(decode_datetime(data['date']))
-        ret['live'] = card(title=title, info=info, table=self._table(), ts=ts)
 
         for division, teamids in divisions():
             body = []
@@ -236,16 +224,6 @@ class Exports(Registrable):
                     n += 1
         return (n, t)
 
-    def _breakdown(self):
-        n, t = self._new()
-        return ', '.join([
-            span(['text-success', 'border', 'px-1'],
-                 str(n) + ' new'),
-            str(t - n) + ' old',
-            span(['text-secondary'],
-                 str(len(self.data['ai'])) + ' ai')
-        ])
-
     def _percent(self):
         n, t = self._new()
         return (100 * n / t) if t else 0
@@ -290,23 +268,6 @@ class Exports(Registrable):
             n = len(match[0])
             return n if 'n' in match[0] else -n
         return 0
-
-    def _table(self):
-        div = divisions()
-        size = len(self.exports) // len(div)
-        cols = [''] + [' class="text-center"'] * size
-        body = [[t[0]] for t in div]
-        for i, export in enumerate(self.exports):
-            row = i // size
-            teamid, status = export
-            text = teamid_to_abbreviation(teamid)
-            if teamid in self.data['ai']:
-                text = span(['text-secondary'], text)
-            if status == 'New':
-                text = span(['text-success', 'border', 'px-1'], text)
-            if row < len(body):
-                body[row].append(text)
-        return table(clazz='table-sm', hcols=cols, bcols=cols, body=body)
 
     def _unlock(self):
         self.data['emails'] = False
