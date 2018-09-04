@@ -12,15 +12,15 @@ sys.path.append(re.sub(r'/plugin/gameday', '', _path))
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 _env = env()
-_now = datetime_datetime(1985, 10, 27, 0, 0, 0)
-_then = datetime_datetime(1985, 10, 26, 0, 2, 30)
+_now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
+_then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 
 
 def _data():

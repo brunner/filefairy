@@ -10,12 +10,12 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/news', '', _path)
 sys.path.append(_root)
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.news.news import box_scores  # noqa
 from util.news.news import leagues  # noqa
 
-_now = datetime_datetime(2022, 10, 16)
-_then = datetime_datetime(2022, 10, 9)
+_now = datetime_datetime_pst(2022, 10, 16)
+_then = datetime_datetime_pst(2022, 10, 9)
 
 _box_sub = '<html> <title>MLB Box Scores, Arizona Diamondbacks at Lo' + \
            's Angeles Dodgers, {}</title> </html>'

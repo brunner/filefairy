@@ -13,7 +13,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/api/renderable', '', _path)
 sys.path.append(_root)
 from api.renderable.renderable import Renderable  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 
 _fairylab_root = re.sub(r'/orangeandblueleague/filefairy', '/fairylab/static',
@@ -116,7 +116,7 @@ class RenderableTest(unittest.TestCase):
             'dyn.html':
             '{{ title }}: Hello {{ z }} -- {{ date }}'
         })
-        date = datetime_datetime(1985, 10, 26, 0, 2, 30)
+        date = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
         env = jinja2.Environment(loader=ldr)
         renderable = FakeRenderable(e=env)
         renderable._render(date=date)
@@ -142,30 +142,30 @@ class RenderableTest(unittest.TestCase):
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
         stream_calls = [
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo',
                 'a': 1,
                 'b': True,
                 'd': date
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » sub',
                 'm': 2,
                 'n': 'bar'
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn0',
                 'z': True
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn1',
                 'z': False
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn2',
                 'z': True
             })
@@ -193,7 +193,7 @@ class RenderableTest(unittest.TestCase):
             'dyn.html':
             '{{ title }}: Hello {{ z }} -- {{ date }}'
         })
-        date = datetime_datetime(1985, 10, 26, 0, 2, 30)
+        date = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
         env = jinja2.Environment(loader=ldr)
         renderable = FakeRenderable(e=env)
         renderable._render(date=date, test=True)
@@ -219,30 +219,30 @@ class RenderableTest(unittest.TestCase):
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
         stream_calls = [
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo',
                 'a': 1,
                 'b': True,
                 'd': date
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » sub',
                 'm': 2,
                 'n': 'bar'
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn0',
                 'z': True
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn1',
                 'z': False
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn2',
                 'z': True
             })
@@ -271,7 +271,7 @@ class RenderableTest(unittest.TestCase):
             'dyn.html':
             '{{ title }}: Hello {{ z }} -- {{ date }}'
         })
-        date = datetime_datetime(1985, 10, 26, 0, 2, 30)
+        date = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
         env = jinja2.Environment(loader=ldr)
         renderable = FakeRenderable(e=env)
         renderable._render(date=date)
@@ -305,30 +305,30 @@ class RenderableTest(unittest.TestCase):
         mock_rlog.assert_has_calls(log_calls)
         stream_calls = [
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo',
                 'a': 1,
                 'b': True,
                 'd': date
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » sub',
                 'm': 2,
                 'n': 'bar'
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn0',
                 'z': True
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn1',
                 'z': False
             }),
             mock.call({
-                'date': '00:02:30 EDT (1985-10-26)',
+                'date': '00:02:30 PDT (1985-10-26)',
                 'title': 'foo » dyn2',
                 'z': True
             })

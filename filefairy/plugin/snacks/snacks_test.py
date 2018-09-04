@@ -19,7 +19,7 @@ from plugin.snacks.snacks import _snacklist  # noqa
 from plugin.snacks.snacks import _wafflelist  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -35,10 +35,10 @@ _members_bot = {
     'U5678': '100.456',
     'U3ULC7DBP': '1000.789'
 }
-_now = datetime_datetime(1985, 10, 27, 0, 0, 0)
-_now_encoded = '1985-10-27T00:00:00-04:00'
-_then = datetime_datetime(1985, 10, 26, 0, 2, 30)
-_then_encoded = '1985-10-26T00:02:30-04:00'
+_now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
+_now_encoded = '1985-10-27T00:00:00-07:00'
+_then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
+_then_encoded = '1985-10-26T00:02:30-07:00'
 
 
 def _data(count=None, date=_then_encoded, last=None, members=None):
@@ -758,7 +758,7 @@ class SnacksTest(Test):
         servings = card(
             title='3',
             info='Total snacks served.',
-            ts='00:00:00 EDT (1985-10-27)')
+            ts='00:00:00 PDT (1985-10-27)')
         stars = card(title='0', info='Total stars awarded.', ts='never')
         trophies = card(title='0', info='Total trophies lifted.', ts='never')
         statistics = [servings, stars, trophies]
@@ -774,8 +774,8 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple', '00:00:00 EDT (1985-10-27)'], [
-                '\U0001f956', 'baguette bread', '00:02:30 EDT (1985-10-26)'
+            body=[['\U0001F34E', 'apple', '00:00:00 PDT (1985-10-27)'], [
+                '\U0001f956', 'baguette bread', '00:02:30 PDT (1985-10-26)'
             ]])
         expected = {
             'breadcrumbs': breadcrumbs,
@@ -805,11 +805,11 @@ class SnacksTest(Test):
         servings = card(
             title='3',
             info='Total snacks served.',
-            ts='00:00:00 EDT (1985-10-27)')
+            ts='00:00:00 PDT (1985-10-27)')
         stars = card(
             title='1',
             info='Total stars awarded.',
-            ts='00:02:30 EDT (1985-10-26)')
+            ts='00:02:30 PDT (1985-10-26)')
         trophies = card(title='0', info='Total trophies lifted.', ts='never')
         statistics = [servings, stars, trophies]
         count = table(
@@ -825,9 +825,9 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple', '00:00:00 EDT (1985-10-27)'], [
-                '\U0001f956', 'baguette bread', '00:02:30 EDT (1985-10-26)'
-            ], ['\u2B50', 'star', '00:02:30 EDT (1985-10-26)']])
+            body=[['\U0001F34E', 'apple', '00:00:00 PDT (1985-10-27)'], [
+                '\U0001f956', 'baguette bread', '00:02:30 PDT (1985-10-26)'
+            ], ['\u2B50', 'star', '00:02:30 PDT (1985-10-26)']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -856,15 +856,15 @@ class SnacksTest(Test):
         servings = card(
             title='1',
             info='Total snacks served.',
-            ts='00:00:00 EDT (1985-10-27)')
+            ts='00:00:00 PDT (1985-10-27)')
         stars = card(
             title='1',
             info='Total stars awarded.',
-            ts='00:00:00 EDT (1985-10-27)')
+            ts='00:00:00 PDT (1985-10-27)')
         trophies = card(
             title='1',
             info='Total trophies lifted.',
-            ts='00:00:00 EDT (1985-10-27)')
+            ts='00:00:00 PDT (1985-10-27)')
         statistics = [servings, stars, trophies]
         count = table(
             clazz='border mt-3',
@@ -878,9 +878,9 @@ class SnacksTest(Test):
             hcols=_cols,
             bcols=_cols,
             head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple', '00:00:00 EDT (1985-10-27)'],
-                  ['\u2B50', 'star', '00:00:00 EDT (1985-10-27)'],
-                  ['\U0001F3C6', 'trophy', '00:00:00 EDT (1985-10-27)']])
+            body=[['\U0001F34E', 'apple', '00:00:00 PDT (1985-10-27)'],
+                  ['\u2B50', 'star', '00:00:00 PDT (1985-10-27)'],
+                  ['\U0001F3C6', 'trophy', '00:00:00 PDT (1985-10-27)']])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,

@@ -6,23 +6,31 @@ import pytz
 import re
 
 _est = pytz.timezone('America/New_York')
+_pst = pytz.timezone('America/Los_Angeles')
 
 
-def datetime_datetime(*args):
+def datetime_as_pst(d):
+    return d.astimezone(_pst)
+
+
+def datetime_datetime_est(*args):
     return _est.localize(datetime.datetime(*args))
 
 
+def datetime_datetime_pst(*args):
+    return _pst.localize(datetime.datetime(*args))
+
+
 def datetime_now():
-    return _est.localize(datetime.datetime.now())
+    return _pst.localize(datetime.datetime.now())
 
 
 def decode_datetime(s):
-    return _est.localize(
-        datetime.datetime(*map(int, re.findall('\d+', s[:-6]))))
+    return datetime_datetime_pst(*map(int, re.findall('\d+', s[:-6])))
 
 
 def encode_datetime(d):
-    return d.isoformat()
+    return datetime_as_pst(d).isoformat()
 
 
 def suffix(day):

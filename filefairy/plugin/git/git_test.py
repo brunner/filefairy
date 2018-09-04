@@ -27,7 +27,7 @@ _commit = 'https://github.com/brunner/orangeandblueleague/commit/'
 _env = env()
 _l = ['d-inline-block', 'w-65p']
 _now = datetime.datetime(1985, 10, 27, 0, 0, 0)
-_now_encoded = '1985-10-27T00:00:00'
+_now_encoded = '1985-10-27T00:00:00-07:00'
 _r = ['d-inline-block', 'text-right', 'w-65p']
 _then = datetime.datetime(1985, 10, 26, 0, 2, 30)
 

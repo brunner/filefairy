@@ -18,7 +18,7 @@ from core.task.task import Task  # noqa
 from plugin.leaguefile.leaguefile import Leaguefile  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.secrets.secrets import server  # noqa
@@ -27,14 +27,14 @@ from util.test.test import main  # noqa
 
 _channel = 'C1234'
 _env = env()
-_now = datetime_datetime(2018, 1, 29)
-_now_encoded = '2018-01-29T00:00:00-05:00'
+_now = datetime_datetime_pst(2018, 1, 29)
+_now_encoded = '2018-01-29T00:00:00-08:00'
 _server = server()
-_then = datetime_datetime(2018, 1, 28)
-_then_encoded = '2018-01-28T00:00:00-05:00'
+_then = datetime_datetime_pst(2018, 1, 28)
+_then_encoded = '2018-01-28T00:00:00-08:00'
 _ts = '123456789'
-_year = datetime_datetime(2019, 1, 1)
-_year_encoded = '2019-01-01T00:00:00-05:00'
+_year = datetime_datetime_pst(2019, 1, 1)
+_year_encoded = '2019-01-01T00:00:00-08:00'
 
 
 def _data(completed=[],
@@ -152,7 +152,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 16:00',
             'size': '100000',
             'end': 'Jan 29 16:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         write = _data(upload=upload)
         mock_check_download.assert_not_called()
@@ -181,7 +181,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 15:00',
             'size': '100000',
             'end': 'Jan 29 16:00',
-            'now': '2018-01-29T16:02:00-05:00'
+            'now': '2018-01-29T16:02:00-08:00'
         }
         completed = {
             'size': '345678901',
@@ -223,7 +223,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 16:00',
             'size': '100000',
             'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         completed = {
             'size': '345678901',
@@ -245,7 +245,7 @@ class LeaguefileTest(Test):
             'size': '328706052',
             'end': 'Jan 29 18:00',
             'date': 'Jan 29 15:55',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         write = _data(upload=upload, completed=[completed])
         mock_check_download.assert_not_called()
@@ -275,7 +275,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 16:00',
             'size': '100000',
             'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         completed = {
             'size': '345678901',
@@ -297,7 +297,7 @@ class LeaguefileTest(Test):
             'size': '328706052',
             'end': 'Jan 29 18:00',
             'date': 'Jan 29 07:55',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         write = _data(upload=upload, completed=[completed])
         mock_check_download.assert_not_called()
@@ -328,7 +328,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 16:00',
             'size': '100000',
             'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         completed = {
             'size': '345678901',
@@ -350,7 +350,7 @@ class LeaguefileTest(Test):
             'size': '328706052',
             'end': 'Jan 29 18:00',
             'date': 'Jan 29 12:55',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         write = _data(upload=upload, completed=[completed])
         mock_check_download.assert_not_called()
@@ -381,13 +381,13 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 18:05',
             'size': '20000',
             'end': 'Jan 29 18:05',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         upload = {
             'start': 'Jan 29 16:00',
             'size': '328706052',
             'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         plugin = self.create_plugin(_data(download=download, upload=upload))
         response = plugin._run_internal(date=_now)
@@ -397,7 +397,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 18:05',
             'size': '100000',
             'end': 'Jan 29 00:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         write = _data(download=download, upload=upload)
         mock_check_download.assert_called_once_with()
@@ -428,14 +428,14 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 18:05',
             'size': '100000',
             'end': 'Jan 29 18:10',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         upload = {
             'start': 'Jan 29 16:00',
             'date': 'Jan 29 12:55',
             'size': '328706052',
             'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         plugin = self.create_plugin(_data(download=download, upload=upload))
         response = plugin._run_internal(date=_now)
@@ -501,7 +501,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 15:00',
             'size': '100000',
             'end': 'Jan 29 16:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         write = _data(upload=upload)
         mock_check.assert_called_once_with()
@@ -551,7 +551,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 16:00',
             'size': '100000',
             'end': 'Jan 29 16:00',
-            'now': '2018-01-29T00:00:00-05:00'
+            'now': '2018-01-29T00:00:00-08:00'
         }
         completed = {
             'size': '345678901',
@@ -600,7 +600,7 @@ class LeaguefileTest(Test):
                 })
             ]))
 
-        download = {'start': 'Jan 29 00:00', 'now': '2018-01-29T00:00:00-05:00'}
+        download = {'start': 'Jan 29 00:00', 'now': '2018-01-29T00:00:00-08:00'}
         write = _data(upload=upload, download=download)
         mock_check.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
@@ -840,7 +840,7 @@ class LeaguefileTest(Test):
         mock_file.return_value = {'ok': True}
         mock_leagues.return_value = _year
 
-        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-05:00'}
+        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-08:00'}
         plugin = self.create_plugin(
             _data(download=download, now=_then_encoded))
 
@@ -867,7 +867,7 @@ class LeaguefileTest(Test):
         mock_file.return_value = {'ok': True}
         mock_leagues.return_value = _now
 
-        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-05:00'}
+        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-08:00'}
         plugin = self.create_plugin(
             _data(download=download, now=_then_encoded))
 
@@ -892,7 +892,7 @@ class LeaguefileTest(Test):
                                               mock_leagues):
         mock_file.return_value = {'ok': False}
 
-        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-05:00'}
+        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-08:00'}
         plugin = self.create_plugin(
             _data(download=download, now=_then_encoded))
 
@@ -939,7 +939,7 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 16:00',
             'size': '100000',
             'end': 'Jan 29 18:00',
-            'now': '2018-01-29T18:04:00-05:00'
+            'now': '2018-01-29T18:04:00-08:00'
         }
         plugin = self.create_plugin(_data(upload=upload))
         actual = plugin._home(date=_now)
@@ -957,7 +957,7 @@ class LeaguefileTest(Test):
                 hcols=[' class="w-55p"', ''],
                 bcols=[' class="w-55p"', ''],
                 body=[['Time: ', '2h 0m'], ['Size: ', '100,000']]),
-            ts='18:04:00 EST (2018-01-29)',
+            ts='18:04:00 PST (2018-01-29)',
             success='ongoing')
         cols = [
             '', ' class="text-center"', ' class="text-center"',
@@ -981,13 +981,13 @@ class LeaguefileTest(Test):
             'start': 'Jan 29 18:05',
             'size': '100000',
             'end': 'Jan 29 18:10',
-            'now': '2018-01-29T18:14:00-05:00'
+            'now': '2018-01-29T18:14:00-08:00'
         }
         upload = {
             'start': 'Jan 29 16:00',
             'size': '345678901',
             'end': 'Jan 29 18:00',
-            'now': '2018-01-29T18:02:00-05:00'
+            'now': '2018-01-29T18:02:00-08:00'
         }
         plugin = self.create_plugin(_data(download=download, upload=upload))
         actual = plugin._home(date=_now)
@@ -1005,7 +1005,7 @@ class LeaguefileTest(Test):
                 hcols=[' class="w-55p"', ''],
                 bcols=[' class="w-55p"', ''],
                 body=[['Time: ', '2h 0m'], ['Size: ', '345,678,901']]),
-            ts='18:02:00 EST (2018-01-29)',
+            ts='18:02:00 PST (2018-01-29)',
             success='completed')
         download = card(
             title='Jan 29',
@@ -1014,7 +1014,7 @@ class LeaguefileTest(Test):
                 hcols=[' class="w-55p"', ''],
                 bcols=[' class="w-55p"', ''],
                 body=[['Time: ', '5m'], ['Size: ', '100,000']]),
-            ts='18:14:00 EST (2018-01-29)',
+            ts='18:14:00 PST (2018-01-29)',
             success='ongoing')
         cols = [
             '', ' class="text-center"', ' class="text-center"',

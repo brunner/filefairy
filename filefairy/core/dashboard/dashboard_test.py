@@ -20,7 +20,7 @@ from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -28,20 +28,20 @@ from util.test.test import main  # noqa
 
 _env = env()
 _exc = Exception('Disabled foo.')
-_now = datetime_datetime(1985, 10, 26, 20, 18, 45)
-_now_day = datetime_datetime(1985, 10, 26)
-_now_date_encoded = '1985-10-26T20:18:45-04:00'
-_soon = datetime_datetime(1985, 10, 26, 0, 2, 35)
-_soon_day = datetime_datetime(1985, 10, 26)
-_soon_date_encoded = '1985-10-26T00:02:35-04:00'
-_then = datetime_datetime(1985, 10, 26, 0, 2, 30)
-_then_day = datetime_datetime(1985, 10, 26)
-_then_date_encoded = '1985-10-26T00:02:30-04:00'
-_then_day_encoded = '1985-10-26T00:00:00-04:00'
-_yesterday = datetime_datetime(1985, 10, 25, 0, 2, 30)
-_yesterday_date_encoded = '1985-10-25T12:55:00-04:00'
-_yesterday_day_encoded = '1985-10-25T00:00:00-04:00'
-_cut_day_encoded = '1985-10-19T00:00:00-04:00'
+_now = datetime_datetime_pst(1985, 10, 26, 20, 18, 45)
+_now_day = datetime_datetime_pst(1985, 10, 26)
+_now_date_encoded = '1985-10-26T20:18:45-07:00'
+_soon = datetime_datetime_pst(1985, 10, 26, 0, 2, 35)
+_soon_day = datetime_datetime_pst(1985, 10, 26)
+_soon_date_encoded = '1985-10-26T00:02:35-07:00'
+_then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
+_then_day = datetime_datetime_pst(1985, 10, 26)
+_then_date_encoded = '1985-10-26T00:02:30-07:00'
+_then_day_encoded = '1985-10-26T00:00:00-07:00'
+_yesterday = datetime_datetime_pst(1985, 10, 25, 0, 2, 30)
+_yesterday_date_encoded = '1985-10-25T12:55:00-07:00'
+_yesterday_day_encoded = '1985-10-25T00:00:00-07:00'
+_cut_day_encoded = '1985-10-19T00:00:00-07:00'
 _details = {'trace': 'Lorem ipsum'}
 _record_error = {
     'pathname': '/home/user/filefairy/path/to/file.py',
@@ -79,7 +79,7 @@ _exceptions = [
         title='file.py#L123',
         info='Disabled foo.',
         code='Traceback [foo] ...',
-        ts='12:55:00 EDT (1985-10-25)')
+        ts='12:55:00 PDT (1985-10-25)')
 ]
 _warnings = [
     card(
@@ -87,7 +87,7 @@ _warnings = [
         title='file.py#L789',
         info='baz (x6).',
         code='Traceback [baz] ...',
-        ts='00:02:30 EDT (1985-10-26)')
+        ts='00:02:30 PDT (1985-10-26)')
 ]
 _logs = [
     table(
@@ -508,7 +508,7 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime_now')
-    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime_pst')
     def test_record__with_error(self, mock_datetime, mock_now, mock_render):
         mock_datetime.return_value = _then_day
         mock_now.return_value = _then
@@ -529,7 +529,7 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime_now')
-    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime_pst')
     def test_record__with_warning(self, mock_datetime, mock_now, mock_render):
         mock_datetime.return_value = _then_day
         mock_now.return_value = _then
@@ -550,7 +550,7 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime_now')
-    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime_pst')
     def test_record__with_new(self, mock_datetime, mock_now, mock_render):
         mock_datetime.return_value = _then_day
         mock_now.return_value = _then
@@ -573,7 +573,7 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime_now')
-    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime_pst')
     def test_record__with_old_now(self, mock_datetime, mock_now, mock_render):
         mock_datetime.return_value = _now_day
         mock_now.return_value = _now
@@ -595,7 +595,7 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_render')
     @mock.patch('core.dashboard.dashboard.datetime_now')
-    @mock.patch('core.dashboard.dashboard.datetime_datetime')
+    @mock.patch('core.dashboard.dashboard.datetime_datetime_pst')
     def test_record__with_old_soon(self, mock_datetime, mock_now, mock_render):
         mock_datetime.return_value = _soon_day
         mock_now.return_value = _soon

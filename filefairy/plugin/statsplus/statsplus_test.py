@@ -17,7 +17,7 @@ from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from plugin.statsplus.statsplus import Statsplus  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.team.team import logo_inline  # noqa
@@ -25,10 +25,10 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 _env = env()
-_now = datetime_datetime(2022, 10, 10)
-_now_encoded = '2022-10-10T00:00:00-04:00'
-_then = datetime_datetime(2022, 10, 9)
-_then_encoded = '2022-10-09T00:00:00-04:00'
+_now = datetime_datetime_pst(2022, 10, 10)
+_now_encoded = '2022-10-10T00:00:00-07:00'
+_then = datetime_datetime_pst(2022, 10, 9)
+_then_encoded = '2022-10-09T00:00:00-07:00'
 
 _highlights_pattern = '<[^|]+\|[^<]+> (?:sets|ties) [^)]+\)'
 _highlights_encoded = [

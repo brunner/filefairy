@@ -19,7 +19,7 @@ from util.ago.ago import timestamp  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.datetime_.datetime_ import datetime_now  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
@@ -233,7 +233,7 @@ class Dashboard(Registrable):
         date = datetime_now()
         encoded_date = encode_datetime(date)
 
-        day = datetime_datetime(date.year, date.month, date.day)
+        day = datetime_datetime_pst(date.year, date.month, date.day)
         encoded_day = encode_datetime(day)
         if encoded_day not in self.data['records']:
             self.data['records'][encoded_day] = []
@@ -266,7 +266,7 @@ class Dashboard(Registrable):
 
         date = kwargs['date']
         cut = date - datetime.timedelta(days=7)
-        cut = datetime_datetime(cut.year, cut.month, cut.day)
+        cut = datetime_datetime_pst(cut.year, cut.month, cut.day)
 
         days = list(original['records'].keys())
         records = data['records']

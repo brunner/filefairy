@@ -14,7 +14,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/test', '', _path)
 sys.path.append(_root)
 from api.renderable.renderable import Renderable  # noqa
-from util.datetime_.datetime_ import datetime_datetime  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 
@@ -38,7 +38,7 @@ def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
     @mock.patch.object(_cls, '_render_internal')
     def test_golden(self, mock_render):
         self.init_mocks(_read)
-        date = datetime_datetime(1985, 10, 26, 6, 2, 30)
+        date = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
         golden = os.path.join(_pth, 'goldens/{}.html'.format(case))
         sample = '{}.samples.{}'.format(_pkg, case)
         module = importlib.import_module(sample)
