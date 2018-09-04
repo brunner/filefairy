@@ -322,7 +322,7 @@ class ExportsTest(Test):
         exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
         plugin = self.create_plugin(_data(form=form), exports=exports)
         response = plugin._run_internal(date=_now)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         mock_exports.assert_called_once_with(_urlopen)
         mock_lock.assert_not_called()
@@ -374,7 +374,7 @@ class ExportsTest(Test):
         exports = [('31', 'Old'), ('32', 'Old'), ('33', 'Old')]
         plugin = self.create_plugin(read, exports=exports)
         response = plugin._run_internal(date=_now)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
+        self.assertEqual(response, Response())
 
         write = _data(ai=['32', '33'], form=form)
         mock_exports.assert_called_once_with(_urlopen)
