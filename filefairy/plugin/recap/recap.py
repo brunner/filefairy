@@ -110,9 +110,10 @@ class Recap(Registrable):
 
     @staticmethod
     def _rewrite_players(text):
-        return re.sub('<a href="../players/player',
-                      '<a href="/StatsLab/reports/news/html/players/player',
-                      text)
+        return re.sub(
+            '<a href="../players/player',
+            '<a href="https://orangeandblueleaguebaseball.com/StatsLab/repo' +
+            'rts/news/html/players/player', text)
 
     @staticmethod
     def _total(record):

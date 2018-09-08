@@ -58,23 +58,25 @@ _injuries_table_new = [
         clazz='border mt-3',
         head=['Wednesday, August 17th, 2022'],
         body=[[
-            'Colorado Rockies: RF <a href=\"/StatsLab/reports/news/html/play' +
-            'ers/player_24198.html\">Eddie Hoffman</a> was injured being hit' +
-            ' by a pitch.  The Diagnosis: bruised knee. This is a day-to-day' +
-            ' injury expected to last 5 days.'
+            'Colorado Rockies: RF <a href=\"https://orangeandblueleaguebaseb' +
+            'all.com/StatsLab/reports/news/html/players/player_24198.html\">' +
+            'Eddie Hoffman</a> was injured being hit by a pitch.  The Diagno' +
+            'sis: bruised knee. This is a day-to-day injury expected to last' +
+            ' 5 days.'
         ], [
-            'Minnesota Twins: 1B <a href=\"/StatsLab/reports/news/html/playe' +
-            'rs/player_34032.html\">Nick Castellanos</a> was injured while r' +
-            'unning the bases.  The Diagnosis: sprained ankle. This is a day' +
-            '-to-day injury expected to last 5 days.'
+            'Minnesota Twins: 1B <a href=\"https://orangeandblueleaguebaseba' +
+            'll.com/StatsLab/reports/news/html/players/player_34032.html\">N' +
+            'ick Castellanos</a> was injured while running the bases.  The D' +
+            'iagnosis: sprained ankle. This is a day-to-day injury expected ' +
+            'to last 5 days.'
         ]]),
     table(
         clazz='border mt-3',
         head=['Monday, August 15th, 2022'],
         body=[[
-            'Tampa Bay Rays: <a href=\"/StatsLab/reports/news/html/players/p' +
-            'layer_1.html\">Zack Weiss</a> diagnosed with a strained hamstri' +
-            'ng, will miss 8 months.'
+            'Tampa Bay Rays: <a href=\"https://orangeandblueleaguebaseball.c' +
+            'om/StatsLab/reports/news/html/players/player_1.html\">Zack Weis' +
+            's</a> diagnosed with a strained hamstring, will miss 8 months.'
         ]])
 ]
 _injuries_table_old = [
@@ -82,10 +84,10 @@ _injuries_table_old = [
         clazz='border mt-3',
         head=['Monday, August 15th, 2022'],
         body=[[
-            'Los Angeles Angels: CF <a href=\"/StatsLab/reports/news/html/pl' +
-            'ayers/player_0.html\">Alex Aristy</a> was injured while running' +
-            ' the bases.  The Diagnosis: knee inflammation. He\'s expected t' +
-            'o miss about 3 weeks.'
+            'Los Angeles Angels: CF <a href=\"https://orangeandblueleaguebas' +
+            'eball.com/StatsLab/reports/news/html/players/player_0.html\">Al' +
+            'ex Aristy</a> was injured while running the bases.  The Diagnos' +
+            'is: knee inflammation. He\'s expected to miss about 3 weeks.'
         ]])
 ]
 _news_table_new = [
@@ -93,21 +95,23 @@ _news_table_new = [
         clazz='border mt-3',
         head=['Thursday, August 18th, 2022'],
         body=[[
-            'Colorado Rockies: <a href=\"/StatsLab/reports/news/html/players' +
-            '/player_30965.html\">Spencer Taylorr</a> got suspended 3 games ' +
-            'after ejection following a brawl.'
+            'Colorado Rockies: <a href=\"https://orangeandblueleaguebaseball' +
+            '.com/StatsLab/reports/news/html/players/player_30965.html\">Spe' +
+            'ncer Taylorr</a> got suspended 3 games after ejection following' +
+            ' a brawl.'
         ], [
-            'Miami Marlins: <a href=\"/StatsLab/reports/news/html/players/pl' +
-            'ayer_131.html\">Jake Ehret</a> got suspended 3 games after ejec' +
-            'tion following a brawl.'
+            'Miami Marlins: <a href=\"https://orangeandblueleaguebaseball.co' +
+            'm/StatsLab/reports/news/html/players/player_131.html\">Jake Ehr' +
+            'et</a> got suspended 3 games after ejection following a brawl.'
         ]]),
     table(
         clazz='border mt-3',
         head=['Monday, August 15th, 2022'],
         body=[[
-            'Houston Astros: <a href=\"/StatsLab/reports/news/html/players/p' +
-            'layer_39044.html\">Mark Appel</a> pitches a 2-hit shutout again' +
-            'st the Los Angeles Angels with 8 strikeouts and 0 BB allowed!'
+            'Houston Astros: <a href=\"https://orangeandblueleaguebaseball.c' +
+            'om/StatsLab/reports/news/html/players/player_39044.html\">Mark ' +
+            'Appel</a> pitches a 2-hit shutout against the Los Angeles Angel' +
+            's with 8 strikeouts and 0 BB allowed!'
         ]])
 ]
 _news_table_old = [
@@ -115,9 +119,10 @@ _news_table_old = [
         clazz='border mt-3',
         head=['Monday, August 15th, 2022'],
         body=[[
-            'Tampa Bay Rays: <a href=\"/StatsLab/reports/news/html/players/p' +
-            'layer_27.html\">A.J. Reed</a> got suspended 4 games after eject' +
-            'ion following arguing a strike call.'
+            'Tampa Bay Rays: <a href=\"https://orangeandblueleaguebaseball.c' +
+            'om/StatsLab/reports/news/html/players/player_27.html\">A.J. Ree' +
+            'd</a> got suspended 4 games after ejection following arguing a ' +
+            'strike call.'
         ]])
 ]
 _transactions_table_new = [
@@ -125,20 +130,22 @@ _transactions_table_new = [
         clazz='border mt-3',
         head=['Monday, August 15th, 2022'],
         body=[[
-            'Baltimore Orioles: Placed C <a href=\"/StatsLab/reports/news/ht' +
-            'ml/players/player_1439.html\">Evan Skoug</a> on the active rost' +
-            'er.'
+            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
+            'uebaseball.com/StatsLab/reports/news/html/players/player_1439.h' +
+            'tml\">Evan Skoug</a> on the active roster.'
         ], [
-            'Baltimore Orioles: Activated C <a href=\"/StatsLab/reports/news' +
-            '/html/players/player_1439.html\">Evan Skoug</a> from the disabl' +
-            'ed list.'
+            'Baltimore Orioles: Activated C <a href=\"https://orangeandbluel' +
+            'eaguebaseball.com/StatsLab/reports/news/html/players/player_143' +
+            '9.html\">Evan Skoug</a> from the disabled list.'
         ], [
-            'Baltimore Orioles: Placed C <a href=\"/StatsLab/reports/news/ht' +
-            'ml/players/player_31093.html\">Salvador Perez</a> on waivers.'
+            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
+            'uebaseball.com/StatsLab/reports/news/html/players/player_31093.' +
+            'html\">Salvador Perez</a> on waivers.'
         ], [
-            'Kansas City Royals: Signed C <a href=\"/StatsLab/reports/news/h' +
-            'tml/players/player_29806.html\">Thomas Dillard</a> to a 7-year ' +
-            'contract extension worth a total of $119,640,000.'
+            'Kansas City Royals: Signed C <a href=\"https://orangeandbluelea' +
+            'guebaseball.com/StatsLab/reports/news/html/players/player_29806' +
+            '.html\">Thomas Dillard</a> to a 7-year contract extension worth' +
+            ' a total of $119,640,000.'
         ]])
 ]
 _transactions_table_old = [
@@ -146,9 +153,10 @@ _transactions_table_old = [
         clazz='border mt-3',
         head=['Monday, August 15th, 2022'],
         body=[[
-            'Baltimore Orioles: Placed 2B <a href=\"/StatsLab/reports/news/h' +
-            'tml/players/player_292.html\">Austin Slater</a> on the 7-day di' +
-            'sabled list, retroactive to 08/12/2022.'
+            'Baltimore Orioles: Placed 2B <a href=\"https://orangeandbluelea' +
+            'guebaseball.com/StatsLab/reports/news/html/players/player_292.h' +
+            'tml\">Austin Slater</a> on the 7-day disabled list, retroactive' +
+            ' to 08/12/2022.'
         ]])
 ]
 _table_new = {
@@ -450,10 +458,11 @@ class RecapTest(Test):
                't 5 days.'
         actual = Recap._rewrite_players(line)
         expected = '<a href=\"../teams/team_47.html\">Minnesota Twins</a>:' + \
-                   ' 1B <a href=\"/StatsLab/reports/news/html/players/play' + \
-                   'er_34032.html\">Nick Castellanos</a> was injured while' + \
-                   ' running the bases.  The Diagnosis: sprained ankle. Th' + \
-                   'is is a day-to-day injury expected to last 5 days.'
+                   ' 1B <a href=\"https://orangeandblueleaguebaseball.com/' + \
+                   'StatsLab/reports/news/html/players/player_34032.html\"' + \
+                   '>Nick Castellanos</a> was injured while running the ba' + \
+                   'ses.  The Diagnosis: sprained ankle. This is a day-to-' + \
+                   'day injury expected to last 5 days.'
         self.assertEqual(actual, expected)
 
     def test_death__with_true(self):
