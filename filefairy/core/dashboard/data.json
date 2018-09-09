@@ -1,189 +1,5 @@
 {
   "records": {
-    "2018-09-02T00:00:00": [
-      {
-        "count": 1,
-        "date": "2018-09-02T00:04:26.560444-05:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 185,
-        "msg": "Automated push.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      }
-    ],
-    "2018-09-02T00:00:00-04:00": [
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:08.182548-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 285,
-        "msg": "Restarted fairylab.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:08.586614-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded exports.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:08.709805-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded gameday.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:09.020088-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:09.117116-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:09.200167-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:10.367056-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 3,
-        "date": "2018-09-02T05:37:10.445569-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T05:36:52.499538-04:00",
-        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 113, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/orangeandblueleague/filefairy/api/registrable/registrable.py\", line 76, in _notify\n    response = self._notify_internal(**kwargs)\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/git/git.py\", line 62, in _notify_internal\n    self.automate('fairylab', **kwargs)\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/git/git.py\", line 154, in automate\n    sub = self.push(*args, **kwargs)\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/git/git.py\", line 179, in push\n    response = self._call(['git', 'push'], *args, **kwargs)\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/git/git.py\", line 121, in _call\n    output = check_output(cmd)\n  File \"/home/pi/orangeandblueleague/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1446, in _communicate\n    ready = selector.select(timeout)\n  File \"/usr/lib/python3.5/selectors.py\", line 376, in select\n    fd_event_list = self._poll.poll(timeout)\nKeyboardInterrupt",
-        "levelname": "INFO",
-        "lineno": 126,
-        "msg": "Disabled git.",
-        "pathname": "/home/pi/fairylab/static/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T06:47:42.294659-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 106,
-        "msg": "Upload started.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T07:45:09.654329-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 312,
-        "msg": "File is up.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T07:45:11.264806-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 306,
-        "msg": "Download started.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T07:50:25.721830-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 288,
-        "msg": "Download finished.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T07:50:26.063018-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 60,
-        "msg": "News updated.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/recap/recap.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T10:19:35.179141-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 185,
-        "msg": "Manual push.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T10:19:39.451540-04:00",
-        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 113, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/orangeandblueleague/filefairy/api/messageable/messageable.py\", line 58, in _on_message\n    return self._on_message_internal(**kwargs)\n  File \"/home/pi/orangeandblueleague/filefairy/plugin/snacks/snacks.py\", line 216, in _on_message_internal\n    ok = float(ts) - float(data['members'][user]) > 10\nValueError: could not convert string to float: '1535754685.000100-05:00'",
-        "levelname": "INFO",
-        "lineno": 126,
-        "msg": "Disabled snacks.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T10:23:12.128569-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T10:25:36.131515-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 173,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-02T10:25:46.989353-04:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
-      }
-    ],
     "2018-09-03T00:00:00-04:00": [
       {
         "count": 1,
@@ -509,6 +325,71 @@
         "lineno": 107,
         "msg": "Upload started.",
         "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      }
+    ],
+    "2018-09-08T00:00:00-07:00": [
+      {
+        "count": 1,
+        "date": "2018-09-08T00:00:30.529419-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 185,
+        "msg": "Automated push.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-08T00:47:24.815442-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 315,
+        "msg": "File is up.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-08T00:47:26.394310-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 309,
+        "msg": "Download started.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-08T00:54:32.990783-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 291,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-08T00:54:33.119678-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 60,
+        "msg": "News updated.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/recap/recap.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-08T01:11:29.334231-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 173,
+        "msg": "Fetched latest changes.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-08T01:11:45.968871-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 248,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/orangeandblueleague/filefairy/core/fairylab/fairylab.py"
       }
     ]
   }
