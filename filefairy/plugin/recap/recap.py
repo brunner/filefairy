@@ -199,12 +199,15 @@ class Recap(Registrable):
         return ret
 
     def _tables_internal(self, key):
+        ret = []
+
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
         dname = dpath.format(key)
+        if not os.path.isfile(dname):
+            return ret
+
         with open(dname, 'r') as f:
             content = f.read()
-
-        ret = []
 
         date, line = '', ''
         cdate = ''

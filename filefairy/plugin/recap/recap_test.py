@@ -588,7 +588,9 @@ class RecapTest(Test):
         self.mock_reactions.assert_not_called()
 
     @mock.patch('plugin.recap.recap.open', create=True)
-    def test_tables_internal__injuries(self, mock_open):
+    @mock.patch('plugin.recap.recap.os.path.isfile')
+    def test_tables_internal__injuries(self, mock_isfile, mock_open):
+        mock_isfile.return_value = True
         injuries_new = '20220815\t<a href=\"../teams/team_57.html\">Tampa ' + \
                        'Bay Rays</a>: <a href=\"../players/player_1.html\"' + \
                        '>Zack Weiss</a> diagnosed with a strained hamstrin' + \
@@ -629,7 +631,9 @@ class RecapTest(Test):
         self.assertEqual(plugin.data['now']['injuries'], _injuries_encoded_new)
 
     @mock.patch('plugin.recap.recap.open', create=True)
-    def test_tables_internal__news(self, mock_open):
+    @mock.patch('plugin.recap.recap.os.path.isfile')
+    def test_tables_internal__news(self, mock_isfile, mock_open):
+        mock_isfile.return_value = True
         news_new = '20220815\t<a href=\"../teams/team_42.html\">Houston As' + \
                    'tros</a>: <a href=\"../players/player_39044.html\">Mar' + \
                    'k Appel</a> pitches a 2-hit shutout against the <a hre' + \
@@ -667,7 +671,9 @@ class RecapTest(Test):
         self.assertEqual(plugin.data['now']['news'], _news_encoded_new)
 
     @mock.patch('plugin.recap.recap.open', create=True)
-    def test_tables_internal__transactions(self, mock_open):
+    @mock.patch('plugin.recap.recap.os.path.isfile')
+    def test_tables_internal__transactions(self, mock_isfile, mock_open):
+        mock_isfile.return_value = True
         _transactions_new = '20220815\t<a href=\"../teams/team_33.html\">B' + \
                             'altimore Orioles</a>: Placed C <a href=\"../p' + \
                             'layers/player_1439.html\">Evan Skoug</a> on t' + \
