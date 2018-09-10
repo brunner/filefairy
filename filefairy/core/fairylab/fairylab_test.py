@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
 import functools
 import logging
 import os
@@ -22,6 +21,7 @@ from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from util.component.component import card  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -89,8 +89,8 @@ class FakeWebSocketApp(object):
 
 
 _env = env()
-_now = datetime.datetime(1985, 10, 26, 0, 2, 30)
-_then = datetime.datetime(1985, 10, 25, 0, 0, 0)
+_now = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
+_then = datetime_datetime_pst(1985, 10, 25, 0, 0, 0)
 
 _dashboard = Dashboard(date=_then, e=_env)
 _registered = {

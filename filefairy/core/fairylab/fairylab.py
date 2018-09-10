@@ -48,7 +48,7 @@ class Fairylab(Messageable, Renderable):
         self.registered = {'dashboard': d}
         self.sleep = 60
         self.tasks = []
-        self.ws = None
+        self.ws = None 
 
     @staticmethod
     def _data():
@@ -68,6 +68,7 @@ class Fairylab(Messageable, Renderable):
 
     def _setup(self, **kwargs):
         date = kwargs['date']
+        self.data['date'] = encode_datetime(date)
         self.day = date.day
         self._try('dashboard', 'resolve', 'dashboard', **kwargs)
         d = os.path.join(_root, 'plugin')

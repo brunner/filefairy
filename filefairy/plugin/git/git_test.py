@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
 import logging
 import os
 import re
@@ -18,6 +17,7 @@ from plugin.git.git import Git  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
@@ -26,10 +26,10 @@ from util.test.test import main  # noqa
 _commit = 'https://github.com/brunner/orangeandblueleague/commit/'
 _env = env()
 _l = ['d-inline-block', 'w-65p']
-_now = datetime.datetime(1985, 10, 27, 0, 0, 0)
+_now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
 _now_encoded = '1985-10-27T00:00:00-07:00'
 _r = ['d-inline-block', 'text-right', 'w-65p']
-_then = datetime.datetime(1985, 10, 26, 0, 2, 30)
+_then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 
 
 def _data(pull=None, push=None):
