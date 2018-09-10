@@ -224,6 +224,9 @@ class Fairylab(Messageable, Renderable):
         response = self._reload_internal(*args, **kwargs)
         if response.notify:
             self._try_all('_setup', **kwargs)
+            if 'git' in self.registered.keys():
+                self._try(
+                    'git', '_notify', notify=Notify.FAIRYLAB_DEPLOY)
         return response
 
     def _reload_internal(self, *args, **kwargs):
