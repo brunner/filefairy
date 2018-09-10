@@ -158,7 +158,8 @@ class TeamTest(unittest.TestCase):
             decoding_to_nickname('St. Louis Cardinals'), 'Cardinals')
         self.assertEqual(decoding_to_nickname('Tampa Bay Rays'), 'Rays')
         self.assertEqual(decoding_to_nickname('Texas Rangers'), 'Rangers')
-        self.assertEqual(decoding_to_nickname('Toronto Blue Jays'), 'Blue Jays')
+        self.assertEqual(
+            decoding_to_nickname('Toronto Blue Jays'), 'Blue Jays')
         self.assertEqual(
             decoding_to_nickname('Washington Nationals'), 'Nationals')
         self.assertEqual(decoding_to_nickname('Chicago'), '')
