@@ -53,7 +53,7 @@ _encoded_old = {
     'transactions': _transactions_encoded_old
 }
 
-_injuries_table_new = [
+_injuries_table_all_new = [
     table(
         clazz='border mt-3',
         head=['Wednesday, August 17th, 2022'],
@@ -79,6 +79,18 @@ _injuries_table_new = [
             's</a> diagnosed with a strained hamstring, will miss 8 months.'
         ]])
 ]
+_injuries_table_team_new = [
+    table(
+        clazz='border mt-3',
+        head=['Wednesday, August 17th, 2022'],
+        body=[[
+            'Minnesota Twins: 1B <a href=\"https://orangeandblueleaguebaseba' +
+            'll.com/StatsLab/reports/news/html/players/player_34032.html\">N' +
+            'ick Castellanos</a> was injured while running the bases.  The D' +
+            'iagnosis: sprained ankle. This is a day-to-day injury expected ' +
+            'to last 5 days.'
+        ]])
+]
 _injuries_table_old = [
     table(
         clazz='border mt-3',
@@ -90,7 +102,7 @@ _injuries_table_old = [
             'is: knee inflammation. He\'s expected to miss about 3 weeks.'
         ]])
 ]
-_news_table_new = [
+_news_table_all_new = [
     table(
         clazz='border mt-3',
         head=['Thursday, August 18th, 2022'],
@@ -114,6 +126,17 @@ _news_table_new = [
             's with 8 strikeouts and 0 BB allowed!'
         ]])
 ]
+_news_table_team_new = [
+    table(
+        clazz='border mt-3',
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Houston Astros: <a href=\"https://orangeandblueleaguebaseball.c' +
+            'om/StatsLab/reports/news/html/players/player_39044.html\">Mark ' +
+            'Appel</a> pitches a 2-hit shutout against the Los Angeles Angel' +
+            's with 8 strikeouts and 0 BB allowed!'
+        ]])
+]
 _news_table_old = [
     table(
         clazz='border mt-3',
@@ -125,7 +148,7 @@ _news_table_old = [
             'strike call.'
         ]])
 ]
-_transactions_table_new = [
+_transactions_table_all_new = [
     table(
         clazz='border mt-3',
         head=['Monday, August 15th, 2022'],
@@ -148,6 +171,24 @@ _transactions_table_new = [
             ' a total of $119,640,000.'
         ]])
 ]
+_transactions_table_team_new = [
+    table(
+        clazz='border mt-3',
+        head=['Monday, August 15th, 2022'],
+        body=[[
+            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
+            'uebaseball.com/StatsLab/reports/news/html/players/player_1439.h' +
+            'tml\">Evan Skoug</a> on the active roster.'
+        ], [
+            'Baltimore Orioles: Activated C <a href=\"https://orangeandbluel' +
+            'eaguebaseball.com/StatsLab/reports/news/html/players/player_143' +
+            '9.html\">Evan Skoug</a> from the disabled list.'
+        ], [
+            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
+            'uebaseball.com/StatsLab/reports/news/html/players/player_31093.' +
+            'html\">Salvador Perez</a> on waivers.'
+        ]])
+]
 _transactions_table_old = [
     table(
         clazz='border mt-3',
@@ -160,15 +201,16 @@ _transactions_table_old = [
         ]])
 ]
 _table_new = {
-    'injuries': _injuries_table_new,
-    'news': _news_table_new,
-    'transactions': _transactions_table_new
+    'injuries': _injuries_table_all_new,
+    'news': _news_table_all_new,
+    'transactions': _transactions_table_all_new
 }
 _table_old = {
     'injuries': _injuries_table_old,
     'news': _news_table_old,
     'transactions': _transactions_table_old
 }
+_teams = [('Arizona Diamondbacks', 'diamondbacks')]
 
 
 def _data(now=_encoded_new, standings=_standings, then=_encoded_old):
@@ -242,10 +284,9 @@ class RecapTest(Test):
         plugin = self.create_plugin(_data())
         plugin.tables = _table_old
         response = plugin._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.BASE],
-                             shadow=plugin._shadow_internal()))
+        self.assertEqual(
+            response,
+            Response(notify=[Notify.BASE], shadow=plugin._shadow_internal()))
 
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
@@ -275,10 +316,9 @@ class RecapTest(Test):
         plugin = self.create_plugin(_data())
         plugin.tables = _table_old
         response = plugin._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.BASE],
-                             shadow=plugin._shadow_internal()))
+        self.assertEqual(
+            response,
+            Response(notify=[Notify.BASE], shadow=plugin._shadow_internal()))
 
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
@@ -308,10 +348,9 @@ class RecapTest(Test):
         plugin = self.create_plugin(_data())
         plugin.tables = _table_old
         response = plugin._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.BASE],
-                             shadow=plugin._shadow_internal()))
+        self.assertEqual(
+            response,
+            Response(notify=[Notify.BASE], shadow=plugin._shadow_internal()))
 
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
@@ -371,22 +410,36 @@ class RecapTest(Test):
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
+    @mock.patch.object(Recap, '_teams')
+    @mock.patch.object(Recap, '_team')
     @mock.patch.object(Recap, '_home')
-    def test_render(self, mock_home):
+    def test_render(self, mock_home, mock_team, mock_teams):
         home = {
+            'breadcrumbs': [],
+            'teams': _teams,
+            'injuries': [],
+            'news': [],
+            'transactions': []
+        }
+        team = {
             'breadcrumbs': [],
             'injuries': [],
             'news': [],
             'transactions': []
         }
         mock_home.return_value = home
+        mock_team.return_value = team
+        mock_teams.return_value = _teams
 
         plugin = self.create_plugin(_data())
         value = plugin._render_internal(date=_now)
-        index = 'recap/index.html'
-        self.assertEqual(value, [(index, '', 'recap.html', home)])
+        index1 = 'recap/index.html'
+        index2 = 'recap/diamondbacks/index.html'
+        self.assertEqual(value, [(index1, '', 'recap.html', home),
+                                 (index2, 'Diamondbacks', 'recap.html', team)])
 
-        mock_home.assert_called_once_with(date=_now)
+        mock_home.assert_called_once_with(_teams, date=_now)
+        mock_team.assert_called_once_with('Arizona Diamondbacks', date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -501,7 +554,7 @@ class RecapTest(Test):
         plugin.shadow['statsplus.postseason'] = False
         plugin.tables = _table_new
 
-        value = plugin._home(date=_now)
+        value = plugin._home(_teams, date=_now)
         breadcrumbs = [{
             'href': '/',
             'name': 'Fairylab'
@@ -511,14 +564,47 @@ class RecapTest(Test):
         }]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'injuries': _injuries_table_new,
-            'news': _news_table_new,
-            'transactions': _transactions_table_new,
+            'teams': _teams,
+            'injuries': _injuries_table_all_new,
+            'news': _news_table_all_new,
+            'transactions': _transactions_table_all_new,
             'standings': standings_table
         }
         self.assertEqual(value, expected)
 
         mock_standings.assert_called_once_with(_standings)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    @mock.patch.object(Recap, '_tables')
+    def test_team(self, mock_tables):
+        mock_tables.return_value = _table_new
+
+        plugin = self.create_plugin(_data())
+
+        value = plugin._team('Arizona Diamondbacks', date=_now)
+        breadcrumbs = [{
+            'href': '/',
+            'name': 'Fairylab'
+        }, {
+            'href': '/recap/',
+            'name': 'Recap'
+        }, {
+            'href': '',
+            'name': 'Diamondbacks'
+        }]
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'injuries': _injuries_table_all_new,
+            'news': _news_table_all_new,
+            'transactions': _transactions_table_all_new
+        }
+        self.assertEqual(value, expected)
+
+        mock_tables.assert_called_once_with('Arizona Diamondbacks')
         self.mock_open.assert_not_called()
         self.mock_handle.write.not_called()
         self.mock_chat.assert_not_called()
@@ -611,18 +697,27 @@ class RecapTest(Test):
                        'the bases.  The Diagnosis: knee inflammation. He\'' + \
                        's expected to miss about 3 weeks.'
         injuries = '\n'.join([injuries_old, injuries_new])
-        mo = mock.mock_open(read_data=injuries)
-        mock_open.side_effect = [mo.return_value]
+        mo1 = mock.mock_open(read_data=injuries)
+        mo2 = mock.mock_open(read_data=injuries)
+        mock_open.side_effect = [mo1.return_value, mo2.return_value]
 
         now = {'injuries': ''}
         then = {'injuries': _injuries_encoded_old}
         plugin = self.create_plugin(_data(now=now, then=then))
-        actual = plugin._tables_internal('injuries')
-        expected = _injuries_table_new
+
+        actual = plugin._tables_internal('injuries', '')
+        expected = _injuries_table_all_new
+        self.assertEqual(actual, expected)
+
+        actual = plugin._tables_internal('injuries', 'Minnesota Twins')
+        expected = _injuries_table_team_new
         self.assertEqual(actual, expected)
 
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
-        mock_open.assert_called_once_with(dpath.format('injuries'), 'r')
+        mock_open.assert_has_calls([
+            mock.call(dpath.format('injuries'), 'r'),
+            mock.call(dpath.format('injuries'), 'r')
+        ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -651,18 +746,27 @@ class RecapTest(Test):
                    'eed</a> got suspended 4 games after ejection following' + \
                    ' arguing a strike call.'
         news = '\n'.join([news_old, news_new])
-        mo = mock.mock_open(read_data=news)
-        mock_open.side_effect = [mo.return_value]
+        mo1 = mock.mock_open(read_data=news)
+        mo2 = mock.mock_open(read_data=news)
+        mock_open.side_effect = [mo1.return_value, mo2.return_value]
 
         now = {'news': ''}
         then = {'news': _news_encoded_old}
         plugin = self.create_plugin(_data(now=now, then=then))
-        actual = plugin._tables_internal('news')
-        expected = _news_table_new
+
+        actual = plugin._tables_internal('news', '')
+        expected = _news_table_all_new
+        self.assertEqual(actual, expected)
+
+        actual = plugin._tables_internal('news', 'Houston Astros')
+        expected = _news_table_team_new
         self.assertEqual(actual, expected)
 
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
-        mock_open.assert_called_once_with(dpath.format('news'), 'r')
+        mock_open.assert_has_calls([
+            mock.call(dpath.format('news'), 'r'),
+            mock.call(dpath.format('news'), 'r')
+        ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -695,18 +799,27 @@ class RecapTest(Test):
                             'n the 7-day disabled list, retroactive to 08/' + \
                             '12/2022.\n'
         trans = '\n'.join([_transactions_old, _transactions_new])
-        mo = mock.mock_open(read_data=trans)
-        mock_open.side_effect = [mo.return_value]
+        mo1 = mock.mock_open(read_data=trans)
+        mo2 = mock.mock_open(read_data=trans)
+        mock_open.side_effect = [mo1.return_value, mo2.return_value]
 
         now = {'transactions': ''}
         then = {'transactions': _transactions_encoded_old}
         plugin = self.create_plugin(_data(now=now, then=then))
-        actual = plugin._tables_internal('transactions')
-        expected = _transactions_table_new
+
+        actual = plugin._tables_internal('transactions', '')
+        expected = _transactions_table_all_new
+        self.assertEqual(actual, expected)
+
+        actual = plugin._tables_internal('transactions', 'Baltimore Orioles')
+        expected = _transactions_table_team_new
         self.assertEqual(actual, expected)
 
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
-        mock_open.assert_called_once_with(dpath.format('transactions'), 'r')
+        mock_open.assert_has_calls([
+            mock.call(dpath.format('transactions'), 'r'),
+            mock.call(dpath.format('transactions'), 'r')
+        ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()

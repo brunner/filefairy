@@ -20,7 +20,10 @@ from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.statslab.statslab import box_score  # noqa
+from util.team.team import decoding_to_nickname  # noqa
 from util.team.team import encoding_to_teamid  # noqa
+from util.team.team import teamid_to_decoding  # noqa
+from util.team.team import teamid_to_nickname  # noqa
 
 logger_ = logging.getLogger('fairylab')
 
@@ -78,9 +81,20 @@ class Recap(Registrable):
         return Response()
 
     def _render_internal(self, **kwargs):
+        ret = []
+        teams = self._teams()
+
         html = 'recap/index.html'
-        _home = self._home(**kwargs)
-        return [(html, '', 'recap.html', _home)]
+        _home = self._home(teams, **kwargs)
+        ret.append((html, '', 'recap.html', _home))
+
+        for decoding, path in teams:
+            html = 'recap/' + path + '/index.html'
+            _team = self._team(decoding, **kwargs)
+            ret.append((html, decoding_to_nickname(decoding), 'recap.html',
+                        _team))
+
+        return ret
 
     def _setup_internal(self, **kwargs):
         self.tables = self._tables()
@@ -116,6 +130,12 @@ class Recap(Registrable):
             'rts/news/html/players/player', text)
 
     @staticmethod
+    def _teams():
+        return sorted([(teamid_to_decoding(str(t)),
+                        teamid_to_nickname(str(t)).replace(' ', '').lower())
+                       for t in range(31, 60)])
+
+    @staticmethod
     def _total(record):
         if record.count('-') == 1:
             return sum(int(n) for n in record.split('-'))
@@ -134,7 +154,7 @@ class Recap(Registrable):
                             return True
         return False
 
-    def _home(self, **kwargs):
+    def _home(self, teams, **kwargs):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
@@ -142,7 +162,8 @@ class Recap(Registrable):
             }, {
                 'href': '',
                 'name': 'Recap'
-            }]
+            }],
+            'teams': teams
         }
         for key in ['injuries', 'news', 'transactions']:
             ret[key] = self.tables[key]
@@ -151,6 +172,26 @@ class Recap(Registrable):
         postseason = self.shadow.get('statsplus.postseason', True)
         if not (offseason or postseason):
             ret['standings'] = standings_table(self.data['standings'])
+
+        return ret
+
+    def _team(self, decoding, **kwargs):
+        ret = {
+            'breadcrumbs': [{
+                'href': '/',
+                'name': 'Fairylab'
+            }, {
+                'href': '/recap/',
+                'name': 'Recap'
+            }, {
+                'href': '',
+                'name': decoding_to_nickname(decoding)
+            }]
+        }
+
+        tables = self._tables(decoding)
+        for key in ['injuries', 'news', 'transactions']:
+            ret[key] = tables[key]
 
         return ret
 
@@ -192,13 +233,13 @@ class Recap(Registrable):
         if data != original:
             self.write()
 
-    def _tables(self):
+    def _tables(self, team=''):
         ret = {}
         for key in ['injuries', 'news', 'transactions']:
-            ret[key] = self._tables_internal(key)
+            ret[key] = self._tables_internal(key, team)
         return ret
 
-    def _tables_internal(self, key):
+    def _tables_internal(self, key, team):
         ret = []
 
         dpath = os.path.join(_root, 'resource/extract/leagues/{}.txt')
@@ -230,7 +271,8 @@ class Recap(Registrable):
                     ret[0]['body'] = []
                 else:
                     body = self._rewrite_players(self._strip_teams(line))
-                    ret[0]['body'].append([body])
+                    if not team or team in body:
+                        ret[0]['body'].append([body])
 
         ret = [table for table in ret if table['body']]
         self.data['now'][key] = self._encode(date, line)

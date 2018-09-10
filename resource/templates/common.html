@@ -78,13 +78,37 @@
 <!-- $(common.card) -->
 {%- endmacro -%}
 
+{% macro dropdown(plugin, teams) -%}
+<!-- ^(common.dropdown) -->
+<div class="row">
+<div class="col-12">
+<div class="dropdown mt-3 p-0">
+<button class="{{ 'btn bg-white dropdown-toggle border w-100 ' +
+                  'd-flex justify-content-between align-items-center' }}"
+        type="button" id="dropdown-button" data-toggle="dropdown"
+        data-flip="false" aria-haspopup="true"
+        aria-expanded="false">Select</button>
+<div class="dropdown-menu w-100" aria-labelledby="dropdown-button">
+{% for name, path in teams %}
+<a class="dropdown-item py-2"
+   href="{{ plugin + '/' + path.replace(' ', '').lower() + '/' }}">
+{{ name }}
+</a>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+<!-- $(common.dropdown) -->
+{%- endmacro -%}
+
 {% macro form() -%}
 <!-- ^(common.form) -->
 <div class="row">
 <div class="col-12">
 <nav class="navbar navbar-light bg-light mt-3 p-0">
 <form class="w-100">
-<input class="form-control mr-sm-2" type="search" placeholder="Search"
+<input class="form-control border mr-sm-2" type="search" placeholder="Search"
        aria-label="Search">
 </form>
 </nav>

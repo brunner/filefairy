@@ -99,12 +99,13 @@ def _sub(ks, f, s):
     return re.sub(pattern, partial(_repl, f), s)
 
 
-_decodings = _map('decoding', ['encoding'])
+_decodings = _map('decoding', ['encoding', 'nickname'])
 _encodings = _map(
     'encoding',
     ['chlany', 'crosstown', 'decoding', 'nickname', 'precoding', 'teamid'])
 _precodings = _map('precoding', ['encoding'])
-_teamids = _map('teamid', ['abbreviation', 'decoding', 'encoding', 'hometown'])
+_teamids = _map(
+    'teamid', ['abbreviation', 'decoding', 'encoding', 'hometown', 'nickname'])
 _img = '<img src="https://orangeandblueleaguebaseball.com/StatsLab/' + \
        'reports/news/html/images/team_logos/{0}_40.png" width="20" ' + \
        'height="20" border="0" class="{1}">'
@@ -121,6 +122,10 @@ def chlany():
 
 def decoding_to_encoding(decoding):
     return _decodings.get(decoding, {}).get('encoding', '')
+
+
+def decoding_to_nickname(decoding):
+    return _decodings.get(decoding, {}).get('nickname', '')
 
 
 def decoding_to_encoding_sub(text):
@@ -216,6 +221,10 @@ def teamid_to_encoding(teamid):
 
 def teamid_to_hometown(teamid):
     return _teamids.get(teamid, {}).get('hometown', '')
+
+
+def teamid_to_nickname(teamid):
+    return _teamids.get(teamid, {}).get('nickname', '')
 
 
 def teamids():

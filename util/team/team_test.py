@@ -16,6 +16,7 @@ from util.team.team import _inline_span  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
+from util.team.team import decoding_to_nickname  # noqa
 from util.team.team import decodings  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import encoding_to_chlany  # noqa
@@ -35,6 +36,7 @@ from util.team.team import teamid_to_abbreviation  # noqa
 from util.team.team import teamid_to_decoding  # noqa
 from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
+from util.team.team import teamid_to_nickname  # noqa
 from util.team.team import teamids  # noqa
 
 _decodings = [
@@ -119,6 +121,49 @@ class TeamTest(unittest.TestCase):
         decodings = ', '.join(_decodings)
         encodings = ', '.join(_de_encodings)
         self.assertEqual(decoding_to_encoding_sub(decodings), encodings)
+
+    def test_decoding_to_nickname(self):
+        self.assertEqual(
+            decoding_to_nickname('Arizona Diamondbacks'), 'Diamondbacks')
+        self.assertEqual(decoding_to_nickname('Atlanta Braves'), 'Braves')
+        self.assertEqual(decoding_to_nickname('Baltimore Orioles'), 'Orioles')
+        self.assertEqual(decoding_to_nickname('Boston Red Sox'), 'Red Sox')
+        self.assertEqual(
+            decoding_to_nickname('Chicago White Sox'), 'White Sox')
+        self.assertEqual(decoding_to_nickname('Chicago Cubs'), 'Cubs')
+        self.assertEqual(decoding_to_nickname('Cincinnati Reds'), 'Reds')
+        self.assertEqual(decoding_to_nickname('Cleveland Indians'), 'Indians')
+        self.assertEqual(decoding_to_nickname('Colorado Rockies'), 'Rockies')
+        self.assertEqual(decoding_to_nickname('Detroit Tigers'), 'Tigers')
+        self.assertEqual(decoding_to_nickname('Miami Marlins'), 'Marlins')
+        self.assertEqual(decoding_to_nickname('Houston Astros'), 'Astros')
+        self.assertEqual(decoding_to_nickname('Kansas City Royals'), 'Royals')
+        self.assertEqual(decoding_to_nickname('Los Angeles Angels'), 'Angels')
+        self.assertEqual(
+            decoding_to_nickname('Los Angeles Dodgers'), 'Dodgers')
+        self.assertEqual(decoding_to_nickname('Milwaukee Brewers'), 'Brewers')
+        self.assertEqual(decoding_to_nickname('Minnesota Twins'), 'Twins')
+        self.assertEqual(decoding_to_nickname('New York Yankees'), 'Yankees')
+        self.assertEqual(decoding_to_nickname('New York Mets'), 'Mets')
+        self.assertEqual(
+            decoding_to_nickname('Oakland Athletics'), 'Athletics')
+        self.assertEqual(
+            decoding_to_nickname('Philadelphia Phillies'), 'Phillies')
+        self.assertEqual(decoding_to_nickname('Pittsburgh Pirates'), 'Pirates')
+        self.assertEqual(decoding_to_nickname('San Diego Padres'), 'Padres')
+        self.assertEqual(decoding_to_nickname('Seattle Mariners'), 'Mariners')
+        self.assertEqual(
+            decoding_to_nickname('San Francisco Giants'), 'Giants')
+        self.assertEqual(
+            decoding_to_nickname('St. Louis Cardinals'), 'Cardinals')
+        self.assertEqual(decoding_to_nickname('Tampa Bay Rays'), 'Rays')
+        self.assertEqual(decoding_to_nickname('Texas Rangers'), 'Rangers')
+        self.assertEqual(decoding_to_nickname('Toronto Blue Jays'), 'Blue Jays')
+        self.assertEqual(
+            decoding_to_nickname('Washington Nationals'), 'Nationals')
+        self.assertEqual(decoding_to_nickname('Chicago'), '')
+        self.assertEqual(decoding_to_nickname('Los Angeles'), '')
+        self.assertEqual(decoding_to_nickname('New York'), '')
 
     def test_decodings(self):
         self.assertEqual(decodings(), _decodings)
@@ -516,6 +561,38 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(teamid_to_hometown('58'), 'Texas')
         self.assertEqual(teamid_to_hometown('59'), 'Toronto')
         self.assertEqual(teamid_to_hometown('60'), 'Washington')
+
+    def test_teamid_to_nickname(self):
+        self.assertEqual(teamid_to_nickname('31'), 'Diamondbacks')
+        self.assertEqual(teamid_to_nickname('32'), 'Braves')
+        self.assertEqual(teamid_to_nickname('33'), 'Orioles')
+        self.assertEqual(teamid_to_nickname('34'), 'Red Sox')
+        self.assertEqual(teamid_to_nickname('35'), 'White Sox')
+        self.assertEqual(teamid_to_nickname('36'), 'Cubs')
+        self.assertEqual(teamid_to_nickname('37'), 'Reds')
+        self.assertEqual(teamid_to_nickname('38'), 'Indians')
+        self.assertEqual(teamid_to_nickname('39'), 'Rockies')
+        self.assertEqual(teamid_to_nickname('40'), 'Tigers')
+        self.assertEqual(teamid_to_nickname('41'), 'Marlins')
+        self.assertEqual(teamid_to_nickname('42'), 'Astros')
+        self.assertEqual(teamid_to_nickname('43'), 'Royals')
+        self.assertEqual(teamid_to_nickname('44'), 'Angels')
+        self.assertEqual(teamid_to_nickname('45'), 'Dodgers')
+        self.assertEqual(teamid_to_nickname('46'), 'Brewers')
+        self.assertEqual(teamid_to_nickname('47'), 'Twins')
+        self.assertEqual(teamid_to_nickname('48'), 'Yankees')
+        self.assertEqual(teamid_to_nickname('49'), 'Mets')
+        self.assertEqual(teamid_to_nickname('50'), 'Athletics')
+        self.assertEqual(teamid_to_nickname('51'), 'Phillies')
+        self.assertEqual(teamid_to_nickname('52'), 'Pirates')
+        self.assertEqual(teamid_to_nickname('53'), 'Padres')
+        self.assertEqual(teamid_to_nickname('54'), 'Mariners')
+        self.assertEqual(teamid_to_nickname('55'), 'Giants')
+        self.assertEqual(teamid_to_nickname('56'), 'Cardinals')
+        self.assertEqual(teamid_to_nickname('57'), 'Rays')
+        self.assertEqual(teamid_to_nickname('58'), 'Rangers')
+        self.assertEqual(teamid_to_nickname('59'), 'Blue Jays')
+        self.assertEqual(teamid_to_nickname('60'), 'Nationals')
 
     def test_teamids(self):
         self.assertEqual(teamids(), _teamids)

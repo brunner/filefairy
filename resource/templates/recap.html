@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('filter', 'Filter')] %}
+{% set items = [] %}
+{% if teams %}
+{% do items.append(('teams', 'Teams')) %}
+{% endif %}
+{% do items.append(('filter', 'Filter')) %}
 {% if injuries %}
 {% do items.append(('injuries', 'Injuries')) %}
 {% endif %}
@@ -19,6 +23,18 @@
 {% endblock %}
 
 {% block content %}
+
+{% if teams %}
+<!-- ^(recap.teams) -->
+<div class="container anchor" id="teams">
+
+{{ common.heading('bookmark', 'Teams') }}
+
+{{ common.dropdown('/recap', teams) }}
+
+</div>
+<!-- $(recap.teams) -->
+{% endif %}
 
 <!-- ^(recap.filter) -->
 <div class="container anchor" id="filter">
