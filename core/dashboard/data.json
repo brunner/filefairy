@@ -1,16 +1,5 @@
 {
   "records": {
-    "2018-09-04T00:00:00-07:00": [
-      {
-        "count": 1,
-        "date": "2018-09-04T00:01:04.220773-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 185,
-        "msg": "Automated push.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      }
-    ],
     "2018-09-05T00:00:00-07:00": [
       {
         "count": 1,
@@ -332,6 +321,170 @@
         "exc": "",
         "levelname": "INFO",
         "lineno": 249,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      }
+    ],
+    "2018-09-10T00:00:00-07:00": [
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:23.905994-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 286,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:24.266895-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 249,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:24.313305-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 249,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:24.365313-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 249,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:24.419717-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 249,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:24.473973-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 249,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:25.583129-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 249,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T02:25:25.640584-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 249,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-09-10T04:42:56.286154-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 172,
+        "msg": "Fetched latest changes.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:40:40.432511-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 242, in _reload_internal\n    module, ok = importlib.import_module(package), True\n  File \"/usr/lib/python3.5/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n  File \"<frozen importlib._bootstrap>\", line 986, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 969, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 958, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 673, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 673, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 222, in _call_with_frames_removed\n  File \"/home/pi/filefairy/plugin/recap/recap.py\", line 23, in <module>\n    from util.team.team import decoding_to_nickname  # noqa\nImportError: cannot import name 'decoding_to_nickname'",
+        "levelname": "INFO",
+        "lineno": 251,
+        "msg": "Disabled recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:04.198149-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 289,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:04.601657-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:04.656334-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:04.718235-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:04.780880-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:04.889648-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:06.015296-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-10T04:43:06.074979-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
         "msg": "Reloaded statsplus.",
         "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
       }
