@@ -31,7 +31,7 @@ def _open(link):
     return ''
 
 
-def box_score(link):
+def parse_box_score(link):
     ret = {'ok': False}
 
     content = _open(link)
@@ -87,7 +87,7 @@ def box_score(link):
     }
 
 
-def player(link):
+def parse_player(link):
     ret = {'ok': False}
 
     content = _open(link)

@@ -624,7 +624,7 @@ class RecapTest(Test):
         self.assertFalse(value)
 
     @mock.patch('plugin.recap.recap.os.listdir')
-    @mock.patch('plugin.recap.recap.box_score')
+    @mock.patch('plugin.recap.recap.parse_box_score')
     def test_standings(self, mock_box, mock_listdir):
         boxes = ['123', '456', '789']
         mock_listdir.return_value = [

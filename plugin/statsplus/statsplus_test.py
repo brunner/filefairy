@@ -1176,8 +1176,8 @@ class StatsplusTest(Test):
         self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.player')
-    @mock.patch('plugin.statsplus.statsplus.box_score')
+    @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.parse_box_score')
     def test_resolve_all__with_valid_box_finished_false(
             self, mock_box, mock_player, mock_render):
         mock_box.side_effect = [{
@@ -1253,8 +1253,8 @@ class StatsplusTest(Test):
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.player')
-    @mock.patch('plugin.statsplus.statsplus.box_score')
+    @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.parse_box_score')
     def test_resolve_all__with_valid_box_finished_true(
             self, mock_box, mock_player, mock_render):
         mock_box.side_effect = [{
@@ -1333,8 +1333,8 @@ class StatsplusTest(Test):
         self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.player')
-    @mock.patch('plugin.statsplus.statsplus.box_score')
+    @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.parse_box_score')
     def test_resolve_all__with_invalid_date(self, mock_box, mock_player,
                                             mock_render):
         mock_box.return_value = {
@@ -1363,8 +1363,8 @@ class StatsplusTest(Test):
         self.assertCountEqual(plugin.data['unresolved'], [_then_encoded])
 
     @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.player')
-    @mock.patch('plugin.statsplus.statsplus.box_score')
+    @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.parse_box_score')
     def test_resolve_all__with_invalid_team(self, mock_box, mock_player,
                                             mock_render):
         mock_box.return_value = {
@@ -1393,8 +1393,8 @@ class StatsplusTest(Test):
         self.assertCountEqual(plugin.data['unresolved'], [_then_encoded])
 
     @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.player')
-    @mock.patch('plugin.statsplus.statsplus.box_score')
+    @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.parse_box_score')
     def test_resolve_all__with_invalid_runs(self, mock_box, mock_player,
                                             mock_render):
         mock_box.return_value = {

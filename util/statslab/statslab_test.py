@@ -10,8 +10,8 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
-from util.statslab.statslab import box_score  # noqa
-from util.statslab.statslab import player  # noqa
+from util.statslab.statslab import parse_box_score  # noqa
+from util.statslab.statslab import parse_player  # noqa
 from util.team.team import decoding_to_encoding  # noqa
 
 _now = datetime.datetime(2022, 10, 9, 0, 0, 0)
@@ -76,7 +76,7 @@ class StatslabTest(unittest.TestCase):
         mock_open.side_effect = [mo.return_value]
 
         link = _path + _game_box.format('2998')
-        actual = box_score(link)
+        actual = parse_box_score(link)
         expected = _box('76-86', 4, 'Arizona Diamondbacks', _now, '97-65', 2,
                         'Los Angeles Dodgers')
         self.assertEqual(actual, expected)
@@ -94,7 +94,7 @@ class StatslabTest(unittest.TestCase):
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
-        actual = box_score(link)
+        actual = parse_box_score(link)
         expected = _box('76-86', 4, 'Arizona Diamondbacks', _now, '97-65', 2,
                         'Los Angeles Dodgers')
         self.assertEqual(actual, expected)
@@ -111,7 +111,7 @@ class StatslabTest(unittest.TestCase):
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
-        actual = box_score(link)
+        actual = parse_box_score(link)
         expected = {'ok': False, 'error': 'invalid_title'}
         self.assertEqual(actual, expected)
 
@@ -126,7 +126,7 @@ class StatslabTest(unittest.TestCase):
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_box.format('2998')
-        actual = box_score(link)
+        actual = parse_box_score(link)
         expected = {'ok': False, 'error': 'invalid_line'}
         self.assertEqual(actual, expected)
 
@@ -139,7 +139,7 @@ class StatslabTest(unittest.TestCase):
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _player.format('29663')
-        actual = player(link)
+        actual = parse_player(link)
         expected = _play('Dakota Donovan', 'T44')
         self.assertEqual(actual, expected)
 
@@ -151,7 +151,7 @@ class StatslabTest(unittest.TestCase):
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _player.format('29663')
-        actual = player(link)
+        actual = parse_player(link)
         expected = {'ok': False, 'error': 'invalid_team'}
         self.assertEqual(actual, expected)
 

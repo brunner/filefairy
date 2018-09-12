@@ -19,7 +19,7 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.standings.standings import standings_table  # noqa
-from util.statslab.statslab import box_score  # noqa
+from util.statslab.statslab import parse_box_score  # noqa
 from util.team.team import decoding_to_nickname  # noqa
 from util.team.team import encoding_to_teamid  # noqa
 from util.team.team import teamid_to_decoding  # noqa
@@ -221,7 +221,7 @@ class Recap(Registrable):
         dpath = os.path.join(_root, 'resource/extract/box_scores')
         for box in os.listdir(dpath):
             bdname = os.path.join(dpath, box)
-            box_score_ = box_score(bdname)
+            box_score_ = parse_box_score(bdname)
             if box_score_['ok']:
                 away_teamid = encoding_to_teamid(box_score_['away_team'])
                 away_record = box_score_['away_record']

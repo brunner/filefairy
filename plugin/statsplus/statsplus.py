@@ -23,8 +23,8 @@ from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.standings.standings import sort  # noqa
 from util.standings.standings import standings_table  # noqa
-from util.statslab.statslab import box_score  # noqa
-from util.statslab.statslab import player  # noqa
+from util.statslab.statslab import parse_box_score  # noqa
+from util.statslab.statslab import parse_player  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import divisions  # noqa
@@ -443,7 +443,7 @@ class Statsplus(Registrable):
                     if url_match:
                         url, content = url_match[0]
                         link = url.format(_html, _player)
-                        player_ = player(link)
+                        player_ = parse_player(link)
                         if player_['ok']:
                             name = player_['name']
                             team = player_['team']
@@ -471,7 +471,7 @@ class Statsplus(Registrable):
                     link = url.format(_root + '/resource/extract/', _game_box)
                 else:
                     link = url.format(_html, _game_box)
-                box_score_ = box_score(link)
+                box_score_ = parse_box_score(link)
                 if box_score_['ok']:
                     ddate = decode_datetime(encoded_date)
                     if ddate != box_score_['date']:
