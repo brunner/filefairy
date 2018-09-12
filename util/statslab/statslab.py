@@ -8,6 +8,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.team.team import decoding_to_encoding  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
 
@@ -17,6 +18,9 @@ _game_box_line = '<tr style=\"background-color:#FFFFFE;\">(.+?)</tr>'
 _game_box_line_team = '<td class="dl">(?:<b>)?([^<]+)(?:</b>)?</td>'
 _game_box_line_record = '([^(]+) \(([^)]+)\)'
 _game_box_line_runs = '<td class="dc"><b>(\d+)</b></td>'
+_game_log_title = '<title>(.+?) @ (.+?)</title>'
+_game_log_date = '<div style="text-align:center; color:#000000; ' + \
+                 'padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>'
 _player_title = '<title>Player Report for #\d+  ([^<]+)</title>'
 _player_subtitle = '<div class="repsubtitle">(.+?)</div>'
 _player_team = 'href=\"..\/teams\/team_\d{2}.html">([^<]+)</a>'
@@ -42,7 +46,8 @@ def parse_box_score(link):
     away_title, home_title, date = title[0]
     away_team = decoding_to_encoding(away_title)
     home_team = decoding_to_encoding(home_title)
-    date = datetime.datetime.strptime(date, '%m/%d/%Y')
+    d = datetime.datetime.strptime(date, '%m/%d/%Y')
+    date = datetime_datetime_pst(d.year, d.month, d.day)
     if not away_team or not home_team:
         return dict(ret, error='invalid_title')
 
@@ -68,12 +73,12 @@ def parse_box_score(link):
     if away_line != away_team or home_line != home_team:
         return dict(ret, error='invalid_line')
 
-    runs = [re.findall(_game_box_line_runs, line)[0] for line in lines]
+    runs = [re.findall(_game_box_line_runs, line) for line in lines]
     if not runs[0] or not runs[1]:
         return dict(ret, error='invalid_line')
 
-    away_runs = int(runs[0])
-    home_runs = int(runs[1])
+    away_runs = int(runs[0][0])
+    home_runs = int(runs[1][0])
 
     return {
         'away_record': away_record,
@@ -82,6 +87,35 @@ def parse_box_score(link):
         'date': date,
         'home_record': home_record,
         'home_runs': home_runs,
+        'home_team': home_team,
+        'ok': True
+    }
+
+
+def parse_game_log(link):
+    ret = {'ok': False}
+
+    content = _open(link)
+    title = re.findall(_game_log_title, content)
+    if not title:
+        return dict(ret, error='invalid_title')
+
+    away_title, home_title = title[0]
+    away_team = decoding_to_encoding(away_title)
+    home_team = decoding_to_encoding(home_title)
+    if not away_team or not home_team:
+        return dict(ret, error='invalid_title')
+
+    date = re.findall(_game_log_date, content)
+    if not date:
+        return dict(ret, error='invalid_date')
+
+    d = datetime.datetime.strptime(date[0], '%m/%d/%Y')
+    date = datetime_datetime_pst(d.year, d.month, d.day)
+
+    return {
+        'away_team': away_team,
+        'date': date,
         'home_team': home_team,
         'ok': True
     }

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
 import os
 import re
 import sys
@@ -10,11 +9,13 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
+from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.statslab.statslab import parse_box_score  # noqa
+from util.statslab.statslab import parse_game_log  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import decoding_to_encoding  # noqa
 
-_now = datetime.datetime(2022, 10, 9, 0, 0, 0)
+_now = datetime_datetime_pst(2022, 10, 9, 0, 0, 0)
 _now_encoded = '10/09/2022'
 
 _record_sub = '{} ({})'
@@ -33,15 +34,19 @@ _game_box_sub = '<html> ... <title>{0} Box Scores, {1} at {2}, {3}</title>' + \
                 '\n<td class="dc">0</td>\n<td class="dc">0</td>\n\t<td cla' + \
                 'ss="dc"><b>{7}</b></td>\n\t<td class="dc"><b>9</b></td>\n' + \
                 '\t<td class="dc"><b>0</b></td>\n\t</tr>\n\t</table>\n\t</' + \
-                'td>\n\t</tr> ... </html'
+                'td>\n\t</tr> ... </html>'
+_game_log_sub = '<html> ... <title>{0} @ {1}</title> ... <div style="text-' + \
+                'align:center; color:#000000; padding-top:4px;">{2}</div> ' + \
+                ' ... </html>'
 _player_sub = '<html> ... <title>Player Report for #{0}  {1}</title> ... <' + \
               'div class="repsubtitle"><a class="boxlink" style="font-weig' + \
               'ht:bold; font-size:18px; color:#FFFFFF;" href="../teams/tea' + \
-              'm_{2}.html">{3}</a></div> ... </html'
+              'm_{2}.html">{3}</a></div> ... </html>'
 _player_empty_sub = '<html><title>Player Report for #{0}  {1}</title></html>'
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_{}.html'
+_game_log = 'game_logs/log_{}.html'
 _player = 'players/player_{}.html'
 
 
@@ -53,6 +58,15 @@ def _box(arecord, aruns, ateam, date, hrecord, hruns, hteam):
         'date': date,
         'home_record': hrecord,
         'home_runs': hruns,
+        'home_team': decoding_to_encoding(hteam),
+        'ok': True
+    }
+
+
+def _log(ateam, date, hteam):
+    return {
+        'away_team': decoding_to_encoding(ateam),
+        'date': date,
         'home_team': decoding_to_encoding(hteam),
         'ok': True
     }
@@ -128,6 +142,19 @@ class StatslabTest(unittest.TestCase):
         link = _html + _game_box.format('2998')
         actual = parse_box_score(link)
         expected = {'ok': False, 'error': 'invalid_line'}
+        self.assertEqual(actual, expected)
+
+        mock_urlopen.assert_called_once_with(link)
+
+    @mock.patch('util.statslab.statslab.urlopen')
+    def test_game_log__with_valid_link(self, mock_urlopen):
+        content = _game_log_sub.format(
+            'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_encoded)
+        mock_urlopen.return_value = bytes(content, 'utf-8')
+
+        link = _html + _game_log.format('2998')
+        actual = parse_game_log(link)
+        expected = _log('Arizona Diamondbacks', _now, 'Los Angeles Dodgers')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
