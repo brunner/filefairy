@@ -11,8 +11,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/news', '', _path)
 sys.path.append(_root)
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from util.news.news import box_scores  # noqa
-from util.news.news import leagues  # noqa
+from util.news.news import extract_box_scores  # noqa
+from util.news.news import extract_leagues  # noqa
 
 _now = datetime_datetime_pst(2022, 10, 16)
 _then = datetime_datetime_pst(2022, 10, 9)
@@ -81,7 +81,7 @@ class NewsTest(unittest.TestCase):
             mo_box_there.return_value, mo_game_there.return_value
         ]
 
-        actual = box_scores(_then)
+        actual = extract_box_scores(_then)
         self.assertEqual(actual, _now)
 
         box_here_123 = os.path.join(_box_here, 'game_box_123.html')
@@ -121,7 +121,7 @@ class NewsTest(unittest.TestCase):
             mo_box_here.return_value, mo_game_here.return_value
         ]
 
-        actual = box_scores(_then)
+        actual = extract_box_scores(_then)
         self.assertEqual(actual, _then)
 
         box_here_123 = os.path.join(_box_here, 'game_box_123.html')
@@ -172,7 +172,7 @@ class NewsTest(unittest.TestCase):
             mo_transactions_there.return_value
         ]
 
-        actual = leagues(_then)
+        actual = extract_leagues(_then)
         self.assertEqual(actual, _now)
 
         mock_isfile.assert_has_calls(_leagues_isfile_calls)
@@ -205,7 +205,7 @@ class NewsTest(unittest.TestCase):
             mo_transactions_there.return_value
         ]
 
-        actual = leagues(_then)
+        actual = extract_leagues(_then)
         self.assertEqual(actual, _then)
 
         mock_isfile.assert_has_calls(_leagues_isfile_calls)
@@ -246,7 +246,7 @@ class NewsTest(unittest.TestCase):
             mo_transactions_there.return_value
         ]
 
-        actual = leagues(_then)
+        actual = extract_leagues(_then)
         self.assertEqual(actual, _now)
 
         mock_isfile.assert_has_calls(_leagues_isfile_calls)
@@ -279,7 +279,7 @@ class NewsTest(unittest.TestCase):
             mo_transactions_there.return_value
         ]
 
-        actual = leagues(_then)
+        actual = extract_leagues(_then)
         self.assertEqual(actual, _then)
 
         mock_isfile.assert_has_calls(_leagues_isfile_calls)
@@ -319,7 +319,7 @@ class NewsTest(unittest.TestCase):
             mo_transactions_there.return_value
         ]
 
-        actual = leagues(_then)
+        actual = extract_leagues(_then)
         self.assertEqual(actual, _now)
 
         mock_isfile.assert_has_calls(_leagues_isfile_calls)
@@ -354,7 +354,7 @@ class NewsTest(unittest.TestCase):
             mo_transactions_there.return_value
         ]
 
-        actual = leagues(_then)
+        actual = extract_leagues(_then)
         self.assertEqual(actual, _then)
 
         mock_isfile.assert_has_calls(_leagues_isfile_calls)

@@ -28,8 +28,8 @@ from util.file_.file_ import ping  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.file_.file_ import wget_file  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
-from util.news.news import box_scores  # noqa
-from util.news.news import leagues  # noqa
+from util.news.news import extract_box_scores  # noqa
+from util.news.news import extract_leagues  # noqa
 from util.secrets.secrets import server  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
@@ -278,8 +278,8 @@ class Leaguefile(Registrable):
             now = decode_datetime(self.data['now'])
             then = now
 
-            box_scores_now = box_scores(then)
-            leagues_now = leagues(then)
+            box_scores_now = extract_box_scores(then)
+            leagues_now = extract_leagues(then)
             if box_scores_now > now:
                 now = box_scores_now
             if leagues_now > then:

@@ -20,7 +20,7 @@ _leagues_here = os.path.join(_root, 'resource/download/news/txt/leagues')
 _leagues_there = os.path.join(_root, 'resource/extract/leagues')
 
 
-def box_scores(then):
+def extract_box_scores(then):
     recreate(_box_there)
     recreate(_game_there)
 
@@ -63,7 +63,7 @@ def box_scores(then):
     return now
 
 
-def leagues(then):
+def extract_leagues(then):
     recreate(_leagues_there)
 
     now = then

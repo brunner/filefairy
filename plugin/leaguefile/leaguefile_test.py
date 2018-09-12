@@ -831,9 +831,9 @@ class LeaguefileTest(Test):
             'now': _now_encoded
         })
 
-    @mock.patch('plugin.leaguefile.leaguefile.leagues')
+    @mock.patch('plugin.leaguefile.leaguefile.extract_leagues')
     @mock.patch('plugin.leaguefile.leaguefile.wget_file')
-    @mock.patch('plugin.leaguefile.leaguefile.box_scores')
+    @mock.patch('plugin.leaguefile.leaguefile.extract_box_scores')
     def test_download_internal__with_new_year(self, mock_box_scores, mock_file,
                                               mock_leagues):
         mock_box_scores.return_value = _then
@@ -858,9 +858,9 @@ class LeaguefileTest(Test):
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch('plugin.leaguefile.leaguefile.leagues')
+    @mock.patch('plugin.leaguefile.leaguefile.extract_leagues')
     @mock.patch('plugin.leaguefile.leaguefile.wget_file')
-    @mock.patch('plugin.leaguefile.leaguefile.box_scores')
+    @mock.patch('plugin.leaguefile.leaguefile.extract_box_scores')
     def test_download_internal__with_same_year(self, mock_box_scores,
                                                mock_file, mock_leagues):
         mock_box_scores.return_value = _now
@@ -885,9 +885,9 @@ class LeaguefileTest(Test):
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch('plugin.leaguefile.leaguefile.leagues')
+    @mock.patch('plugin.leaguefile.leaguefile.extract_leagues')
     @mock.patch('plugin.leaguefile.leaguefile.wget_file')
-    @mock.patch('plugin.leaguefile.leaguefile.box_scores')
+    @mock.patch('plugin.leaguefile.leaguefile.extract_box_scores')
     def test_download_internal__with_ok_false(self, mock_box_scores, mock_file,
                                               mock_leagues):
         mock_file.return_value = {'ok': False}
