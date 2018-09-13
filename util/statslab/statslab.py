@@ -10,6 +10,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.team.team import decoding_to_encoding  # noqa
+from util.team.team import decoding_to_encoding_sub  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
 
 _game_box_title = '<title>MLB Box Scores, (.+?) at (.+?), ' + \
@@ -18,9 +19,21 @@ _game_box_line = '<tr style=\"background-color:#FFFFFE;\">(.+?)</tr>'
 _game_box_line_team = '<td class="dl">(?:<b>)?([^<]+)(?:</b>)?</td>'
 _game_box_line_record = '([^(]+) \(([^)]+)\)'
 _game_box_line_runs = '<td class="dc"><b>(\d+)</b></td>'
-_game_log_title = '<title>(.+?) @ (.+?)</title>'
+_game_log_game_title = '<title>(.+?) @ (.+?)</title>'
 _game_log_date = '<div style="text-align:center; color:#000000; ' + \
                  'padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>'
+_game_log_cell = '<table cellspacing="0" cellpadding="0" class="data" ' + \
+                 'width="968px">(.+?)</table>'
+_game_log_cell_id = '<th colspan="2" class="boxtitle">' + \
+                       '(\w)[^\d]+(\d+?)\w+</th>'
+_game_log_cell_intro = '<th colspan="2" align="left" ' + \
+                       'style="padding:4px 0px 4px 4px;">(.+?)</th>'
+_game_log_cell_outro = '<td class="datathbg" colspan="2">' + \
+                       '[^-]+-  ([^;]+)[^<]+</td>'
+_game_log_inner_left = '<td valign="top" width="268px" class="dl">(.+?)</td>'
+_game_log_inner_right = '<td class="dl" width="700px">(.+?)</td>'
+_game_log_outer = '(<td (?:valign="top" width="268px" class="dl"|' + \
+                  'class="dl" width="700px")>.+?</td>)'
 _player_title = '<title>Player Report for #\d+  ([^<]+)</title>'
 _player_subtitle = '<div class="repsubtitle">(.+?)</div>'
 _player_team = 'href=\"..\/teams\/team_\d{2}.html">([^<]+)</a>'
@@ -96,25 +109,76 @@ def parse_game_log(link):
     ret = {'ok': False}
 
     content = _open(link)
-    title = re.findall(_game_log_title, content)
-    if not title:
-        return dict(ret, error='invalid_title')
+    content = re.sub('</?b>', '', content)
+    content = re.sub(r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)',
+                     'P' + r'\2', content)
+    content = decoding_to_encoding_sub(content)
 
-    away_title, home_title = title[0]
-    away_team = decoding_to_encoding(away_title)
-    home_team = decoding_to_encoding(home_title)
-    if not away_team or not home_team:
+    game_title = re.findall(_game_log_game_title, content)
+    if not game_title:
         return dict(ret, error='invalid_title')
+    away_team, home_team = game_title[0]
 
     date = re.findall(_game_log_date, content)
     if not date:
         return dict(ret, error='invalid_date')
-
     d = datetime.datetime.strptime(date[0], '%m/%d/%Y')
     date = datetime_datetime_pst(d.year, d.month, d.day)
 
+    inning = []
+    cell = re.findall(_game_log_cell, content, re.DOTALL)
+    for c in cell:
+        cell_id = re.findall(_game_log_cell_id, c)
+        if not cell_id:
+            return dict(ret, error='invalid_cell')
+        cell_id = cell_id[0][0].lower() + cell_id[0][1]
+
+        cell_intro = re.findall(_game_log_cell_intro, c, re.DOTALL)
+        if not cell_intro:
+            return dict(ret, error='invalid_cell')
+        cell_intro = cell_intro[0].strip()
+
+        cell_outro = re.findall(_game_log_cell_outro, c)
+        if not cell_outro:
+            return dict(ret, error='invalid_cell')
+        cell_outro = cell_outro[0].strip()
+
+        before = []
+        pitch = []
+
+        side = re.findall(_game_log_outer, c, re.DOTALL)
+        for s in side:
+            left = re.findall(_game_log_inner_left, s, re.DOTALL)
+            right = re.findall(_game_log_inner_right, s, re.DOTALL)
+
+            if left:
+                before.append(left[0].strip())
+            if right:
+                for r in right[0].strip().split('<br>'):
+                    if not r:
+                        continue
+                    if r[0].isdigit():
+                        p = {'result': r}
+                        if before:
+                            p['before'] = before
+                        pitch.append(p)
+                        before = []
+                    else:
+                        p = pitch[-1]
+                        if 'after' not in p:
+                            p['after'] = []
+                        p['after'].append(r)
+
+        inning.append({
+            'id': cell_id,
+            'intro': cell_intro,
+            'outro': cell_outro,
+            'pitch': pitch
+        })
+
     return {
         'away_team': away_team,
+        'inning': inning,
         'date': date,
         'home_team': home_team,
         'ok': True
@@ -141,8 +205,4 @@ def parse_player(link):
 
     team = decoding_to_encoding(team[0])
 
-    return {
-        'name': name,
-        'ok': True,
-        'team': team
-    }
+    return {'name': name, 'ok': True, 'team': team}

@@ -37,7 +37,41 @@ _game_box_sub = '<html> ... <title>{0} Box Scores, {1} at {2}, {3}</title>' + \
                 'td>\n\t</tr> ... </html>'
 _game_log_sub = '<html> ... <title>{0} @ {1}</title> ... <div style="text-' + \
                 'align:center; color:#000000; padding-top:4px;">{2}</div> ' + \
-                ' ... </html>'
+                ' ... <table cellspacing="0" cellpadding="0" class="data" ' + \
+                'width="968px">\r\n\t<tr><th colspan="2" class="boxtitle">' + \
+                'TOP OF THE 1ST</th></tr>\r\n\t<tr>\r\n\t<th colspan="2" a' + \
+                'lign="left" style="padding:4px 0px 4px 4px;">\r\n\t{0} ba' + \
+                'tting - Pitching for {1} : RHP <a href="../players/player' + \
+                '_101.html">101</a>\r\n\t</th>\r\n\t</tr>\r\n\t<tr>\r\n\t<' + \
+                'td valign="top" width="268px" class="dl">\r\n\tPitching: ' + \
+                'RHP <a href="../players/player_101.html">101</a>\r\n\t</t' + \
+                'd>\r\n\t<td class="dl" width="700px">\r\n\t</td>\r\n\t</t' + \
+                'r>\r\n\t<tr>\r\n\t<td valign="top" width="268px" class="d' + \
+                'l">\r\n\tBatting: RHB <a href="../players/player_102.html' + \
+                '">102</a>\r\n\t</td>\r\n\t<td class="dl" width="700px">\r' + \
+                '\n\t0-0: Ball<br>1-0: Fly out, F7  (Flyball, 7LSF)\r\n\t<' + \
+                '/td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="26' + \
+                '8px" class="dl">\r\n\tBatting: LHB <a href="../players/pl' + \
+                'ayer_103.html">103</a>\r\n\t</td>\r\n\t<td class="dl" wid' + \
+                'th="700px">\r\n\t0-0: SINGLE  (Groundball, 56)\r\n\t</td>' + \
+                '\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="268px"' + \
+                ' class="dl">\r\n\tBatting: RHB <a href="../players/player' + \
+                '_104.html">104</a>\r\n\t</td>\r\n\t<td class="dl" width="' + \
+                '700px">\r\n\t0-0: <b>SINGLE</b>  (Groundball, 6MS) (infie' + \
+                'ld hit)<br><a href="../players/player_103.html">103</a> t' + \
+                'o second\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign=' + \
+                '"top" width="268px" class="dl">\r\n\tBatting: SHB <a href' + \
+                '="../players/player_105.html">105</a>\r\n\t</td>\r\n\t<td' + \
+                ' class="dl" width="700px">\r\n\t0-0:  Fly out, F9  (Flyba' + \
+                'll, 9)\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="t' + \
+                'op" width="268px" class="dl">\r\n\tBatting: LHB <a href="' + \
+                '../players/player_106.html">106</a>\r\n\t</td>\r\n\t<td c' + \
+                'lass="dl" width="700px">\r\n\t0-0: Swinging Strike<br>0-1' + \
+                ': Foul Ball, location: 2F<br>0-2: Strikes out  swinging\r' + \
+                '\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td class="datathbg" ' + \
+                'colspan="2">Top of the 1st over -  0 run(s), 1 hit(s), 0 ' + \
+                'error(s), 2 left on base; {3} 0 - {4} 0</td>\r\n\t</tr>\r' + \
+                '\n\t</table> ... </html>'
 _player_sub = '<html> ... <title>Player Report for #{0}  {1}</title> ... <' + \
               'div class="repsubtitle"><a class="boxlink" style="font-weig' + \
               'ht:bold; font-size:18px; color:#FFFFFF;" href="../teams/tea' + \
@@ -63,11 +97,12 @@ def _box(arecord, aruns, ateam, date, hrecord, hruns, hteam):
     }
 
 
-def _log(ateam, date, hteam):
+def _log(ateam, date, hteam, inning):
     return {
         'away_team': decoding_to_encoding(ateam),
         'date': date,
         'home_team': decoding_to_encoding(hteam),
+        'inning': inning,
         'ok': True
     }
 
@@ -146,23 +181,58 @@ class StatslabTest(unittest.TestCase):
 
         mock_urlopen.assert_called_once_with(link)
 
+    maxDiff = None
+
     @mock.patch('util.statslab.statslab.urlopen')
     def test_game_log__with_valid_link(self, mock_urlopen):
-        content = _game_log_sub.format(
-            'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_encoded)
+        content = _game_log_sub.format('Arizona Diamondbacks',
+                                       'Los Angeles Dodgers', _now_encoded,
+                                       'Arizona', 'Los Angeles')
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _game_log.format('2998')
         actual = parse_game_log(link)
-        expected = _log('Arizona Diamondbacks', _now, 'Los Angeles Dodgers')
+        inning = [{
+            'id':
+            't1',
+            'intro':
+            'T31 batting - Pitching for T45 : RHP P101',
+            'outro':
+            '0 run(s), 1 hit(s), 0 error(s), 2 left on base',
+            'pitch': [{
+                'before': ['Pitching: RHP P101', 'Batting: RHB P102'],
+                'result': '0-0: Ball'
+            }, {
+                'result': '1-0: Fly out, F7  (Flyball, 7LSF)'
+            }, {
+                'before': ['Batting: LHB P103'],
+                'result': '0-0: SINGLE  (Groundball, 56)'
+            }, {
+                'after': ['P103 to second'],
+                'before': ['Batting: RHB P104'],
+                'result': '0-0: SINGLE  (Groundball, 6MS) (infield hit)'
+            }, {
+                'before': ['Batting: SHB P105'],
+                'result': '0-0:  Fly out, F9  (Flyball, 9)'
+            }, {
+                'before': ['Batting: LHB P106'],
+                'result': '0-0: Swinging Strike'
+            }, {
+                'result': '0-1: Foul Ball, location: 2F'
+            }, {
+                'result': '0-2: Strikes out  swinging'
+            }]
+        }]
+        expected = _log('Arizona Diamondbacks', _now, 'Los Angeles Dodgers',
+                        inning)
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
 
     @mock.patch('util.statslab.statslab.urlopen')
     def test_player__with_valid_link(self, mock_urlopen):
-        content = _player_sub.format(73, 'Dakota Donovan',
-                                     '44', 'Los Angeles Angels')
+        content = _player_sub.format(73, 'Dakota Donovan', '44',
+                                     'Los Angeles Angels')
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
         link = _html + _player.format('29663')
