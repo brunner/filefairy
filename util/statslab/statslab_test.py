@@ -16,7 +16,8 @@ from util.statslab.statslab import parse_player  # noqa
 from util.team.team import decoding_to_encoding  # noqa
 
 _now = datetime_datetime_pst(2022, 10, 9, 0, 0, 0)
-_now_encoded = '10/09/2022'
+_now_displayed = '10/09/2022'
+_now_encoded = '2022-10-09T00:00:00-07:00'
 
 _record_sub = '{} ({})'
 _game_box_sub = '<html> ... <title>{0} Box Scores, {1} at {2}, {3}</title>' + \
@@ -118,7 +119,7 @@ class StatslabTest(unittest.TestCase):
     def test_box_score__with_valid_file(self, mock_isfile, mock_open):
         mock_isfile.return_value = True
         content = _game_box_sub.format(
-            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_encoded,
+            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
         mo = mock.mock_open(read_data=content)
@@ -138,7 +139,7 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('util.statslab.statslab.urlopen')
     def test_box_score__with_valid_link(self, mock_urlopen):
         content = _game_box_sub.format(
-            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_encoded,
+            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
         mock_urlopen.return_value = bytes(content, 'utf-8')
@@ -155,7 +156,7 @@ class StatslabTest(unittest.TestCase):
     def test_box_score__with_invalid_title(self, mock_urlopen):
         content = _game_box_sub.format(
             'NPB', 'Yokohama DeNA BayStars',
-            'Tokyo Yakult Swallows', _now_encoded,
+            'Tokyo Yakult Swallows', _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
         mock_urlopen.return_value = bytes(content, 'utf-8')
@@ -170,7 +171,7 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('util.statslab.statslab.urlopen')
     def test_box_score__with_invalid_line(self, mock_urlopen):
         content = _game_box_sub.format(
-            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_encoded,
+            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
         mock_urlopen.return_value = bytes(content, 'utf-8')
@@ -187,7 +188,7 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('util.statslab.statslab.urlopen')
     def test_game_log__with_valid_link(self, mock_urlopen):
         content = _game_log_sub.format('Arizona Diamondbacks',
-                                       'Los Angeles Dodgers', _now_encoded,
+                                       'Los Angeles Dodgers', _now_displayed,
                                        'Arizona', 'Los Angeles')
         mock_urlopen.return_value = bytes(content, 'utf-8')
 
@@ -232,8 +233,8 @@ class StatslabTest(unittest.TestCase):
             'P105': '105',
             'P106': '106'
         }
-        expected = _log('Arizona Diamondbacks', _now, 'Los Angeles Dodgers',
-                        inning, player)
+        expected = _log('Arizona Diamondbacks', _now_encoded,
+                        'Los Angeles Dodgers', inning, player)
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)

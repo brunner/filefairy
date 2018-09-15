@@ -9,6 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.team.team import decoding_to_encoding  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from util.urllib_.urllib_ import urlopen  # noqa
@@ -188,7 +189,7 @@ def parse_game_log(link):
     return {
         'away_team': away_team,
         'inning': inning,
-        'date': date,
+        'date': encode_datetime(date),
         'home_team': home_team,
         'player': player,
         'ok': True
@@ -216,6 +217,3 @@ def parse_player(link):
     team = decoding_to_encoding(team[0])
 
     return {'name': name, 'ok': True, 'team': team}
-
-from util.json_.json_ import dumps
-print(dumps(parse_game_log('https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/game_logs/log_25205.html')))
