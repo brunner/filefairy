@@ -321,10 +321,9 @@ class StatsplusTest(Test):
         }
         plugin = self.create_plugin(_data(offseason=True, postseason=True))
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.BASE],
-                             shadow=plugin._shadow_internal()))
+        self.assertEqual(
+            response,
+            Response(notify=[Notify.BASE], shadow=plugin._shadow_internal()))
 
         write = _data(offseason=True)
         mock_clear.assert_not_called()
@@ -378,10 +377,9 @@ class StatsplusTest(Test):
         }
         plugin = self.create_plugin(_data(offseason=True))
         response = plugin._on_message_internal(obj=obj)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.BASE],
-                             shadow=plugin._shadow_internal()))
+        self.assertEqual(
+            response,
+            Response(notify=[Notify.BASE], shadow=plugin._shadow_internal()))
 
         write = _data()
         mock_clear.assert_not_called()
@@ -632,9 +630,7 @@ class StatsplusTest(Test):
         read = _data(
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
-            scores={
-                _then_encoded: _scores_regular_encoded
-            })
+            scores={_then_encoded: _scores_regular_encoded})
         plugin = self.create_plugin(read)
         plugin._clear()
 
@@ -657,10 +653,9 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(plugin.data['injuries'], {
-            _then_encoded: _injuries_encoded[:1]
-        })
-        self.assertFalse(plugin.data['unresolved'])
+        self.assertEqual(plugin.data['injuries'],
+                         {_then_encoded: _injuries_encoded[:1]})
+        self.assertEqual(plugin.data['unresolved'], [])
 
     def test_handle_key__highlights(self):
         plugin = self.create_plugin(_data())
@@ -672,10 +667,9 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(plugin.data['highlights'], {
-            _then_encoded: _highlights_encoded[:1]
-        })
-        self.assertFalse(plugin.data['unresolved'])
+        self.assertEqual(plugin.data['highlights'],
+                         {_then_encoded: _highlights_encoded[:1]})
+        self.assertEqual(plugin.data['unresolved'], [])
 
     def test_handle_key__injuries(self):
         plugin = self.create_plugin(_data())
@@ -687,10 +681,9 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(plugin.data['injuries'], {
-            _then_encoded: _injuries_encoded[:1]
-        })
-        self.assertFalse(plugin.data['unresolved'])
+        self.assertEqual(plugin.data['injuries'],
+                         {_then_encoded: _injuries_encoded[:1]})
+        self.assertEqual(plugin.data['unresolved'], [])
 
     def test_handle_key__scores(self):
         plugin = self.create_plugin(_data())
@@ -703,10 +696,13 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(plugin.data['scores'], {
-            _then_encoded: _scores_regular_encoded
-        })
-        self.assertTrue(plugin.data['unresolved'])
+        self.assertEqual(plugin.data['scores'],
+                         {_then_encoded: _scores_regular_encoded})
+        self.assertEqual(
+            plugin.data['unresolved'], [[_then_encoded, id_] for id_ in [
+                '2998', '3003', '2996', '3002', '2993', '2991', '14721',
+                '3001', '3000', '2992', '2999', '2990', '2997', '2994', '2995'
+            ]])
 
     def test_handle_table(self):
         plugin = self.create_plugin(_data())
@@ -716,10 +712,9 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertEqual(plugin.data['table'], {
-            _then_encoded: _table_encoded_new
-        })
-        self.assertFalse(plugin.data['unresolved'])
+        self.assertEqual(plugin.data['table'],
+                         {_then_encoded: _table_encoded_new})
+        self.assertEqual(plugin.data['unresolved'], [])
 
     @mock.patch.object(Statsplus, '_table')
     @mock.patch('plugin.statsplus.statsplus.standings_table')
@@ -962,9 +957,7 @@ class StatsplusTest(Test):
 
         read = _data(
             postseason=True,
-            scores={
-                _then_encoded: _scores_postseason_encoded
-            })
+            scores={_then_encoded: _scores_postseason_encoded})
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason()
         ps_header = table(
@@ -1016,9 +1009,7 @@ class StatsplusTest(Test):
     def test_live_postseason_series(self):
         read = _data(
             postseason=True,
-            scores={
-                _then_encoded: _scores_postseason_encoded
-            })
+            scores={_then_encoded: _scores_postseason_encoded})
         plugin = self.create_plugin(read)
         actual = plugin._live_postseason_series()
         expected = [['T45', 'T53'], ['T34', 'T54']]
@@ -1221,13 +1212,15 @@ class StatsplusTest(Test):
             'ok': True,
             'team': 'T44'
         }
+        unresolved = [[_then_encoded, id_]
+                      for id_ in ['2998', '3002', '14721', '3001', '3000']]
         read = _data(
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
             scores={_then_encoded: _scores_regular_encoded},
-            unresolved=[_then_encoded])
+            unresolved=unresolved)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all([_then_encoded], date=_then)
+        response = plugin._resolve_all(unresolved, date=_then)
         self.assertEqual(response, Response())
 
         write = _data(
@@ -1250,7 +1243,6 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
@@ -1298,14 +1290,16 @@ class StatsplusTest(Test):
             'ok': True,
             'team': 'T44'
         }
+        unresolved = [[_then_encoded, id_]
+                      for id_ in ['2998', '3002', '14721', '3001', '3000']]
         read = _data(
             finished=True,
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
             scores={_then_encoded: _scores_regular_encoded},
-            unresolved=[_then_encoded])
+            unresolved=unresolved)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all([_then_encoded], date=_then)
+        response = plugin._resolve_all(unresolved, date=_then)
         self.assertEqual(response, Response())
 
         write = _data(
@@ -1330,7 +1324,6 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertFalse(plugin.data['unresolved'])
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
@@ -1346,10 +1339,10 @@ class StatsplusTest(Test):
             'ok': True
         }
         scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        read = _data(
-            scores={_then_encoded: scores}, unresolved=[_then_encoded])
+        unresolved = [[_then_encoded, '2998']]
+        read = _data(scores={_then_encoded: scores}, unresolved=unresolved)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all([_then_encoded], date=_then)
+        response = plugin._resolve_all(unresolved, date=_then)
         self.assertEqual(response, Response())
 
         link = _game_box_sub('{0}{1}2998.html')
@@ -1360,7 +1353,6 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertCountEqual(plugin.data['unresolved'], [_then_encoded])
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
@@ -1376,10 +1368,10 @@ class StatsplusTest(Test):
             'ok': True
         }
         scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        read = _data(
-            scores={_then_encoded: scores}, unresolved=[_then_encoded])
+        unresolved = [[_then_encoded, '2998']]
+        read = _data(scores={_then_encoded: scores}, unresolved=unresolved)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all([_then_encoded], date=_then)
+        response = plugin._resolve_all(unresolved, date=_then)
         self.assertEqual(response, Response())
 
         link = _game_box_sub('{0}{1}2998.html')
@@ -1390,7 +1382,6 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertCountEqual(plugin.data['unresolved'], [_then_encoded])
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
@@ -1406,10 +1397,10 @@ class StatsplusTest(Test):
             'ok': True
         }
         scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        read = _data(
-            scores={_then_encoded: scores}, unresolved=[_then_encoded])
+        unresolved = [[_then_encoded, '2998']]
+        read = _data(scores={_then_encoded: scores}, unresolved=unresolved)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all([_then_encoded], date=_then)
+        response = plugin._resolve_all(unresolved, date=_then)
         self.assertEqual(response, Response())
 
         link = _game_box_sub('{0}{1}2998.html')
@@ -1420,7 +1411,6 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
-        self.assertCountEqual(plugin.data['unresolved'], [_then_encoded])
 
     def test_table__highlights(self):
         read = _data(highlights={_then_encoded: _highlights_encoded})

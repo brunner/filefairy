@@ -49,6 +49,7 @@ _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
 _player = 'players/player_'
 _shorten = '{}(?:{}|{})'.format(_html, _game_box, _player)
+_game_id = '\{0\}\{1\}(\d+).html'
 _encodings = '|'.join(encodings())
 _precodings = '|'.join(precodings())
 _url_pattern = '<([^|]+)\|([^<]+)>'
@@ -214,9 +215,9 @@ class Statsplus(Registrable):
         for m in match:
             e = re.sub(_shorten, '{0}{1}', self._encode(key, m))
             self.data[key][encoded_date].append(e)
-            if key == 'scores' and encoded_date not in self.data['unresolved']:
-                if any(c in e for c in _chlany):
-                    self.data['unresolved'].append(encoded_date)
+            if key == 'scores':
+                id_ = re.findall(_game_id, e)[0]
+                self.data['unresolved'].append([encoded_date, id_])
 
     def _handle_table(self, encoded_date, text):
         if encoded_date not in self.data['table']:
@@ -412,14 +413,10 @@ class Statsplus(Registrable):
         original = copy.deepcopy(data)
 
         unresolved = args[0]
-        for encoded_date in unresolved:
-            scores = data['scores'].get(encoded_date, [])
-            for i in range(len(scores)):
-                self._resolve(encoded_date, i)
-            scores = self.data['scores'].get(encoded_date, [])
-            if encoded_date in data['unresolved']:
-                if not any(e in '\n'.join(scores) for e in _chlany):
-                    data['unresolved'].remove(encoded_date)
+        for encoded_date, id_ in unresolved:
+            ret = self._resolve(encoded_date, id_)
+            if ret and [encoded_date, id_] in data['unresolved']:
+                data['unresolved'].remove([encoded_date, id_])
 
         if data != original:
             self._render(**kwargs)
@@ -452,11 +449,17 @@ class Statsplus(Registrable):
                                     line = re.sub(before, after, lines[i])
                                     self.data[key][encoded_date][i] = line
 
-    def _resolve(self, encoded_date, i):
+    def _resolve(self, encoded_date, id_):
         scores = self.data['scores'][encoded_date]
+        for i, s in enumerate(scores):
+            if id_ in s:
+                break
+        else:
+            return False
+
         count = len([True for e in _chlany if e in scores[i]])
         if count not in [1, 2]:
-            return
+            return False
 
         finished = self.data['finished']
         score_pattern = '(\w+) (\d+), (\w+) (\d+)'
@@ -475,7 +478,7 @@ class Statsplus(Registrable):
                 if box_score_['ok']:
                     ddate = decode_datetime(encoded_date)
                     if ddate != box_score_['date']:
-                        return
+                        return False
                     bruns1 = box_score_['away_runs']
                     bteam1 = box_score_['away_team']
                     bruns2 = box_score_['home_runs']
@@ -500,6 +503,9 @@ class Statsplus(Registrable):
                     for key in ['highlights', 'injuries']:
                         self._clarify(key, encoded_date, cteam1, cteam2,
                                       bteam1, bteam2, count)
+                    return True
+
+        return False
 
     def _table(self, key, date, path):
         lines = self.data[key][date]
