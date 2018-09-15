@@ -172,10 +172,10 @@ class Statsplus(Registrable):
         data = self.data
         response = Response()
 
-        if data['unresolved']:
-            unresolved = copy.deepcopy(data)['unresolved']
+        if data['unchecked']:
+            unchecked = copy.deepcopy(data)['unchecked']
             response.append_task(
-                Task(target='_resolve_all', args=(unresolved, )))
+                Task(target='_extract_all', args=(unchecked, )))
 
         return response
 
@@ -205,7 +205,7 @@ class Statsplus(Registrable):
         self.data['injuries'] = {}
         self.data['scores'] = {}
         self.data['table'] = {}
-        self.data['unresolved'] = []
+        self.data['unchecked'] = []
 
     def _handle_key(self, key, encoded_date, text, pattern, append):
         if not append or encoded_date not in self.data[key]:
@@ -217,7 +217,7 @@ class Statsplus(Registrable):
             self.data[key][encoded_date].append(e)
             if key == 'scores':
                 id_ = re.findall(_game_id, e)[0]
-                self.data['unresolved'].append([encoded_date, id_])
+                self.data['unchecked'].append([encoded_date, id_])
 
     def _handle_table(self, encoded_date, text):
         if encoded_date not in self.data['table']:
@@ -285,7 +285,7 @@ class Statsplus(Registrable):
         return text
 
     @staticmethod
-    def _unresolve(encoding):
+    def _uncheck(encoding):
         chlany_ = encoding_to_chlany(encoding)
         return chlany_ if chlany_ else encoding
 
@@ -405,18 +405,18 @@ class Statsplus(Registrable):
             hl += el + cl
         return '{0}-{1}'.format(hw, hl)
 
-    def _resolve_all(self, *args, **kwargs):
+    def _extract_all(self, *args, **kwargs):
         if len(args) != 1:
             return Response()
 
         data = self.data
         original = copy.deepcopy(data)
 
-        unresolved = args[0]
-        for encoded_date, id_ in unresolved:
-            ret = self._resolve(encoded_date, id_)
-            if ret and [encoded_date, id_] in data['unresolved']:
-                data['unresolved'].remove([encoded_date, id_])
+        unchecked = args[0]
+        for encoded_date, id_ in unchecked:
+            ret = self._extract(encoded_date, id_)
+            if ret and [encoded_date, id_] in data['unchecked']:
+                data['unchecked'].remove([encoded_date, id_])
 
         if data != original:
             self._render(**kwargs)
@@ -449,7 +449,7 @@ class Statsplus(Registrable):
                                     line = re.sub(before, after, lines[i])
                                     self.data[key][encoded_date][i] = line
 
-    def _resolve(self, encoded_date, id_):
+    def _extract(self, encoded_date, id_):
         scores = self.data['scores'][encoded_date]
         for i, s in enumerate(scores):
             if id_ in s:
@@ -488,9 +488,9 @@ class Statsplus(Registrable):
                         bruns1, bruns2 = bruns2, bruns1
                         bteam1, bteam2 = bteam2, bteam1
                         swap = True
-                    if self._unresolve(bteam1) != cteam1:
+                    if self._uncheck(bteam1) != cteam1:
                         return
-                    if self._unresolve(bteam2) != cteam2:
+                    if self._uncheck(bteam2) != cteam2:
                         return
                     if bruns1 != int(cruns1) or bruns2 != int(cruns2):
                         return

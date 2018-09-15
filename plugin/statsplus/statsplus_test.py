@@ -150,7 +150,7 @@ def _data(finished=False,
           scores={},
           started=False,
           table={},
-          unresolved=[]):
+          unchecked=[]):
     return {
         'finished': finished,
         'highlights': highlights,
@@ -160,7 +160,7 @@ def _data(finished=False,
         'scores': scores,
         'started': started,
         'table': table,
-        'unresolved': unresolved,
+        'unchecked': unchecked,
     }
 
 
@@ -560,7 +560,7 @@ class StatsplusTest(Test):
         self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
-    def test_run__with_resolved(self, mock_render):
+    def test_run__with_extractd(self, mock_render):
         plugin = self.create_plugin(_data())
         response = plugin._run_internal(date=_now)
         self.assertEqual(response, Response())
@@ -572,10 +572,10 @@ class StatsplusTest(Test):
         self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_render')
-    def test_run__with_unresolved(self, mock_render):
-        plugin = self.create_plugin(_data(unresolved=[_then_encoded]))
+    def test_run__with_unchecked(self, mock_render):
+        plugin = self.create_plugin(_data(unchecked=[_then_encoded]))
         response = plugin._run_internal(date=_now)
-        task = Task(target='_resolve_all', args=([_then_encoded], ))
+        task = Task(target='_extract_all', args=([_then_encoded], ))
         self.assertEqual(response, Response(task=[task]))
 
         mock_render.assert_not_called()
@@ -655,7 +655,7 @@ class StatsplusTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['injuries'],
                          {_then_encoded: _injuries_encoded[:1]})
-        self.assertEqual(plugin.data['unresolved'], [])
+        self.assertEqual(plugin.data['unchecked'], [])
 
     def test_handle_key__highlights(self):
         plugin = self.create_plugin(_data())
@@ -669,7 +669,7 @@ class StatsplusTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['highlights'],
                          {_then_encoded: _highlights_encoded[:1]})
-        self.assertEqual(plugin.data['unresolved'], [])
+        self.assertEqual(plugin.data['unchecked'], [])
 
     def test_handle_key__injuries(self):
         plugin = self.create_plugin(_data())
@@ -683,7 +683,7 @@ class StatsplusTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['injuries'],
                          {_then_encoded: _injuries_encoded[:1]})
-        self.assertEqual(plugin.data['unresolved'], [])
+        self.assertEqual(plugin.data['unchecked'], [])
 
     def test_handle_key__scores(self):
         plugin = self.create_plugin(_data())
@@ -699,7 +699,7 @@ class StatsplusTest(Test):
         self.assertEqual(plugin.data['scores'],
                          {_then_encoded: _scores_regular_encoded})
         self.assertEqual(
-            plugin.data['unresolved'], [[_then_encoded, id_] for id_ in [
+            plugin.data['unchecked'], [[_then_encoded, id_] for id_ in [
                 '2998', '3003', '2996', '3002', '2993', '2991', '14721',
                 '3001', '3000', '2992', '2999', '2990', '2997', '2994', '2995'
             ]])
@@ -714,7 +714,7 @@ class StatsplusTest(Test):
         self.mock_log.assert_not_called()
         self.assertEqual(plugin.data['table'],
                          {_then_encoded: _table_encoded_new})
-        self.assertEqual(plugin.data['unresolved'], [])
+        self.assertEqual(plugin.data['unchecked'], [])
 
     @mock.patch.object(Statsplus, '_table')
     @mock.patch('plugin.statsplus.statsplus.standings_table')
@@ -1169,7 +1169,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_resolve_all__with_valid_box_finished_false(
+    def test_extract_all__with_valid_box_finished_false(
             self, mock_box, mock_player, mock_render):
         mock_box.side_effect = [{
             'away_runs': 4,
@@ -1212,22 +1212,22 @@ class StatsplusTest(Test):
             'ok': True,
             'team': 'T44'
         }
-        unresolved = [[_then_encoded, id_]
+        unchecked = [[_then_encoded, id_]
                       for id_ in ['2998', '3002', '14721', '3001', '3000']]
         read = _data(
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
             scores={_then_encoded: _scores_regular_encoded},
-            unresolved=unresolved)
+            unchecked=unchecked)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all(unresolved, date=_then)
+        response = plugin._extract_all(unchecked, date=_then)
         self.assertEqual(response, Response())
 
         write = _data(
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_clarified},
             scores={_then_encoded: _scores_regular_clarified},
-            unresolved=[])
+            unchecked=[])
         calls = [
             mock.call(_game_box_sub('{0}{1}2998.html')),
             mock.call(_game_box_sub('{0}{1}3002.html')),
@@ -1247,7 +1247,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_resolve_all__with_valid_box_finished_true(
+    def test_extract_all__with_valid_box_finished_true(
             self, mock_box, mock_player, mock_render):
         mock_box.side_effect = [{
             'away_runs': 4,
@@ -1290,16 +1290,16 @@ class StatsplusTest(Test):
             'ok': True,
             'team': 'T44'
         }
-        unresolved = [[_then_encoded, id_]
+        unchecked = [[_then_encoded, id_]
                       for id_ in ['2998', '3002', '14721', '3001', '3000']]
         read = _data(
             finished=True,
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
             scores={_then_encoded: _scores_regular_encoded},
-            unresolved=unresolved)
+            unchecked=unchecked)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all(unresolved, date=_then)
+        response = plugin._extract_all(unchecked, date=_then)
         self.assertEqual(response, Response())
 
         write = _data(
@@ -1307,7 +1307,7 @@ class StatsplusTest(Test):
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_clarified},
             scores={_then_encoded: _scores_regular_clarified},
-            unresolved=[])
+            unchecked=[])
         extract = _root + '/resource/extract/'
         calls = [
             mock.call('{0}{1}2998.html'.format(extract, _game_box)),
@@ -1328,7 +1328,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_resolve_all__with_invalid_date(self, mock_box, mock_player,
+    def test_extract_all__with_invalid_date(self, mock_box, mock_player,
                                             mock_render):
         mock_box.return_value = {
             'away_runs': 4,
@@ -1339,10 +1339,10 @@ class StatsplusTest(Test):
             'ok': True
         }
         scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        unresolved = [[_then_encoded, '2998']]
-        read = _data(scores={_then_encoded: scores}, unresolved=unresolved)
+        unchecked = [[_then_encoded, '2998']]
+        read = _data(scores={_then_encoded: scores}, unchecked=unchecked)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all(unresolved, date=_then)
+        response = plugin._extract_all(unchecked, date=_then)
         self.assertEqual(response, Response())
 
         link = _game_box_sub('{0}{1}2998.html')
@@ -1357,7 +1357,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_resolve_all__with_invalid_team(self, mock_box, mock_player,
+    def test_extract_all__with_invalid_team(self, mock_box, mock_player,
                                             mock_render):
         mock_box.return_value = {
             'away_runs': 4,
@@ -1368,10 +1368,10 @@ class StatsplusTest(Test):
             'ok': True
         }
         scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        unresolved = [[_then_encoded, '2998']]
-        read = _data(scores={_then_encoded: scores}, unresolved=unresolved)
+        unchecked = [[_then_encoded, '2998']]
+        read = _data(scores={_then_encoded: scores}, unchecked=unchecked)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all(unresolved, date=_then)
+        response = plugin._extract_all(unchecked, date=_then)
         self.assertEqual(response, Response())
 
         link = _game_box_sub('{0}{1}2998.html')
@@ -1386,7 +1386,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_resolve_all__with_invalid_runs(self, mock_box, mock_player,
+    def test_extract_all__with_invalid_runs(self, mock_box, mock_player,
                                             mock_render):
         mock_box.return_value = {
             'away_runs': 5,
@@ -1397,10 +1397,10 @@ class StatsplusTest(Test):
             'ok': True
         }
         scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        unresolved = [[_then_encoded, '2998']]
-        read = _data(scores={_then_encoded: scores}, unresolved=unresolved)
+        unchecked = [[_then_encoded, '2998']]
+        read = _data(scores={_then_encoded: scores}, unchecked=unchecked)
         plugin = self.create_plugin(read)
-        response = plugin._resolve_all(unresolved, date=_then)
+        response = plugin._extract_all(unchecked, date=_then)
         self.assertEqual(response, Response())
 
         link = _game_box_sub('{0}{1}2998.html')
