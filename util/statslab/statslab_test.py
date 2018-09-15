@@ -97,12 +97,13 @@ def _box(arecord, aruns, ateam, date, hrecord, hruns, hteam):
     }
 
 
-def _log(ateam, date, hteam, inning):
+def _log(ateam, date, hteam, inning, player):
     return {
         'away_team': decoding_to_encoding(ateam),
         'date': date,
         'home_team': decoding_to_encoding(hteam),
         'inning': inning,
+        'player': player,
         'ok': True
     }
 
@@ -223,8 +224,16 @@ class StatslabTest(unittest.TestCase):
                 'result': '0-2: Strikes out  swinging'
             }]
         }]
+        player = {
+            'P101': '101',
+            'P102': '102',
+            'P103': '103',
+            'P104': '104',
+            'P105': '105',
+            'P106': '106'
+        }
         expected = _log('Arizona Diamondbacks', _now, 'Los Angeles Dodgers',
-                        inning)
+                        inning, player)
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)

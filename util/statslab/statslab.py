@@ -22,6 +22,7 @@ _game_box_line_runs = '<td class="dc"><b>(\d+)</b></td>'
 _game_log_game_title = '<title>(.+?) @ (.+?)</title>'
 _game_log_date = '<div style="text-align:center; color:#000000; ' + \
                  'padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>'
+_game_log_player = '<a href="../players/player_(\d+).html">([^<]+)</a>'
 _game_log_cell = '<table cellspacing="0" cellpadding="0" class="data" ' + \
                  'width="968px">(.+?)</table>'
 _game_log_cell_id = '<th colspan="2" class="boxtitle">' + \
@@ -109,21 +110,29 @@ def parse_game_log(link):
     ret = {'ok': False}
 
     content = _open(link)
-    content = re.sub('</?b>', '', content)
-    content = re.sub(r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)',
-                     'P' + r'\2', content)
-    content = decoding_to_encoding_sub(content)
 
     game_title = re.findall(_game_log_game_title, content)
     if not game_title:
         return dict(ret, error='invalid_title')
-    away_team, home_team = game_title[0]
+    away_title, home_title = game_title[0]
+    away_team = decoding_to_encoding(away_title)
+    home_team = decoding_to_encoding(home_title)
 
     date = re.findall(_game_log_date, content)
     if not date:
         return dict(ret, error='invalid_date')
     d = datetime.datetime.strptime(date[0], '%m/%d/%Y')
     date = datetime_datetime_pst(d.year, d.month, d.day)
+
+    player = {}
+    for p in re.findall(_game_log_player, content):
+        id_, name = p
+        player['P' + id_] = name
+
+    content = re.sub('</?b>', '', content)
+    content = re.sub(r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)',
+                     'P' + r'\2', content)
+    content = decoding_to_encoding_sub(content)
 
     inning = []
     cell = re.findall(_game_log_cell, content, re.DOTALL)
@@ -181,6 +190,7 @@ def parse_game_log(link):
         'inning': inning,
         'date': date,
         'home_team': home_team,
+        'player': player,
         'ok': True
     }
 
@@ -206,3 +216,6 @@ def parse_player(link):
     team = decoding_to_encoding(team[0])
 
     return {'name': name, 'ok': True, 'team': team}
+
+from util.json_.json_ import dumps
+print(dumps(parse_game_log('https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/game_logs/log_25205.html')))
