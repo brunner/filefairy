@@ -139,6 +139,8 @@ _table_text = '```MAJOR LEAGUE BASEBALL Live Table - 10/10/2022\nCincinnat' + \
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
+_game_game = 'games/game_'
+_game_log = 'game_logs/log_'
 _player = 'players/player_'
 
 
@@ -166,6 +168,10 @@ def _data(finished=False,
 
 def _game_box_sub(s):
     return s.format(_html, _game_box)
+
+
+def _game_log_sub(s):
+    return s.format(_html, _game_log)
 
 
 def _player_sub(s):
@@ -626,7 +632,8 @@ class StatsplusTest(Test):
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
 
-    def test_clear(self):
+    @mock.patch('plugin.statsplus.statsplus.recreate')
+    def test_clear(self, mock_recreate):
         read = _data(
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
@@ -634,6 +641,7 @@ class StatsplusTest(Test):
         plugin = self.create_plugin(read)
         plugin._clear()
 
+        mock_recreate.assert_called_once_with(_root + '/resource/games/')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -1168,9 +1176,11 @@ class StatsplusTest(Test):
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.open')
+    @mock.patch('plugin.statsplus.statsplus.parse_game_log')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
     def test_extract_all__with_valid_box_finished_false(
-            self, mock_box, mock_player, mock_render):
+            self, mock_box, mock_log, mock_open, mock_player, mock_render):
         mock_box.side_effect = [{
             'away_runs': 4,
             'away_team': 'T31',
@@ -1207,13 +1217,17 @@ class StatsplusTest(Test):
             'home_team': 'T44',
             'ok': True
         }]
+        mock_log.return_value = {'ok': True}
         mock_player.return_value = {
             'name': 'Dakota Donovan',
             'ok': True,
             'team': 'T44'
         }
+        mo = mock.mock_open(read_data=dumps({}))
+        mock_handle = mo()
+        mock_open.side_effect = [mo.return_value] * 5
         unchecked = [[_then_encoded, id_]
-                      for id_ in ['2998', '3002', '14721', '3001', '3000']]
+                     for id_ in ['2998', '3002', '14721', '3001', '3000']]
         read = _data(
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
@@ -1228,16 +1242,25 @@ class StatsplusTest(Test):
             injuries={_then_encoded: _injuries_clarified},
             scores={_then_encoded: _scores_regular_clarified},
             unchecked=[])
-        calls = [
-            mock.call(_game_box_sub('{0}{1}2998.html')),
-            mock.call(_game_box_sub('{0}{1}3002.html')),
-            mock.call(_game_box_sub('{0}{1}14721.html')),
-            mock.call(_game_box_sub('{0}{1}3001.html')),
-            mock.call(_game_box_sub('{0}{1}3000.html'))
+        ids = [
+            '{0}{1}2998{2}', '{0}{1}3002{2}', '{0}{1}14721{2}',
+            '{0}{1}3001{2}', '{0}{1}3000{2}'
         ]
-        mock_box.assert_has_calls(calls)
+        mock_box.assert_has_calls(
+            [mock.call(id_.format(_html, _game_box, '.html')) for id_ in ids])
+        mock_log.assert_has_calls(
+            [mock.call(id_.format(_html, _game_log, '.html')) for id_ in ids])
         link = '{0}{1}29663.html'.format(_html, _player)
         mock_player.assert_called_once_with(link)
+        mock_open.assert_has_calls([
+            mock.call(
+                id_.format(_root + '/resource/', _game_game, '.json'), 'w')
+            for id_ in ids
+        ])
+        mock_handle.write.assert_has_calls(
+            [mock.call(dumps({
+                'ok': True
+            }) + '\n')] * 5)
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -1246,9 +1269,11 @@ class StatsplusTest(Test):
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.open')
+    @mock.patch('plugin.statsplus.statsplus.parse_game_log')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
     def test_extract_all__with_valid_box_finished_true(
-            self, mock_box, mock_player, mock_render):
+            self, mock_box, mock_log, mock_open, mock_player, mock_render):
         mock_box.side_effect = [{
             'away_runs': 4,
             'away_team': 'T31',
@@ -1285,13 +1310,17 @@ class StatsplusTest(Test):
             'home_team': 'T44',
             'ok': True
         }]
+        mock_log.return_value = {'ok': True}
         mock_player.return_value = {
             'name': 'Dakota Donovan',
             'ok': True,
             'team': 'T44'
         }
+        mo = mock.mock_open(read_data=dumps({}))
+        mock_handle = mo()
+        mock_open.side_effect = [mo.return_value] * 5
         unchecked = [[_then_encoded, id_]
-                      for id_ in ['2998', '3002', '14721', '3001', '3000']]
+                     for id_ in ['2998', '3002', '14721', '3001', '3000']]
         read = _data(
             finished=True,
             highlights={_then_encoded: _highlights_encoded},
@@ -1309,16 +1338,27 @@ class StatsplusTest(Test):
             scores={_then_encoded: _scores_regular_clarified},
             unchecked=[])
         extract = _root + '/resource/extract/'
-        calls = [
-            mock.call('{0}{1}2998.html'.format(extract, _game_box)),
-            mock.call('{0}{1}3002.html'.format(extract, _game_box)),
-            mock.call('{0}{1}14721.html'.format(extract, _game_box)),
-            mock.call('{0}{1}3001.html'.format(extract, _game_box)),
-            mock.call('{0}{1}3000.html'.format(extract, _game_box))
+        ids = [
+            '{0}{1}2998{2}', '{0}{1}3002{2}', '{0}{1}14721{2}',
+            '{0}{1}3001{2}', '{0}{1}3000{2}'
         ]
-        mock_box.assert_has_calls(calls)
+        mock_box.assert_has_calls([
+            mock.call(id_.format(extract, _game_box, '.html')) for id_ in ids
+        ])
+        mock_log.assert_has_calls([
+            mock.call(id_.format(extract, _game_log, '.html')) for id_ in ids
+        ])
         link = '{0}{1}29663.html'.format(_html, _player)
         mock_player.assert_called_once_with(link)
+        mock_open.assert_has_calls([
+            mock.call(
+                id_.format(_root + '/resource/', _game_game, '.json'), 'w')
+            for id_ in ids
+        ])
+        mock_handle.write.assert_has_calls(
+            [mock.call(dumps({
+                'ok': True
+            }) + '\n')] * 5)
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_called_once_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -1327,9 +1367,11 @@ class StatsplusTest(Test):
 
     @mock.patch.object(Statsplus, '_render')
     @mock.patch('plugin.statsplus.statsplus.parse_player')
+    @mock.patch('plugin.statsplus.statsplus.open')
+    @mock.patch('plugin.statsplus.statsplus.parse_game_log')
     @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_extract_all__with_invalid_date(self, mock_box, mock_player,
-                                            mock_render):
+    def test_extract_all__with_invalid_date(
+            self, mock_box, mock_log, mock_open, mock_player, mock_render):
         mock_box.return_value = {
             'away_runs': 4,
             'away_team': 'T31',
@@ -1338,6 +1380,7 @@ class StatsplusTest(Test):
             'home_team': 'T45',
             'ok': True
         }
+        mock_log.return_value = {'ok': True}
         scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
         unchecked = [[_then_encoded, '2998']]
         read = _data(scores={_then_encoded: scores}, unchecked=unchecked)
@@ -1345,67 +1388,10 @@ class StatsplusTest(Test):
         response = plugin._extract_all(unchecked, date=_then)
         self.assertEqual(response, Response())
 
-        link = _game_box_sub('{0}{1}2998.html')
-        mock_box.assert_called_once_with(link)
+        mock_box.assert_called_once_with(_game_box_sub('{0}{1}2998.html'))
+        mock_log.assert_called_once_with(_game_log_sub('{0}{1}2998.html'))
         mock_player.assert_not_called()
-        mock_render.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-
-    @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.parse_player')
-    @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_extract_all__with_invalid_team(self, mock_box, mock_player,
-                                            mock_render):
-        mock_box.return_value = {
-            'away_runs': 4,
-            'away_team': 'T32',
-            'date': _then,
-            'home_runs': 2,
-            'home_team': 'T45',
-            'ok': True
-        }
-        scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        unchecked = [[_then_encoded, '2998']]
-        read = _data(scores={_then_encoded: scores}, unchecked=unchecked)
-        plugin = self.create_plugin(read)
-        response = plugin._extract_all(unchecked, date=_then)
-        self.assertEqual(response, Response())
-
-        link = _game_box_sub('{0}{1}2998.html')
-        mock_box.assert_called_once_with(link)
-        mock_player.assert_not_called()
-        mock_render.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-
-    @mock.patch.object(Statsplus, '_render')
-    @mock.patch('plugin.statsplus.statsplus.parse_player')
-    @mock.patch('plugin.statsplus.statsplus.parse_box_score')
-    def test_extract_all__with_invalid_runs(self, mock_box, mock_player,
-                                            mock_render):
-        mock_box.return_value = {
-            'away_runs': 5,
-            'away_team': 'T31',
-            'date': _then,
-            'home_runs': 2,
-            'home_team': 'T45',
-            'ok': True
-        }
-        scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        unchecked = [[_then_encoded, '2998']]
-        read = _data(scores={_then_encoded: scores}, unchecked=unchecked)
-        plugin = self.create_plugin(read)
-        response = plugin._extract_all(unchecked, date=_then)
-        self.assertEqual(response, Response())
-
-        link = _game_box_sub('{0}{1}2998.html')
-        mock_box.assert_called_once_with(link)
-        mock_player.assert_not_called()
+        mock_open.assert_not_called()
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

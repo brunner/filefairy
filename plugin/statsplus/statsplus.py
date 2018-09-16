@@ -21,9 +21,12 @@ from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
+from util.file_.file_ import recreate  # noqa
+from util.json_.json_ import dumps  # noqa
 from util.standings.standings import sort  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.statslab.statslab import parse_box_score  # noqa
+from util.statslab.statslab import parse_game_log  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
@@ -47,6 +50,7 @@ logger_ = logging.getLogger('fairylab')
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
+_game_log = 'game_logs/log_'
 _player = 'players/player_'
 _shorten = '{}(?:{}|{})'.format(_html, _game_box, _player)
 _game_id = '\{0\}\{1\}(\d+).html'
@@ -206,6 +210,7 @@ class Statsplus(Registrable):
         self.data['scores'] = {}
         self.data['table'] = {}
         self.data['unchecked'] = []
+        recreate(_root + '/resource/games/')
 
     def _handle_key(self, key, encoded_date, text, pattern, append):
         if not append or encoded_date not in self.data[key]:
@@ -457,11 +462,8 @@ class Statsplus(Registrable):
         else:
             return False
 
-        count = len([True for e in _chlany if e in scores[i]])
-        if count not in [1, 2]:
-            return False
-
         finished = self.data['finished']
+        count = len([True for e in _chlany if e in scores[i]])
         score_pattern = '(\w+) (\d+), (\w+) (\d+)'
         url_match = re.findall(_url_pattern, scores[i])
         if url_match:
@@ -471,38 +473,50 @@ class Statsplus(Registrable):
             if score_match:
                 cteam1, cruns1, cteam2, cruns2 = score_match[0]
                 if finished:
-                    link = url.format(_root + '/resource/extract/', _game_box)
+                    box_link = url.format(_root + '/resource/extract/',
+                                          _game_box)
+                    log_link = url.format(_root + '/resource/extract/',
+                                          _game_log)
                 else:
-                    link = url.format(_html, _game_box)
-                box_score_ = parse_box_score(link)
-                if box_score_['ok']:
+                    box_link = url.format(_html, _game_box)
+                    log_link = url.format(_html, _game_log)
+                box_score_ = parse_box_score(box_link)
+                game_log_ = parse_game_log(log_link)
+                if not game_log_['ok']:
+                    print(game_log_)
+                if box_score_['ok'] and game_log_['ok']:
                     ddate = decode_datetime(encoded_date)
                     if ddate != box_score_['date']:
                         return False
-                    bruns1 = box_score_['away_runs']
-                    bteam1 = box_score_['away_team']
-                    bruns2 = box_score_['home_runs']
-                    bteam2 = box_score_['home_team']
-                    swap = False
-                    if bruns1 < bruns2:
-                        bruns1, bruns2 = bruns2, bruns1
-                        bteam1, bteam2 = bteam2, bteam1
-                        swap = True
-                    if self._uncheck(bteam1) != cteam1:
-                        return
-                    if self._uncheck(bteam2) != cteam2:
-                        return
-                    if bruns1 != int(cruns1) or bruns2 != int(cruns2):
-                        return
-                    s = '{} {}, {} {}'
-                    score = s.format(bteam1, bruns1, bteam2, bruns2)
-                    scores[i] = '<{0}|{1}>'.format(url, score)
-                    if swap:
-                        bteam1, bteam2 = bteam2, bteam1
-                        cteam1, cteam2 = cteam2, cteam1
-                    for key in ['highlights', 'injuries']:
-                        self._clarify(key, encoded_date, cteam1, cteam2,
-                                      bteam1, bteam2, count)
+                    fname = url.format(_root + '/resource/games/', 'game_')
+                    fname = fname.replace('.html', '.json')
+                    with open(fname, 'w') as f:
+                        f.write(dumps(game_log_) + '\n')
+                    if count:
+                        bruns1 = box_score_['away_runs']
+                        bteam1 = box_score_['away_team']
+                        bruns2 = box_score_['home_runs']
+                        bteam2 = box_score_['home_team']
+                        swap = False
+                        if bruns1 < bruns2:
+                            bruns1, bruns2 = bruns2, bruns1
+                            bteam1, bteam2 = bteam2, bteam1
+                            swap = True
+                        if self._uncheck(bteam1) != cteam1:
+                            return False
+                        if self._uncheck(bteam2) != cteam2:
+                            return False
+                        if bruns1 != int(cruns1) or bruns2 != int(cruns2):
+                            return False
+                        s = '{} {}, {} {}'
+                        score = s.format(bteam1, bruns1, bteam2, bruns2)
+                        scores[i] = '<{0}|{1}>'.format(url, score)
+                        if swap:
+                            bteam1, bteam2 = bteam2, bteam1
+                            cteam1, cteam2 = cteam2, cteam1
+                        for key in ['highlights', 'injuries']:
+                            self._clarify(key, encoded_date, cteam1, cteam2,
+                                          bteam1, bteam2, count)
                     return True
 
         return False

@@ -150,7 +150,7 @@ def parse_game_log(link):
 
         cell_outro = re.findall(_game_log_cell_outro, c)
         if not cell_outro:
-            return dict(ret, error='invalid_cell')
+            cell_outro = ['']
         cell_outro = cell_outro[0].strip()
 
         before = []
