@@ -8,4 +8,30 @@
 
 {% block content %}
 
+{% if inning %}
+<!-- ^(game.inning) -->
+<div class="container anchor" id="inning">
+
+{{ common.heading('book', 'Game Log') }}
+
+<!-- ^(game.row) -->
+<div class="row">
+
+<!-- ^(game.column) -->
+<div class="col-12">
+
+{% for table in inning %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(game.column) -->
+
+</div>
+<!-- $(game.row) -->
+
+</div>
+<!-- $(game.inning) -->
+{% endif %}
+
 {% endblock %}

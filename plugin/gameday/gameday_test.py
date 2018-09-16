@@ -8,10 +8,12 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/plugin/gameday', '', _path))
+_root = re.sub(r'/plugin/gameday', '', _path)
+sys.path.append(_root)
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
+from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
@@ -19,12 +21,55 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 _env = env()
+_game = {
+    'breadcrumbs': [{
+        'href': '/',
+        'name': 'Fairylab'
+    }, {
+        'href': '/gameday/',
+        'name': 'Gameday'
+    }, {
+        'href': '',
+        'name': 'Diamondbacks at Dodgers, 10/09/2022'
+    }],
+    'inning': [
+        table(
+            clazz='border mt-3',
+            head=['t1'],
+            body=[['T31 batting - Pitching for T45 : LHP P101'],
+                  ['Batting: SHB P102'], ['0-0: Ball'], ['P103 to second'],
+                  ['0 run(s), 0 hit(s), 0 error(s), 0 left on base']])
+    ]
+}
+_game_data = {
+    'away_team':
+    'T31',
+    'date':
+    '2022-10-09T00:00:00-07:00',
+    'home_team':
+    'T45',
+    'inning': [{
+        'id':
+        't1',
+        'intro':
+        'T31 batting - Pitching for T45 : LHP P101',
+        'outro':
+        '0 run(s), 0 hit(s), 0 error(s), 0 left on base',
+        'pitch': [{
+            'before': ['Batting: SHB P102'],
+            'result': '0-0: Ball',
+            'after': ['P103 to second']
+        }]
+    }]
+}
 _now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
 _then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 
 
-def _data():
-    return {}
+def _data(games=None):
+    if games is None:
+        games = []
+    return {'games': games}
 
 
 class GamedayTest(unittest.TestCase):
@@ -71,22 +116,28 @@ class GamedayTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(Gameday, '_game')
-    def test_render(self, mock_game):
-        game = {'breadcrumbs': []}
-        mock_game.return_value = game
+    maxDiff = None
 
-        plugin = self.create_plugin(_data())
+    @mock.patch('plugin.gameday.gameday.open')
+    def test_render(self, mock_open):
+        mo = mock.mock_open(read_data=dumps(_game_data))
+        mock_open.side_effect = [mo.return_value]
+
+        plugin = self.create_plugin(_data(games=['2998']))
         response = plugin._render_internal(date=_now)
-        index = 'gameday/diamondbacks/index.html'
-        self.assertEqual(response,
-                         [(index, 'diamondbacks', 'game.html', game)])
+        index = 'gameday/2998/index.html'
+        subtitle = 'Diamondbacks at Dodgers, 10/09/2022'
+        self.assertEqual(response, [(index, subtitle, 'game.html', _game)])
 
-        mock_game.assert_called_once_with('Diamondbacks', date=_now)
+        mock_open.assert_called_once_with(
+            _root + '/resource/games/game_2998.json', 'r')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    def test_run(self):
+    @mock.patch.object(Gameday, '_check_games')
+    def test_run__with_check_false(self, mock_check):
+        mock_check.return_value = False
+
         plugin = self.create_plugin(_data())
         response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response())
@@ -94,13 +145,24 @@ class GamedayTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
-    @mock.patch.object(Gameday, '_render')
-    def test_setup(self, mock_render):
+    @mock.patch.object(Gameday, '_check_games')
+    def test_run__with_check_true(self, mock_check):
+        mock_check.return_value = True
+
+        plugin = self.create_plugin(_data())
+        response = plugin._run_internal(date=_then)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+
+    @mock.patch.object(Gameday, '_check_games')
+    def test_setup(self, mock_check):
         plugin = self.create_plugin(_data())
         response = plugin._setup_internal(date=_then)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_then)
+        mock_check.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
@@ -111,22 +173,6 @@ class GamedayTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-
-    def test_game__with_empty(self):
-        plugin = self.create_plugin(_data())
-        actual = plugin._game('Diamondbacks', date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '/gameday/',
-            'name': 'Gameday'
-        }, {
-            'href': '',
-            'name': 'Diamondbacks'
-        }]
-        expected = {'breadcrumbs': breadcrumbs}
-        self.assertEqual(actual, expected)
 
 
 if __name__ in ['__main__', 'plugin.gameday.gameday_test']:

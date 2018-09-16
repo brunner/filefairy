@@ -48,6 +48,33 @@ footer {
 .breadcrumb {
   background-color: inherit;
   line-height: 60px;
+  max-width: 468px;
+  overflow-x: auto;
+}
+@media (max-width: 560px) {
+  .breadcrumb {
+    max-width: 428px;
+  }
+}
+@media (max-width: 512px) {
+  .breadcrumb {
+    max-width: 380px;
+  }
+}
+@media (max-width: 464px) {
+  .breadcrumb {
+    max-width: 332px;
+  }
+}
+@media (max-width: 416px) {
+  .breadcrumb {
+    max-width: 284px;
+  }
+}
+@media (max-width: 368px) {
+  .breadcrumb {
+    max-width: 236px;
+  }
 }
 .dropdown-toggle {
   color: #6c767c;
@@ -126,7 +153,7 @@ footer {
 <header class="border-bottom sticky-top">
 <div class="container">
 <nav class="navbar navbar-light" aria-label="nav">
-<ol class="breadcrumb m-0 p-0">
+<ol class="breadcrumb flex-nowrap text-truncate m-0 p-0">
 <li class="breadcrumb-item active" aria-current="page">Fairylab</li>
 </ol>
 
