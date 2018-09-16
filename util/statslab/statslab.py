@@ -26,8 +26,7 @@ _game_log_date = '<div style="text-align:center; color:#000000; ' + \
 _game_log_player = '<a href="../players/player_(\d+).html">([^<]+)</a>'
 _game_log_cell = '<table cellspacing="0" cellpadding="0" class="data" ' + \
                  'width="968px">(.+?)</table>'
-_game_log_cell_id = '<th colspan="2" class="boxtitle">' + \
-                       '(\w)[^\d]+(\d+?)\w+</th>'
+_game_log_cell_id = '<th colspan="2" class="boxtitle">(.+?)</th>'
 _game_log_cell_intro = '<th colspan="2" align="left" ' + \
                        'style="padding:4px 0px 4px 4px;">(.+?)</th>'
 _game_log_cell_outro = '<td class="datathbg" colspan="2">' + \
@@ -138,10 +137,10 @@ def parse_game_log(link):
     inning = []
     cell = re.findall(_game_log_cell, content, re.DOTALL)
     for c in cell:
-        cell_id = re.findall(_game_log_cell_id, c)
+        cell_id = re.findall(_game_log_cell_id, c, re.DOTALL)
         if not cell_id:
             return dict(ret, error='invalid_cell')
-        cell_id = cell_id[0][0].lower() + cell_id[0][1]
+        cell_id = cell_id[0][0] + ''.join(cell_id[0][1:]).lower()
 
         cell_intro = re.findall(_game_log_cell_intro, c, re.DOTALL)
         if not cell_intro:

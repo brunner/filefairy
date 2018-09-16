@@ -5,6 +5,7 @@ import json
 import os
 import re
 import sys
+from functools import partial
 
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/gameday', '', _path)
@@ -15,6 +16,7 @@ from core.response.response import Response  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
+from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_nickname  # noqa
 
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
@@ -77,6 +79,22 @@ class Gameday(Registrable):
     def _shadow_internal(self, **kwargs):
         return []
 
+    @staticmethod
+    def _game_repl(game_data, m):
+        a = m.group(0)
+        if a.startswith('P'):
+            return game_data['player'][a] if a in game_data['player'] else a
+        if a.startswith('T'):
+            return encoding_to_decoding(a)
+        return a
+
+    @staticmethod
+    def _game_sub(game_data):
+        pattern = '|'.join(
+            list(game_data['player'].keys()) +
+            [game_data['away_team'], game_data['home_team']])
+        return partial(re.sub, pattern, partial(Gameday._game_repl, game_data))
+
     def _check_games(self, **kwargs):
         games = []
         for game in os.listdir(_root + '/resource/games/'):
@@ -106,16 +124,43 @@ class Gameday(Registrable):
             'inning': []
         }
 
+        game_sub = self._game_sub(game_data)
+
         for inning in game_data['inning']:
-            _table = table(head=[inning['id']], body=[[inning['intro']]])
+            _table = table(
+                head=[inning['id']], body=[[game_sub(inning['intro'])]])
             for pitch in inning['pitch']:
                 for before in pitch.get('before', []):
-                    _table['body'].append([before])
-                _table['body'].append([pitch['result']])
+                    _table['body'].append([game_sub(before)])
+                _table['body'].append([game_sub(pitch['result'])])
                 for after in pitch.get('after', []):
-                    _table['body'].append([after])
+                    _table['body'].append([game_sub(after)])
             if inning['outro']:
                 _table['body'].append([inning['outro']])
             ret['inning'].append(_table)
 
         return ret
+
+
+# import copy  # noqa
+# from plugin.statsplus.statsplus import Statsplus  # noqa
+# from util.jinja2_.jinja2_ import env  # noqa
+# from util.datetime_.datetime_ import datetime_now  # noqa
+
+# e = env()
+# now = datetime_now()
+
+# statsplus = Statsplus(date=now, e=e)
+# unchecked = []
+# for date in statsplus.data['scores']:
+#     id_ = re.findall('\{1\}(\d+).h', statsplus.data['scores'][date][0])[0]
+#     unchecked.append([date, id_])
+# statsplus.data['unchecked'] = unchecked
+# statsplus.data['finished'] = False
+# statsplus._extract_all(copy.deepcopy(unchecked), date=now)
+# statsplus.data['finished'] = True
+# statsplus.write()
+
+# gameday = Gameday(date=now, e=e)
+# gameday.data['games'] = []
+# gameday._setup_internal(date=now)

@@ -37,8 +37,10 @@ _game = {
         table(
             clazz='border mt-3',
             head=['t1'],
-            body=[['T31 batting - Pitching for T45 : LHP P101'],
-                  ['Batting: SHB P102'], ['0-0: Ball'], ['P103 to second'],
+            body=[[
+                'Arizona Diamondbacks batting - Pitching for Los Angeles '
+                'Dodgers : LHP 101'
+            ], ['Batting: SHB 102'], ['0-0: Ball'], ['103 to second'],
                   ['0 run(s), 0 hit(s), 0 error(s), 0 left on base']])
     ]
 }
@@ -61,7 +63,12 @@ _game_data = {
             'result': '0-0: Ball',
             'after': ['P103 to second']
         }]
-    }]
+    }],
+    'player': {
+        'P101': '101',
+        'P102': '102',
+        'P103': '103'
+    }
 }
 _now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
 _then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)

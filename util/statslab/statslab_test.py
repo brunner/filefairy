@@ -196,7 +196,7 @@ class StatslabTest(unittest.TestCase):
         actual = parse_game_log(link)
         inning = [{
             'id':
-            't1',
+            'Top of the 1st',
             'intro':
             'T31 batting - Pitching for T45 : RHP P101',
             'outro':
