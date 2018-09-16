@@ -21,6 +21,7 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 _env = env()
+_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 _game = {
     'breadcrumbs': [{
         'href': '/',
@@ -118,8 +119,9 @@ class GamedayTest(unittest.TestCase):
 
     maxDiff = None
 
+    @mock.patch('plugin.gameday.gameday.recreate')
     @mock.patch('plugin.gameday.gameday.open')
-    def test_render(self, mock_open):
+    def test_render(self, mock_open, mock_recreate):
         mo = mock.mock_open(read_data=dumps(_game_data))
         mock_open.side_effect = [mo.return_value]
 
@@ -131,6 +133,7 @@ class GamedayTest(unittest.TestCase):
 
         mock_open.assert_called_once_with(
             _root + '/resource/games/game_2998.json', 'r')
+        mock_recreate.assert_called_once_with(_fairylab_root + '/gameday/')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
