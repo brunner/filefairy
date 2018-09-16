@@ -1,160 +1,5 @@
 {
   "records": {
-    "2018-09-09T00:00:00-07:00": [
-      {
-        "count": 1,
-        "date": "2018-09-09T00:00:53.357741-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 185,
-        "msg": "Automated push.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T11:05:10.047161-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T15:48:39.313506-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 194,
-        "msg": "Tracker locked.",
-        "pathname": "/home/pi/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T16:51:14.346111-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 107,
-        "msg": "Upload started.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T19:58:17.515028-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 315,
-        "msg": "File is up.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T19:58:18.040657-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 309,
-        "msg": "Download started.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:04:01.033792-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 291,
-        "msg": "Download finished.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:04:01.422356-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 113, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 76, in _notify\n    response = self._notify_internal(**kwargs)\n  File \"/home/pi/filefairy/plugin/recap/recap.py\", line 56, in _notify_internal\n    self.tables = self._tables()\n  File \"/home/pi/filefairy/plugin/recap/recap.py\", line 198, in _tables\n    ret[key] = self._tables_internal(key)\n  File \"/home/pi/filefairy/plugin/recap/recap.py\", line 204, in _tables_internal\n    with open(dname, 'r') as f:\nFileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/resource/extract/leagues/injuries.txt'",
-        "levelname": "INFO",
-        "lineno": 126,
-        "msg": "Disabled recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:18:52.866142-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 248,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:28.512747-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 286,
-        "msg": "Restarted fairylab.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:28.908707-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 249,
-        "msg": "Reloaded exports.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:28.971827-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 249,
-        "msg": "Reloaded gameday.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:29.042077-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 249,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:29.115620-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 249,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:29.187448-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 249,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:30.335476-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 249,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-09T20:53:30.409671-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 249,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      }
-    ],
     "2018-09-10T00:00:00-07:00": [
       {
         "count": 1,
@@ -464,6 +309,26 @@
       {
         "count": 1,
         "date": "2018-09-14T20:43:53.077702-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 172,
+        "msg": "Fetched latest changes.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      }
+    ],
+    "2018-09-15T00:00:00-07:00": [
+      {
+        "count": 1,
+        "date": "2018-09-15T00:00:26.514244-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 184,
+        "msg": "Automated push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-15T22:17:37.875826-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 172,
