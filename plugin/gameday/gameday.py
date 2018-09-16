@@ -124,19 +124,25 @@ class Gameday(Registrable):
             'inning': []
         }
 
+        cs = [' colspan="2"']
+        bs = [' class="w-50"', ' class="w-50"']
         game_sub = self._game_sub(game_data)
 
         for inning in game_data['inning']:
             _table = table(
-                head=[inning['id']], body=[[game_sub(inning['intro'])]])
+                hcols=cs, head=[game_sub(inning['intro'])], bcols=bs, body=[])
             for pitch in inning['pitch']:
-                for before in pitch.get('before', []):
-                    _table['body'].append([game_sub(before)])
-                _table['body'].append([game_sub(pitch['result'])])
+                before_list = pitch.get('before', [''])
+                for before in before_list[:-1]:
+                    _table['body'].append([game_sub(before), ''])
+                _table['body'].append(
+                    [game_sub(before_list[-1]),
+                     game_sub(pitch['result'])])
                 for after in pitch.get('after', []):
-                    _table['body'].append([game_sub(after)])
+                    _table['body'].append(['', game_sub(after)])
             if inning['outro']:
-                _table['body'].append([inning['outro']])
+                _table['fcols'] = cs
+                _table['foot'] = [inning['outro']]
             ret['inning'].append(_table)
 
         return ret

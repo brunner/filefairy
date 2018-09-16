@@ -33,12 +33,16 @@ def span(classes, text):
 def table(clazz='border mt-3',
           hcols=None,
           bcols=None,
+          fcols=None,
           head=None,
-          body=None):
+          body=None,
+          foot=None):
     return {
         'clazz': clazz,
         'hcols': hcols,
         'bcols': bcols,
+        'fcols': fcols,
         'head': head,
-        'body': body
+        'body': body,
+        'foot': foot
     }

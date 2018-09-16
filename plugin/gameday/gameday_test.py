@@ -36,12 +36,15 @@ _game = {
     'inning': [
         table(
             clazz='border mt-3',
-            head=['t1'],
-            body=[[
+            hcols=[' colspan="2"'],
+            bcols=[' class="w-50"', ' class="w-50"'],
+            fcols=[' colspan="2"'],
+            head=[
                 'Arizona Diamondbacks batting - Pitching for Los Angeles '
                 'Dodgers : LHP 101'
-            ], ['Batting: SHB 102'], ['0-0: Ball'], ['103 to second'],
-                  ['0 run(s), 0 hit(s), 0 error(s), 0 left on base']])
+            ],
+            body=[['Batting: SHB 102', '0-0: Ball'], ['', '103 to second']],
+            foot=['0 run(s), 0 hit(s), 0 error(s), 0 left on base'])
     ]
 }
 _game_data = {

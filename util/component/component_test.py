@@ -86,8 +86,10 @@ class ComponentTest(unittest.TestCase):
             'clazz': 'border mt-3',
             'hcols': None,
             'bcols': None,
+            'fcols': None,
             'head': None,
-            'body': None
+            'body': None,
+            'foot': None
         }
         self.assertEqual(actual, expected)
 
@@ -100,8 +102,10 @@ class ComponentTest(unittest.TestCase):
             'clazz': 'table-sm',
             'hcols': None,
             'bcols': None,
+            'fcols': None,
             'head': ['Date', 'Time', 'Size'],
-            'body': [['Jan 1', '5h 0m', '300,000,000']]
+            'body': [['Jan 1', '5h 0m', '300,000,000']],
+            'foot': None
         }
         self.assertEqual(actual, expected)
 

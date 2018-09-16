@@ -184,6 +184,19 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 </tbody>
 <!-- $(common.table.body) -->
 {% endif %}
+{% if data.foot %}
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+{% for cell in data.foot %}
+{% set hcol = data.fcols[loop.index0] if data.fcols else '' %}
+<td scope="col"{{ hcol | safe }}>{{ cell }}</td>
+{% endfor %}
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+{% endif %}
 
 </table>
 <!-- $(common.table) -->

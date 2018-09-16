@@ -23,10 +23,15 @@ _breadcrumbs = [{
 _inning = [
     table(
         clazz='border mt-3',
-        head=['t1'],
-        body=[['T31 batting - Pitching for T45 : LHP P101'],
-              ['Batting: SHB P102'], ['0-0: Ball'], ['P103 to second'],
-              ['0 run(s), 0 hit(s), 0 error(s), 0 left on base']])
+        bcols=[' class="w-50"', ' class="w-50"'],
+        hcols=[' colspan="2"'],
+        fcols=[' colspan="2"'],
+        head=[
+            'Arizona Diamondbacks batting - Pitching for Los Angeles ' +
+            'Dodgers : LHP 101'
+        ],
+        body=[['Batting: SHB 102', '0-0: Ball'], ['', '103 to second']],
+        foot=['0 run(s), 0 hit(s), 0 error(s), 0 left on base'])
 ]
 
 subtitle = 'Diamondbacks at Dodgers, 10/09/2022'
