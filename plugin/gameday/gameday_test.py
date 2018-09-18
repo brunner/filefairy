@@ -44,7 +44,10 @@ _game = {
                 'Dodgers : LHP 101'
             ],
             body=[['Batting: SHB 102', '0-0: Ball'], ['', '103 to second']],
-            foot=['0 run(s), 0 hit(s), 0 error(s), 0 left on base'])
+            foot=[
+                '0 run(s), 0 hit(s), 0 error(s), 0 left on base; Arizona '
+                'Diamondbacks 0 - Los Angeles Dodgers 0'
+            ])
     ]
 }
 _game_data = {
@@ -60,7 +63,7 @@ _game_data = {
         'intro':
         'T31 batting - Pitching for T45 : LHP P101',
         'outro':
-        '0 run(s), 0 hit(s), 0 error(s), 0 left on base',
+        '0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 0 - T45 0',
         'pitch': [{
             'before': ['Batting: SHB P102'],
             'result': '0-0: Ball',

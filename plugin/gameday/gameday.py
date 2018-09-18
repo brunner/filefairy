@@ -142,7 +142,7 @@ class Gameday(Registrable):
                     _table['body'].append(['', game_sub(after)])
             if inning['outro']:
                 _table['fcols'] = cs
-                _table['foot'] = [inning['outro']]
+                _table['foot'] = [game_sub(inning['outro'])]
             ret['inning'].append(_table)
 
         return ret

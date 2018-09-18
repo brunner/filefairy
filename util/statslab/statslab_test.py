@@ -200,7 +200,7 @@ class StatslabTest(unittest.TestCase):
             'intro':
             'T31 batting - Pitching for T45 : RHP P101',
             'outro':
-            '0 run(s), 1 hit(s), 0 error(s), 2 left on base',
+            '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
             'pitch': [{
                 'before': ['Pitching: RHP P101', 'Batting: RHB P102'],
                 'result': '0-0: Ball'
