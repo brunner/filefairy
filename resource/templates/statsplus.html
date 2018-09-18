@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('overview', 'Overview'), ('filter', 'Filter'), ('scores', 'Scores')] %}
+{% set modals = [] %}
+{% set anchors = [('overview', 'Overview'), ('filter', 'Filter'), ('scores', 'Scores')] %}
 {% if injuries %}
-{% do items.append(('injuries', 'Injuries')) %}
+{% do anchors.append(('injuries', 'Injuries')) %}
 {% endif %}
 {% if highlights %}
-{% do items.append(('highlights', 'Highlights')) %}
+{% do anchors.append(('highlights', 'Highlights')) %}
 {% endif %}
 {% if forecast %}
-{% do items.append(('forecast', 'Forecast')) %}
+{% do anchors.append(('forecast', 'Forecast')) %}
 {% endif %}
 {% block nav %}
-{{ common.nav(items) }}
+{{ common.nav(modals, anchors) }}
 {% endblock %}
 
 {% block content %}

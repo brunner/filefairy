@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [] %}
+{% set modals = [] %}
+{% set anchors = [] %}
 {% if exceptions %}
-{% do items.append(('exceptions', 'Exceptions')) %}
+{% do anchors.append(('exceptions', 'Exceptions')) %}
 {% endif %}
 {% if warnings %}
-{% do items.append(('warnings', 'Warnings')) %}
+{% do anchors.append(('warnings', 'Warnings')) %}
 {% endif %}
 {% if logs %}
-{% do items.append(('filter', 'Filter')) %}
-{% do items.append(('logs', 'Logs')) %}
+{% do anchors.append(('filter', 'Filter')) %}
+{% do anchors.append(('logs', 'Logs')) %}
 {% endif %}
 {% block nav %}
-{{ common.nav(items) }}
+{{ common.nav(modals, anchors) }}
 {% endblock %}
 
 {% block content %}

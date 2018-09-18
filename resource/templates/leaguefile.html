@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [] %}
+{% set modals = [] %}
+{% set anchors = [] %}
 {% if upload %}
-{% do items.append(('upload', 'Upload')) %}
+{% do anchors.append(('upload', 'Upload')) %}
 {% endif %}
 {% if download %}
-{% do items.append(('download', 'Download')) %}
+{% do anchors.append(('download', 'Download')) %}
 {% endif %}
 {% if completed %}
-{% do items.append(('completed', 'Completed')) %}
+{% do anchors.append(('completed', 'Completed')) %}
 {% endif %}
 {% block nav %}
-{% if items %}
-{{ common.nav(items) }}
+{% if anchors %}
+{{ common.nav(modals, anchors) }}
 {% endif %}
 {% endblock %}
 

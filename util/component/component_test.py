@@ -10,6 +10,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/component', '', _path))
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
+from util.component.component import replace  # noqa
+from util.component.component import show  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 
@@ -75,6 +77,19 @@ class ComponentTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
+    def test_replace__default(self):
+        actual = replace('text', 'replace')
+        expected = '<a class="repl-toggler" href="#" role="button" ' + \
+                   'data-repl="replace">text</a>'
+        self.assertEqual(actual, expected)
+
+    def test_show__default(self):
+        actual = show('trigger', 'text')
+        expected = '<a class="show-toggler" data-toggle="collapse" ' + \
+                   'href="#trigger" role="button" aria-expanded="false" ' + \
+                   'aria-controls="trigger">text</a>'
+        self.assertEqual(actual, expected)
+
     def test_span(self):
         actual = span(['foo', 'bar'], 'text')
         expected = '<span class="foo bar">text</span>'
@@ -84,6 +99,7 @@ class ComponentTest(unittest.TestCase):
         actual = table()
         expected = {
             'clazz': 'border mt-3',
+            'id': '',
             'hcols': None,
             'bcols': None,
             'fcols': None,
@@ -100,6 +116,7 @@ class ComponentTest(unittest.TestCase):
             body=[['Jan 1', '5h 0m', '300,000,000']])
         expected = {
             'clazz': 'table-sm',
+            'id': '',
             'hcols': None,
             'bcols': None,
             'fcols': None,

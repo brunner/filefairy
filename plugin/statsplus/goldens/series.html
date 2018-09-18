@@ -33,6 +33,10 @@ footer {
   position: absolute;
   width: 100%;
 }
+a.disabled{
+  pointer-events: none;
+  cursor: default;
+}
 .alert, .dropdown-toggle, .form-control {
   padding: .75rem;
 }
@@ -93,6 +97,7 @@ footer {
 }
 .navbar .nav-link {
   padding: .5rem;
+  cursor: pointer;
 }
 .pl-24p {
   padding-left: 24px;
@@ -119,6 +124,9 @@ footer {
 }
 .table .td-sm {
   padding: .75rem .25rem;
+}
+.table.collapse.show {
+  display: table;
 }
 .top-14p {
   top: 14px;
@@ -543,6 +551,17 @@ $('.navbar-toggler').one('click', function(e) {
 });
 $('.navbar-toggler').on('click', function(e) {
   $('.anchor').toggleClass('offset');
+});
+$('.repl-toggler').on('click', function(e) {
+  if ($(this).hasClass('disabled')) {
+    e.preventDefault();
+  } else {
+    $(this).toggleClass('disabled text-secondary');
+    $(this).html($(this).data('repl'));
+  }
+});
+$('.show-toggler').on('click', function(e) {
+  $(this).closest('.table').toggleClass('border-bottom-0');
 });
 </script>
 

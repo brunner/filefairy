@@ -26,11 +26,23 @@ def card(href='',
     }
 
 
+def show(trigger, text):
+    s = '<a class="show-toggler" data-toggle="collapse" href="#{0}" ' + \
+        'role="button" aria-expanded="false" aria-controls="{0}">{1}</a>'
+    return s.format(trigger, text)
+
+
+def replace(text, replace):
+    s = '<a class="repl-toggler" href="#" role="button" data-repl="{}">{}</a>'
+    return s.format(replace, text)
+
+
 def span(classes, text):
     return '<span class="{}">{}</span>'.format(' '.join(classes), text)
 
 
 def table(clazz='border mt-3',
+          id_='',
           hcols=None,
           bcols=None,
           fcols=None,
@@ -39,6 +51,7 @@ def table(clazz='border mt-3',
           foot=None):
     return {
         'clazz': clazz,
+        'id': id_,
         'hcols': hcols,
         'bcols': bcols,
         'fcols': fcols,

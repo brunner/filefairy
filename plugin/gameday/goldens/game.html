@@ -33,6 +33,10 @@ footer {
   position: absolute;
   width: 100%;
 }
+a.disabled{
+  pointer-events: none;
+  cursor: default;
+}
 .alert, .dropdown-toggle, .form-control {
   padding: .75rem;
 }
@@ -93,6 +97,7 @@ footer {
 }
 .navbar .nav-link {
   padding: .5rem;
+  cursor: pointer;
 }
 .pl-24p {
   padding-left: 24px;
@@ -119,6 +124,9 @@ footer {
 }
 .table .td-sm {
   padding: .75rem .25rem;
+}
+.table.collapse.show {
+  display: table;
 }
 .top-14p {
   top: 14px;
@@ -171,6 +179,12 @@ footer {
 </button>
 <div class="collapse navbar-collapse border-top" id="nav-dropdown">
 <ul class="navbar-nav">
+<li class="nav-item">
+<span class="nav-link"
+      data-toggle="modal"
+      data-target="#schedule">Schedule</a>
+</li>
+<div class="dropdown-divider"></div>
 <li class="nav-item">
 <a class="nav-link" href="#log">Game Log</a>
 </li>
@@ -249,6 +263,155 @@ footer {
 </div>
 <!-- $(game.inning) -->
 
+<div class="modal fade"
+     id="schedule"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="schedule-modal-label" aria-hidden="true">
+
+<!-- ^(common.modal.head) -->
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="schedule-modal-label">Schedule</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<!-- $(common.modal.head) -->
+
+<!-- ^(common.modal.body) -->
+<div class="modal-body">
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border border-bottom-0">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="text-center">Arizona Diamondbacks</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border border-bottom-0">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="text-center"><a class="repl-toggler" href="#" role="button" data-repl="Previous game not found">Previous game</a> - <a class="repl-toggler" href="#" role="button" data-repl="Next game not found">Next game</a></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="text-center"><a class="show-toggler" data-toggle="collapse" href="#schedule-t31" role="button" aria-expanded="false" aria-controls="schedule-t31">Toggle full schedule</a></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border collapse"id="schedule-t31">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="text-center"><span class="text-secondary">10/09/2022 @ Los Angeles Dodgers</span></td>
+</tr>
+<tr>
+<td scope="row" class="text-center"><a href="/gameday/1000/">10/10/2022 @ Los Angeles Dodgers</a></td>
+</tr>
+<tr>
+<td scope="row" class="text-center"><a href="/gameday/2000/">10/11/2022 @ Los Angeles Dodgers</a></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border border-bottom-0 mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="text-center">Los Angeles Dodgers</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border border-bottom-0">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="text-center"><a class="repl-toggler" href="#" role="button" data-repl="Previous game not found">Previous game</a> - <a class="repl-toggler" href="#" role="button" data-repl="Next game not found">Next game</a></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="text-center"><a class="show-toggler" data-toggle="collapse" href="#schedule-t45" role="button" aria-expanded="false" aria-controls="schedule-t45">Toggle full schedule</a></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table table-fixed border collapse"id="schedule-t45">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="text-center"><span class="text-secondary">10/09/2022 v Arizona Diamondbacks</span></td>
+</tr>
+<tr>
+<td scope="row" class="text-center"><a href="/gameday/1000/">10/10/2022 v Arizona Diamondbacks</a></td>
+</tr>
+<tr>
+<td scope="row" class="text-center"><a href="/gameday/2000/">10/11/2022 v Arizona Diamondbacks</a></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(common.modal.body) -->
+
+</div>
+
 </main>
 <!-- $(base.main) -->
 
@@ -279,6 +442,17 @@ $('.navbar-toggler').one('click', function(e) {
 });
 $('.navbar-toggler').on('click', function(e) {
   $('.anchor').toggleClass('offset');
+});
+$('.repl-toggler').on('click', function(e) {
+  if ($(this).hasClass('disabled')) {
+    e.preventDefault();
+  } else {
+    $(this).toggleClass('disabled text-secondary');
+    $(this).html($(this).data('repl'));
+  }
+});
+$('.show-toggler').on('click', function(e) {
+  $(this).closest('.table').toggleClass('border-bottom-0');
 });
 </script>
 

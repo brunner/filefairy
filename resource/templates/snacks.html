@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('statistics', 'Statistics')] %}
+{% set modals = [] %}
+{% set anchors = [('statistics', 'Statistics')] %}
 {% if count and recent %}
-{% do items.append(('leaderboard', 'Leaderboard')) %}
+{% do anchors.append(('leaderboard', 'Leaderboard')) %}
 {% endif %}
 {% block nav %}
-{{ common.nav(items) }}
+{{ common.nav(modals, anchors) }}
 {% endblock %}
 
 {% block content %}

@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('tracker', 'Tracker')] %}
+{% set modals = [] %}
+{% set anchors = [('tracker', 'Tracker')] %}
 {% block nav %}
-{{ common.nav(items) }}
+{{ common.nav(modals, anchors) }}
 {% endblock %}
 
 {% block content %}

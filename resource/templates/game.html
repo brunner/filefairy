@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [('log', 'Game Log')] %}
+{% set modals = [('schedule', 'Schedule')] %}
+{% set anchors = [('log', 'Game Log')] %}
 {% block nav %}
-{{ common.nav(items) }}
+{{ common.nav(modals, anchors) }}
 {% endblock %}
 
 {% block content %}
@@ -33,5 +34,7 @@
 </div>
 <!-- $(game.inning) -->
 {% endif %}
+
+{{ common.modal('schedule', 'Schedule', schedule)}}
 
 {% endblock %}

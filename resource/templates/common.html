@@ -1,4 +1,4 @@
-{% macro nav(items) -%}
+{% macro nav(modals, anchors) -%}
 <!-- ^(common.nav) -->
 <button class="navbar-toggler border-0" type="button" data-toggle="collapse"
         data-target="#nav-dropdown" aria-controls="#nav-dropdown"
@@ -7,9 +7,19 @@
 </button>
 <div class="collapse navbar-collapse border-top" id="nav-dropdown">
 <ul class="navbar-nav">
-{% for item in items %}
+{% for modal in modals %}
 <li class="nav-item">
-<a class="nav-link" href="#{{ item[0] }}">{{ item[1] }}</a>
+<span class="nav-link"
+      data-toggle="modal"
+      data-target="#{{ modal[0] }}">{{ modal[1] }}</a>
+</li>
+{% endfor %}
+{% if modals and anchors %}
+<div class="dropdown-divider"></div>
+{% endif %}
+{% for anchor in anchors %}
+<li class="nav-item">
+<a class="nav-link" href="#{{ anchor[0] }}">{{ anchor[1] }}</a>
 </li>
 {% endfor %}
 </ul>
@@ -200,4 +210,35 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 
 </table>
 <!-- $(common.table) -->
+{%- endmacro -%}
+
+{% macro modal(trigger, name, tables) -%}
+<div class="modal fade"
+     id="{{ trigger }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="{{ trigger }}-modal-label" aria-hidden="true">
+
+<!-- ^(common.modal.head) -->
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="{{ trigger }}-modal-label">{{ name }}</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<!-- $(common.modal.head) -->
+
+<!-- ^(common.modal.body) -->
+<div class="modal-body">
+
+{% for t in tables %}
+{{ table(t) }}
+
+{% endfor %}
+</div>
+<!-- $(common.modal.body) -->
+
+</div>
 {%- endmacro -%}
