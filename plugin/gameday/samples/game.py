@@ -53,7 +53,7 @@ _schedule = [
             ],
         ]),
     table(
-        clazz='table-fixed border',
+        clazz='table-fixed border show-toggler',
         bcols=[' class="text-center"'],
         body=[
             [show('schedule-t31', 'Toggle full schedule')],
@@ -81,7 +81,7 @@ _schedule = [
             ],
         ]),
     table(
-        clazz='table-fixed border',
+        clazz='table-fixed border show-toggler',
         bcols=[' class="text-center"'],
         body=[
             [show('schedule-t45', 'Toggle full schedule')],

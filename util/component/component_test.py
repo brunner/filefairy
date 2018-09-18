@@ -85,8 +85,8 @@ class ComponentTest(unittest.TestCase):
 
     def test_show__default(self):
         actual = show('trigger', 'text')
-        expected = '<a class="show-toggler" data-toggle="collapse" ' + \
-                   'href="#trigger" role="button" aria-expanded="false" ' + \
+        expected = '<a data-toggle="collapse" href="#trigger" ' + \
+                   'role="button" aria-expanded="false" ' + \
                    'aria-controls="trigger">text</a>'
         self.assertEqual(actual, expected)
 

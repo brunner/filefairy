@@ -27,8 +27,8 @@ def card(href='',
 
 
 def show(trigger, text):
-    s = '<a class="show-toggler" data-toggle="collapse" href="#{0}" ' + \
-        'role="button" aria-expanded="false" aria-controls="{0}">{1}</a>'
+    s = '<a data-toggle="collapse" href="#{0}" role="button" ' + \
+        'aria-expanded="false" aria-controls="{0}">{1}</a>'
     return s.format(trigger, text)
 
 

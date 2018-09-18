@@ -13,6 +13,9 @@ sys.path.append(_root)
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
+from util.component.component import replace  # noqa
+from util.component.component import show  # noqa
+from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -48,6 +51,64 @@ _game = {
                 '0 run(s), 0 hit(s), 0 error(s), 0 left on base; Arizona '
                 'Diamondbacks 0 - Los Angeles Dodgers 0'
             ])
+    ],
+    'schedule': [
+        table(
+            clazz='table-fixed border border-bottom-0',
+            hcols=[' class="text-center"'],
+            head=['Arizona Diamondbacks']),
+        table(
+            clazz='table-fixed border border-bottom-0',
+            bcols=[' class="text-center"'],
+            body=[
+                [
+                    replace('Previous game', 'Previous game not found') + ' - '
+                    + replace('Next game', 'Next game not found')
+                ],
+            ]),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="text-center"'],
+            body=[
+                [show('schedule-t31', 'Toggle full schedule')],
+            ]),
+        table(
+            clazz='table-fixed border collapse',
+            id_='schedule-t31',
+            bcols=[' class="text-center"'],
+            body=[
+                [span(['text-secondary'], '10/09/2022 @ Los Angeles Dodgers')],
+            ]),
+        table(
+            clazz='table-fixed border border-bottom-0 mt-3',
+            hcols=[' class="text-center"'],
+            head=['Los Angeles Dodgers']),
+        table(
+            clazz='table-fixed border border-bottom-0',
+            bcols=[' class="text-center"'],
+            body=[
+                [
+                    replace('Previous game', 'Previous game not found') + ' - '
+                    + replace('Next game', 'Next game not found')
+                ],
+            ]),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="text-center"'],
+            body=[
+                [show('schedule-t45',
+                      'Toggle full schedule')],
+            ]),
+        table(
+            clazz='table-fixed border collapse',
+            id_='schedule-t45',
+            bcols=[' class="text-center"'],
+            body=[
+                [
+                    span(['text-secondary'],
+                         '10/09/2022 v Arizona Diamondbacks')
+                ],
+            ]),
     ]
 }
 _game_data = {
@@ -129,8 +190,6 @@ class GamedayTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-
-    maxDiff = None
 
     @mock.patch('plugin.gameday.gameday.recreate')
     @mock.patch('plugin.gameday.gameday.open')

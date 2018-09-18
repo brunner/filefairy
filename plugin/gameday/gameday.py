@@ -13,6 +13,9 @@ sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
+from util.component.component import replace  # noqa
+from util.component.component import show  # noqa
+from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
@@ -127,6 +130,11 @@ class Gameday(Registrable):
         cs = [' colspan="2"']
         bs = [' class="w-50"', ' class="w-50"']
         game_sub = self._game_sub(game_data)
+        away_team = game_data['away_team']
+        away_decoding = encoding_to_decoding(away_team)
+        home_team = game_data['home_team']
+        home_decoding = encoding_to_decoding(home_team)
+        date_decoding = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
 
         for inning in game_data['inning']:
             _table = table(
@@ -144,6 +152,73 @@ class Gameday(Registrable):
                 _table['fcols'] = cs
                 _table['foot'] = [game_sub(inning['outro'])]
             ret['inning'].append(_table)
+
+        ret['schedule'] = [
+            table(
+                clazz='table-fixed border border-bottom-0',
+                hcols=[' class="text-center"'],
+                head=[away_decoding]),
+            table(
+                clazz='table-fixed border border-bottom-0',
+                bcols=[' class="text-center"'],
+                body=[
+                    [
+                        replace('Previous game', 'Previous game not found') +
+                        ' - ' + replace('Next game', 'Next game not found')
+                    ],
+                ]),
+            table(
+                clazz='table-fixed border',
+                bcols=[' class="text-center"'],
+                body=[
+                    [
+                        show('schedule-' + away_team.lower(),
+                             'Toggle full schedule')
+                    ],
+                ]),
+            table(
+                clazz='table-fixed border collapse',
+                id_='schedule-' + away_team.lower(),
+                bcols=[' class="text-center"'],
+                body=[
+                    [
+                        span(['text-secondary'], '{} @ {}'.format(
+                            date_decoding, home_decoding))
+                    ],
+                ]),
+            table(
+                clazz='table-fixed border border-bottom-0 mt-3',
+                hcols=[' class="text-center"'],
+                head=[home_decoding]),
+            table(
+                clazz='table-fixed border border-bottom-0',
+                bcols=[' class="text-center"'],
+                body=[
+                    [
+                        replace('Previous game', 'Previous game not found') +
+                        ' - ' + replace('Next game', 'Next game not found')
+                    ],
+                ]),
+            table(
+                clazz='table-fixed border',
+                bcols=[' class="text-center"'],
+                body=[
+                    [
+                        show('schedule-' + home_team.lower(),
+                             'Toggle full schedule')
+                    ],
+                ]),
+            table(
+                clazz='table-fixed border collapse',
+                id_='schedule-' + home_team.lower(),
+                bcols=[' class="text-center"'],
+                body=[
+                    [
+                        span(['text-secondary'], '{} v {}'.format(
+                            date_decoding, away_decoding))
+                    ],
+                ]),
+        ]
 
         return ret
 
