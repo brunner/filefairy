@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set items = [] %}
+{% set items = [('log', 'Game Log')] %}
 {% block nav %}
 {{ common.nav(items) }}
 {% endblock %}
@@ -10,7 +10,7 @@
 
 {% if inning %}
 <!-- ^(game.inning) -->
-<div class="container anchor" id="inning">
+<div class="container anchor" id="log">
 
 {{ common.heading('book', 'Game Log') }}
 
