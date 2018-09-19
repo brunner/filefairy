@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "common.html" as common %}
+
+{% set modals = [] %}
+{% set anchors = [('schedule', 'Schedule')] %}
+{% block nav %}
+{{ common.nav(modals, anchors) }}
+{% endblock %}
+
+{% block content %}
+
+{% if schedule %}
+<!-- ^(gameday.schedule) -->
+<div class="container anchor" id="schedule">
+
+{{ common.heading('calendar', 'Schedule') }}
+
+<!-- ^(gameday.row) -->
+<div class="row">
+
+<!-- ^(gameday.column) -->
+<div class="col-12">
+
+{% for table in schedule %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(gameday.column) -->
+
+</div>
+<!-- $(gameday.row) -->
+
+</div>
+<!-- $(gameday.schedule) -->
+{% endif %}
+
+{% endblock %}
