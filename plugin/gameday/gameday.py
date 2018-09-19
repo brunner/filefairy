@@ -51,6 +51,9 @@ class Gameday(Registrable):
         return 'gameday'
 
     def _notify_internal(self, **kwargs):
+        if kwargs['notify'] == Notify.LEAGUEFILE_START:
+            self.data['finished'] = True
+            self.write()
         return Response()
 
     def _on_message_internal(self, **kwargs):
@@ -161,13 +164,22 @@ class Gameday(Registrable):
             body=body)
 
     def _check_games(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
         games = []
         for game in os.listdir(_root + '/resource/games/'):
             id_ = re.findall('game_(\d+).json', game)[0]
             games.append(id_)
 
-        if games != self.data['games']:
+        if data['finished']:
+            data['finished'] = False
+            self._chat('fairylab', 'Live sim created.')
+
+        if games != data['games']:
             self.data['games'] = games
+
+        if data != original:
             self.write()
             self._render(**kwargs)
             return True

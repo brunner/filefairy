@@ -23,7 +23,12 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 from util.team.team import logo_absolute  # noqa
 
+_channel = 'C1234'
 _env = env()
+_now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
+_then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
+_ts = '123456789'
+
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
 _s31 = logo_absolute('31', anchor('/gameday/2998/', 'Arizona Diamondbacks'),
@@ -47,7 +52,8 @@ _s43 = logo_absolute('43', span(['text-secondary'], 'Kansas City Royals'),
                      'left')
 _s44 = logo_absolute('44', span(['text-secondary'], 'Los Angeles Angels'),
                      'left')
-_s45 = logo_absolute('45', anchor('/gameday/2998/', 'Los Angeles Dodgers'), 'left')
+_s45 = logo_absolute('45', anchor('/gameday/2998/', 'Los Angeles Dodgers'),
+                     'left')
 _s46 = logo_absolute('46', span(['text-secondary'], 'Milwaukee Brewers'),
                      'left')
 _s47 = logo_absolute('47', span(['text-secondary'], 'Minnesota Twins'), 'left')
@@ -242,14 +248,12 @@ _game_data = {
         'P103': '103'
     }
 }
-_now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
-_then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 
 
-def _data(games=None):
+def _data(finished=False, games=None):
     if games is None:
         games = []
-    return {'games': games}
+    return {'finished': finished, 'games': games}
 
 
 class GamedayTest(unittest.TestCase):
@@ -259,14 +263,24 @@ class GamedayTest(unittest.TestCase):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
+        patch_chat = mock.patch.object(Gameday, '_chat')
+        self.addCleanup(patch_chat.stop)
+        self.mock_chat = patch_chat.start()
+
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
+        self.mock_chat.return_value = {
+            'ok': True,
+            'channel': _channel,
+            'ts': _ts
+        }
 
     def reset_mocks(self):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
+        self.mock_chat.reset_mock()
 
     def create_plugin(self, data):
         self.init_mocks(data)
@@ -274,19 +288,31 @@ class GamedayTest(unittest.TestCase):
 
         self.mock_open.assert_called_once_with(Gameday._data(), 'r')
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
 
         self.reset_mocks()
         self.init_mocks(data)
 
         return plugin
 
-    def test_notify(self):
+    def test_notify__with_start(self):
+        plugin = self.create_plugin(_data())
+        response = plugin._notify_internal(notify=Notify.LEAGUEFILE_START)
+        self.assertEqual(response, Response())
+
+        write = _data(finished=True)
+        self.mock_open.assert_called_once_with(Gameday._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
+
+    def test_notify__with_other(self):
         plugin = self.create_plugin(_data())
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     def test_on_message(self):
         plugin = self.create_plugin(_data())
@@ -295,8 +321,7 @@ class GamedayTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
-
-    maxDiff = None
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')
@@ -323,6 +348,7 @@ class GamedayTest(unittest.TestCase):
         mock_recreate.assert_called_once_with(_fairylab_root + '/gameday/')
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(Gameday, '_check_games')
     def test_run__with_check_false(self, mock_check):
@@ -334,6 +360,7 @@ class GamedayTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(Gameday, '_check_games')
     def test_run__with_check_true(self, mock_check):
@@ -345,6 +372,7 @@ class GamedayTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     @mock.patch.object(Gameday, '_check_games')
     def test_setup(self, mock_check):
@@ -355,6 +383,7 @@ class GamedayTest(unittest.TestCase):
         mock_check.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
 
     def test_shadow(self):
         plugin = self.create_plugin(_data())
@@ -363,6 +392,36 @@ class GamedayTest(unittest.TestCase):
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(Gameday, '_render')
+    @mock.patch('plugin.gameday.gameday.os.listdir')
+    def test_check_games__with_finished_false(self, mock_listdir, mock_render):
+        mock_listdir.return_value = ['game_2998.json']
+
+        plugin = self.create_plugin(_data(games=['2998']))
+        actual = plugin._check_games(date=_now)
+        self.assertFalse(actual)
+
+        mock_render.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+
+    @mock.patch.object(Gameday, '_render')
+    @mock.patch('plugin.gameday.gameday.os.listdir')
+    def test_check_games__with_finished_true(self, mock_listdir, mock_render):
+        mock_listdir.return_value = ['game_2998.json']
+
+        plugin = self.create_plugin(_data(finished=True))
+        actual = plugin._check_games(date=_now)
+        self.assertTrue(actual)
+
+        write = _data(games=['2998'])
+        mock_render.assert_called_once_with(date=_now)
+        self.mock_open.assert_called_once_with(Gameday._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_called_once_with('fairylab', 'Live sim created.')
 
 
 if __name__ in ['__main__', 'plugin.gameday.gameday_test']:
