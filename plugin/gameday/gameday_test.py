@@ -13,8 +13,7 @@ sys.path.append(_root)
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
-from util.component.component import replace  # noqa
-from util.component.component import show  # noqa
+from util.component.component import anchor  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -61,7 +60,8 @@ _game = {
             clazz='table-fixed border',
             bcols=[' class="text-center"'],
             body=[
-                [span(['text-secondary'], '10/09/2022 @ Los Angeles Dodgers')],
+                [span(['text-secondary'], '10/26/1985 @ Los Angeles Dodgers')],
+                [anchor('/gameday/2999/', '10/27/1985 @ Los Angeles Dodgers')],
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
@@ -70,12 +70,10 @@ _game = {
         table(
             clazz='table-fixed border',
             bcols=[' class="text-center"'],
-            body=[
-                [
-                    span(['text-secondary'],
-                         '10/09/2022 v Arizona Diamondbacks')
-                ],
-            ]),
+            body=[[
+                span(['text-secondary'], '10/26/1985 v Arizona Diamondbacks')
+            ], [anchor('/gameday/2999/',
+                       '10/27/1985 v Arizona Diamondbacks')]]),
     ]
 }
 _game_data = {
@@ -158,11 +156,16 @@ class GamedayTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')
     @mock.patch('plugin.gameday.gameday.open')
-    def test_render(self, mock_open, mock_recreate):
+    def test_render(self, mock_open, mock_recreate, mock_schedule):
         mo = mock.mock_open(read_data=dumps(_game_data))
         mock_open.side_effect = [mo.return_value]
+        mock_schedule.return_value = {
+            'T31': [(_then, 'T45', '@', '2998'), (_now, 'T45', '@', '2999')],
+            'T45': [(_then, 'T31', 'v', '2998'), (_now, 'T31', 'v', '2999')],
+        }
 
         plugin = self.create_plugin(_data(games=['2998']))
         response = plugin._render_internal(date=_now)
