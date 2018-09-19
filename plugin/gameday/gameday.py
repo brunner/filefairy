@@ -179,7 +179,7 @@ class Gameday(Registrable):
         if games != data['games']:
             self.data['games'] = games
 
-        if data != original:
+        if data != original or setup:
             self.write()
             self._render(**kwargs)
             return True
