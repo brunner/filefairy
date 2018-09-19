@@ -86,12 +86,12 @@ class Gameday(Registrable):
 
     def _run_internal(self, **kwargs):
         response = Response()
-        if self._check_games(**kwargs):
+        if self._check_games(False, **kwargs):
             response.append_notify(Notify.BASE)
         return response
 
     def _setup_internal(self, **kwargs):
-        self._check_games(**kwargs)
+        self._check_games(True, **kwargs)
         return Response()
 
     def _shadow_internal(self, **kwargs):
@@ -163,7 +163,7 @@ class Gameday(Registrable):
             bcols=[' class="text-center"'],
             body=body)
 
-    def _check_games(self, **kwargs):
+    def _check_games(self, setup, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
@@ -172,7 +172,7 @@ class Gameday(Registrable):
             id_ = re.findall('game_(\d+).json', game)[0]
             games.append(id_)
 
-        if data['finished']:
+        if data['finished'] and not setup:
             data['finished'] = False
             self._chat('fairylab', 'Live sim created.')
 

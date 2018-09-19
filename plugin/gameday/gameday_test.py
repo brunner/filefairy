@@ -358,6 +358,7 @@ class GamedayTest(unittest.TestCase):
         response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response())
 
+        mock_check.assert_called_once_with(False, date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -370,6 +371,7 @@ class GamedayTest(unittest.TestCase):
         response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
+        mock_check.assert_called_once_with(False, date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -380,7 +382,7 @@ class GamedayTest(unittest.TestCase):
         response = plugin._setup_internal(date=_then)
         self.assertEqual(response, Response())
 
-        mock_check.assert_called_once_with(date=_then)
+        mock_check.assert_called_once_with(True, date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -400,7 +402,7 @@ class GamedayTest(unittest.TestCase):
         mock_listdir.return_value = ['game_2998.json']
 
         plugin = self.create_plugin(_data(games=['2998']))
-        actual = plugin._check_games(date=_now)
+        actual = plugin._check_games(False, date=_now)
         self.assertFalse(actual)
 
         mock_render.assert_not_called()
@@ -414,7 +416,7 @@ class GamedayTest(unittest.TestCase):
         mock_listdir.return_value = ['game_2998.json']
 
         plugin = self.create_plugin(_data(finished=True))
-        actual = plugin._check_games(date=_now)
+        actual = plugin._check_games(False, date=_now)
         self.assertTrue(actual)
 
         write = _data(games=['2998'])
