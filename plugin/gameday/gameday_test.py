@@ -58,23 +58,7 @@ _game = {
             hcols=[' class="text-center"'],
             head=['Arizona Diamondbacks']),
         table(
-            clazz='table-fixed border border-bottom-0',
-            bcols=[' class="text-center"'],
-            body=[
-                [
-                    replace('Previous game', 'Previous game not found') + ' - '
-                    + replace('Next game', 'Next game not found')
-                ],
-            ]),
-        table(
             clazz='table-fixed border',
-            bcols=[' class="text-center"'],
-            body=[
-                [show('schedule-t31', 'Toggle full schedule')],
-            ]),
-        table(
-            clazz='table-fixed border collapse',
-            id_='schedule-t31',
             bcols=[' class="text-center"'],
             body=[
                 [span(['text-secondary'], '10/09/2022 @ Los Angeles Dodgers')],
@@ -84,24 +68,7 @@ _game = {
             hcols=[' class="text-center"'],
             head=['Los Angeles Dodgers']),
         table(
-            clazz='table-fixed border border-bottom-0',
-            bcols=[' class="text-center"'],
-            body=[
-                [
-                    replace('Previous game', 'Previous game not found') + ' - '
-                    + replace('Next game', 'Next game not found')
-                ],
-            ]),
-        table(
             clazz='table-fixed border',
-            bcols=[' class="text-center"'],
-            body=[
-                [show('schedule-t45',
-                      'Toggle full schedule')],
-            ]),
-        table(
-            clazz='table-fixed border collapse',
-            id_='schedule-t45',
             bcols=[' class="text-center"'],
             body=[
                 [

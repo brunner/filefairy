@@ -159,26 +159,7 @@ class Gameday(Registrable):
                 hcols=[' class="text-center"'],
                 head=[away_decoding]),
             table(
-                clazz='table-fixed border border-bottom-0',
-                bcols=[' class="text-center"'],
-                body=[
-                    [
-                        replace('Previous game', 'Previous game not found') +
-                        ' - ' + replace('Next game', 'Next game not found')
-                    ],
-                ]),
-            table(
                 clazz='table-fixed border',
-                bcols=[' class="text-center"'],
-                body=[
-                    [
-                        show('schedule-' + away_team.lower(),
-                             'Toggle full schedule')
-                    ],
-                ]),
-            table(
-                clazz='table-fixed border collapse',
-                id_='schedule-' + away_team.lower(),
                 bcols=[' class="text-center"'],
                 body=[
                     [
@@ -191,26 +172,7 @@ class Gameday(Registrable):
                 hcols=[' class="text-center"'],
                 head=[home_decoding]),
             table(
-                clazz='table-fixed border border-bottom-0',
-                bcols=[' class="text-center"'],
-                body=[
-                    [
-                        replace('Previous game', 'Previous game not found') +
-                        ' - ' + replace('Next game', 'Next game not found')
-                    ],
-                ]),
-            table(
                 clazz='table-fixed border',
-                bcols=[' class="text-center"'],
-                body=[
-                    [
-                        show('schedule-' + home_team.lower(),
-                             'Toggle full schedule')
-                    ],
-                ]),
-            table(
-                clazz='table-fixed border collapse',
-                id_='schedule-' + home_team.lower(),
                 bcols=[' class="text-center"'],
                 body=[
                     [
