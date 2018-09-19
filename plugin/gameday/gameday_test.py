@@ -21,9 +21,149 @@ from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
+from util.team.team import logo_absolute  # noqa
 
 _env = env()
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
+
+_s31 = logo_absolute('31', anchor('/gameday/2998/', 'Arizona Diamondbacks'),
+                     'left')
+_s32 = logo_absolute('32', span(['text-secondary'], 'Atlanta Braves'), 'left')
+_s33 = logo_absolute('33', span(['text-secondary'], 'Baltimore Orioles'),
+                     'left')
+_s34 = logo_absolute('34', span(['text-secondary'], 'Boston Red Sox'), 'left')
+_s35 = logo_absolute('35', span(['text-secondary'], 'Chicago White Sox'),
+                     'left')
+_s36 = logo_absolute('36', span(['text-secondary'], 'Chicago Cubs'), 'left')
+_s37 = logo_absolute('37', span(['text-secondary'], 'Cincinnati Reds'), 'left')
+_s38 = logo_absolute('38', span(['text-secondary'], 'Cleveland Indians'),
+                     'left')
+_s39 = logo_absolute('39', span(['text-secondary'], 'Colorado Rockies'),
+                     'left')
+_s40 = logo_absolute('40', span(['text-secondary'], 'Detroit Tigers'), 'left')
+_s41 = logo_absolute('41', span(['text-secondary'], 'Miami Marlins'), 'left')
+_s42 = logo_absolute('42', span(['text-secondary'], 'Houston Astros'), 'left')
+_s43 = logo_absolute('43', span(['text-secondary'], 'Kansas City Royals'),
+                     'left')
+_s44 = logo_absolute('44', span(['text-secondary'], 'Los Angeles Angels'),
+                     'left')
+_s45 = logo_absolute('45', anchor('/gameday/2998/', 'Los Angeles Dodgers'), 'left')
+_s46 = logo_absolute('46', span(['text-secondary'], 'Milwaukee Brewers'),
+                     'left')
+_s47 = logo_absolute('47', span(['text-secondary'], 'Minnesota Twins'), 'left')
+_s48 = logo_absolute('48', span(['text-secondary'], 'New York Yankees'),
+                     'left')
+_s49 = logo_absolute('49', span(['text-secondary'], 'New York Mets'), 'left')
+_s50 = logo_absolute('50', span(['text-secondary'], 'Oakland Athletics'),
+                     'left')
+_s51 = logo_absolute('51', span(['text-secondary'], 'Philadelphia Phillies'),
+                     'left')
+_s52 = logo_absolute('52', span(['text-secondary'], 'Pittsburgh Pirates'),
+                     'left')
+_s53 = logo_absolute('53', span(['text-secondary'], 'San Diego Padres'),
+                     'left')
+_s54 = logo_absolute('54', span(['text-secondary'], 'Seattle Mariners'),
+                     'left')
+_s55 = logo_absolute('55', span(['text-secondary'], 'San Francisco Giants'),
+                     'left')
+_s56 = logo_absolute('56', span(['text-secondary'], 'St. Louis Cardinals'),
+                     'left')
+_s57 = logo_absolute('57', span(['text-secondary'], 'Tampa Bay Rays'), 'left')
+_s58 = logo_absolute('58', span(['text-secondary'], 'Texas Rangers'), 'left')
+_s59 = logo_absolute('59', span(['text-secondary'], 'Toronto Blue Jays'),
+                     'left')
+_s60 = logo_absolute('60', span(['text-secondary'], 'Washington Nationals'),
+                     'left')
+
+_gameday = {
+    'breadcrumbs': [{
+        'href': '/',
+        'name': 'Fairylab'
+    }, {
+        'href': '',
+        'name': 'Gameday'
+    }],
+    'schedule': [
+        table(
+            clazz='table-fixed border border-bottom-0 mt-3',
+            head=['American League East']),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="position-relative text-truncate"'],
+            body=[
+                [_s33],
+                [_s34],
+                [_s48],
+                [_s57],
+                [_s59],
+            ]),
+        table(
+            clazz='table-fixed border border-bottom-0 mt-3',
+            head=['American League Central']),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="position-relative text-truncate"'],
+            body=[
+                [_s35],
+                [_s38],
+                [_s40],
+                [_s43],
+                [_s47],
+            ]),
+        table(
+            clazz='table-fixed border border-bottom-0 mt-3',
+            head=['American League West']),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="position-relative text-truncate"'],
+            body=[
+                [_s42],
+                [_s44],
+                [_s50],
+                [_s54],
+                [_s58],
+            ]),
+        table(
+            clazz='table-fixed border border-bottom-0 mt-3',
+            head=['National League East']),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="position-relative text-truncate"'],
+            body=[
+                [_s32],
+                [_s41],
+                [_s49],
+                [_s51],
+                [_s60],
+            ]),
+        table(
+            clazz='table-fixed border border-bottom-0 mt-3',
+            head=['National League Central']),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="position-relative text-truncate"'],
+            body=[
+                [_s36],
+                [_s37],
+                [_s46],
+                [_s52],
+                [_s56],
+            ]),
+        table(
+            clazz='table-fixed border border-bottom-0 mt-3',
+            head=['National League West']),
+        table(
+            clazz='table-fixed border',
+            bcols=[' class="position-relative text-truncate"'],
+            body=[
+                [_s31],
+                [_s39],
+                [_s45],
+                [_s53],
+                [_s55],
+            ])
+    ]
+}
 _game = {
     'breadcrumbs': [{
         'href': '/',
@@ -156,6 +296,8 @@ class GamedayTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
 
+    maxDiff = None
+
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')
     @mock.patch('plugin.gameday.gameday.open')
@@ -169,9 +311,12 @@ class GamedayTest(unittest.TestCase):
 
         plugin = self.create_plugin(_data(games=['2998']))
         response = plugin._render_internal(date=_now)
-        index = 'gameday/2998/index.html'
+        gameday_index = 'gameday/index.html'
+        game_index = 'gameday/2998/index.html'
         subtitle = 'Diamondbacks at Dodgers, 10/09/2022'
-        self.assertEqual(response, [(index, subtitle, 'game.html', _game)])
+        self.assertEqual(response,
+                         [(gameday_index, '', 'gameday.html', _gameday),
+                          (game_index, subtitle, 'game.html', _game)])
 
         mock_open.assert_called_once_with(
             _root + '/resource/games/game_2998.json', 'r')

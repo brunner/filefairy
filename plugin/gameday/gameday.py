@@ -19,9 +19,13 @@ from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
+from util.team.team import divisions  # noqa
 from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_nickname  # noqa
+from util.team.team import logo_absolute  # noqa
+from util.team.team import teamid_to_encoding  # noqa
 
+_divisions = divisions()
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 _game_path = '/resource/games/game_{}.json'
 
@@ -59,6 +63,11 @@ class Gameday(Registrable):
         schedule_data = self._schedule_data(games)
 
         ret = []
+
+        gameday = self._gameday(schedule_data)
+        html = 'gameday/index.html'
+        ret.append((html, '', 'gameday.html', gameday))
+
         for id_ in games:
             with open(_root + _game_path.format(id_), 'r') as f:
                 game_data = json.loads(f.read())
@@ -66,8 +75,7 @@ class Gameday(Registrable):
                 home_team = encoding_to_nickname(game_data['home_team'])
                 date = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
                 subtitle = '{} at {}, {}'.format(away_team, home_team, date)
-                game = self._game(id_, subtitle, game_data, schedule_data,
-                                  **kwargs)
+                game = self._game(id_, subtitle, game_data, schedule_data)
                 html = 'gameday/{}/index.html'.format(id_)
                 ret.append((html, subtitle, 'game.html', game))
 
@@ -166,7 +174,44 @@ class Gameday(Registrable):
 
         return False
 
-    def _game(self, id_, subtitle, game_data, schedule_data, **kwargs):
+    def _gameday(self, schedule_data):
+        ret = {
+            'breadcrumbs': [{
+                'href': '/',
+                'name': 'Fairylab'
+            }, {
+                'href': '',
+                'name': 'Gameday'
+            }],
+            'schedule': []
+        }
+
+        for division, ts in _divisions:
+            division = division.replace('AL', 'American League')
+            division = division.replace('NL', 'National League')
+            ret['schedule'].append(
+                table(
+                    clazz='table-fixed border border-bottom-0 mt-3',
+                    head=[division]))
+            body = []
+            for teamid in ts:
+                encoding = teamid_to_encoding(teamid)
+                decoding = encoding_to_decoding(encoding)
+                if encoding in schedule_data:
+                    sid = schedule_data[encoding][0][3]
+                    stext = anchor('/gameday/{}/'.format(sid), decoding)
+                else:
+                    stext = span(['text-secondary'], decoding)
+                body.append([logo_absolute(teamid, stext, 'left')])
+            ret['schedule'].append(
+                table(
+                    clazz='table-fixed border',
+                    bcols=[' class="position-relative text-truncate"'],
+                    body=body))
+
+        return ret
+
+    def _game(self, id_, subtitle, game_data, schedule_data):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
@@ -215,27 +260,3 @@ class Gameday(Registrable):
             self._schedule_body(home_team, id_, schedule_data))
 
         return ret
-
-
-# import copy  # noqa
-# from plugin.statsplus.statsplus import Statsplus  # noqa
-# from util.jinja2_.jinja2_ import env  # noqa
-# from util.datetime_.datetime_ import datetime_now  # noqa
-
-# e = env()
-# now = datetime_now()
-
-# statsplus = Statsplus(date=now, e=e)
-# unchecked = []
-# for date in statsplus.data['scores']:
-#     id_ = re.findall('\{1\}(\d+).h', statsplus.data['scores'][date][0])[0]
-#     unchecked.append([date, id_])
-# statsplus.data['unchecked'] = unchecked
-# statsplus.data['finished'] = False
-# statsplus._extract_all(copy.deepcopy(unchecked), date=now)
-# statsplus.data['finished'] = True
-# statsplus.write()
-
-# gameday = Gameday(date=now, e=e)
-# gameday.data['games'] = []
-# gameday._setup_internal(date=now)
