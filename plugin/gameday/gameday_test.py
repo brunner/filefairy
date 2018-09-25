@@ -250,10 +250,10 @@ _game_data = {
 }
 
 
-def _data(finished=False, games=None):
+def _data(games=None, started=False):
     if games is None:
         games = []
-    return {'finished': finished, 'games': games}
+    return {'games': games, 'started': started}
 
 
 class GamedayTest(unittest.TestCase):
@@ -296,17 +296,17 @@ class GamedayTest(unittest.TestCase):
         return plugin
 
     def test_notify__with_start(self):
-        plugin = self.create_plugin(_data())
-        response = plugin._notify_internal(notify=Notify.LEAGUEFILE_START)
+        plugin = self.create_plugin(_data(started=True))
+        response = plugin._notify_internal(notify=Notify.STATSPLUS_SIM)
         self.assertEqual(response, Response())
 
-        write = _data(finished=True)
+        write = _data()
         self.mock_open.assert_called_once_with(Gameday._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
 
     def test_notify__with_other(self):
-        plugin = self.create_plugin(_data())
+        plugin = self.create_plugin(_data(started=True))
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
@@ -350,39 +350,43 @@ class GamedayTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    @mock.patch.object(Gameday, '_render')
     @mock.patch.object(Gameday, '_check_games')
-    def test_run__with_check_false(self, mock_check):
+    def test_run__with_check_false(self, mock_check, mock_render):
         mock_check.return_value = False
 
         plugin = self.create_plugin(_data())
         response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response())
 
-        mock_check.assert_called_once_with(False, date=_then)
+        mock_check.assert_called_once_with()
+        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    @mock.patch.object(Gameday, '_render')
     @mock.patch.object(Gameday, '_check_games')
-    def test_run__with_check_true(self, mock_check):
+    def test_run__with_check_true(self, mock_check, mock_render):
         mock_check.return_value = True
 
         plugin = self.create_plugin(_data())
         response = plugin._run_internal(date=_then)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        mock_check.assert_called_once_with(False, date=_then)
+        mock_check.assert_called_once_with()
+        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch.object(Gameday, '_check_games')
-    def test_setup(self, mock_check):
+    @mock.patch.object(Gameday, '_render')
+    def test_setup(self, mock_render):
         plugin = self.create_plugin(_data())
         response = plugin._setup_internal(date=_then)
         self.assertEqual(response, Response())
 
-        mock_check.assert_called_once_with(True, date=_then)
+        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -396,34 +400,43 @@ class GamedayTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch.object(Gameday, '_render')
     @mock.patch('plugin.gameday.gameday.os.listdir')
-    def test_check_games__with_finished_false(self, mock_listdir, mock_render):
+    def test_check_games__with_no_change(self, mock_listdir):
         mock_listdir.return_value = ['game_2998.json']
 
         plugin = self.create_plugin(_data(games=['2998']))
-        actual = plugin._check_games(False, date=_now)
+        actual = plugin._check_games()
         self.assertFalse(actual)
 
-        mock_render.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    @mock.patch.object(Gameday, '_render')
     @mock.patch('plugin.gameday.gameday.os.listdir')
-    def test_check_games__with_finished_true(self, mock_listdir, mock_render):
+    def test_check_games__with_started_false(self, mock_listdir):
         mock_listdir.return_value = ['game_2998.json']
 
-        plugin = self.create_plugin(_data(finished=True))
-        actual = plugin._check_games(False, date=_now)
+        plugin = self.create_plugin(_data())
+        actual = plugin._check_games()
         self.assertTrue(actual)
 
-        write = _data(games=['2998'])
-        mock_render.assert_called_once_with(date=_now)
+        write = _data(games=['2998'], started=True)
         self.mock_open.assert_called_once_with(Gameday._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'Live sim created.')
+
+    @mock.patch('plugin.gameday.gameday.os.listdir')
+    def test_check_games__with_started_true(self, mock_listdir):
+        mock_listdir.return_value = ['game_2998.json']
+
+        plugin = self.create_plugin(_data(started=True))
+        actual = plugin._check_games()
+        self.assertTrue(actual)
+
+        write = _data(games=['2998'], started=True)
+        self.mock_open.assert_called_once_with(Gameday._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_chat.assert_not_called()
 
 
 if __name__ in ['__main__', 'plugin.gameday.gameday_test']:

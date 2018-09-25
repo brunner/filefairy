@@ -51,8 +51,9 @@ class Gameday(Registrable):
         return 'gameday'
 
     def _notify_internal(self, **kwargs):
-        if kwargs['notify'] == Notify.LEAGUEFILE_START:
-            self.data['finished'] = True
+        if kwargs['notify'] == Notify.STATSPLUS_SIM:
+            self.data['started'] = False
+            self.data['games'] = []
             self.write()
         return Response()
 
@@ -86,12 +87,13 @@ class Gameday(Registrable):
 
     def _run_internal(self, **kwargs):
         response = Response()
-        if self._check_games(False, **kwargs):
+        if self._check_games():
+            self._render(**kwargs)
             response.append_notify(Notify.BASE)
         return response
 
     def _setup_internal(self, **kwargs):
-        self._check_games(True, **kwargs)
+        self._render(**kwargs)
         return Response()
 
     def _shadow_internal(self, **kwargs):
@@ -163,25 +165,21 @@ class Gameday(Registrable):
             bcols=[' class="text-center"'],
             body=body)
 
-    def _check_games(self, setup, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
+    def _check_games(self):
         games = []
         for game in os.listdir(_root + '/resource/games/'):
             id_ = re.findall('game_(\d+).json', game)[0]
             games.append(id_)
 
-        if data['finished'] and not setup:
-            data['finished'] = False
-            self._chat('fairylab', 'Live sim created.')
-
-        if games != data['games']:
+        games = sorted(games)
+        if games != self.data['games']:
             self.data['games'] = games
 
-        if data != original or setup:
+            if not self.data['started']:
+                self.data['started'] = True
+                self._chat('fairylab', 'Live sim created.')
+
             self.write()
-            self._render(**kwargs)
             return True
 
         return False
