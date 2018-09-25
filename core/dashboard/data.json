@@ -1,54 +1,5 @@
 {
   "records": {
-    "2018-09-17T00:00:00-07:00": [
-      {
-        "count": 1,
-        "date": "2018-09-17T00:01:08.516059-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 184,
-        "msg": "Automated push.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-17T23:58:39.001405-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 172,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      }
-    ],
-    "2018-09-18T00:00:00-07:00": [
-      {
-        "count": 1,
-        "date": "2018-09-18T00:00:57.459638-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 184,
-        "msg": "Automated push.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-18T00:18:33.702890-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 172,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-18T23:49:32.435381-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 172,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      }
-    ],
     "2018-09-19T00:00:00-07:00": [
       {
         "count": 2,
@@ -226,6 +177,163 @@
         "lineno": 63,
         "msg": "News updated.",
         "pathname": "/home/pi/filefairy/plugin/recap/recap.py"
+      }
+    ],
+    "2018-09-23T00:00:00-07:00": [
+      {
+        "count": 1,
+        "date": "2018-09-23T00:00:11.950042-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 184,
+        "msg": "Automated push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-23T16:30:23.835677-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 194,
+        "msg": "Tracker locked.",
+        "pathname": "/home/pi/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-23T18:09:14.714009-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 107,
+        "msg": "Upload started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-23T20:25:44.727216-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 315,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-23T20:25:46.245462-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 309,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-23T20:34:15.170579-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 291,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-23T20:34:16.807065-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 63,
+        "msg": "News updated.",
+        "pathname": "/home/pi/filefairy/plugin/recap/recap.py"
+      }
+    ],
+    "2018-09-24T00:00:00-07:00": [
+      {
+        "count": 2,
+        "date": "2018-09-24T21:32:12.908678-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 289,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-09-24T21:32:13.354058-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-24T21:31:18.281589-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 262, in _install\n    instance = plugin(date=date, e=self.environment)\n  File \"/home/pi/filefairy/plugin/gameday/gameday.py\", line 35, in __init__\n    super().__init__(**kwargs)\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 23, in __init__\n    super().__init__(**kwargs)\n  File \"/home/pi/filefairy/api/messageable/messageable.py\", line 23, in __init__\n    super().__init__(**kwargs)\n  File \"/home/pi/filefairy/api/renderable/renderable.py\", line 29, in __init__\n    super().__init__(**kwargs)\n  File \"/home/pi/filefairy/api/serializable/serializable.py\", line 26, in __init__\n    self.read()\n  File \"/home/pi/filefairy/api/serializable/serializable.py\", line 37, in read\n    self.data = json.loads(f.read())\n  File \"/usr/lib/python3.5/json/__init__.py\", line 319, in loads\n    return _default_decoder.decode(s)\n  File \"/usr/lib/python3.5/json/decoder.py\", line 339, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n  File \"/usr/lib/python3.5/json/decoder.py\", line 355, in raw_decode\n    obj, end = self.scan_once(s, idx)\njson.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 12 column 1 (char 129)",
+        "levelname": "INFO",
+        "lineno": 268,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-09-24T21:32:13.542626-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-09-24T21:32:13.597211-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-09-24T21:32:13.653890-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-09-24T21:32:14.772449-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-09-24T21:32:14.825036-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-24T21:31:35.789400-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 114, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 76, in _notify\n    response = self._notify_internal(**kwargs)\n  File \"/home/pi/filefairy/plugin/git/git.py\", line 61, in _notify_internal\n    self.automate('fairylab', **kwargs)\n  File \"/home/pi/filefairy/plugin/git/git.py\", line 153, in automate\n    sub = self.push(*args, **kwargs)\n  File \"/home/pi/filefairy/plugin/git/git.py\", line 178, in push\n    response = self._call(['git', 'push'], *args, **kwargs)\n  File \"/home/pi/filefairy/plugin/git/git.py\", line 120, in _call\n    output = check_output(cmd)\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1446, in _communicate\n    ready = selector.select(timeout)\n  File \"/usr/lib/python3.5/selectors.py\", line 376, in select\n    fd_event_list = self._poll.poll(timeout)\nKeyboardInterrupt",
+        "levelname": "INFO",
+        "lineno": 127,
+        "msg": "Disabled git.",
+        "pathname": "/home/pi/fairylab/static/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-09-24T21:32:13.452496-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
       }
     ]
   }
