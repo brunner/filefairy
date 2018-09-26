@@ -463,6 +463,7 @@ class Statsplus(Registrable):
             return False
 
         finished = self.data['finished']
+        valid = False
         count = len([True for e in _chlany if e in scores[i]])
         score_pattern = '(\w+) (\d+), (\w+) (\d+)'
         url_match = re.findall(_url_pattern, scores[i])
@@ -471,19 +472,16 @@ class Statsplus(Registrable):
             score_pattern = '(\w+) (\d+), (\w+) (\d+)'
             score_match = re.findall(score_pattern, content)
             if score_match:
+                valid = True
                 cteam1, cruns1, cteam2, cruns2 = score_match[0]
                 if finished:
                     box_link = url.format(_root + '/resource/extract/',
                                           _game_box)
-                    log_link = url.format(_root + '/resource/extract/',
-                                          _game_log)
                 else:
                     box_link = url.format(_html, _game_box)
-                    log_link = url.format(_html, _game_log)
+                log_link = url.format(_html, _game_log)
                 box_score_ = parse_box_score(box_link)
                 game_log_ = parse_game_log(log_link)
-                if not game_log_['ok']:
-                    print(game_log_)
                 if box_score_['ok'] and game_log_['ok']:
                     ddate = decode_datetime(encoded_date)
                     if ddate != box_score_['date']:
@@ -503,23 +501,25 @@ class Statsplus(Registrable):
                             bteam1, bteam2 = bteam2, bteam1
                             swap = True
                         if self._uncheck(bteam1) != cteam1:
-                            return False
+                            valid = False
                         if self._uncheck(bteam2) != cteam2:
-                            return False
+                            valid = False
                         if bruns1 != int(cruns1) or bruns2 != int(cruns2):
-                            return False
-                        s = '{} {}, {} {}'
-                        score = s.format(bteam1, bruns1, bteam2, bruns2)
-                        scores[i] = '<{0}|{1}>'.format(url, score)
-                        if swap:
-                            bteam1, bteam2 = bteam2, bteam1
-                            cteam1, cteam2 = cteam2, cteam1
-                        for key in ['highlights', 'injuries']:
-                            self._clarify(key, encoded_date, cteam1, cteam2,
-                                          bteam1, bteam2, count)
-                    return True
+                            valid = False
+                        if valid:
+                          s = '{} {}, {} {}'
+                          score = s.format(bteam1, bruns1, bteam2, bruns2)
+                          scores[i] = '<{0}|{1}>'.format(url, score)
+                          if swap:
+                              bteam1, bteam2 = bteam2, bteam1
+                              cteam1, cteam2 = cteam2, cteam1
+                          for key in ['highlights', 'injuries']:
+                              self._clarify(key, encoded_date, cteam1, cteam2,
+                                            bteam1, bteam2, count)
+                else:
+                    valid = False
 
-        return False
+        return finished or valid
 
     def _table(self, key, date, path):
         lines = self.data[key][date]
