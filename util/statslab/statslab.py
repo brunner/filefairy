@@ -174,7 +174,7 @@ def parse_game_log(link):
                             p['before'] = before
                         pitch.append(p)
                         before = []
-                    else:
+                    elif pitch:
                         p = pitch[-1]
                         if 'after' not in p:
                             p['after'] = []
