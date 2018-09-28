@@ -15,7 +15,7 @@ def urlopen(url, params={}):
         with request.urlopen(url, data=data, timeout=8) as f:
             return f.read()
     except error.HTTPError as e:
-        if e.code != 403:
+        if e.code not in [403, 404]:
             logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
         return b''
     except:
