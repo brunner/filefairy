@@ -221,7 +221,7 @@ class Gameday(Registrable):
 
         return ret
 
-    def _game(self, id_, subtitle, game_data, schedule_data):
+    def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
@@ -246,8 +246,12 @@ class Gameday(Registrable):
         home_decoding = encoding_to_decoding(home_team)
 
         for inning in game_data['inning']:
+            inning_id_ = inning['id']
             _table = table(
-                hcols=cs, head=[game_sub(inning['intro'])], bcols=bs, body=[])
+                hcols=cs,
+                head=[inning_id_ + ' - ' + game_sub(inning['intro'])],
+                bcols=bs,
+                body=[])
             for pitch in inning['pitch']:
                 before_list = pitch.get('before', [''])
                 for before in before_list[:-1]:
@@ -259,14 +263,14 @@ class Gameday(Registrable):
                     _table['body'].append(['', game_sub(after)])
             if inning['outro']:
                 _table['fcols'] = cs
-                _table['foot'] = [game_sub(inning['outro'])]
+                _table['foot'] = [inning_id_ + ' - ' + game_sub(inning['outro'])]
             ret['inning'].append(_table)
 
         ret['schedule'].append(self._schedule_head(away_decoding, False))
         ret['schedule'].append(
-            self._schedule_body(away_team, id_, schedule_data))
+            self._schedule_body(away_team, game_id_, schedule_data))
         ret['schedule'].append(self._schedule_head(home_decoding, True))
         ret['schedule'].append(
-            self._schedule_body(home_team, id_, schedule_data))
+            self._schedule_body(home_team, game_id_, schedule_data))
 
         return ret
