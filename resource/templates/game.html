@@ -2,18 +2,15 @@
 {% import "common.html" as common %}
 
 {% set modals = [('schedule', 'Schedule')] %}
-{% set anchors = [('log', 'Game Log')] %}
+{% set anchors = [] %}
 {% block nav %}
 {{ common.nav(modals, anchors) }}
 {% endblock %}
 
 {% block content %}
 
-{% if inning %}
-<!-- ^(game.inning) -->
-<div class="container anchor" id="log">
-
-{{ common.heading('book', 'Game Log') }}
+<!-- ^(game.tabs) -->
+<div class="container">
 
 <!-- ^(game.row) -->
 <div class="row">
@@ -21,10 +18,30 @@
 <!-- ^(game.column) -->
 <div class="col-12">
 
-{% for table in inning %}
+<ul class="nav nav-tabs mt-3" id="game-tab" role="tablist">
+
+<li class="nav-item">
+
+<a class="nav-link active" id="raw-tab" data-toggle="tab" href="#raw"
+   role="tab" aria-controls="raw" aria-selected="true">Game Log</a>
+
+</li>
+
+</ul>
+
+<div class="tab-content" id="game-tab-content">
+
+<div class="tab-pane fade show active" id="raw"
+     role="tabpanel" aria-labelledby="raw-tab">
+
+{% for table in raw %}
 {{ common.table(table) }}
 
 {% endfor %}
+</div>
+
+</div>
+
 </div>
 <!-- $(game.column) -->
 
@@ -32,8 +49,7 @@
 <!-- $(game.row) -->
 
 </div>
-<!-- $(game.inning) -->
-{% endif %}
+<!-- $(game.tabs) -->
 
 {{ common.modal('schedule', 'Schedule', schedule)}}
 

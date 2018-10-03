@@ -184,10 +184,6 @@ a.disabled{
       data-toggle="modal"
       data-target="#schedule">Schedule</a>
 </li>
-<div class="dropdown-divider"></div>
-<li class="nav-item">
-<a class="nav-link" href="#log">Game Log</a>
-</li>
 </ul>
 </div>
 <!-- $(common.nav) -->
@@ -200,24 +196,30 @@ a.disabled{
 <!-- ^(base.main) -->
 <main role="main" class="pb-3">
 
-<!-- ^(game.inning) -->
-<div class="container anchor" id="log">
-
-<!-- ^(common.heading) -->
-<div class="row">
-<div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-book text-secondary"></span>Game Log
-</div>
-</div>
-</div>
-<!-- $(common.heading) -->
+<!-- ^(game.tabs) -->
+<div class="container">
 
 <!-- ^(game.row) -->
 <div class="row">
 
 <!-- ^(game.column) -->
 <div class="col-12">
+
+<ul class="nav nav-tabs mt-3" id="game-tab" role="tablist">
+
+<li class="nav-item">
+
+<a class="nav-link active" id="raw-tab" data-toggle="tab" href="#raw"
+   role="tab" aria-controls="raw" aria-selected="true">Game Log</a>
+
+</li>
+
+</ul>
+
+<div class="tab-content" id="game-tab-content">
+
+<div class="tab-pane fade show active" id="raw"
+     role="tabpanel" aria-labelledby="raw-tab">
 
 <!-- ^(common.table) -->
 <table class="table border mt-3">
@@ -255,13 +257,17 @@ a.disabled{
 <!-- $(common.table) -->
 
 </div>
+
+</div>
+
+</div>
 <!-- $(game.column) -->
 
 </div>
 <!-- $(game.row) -->
 
 </div>
-<!-- $(game.inning) -->
+<!-- $(game.tabs) -->
 
 <div class="modal fade"
      id="schedule"

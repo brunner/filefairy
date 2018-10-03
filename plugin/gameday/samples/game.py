@@ -24,7 +24,7 @@ _breadcrumbs = [{
     'name': 'Diamondbacks at Dodgers, 10/09/2022'
 }]
 
-_inning = [
+_raw = [
     table(
         clazz='border mt-3',
         bcols=[' class="w-50"', ' class="w-50"'],
@@ -104,6 +104,6 @@ tmpl = 'game.html'
 context = {
     'title': 'game',
     'breadcrumbs': _breadcrumbs,
-    'inning': _inning,
+    'raw': _raw,
     'schedule': _schedule
 }

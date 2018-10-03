@@ -181,7 +181,7 @@ _game = {
         'href': '',
         'name': 'Diamondbacks at Dodgers, 10/09/2022'
     }],
-    'inning': [
+    'raw': [
         table(
             clazz='border mt-3',
             hcols=[' colspan="2"'],

@@ -233,7 +233,7 @@ class Gameday(Registrable):
                 'href': '',
                 'name': subtitle
             }],
-            'inning': [],
+            'raw': [],
             'schedule': []
         }
 
@@ -264,7 +264,7 @@ class Gameday(Registrable):
             if inning['outro']:
                 _table['fcols'] = cs
                 _table['foot'] = [inning_id_ + ' - ' + game_sub(inning['outro'])]
-            ret['inning'].append(_table)
+            ret['raw'].append(_table)
 
         ret['schedule'].append(self._schedule_head(away_decoding, False))
         ret['schedule'].append(
