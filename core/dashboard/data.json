@@ -1,459 +1,5 @@
 {
   "records": {
-    "2018-09-26T00:00:00-07:00": [
-      {
-        "count": 1,
-        "date": "2018-09-26T00:00:40.003047-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 184,
-        "msg": "Automated push.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      }
-    ],
-    "2018-09-27T00:00:00-07:00": [
-      {
-        "count": 1,
-        "date": "2018-09-27T00:00:57.229224-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 184,
-        "msg": "Automated push.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:36.413152-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 289,
-        "msg": "Restarted fairylab.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:36.911800-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded exports.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:37.011669-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded gameday.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:37.090501-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:37.176673-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:37.269598-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:39.045675-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:29:39.128945-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T17:44:08.193613-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 194,
-        "msg": "Tracker locked.",
-        "pathname": "/home/pi/filefairy/plugin/exports/exports.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:29:01.062667-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 155,
-        "msg": "Sim in progress.",
-        "pathname": "/home/pi/filefairy/plugin/statsplus/statsplus.py"
-      },
-      {
-        "count": 190,
-        "date": "2018-09-27T18:40:36.214346-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/urllib_/urllib_.py\", line 14, in urlopen\n    with request.urlopen(url, data=data, timeout=8) as f:\n  File \"/usr/lib/python3.5/urllib/request.py\", line 163, in urlopen\n    return opener.open(url, data, timeout)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 472, in open\n    response = meth(req, response)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 582, in http_response\n    'http', request, response, code, msg, hdrs)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 510, in error\n    return self._call_chain(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 444, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 590, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 403: Forbidden",
-        "levelname": "INFO",
-        "lineno": 17,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/filefairy/util/urllib_/urllib_.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:42:41.921833-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 114, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/filefairy/plugin/statsplus/statsplus.py\", line 422, in _extract_all\n    ret = self._extract(encoded_date, id_)\n  File \"/home/pi/filefairy/plugin/statsplus/statsplus.py\", line 484, in _extract\n    game_log_ = parse_game_log(log_link)\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 178, in parse_game_log\n    p = pitch[-1]\nIndexError: list index out of range",
-        "levelname": "INFO",
-        "lineno": 127,
-        "msg": "Disabled statsplus.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 2,
-        "date": "2018-09-27T19:00:53.329007-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 172,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 2,
-        "date": "2018-09-27T19:01:00.662579-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded urllib_.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 2,
-        "date": "2018-09-27T18:52:32.628667-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:48:32.060753-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 114, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/filefairy/plugin/statsplus/statsplus.py\", line 422, in _extract_all\n    ret = self._extract(encoded_date, id_)\n  File \"/home/pi/filefairy/plugin/statsplus/statsplus.py\", line 484, in _extract\n    game_log_ = parse_game_log(log_link)\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 178, in parse_game_log\n    p = pitch[-1]\nIndexError: list index out of range",
-        "levelname": "INFO",
-        "lineno": 127,
-        "msg": "Disabled statsplus.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:52:30.429470-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 289,
-        "msg": "Restarted fairylab.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:52:30.907214-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded exports.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:52:30.996121-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded gameday.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:52:31.077284-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:52:31.163186-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:52:31.261788-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T18:52:32.448718-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 8,
-        "date": "2018-09-27T18:59:50.995668-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/urllib_/urllib_.py\", line 15, in urlopen\n    with request.urlopen(url, data=data, timeout=8) as f:\n  File \"/usr/lib/python3.5/urllib/request.py\", line 163, in urlopen\n    return opener.open(url, data, timeout)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 472, in open\n    response = meth(req, response)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 582, in http_response\n    'http', request, response, code, msg, hdrs)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 510, in error\n    return self._call_chain(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 444, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 590, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 404: Not Found",
-        "levelname": "INFO",
-        "lineno": 19,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/filefairy/util/urllib_/urllib_.py"
-      },
-      {
-        "count": 16,
-        "date": "2018-09-27T19:10:24.900964-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/urllib_/urllib_.py\", line 15, in urlopen\n    with request.urlopen(url, data=data, timeout=8) as f:\n  File \"/usr/lib/python3.5/urllib/request.py\", line 163, in urlopen\n    return opener.open(url, data, timeout)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 472, in open\n    response = meth(req, response)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 582, in http_response\n    'http', request, response, code, msg, hdrs)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 510, in error\n    return self._call_chain(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 444, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 590, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 404: Not Found",
-        "levelname": "WARNING",
-        "lineno": 19,
-        "msg": "Handled warning.",
-        "pathname": "/home/pi/filefairy/util/urllib_/urllib_.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:33.419099-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 289,
-        "msg": "Restarted fairylab.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:33.909436-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded exports.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:34.006808-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded gameday.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:34.096852-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:34.191677-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:34.289297-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:35.485713-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:10:35.587949-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T19:45:20.645337-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 107,
-        "msg": "Upload started.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T20:43:47.560167-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 315,
-        "msg": "File is up.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T20:43:48.084062-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 309,
-        "msg": "Download started.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T20:50:14.335828-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 291,
-        "msg": "Download finished.",
-        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T20:50:15.969294-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 63,
-        "msg": "News updated.",
-        "pathname": "/home/pi/filefairy/plugin/recap/recap.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:01:35.976991-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 172,
-        "msg": "Fetched latest changes.",
-        "pathname": "/home/pi/filefairy/plugin/git/git.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:01:44.050416-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 245, in _reload_internal\n    module, ok = importlib.import_module(package), True\n  File \"/usr/lib/python3.5/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n  File \"<frozen importlib._bootstrap>\", line 986, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 969, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 944, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 222, in _call_with_frames_removed\n  File \"<frozen importlib._bootstrap>\", line 986, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 969, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 944, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 222, in _call_with_frames_removed\n  File \"<frozen importlib._bootstrap>\", line 986, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 969, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 956, in _find_and_load_unlocked\nImportError: No module named 'plugins'",
-        "levelname": "INFO",
-        "lineno": 254,
-        "msg": "Disabled statsplus.",
-        "pathname": "/home/pi/filefairy/resource/download/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:07.517669-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 289,
-        "msg": "Restarted fairylab.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:08.045908-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded exports.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:08.172148-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded gameday.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:08.284399-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded git.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:08.407179-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded leaguefile.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:08.532139-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded recap.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:10.238761-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded snacks.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      },
-      {
-        "count": 1,
-        "date": "2018-09-27T23:06:10.443803-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
-      }
-    ],
     "2018-09-28T00:00:00-07:00": [
       {
         "count": 1,
@@ -572,6 +118,172 @@
       {
         "count": 1,
         "date": "2018-10-01T00:00:39.102277-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 184,
+        "msg": "Automated push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      }
+    ],
+    "2018-10-02T00:00:00-07:00": [
+      {
+        "count": 1,
+        "date": "2018-10-02T00:00:31.733248-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 184,
+        "msg": "Automated push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T16:19:40.835358-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 194,
+        "msg": "Tracker locked.",
+        "pathname": "/home/pi/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T17:31:54.412656-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 155,
+        "msg": "Sim in progress.",
+        "pathname": "/home/pi/filefairy/plugin/statsplus/statsplus.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T18:47:30.481981-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 107,
+        "msg": "Upload started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T20:18:29.076284-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 315,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T20:18:29.621292-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 309,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T20:28:45.197595-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 291,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T20:28:47.388533-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 63,
+        "msg": "News updated.",
+        "pathname": "/home/pi/filefairy/plugin/recap/recap.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:08:39.115909-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 172,
+        "msg": "Fetched latest changes.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:10.240768-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 289,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:10.748401-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:10.866788-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:10.956538-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:11.053176-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:11.154233-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:12.956932-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-02T23:09:13.051994-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      }
+    ],
+    "2018-10-03T00:00:00-07:00": [
+      {
+        "count": 1,
+        "date": "2018-10-03T00:01:10.994783-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 184,
