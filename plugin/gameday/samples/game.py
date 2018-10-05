@@ -24,7 +24,7 @@ _breadcrumbs = [{
     'name': 'Diamondbacks at Dodgers, 10/09/2022'
 }]
 
-_raw = [
+_log = [
     table(
         clazz='border mt-3',
         bcols=[' class="w-50"', ' class="w-50"'],
@@ -40,12 +40,10 @@ _raw = [
 
 _schedule = [
     table(
-        clazz='table-fixed border border-bottom-0',
-        hcols=[' class="text-center"'],
+        clazz='table-fixed border border-bottom-0 mt-3',
         head=['Arizona Diamondbacks']),
     table(
         clazz='table-fixed border border-bottom-0',
-        bcols=[' class="text-center"'],
         body=[
             [
                 replace('Previous game', 'Previous game not found') + ' - ' +
@@ -54,14 +52,12 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border show-toggler',
-        bcols=[' class="text-center"'],
         body=[
             [show('schedule-t31', 'Toggle full schedule')],
         ]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t31',
-        bcols=[' class="text-center"'],
         body=[
             [span(['text-secondary'], '10/09/2022 @ Los Angeles Dodgers')],
             [anchor('/gameday/1000/', '10/10/2022 @ Los Angeles Dodgers')],
@@ -69,11 +65,9 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        hcols=[' class="text-center"'],
         head=['Los Angeles Dodgers']),
     table(
         clazz='table-fixed border border-bottom-0',
-        bcols=[' class="text-center"'],
         body=[
             [
                 replace('Previous game', 'Previous game not found') + ' - ' +
@@ -82,14 +76,12 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border show-toggler',
-        bcols=[' class="text-center"'],
         body=[
             [show('schedule-t45', 'Toggle full schedule')],
         ]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t45',
-        bcols=[' class="text-center"'],
         body=[
             [span(['text-secondary'], '10/09/2022 v Arizona Diamondbacks')],
             [anchor('/gameday/1000/', '10/10/2022 v Arizona Diamondbacks')],
@@ -104,6 +96,15 @@ tmpl = 'game.html'
 context = {
     'title': 'game',
     'breadcrumbs': _breadcrumbs,
-    'raw': _raw,
-    'schedule': _schedule
+    'tabs': {
+        'tabs': [{
+            'name': 'log',
+            'title': 'Game Log',
+            'tables': _log
+        }, {
+            'name': 'schedule',
+            'title': 'Schedule',
+            'tables': _schedule
+        }]
+    }
 }

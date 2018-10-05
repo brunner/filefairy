@@ -212,6 +212,54 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <!-- $(common.table) -->
 {%- endmacro -%}
 
+{% macro tabs(data) -%}
+<!-- ^(common.tabs) -->
+<div class="container">
+<div class="row">
+<div class="col-12">
+
+<!-- ^(common.tabs.tabs) -->
+<ul class="nav nav-tabs mt-3" role="tablist">
+
+{% for t in data.tabs %}
+<li class="nav-item">
+{% set active = ' active' if loop.first else '' %}
+<a class="nav-link{{ active }}" id="{{ t.name }}-tab" data-toggle="tab"
+   href="#{{ t.name }}" role="tab" aria-controls="raw" aria-selected="true">
+{{ t.title }}
+</a>
+</li>
+
+{% endfor %}
+</ul>
+<!-- $(common.tabs.tabs) -->
+
+<!-- ^(common.tabs.content) -->
+<div class="tab-content">
+
+{% for t in data.tabs %}
+{% set active = ' active' if loop.first else '' %}
+<div class="tab-pane fade show{{ active }}" id="{{ t.name }}"
+     role="tabpanel" aria-labelledby="{{ t.name }}-tab">
+
+<!-- ^(common.tabs.content.tables) -->
+{% for u in t.tables %}
+{{ table(u) }}
+
+{% endfor %}
+<!-- $(common.tabs.content.tables) -->
+</div>
+
+{% endfor %}
+</div>
+<!-- $(common.tabs.content) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.tabs) -->
+{%- endmacro -%}
+
 {% macro modal(trigger, name, tables) -%}
 <div class="modal fade"
      id="{{ trigger }}"

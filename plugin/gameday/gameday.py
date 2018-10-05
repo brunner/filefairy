@@ -140,12 +140,9 @@ class Gameday(Registrable):
         return schedule_data
 
     @staticmethod
-    def _schedule_head(decoding, margin_top):
-        margin_top = ' mt-3' if margin_top else ''
+    def _schedule_head(decoding):
         return table(
-            clazz='table-fixed border border-bottom-0' + margin_top,
-            hcols=[' class="text-center"'],
-            head=[decoding])
+            clazz='table-fixed border border-bottom-0 mt-3', head=[decoding])
 
     @staticmethod
     def _schedule_body(encoding, id_, schedule_data):
@@ -160,10 +157,7 @@ class Gameday(Registrable):
                 url = '/gameday/{}/'.format(sid)
                 body.append([anchor(url, stext)])
 
-        return table(
-            clazz='table-fixed border',
-            bcols=[' class="text-center"'],
-            body=body)
+        return table(clazz='table-fixed border', body=body)
 
     def _check_games(self):
         games = []
@@ -233,8 +227,9 @@ class Gameday(Registrable):
                 'href': '',
                 'name': subtitle
             }],
-            'raw': [],
-            'schedule': []
+            'tabs': {
+                'tabs': []
+            }
         }
 
         cs = [' colspan="2"']
@@ -245,6 +240,7 @@ class Gameday(Registrable):
         home_team = game_data['home_team']
         home_decoding = encoding_to_decoding(home_team)
 
+        log_tables = []
         for inning in game_data['inning']:
             inning_id_ = inning['id']
             _table = table(
@@ -263,14 +259,27 @@ class Gameday(Registrable):
                     _table['body'].append(['', game_sub(after)])
             if inning['outro']:
                 _table['fcols'] = cs
-                _table['foot'] = [inning_id_ + ' - ' + game_sub(inning['outro'])]
-            ret['raw'].append(_table)
+                _table['foot'] = [
+                    inning_id_ + ' - ' + game_sub(inning['outro'])
+                ]
+            log_tables.append(_table)
+        ret['tabs']['tabs'].append({
+            'name': 'log',
+            'title': 'Game Log',
+            'tables': log_tables
+        })
 
-        ret['schedule'].append(self._schedule_head(away_decoding, False))
-        ret['schedule'].append(
+        schedule_tables = []
+        schedule_tables.append(self._schedule_head(away_decoding))
+        schedule_tables.append(
             self._schedule_body(away_team, game_id_, schedule_data))
-        ret['schedule'].append(self._schedule_head(home_decoding, True))
-        ret['schedule'].append(
+        schedule_tables.append(self._schedule_head(home_decoding))
+        schedule_tables.append(
             self._schedule_body(home_team, game_id_, schedule_data))
+        ret['tabs']['tabs'].append({
+            'name': 'schedule',
+            'title': 'Schedule',
+            'tables': schedule_tables
+        })
 
         return ret

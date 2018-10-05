@@ -55,31 +55,6 @@ a.disabled{
   max-width: 468px;
   overflow-x: auto;
 }
-@media (max-width: 560px) {
-  .breadcrumb {
-    max-width: 428px;
-  }
-}
-@media (max-width: 512px) {
-  .breadcrumb {
-    max-width: 380px;
-  }
-}
-@media (max-width: 464px) {
-  .breadcrumb {
-    max-width: 332px;
-  }
-}
-@media (max-width: 416px) {
-  .breadcrumb {
-    max-width: 284px;
-  }
-}
-@media (max-width: 368px) {
-  .breadcrumb {
-    max-width: 236px;
-  }
-}
 .dropdown-toggle {
   color: #6c767c;
 }
@@ -171,22 +146,6 @@ a.disabled{
 <li class="breadcrumb-item active" aria-current="page">Diamondbacks at Dodgers, 10/09/2022</li>
 </ol>
 
-<!-- ^(common.nav) -->
-<button class="navbar-toggler border-0" type="button" data-toggle="collapse"
-        data-target="#nav-dropdown" aria-controls="#nav-dropdown"
-        aria-expanded="false" aria-label="nav toggler">
-<span class="navbar-toggler-icon"></span>
-</button>
-<div class="collapse navbar-collapse border-top" id="nav-dropdown">
-<ul class="navbar-nav">
-<li class="nav-item">
-<span class="nav-link"
-      data-toggle="modal"
-      data-target="#schedule">Schedule</a>
-</li>
-</ul>
-</div>
-<!-- $(common.nav) -->
 
 </nav>
 
@@ -201,31 +160,38 @@ a.disabled{
 <!-- ^(base.main) -->
 <main role="main" class="pb-3">
 
-<!-- ^(game.tabs) -->
+<!-- ^(common.tabs) -->
 <div class="container">
-
-<!-- ^(game.row) -->
 <div class="row">
-
-<!-- ^(game.column) -->
 <div class="col-12">
 
-<ul class="nav nav-tabs mt-3" id="game-tab" role="tablist">
+<!-- ^(common.tabs.tabs) -->
+<ul class="nav nav-tabs mt-3" role="tablist">
 
 <li class="nav-item">
+<a class="nav-link active" id="log-tab" data-toggle="tab"
+   href="#log" role="tab" aria-controls="raw" aria-selected="true">
+Game Log
+</a>
+</li>
 
-<a class="nav-link active" id="raw-tab" data-toggle="tab" href="#raw"
-   role="tab" aria-controls="raw" aria-selected="true">Game Log</a>
-
+<li class="nav-item">
+<a class="nav-link" id="schedule-tab" data-toggle="tab"
+   href="#schedule" role="tab" aria-controls="raw" aria-selected="true">
+Schedule
+</a>
 </li>
 
 </ul>
+<!-- $(common.tabs.tabs) -->
 
-<div class="tab-content" id="game-tab-content">
+<!-- ^(common.tabs.content) -->
+<div class="tab-content">
 
-<div class="tab-pane fade show active" id="raw"
-     role="tabpanel" aria-labelledby="raw-tab">
+<div class="tab-pane fade show active" id="log"
+     role="tabpanel" aria-labelledby="log-tab">
 
+<!-- ^(common.tabs.content.tables) -->
 <!-- ^(common.table) -->
 <table class="table border mt-3">
 
@@ -261,46 +227,20 @@ a.disabled{
 </table>
 <!-- $(common.table) -->
 
+<!-- $(common.tabs.content.tables) -->
 </div>
 
-</div>
+<div class="tab-pane fade show" id="schedule"
+     role="tabpanel" aria-labelledby="schedule-tab">
 
-</div>
-<!-- $(game.column) -->
-
-</div>
-<!-- $(game.row) -->
-
-</div>
-<!-- $(game.tabs) -->
-
-<div class="modal fade"
-     id="schedule"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="schedule-modal-label" aria-hidden="true">
-
-<!-- ^(common.modal.head) -->
-<div class="modal-dialog" role="document">
-<div class="modal-content">
-<div class="modal-header">
-<h5 class="modal-title" id="schedule-modal-label">Schedule</h5>
-<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-<span aria-hidden="true">&times;</span>
-</button>
-</div>
-<!-- $(common.modal.head) -->
-
-<!-- ^(common.modal.body) -->
-<div class="modal-body">
-
+<!-- ^(common.tabs.content.tables) -->
 <!-- ^(common.table) -->
-<table class="table table-fixed border border-bottom-0">
+<table class="table table-fixed border border-bottom-0 mt-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="text-center">Arizona Diamondbacks</td>
+<td scope="col">Arizona Diamondbacks</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -314,7 +254,7 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="text-center"><a class="repl-toggler" href="#" role="button" data-repl="Previous game not found">Previous game</a> - <a class="repl-toggler" href="#" role="button" data-repl="Next game not found">Next game</a></td>
+<td scope="row"><a class="repl-toggler" href="#" role="button" data-repl="Previous game not found">Previous game</a> - <a class="repl-toggler" href="#" role="button" data-repl="Next game not found">Next game</a></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -328,7 +268,7 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="text-center"><a data-toggle="collapse" href="#schedule-t31" role="button" aria-expanded="false" aria-controls="schedule-t31">Toggle full schedule</a></td>
+<td scope="row"><a data-toggle="collapse" href="#schedule-t31" role="button" aria-expanded="false" aria-controls="schedule-t31">Toggle full schedule</a></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -342,13 +282,13 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="text-center"><span class="text-secondary">10/09/2022 @ Los Angeles Dodgers</span></td>
+<td scope="row"><span class="text-secondary">10/09/2022 @ Los Angeles Dodgers</span></td>
 </tr>
 <tr>
-<td scope="row" class="text-center"><a href="/gameday/1000/">10/10/2022 @ Los Angeles Dodgers</a></td>
+<td scope="row"><a href="/gameday/1000/">10/10/2022 @ Los Angeles Dodgers</a></td>
 </tr>
 <tr>
-<td scope="row" class="text-center"><a href="/gameday/2000/">10/11/2022 @ Los Angeles Dodgers</a></td>
+<td scope="row"><a href="/gameday/2000/">10/11/2022 @ Los Angeles Dodgers</a></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -362,7 +302,7 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="text-center">Los Angeles Dodgers</td>
+<td scope="col">Los Angeles Dodgers</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -376,7 +316,7 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="text-center"><a class="repl-toggler" href="#" role="button" data-repl="Previous game not found">Previous game</a> - <a class="repl-toggler" href="#" role="button" data-repl="Next game not found">Next game</a></td>
+<td scope="row"><a class="repl-toggler" href="#" role="button" data-repl="Previous game not found">Previous game</a> - <a class="repl-toggler" href="#" role="button" data-repl="Next game not found">Next game</a></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -390,7 +330,7 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="text-center"><a data-toggle="collapse" href="#schedule-t45" role="button" aria-expanded="false" aria-controls="schedule-t45">Toggle full schedule</a></td>
+<td scope="row"><a data-toggle="collapse" href="#schedule-t45" role="button" aria-expanded="false" aria-controls="schedule-t45">Toggle full schedule</a></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -404,13 +344,13 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="text-center"><span class="text-secondary">10/09/2022 v Arizona Diamondbacks</span></td>
+<td scope="row"><span class="text-secondary">10/09/2022 v Arizona Diamondbacks</span></td>
 </tr>
 <tr>
-<td scope="row" class="text-center"><a href="/gameday/1000/">10/10/2022 v Arizona Diamondbacks</a></td>
+<td scope="row"><a href="/gameday/1000/">10/10/2022 v Arizona Diamondbacks</a></td>
 </tr>
 <tr>
-<td scope="row" class="text-center"><a href="/gameday/2000/">10/11/2022 v Arizona Diamondbacks</a></td>
+<td scope="row"><a href="/gameday/2000/">10/11/2022 v Arizona Diamondbacks</a></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -418,10 +358,16 @@ a.disabled{
 </table>
 <!-- $(common.table) -->
 
+<!-- $(common.tabs.content.tables) -->
 </div>
-<!-- $(common.modal.body) -->
 
 </div>
+<!-- $(common.tabs.content) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.tabs) -->
 
 </main>
 <!-- $(base.main) -->

@@ -181,46 +181,66 @@ _game = {
         'href': '',
         'name': 'Diamondbacks at Dodgers, 10/09/2022'
     }],
-    'raw': [
-        table(
-            clazz='border mt-3',
-            hcols=[' colspan="2"'],
-            bcols=[' class="w-50"', ' class="w-50"'],
-            fcols=[' colspan="2"'],
-            head=[
-                'Top of the 1st - Arizona Diamondbacks batting - Pitching for '
-                'Los Angeles Dodgers : LHP 101'
-            ],
-            body=[['Batting: SHB 102', '0-0: Ball'], ['', '103 to second']],
-            foot=[
-                'Top of the 1st - 0 run(s), 0 hit(s), 0 error(s), 0 left on '
-                'base; Arizona Diamondbacks 0 - Los Angeles Dodgers 0'
-            ])
-    ],
-    'schedule': [
-        table(
-            clazz='table-fixed border border-bottom-0',
-            hcols=[' class="text-center"'],
-            head=['Arizona Diamondbacks']),
-        table(
-            clazz='table-fixed border',
-            bcols=[' class="text-center"'],
-            body=[
-                [span(['text-secondary'], '10/26/1985 @ Los Angeles Dodgers')],
-                [anchor('/gameday/2999/', '10/27/1985 @ Los Angeles Dodgers')],
-            ]),
-        table(
-            clazz='table-fixed border border-bottom-0 mt-3',
-            hcols=[' class="text-center"'],
-            head=['Los Angeles Dodgers']),
-        table(
-            clazz='table-fixed border',
-            bcols=[' class="text-center"'],
-            body=[[
-                span(['text-secondary'], '10/26/1985 v Arizona Diamondbacks')
-            ], [anchor('/gameday/2999/',
-                       '10/27/1985 v Arizona Diamondbacks')]]),
-    ]
+    'tabs': {
+        'tabs': [{
+            'name':
+            'log',
+            'title':
+            'Game Log',
+            'tables': [
+                table(
+                    clazz='border mt-3',
+                    hcols=[' colspan="2"'],
+                    bcols=[' class="w-50"', ' class="w-50"'],
+                    fcols=[' colspan="2"'],
+                    head=[
+                        'Top of the 1st - Arizona Diamondbacks batting - '
+                        'Pitching for Los Angeles Dodgers : LHP 101'
+                    ],
+                    body=[['Batting: SHB 102', '0-0: Ball'],
+                          ['', '103 to second']],
+                    foot=[
+                        'Top of the 1st - 0 run(s), 0 hit(s), 0 error(s), 0 '
+                        'left on base; Arizona Diamondbacks 0 - Los Angeles '
+                        'Dodgers 0'
+                    ])
+            ]
+        }, {
+            'name':
+            'schedule',
+            'title':
+            'Schedule',
+            'tables': [
+                table(
+                    clazz='table-fixed border border-bottom-0 mt-3',
+                    head=['Arizona Diamondbacks']),
+                table(
+                    clazz='table-fixed border',
+                    body=[
+                        [
+                            span(['text-secondary'],
+                                 '10/26/1985 @ Los Angeles Dodgers')
+                        ],
+                        [
+                            anchor('/gameday/2999/',
+                                   '10/27/1985 @ Los Angeles Dodgers')
+                        ],
+                    ]),
+                table(
+                    clazz='table-fixed border border-bottom-0 mt-3',
+                    head=['Los Angeles Dodgers']),
+                table(
+                    clazz='table-fixed border',
+                    body=[[
+                        span(['text-secondary'],
+                             '10/26/1985 v Arizona Diamondbacks')
+                    ], [
+                        anchor('/gameday/2999/',
+                               '10/27/1985 v Arizona Diamondbacks')
+                    ]]),
+            ]
+        }]
+    }
 }
 _game_data = {
     'away_team':
