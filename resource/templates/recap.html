@@ -3,9 +3,6 @@
 
 {% set modals = [] %}
 {% set anchors = [] %}
-{% if teams %}
-{% do anchors.append(('teams', 'Teams')) %}
-{% endif %}
 {% do anchors.append(('filter', 'Filter')) %}
 {% if injuries %}
 {% do anchors.append(('injuries', 'Injuries')) %}
@@ -24,18 +21,6 @@
 {% endblock %}
 
 {% block content %}
-
-{% if teams %}
-<!-- ^(recap.teams) -->
-<div class="container anchor" id="teams">
-
-{{ common.heading('bookmark', 'Teams') }}
-
-{{ common.dropdown('/recap', teams) }}
-
-</div>
-<!-- $(recap.teams) -->
-{% endif %}
 
 <!-- ^(recap.filter) -->
 <div class="container anchor" id="filter">

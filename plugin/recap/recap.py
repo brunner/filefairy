@@ -81,20 +81,9 @@ class Recap(Registrable):
         return Response()
 
     def _render_internal(self, **kwargs):
-        ret = []
-        teams = self._teams()
-
         html = 'recap/index.html'
-        _home = self._home(teams, **kwargs)
-        ret.append((html, '', 'recap.html', _home))
-
-        for decoding, path in teams:
-            html = 'recap/' + path + '/index.html'
-            _team = self._team(decoding, **kwargs)
-            ret.append((html, decoding_to_nickname(decoding), 'recap.html',
-                        _team))
-
-        return ret
+        _home = self._home(**kwargs)
+        return [(html, '', 'recap.html', _home)]
 
     def _setup_internal(self, **kwargs):
         self.tables = self._tables()
@@ -154,7 +143,7 @@ class Recap(Registrable):
                             return True
         return False
 
-    def _home(self, teams, **kwargs):
+    def _home(self, **kwargs):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
@@ -162,8 +151,7 @@ class Recap(Registrable):
             }, {
                 'href': '',
                 'name': 'Recap'
-            }],
-            'teams': teams
+            }]
         }
         for key in ['injuries', 'news', 'transactions']:
             ret[key] = self.tables[key]
@@ -172,26 +160,6 @@ class Recap(Registrable):
         postseason = self.shadow.get('statsplus.postseason', True)
         if not (offseason or postseason):
             ret['standings'] = standings_table(self.data['standings'])
-
-        return ret
-
-    def _team(self, decoding, **kwargs):
-        ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '/recap/',
-                'name': 'Recap'
-            }, {
-                'href': '',
-                'name': decoding_to_nickname(decoding)
-            }]
-        }
-
-        tables = self._tables(decoding)
-        for key in ['injuries', 'news', 'transactions']:
-            ret[key] = tables[key]
 
         return ret
 

@@ -210,7 +210,6 @@ _table_old = {
     'news': _news_table_old,
     'transactions': _transactions_table_old
 }
-_teams = [('Arizona Diamondbacks', 'diamondbacks')]
 
 
 def _data(now=_encoded_new, standings=_standings, then=_encoded_old):
@@ -410,36 +409,22 @@ class RecapTest(Test):
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Recap, '_teams')
-    @mock.patch.object(Recap, '_team')
     @mock.patch.object(Recap, '_home')
-    def test_render(self, mock_home, mock_team, mock_teams):
+    def test_render(self, mock_home):
         home = {
-            'breadcrumbs': [],
-            'teams': _teams,
-            'injuries': [],
-            'news': [],
-            'transactions': []
-        }
-        team = {
             'breadcrumbs': [],
             'injuries': [],
             'news': [],
             'transactions': []
         }
         mock_home.return_value = home
-        mock_team.return_value = team
-        mock_teams.return_value = _teams
 
         plugin = self.create_plugin(_data())
         value = plugin._render_internal(date=_now)
-        index1 = 'recap/index.html'
-        index2 = 'recap/diamondbacks/index.html'
-        self.assertEqual(value, [(index1, '', 'recap.html', home),
-                                 (index2, 'Diamondbacks', 'recap.html', team)])
+        index = 'recap/index.html'
+        self.assertEqual(value, [(index, '', 'recap.html', home)])
 
-        mock_home.assert_called_once_with(_teams, date=_now)
-        mock_team.assert_called_once_with('Arizona Diamondbacks', date=_now)
+        mock_home.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -554,7 +539,7 @@ class RecapTest(Test):
         plugin.shadow['statsplus.postseason'] = False
         plugin.tables = _table_new
 
-        value = plugin._home(_teams, date=_now)
+        value = plugin._home(date=_now)
         breadcrumbs = [{
             'href': '/',
             'name': 'Fairylab'
@@ -564,7 +549,6 @@ class RecapTest(Test):
         }]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'teams': _teams,
             'injuries': _injuries_table_all_new,
             'news': _news_table_all_new,
             'transactions': _transactions_table_all_new,
@@ -573,38 +557,6 @@ class RecapTest(Test):
         self.assertEqual(value, expected)
 
         mock_standings.assert_called_once_with(_standings)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Recap, '_tables')
-    def test_team(self, mock_tables):
-        mock_tables.return_value = _table_new
-
-        plugin = self.create_plugin(_data())
-
-        value = plugin._team('Arizona Diamondbacks', date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '/recap/',
-            'name': 'Recap'
-        }, {
-            'href': '',
-            'name': 'Diamondbacks'
-        }]
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'injuries': _injuries_table_all_new,
-            'news': _news_table_all_new,
-            'transactions': _transactions_table_all_new
-        }
-        self.assertEqual(value, expected)
-
-        mock_tables.assert_called_once_with('Arizona Diamondbacks')
         self.mock_open.assert_not_called()
         self.mock_handle.write.not_called()
         self.mock_chat.assert_not_called()
