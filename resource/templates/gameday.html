@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set modals = [] %}
-{% set anchors = [('schedule', 'Schedule')] %}
-{% block nav %}
-{{ common.nav(modals, anchors) }}
-{% endblock %}
-
 {% block content %}
 
 {% if schedule %}

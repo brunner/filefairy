@@ -1,15 +1,6 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set modals = [] %}
-{% set anchors = [('statistics', 'Statistics')] %}
-{% if count and recent %}
-{% do anchors.append(('leaderboard', 'Leaderboard')) %}
-{% endif %}
-{% block nav %}
-{{ common.nav(modals, anchors) }}
-{% endblock %}
-
 {% block content %}
 
 <!-- ^(snacks.statistics) -->

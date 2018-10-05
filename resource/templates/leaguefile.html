@@ -1,23 +1,6 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set modals = [] %}
-{% set anchors = [] %}
-{% if upload %}
-{% do anchors.append(('upload', 'Upload')) %}
-{% endif %}
-{% if download %}
-{% do anchors.append(('download', 'Download')) %}
-{% endif %}
-{% if completed %}
-{% do anchors.append(('completed', 'Completed')) %}
-{% endif %}
-{% block nav %}
-{% if anchors %}
-{{ common.nav(modals, anchors) }}
-{% endif %}
-{% endblock %}
-
 {% block content %}
 
 {% if upload %}

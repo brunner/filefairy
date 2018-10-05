@@ -1,21 +1,6 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set modals = [] %}
-{% set anchors = [('overview', 'Overview'), ('filter', 'Filter'), ('scores', 'Scores')] %}
-{% if injuries %}
-{% do anchors.append(('injuries', 'Injuries')) %}
-{% endif %}
-{% if highlights %}
-{% do anchors.append(('highlights', 'Highlights')) %}
-{% endif %}
-{% if forecast %}
-{% do anchors.append(('forecast', 'Forecast')) %}
-{% endif %}
-{% block nav %}
-{{ common.nav(modals, anchors) }}
-{% endblock %}
-
 {% block content %}
 
 <!-- ^(statsplus.overview) -->

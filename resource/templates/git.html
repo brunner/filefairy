@@ -1,18 +1,6 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set modals = [] %}
-{% set anchors = [] %}
-{% if pull %}
-{% do anchors.append(('pull', 'Pull')) %}
-{% endif %}
-{% if push %}
-{% do anchors.append(('push', 'Push')) %}
-{% endif %}
-{% block nav %}
-{{ common.nav(modals, anchors) }}
-{% endblock %}
-
 {% block content %}
 
 {% if pull %}

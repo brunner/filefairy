@@ -25,14 +25,6 @@ header {
   background-color: #f5f5f5;
   width: 100%;
 }
-footer {
-  background-color: #f5f5f5;
-  bottom: 0;
-  height: 60px;
-  line-height: 60px;
-  position: absolute;
-  width: 100%;
-}
 a.disabled{
   pointer-events: none;
   cursor: default;
@@ -66,13 +58,6 @@ a.disabled{
 }
 .navbar {
   padding: 0;
-}
-.navbar-nav {
-  padding: .5rem 0;
-}
-.navbar .nav-link {
-  padding: .5rem;
-  cursor: pointer;
 }
 .pl-24p {
   padding-left: 24px;
@@ -147,9 +132,6 @@ a.disabled{
 {% endif %}
 {% endfor %}
 </ol>
-
-{% block nav %}{% endblock %}
-
 </nav>
 
 <div class="my-1">
@@ -176,16 +158,6 @@ a.disabled{
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
 <script>
-$('.navbar-toggler').one('click', function(e) {
-  setTimeout(function() {
-    var height = $('header').height() + 1;
-    var css = '<style> .anchor.offset { padding-top: %spx; margin-top: -%spx; } </style>';
-    $(css.replace(/%s/g, height)).appendTo('head');
-  }, 500);
-});
-$('.navbar-toggler').on('click', function(e) {
-  $('.anchor').toggleClass('offset');
-});
 $('.repl-toggler').on('click', function(e) {
   if ($(this).hasClass('disabled')) {
     e.preventDefault();

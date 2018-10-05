@@ -1,25 +1,6 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
 
-{% set modals = [] %}
-{% set anchors = [] %}
-{% do anchors.append(('filter', 'Filter')) %}
-{% if injuries %}
-{% do anchors.append(('injuries', 'Injuries')) %}
-{% endif %}
-{% if news %}
-{% do anchors.append(('news', 'News')) %}
-{% endif %}
-{% if transactions %}
-{% do anchors.append(('transactions', 'Transactions')) %}
-{% endif %}
-{% if standings %}
-{% do anchors.append(('standings', 'Standings')) %}
-{% endif %}
-{% block nav %}
-{{ common.nav(modals, anchors) }}
-{% endblock %}
-
 {% block content %}
 
 <!-- ^(recap.filter) -->
