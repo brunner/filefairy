@@ -160,7 +160,7 @@ a.disabled{
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<nav class="navbar navbar-light" aria-label="nav">
+<nav class="navbar navbar-light border-bottom" aria-label="nav">
 <ol class="breadcrumb flex-nowrap text-truncate m-0 p-0">
 {% for breadcrumb in breadcrumbs %}
 {% if breadcrumb.href != '' %}
@@ -176,6 +176,11 @@ a.disabled{
 {% block nav %}{% endblock %}
 
 </nav>
+
+<div class="my-1">
+<small class="text-muted">Last reloaded: {{ date }}</small>
+</div>
+
 </div>
 </header>
 <!-- $(base.header) -->
@@ -185,14 +190,6 @@ a.disabled{
 {% block content %}{% endblock %}
 </main>
 <!-- $(base.main) -->
-
-<!-- ^(base.footer) -->
-<footer class="border-top">
-<div class="container text-center">
-<small class="text-muted">Last reloaded: {{ date }}</small>
-</div>
-</footer>
-<!-- $(base.footer) -->
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
