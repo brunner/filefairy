@@ -30,7 +30,7 @@ _game_log_cell_id = '<th colspan="2" class="boxtitle">(.+?)</th>'
 _game_log_cell_intro = '<th colspan="2" align="left" ' + \
                        'style="padding:4px 0px 4px 4px;">(.+?)</th>'
 _game_log_cell_outro = '<td class="datathbg" colspan="2">' + \
-                       '[^-]+-  ([^;]+); \w+ (\d+) - \w+ (\d+)</td>'
+                       '[^-]+-  ([^;]+); [^\d]+(\d+) - [^\d]+(\d+)</td>'
 _game_log_inner_left = '<td valign="top" width="268px" class="dl">(.+?)</td>'
 _game_log_inner_right = '<td class="dl" width="700px">(.+?)</td>'
 _game_log_outer = '(<td (?:valign="top" width="268px" class="dl"|' + \
@@ -147,6 +147,7 @@ def parse_game_log(link):
             return dict(ret, error='invalid_cell')
         cell_intro = cell_intro[0].strip()
 
+        print(c)
         cell_outro = re.findall(_game_log_cell_outro, c)
         if not cell_outro:
             cell_outro = ''

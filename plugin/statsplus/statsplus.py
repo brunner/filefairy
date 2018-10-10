@@ -507,15 +507,15 @@ class Statsplus(Registrable):
                         if bruns1 != int(cruns1) or bruns2 != int(cruns2):
                             valid = False
                         if valid:
-                          s = '{} {}, {} {}'
-                          score = s.format(bteam1, bruns1, bteam2, bruns2)
-                          scores[i] = '<{0}|{1}>'.format(url, score)
-                          if swap:
-                              bteam1, bteam2 = bteam2, bteam1
-                              cteam1, cteam2 = cteam2, cteam1
-                          for key in ['highlights', 'injuries']:
-                              self._clarify(key, encoded_date, cteam1, cteam2,
-                                            bteam1, bteam2, count)
+                            s = '{} {}, {} {}'
+                            score = s.format(bteam1, bruns1, bteam2, bruns2)
+                            scores[i] = '<{0}|{1}>'.format(url, score)
+                            if swap:
+                                bteam1, bteam2 = bteam2, bteam1
+                                cteam1, cteam2 = cteam2, cteam1
+                            for key in ['highlights', 'injuries']:
+                                self._clarify(key, encoded_date, cteam1,
+                                              cteam2, bteam1, bteam2, count)
                 else:
                     valid = False
 
