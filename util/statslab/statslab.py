@@ -147,7 +147,6 @@ def parse_game_log(link):
             return dict(ret, error='invalid_cell')
         cell_intro = cell_intro[0].strip()
 
-        print(c)
         cell_outro = re.findall(_game_log_cell_outro, c)
         if not cell_outro:
             cell_outro = ''
