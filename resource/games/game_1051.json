@@ -2,11 +2,38 @@
   "away_team": "T34",
   "date": "2024-05-14T00:00:00-07:00",
   "home_team": "T48",
-  "inning": [
+  "id": "1051",
+  "ok": true,
+  "player": {
+    "P1169": "Eddy Vizcaino",
+    "P1413": "Sean Bouchard",
+    "P19894": "Willy Rozon",
+    "P21968": "Nathan Hadley",
+    "P22595": "Richie Martin",
+    "P25047": "Hyuk Lee",
+    "P25102": "Cole Sands",
+    "P25185": "Isiah Gilliam",
+    "P28116": "Miguel A. Gonzalez",
+    "P28398": "Kolby Allard",
+    "P29845": "Michael Massey",
+    "P29959": "Paul Goldschmidt",
+    "P33558": "Gary Sanchez",
+    "P35142": "Xander Bogaerts",
+    "P35498": "Anthony Rendon",
+    "P38573": "Kris Bryant",
+    "P38585": "Ian Clarkin",
+    "P38630": "Willie Abreu",
+    "P39019": "Malik Collymore",
+    "P49103": "Victor Robles",
+    "P49595": "Juan De Leon",
+    "P53704": "Bob Todd",
+    "P816": "Blaise Salter"
+  },
+  "plays": [
     {
-      "id": "Top of the 1st",
-      "intro": "T34 batting - Pitching for T48 : LHP P38585",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T34 0 - T48 0",
+      "batting": "T34",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T34 0 - T48 0",
+      "label": "Top 1st",
       "pitch": [
         {
           "before": [
@@ -57,12 +84,13 @@
         {
           "result": "2-2: Grounds into double play, 6-4-3 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "LHP P38585"
     },
     {
-      "id": "Bottom of the 1st",
-      "intro": "T48 batting - Pitching for T34 : LHP P28398",
-      "outro": "3 run(s), 3 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "batting": "T48",
+      "footer": "3 run(s), 3 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "label": "Bot 1st",
       "pitch": [
         {
           "before": [
@@ -167,12 +195,13 @@
         {
           "result": "3-2: Ground out 5-3 (Groundball, 56S)"
         }
-      ]
+      ],
+      "pitching": "LHP P28398"
     },
     {
-      "id": "Top of the 2nd",
-      "intro": "T34 batting - Pitching for T48 : LHP P38585",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "batting": "T34",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "label": "Top 2nd",
       "pitch": [
         {
           "before": [
@@ -216,12 +245,13 @@
         {
           "result": "1-1:  Fly out, F7  (Line Drive, 78M)"
         }
-      ]
+      ],
+      "pitching": "LHP P38585"
     },
     {
-      "id": "Bottom of the 2nd",
-      "intro": "T48 batting - Pitching for T34 : LHP P28398",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T34 0 - T48 3",
+      "batting": "T48",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T34 0 - T48 3",
+      "label": "Bot 2nd",
       "pitch": [
         {
           "before": [
@@ -259,12 +289,13 @@
         {
           "result": "1-0: Ground out 6-3 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "LHP P28398"
     },
     {
-      "id": "Top of the 3rd",
-      "intro": "T34 batting - Pitching for T48 : LHP P38585",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "batting": "T34",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "label": "Top 3rd",
       "pitch": [
         {
           "before": [
@@ -323,12 +354,13 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P38585"
     },
     {
-      "id": "Bottom of the 3rd",
-      "intro": "T48 batting - Pitching for T34 : LHP P28398",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "batting": "T48",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 0 - T48 3",
+      "label": "Bot 3rd",
       "pitch": [
         {
           "before": [
@@ -375,12 +407,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P28398"
     },
     {
-      "id": "Top of the 4th",
-      "intro": "T34 batting - Pitching for T48 : LHP P38585",
-      "outro": "1 run(s), 3 hit(s), 0 error(s), 1 left on base; T34 1 - T48 3",
+      "batting": "T34",
+      "footer": "1 run(s), 3 hit(s), 0 error(s), 1 left on base; T34 1 - T48 3",
+      "label": "Top 4th",
       "pitch": [
         {
           "before": [
@@ -459,12 +492,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P38585"
     },
     {
-      "id": "Bottom of the 4th",
-      "intro": "T48 batting - Pitching for T34 : LHP P28398",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T34 1 - T48 3",
+      "batting": "T48",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T34 1 - T48 3",
+      "label": "Bot 4th",
       "pitch": [
         {
           "before": [
@@ -541,12 +575,13 @@
         {
           "result": "1-1: Fielders Choice at 2nd, 5-4 (Groundball, 5)"
         }
-      ]
+      ],
+      "pitching": "LHP P28398"
     },
     {
-      "id": "Top of the 5th",
-      "intro": "T34 batting - Pitching for T48 : LHP P38585",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T34 1 - T48 3",
+      "batting": "T34",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T34 1 - T48 3",
+      "label": "Top 5th",
       "pitch": [
         {
           "before": [
@@ -611,12 +646,13 @@
         {
           "result": "1-2:  Fly out, F7  (Flyball, 7LSF)"
         }
-      ]
+      ],
+      "pitching": "LHP P38585"
     },
     {
-      "id": "Bottom of the 5th",
-      "intro": "T48 batting - Pitching for T34 : LHP P28398",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 3",
+      "batting": "T48",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 3",
+      "label": "Bot 5th",
       "pitch": [
         {
           "before": [
@@ -666,12 +702,13 @@
         {
           "result": "0-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P28398"
     },
     {
-      "id": "Top of the 6th",
-      "intro": "T34 batting - Pitching for T48 : LHP P38585",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 3",
+      "batting": "T34",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 3",
+      "label": "Top 6th",
       "pitch": [
         {
           "before": [
@@ -719,12 +756,13 @@
         {
           "result": "3-1:  Fly out, F7  (Flyball, 78XD)"
         }
-      ]
+      ],
+      "pitching": "LHP P38585"
     },
     {
-      "id": "Bottom of the 6th",
-      "intro": "T48 batting - Pitching for T34 : LHP P28398",
-      "outro": "2 run(s), 2 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "batting": "T48",
+      "footer": "2 run(s), 2 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "label": "Bot 6th",
       "pitch": [
         {
           "before": [
@@ -820,12 +858,13 @@
         {
           "result": "1-1: Ground out 6-3 (Groundball, 6D)"
         }
-      ]
+      ],
+      "pitching": "LHP P28398"
     },
     {
-      "id": "Top of the 7th",
-      "intro": "T34 batting - Pitching for T48 : RHP P21968",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T34 1 - T48 5",
+      "batting": "T34",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T34 1 - T48 5",
+      "label": "Top 7th",
       "pitch": [
         {
           "before": [
@@ -914,12 +953,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P21968"
     },
     {
-      "id": "Bottom of the 7th",
-      "intro": "T48 batting - Pitching for T34 : RHP P25102",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "batting": "T48",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "label": "Bot 7th",
       "pitch": [
         {
           "before": [
@@ -963,12 +1003,13 @@
         {
           "result": "3-2:  Fly out, F6  (Popup, 6MD)"
         }
-      ]
+      ],
+      "pitching": "RHP P25102"
     },
     {
-      "id": "Top of the 8th",
-      "intro": "T34 batting - Pitching for T48 : RHP P21968",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T34 1 - T48 5",
+      "batting": "T34",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T34 1 - T48 5",
+      "label": "Top 8th",
       "pitch": [
         {
           "before": [
@@ -1040,12 +1081,13 @@
         {
           "result": "0-1:  Fly out, F8  (Flyball, 8RXD)"
         }
-      ]
+      ],
+      "pitching": "RHP P21968"
     },
     {
-      "id": "Bottom of the 8th",
-      "intro": "T48 batting - Pitching for T34 : RHP P25102",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "batting": "T48",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "label": "Bot 8th",
       "pitch": [
         {
           "before": [
@@ -1095,12 +1137,13 @@
         {
           "result": "3-2: Grounds into double play, 4-6-3 (Groundball, 4M)"
         }
-      ]
+      ],
+      "pitching": "RHP P25102"
     },
     {
-      "id": "Top of the 9th",
-      "intro": "T34 batting - Pitching for T48 : RHP P19894",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "batting": "T34",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T34 1 - T48 5",
+      "label": "Top 9th",
       "pitch": [
         {
           "before": [
@@ -1165,33 +1208,8 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P19894"
     }
-  ],
-  "ok": true,
-  "player": {
-    "P1169": "Eddy Vizcaino",
-    "P1413": "Sean Bouchard",
-    "P19894": "Willy Rozon",
-    "P21968": "Nathan Hadley",
-    "P22595": "Richie Martin",
-    "P25047": "Hyuk Lee",
-    "P25102": "Cole Sands",
-    "P25185": "Isiah Gilliam",
-    "P28116": "Miguel A. Gonzalez",
-    "P28398": "Kolby Allard",
-    "P29845": "Michael Massey",
-    "P29959": "Paul Goldschmidt",
-    "P33558": "Gary Sanchez",
-    "P35142": "Xander Bogaerts",
-    "P35498": "Anthony Rendon",
-    "P38573": "Kris Bryant",
-    "P38585": "Ian Clarkin",
-    "P38630": "Willie Abreu",
-    "P39019": "Malik Collymore",
-    "P49103": "Victor Robles",
-    "P49595": "Juan De Leon",
-    "P53704": "Bob Todd",
-    "P816": "Blaise Salter"
-  }
+  ]
 }

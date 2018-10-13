@@ -98,13 +98,14 @@ def _box(arecord, aruns, ateam, date, hrecord, hruns, hteam):
     }
 
 
-def _log(ateam, date, hteam, inning, player):
+def _log(id_, ateam, date, hteam, player, plays):
     return {
+        'id': id_,
         'away_team': decoding_to_encoding(ateam),
-        'date': date,
         'home_team': decoding_to_encoding(hteam),
-        'inning': inning,
+        'date': date,
         'player': player,
+        'plays': plays,
         'ok': True
     }
 
@@ -119,7 +120,8 @@ class StatslabTest(unittest.TestCase):
     def test_box_score__with_valid_file(self, mock_isfile, mock_open):
         mock_isfile.return_value = True
         content = _game_box_sub.format(
-            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
+            'MLB', 'Arizona Diamondbacks',
+            'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
         mo = mock.mock_open(read_data=content)
@@ -139,7 +141,8 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('util.statslab.statslab.urlopen')
     def test_box_score__with_valid_link(self, mock_urlopen):
         content = _game_box_sub.format(
-            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
+            'MLB', 'Arizona Diamondbacks',
+            'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
         mock_urlopen.return_value = bytes(content, 'utf-8')
@@ -155,8 +158,8 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('util.statslab.statslab.urlopen')
     def test_box_score__with_invalid_title(self, mock_urlopen):
         content = _game_box_sub.format(
-            'NPB', 'Yokohama DeNA BayStars',
-            'Tokyo Yakult Swallows', _now_displayed,
+            'NPB', 'Yokohama DeNA BayStars', 'Tokyo Yakult Swallows',
+            _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
         mock_urlopen.return_value = bytes(content, 'utf-8')
@@ -171,7 +174,8 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('util.statslab.statslab.urlopen')
     def test_box_score__with_invalid_line(self, mock_urlopen):
         content = _game_box_sub.format(
-            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
+            'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers',
+            _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
         mock_urlopen.return_value = bytes(content, 'utf-8')
@@ -183,8 +187,6 @@ class StatslabTest(unittest.TestCase):
 
         mock_urlopen.assert_called_once_with(link)
 
-    maxDiff = None
-
     @mock.patch('util.statslab.statslab.urlopen')
     def test_game_log__with_valid_link(self, mock_urlopen):
         content = _game_log_sub.format('Arizona Diamondbacks',
@@ -194,12 +196,22 @@ class StatslabTest(unittest.TestCase):
 
         link = _html + _game_log.format('2998')
         actual = parse_game_log(link)
-        inning = [{
-            'id':
-            'Top of the 1st',
-            'intro':
-            'T31 batting - Pitching for T45 : RHP P101',
-            'outro':
+        player = {
+            'P101': '101',
+            'P102': '102',
+            'P103': '103',
+            'P104': '104',
+            'P105': '105',
+            'P106': '106'
+        }
+        plays = [{
+            'label':
+            'Top 1st',
+            'batting':
+            'T31',
+            'pitching':
+            'RHP P101',
+            'footer':
             '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
             'pitch': [{
                 'before': ['Pitching: RHP P101', 'Batting: RHB P102'],
@@ -225,16 +237,8 @@ class StatslabTest(unittest.TestCase):
                 'result': '0-2: Strikes out  swinging'
             }]
         }]
-        player = {
-            'P101': '101',
-            'P102': '102',
-            'P103': '103',
-            'P104': '104',
-            'P105': '105',
-            'P106': '106'
-        }
-        expected = _log('Arizona Diamondbacks', _now_encoded,
-                        'Los Angeles Dodgers', inning, player)
+        expected = _log('2998', 'Arizona Diamondbacks', _now_encoded,
+                        'Los Angeles Dodgers', player, plays)
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)

@@ -2,11 +2,39 @@
   "away_team": "T38",
   "date": "2024-05-13T00:00:00-07:00",
   "home_team": "T43",
-  "inning": [
+  "id": "1034",
+  "ok": true,
+  "player": {
+    "P1395": "Turner Larkins",
+    "P20111": "Kwang-Min Kwon",
+    "P21191": "Kevin Merrell",
+    "P2138": "Mitch Keller",
+    "P23598": "Dan Hudson",
+    "P23685": "Jeff Raube",
+    "P23995": "Alex Hafner",
+    "P26298": "Marrick Crouse",
+    "P26531": "Jos\u00e9 Orozco",
+    "P27015": "Anthony Rizzo",
+    "P27172": "Cory Wright",
+    "P28678": "Jes\u00fas Hern\u00e1ndez",
+    "P28695": "Ryan Sloniger",
+    "P28940": "Ian Anderson",
+    "P29806": "Thomas Dillard",
+    "P33777": "Kaleb Cowart",
+    "P35840": "Francisco Lindor",
+    "P36759": "Jose Ramirez",
+    "P37049": "Joey Gallo",
+    "P38603": "Ryan Boldt",
+    "P39186": "Domingo Leyba",
+    "P50287": "Brian Morrell",
+    "P51765": "Lorenzo Hampton",
+    "P52411": "Tommy Richter"
+  },
+  "plays": [
     {
-      "id": "Top of the 1st",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "batting": "T38",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "label": "Top 1st",
       "pitch": [
         {
           "before": [
@@ -45,12 +73,13 @@
         {
           "result": "1-1:  Fly out, F8  (Flyball, 8RM)"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 1st",
-      "intro": "T43 batting - Pitching for T38 : RHP P23995",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T38 0 - T43 0",
+      "batting": "T43",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T38 0 - T43 0",
+      "label": "Bot 1st",
       "pitch": [
         {
           "before": [
@@ -122,12 +151,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P23995"
     },
     {
-      "id": "Top of the 2nd",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "batting": "T38",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "label": "Top 2nd",
       "pitch": [
         {
           "before": [
@@ -180,12 +210,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 2nd",
-      "intro": "T43 batting - Pitching for T38 : RHP P23995",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T38 0 - T43 0",
+      "batting": "T43",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T38 0 - T43 0",
+      "label": "Bot 2nd",
       "pitch": [
         {
           "before": [
@@ -241,12 +272,13 @@
         {
           "result": "1-0:  Fly out, F4  (Popup, 4D)"
         }
-      ]
+      ],
+      "pitching": "RHP P23995"
     },
     {
-      "id": "Top of the 3rd",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 2 left on base; T38 0 - T43 0",
+      "batting": "T38",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 2 left on base; T38 0 - T43 0",
+      "label": "Top 3rd",
       "pitch": [
         {
           "before": [
@@ -317,12 +349,13 @@
           ],
           "result": "0-0:  Fly out, F8  (Flyball, 8RS)"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 3rd",
-      "intro": "T43 batting - Pitching for T38 : RHP P23995",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "batting": "T43",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "label": "Bot 3rd",
       "pitch": [
         {
           "before": [
@@ -375,12 +408,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P23995"
     },
     {
-      "id": "Top of the 4th",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T38 0 - T43 0",
+      "batting": "T38",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T38 0 - T43 0",
+      "label": "Top 4th",
       "pitch": [
         {
           "before": [
@@ -476,12 +510,13 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 4th",
-      "intro": "T43 batting - Pitching for T38 : RHP P23995",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "batting": "T43",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "label": "Bot 4th",
       "pitch": [
         {
           "before": [
@@ -519,12 +554,13 @@
         {
           "result": "2-1: Ground out 6-3 (Groundball, 6D)"
         }
-      ]
+      ],
+      "pitching": "RHP P23995"
     },
     {
-      "id": "Top of the 5th",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "batting": "T38",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 0",
+      "label": "Top 5th",
       "pitch": [
         {
           "before": [
@@ -568,12 +604,13 @@
         {
           "result": "2-0: Fielders Choice at 2nd, 4-6 (Groundball, 34)"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 5th",
-      "intro": "T43 batting - Pitching for T38 : RHP P23995",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T38 0 - T43 1",
+      "batting": "T43",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T38 0 - T43 1",
+      "label": "Bot 5th",
       "pitch": [
         {
           "before": [
@@ -648,12 +685,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P23995"
     },
     {
-      "id": "Top of the 6th",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T38 0 - T43 1",
+      "batting": "T38",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T38 0 - T43 1",
+      "label": "Top 6th",
       "pitch": [
         {
           "before": [
@@ -724,12 +762,13 @@
         {
           "result": "0-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 6th",
-      "intro": "T43 batting - Pitching for T38 : RHP P23995",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T38 0 - T43 1",
+      "batting": "T43",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T38 0 - T43 1",
+      "label": "Bot 6th",
       "pitch": [
         {
           "before": [
@@ -794,12 +833,13 @@
         {
           "result": "3-2:  Fly out, F9  (Flyball, 9LM)"
         }
-      ]
+      ],
+      "pitching": "RHP P23995"
     },
     {
-      "id": "Top of the 7th",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T38 0 - T43 1",
+      "batting": "T38",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T38 0 - T43 1",
+      "label": "Top 7th",
       "pitch": [
         {
           "before": [
@@ -858,12 +898,13 @@
         {
           "result": "3-1:  Fly out, F9  (Line Drive, 9)"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 7th",
-      "intro": "T43 batting - Pitching for T38 : RHP P23995",
-      "outro": "2 run(s), 3 hit(s), 0 error(s), 1 left on base; T38 0 - T43 3",
+      "batting": "T43",
+      "footer": "2 run(s), 3 hit(s), 0 error(s), 1 left on base; T38 0 - T43 3",
+      "label": "Bot 7th",
       "pitch": [
         {
           "before": [
@@ -963,12 +1004,13 @@
         {
           "result": "3-2: Ground out U3 (Groundball, 3L)"
         }
-      ]
+      ],
+      "pitching": "RHP P23995"
     },
     {
-      "id": "Top of the 8th",
-      "intro": "T38 batting - Pitching for T43 : RHP P28940",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T38 0 - T43 3",
+      "batting": "T38",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T38 0 - T43 3",
+      "label": "Top 8th",
       "pitch": [
         {
           "before": [
@@ -1017,12 +1059,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P28940"
     },
     {
-      "id": "Bottom of the 8th",
-      "intro": "T43 batting - Pitching for T38 : RHP P23685",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 3",
+      "batting": "T43",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T38 0 - T43 3",
+      "label": "Bot 8th",
       "pitch": [
         {
           "before": [
@@ -1093,12 +1136,13 @@
         {
           "result": "3-2: Strikes out  looking"
         }
-      ]
+      ],
+      "pitching": "RHP P23685"
     },
     {
-      "id": "Top of the 9th",
-      "intro": "T38 batting - Pitching for T43 : RHP P1395",
-      "outro": "0 run(s), 2 hit(s), 0 error(s), 1 left on base; T38 0 - T43 3",
+      "batting": "T38",
+      "footer": "0 run(s), 2 hit(s), 0 error(s), 1 left on base; T38 0 - T43 3",
+      "label": "Top 9th",
       "pitch": [
         {
           "before": [
@@ -1161,34 +1205,8 @@
         {
           "result": "2-2: Grounds into double play, 3-6-1 (Groundball, 34)"
         }
-      ]
+      ],
+      "pitching": "RHP P1395"
     }
-  ],
-  "ok": true,
-  "player": {
-    "P1395": "Turner Larkins",
-    "P20111": "Kwang-Min Kwon",
-    "P21191": "Kevin Merrell",
-    "P2138": "Mitch Keller",
-    "P23598": "Dan Hudson",
-    "P23685": "Jeff Raube",
-    "P23995": "Alex Hafner",
-    "P26298": "Marrick Crouse",
-    "P26531": "Jos\u00e9 Orozco",
-    "P27015": "Anthony Rizzo",
-    "P27172": "Cory Wright",
-    "P28678": "Jes\u00fas Hern\u00e1ndez",
-    "P28695": "Ryan Sloniger",
-    "P28940": "Ian Anderson",
-    "P29806": "Thomas Dillard",
-    "P33777": "Kaleb Cowart",
-    "P35840": "Francisco Lindor",
-    "P36759": "Jose Ramirez",
-    "P37049": "Joey Gallo",
-    "P38603": "Ryan Boldt",
-    "P39186": "Domingo Leyba",
-    "P50287": "Brian Morrell",
-    "P51765": "Lorenzo Hampton",
-    "P52411": "Tommy Richter"
-  }
+  ]
 }

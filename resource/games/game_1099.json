@@ -2,11 +2,43 @@
   "away_team": "T31",
   "date": "2024-05-18T00:00:00-07:00",
   "home_team": "T48",
-  "inning": [
+  "id": "1099",
+  "ok": true,
+  "player": {
+    "P1390": "Alex Jackson",
+    "P1407": "Austin DeCarr",
+    "P1413": "Sean Bouchard",
+    "P19894": "Willy Rozon",
+    "P20213": "Dalton Ewing",
+    "P21968": "Nathan Hadley",
+    "P22620": "Christin Stewart",
+    "P24000": "Nick Collins",
+    "P2476": "Isan Diaz",
+    "P25047": "Hyuk Lee",
+    "P25185": "Isiah Gilliam",
+    "P26904": "Diego Cordero",
+    "P29463": "Bobby Dalbec",
+    "P29717": "Riley Hogan",
+    "P29836": "Grant Horwitz",
+    "P29845": "Michael Massey",
+    "P29959": "Paul Goldschmidt",
+    "P29996": "Keon Broxton",
+    "P30109": "Bo Weiss",
+    "P33609": "Chris Sale",
+    "P35498": "Anthony Rendon",
+    "P38630": "Willie Abreu",
+    "P40111": "Jake Bauers",
+    "P47910": "Carlos Aponte",
+    "P50648": "Alec Sanchez",
+    "P53420": "Hugh Bruns",
+    "P53704": "Bob Todd",
+    "P54944": "Cristi\u00e1n Sepolio"
+  },
+  "plays": [
     {
-      "id": "Top of the 1st",
-      "intro": "T31 batting - Pitching for T48 : RHP P47910",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T31 1 - T48 0",
+      "batting": "T31",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T31 1 - T48 0",
+      "label": "Top 1st",
       "pitch": [
         {
           "before": [
@@ -104,12 +136,13 @@
         {
           "result": "0-1:  Fly out, F8  (Flyball, 8RS)"
         }
-      ]
+      ],
+      "pitching": "RHP P47910"
     },
     {
-      "id": "Bottom of the 1st",
-      "intro": "T48 batting - Pitching for T31 : RHP P1407",
-      "outro": "2 run(s), 4 hit(s), 0 error(s), 1 left on base; T31 1 - T48 2",
+      "batting": "T48",
+      "footer": "2 run(s), 4 hit(s), 0 error(s), 1 left on base; T31 1 - T48 2",
+      "label": "Bot 1st",
       "pitch": [
         {
           "before": [
@@ -221,12 +254,13 @@
         {
           "result": "1-1: Ground out 6-3 (Groundball, 56)"
         }
-      ]
+      ],
+      "pitching": "RHP P1407"
     },
     {
-      "id": "Top of the 2nd",
-      "intro": "T31 batting - Pitching for T48 : RHP P47910",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 1 - T48 2",
+      "batting": "T31",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 1 - T48 2",
+      "label": "Top 2nd",
       "pitch": [
         {
           "before": [
@@ -264,12 +298,13 @@
         {
           "result": "2-0:  Fly out, F7  (Line Drive, 78D)"
         }
-      ]
+      ],
+      "pitching": "RHP P47910"
     },
     {
-      "id": "Bottom of the 2nd",
-      "intro": "T48 batting - Pitching for T31 : RHP P1407",
-      "outro": "2 run(s), 4 hit(s), 0 error(s), 1 left on base; T31 1 - T48 4",
+      "batting": "T48",
+      "footer": "2 run(s), 4 hit(s), 0 error(s), 1 left on base; T31 1 - T48 4",
+      "label": "Bot 2nd",
       "pitch": [
         {
           "before": [
@@ -366,12 +401,13 @@
         {
           "result": "2-0:  Fly out, F7  (Flyball, 78D)"
         }
-      ]
+      ],
+      "pitching": "RHP P1407"
     },
     {
-      "id": "Top of the 3rd",
-      "intro": "T31 batting - Pitching for T48 : RHP P47910",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 1 - T48 4",
+      "batting": "T31",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 1 - T48 4",
+      "label": "Top 3rd",
       "pitch": [
         {
           "before": [
@@ -424,12 +460,13 @@
         {
           "result": "3-2: Strikes out  looking"
         }
-      ]
+      ],
+      "pitching": "RHP P47910"
     },
     {
-      "id": "Bottom of the 3rd",
-      "intro": "T48 batting - Pitching for T31 : RHP P1407",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 1 - T48 4",
+      "batting": "T48",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 1 - T48 4",
+      "label": "Bot 3rd",
       "pitch": [
         {
           "before": [
@@ -485,12 +522,13 @@
         {
           "result": "0-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P1407"
     },
     {
-      "id": "Top of the 4th",
-      "intro": "T31 batting - Pitching for T48 : RHP P47910",
-      "outro": "2 run(s), 3 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "batting": "T31",
+      "footer": "2 run(s), 3 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "label": "Top 4th",
       "pitch": [
         {
           "before": [
@@ -576,12 +614,13 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P47910"
     },
     {
-      "id": "Bottom of the 4th",
-      "intro": "T48 batting - Pitching for T31 : RHP P1407",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 4",
+      "batting": "T48",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 4",
+      "label": "Bot 4th",
       "pitch": [
         {
           "before": [
@@ -601,12 +640,13 @@
           ],
           "result": "0-0: Ground out U3 (Groundball, 34S)"
         }
-      ]
+      ],
+      "pitching": "RHP P1407"
     },
     {
-      "id": "Top of the 5th",
-      "intro": "T31 batting - Pitching for T48 : RHP P47910",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 3 - T48 4",
+      "batting": "T31",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 3 - T48 4",
+      "label": "Top 5th",
       "pitch": [
         {
           "before": [
@@ -687,12 +727,13 @@
         {
           "result": "0-1: Grounds into double play, 4-6-3 (Groundball, 4)"
         }
-      ]
+      ],
+      "pitching": "RHP P47910"
     },
     {
-      "id": "Bottom of the 5th",
-      "intro": "T48 batting - Pitching for T31 : RHP P1407",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "batting": "T48",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "label": "Bot 5th",
       "pitch": [
         {
           "before": [
@@ -745,12 +786,13 @@
         {
           "result": "1-1:  Fly out, F4  (Line Drive, 4M)"
         }
-      ]
+      ],
+      "pitching": "RHP P1407"
     },
     {
-      "id": "Top of the 6th",
-      "intro": "T31 batting - Pitching for T48 : RHP P47910",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "batting": "T31",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "label": "Top 6th",
       "pitch": [
         {
           "before": [
@@ -818,12 +860,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P47910"
     },
     {
-      "id": "Bottom of the 6th",
-      "intro": "T48 batting - Pitching for T31 : RHP P1407",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "batting": "T48",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T31 3 - T48 4",
+      "label": "Bot 6th",
       "pitch": [
         {
           "before": [
@@ -870,12 +913,13 @@
         {
           "result": "0-1: Ground out 4-3 (Groundball, 4MS)"
         }
-      ]
+      ],
+      "pitching": "RHP P1407"
     },
     {
-      "id": "Top of the 7th",
-      "intro": "T31 batting - Pitching for T48 : RHP P47910",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 4",
+      "batting": "T31",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 4",
+      "label": "Top 7th",
       "pitch": [
         {
           "before": [
@@ -931,12 +975,13 @@
         {
           "result": "3-1: Ground out 6-3 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "RHP P47910"
     },
     {
-      "id": "Bottom of the 7th",
-      "intro": "T48 batting - Pitching for T31 : RHP P1407",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T31 3 - T48 5",
+      "batting": "T48",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T31 3 - T48 5",
+      "label": "Bot 7th",
       "pitch": [
         {
           "before": [
@@ -1032,12 +1077,13 @@
         {
           "result": "2-2: Fielders Choice at 2nd, 6-4 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "RHP P1407"
     },
     {
-      "id": "Top of the 8th",
-      "intro": "T31 batting - Pitching for T48 : RHP P21968",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 5",
+      "batting": "T31",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 5",
+      "label": "Top 8th",
       "pitch": [
         {
           "before": [
@@ -1081,12 +1127,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P21968"
     },
     {
-      "id": "Bottom of the 8th",
-      "intro": "T48 batting - Pitching for T31 : LHP P26904",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 5",
+      "batting": "T48",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 3 - T48 5",
+      "label": "Bot 8th",
       "pitch": [
         {
           "before": [
@@ -1119,12 +1166,13 @@
           ],
           "result": "0-0:  Fly out, F8  (Flyball, 78M)"
         }
-      ]
+      ],
+      "pitching": "LHP P26904"
     },
     {
-      "id": "Top of the 9th",
-      "intro": "T31 batting - Pitching for T48 : RHP P21968",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 3 - T48 5",
+      "batting": "T31",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 3 - T48 5",
+      "label": "Top 9th",
       "pitch": [
         {
           "before": [
@@ -1181,38 +1229,8 @@
         {
           "result": "1-0:  Fly out, F7  (Flyball, 7LM)"
         }
-      ]
+      ],
+      "pitching": "RHP P21968"
     }
-  ],
-  "ok": true,
-  "player": {
-    "P1390": "Alex Jackson",
-    "P1407": "Austin DeCarr",
-    "P1413": "Sean Bouchard",
-    "P19894": "Willy Rozon",
-    "P20213": "Dalton Ewing",
-    "P21968": "Nathan Hadley",
-    "P22620": "Christin Stewart",
-    "P24000": "Nick Collins",
-    "P2476": "Isan Diaz",
-    "P25047": "Hyuk Lee",
-    "P25185": "Isiah Gilliam",
-    "P26904": "Diego Cordero",
-    "P29463": "Bobby Dalbec",
-    "P29717": "Riley Hogan",
-    "P29836": "Grant Horwitz",
-    "P29845": "Michael Massey",
-    "P29959": "Paul Goldschmidt",
-    "P29996": "Keon Broxton",
-    "P30109": "Bo Weiss",
-    "P33609": "Chris Sale",
-    "P35498": "Anthony Rendon",
-    "P38630": "Willie Abreu",
-    "P40111": "Jake Bauers",
-    "P47910": "Carlos Aponte",
-    "P50648": "Alec Sanchez",
-    "P53420": "Hugh Bruns",
-    "P53704": "Bob Todd",
-    "P54944": "Cristi\u00e1n Sepolio"
-  }
+  ]
 }

@@ -2,11 +2,38 @@
   "away_team": "T53",
   "date": "2024-05-14T00:00:00-07:00",
   "home_team": "T39",
-  "inning": [
+  "id": "1052",
+  "ok": true,
+  "player": {
+    "P1401": "Greg Deichmann",
+    "P1614": "Troy Stokes",
+    "P20230": "Lazaro Leyva",
+    "P22457": "Walker Buehler",
+    "P22840": "Michael Matuella",
+    "P23264": "Dan Welch",
+    "P23816": "Ant\u00f3nio Campos",
+    "P24196": "Chris Catron",
+    "P25191": "Nico Hoerner",
+    "P25482": "Luis Reyes",
+    "P28198": "Joel Davis",
+    "P30307": "Chris Withrow",
+    "P33114": "Oct\u00e1vio Macaluso",
+    "P33764": "Dani Sol\u00eds",
+    "P34175": "Jos\u00e9 Uribe",
+    "P39245": "Jake Elliott",
+    "P48867": "Andy Diaz",
+    "P50254": "Ronald Washington",
+    "P50269": "Xavier Edwards",
+    "P50304": "Boyd Vander Kooi",
+    "P53787": "Derek Partners",
+    "P54511": "Ken'ichi Nakano",
+    "P55104": "Greg Fowler"
+  },
+  "plays": [
     {
-      "id": "Top of the 1st",
-      "intro": "T53 batting - Pitching for T39 : RHP P22840",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 0 - T39 0",
+      "batting": "T53",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 0 - T39 0",
+      "label": "Top 1st",
       "pitch": [
         {
           "before": [
@@ -54,12 +81,13 @@
         {
           "result": "1-1: Ground out 5-3 (Groundball, 56)"
         }
-      ]
+      ],
+      "pitching": "RHP P22840"
     },
     {
-      "id": "Bottom of the 1st",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 0 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 0 - T39 0",
+      "label": "Bot 1st",
       "pitch": [
         {
           "before": [
@@ -113,12 +141,13 @@
         {
           "result": "0-1:  Fly out, F8  (Flyball, 8RXD)"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 2nd",
-      "intro": "T53 batting - Pitching for T39 : RHP P22840",
-      "outro": "0 run(s), 2 hit(s), 0 error(s), 2 left on base; T53 0 - T39 0",
+      "batting": "T53",
+      "footer": "0 run(s), 2 hit(s), 0 error(s), 2 left on base; T53 0 - T39 0",
+      "label": "Top 2nd",
       "pitch": [
         {
           "before": [
@@ -190,12 +219,13 @@
         {
           "result": "2-1: Grounds into double play, 4-6-3 (Groundball, 4)"
         }
-      ]
+      ],
+      "pitching": "RHP P22840"
     },
     {
-      "id": "Bottom of the 2nd",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T53 0 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T53 0 - T39 0",
+      "label": "Bot 2nd",
       "pitch": [
         {
           "before": [
@@ -281,12 +311,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 3rd",
-      "intro": "T53 batting - Pitching for T39 : RHP P22840",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 2 left on base; T53 1 - T39 0",
+      "batting": "T53",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 2 left on base; T53 1 - T39 0",
+      "label": "Top 3rd",
       "pitch": [
         {
           "before": [
@@ -371,12 +402,13 @@
           ],
           "result": "0-0: Grounds into double play, 6-4-3 (Groundball, 6M)"
         }
-      ]
+      ],
+      "pitching": "RHP P22840"
     },
     {
-      "id": "Bottom of the 3rd",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 1 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 1 - T39 0",
+      "label": "Bot 3rd",
       "pitch": [
         {
           "before": [
@@ -417,12 +449,13 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 4th",
-      "intro": "T53 batting - Pitching for T39 : RHP P22840",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 1 - T39 0",
+      "batting": "T53",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 1 - T39 0",
+      "label": "Top 4th",
       "pitch": [
         {
           "before": [
@@ -463,12 +496,13 @@
         {
           "result": "0-2: Strikes out  looking"
         }
-      ]
+      ],
+      "pitching": "RHP P22840"
     },
     {
-      "id": "Bottom of the 4th",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T53 1 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T53 1 - T39 0",
+      "label": "Bot 4th",
       "pitch": [
         {
           "before": [
@@ -569,12 +603,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 5th",
-      "intro": "T53 batting - Pitching for T39 : RHP P22840",
-      "outro": "2 run(s), 2 hit(s), 0 error(s), 1 left on base; T53 3 - T39 0",
+      "batting": "T53",
+      "footer": "2 run(s), 2 hit(s), 0 error(s), 1 left on base; T53 3 - T39 0",
+      "label": "Top 5th",
       "pitch": [
         {
           "before": [
@@ -672,12 +707,13 @@
         {
           "result": "2-1: Ground out 4-3 (Groundball, 4)"
         }
-      ]
+      ],
+      "pitching": "RHP P22840"
     },
     {
-      "id": "Bottom of the 5th",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T53 3 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T53 3 - T39 0",
+      "label": "Bot 5th",
       "pitch": [
         {
           "before": [
@@ -736,12 +772,13 @@
         {
           "result": "0-1: Grounds into double play, 6-4-3 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 6th",
-      "intro": "T53 batting - Pitching for T39 : RHP P22840",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 3 - T39 0",
+      "batting": "T53",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 3 - T39 0",
+      "label": "Top 6th",
       "pitch": [
         {
           "before": [
@@ -788,12 +825,13 @@
         {
           "result": "0-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P22840"
     },
     {
-      "id": "Bottom of the 6th",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 3 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 3 - T39 0",
+      "label": "Bot 6th",
       "pitch": [
         {
           "before": [
@@ -840,12 +878,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 7th",
-      "intro": "T53 batting - Pitching for T39 : RHP P22840",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T53 4 - T39 0",
+      "batting": "T53",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T53 4 - T39 0",
+      "label": "Top 7th",
       "pitch": [
         {
           "before": [
@@ -921,12 +960,13 @@
         {
           "result": "1-1:  Fly out, F9  (Flyball, 9S)"
         }
-      ]
+      ],
+      "pitching": "RHP P22840"
     },
     {
-      "id": "Bottom of the 7th",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 4 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 4 - T39 0",
+      "label": "Bot 7th",
       "pitch": [
         {
           "before": [
@@ -973,12 +1013,13 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 8th",
-      "intro": "T53 batting - Pitching for T39 : RHP P39245",
-      "outro": "3 run(s), 3 hit(s), 0 error(s), 1 left on base; T53 7 - T39 0",
+      "batting": "T53",
+      "footer": "3 run(s), 3 hit(s), 0 error(s), 1 left on base; T53 7 - T39 0",
+      "label": "Top 8th",
       "pitch": [
         {
           "before": [
@@ -1124,12 +1165,13 @@
         {
           "result": "2-1:  Fly out, F8  (Line Drive, 8RD)"
         }
-      ]
+      ],
+      "pitching": "RHP P39245"
     },
     {
-      "id": "Bottom of the 8th",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 7 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 7 - T39 0",
+      "label": "Bot 8th",
       "pitch": [
         {
           "before": [
@@ -1167,12 +1209,13 @@
           ],
           "result": "0-0:  Fly out, F8  (Flyball, 8RM)"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     },
     {
-      "id": "Top of the 9th",
-      "intro": "T53 batting - Pitching for T39 : RHP P22457",
-      "outro": "0 run(s), 2 hit(s), 0 error(s), 2 left on base; T53 7 - T39 0",
+      "batting": "T53",
+      "footer": "0 run(s), 2 hit(s), 0 error(s), 2 left on base; T53 7 - T39 0",
+      "label": "Top 9th",
       "pitch": [
         {
           "before": [
@@ -1256,12 +1299,13 @@
         {
           "result": "1-2: Strikes out  swinging, 2-3 out at first."
         }
-      ]
+      ],
+      "pitching": "RHP P22457"
     },
     {
-      "id": "Bottom of the 9th",
-      "intro": "T39 batting - Pitching for T53 : LHP P54511",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 7 - T39 0",
+      "batting": "T39",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 7 - T39 0",
+      "label": "Bot 9th",
       "pitch": [
         {
           "before": [
@@ -1327,33 +1371,8 @@
         {
           "result": "0-1: Grounds into double play, 4-6-3 (Groundball, 4M)"
         }
-      ]
+      ],
+      "pitching": "LHP P54511"
     }
-  ],
-  "ok": true,
-  "player": {
-    "P1401": "Greg Deichmann",
-    "P1614": "Troy Stokes",
-    "P20230": "Lazaro Leyva",
-    "P22457": "Walker Buehler",
-    "P22840": "Michael Matuella",
-    "P23264": "Dan Welch",
-    "P23816": "Ant\u00f3nio Campos",
-    "P24196": "Chris Catron",
-    "P25191": "Nico Hoerner",
-    "P25482": "Luis Reyes",
-    "P28198": "Joel Davis",
-    "P30307": "Chris Withrow",
-    "P33114": "Oct\u00e1vio Macaluso",
-    "P33764": "Dani Sol\u00eds",
-    "P34175": "Jos\u00e9 Uribe",
-    "P39245": "Jake Elliott",
-    "P48867": "Andy Diaz",
-    "P50254": "Ronald Washington",
-    "P50269": "Xavier Edwards",
-    "P50304": "Boyd Vander Kooi",
-    "P53787": "Derek Partners",
-    "P54511": "Ken'ichi Nakano",
-    "P55104": "Greg Fowler"
-  }
+  ]
 }

@@ -2,11 +2,44 @@
   "away_team": "T47",
   "date": "2024-05-15T00:00:00-07:00",
   "home_team": "T59",
-  "inning": [
+  "id": "1057",
+  "ok": true,
+  "player": {
+    "P1424": "Forrest Wall",
+    "P19": "Michael Conforto",
+    "P23979": "Eric McCormick",
+    "P24150": "Andy Taylor",
+    "P24243": "Ken Parnaby",
+    "P24322": "Jarid Joseph",
+    "P24455": "Jos\u00e9 Saunders",
+    "P24499": "Ed Shaw",
+    "P28483": "Nick Neville",
+    "P28677": "Jordan Humphreys",
+    "P28933": "Bryan Reynolds",
+    "P29739": "Tyler Duvall",
+    "P30074": "Ryan January",
+    "P30475": "Jenrry Mejia",
+    "P34032": "Nick Castellanos",
+    "P34312": "Aaron Sanchez",
+    "P34691": "Rangel Ravelo",
+    "P37110": "Nomar Mazara",
+    "P37294": "Tyrone Taylor",
+    "P37385": "Mauricio Cabrera",
+    "P38656": "J.P. Crawford",
+    "P39015": "Brett Hanewich",
+    "P39654": "Jen-Ho Tseng",
+    "P39755": "Willi Castro",
+    "P44830": "Luis Miguel Maya",
+    "P49985": "Guillermo De La Cruz",
+    "P50252": "Jonathan Windham",
+    "P53622": "Steve Norris",
+    "P57": "Mike Papi"
+  },
+  "plays": [
     {
-      "id": "Top of the 1st",
-      "intro": "T47 batting - Pitching for T59 : RHP P34312",
-      "outro": "3 run(s), 4 hit(s), 0 error(s), 1 left on base; T47 3 - T59 0",
+      "batting": "T47",
+      "footer": "3 run(s), 4 hit(s), 0 error(s), 1 left on base; T47 3 - T59 0",
+      "label": "Top 1st",
       "pitch": [
         {
           "before": [
@@ -110,12 +143,13 @@
           ],
           "result": "0-0:  Fly out, F8  (Flyball, 8LD)"
         }
-      ]
+      ],
+      "pitching": "RHP P34312"
     },
     {
-      "id": "Bottom of the 1st",
-      "intro": "T59 batting - Pitching for T47 : RHP P39015",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T47 3 - T59 0",
+      "batting": "T59",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T47 3 - T59 0",
+      "label": "Bot 1st",
       "pitch": [
         {
           "before": [
@@ -184,12 +218,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P39015"
     },
     {
-      "id": "Top of the 2nd",
-      "intro": "T47 batting - Pitching for T59 : RHP P34312",
-      "outro": "0 run(s), 2 hit(s), 0 error(s), 1 left on base; T47 3 - T59 0",
+      "batting": "T47",
+      "footer": "0 run(s), 2 hit(s), 0 error(s), 1 left on base; T47 3 - T59 0",
+      "label": "Top 2nd",
       "pitch": [
         {
           "before": [
@@ -245,12 +280,13 @@
           ],
           "result": "0-0: Grounds into double play, 4-6-3 (Groundball, 4)"
         }
-      ]
+      ],
+      "pitching": "RHP P34312"
     },
     {
-      "id": "Bottom of the 2nd",
-      "intro": "T59 batting - Pitching for T47 : RHP P39015",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T47 3 - T59 1",
+      "batting": "T59",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T47 3 - T59 1",
+      "label": "Bot 2nd",
       "pitch": [
         {
           "before": [
@@ -316,12 +352,13 @@
         {
           "result": "0-1:  Fly out, F9  (Flyball, 9S)"
         }
-      ]
+      ],
+      "pitching": "RHP P39015"
     },
     {
-      "id": "Top of the 3rd",
-      "intro": "T47 batting - Pitching for T59 : RHP P34312",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 3 left on base; T47 4 - T59 1",
+      "batting": "T47",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 3 left on base; T47 4 - T59 1",
+      "label": "Top 3rd",
       "pitch": [
         {
           "before": [
@@ -446,12 +483,13 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P34312"
     },
     {
-      "id": "Bottom of the 3rd",
-      "intro": "T59 batting - Pitching for T47 : RHP P39015",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 4 - T59 1",
+      "batting": "T59",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 4 - T59 1",
+      "label": "Bot 3rd",
       "pitch": [
         {
           "before": [
@@ -495,12 +533,13 @@
         {
           "result": "1-1:  Fly out, F8  (Line Drive, 8RM)"
         }
-      ]
+      ],
+      "pitching": "RHP P39015"
     },
     {
-      "id": "Top of the 4th",
-      "intro": "T47 batting - Pitching for T59 : RHP P34312",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T47 4 - T59 1",
+      "batting": "T47",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T47 4 - T59 1",
+      "label": "Top 4th",
       "pitch": [
         {
           "before": [
@@ -571,12 +610,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P34312"
     },
     {
-      "id": "Bottom of the 4th",
-      "intro": "T59 batting - Pitching for T47 : RHP P39015",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T47 4 - T59 1",
+      "batting": "T59",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T47 4 - T59 1",
+      "label": "Bot 4th",
       "pitch": [
         {
           "before": [
@@ -632,12 +672,13 @@
         {
           "result": "3-2:  Fly out, F6  (Popup, 6MD)"
         }
-      ]
+      ],
+      "pitching": "RHP P39015"
     },
     {
-      "id": "Top of the 5th",
-      "intro": "T47 batting - Pitching for T59 : RHP P34312",
-      "outro": "1 run(s), 3 hit(s), 0 error(s), 3 left on base; T47 5 - T59 1",
+      "batting": "T47",
+      "footer": "1 run(s), 3 hit(s), 0 error(s), 3 left on base; T47 5 - T59 1",
+      "label": "Top 5th",
       "pitch": [
         {
           "before": [
@@ -733,12 +774,13 @@
         {
           "result": "0-1:  Fly out, F9  (Flyball, 9S)"
         }
-      ]
+      ],
+      "pitching": "RHP P34312"
     },
     {
-      "id": "Bottom of the 5th",
-      "intro": "T59 batting - Pitching for T47 : RHP P39015",
-      "outro": "6 run(s), 6 hit(s), 0 error(s), 0 left on base; T47 5 - T59 7",
+      "batting": "T59",
+      "footer": "6 run(s), 6 hit(s), 0 error(s), 0 left on base; T47 5 - T59 7",
+      "label": "Bot 5th",
       "pitch": [
         {
           "before": [
@@ -863,12 +905,13 @@
         {
           "result": "3-2: Strikes out  looking"
         }
-      ]
+      ],
+      "pitching": "RHP P39015"
     },
     {
-      "id": "Top of the 6th",
-      "intro": "T47 batting - Pitching for T59 : RHP P39654",
-      "outro": "4 run(s), 3 hit(s), 0 error(s), 1 left on base; T47 9 - T59 7",
+      "batting": "T47",
+      "footer": "4 run(s), 3 hit(s), 0 error(s), 1 left on base; T47 9 - T59 7",
+      "label": "Top 6th",
       "pitch": [
         {
           "before": [
@@ -999,12 +1042,13 @@
         {
           "result": "2-1:  Fly out, F9  (Flyball, 89S)"
         }
-      ]
+      ],
+      "pitching": "RHP P39654"
     },
     {
-      "id": "Bottom of the 6th",
-      "intro": "T59 batting - Pitching for T47 : RHP P28677",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 9 - T59 7",
+      "batting": "T59",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 9 - T59 7",
+      "label": "Bot 6th",
       "pitch": [
         {
           "before": [
@@ -1040,12 +1084,13 @@
         {
           "result": "0-2:  Fly out, F8  (Flyball, 8LM)"
         }
-      ]
+      ],
+      "pitching": "RHP P28677"
     },
     {
-      "id": "Top of the 7th",
-      "intro": "T47 batting - Pitching for T59 : RHP P37385",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T47 9 - T59 7",
+      "batting": "T47",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T47 9 - T59 7",
+      "label": "Top 7th",
       "pitch": [
         {
           "before": [
@@ -1120,12 +1165,13 @@
         {
           "result": "1-0:  Fly out, F4  (Popup, 4MD)"
         }
-      ]
+      ],
+      "pitching": "RHP P37385"
     },
     {
-      "id": "Bottom of the 7th",
-      "intro": "T59 batting - Pitching for T47 : RHP P28677",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 9 - T59 7",
+      "batting": "T59",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 9 - T59 7",
+      "label": "Bot 7th",
       "pitch": [
         {
           "before": [
@@ -1157,12 +1203,13 @@
           ],
           "result": "0-0:  Fly out, F9  (Flyball, 9)"
         }
-      ]
+      ],
+      "pitching": "RHP P28677"
     },
     {
-      "id": "Top of the 8th",
-      "intro": "T47 batting - Pitching for T59 : LHP P49985",
-      "outro": "1 run(s), 1 hit(s), 1 error(s), 0 left on base; T47 10 - T59 7",
+      "batting": "T47",
+      "footer": "1 run(s), 1 hit(s), 1 error(s), 0 left on base; T47 10 - T59 7",
+      "label": "Top 8th",
       "pitch": [
         {
           "before": [
@@ -1220,12 +1267,13 @@
         {
           "result": "2-1: Ground out U3 (Groundball, 3)"
         }
-      ]
+      ],
+      "pitching": "LHP P49985"
     },
     {
-      "id": "Bottom of the 8th",
-      "intro": "T59 batting - Pitching for T47 : RHP P28677",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 10 - T59 7",
+      "batting": "T59",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 10 - T59 7",
+      "label": "Bot 8th",
       "pitch": [
         {
           "before": [
@@ -1260,12 +1308,13 @@
         {
           "result": "0-2:  Fly out, F2  (Popup, 15S)"
         }
-      ]
+      ],
+      "pitching": "RHP P28677"
     },
     {
-      "id": "Top of the 9th",
-      "intro": "T47 batting - Pitching for T59 : RHP P23979",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 10 - T59 7",
+      "batting": "T47",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T47 10 - T59 7",
+      "label": "Top 9th",
       "pitch": [
         {
           "before": [
@@ -1310,12 +1359,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P23979"
     },
     {
-      "id": "Bottom of the 9th",
-      "intro": "T59 batting - Pitching for T47 : RHP P28677",
-      "outro": "1 run(s), 1 hit(s), 1 error(s), 1 left on base; T47 10 - T59 8",
+      "batting": "T59",
+      "footer": "1 run(s), 1 hit(s), 1 error(s), 1 left on base; T47 10 - T59 8",
+      "label": "Bot 9th",
       "pitch": [
         {
           "before": [
@@ -1409,39 +1459,8 @@
         {
           "result": "3-1:  Fly out, F8  (Flyball, 8RM)"
         }
-      ]
+      ],
+      "pitching": "RHP P28677"
     }
-  ],
-  "ok": true,
-  "player": {
-    "P1424": "Forrest Wall",
-    "P19": "Michael Conforto",
-    "P23979": "Eric McCormick",
-    "P24150": "Andy Taylor",
-    "P24243": "Ken Parnaby",
-    "P24322": "Jarid Joseph",
-    "P24455": "Jos\u00e9 Saunders",
-    "P24499": "Ed Shaw",
-    "P28483": "Nick Neville",
-    "P28677": "Jordan Humphreys",
-    "P28933": "Bryan Reynolds",
-    "P29739": "Tyler Duvall",
-    "P30074": "Ryan January",
-    "P30475": "Jenrry Mejia",
-    "P34032": "Nick Castellanos",
-    "P34312": "Aaron Sanchez",
-    "P34691": "Rangel Ravelo",
-    "P37110": "Nomar Mazara",
-    "P37294": "Tyrone Taylor",
-    "P37385": "Mauricio Cabrera",
-    "P38656": "J.P. Crawford",
-    "P39015": "Brett Hanewich",
-    "P39654": "Jen-Ho Tseng",
-    "P39755": "Willi Castro",
-    "P44830": "Luis Miguel Maya",
-    "P49985": "Guillermo De La Cruz",
-    "P50252": "Jonathan Windham",
-    "P53622": "Steve Norris",
-    "P57": "Mike Papi"
-  }
+  ]
 }

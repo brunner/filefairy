@@ -22,6 +22,7 @@ from util.file_.file_ import recreate  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_nickname  # noqa
+from util.team.team import encoding_to_teamid  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_encoding  # noqa
 
@@ -232,8 +233,6 @@ class Gameday(Registrable):
             }
         }
 
-        cs = [' colspan="2"']
-        bs = [' class="w-50"', ' class="w-50"']
         game_sub = self._game_sub(game_data)
         away_team = game_data['away_team']
         away_decoding = encoding_to_decoding(away_team)
@@ -241,14 +240,14 @@ class Gameday(Registrable):
         home_decoding = encoding_to_decoding(home_team)
 
         log_tables = []
-        for inning in game_data['inning']:
-            inning_id_ = inning['id']
+        for plays in game_data['plays']:
+            teamid = encoding_to_teamid(plays['batting'])
             _table = table(
-                hcols=cs,
-                head=[inning_id_ + ' - ' + game_sub(inning['intro'])],
-                bcols=bs,
+                hcols=[' colspan="2" class="position-relative"'],
+                head=[logo_absolute(teamid, plays['label'], 'left')],
+                bcols=[' class="w-50"', ' class="w-50"'],
                 body=[])
-            for pitch in inning['pitch']:
+            for pitch in plays['pitch']:
                 before_list = pitch.get('before', [''])
                 for before in before_list[:-1]:
                     _table['body'].append([game_sub(before), ''])
@@ -257,11 +256,9 @@ class Gameday(Registrable):
                      game_sub(pitch['result'])])
                 for after in pitch.get('after', []):
                     _table['body'].append(['', game_sub(after)])
-            if inning['outro']:
-                _table['fcols'] = cs
-                _table['foot'] = [
-                    inning_id_ + ' - ' + game_sub(inning['outro'])
-                ]
+            if plays['footer']:
+                _table['fcols'] = [' colspan="2"']
+                _table['foot'] = [game_sub(plays['footer'])]
             log_tables.append(_table)
         ret['tabs']['tabs'].append({
             'name': 'log',
@@ -283,3 +280,13 @@ class Gameday(Registrable):
         })
 
         return ret
+
+# from util.datetime_.datetime_ import datetime_now
+# from util.jinja2_.jinja2_ import env
+
+# date = datetime_now()
+# e = env()
+# gameday = Gameday(date=date, e=e)
+# # gameday.data['games'] = ['1039']
+# gameday._check_games()
+# gameday._setup_internal(date=date)

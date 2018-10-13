@@ -190,19 +190,17 @@ _game = {
             'tables': [
                 table(
                     clazz='border mt-3',
-                    hcols=[' colspan="2"'],
+                    hcols=[' colspan="2" class="position-relative"'],
                     bcols=[' class="w-50"', ' class="w-50"'],
                     fcols=[' colspan="2"'],
                     head=[
-                        'Top of the 1st - Arizona Diamondbacks batting - '
-                        'Pitching for Los Angeles Dodgers : LHP 101'
+                        logo_absolute('31', 'Top 1st', 'left')
                     ],
                     body=[['Batting: SHB 102', '0-0: Ball'],
                           ['', '103 to second']],
                     foot=[
-                        'Top of the 1st - 0 run(s), 0 hit(s), 0 error(s), 0 '
-                        'left on base; Arizona Diamondbacks 0 - Los Angeles '
-                        'Dodgers 0'
+                        '0 run(s), 0 hit(s), 0 error(s), 0 left on base; '
+                        'Arizona Diamondbacks 0 - Los Angeles Dodgers 0'
                     ])
             ]
         }, {
@@ -243,30 +241,34 @@ _game = {
     }
 }
 _game_data = {
+    'id':
+    '2998',
     'away_team':
     'T31',
-    'date':
-    '2022-10-09T00:00:00-07:00',
     'home_team':
     'T45',
-    'inning': [{
-        'id':
-        'Top of the 1st',
-        'intro':
-        'T31 batting - Pitching for T45 : LHP P101',
-        'outro':
+    'date':
+    '2022-10-09T00:00:00-07:00',
+    'player': {
+        'P101': '101',
+        'P102': '102',
+        'P103': '103'
+    },
+    'plays': [{
+        'label':
+        'Top 1st',
+        'batting':
+        'T31',
+        'pitching':
+        'LHP P101',
+        'footer':
         '0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 0 - T45 0',
         'pitch': [{
             'before': ['Batting: SHB P102'],
             'result': '0-0: Ball',
             'after': ['P103 to second']
         }]
-    }],
-    'player': {
-        'P101': '101',
-        'P102': '102',
-        'P103': '103'
-    }
+    }]
 }
 
 
