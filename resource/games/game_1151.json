@@ -2,11 +2,46 @@
   "away_team": "T36",
   "date": "2024-05-22T00:00:00-07:00",
   "home_team": "T46",
-  "inning": [
+  "id": "1151",
+  "ok": true,
+  "player": {
+    "P131": "Jake Ehret",
+    "P15535": "Mike Papierski",
+    "P1728": "Dailyn De Oleo",
+    "P19907": "Edinxon Arias",
+    "P21306": "Brett Langhorne",
+    "P21579": "Pavin Smith",
+    "P21643": "A.J. Moore",
+    "P23700": "Jake Cooley",
+    "P25133": "Garrett Hutson",
+    "P25186": "Eric Jenkins",
+    "P25200": "Tekwaan Whyte",
+    "P26894": "Logan Gillaspie",
+    "P26980": "Juan Carlos Rodr\u00edguez",
+    "P27062": "Abraham Almonte",
+    "P28672": "Nick Plummer",
+    "P28919": "Zack Brown",
+    "P28985": "Jake Fraley",
+    "P29146": "Nicholos Hamilton",
+    "P29658": "Jonathan Gettys",
+    "P29769": "Ryan Leckich",
+    "P29822": "Taylor Trammell",
+    "P30016": "Austin Bodrato",
+    "P30024": "Ryan Kirk",
+    "P30062": "Grant Bodison",
+    "P34118": "Gregory Polanco",
+    "P35777": "Taylor Featherston",
+    "P35967": "Blake Swihart",
+    "P37613": "Luis Torrens",
+    "P38681": "Ryan Eades",
+    "P45075": "Juan Mata",
+    "P48806": "Julio Mendez"
+  },
+  "plays": [
     {
-      "id": "Top of the 1st",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T36 0 - T46 0",
+      "batting": "T36",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T36 0 - T46 0",
+      "label": "Top 1st",
       "pitch": [
         {
           "before": [
@@ -51,12 +86,13 @@
         {
           "result": "0-2:  Fly out, F7  (Flyball, 7S)"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 1st",
-      "intro": "T46 batting - Pitching for T36 : RHP P19907",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 3 left on base; T36 0 - T46 1",
+      "batting": "T46",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 3 left on base; T36 0 - T46 1",
+      "label": "Bot 1st",
       "pitch": [
         {
           "before": [
@@ -174,12 +210,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P19907"
     },
     {
-      "id": "Top of the 2nd",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "0 run(s), 0 hit(s), 1 error(s), 0 left on base; T36 0 - T46 1",
+      "batting": "T36",
+      "footer": "0 run(s), 0 hit(s), 1 error(s), 0 left on base; T36 0 - T46 1",
+      "label": "Top 2nd",
       "pitch": [
         {
           "before": [
@@ -232,12 +269,13 @@
         {
           "result": "3-1: Fielders Choice at 2nd, 6-4 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 2nd",
-      "intro": "T46 batting - Pitching for T36 : RHP P19907",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 0 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 0 - T46 1",
+      "label": "Bot 2nd",
       "pitch": [
         {
           "before": [
@@ -284,12 +322,13 @@
         {
           "result": "1-1: Ground out 6-3 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "RHP P19907"
     },
     {
-      "id": "Top of the 3rd",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 0 - T46 1",
+      "batting": "T36",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 0 - T46 1",
+      "label": "Top 3rd",
       "pitch": [
         {
           "before": [
@@ -336,12 +375,13 @@
         {
           "result": "1-2: Ground out 4-3 (Groundball, 4)"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 3rd",
-      "intro": "T46 batting - Pitching for T36 : RHP P19907",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 0 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 0 - T46 1",
+      "label": "Bot 3rd",
       "pitch": [
         {
           "before": [
@@ -382,12 +422,13 @@
           ],
           "result": "0-0: Grounds into double play, 4-6-3 (Groundball, 4)"
         }
-      ]
+      ],
+      "pitching": "RHP P19907"
     },
     {
-      "id": "Top of the 4th",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 0 left on base; T36 1 - T46 1",
+      "batting": "T36",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 0 left on base; T36 1 - T46 1",
+      "label": "Top 4th",
       "pitch": [
         {
           "before": [
@@ -461,12 +502,13 @@
           ],
           "result": "2-0: Ball"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 4th",
-      "intro": "T46 batting - Pitching for T36 : RHP P19907",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T36 1 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T36 1 - T46 1",
+      "label": "Bot 4th",
       "pitch": [
         {
           "before": [
@@ -522,12 +564,13 @@
         {
           "result": "3-2: Ground out 5-3 (Groundball, 15S)"
         }
-      ]
+      ],
+      "pitching": "RHP P19907"
     },
     {
-      "id": "Top of the 5th",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T36 1 - T46 1",
+      "batting": "T36",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T36 1 - T46 1",
+      "label": "Top 5th",
       "pitch": [
         {
           "before": [
@@ -613,12 +656,13 @@
           ],
           "result": "0-0:  Fly out, F9  (Flyball, 9S)"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 5th",
-      "intro": "T46 batting - Pitching for T36 : RHP P19907",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 1 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 1 - T46 1",
+      "label": "Bot 5th",
       "pitch": [
         {
           "before": [
@@ -656,12 +700,13 @@
         {
           "result": "1-0: Grounds into double play, 6-4-3 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "RHP P19907"
     },
     {
-      "id": "Top of the 6th",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T36 1 - T46 1",
+      "batting": "T36",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T36 1 - T46 1",
+      "label": "Top 6th",
       "pitch": [
         {
           "before": [
@@ -729,12 +774,13 @@
         {
           "result": "2-0: Grounds into double play, 6-4-3 (Groundball, 6)"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 6th",
-      "intro": "T46 batting - Pitching for T36 : RHP P19907",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T36 1 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T36 1 - T46 1",
+      "label": "Bot 6th",
       "pitch": [
         {
           "before": [
@@ -796,12 +842,13 @@
         {
           "result": "2-2:  Fly out, F9  (Flyball, 9S)"
         }
-      ]
+      ],
+      "pitching": "RHP P19907"
     },
     {
-      "id": "Top of the 7th",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 1 - T46 1",
+      "batting": "T36",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 1 - T46 1",
+      "label": "Top 7th",
       "pitch": [
         {
           "before": [
@@ -848,12 +895,13 @@
         {
           "result": "0-2: Ground out 3-1 (Groundball, 34)"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 7th",
-      "intro": "T46 batting - Pitching for T36 : RHP P19907",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T36 1 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T36 1 - T46 1",
+      "label": "Bot 7th",
       "pitch": [
         {
           "before": [
@@ -924,12 +972,13 @@
         {
           "result": "0-1: Ground out 4-3 (Groundball, 4M)"
         }
-      ]
+      ],
+      "pitching": "RHP P19907"
     },
     {
-      "id": "Top of the 8th",
-      "intro": "T36 batting - Pitching for T46 : RHP P30024",
-      "outro": "4 run(s), 3 hit(s), 0 error(s), 0 left on base; T36 5 - T46 1",
+      "batting": "T36",
+      "footer": "4 run(s), 3 hit(s), 0 error(s), 0 left on base; T36 5 - T46 1",
+      "label": "Top 8th",
       "pitch": [
         {
           "before": [
@@ -1030,12 +1079,13 @@
         {
           "result": "2-1:  Fly out, F9  (Flyball, 9LS)"
         }
-      ]
+      ],
+      "pitching": "RHP P30024"
     },
     {
-      "id": "Bottom of the 8th",
-      "intro": "T46 batting - Pitching for T36 : LHP P26980",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 5 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T36 5 - T46 1",
+      "label": "Bot 8th",
       "pitch": [
         {
           "before": [
@@ -1078,12 +1128,13 @@
           ],
           "result": "0-0: Ground out U3 (Groundball, 3)"
         }
-      ]
+      ],
+      "pitching": "LHP P26980"
     },
     {
-      "id": "Top of the 9th",
-      "intro": "T36 batting - Pitching for T46 : RHP P28919",
-      "outro": "2 run(s), 2 hit(s), 0 error(s), 2 left on base; T36 7 - T46 1",
+      "batting": "T36",
+      "footer": "2 run(s), 2 hit(s), 0 error(s), 2 left on base; T36 7 - T46 1",
+      "label": "Top 9th",
       "pitch": [
         {
           "before": [
@@ -1191,12 +1242,13 @@
         {
           "result": "1-0:  Fly out, F6  (Popup, 6S)"
         }
-      ]
+      ],
+      "pitching": "RHP P28919"
     },
     {
-      "id": "Bottom of the 9th",
-      "intro": "T46 batting - Pitching for T36 : RHP P131",
-      "outro": "0 run(s), 1 hit(s), 1 error(s), 1 left on base; T36 7 - T46 1",
+      "batting": "T46",
+      "footer": "0 run(s), 1 hit(s), 1 error(s), 1 left on base; T36 7 - T46 1",
+      "label": "Bot 9th",
       "pitch": [
         {
           "before": [
@@ -1260,41 +1312,8 @@
         {
           "result": "3-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P131"
     }
-  ],
-  "ok": true,
-  "player": {
-    "P131": "Jake Ehret",
-    "P15535": "Mike Papierski",
-    "P1728": "Dailyn De Oleo",
-    "P19907": "Edinxon Arias",
-    "P21306": "Brett Langhorne",
-    "P21579": "Pavin Smith",
-    "P21643": "A.J. Moore",
-    "P23700": "Jake Cooley",
-    "P25133": "Garrett Hutson",
-    "P25186": "Eric Jenkins",
-    "P25200": "Tekwaan Whyte",
-    "P26894": "Logan Gillaspie",
-    "P26980": "Juan Carlos Rodr\u00edguez",
-    "P27062": "Abraham Almonte",
-    "P28672": "Nick Plummer",
-    "P28919": "Zack Brown",
-    "P28985": "Jake Fraley",
-    "P29146": "Nicholos Hamilton",
-    "P29658": "Jonathan Gettys",
-    "P29769": "Ryan Leckich",
-    "P29822": "Taylor Trammell",
-    "P30016": "Austin Bodrato",
-    "P30024": "Ryan Kirk",
-    "P30062": "Grant Bodison",
-    "P34118": "Gregory Polanco",
-    "P35777": "Taylor Featherston",
-    "P35967": "Blake Swihart",
-    "P37613": "Luis Torrens",
-    "P38681": "Ryan Eades",
-    "P45075": "Juan Mata",
-    "P48806": "Julio Mendez"
-  }
+  ]
 }

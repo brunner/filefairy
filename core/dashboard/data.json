@@ -670,13 +670,103 @@
         "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
       },
       {
-        "count": 1,
-        "date": "2018-10-14T09:23:50.148882-07:00",
+        "count": 2,
+        "date": "2018-10-14T09:24:38.241309-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 172,
         "msg": "Fetched latest changes.",
         "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:00.199560-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 184,
+        "msg": "Manual push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:54.451610-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 289,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:54.910754-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:55.024899-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:55.108383-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:55.200955-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:55.305695-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:57.080640-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:57.205770-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-10-14T09:24:58.530028-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 114, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 85, in _setup\n    response = self._setup_internal(**kwargs)\n  File \"/home/pi/filefairy/plugin/gameday/gameday.py\", line 97, in _setup_internal\n    self._render(**kwargs)\n  File \"/home/pi/filefairy/api/renderable/renderable.py\", line 55, in _render\n    for html, subtitle, tmpl, context in self._render_internal(**kwargs):\n  File \"/home/pi/filefairy/plugin/gameday/gameday.py\", line 83, in _render_internal\n    game = self._game(id_, subtitle, game_data, schedule_data)\n  File \"/home/pi/filefairy/plugin/gameday/gameday.py\", line 243, in _game\n    for plays in game_data['plays']:\nKeyError: 'plays'",
+        "levelname": "ERROR",
+        "lineno": 127,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
       }
     ]
   }

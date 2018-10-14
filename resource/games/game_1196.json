@@ -2,11 +2,38 @@
   "away_team": "T35",
   "date": "2024-05-25T00:00:00-07:00",
   "home_team": "T44",
-  "inning": [
+  "id": "1196",
+  "ok": true,
+  "player": {
+    "P1150": "Jake Peter",
+    "P1495": "Shane Benes",
+    "P22622": "Kyle Cody",
+    "P23840": "Ron Collins",
+    "P27864": "Avisail Garcia",
+    "P29736": "Blake Rutherford",
+    "P29786": "William Wallace",
+    "P31259": "Matt Davidson",
+    "P32314": "Jorge Tirado",
+    "P32460": "Luis Freitas",
+    "P32862": "Dan Reynolds",
+    "P33563": "Miguel Sano",
+    "P38694": "Justin Williams",
+    "P38787": "Tyler Danish",
+    "P39880": "Nicolas Pierre",
+    "P45359": "Yu-Cheng Chang",
+    "P46500": "Jose Abreu",
+    "P46900": "Yoan Moncada",
+    "P50059": "Scott Price",
+    "P50274": "Anthony Fidanza",
+    "P53206": "Artie Crews",
+    "P584": "Brett Austin",
+    "P8": "Carlos Rodon"
+  },
+  "plays": [
     {
-      "id": "Top of the 1st",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T35 1 - T44 0",
+      "batting": "T35",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T35 1 - T44 0",
+      "label": "Top 1st",
       "pitch": [
         {
           "before": [
@@ -85,12 +112,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 1st",
-      "intro": "T44 batting - Pitching for T35 : RHP P22622",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 1 - T44 0",
+      "batting": "T44",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 1 - T44 0",
+      "label": "Bot 1st",
       "pitch": [
         {
           "before": [
@@ -138,12 +166,13 @@
         {
           "result": "0-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P22622"
     },
     {
-      "id": "Top of the 2nd",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "0 run(s), 0 hit(s), 1 error(s), 1 left on base; T35 1 - T44 0",
+      "batting": "T35",
+      "footer": "0 run(s), 0 hit(s), 1 error(s), 1 left on base; T35 1 - T44 0",
+      "label": "Top 2nd",
       "pitch": [
         {
           "before": [
@@ -218,12 +247,13 @@
         {
           "result": "2-2: Ground out 4-3 (Groundball, 4)"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 2nd",
-      "intro": "T44 batting - Pitching for T35 : RHP P22622",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 1 - T44 0",
+      "batting": "T44",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 1 - T44 0",
+      "label": "Bot 2nd",
       "pitch": [
         {
           "before": [
@@ -283,12 +313,13 @@
         {
           "result": "0-1:  Fly out, F8  (Flyball, 8RD)"
         }
-      ]
+      ],
+      "pitching": "RHP P22622"
     },
     {
-      "id": "Top of the 3rd",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "1 run(s), 1 hit(s), 0 error(s), 0 left on base; T35 2 - T44 0",
+      "batting": "T35",
+      "footer": "1 run(s), 1 hit(s), 0 error(s), 0 left on base; T35 2 - T44 0",
+      "label": "Top 3rd",
       "pitch": [
         {
           "before": [
@@ -341,12 +372,13 @@
         {
           "result": "0-1:  Fly out, F8  (Flyball, 8LD)"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 3rd",
-      "intro": "T44 batting - Pitching for T35 : RHP P22622",
-      "outro": "0 run(s), 0 hit(s), 1 error(s), 0 left on base; T35 2 - T44 0",
+      "batting": "T44",
+      "footer": "0 run(s), 0 hit(s), 1 error(s), 0 left on base; T35 2 - T44 0",
+      "label": "Bot 3rd",
       "pitch": [
         {
           "before": [
@@ -417,12 +449,13 @@
           ],
           "result": "0-1: Ball"
         }
-      ]
+      ],
+      "pitching": "RHP P22622"
     },
     {
-      "id": "Top of the 4th",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 2 - T44 0",
+      "batting": "T35",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 2 - T44 0",
+      "label": "Top 4th",
       "pitch": [
         {
           "before": [
@@ -466,12 +499,13 @@
         {
           "result": "1-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 4th",
-      "intro": "T44 batting - Pitching for T35 : RHP P22622",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T35 2 - T44 0",
+      "batting": "T44",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T35 2 - T44 0",
+      "label": "Bot 4th",
       "pitch": [
         {
           "before": [
@@ -515,12 +549,13 @@
           ],
           "result": "0-0:  Fly out, F8  (Flyball, 8LM)"
         }
-      ]
+      ],
+      "pitching": "RHP P22622"
     },
     {
-      "id": "Top of the 5th",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "1 run(s), 2 hit(s), 0 error(s), 2 left on base; T35 3 - T44 0",
+      "batting": "T35",
+      "footer": "1 run(s), 2 hit(s), 0 error(s), 2 left on base; T35 3 - T44 0",
+      "label": "Top 5th",
       "pitch": [
         {
           "before": [
@@ -616,12 +651,13 @@
         {
           "result": "1-2:  Fly out, F4  (Popup, 4MD)"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 5th",
-      "intro": "T44 batting - Pitching for T35 : RHP P22622",
-      "outro": "4 run(s), 5 hit(s), 0 error(s), 1 left on base; T35 3 - T44 4",
+      "batting": "T44",
+      "footer": "4 run(s), 5 hit(s), 0 error(s), 1 left on base; T35 3 - T44 4",
+      "label": "Bot 5th",
       "pitch": [
         {
           "before": [
@@ -716,12 +752,13 @@
         {
           "result": "0-1:  Fly out, F8  (Flyball, 8LM)"
         }
-      ]
+      ],
+      "pitching": "RHP P22622"
     },
     {
-      "id": "Top of the 6th",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 3 - T44 4",
+      "batting": "T35",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 3 - T44 4",
+      "label": "Top 6th",
       "pitch": [
         {
           "before": [
@@ -762,12 +799,13 @@
         {
           "result": "1-0: Ground out 5-3 (Groundball, 5S)"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 6th",
-      "intro": "T44 batting - Pitching for T35 : RHP P22622",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 4",
+      "batting": "T44",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 4",
+      "label": "Bot 6th",
       "pitch": [
         {
           "before": [
@@ -796,12 +834,13 @@
           ],
           "result": "0-0:  Fly out, F9  (Flyball, 89D)"
         }
-      ]
+      ],
+      "pitching": "RHP P22622"
     },
     {
-      "id": "Top of the 7th",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 4",
+      "batting": "T35",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 4",
+      "label": "Top 7th",
       "pitch": [
         {
           "before": [
@@ -848,12 +887,13 @@
         {
           "result": "1-2: Strikes out  looking"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 7th",
-      "intro": "T44 batting - Pitching for T35 : RHP P22622",
-      "outro": "3 run(s), 1 hit(s), 0 error(s), 0 left on base; T35 3 - T44 7",
+      "batting": "T44",
+      "footer": "3 run(s), 1 hit(s), 0 error(s), 0 left on base; T35 3 - T44 7",
+      "label": "Bot 7th",
       "pitch": [
         {
           "before": [
@@ -941,12 +981,13 @@
         {
           "result": "0-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P22622"
     },
     {
-      "id": "Top of the 8th",
-      "intro": "T35 batting - Pitching for T44 : RHP P23840",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 7",
+      "batting": "T35",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 7",
+      "label": "Top 8th",
       "pitch": [
         {
           "before": [
@@ -997,12 +1038,13 @@
         {
           "result": "2-2: Strikes out  swinging"
         }
-      ]
+      ],
+      "pitching": "RHP P23840"
     },
     {
-      "id": "Bottom of the 8th",
-      "intro": "T44 batting - Pitching for T35 : LHP P8",
-      "outro": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 7",
+      "batting": "T44",
+      "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T35 3 - T44 7",
+      "label": "Bot 8th",
       "pitch": [
         {
           "before": [
@@ -1043,12 +1085,13 @@
         {
           "result": "1-2: Strikes out  looking"
         }
-      ]
+      ],
+      "pitching": "LHP P8"
     },
     {
-      "id": "Top of the 9th",
-      "intro": "T35 batting - Pitching for T44 : RHP P32862",
-      "outro": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 3 - T44 7",
+      "batting": "T35",
+      "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T35 3 - T44 7",
+      "label": "Top 9th",
       "pitch": [
         {
           "before": [
@@ -1107,33 +1150,8 @@
         {
           "result": "0-1:  Fly out, F8  (Flyball, 8RM)"
         }
-      ]
+      ],
+      "pitching": "RHP P32862"
     }
-  ],
-  "ok": true,
-  "player": {
-    "P1150": "Jake Peter",
-    "P1495": "Shane Benes",
-    "P22622": "Kyle Cody",
-    "P23840": "Ron Collins",
-    "P27864": "Avisail Garcia",
-    "P29736": "Blake Rutherford",
-    "P29786": "William Wallace",
-    "P31259": "Matt Davidson",
-    "P32314": "Jorge Tirado",
-    "P32460": "Luis Freitas",
-    "P32862": "Dan Reynolds",
-    "P33563": "Miguel Sano",
-    "P38694": "Justin Williams",
-    "P38787": "Tyler Danish",
-    "P39880": "Nicolas Pierre",
-    "P45359": "Yu-Cheng Chang",
-    "P46500": "Jose Abreu",
-    "P46900": "Yoan Moncada",
-    "P50059": "Scott Price",
-    "P50274": "Anthony Fidanza",
-    "P53206": "Artie Crews",
-    "P584": "Brett Austin",
-    "P8": "Carlos Rodon"
-  }
+  ]
 }
