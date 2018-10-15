@@ -313,6 +313,17 @@ class Gameday(Registrable):
         ret['tabs']['tabs'].append(plays)
         return ret
 
+# from plugin.statsplus.statsplus import Statsplus
+# from util.datetime_.datetime_ import datetime_now
+# from util.jinja2_.jinja2_ import env
+
+# date = datetime_now()
+# e = env()
+# statsplus = Statsplus(date=date, e=e)
+# statsplus._extract('2024-05-22T00:00:00-07:00', '1161')
+# gameday = Gameday(date=date, e=e)
+# gameday.data['games'] = ['1161']
+# gameday._setup_internal(date=date)
 
 # from util.datetime_.datetime_ import datetime_now
 # from util.jinja2_.jinja2_ import env

@@ -42,9 +42,17 @@ def _open(link):
     return ''
 
 
-def _play_event(batting, sequence, values):
+def _play_event(sequence, value):
+    return {'type': 'event', 'sequence': sequence, 'value': value}
+
+
+def _play_sub(subtype, value):
+    return {'type': 'sub', 'subtype': subtype, 'value': value}
+
+
+def _value(batting, values, during=False):
     if values:
-        values0 = batting + ' '
+        values0 = ('With {} batting, ' if during else '{} ').format(batting)
         for i, v in enumerate(values[0]):
             if v.isupper() or v.isspace():
                 values0 += v.lower()
@@ -52,12 +60,7 @@ def _play_event(batting, sequence, values):
                 values0 += values[0][i:]
                 break
         values[0] = values0
-    value = ' '.join([v + '.' for v in values])
-    return {'type': 'event', 'sequence': sequence, 'value': value}
-
-
-def _play_sub(subtype, value):
-    return {'type': 'sub', 'subtype': subtype, 'value': value}
+    return ' '.join([v + ('.' if v[-1] != '!' else '') for v in values])
 
 
 def parse_box_score(link):
@@ -194,7 +197,10 @@ def parse_game_log(link):
                     value = _find('^\d-\d: (.+?)$', part, re.DOTALL)
                     if value:
                         if values:
-                            play.append(_play_event(batting, sequence, values))
+                            play.append(
+                                _play_event(
+                                    sequence,
+                                    _value(batting, values, during=True)))
                             sequence, values = [], []
                         if _find('Base on Balls', value):
                             sequence.append(
@@ -209,16 +215,19 @@ def parse_game_log(link):
                             sequence.append(
                                 part.replace('Strikes out looking',
                                              'Called Strike'))
-                            values.append(value)
+                            values.append('Called out on strikes')
                         elif _find('Ball|Strike|Bunted foul', value):
-                            sequence.append(part)
+                            sequence.append(
+                                part.replace(' Ball, location: 2F', ''))
                         else:
                             sequence.append(part.replace(value, 'In play'))
                             values.append(value)
                     else:
                         values.append(part)
                 if sequence or values:
-                    play.append(_play_event(batting, sequence, values))
+                    play.append(
+                        _play_event(sequence,
+                                    _value(batting, values, during=False)))
 
         inning.append({
             'label': cell_label,

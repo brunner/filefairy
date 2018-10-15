@@ -78,8 +78,8 @@
               "1-0: Ball",
               "2-0: Called Strike",
               "2-1: Ball",
-              "3-1: Foul Ball, location: 2F",
-              "3-2: Foul Ball, location: 2F",
+              "3-1: Foul",
+              "3-2: Foul",
               "3-2: In play"
             ],
             "type": "event",
@@ -110,7 +110,7 @@
               "1-0: Swinging Strike",
               "1-1: Called Strike",
               "1-2: Ball",
-              "2-2: Foul Ball, location: 2F",
+              "2-2: Foul",
               "2-2: Swinging Strike"
             ],
             "type": "event",
@@ -201,7 +201,7 @@
               "0-0: Ball",
               "1-0: Bunted foul",
               "1-1: Bunted foul",
-              "1-2: Foul Ball, location: 2F",
+              "1-2: Foul",
               "1-2: Ball",
               "2-2: Swinging Strike"
             ],
@@ -320,7 +320,7 @@
               "0-0: Called Strike",
               "0-1: Ball",
               "1-1: Ball",
-              "2-1: Foul Ball, location: 2F",
+              "2-1: Foul",
               "2-2: Swinging Strike"
             ],
             "type": "event",
@@ -374,7 +374,7 @@
               "1-2: Called Strike"
             ],
             "type": "event",
-            "value": "P20036 strikes out looking."
+            "value": "P20036 called out on strikes."
           },
           {
             "subtype": "batting",
@@ -404,7 +404,7 @@
               "2-2: Called Strike"
             ],
             "type": "event",
-            "value": "P38811 strikes out looking."
+            "value": "P38811 called out on strikes."
           }
         ]
       }
@@ -424,8 +424,8 @@
           {
             "sequence": [
               "0-0: Swinging Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Foul Ball, location: 2F",
+              "0-1: Foul",
+              "0-2: Foul",
               "0-2: In play"
             ],
             "type": "event",
@@ -470,7 +470,7 @@
               "3-1: In play"
             ],
             "type": "event",
-            "value": "P37294 double (Flyball, 8LD). P24150 to third. Runner from 3rd tries for Home, throw and OUT!."
+            "value": "P37294 double (Flyball, 8LD). P24150 to third. Runner from 3rd tries for Home, throw and OUT!"
           }
         ]
       },
@@ -577,7 +577,7 @@
           {
             "sequence": [
               "0-0: Swinging Strike",
-              "0-1: Foul Ball, location: 2F",
+              "0-1: Foul",
               "0-2: Swinging Strike"
             ],
             "type": "event",
@@ -613,7 +613,7 @@
           {
             "sequence": [
               "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
+              "1-0: Foul",
               "1-1: Called Strike",
               "1-2: Swinging Strike"
             ],
@@ -657,12 +657,12 @@
               "0-1: Ball"
             ],
             "type": "event",
-            "value": "P52260 wild Pitch!. P20036 to third."
+            "value": "With P52260 batting, wild Pitch! P20036 to third."
           },
           {
             "sequence": [
               "1-1: Ball",
-              "2-1: Foul Ball, location: 2F",
+              "2-1: Foul",
               "2-2: Ball",
               "3-2: Ball"
             ],
@@ -677,7 +677,7 @@
           {
             "sequence": [],
             "type": "event",
-            "value": "P38811 pickoff Throw to First - Error! E1. P20036 scores. P52260 to second."
+            "value": "With P38811 batting, pickoff Throw to First - Error! E1. P20036 scores. P52260 to second."
           },
           {
             "sequence": [
@@ -724,7 +724,7 @@
               "0-1: Ball"
             ],
             "type": "event",
-            "value": "P49108 wild Pitch!. P24322 to third."
+            "value": "With P49108 batting, wild Pitch! P24322 to third."
           },
           {
             "sequence": [
@@ -740,8 +740,8 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Foul Ball, location: 2F",
+              "0-0: Foul",
+              "0-1: Foul",
               "0-2: Ball",
               "1-2: Ball",
               "2-2: Ball",
@@ -790,7 +790,7 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
+              "0-0: Foul",
               "0-1: Ball",
               "1-1: In play"
             ],
@@ -807,7 +807,7 @@
               "0-0: Ball",
               "1-0: Swinging Strike",
               "1-1: Ball",
-              "2-1: Foul Ball, location: 2F",
+              "2-1: Foul",
               "2-2: In play"
             ],
             "type": "event",
@@ -854,7 +854,7 @@
               "0-1: Ball"
             ],
             "type": "event",
-            "value": "P35554 wild Pitch!. P22023 to third. P1421 to second."
+            "value": "With P35554 batting, wild Pitch! P22023 to third. P1421 to second."
           },
           {
             "sequence": [
@@ -944,7 +944,7 @@
             "sequence": [
               "0-0: Called Strike",
               "0-1: Ball",
-              "1-1: Foul Ball, location: 2F",
+              "1-1: Foul",
               "1-2: In play"
             ],
             "type": "event",
@@ -960,16 +960,16 @@
               "0-0: Ball"
             ],
             "type": "event",
-            "value": "P52260 p20036 steals 2nd base."
+            "value": "With P52260 batting, p20036 steals 2nd base."
           },
           {
             "sequence": [
               "1-0: Ball",
               "2-0: Swinging Strike",
               "2-1: Ball",
-              "3-1: Foul Ball, location: 2F",
-              "3-2: Foul Ball, location: 2F",
-              "3-2: Foul Ball, location: 2F",
+              "3-1: Foul",
+              "3-2: Foul",
+              "3-2: Foul",
               "3-2: In play"
             ],
             "type": "event",
@@ -1006,9 +1006,9 @@
             "sequence": [
               "0-0: Called Strike",
               "0-1: Called Strike",
-              "0-2: Foul Ball, location: 2F",
+              "0-2: Foul",
               "0-2: Ball",
-              "1-2: Foul Ball, location: 2F",
+              "1-2: Foul",
               "1-2: Swinging Strike"
             ],
             "type": "event",
@@ -1023,11 +1023,11 @@
             "sequence": [
               "0-0: Swinging Strike",
               "0-1: Swinging Strike",
-              "0-2: Foul Ball, location: 2F",
+              "0-2: Foul",
               "0-2: Called Strike"
             ],
             "type": "event",
-            "value": "P24322 strikes out looking."
+            "value": "P24322 called out on strikes."
           },
           {
             "subtype": "batting",
@@ -1037,9 +1037,9 @@
           {
             "sequence": [
               "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
+              "1-0: Foul",
               "1-1: Called Strike",
-              "1-2: Foul Ball, location: 2F",
+              "1-2: Foul",
               "1-2: Ball",
               "2-2: Swinging Strike"
             ],
@@ -1117,8 +1117,8 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Foul Ball, location: 2F",
+              "0-0: Foul",
+              "0-1: Foul",
               "0-2: Ball",
               "1-2: In play"
             ],
@@ -1166,11 +1166,11 @@
             "sequence": [
               "0-0: Ball",
               "1-0: Called Strike",
-              "1-1: Foul Ball, location: 2F",
+              "1-1: Foul",
               "1-2: Ball",
-              "2-2: Foul Ball, location: 2F",
+              "2-2: Foul",
               "2-2: Ball",
-              "3-2: Foul Ball, location: 2F",
+              "3-2: Foul",
               "3-2: Swinging Strike"
             ],
             "type": "event",
@@ -1196,10 +1196,10 @@
           {
             "sequence": [
               "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
+              "0-1: Foul",
               "0-2: Ball",
               "1-2: Ball",
-              "2-2: Foul Ball, location: 2F",
+              "2-2: Foul",
               "2-2: In play"
             ],
             "type": "event",
@@ -1249,14 +1249,14 @@
           {
             "sequence": [
               "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
+              "0-1: Foul",
               "0-2: Ball",
               "1-2: Ball",
               "2-2: Ball",
               "3-2: Called Strike"
             ],
             "type": "event",
-            "value": "P35554 strikes out looking."
+            "value": "P35554 called out on strikes."
           },
           {
             "subtype": "batting",
@@ -1303,9 +1303,9 @@
             "sequence": [
               "0-0: Swinging Strike",
               "0-1: Called Strike",
-              "0-2: Foul Ball, location: 2F",
+              "0-2: Foul",
               "0-2: Ball",
-              "1-2: Foul Ball, location: 2F",
+              "1-2: Foul",
               "1-2: Ball",
               "2-2: In play"
             ],
@@ -1335,7 +1335,7 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
+              "0-0: Foul",
               "0-1: Ball",
               "1-1: Ball",
               "2-1: In play"
@@ -1373,10 +1373,10 @@
           {
             "sequence": [
               "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
+              "1-0: Foul",
+              "1-1: Foul",
+              "1-2: Foul",
+              "1-2: Foul",
               "1-2: Swinging Strike"
             ],
             "type": "event",
@@ -1461,7 +1461,7 @@
               "0-0: Called Strike",
               "0-1: Ball",
               "1-1: Ball",
-              "2-1: Foul Ball, location: 2F",
+              "2-1: Foul",
               "2-2: Ball",
               "3-2: Swinging Strike"
             ],
@@ -1536,7 +1536,7 @@
               "0-0: Ball"
             ],
             "type": "event",
-            "value": "P1421 pickoff Throw to First - Error! E1. P50898 to second."
+            "value": "With P1421 batting, pickoff Throw to First - Error! E1. P50898 to second."
           },
           {
             "sequence": [
@@ -1553,7 +1553,7 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
+              "0-0: Foul",
               "0-1: Called Strike",
               "0-2: Swinging Strike"
             ],

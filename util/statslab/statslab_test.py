@@ -262,7 +262,7 @@ class StatslabTest(unittest.TestCase):
                 'type':
                 'event',
                 'sequence': [
-                    '0-0: Swinging Strike', '0-1: Foul Ball, location: 2F',
+                    '0-0: Swinging Strike', '0-1: Foul',
                     '0-2: Swinging Strike'
                 ],
                 'value':
