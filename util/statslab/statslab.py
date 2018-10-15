@@ -43,6 +43,16 @@ def _open(link):
 
 
 def _play_event(sequence, value):
+    if sequence and 'In play' in sequence[-1]:
+        value_lower = value.lower()
+        if any(s in value_lower for s in ['scores', 'home run', 'home, safe']):
+            suffix = ', run(s)'
+        elif any(s in value_lower
+                 for s in ['out', 'double play', 'fielders choice']):
+            suffix = ', out(s)'
+        else:
+            suffix = ', no out'
+        sequence[-1] += suffix
     return {'type': 'event', 'sequence': sequence, 'value': value}
 
 
