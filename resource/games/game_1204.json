@@ -53,7 +53,7 @@
           },
           {
             "sequence": [
-              "0-0: In play"
+              "1 0 0 In play, out(s)"
             ],
             "type": "event",
             "value": "P2174 ground out 4-3 (Groundball, 4M)."
@@ -65,9 +65,9 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Called Strike",
-              "0-2: Swinging Strike"
+              "1 0 1 Foul",
+              "2 0 2 Called Strike",
+              "3 0 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P50259 strikes out swinging."
@@ -79,8 +79,8 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: In play"
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
             ],
             "type": "event",
             "value": "P25140 fly out, F6 (Popup, 6D)."
@@ -105,12 +105,12 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Swinging Strike",
-              "1-2: Ball",
-              "2-2: Ball",
-              "3-2: In play"
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 1 2 Swinging Strike",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 3 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P38603 fly out, F9 (Line Drive, 9D)."
@@ -122,14 +122,14 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Swinging Strike",
-              "0-2: Ball",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Called Strike"
+              "1 0 1 Foul",
+              "2 0 2 Swinging Strike",
+              "3 1 2 Ball",
+              "4 1 2 Foul",
+              "5 1 3 Called Strike"
             ],
             "type": "event",
-            "value": "P50287 strikes out looking."
+            "value": "P50287 called out on s."
           },
           {
             "subtype": "batting",
@@ -138,9 +138,9 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Swinging Strike",
-              "0-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P37049 strikes out swinging."
@@ -162,11 +162,11 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Foul Ball, location: 2F",
-              "2-1: Ball",
-              "3-1: Ball"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
             ],
             "type": "event",
             "value": "P36650 base on Balls."
@@ -178,11 +178,11 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Called Strike",
-              "0-2: Ball",
-              "1-2: Ball",
-              "2-2: In play"
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 1 2 Ball",
+              "4 2 2 Ball",
+              "5 2 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P50897 fly out, F7 (Flyball, 78S)."
@@ -194,13 +194,13 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Ball",
-              "1-1: Foul Ball, location: 2F",
-              "1-2: Ball",
-              "2-2: Ball",
-              "3-2: Foul Ball, location: 2F",
-              "3-2: In play"
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 3 2 Foul",
+              "7 3 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P27218 grounds into double play, 1-6-3 (Groundball, P)."
@@ -220,11 +220,11 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: Ball",
-              "2-1: Called Strike",
-              "2-2: In play"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 2 Called Strike",
+              "5 2 2 In play, no out"
             ],
             "type": "event",
             "value": "P29806 single (Line Drive, 89S)."
@@ -236,11 +236,11 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Ball",
-              "3-0: Called Strike",
-              "3-1: Ball"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 3 1 Called Strike",
+              "5 4 1 Ball"
             ],
             "type": "event",
             "value": "P27172 base on Balls. P29806 to second."
@@ -252,14 +252,14 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: Foul Ball, location: 2F",
-              "1-2: Ball",
-              "2-2: Called Strike"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 2 3 Called Strike"
             ],
             "type": "event",
-            "value": "P52411 strikes out looking."
+            "value": "P52411 called out on s."
           },
           {
             "subtype": "batting",
@@ -268,11 +268,11 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Ball",
-              "1-2: Ball",
-              "2-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 2 2 Ball",
+              "5 2 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P1440 strikes out swinging."
@@ -284,14 +284,14 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Swinging Strike",
-              "1-1: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Ball",
-              "2-2: Foul Ball, location: 2F",
-              "2-2: In play"
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 1 2 Foul",
+              "4 1 2 Foul",
+              "5 1 2 Foul",
+              "6 2 2 Ball",
+              "7 2 2 Foul",
+              "8 2 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P49980 ground out 5-3 (Groundball, 5S)."
@@ -313,15 +313,15 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Called Strike",
-              "2-1: Swinging Strike",
-              "2-2: Foul Ball, location: 2F",
-              "2-2: Ball",
-              "3-2: Foul Ball, location: 2F",
-              "3-2: Foul Ball, location: 2F",
-              "3-2: In play"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 2 2 Swinging Strike",
+              "5 2 2 Foul",
+              "6 3 2 Ball",
+              "7 3 2 Foul",
+              "8 3 2 Foul",
+              "9 3 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P35161 fly out, F7 (Flyball, 7D)."
@@ -333,10 +333,10 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Called Strike",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: In play"
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 2 Foul",
+              "4 0 2 In play, no out"
             ],
             "type": "event",
             "value": "P50302 single (Line Drive, 78S)."
@@ -348,8 +348,8 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: In play"
+              "1 0 1 Foul",
+              "2 0 1 In play, no out"
             ],
             "type": "event",
             "value": "P28737 single (Line Drive, 6M). P50302 to second."
@@ -361,10 +361,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Ball",
-              "2-1: In play"
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P2174 fielders Choice at 2nd, 3-6 (Groundball, 34). P50302 to third."
@@ -376,12 +376,12 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Called Strike",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: In play"
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 1 2 Called Strike",
+              "4 1 2 Foul",
+              "5 1 2 Foul",
+              "6 1 2 In play, run(s)"
             ],
             "type": "event",
             "value": "P50259 single (Groundball, 4MD). P50302 scores. P2174 to second."
@@ -393,8 +393,8 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: In play"
+              "1 0 1 Called Strike",
+              "2 0 1 In play, run(s)"
             ],
             "type": "event",
             "value": "P25140 single (Line Drive, 9S). P2174 to third. P50259 to second. Runner from 3rd tries for Home, SAFE, no throw."
@@ -406,11 +406,11 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Foul Ball, location: 2F",
-              "2-1: Ball",
-              "3-1: Ball"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
             ],
             "type": "event",
             "value": "P36650 base on Balls. P50259 to third. P25140 to second."
@@ -422,7 +422,7 @@
           },
           {
             "sequence": [
-              "0-0: In play"
+              "1 0 0 In play, run(s)"
             ],
             "type": "event",
             "value": "P50897 single (Line Drive, 4MD). P50259 scores. P25140 to third. P36650 to second."
@@ -434,9 +434,9 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: In play"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, run(s)"
             ],
             "type": "event",
             "value": "P27218 double (Line Drive, 9LM). P25140 scores. P36650 scores. P50897 to third. Runner from 3rd tries for Home, SAFE, no throw."
@@ -453,8 +453,8 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: In play"
+              "1 1 0 Ball",
+              "2 1 0 In play, run(s)"
             ],
             "type": "event",
             "value": "P35161 single (Groundball, 4MD). P27218 to third. Runner from 3rd tries for Home, SAFE, no throw."
@@ -466,9 +466,9 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Ball",
-              "1-1: In play"
+              "1 0 1 Foul",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P50302 fielders Choice at 2nd, 5-4 (Groundball, 5L)."
@@ -488,15 +488,15 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Swinging Strike",
-              "2-1: Ball",
-              "3-1: Foul Ball, location: 2F",
-              "3-2: Called Strike"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Swinging Strike",
+              "4 3 1 Ball",
+              "5 3 2 Foul",
+              "6 3 3 Called Strike"
             ],
             "type": "event",
-            "value": "P21191 strikes out looking."
+            "value": "P21191 called out on s."
           },
           {
             "subtype": "batting",
@@ -505,9 +505,9 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Called Strike",
-              "0-2: In play"
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 2 In play, no out"
             ],
             "type": "event",
             "value": "P38603 single (Groundball, 6D)."
@@ -519,19 +519,19 @@
           },
           {
             "sequence": [
-              "0-0: Swinging Strike",
-              "0-1: Ball",
-              "1-1: Called Strike"
+              "1 0 1 Swinging Strike",
+              "2 1 1 Ball",
+              "3 1 2 Called Strike"
             ],
             "type": "event",
-            "value": "P50287 p38603 steals 2nd base."
+            "value": "With P50287 batting, p38603 steals 2nd base."
           },
           {
             "sequence": [
-              "1-2: Ball",
-              "2-2: Foul Ball, location: 2F",
-              "2-2: Foul Ball, location: 2F",
-              "2-2: In play"
+              "4 2 2 Ball",
+              "5 2 2 Foul",
+              "6 2 2 Foul",
+              "7 2 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P50287 ground out 4-3 (Groundball, 4). P38603 to third."
@@ -543,7 +543,7 @@
           },
           {
             "sequence": [
-              "0-0: In play"
+              "1 0 0 In play, run(s)"
             ],
             "type": "event",
             "value": "P37049 single (Groundball, 4MD). P38603 scores."
@@ -555,8 +555,8 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: In play"
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
             ],
             "type": "event",
             "value": "P29806 fielders Choice at 2nd, 4-6 (Groundball, 4)."
@@ -578,9 +578,9 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Ball",
-              "1-1: In play"
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P28737 fly out, F7 (Line Drive, 7)."
@@ -592,12 +592,12 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Ball",
-              "1-1: Ball",
-              "2-1: Swinging Strike",
-              "2-2: Ball",
-              "3-2: Swinging Strike"
+              "1 0 1 Foul",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 2 Swinging Strike",
+              "5 3 2 Ball",
+              "6 3 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P2174 strikes out swinging."
@@ -609,8 +609,8 @@
           },
           {
             "sequence": [
-              "0-0: Swinging Strike",
-              "0-1: In play"
+              "1 0 1 Swinging Strike",
+              "2 0 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P50259 ground out U3 (Groundball, 3)."
@@ -630,10 +630,10 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Called Strike",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Swinging Strike"
+              "1 0 1 Foul",
+              "2 0 2 Called Strike",
+              "3 0 2 Foul",
+              "4 0 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P27172 strikes out swinging."
@@ -645,10 +645,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Called Strike",
-              "1-2: Swinging Strike"
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 1 2 Called Strike",
+              "4 1 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P52411 strikes out swinging."
@@ -660,10 +660,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: Called Strike",
-              "1-2: In play"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Called Strike",
+              "4 1 2 In play, no out"
             ],
             "type": "event",
             "value": "P1440 single (Groundball, 4MD)."
@@ -675,12 +675,12 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: Called Strike",
-              "1-2: Ball",
-              "2-2: Ball",
-              "3-2: In play"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Called Strike",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 3 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P49980 fly out, F7 (Flyball, 7LD)."
@@ -702,11 +702,11 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Swinging Strike",
-              "1-2: Ball",
-              "2-2: Swinging Strike"
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 1 2 Swinging Strike",
+              "4 2 2 Ball",
+              "5 2 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P25140 strikes out swinging."
@@ -718,11 +718,11 @@
           },
           {
             "sequence": [
-              "0-0: Swinging Strike",
-              "0-1: Swinging Strike",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Ball",
-              "1-2: Swinging Strike"
+              "1 0 1 Swinging Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 2 Foul",
+              "4 1 2 Ball",
+              "5 1 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P36650 strikes out swinging."
@@ -734,10 +734,10 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Called Strike",
-              "0-2: Ball",
-              "1-2: In play"
+              "1 0 1 Foul",
+              "2 0 2 Called Strike",
+              "3 1 2 Ball",
+              "4 1 2 In play, no out"
             ],
             "type": "event",
             "value": "P50897 double (Line Drive, 89D)."
@@ -749,10 +749,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Ball",
-              "3-0: Ball"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 4 0 Ball"
             ],
             "type": "event",
             "value": "P27218 base on Balls."
@@ -764,11 +764,11 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Foul Ball, location: 2F",
-              "2-1: Foul Ball, location: 2F",
-              "2-2: Swinging Strike"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 2 2 Foul",
+              "5 2 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P35161 strikes out swinging."
@@ -788,9 +788,9 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Ball",
-              "1-1: In play"
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P21191 ground out 4-3 (Groundball, 4M)."
@@ -802,14 +802,14 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Ball",
-              "2-1: Ball",
-              "3-1: Called Strike",
-              "3-2: Foul Ball, location: 2F",
-              "3-2: Foul Ball, location: 2F",
-              "3-2: In play"
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 2 Called Strike",
+              "6 3 2 Foul",
+              "7 3 2 Foul",
+              "8 3 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P38603 fly out, F8 (Flyball, 8RD)."
@@ -821,13 +821,13 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Called Strike",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Ball",
-              "1-2: Ball",
-              "2-2: Ball",
-              "3-2: Ball"
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 2 Foul",
+              "4 1 2 Ball",
+              "5 2 2 Ball",
+              "6 3 2 Ball",
+              "7 4 2 Ball"
             ],
             "type": "event",
             "value": "P50287 base on Balls."
@@ -839,10 +839,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Ball",
-              "3-0: In play"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 3 0 In play, no out"
             ],
             "type": "event",
             "value": "P37049 single (Line Drive, 3L). P50287 to second."
@@ -854,11 +854,11 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Ball",
-              "1-2: Swinging Strike"
+              "1 0 1 Foul",
+              "2 0 2 Foul",
+              "3 0 2 Foul",
+              "4 1 2 Ball",
+              "5 1 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P29806 strikes out swinging."
@@ -880,9 +880,9 @@
           },
           {
             "sequence": [
-              "0-0: Swinging Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: In play"
+              "1 0 1 Swinging Strike",
+              "2 0 2 Foul",
+              "3 0 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P50302 fly out, F8 (Flyball, 8RD)."
@@ -894,9 +894,9 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: In play"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, out(s)"
             ],
             "type": "event",
             "value": "P28737 fly out, F7 (Flyball, 7LMF)."
@@ -908,9 +908,9 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: In play"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P2174 fly out, F7 (Flyball, 7)."
@@ -935,11 +935,11 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Swinging Strike",
-              "0-2: Ball",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 1 2 Ball",
+              "4 1 2 Foul",
+              "5 1 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P27172 strikes out swinging."
@@ -951,14 +951,14 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Ball",
-              "1-1: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Ball",
-              "2-2: Foul Ball, location: 2F",
-              "2-2: In play"
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 1 2 Foul",
+              "5 1 2 Foul",
+              "6 2 2 Ball",
+              "7 2 2 Foul",
+              "8 2 2 In play, no out"
             ],
             "type": "event",
             "value": "P52411 double (Line Drive, 9D)."
@@ -970,11 +970,11 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Foul Ball, location: 2F",
-              "2-1: Ball",
-              "3-1: Ball"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
             ],
             "type": "event",
             "value": "P1440 base on Balls."
@@ -986,10 +986,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Ball",
-              "3-0: Ball"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 4 0 Ball"
             ],
             "type": "event",
             "value": "P49980 base on Balls. P52411 to third. P1440 to second."
@@ -1001,7 +1001,7 @@
           },
           {
             "sequence": [
-              "0-0: In play"
+              "1 0 0 In play, run(s)"
             ],
             "type": "event",
             "value": "P21191 double (Line Drive, 7LM). P52411 scores. P1440 scores. P49980 to third."
@@ -1018,10 +1018,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Foul Ball, location: 2F",
-              "1-1: Ball",
-              "2-1: In play"
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 1 In play, run(s)"
             ],
             "type": "event",
             "value": "P38603 single (Groundball, 6S) (infield hit). P49980 scores. P21191 to third."
@@ -1033,10 +1033,10 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Ball",
-              "1-1: Called Strike",
-              "1-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Called Strike",
+              "4 1 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P50287 strikes out swinging."
@@ -1048,8 +1048,8 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: In play"
+              "1 1 0 Ball",
+              "2 1 0 In play, run(s)"
             ],
             "type": "event",
             "value": "P37049 single (Flyball, 6MD). P21191 scores. P38603 to second. Runner from 2nd tries for 3rd, SAFE, throw made to third. P37049 to second."
@@ -1061,14 +1061,14 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Ball",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Called Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 1 2 Foul",
+              "5 1 3 Called Strike"
             ],
             "type": "event",
-            "value": "P29806 strikes out looking."
+            "value": "P29806 called out on s."
           }
         ]
       }
@@ -1092,10 +1092,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: Ball",
-              "2-1: In play"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P50259 ground out U3 (Groundball, 34)."
@@ -1107,8 +1107,8 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: In play"
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
             ],
             "type": "event",
             "value": "P25140 fly out, F4 (Popup, 4)."
@@ -1120,12 +1120,12 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: Ball",
-              "2-1: Foul Ball, location: 2F",
-              "2-2: Foul Ball, location: 2F",
-              "2-2: Swinging Strike"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 2 Foul",
+              "5 2 2 Foul",
+              "6 2 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P36650 strikes out swinging."
@@ -1145,10 +1145,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Ball",
-              "2-0: Called Strike",
-              "2-1: In play"
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 2 1 In play, no out"
             ],
             "type": "event",
             "value": "P27172 reached on error, E6 (Line Drive, 6MD)."
@@ -1160,12 +1160,12 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Ball",
-              "1-1: Foul Ball, location: 2F",
-              "1-2: Foul Ball, location: 2F",
-              "1-2: Ball",
-              "2-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 1 2 Foul",
+              "5 2 2 Ball",
+              "6 2 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P52411 strikes out swinging."
@@ -1177,8 +1177,8 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: In play"
+              "1 0 1 Called Strike",
+              "2 0 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P1440 fly out, F3 (Popup, 3S)."
@@ -1190,9 +1190,9 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P49980 strikes out swinging."
@@ -1214,12 +1214,12 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Called Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 3 Called Strike"
             ],
             "type": "event",
-            "value": "P50897 strikes out looking."
+            "value": "P50897 called out on s."
           },
           {
             "subtype": "batting",
@@ -1228,9 +1228,9 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Swinging Strike",
-              "1-1: In play"
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 1 1 In play, no out"
             ],
             "type": "event",
             "value": "P27218 double (Line Drive, 9LS)."
@@ -1242,7 +1242,7 @@
           },
           {
             "sequence": [
-              "0-0: In play"
+              "1 0 0 In play, no out"
             ],
             "type": "event",
             "value": "P35161 intentional Walk."
@@ -1254,8 +1254,8 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: In play"
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
             ],
             "type": "event",
             "value": "P50302 grounds into double play, 5-4-3 (Groundball, 5)."
@@ -1280,9 +1280,9 @@
           },
           {
             "sequence": [
-              "0-0: Swinging Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: In play"
+              "1 0 1 Swinging Strike",
+              "2 0 2 Foul",
+              "3 0 2 In play, no out"
             ],
             "type": "event",
             "value": "P21191 single (Groundball, 5D)."
@@ -1294,13 +1294,13 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Swinging Strike",
-              "0-2: Ball",
-              "1-2: Called Strike"
+              "1 0 1 Foul",
+              "2 0 2 Swinging Strike",
+              "3 1 2 Ball",
+              "4 1 3 Called Strike"
             ],
             "type": "event",
-            "value": "P38603 strikes out looking."
+            "value": "P38603 called out on s."
           },
           {
             "subtype": "batting",
@@ -1309,10 +1309,10 @@
           },
           {
             "sequence": [
-              "0-0: Ball",
-              "1-0: Called Strike",
-              "1-1: Swinging Strike",
-              "1-2: Swinging Strike"
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Swinging Strike",
+              "4 1 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P50287 strikes out swinging."
@@ -1324,9 +1324,9 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Called Strike",
-              "0-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P37049 strikes out swinging."
@@ -1353,9 +1353,9 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Ball",
-              "1-1: In play"
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
             ],
             "type": "event",
             "value": "P28737 fly out, F8 (Flyball, 8LS)."
@@ -1367,10 +1367,10 @@
           },
           {
             "sequence": [
-              "0-0: Foul Ball, location: 2F",
-              "0-1: Ball",
-              "1-1: Ball",
-              "2-1: In play"
+              "1 0 1 Foul",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 1 In play, no out"
             ],
             "type": "event",
             "value": "P2174 single (Flyball, 9LS)."
@@ -1382,15 +1382,15 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Ball",
-              "1-2: Ball",
-              "2-2: Ball",
-              "3-2: Foul Ball, location: 2F",
-              "3-2: In play"
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 Foul",
+              "4 0 2 Foul",
+              "5 1 2 Ball",
+              "6 2 2 Ball",
+              "7 3 2 Ball",
+              "8 3 2 Foul",
+              "9 3 2 In play, out(s)"
             ],
             "type": "event",
             "value": "P50259 fly out, F9 (Flyball, 9LS)."
@@ -1402,8 +1402,8 @@
           },
           {
             "sequence": [
-              "0-0: Swinging Strike",
-              "0-1: In play"
+              "1 0 1 Swinging Strike",
+              "2 0 1 In play, no out"
             ],
             "type": "event",
             "value": "P25140 reached on error, E5 (Groundball, 5S). P2174 to third."
@@ -1415,15 +1415,15 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Foul Ball, location: 2F",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Ball",
-              "1-2: Called Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 Foul",
+              "4 0 2 Foul",
+              "5 1 2 Ball",
+              "6 1 3 Called Strike"
             ],
             "type": "event",
-            "value": "P36650 strikes out looking."
+            "value": "P36650 called out on s."
           }
         ]
       },
@@ -1445,10 +1445,10 @@
           },
           {
             "sequence": [
-              "0-0: Called Strike",
-              "0-1: Swinging Strike",
-              "0-2: Foul Ball, location: 2F",
-              "0-2: Swinging Strike"
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 2 Foul",
+              "4 0 3 Swinging Strike"
             ],
             "type": "event",
             "value": "P29806 strikes out swinging."
@@ -1460,7 +1460,7 @@
           },
           {
             "sequence": [
-              "0-0: In play"
+              "1 0 0 In play, no out"
             ],
             "type": "event",
             "value": "P27172 single (Line Drive, 8RS)."
@@ -1472,7 +1472,7 @@
           },
           {
             "sequence": [
-              "0-0: In play"
+              "1 0 0 In play, out(s)"
             ],
             "type": "event",
             "value": "P52411 ground out 4-3 (Groundball, 4S). P27172 to second."
@@ -1484,15 +1484,15 @@
           },
           {
             "sequence": [
-              "0-0: Swinging Strike",
-              "0-1: Ball",
-              "1-1: Ball",
-              "2-1: Swinging Strike",
-              "2-2: Ball",
-              "3-2: Called Strike"
+              "1 0 1 Swinging Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 2 Swinging Strike",
+              "5 3 2 Ball",
+              "6 3 3 Called Strike"
             ],
             "type": "event",
-            "value": "P1440 strikes out looking."
+            "value": "P1440 called out on s."
           }
         ]
       }

@@ -216,6 +216,15 @@ class Gameday(Registrable):
 
         return ret
 
+    @staticmethod
+    def _badge(pitch, sequence):
+        p = '<div class="badge badge-pill alert-{0} mr-12p">{1}</div>'
+        if 'In play' in sequence:
+            return p.format('primary', pitch) + sequence
+        if 'Ball' in sequence:
+            return p.format('success', pitch) + sequence
+        return p.format('danger', pitch) + sequence
+
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
             'breadcrumbs': [{
@@ -256,7 +265,7 @@ class Gameday(Registrable):
                 log_table = table(
                     hcols=[' colspan="2" class="position-relative"'],
                     head=[logo_absolute(teamid, half['label'], 'left')],
-                    bcols=[' class="w-50"', ' class="w-50"'],
+                    bcols=['', ' class="text-secondary w-55p"'],
                     body=[])
                 plays_table = table(
                     hcols=[' colspan="2" class="position-relative"'],
@@ -270,15 +279,21 @@ class Gameday(Registrable):
                             log_table['body'].append([text, ''])
                             plays_table['body'].append([text])
                         elif play['subtype'] == 'batting':
+                            if log_table['body']:
+                                log_table['body'].append(['&nbsp;', '&nbsp;'])
                             log_table['body'].append(['Batting: ' + value, ''])
                         else:
                             log_table['body'].append([value, ''])
                     elif play['type'] == 'event':
                         for s in play['sequence']:
-                            log_table['body'].append(['', s])
+                            pitch, balls, strikes, value = s.split(' ', 3)
+                            badge = self._badge(pitch, value)
+                            count = '' if 'In play' in s else '{}-{}'.format(
+                                balls, strikes)
+                            log_table['body'].append([badge, count])
                         if play['value']:
                             value = game_sub(play['value'])
-                            log_table['body'].append(['', value])
+                            log_table['body'].append([value, ''])
                             plays_table['body'].append([value])
                 if half['footer']:
                     log_table['fcols'] = [' colspan="2"']
@@ -313,6 +328,7 @@ class Gameday(Registrable):
         ret['tabs']['tabs'].append(plays)
         return ret
 
+
 # from plugin.statsplus.statsplus import Statsplus
 # from util.datetime_.datetime_ import datetime_now
 # from util.jinja2_.jinja2_ import env
@@ -320,17 +336,13 @@ class Gameday(Registrable):
 # date = datetime_now()
 # e = env()
 # statsplus = Statsplus(date=date, e=e)
+
+# for encoded_date in statsplus.data['scores']:
+#     for score in statsplus.data['scores'][encoded_date]:
+#         id_ = re.findall('(\d+)\.html', score)[0]
+#         statsplus._extract(encoded_date, id_)
 # statsplus._extract('2024-05-22T00:00:00-07:00', '1161')
+
 # gameday = Gameday(date=date, e=e)
 # gameday.data['games'] = ['1161']
-# gameday._setup_internal(date=date)
-
-# from util.datetime_.datetime_ import datetime_now
-# from util.jinja2_.jinja2_ import env
-
-# date = datetime_now()
-# e = env()
-# gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1161']
-# gameday._check_games()
 # gameday._setup_internal(date=date)

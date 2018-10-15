@@ -193,24 +193,29 @@ _game = {
                 table(
                     clazz='border mt-3',
                     hcols=[' colspan="2" class="position-relative"'],
-                    bcols=[' class="w-50"', ' class="w-50"'],
+                    bcols=['', ' class="text-secondary w-55p"'],
                     fcols=[' colspan="2"'],
                     head=[logo_absolute('31', 'Top 1st', 'left')],
-                    body=[['Pitching: 101', ''], ['Batting: 102', ''], [
-                        '', '0-0: Ball'
-                    ], ['', '1-0: In play'], [
-                        '', '102 fly out, F7 (Flyball, 7LSF).'
-                    ], ['Batting: 103', ''], ['', '0-0: In play'], [
-                        '', '103 single (Groundball, 56).'
-                    ], ['Batting: 104', ''], ['', '0-0: In play'], [
-                        '', '104 single (Groundball, 6MS) (infield hit). '
-                        '103 to second.'
-                    ], ['Batting: 105', ''], ['', '0-0: In play'], [
-                        '', '105 fly out, F9 (Flyball, 9).'
-                    ], ['Batting: 106', ''], ['', '0-0: Swinging Strike'], [
-                        '', '0-1: Foul Ball, location: 2F'
-                    ], ['', '0-2: Swinging Strike'],
-                          ['', '106 strikes out swinging.']],
+                    body=[['Pitching: 101', ''], ['&nbsp;', '&nbsp;'], [
+                        'Batting: 102', ''
+                    ], [Gameday._badge('1', 'Ball'),
+                        '1-0'], [Gameday._badge('2', 'In play, out(s)'), ''], [
+                            '102 fly out, F7 (Flyball, 7LSF).', ''
+                        ], ['&nbsp;', '&nbsp;'], ['Batting: 103', ''], [
+                            Gameday._badge('1', 'In play, no out'), ''
+                        ], ['103 single (Groundball, 56).',
+                            ''], ['&nbsp;', '&nbsp;'], ['Batting: 104', ''],
+                          [Gameday._badge('1', 'In play, no out'), ''], [
+                              '104 single (Groundball, 6MS) (infield hit). '
+                              '103 to second.', ''
+                          ], ['&nbsp;', '&nbsp;'], ['Batting: 105', ''], [
+                              Gameday._badge('1', 'In play, out(s)'), ''
+                          ], ['105 fly out, F9 (Flyball, 9).', ''],
+                          ['&nbsp;', '&nbsp;'], ['Batting: 106', ''], [
+                              Gameday._badge('1', 'Swinging Strike'), '0-1'
+                          ], [Gameday._badge('2', 'Foul'), '0-2'], [
+                              Gameday._badge('3', 'Swinging Strike'), '0-3'
+                          ], ['106 strikes out swinging.', '']],
                     foot=[
                         '0 run(s), 2 hit(s), 0 error(s), 2 left on base; '
                         'Arizona Diamondbacks 0 - Los Angeles Dodgers 0'
@@ -320,7 +325,7 @@ _game_data = {
             'value': 'P102'
         }, {
             'type': 'event',
-            'sequence': ['0-0: Ball', '1-0: In play'],
+            'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
             'value': 'P102 fly out, F7 (Flyball, 7LSF).'
         }, {
             'type': 'sub',
@@ -328,7 +333,7 @@ _game_data = {
             'value': 'P103'
         }, {
             'type': 'event',
-            'sequence': ['0-0: In play'],
+            'sequence': ['1 0 0 In play, no out'],
             'value': 'P103 single (Groundball, 56).'
         }, {
             'type': 'sub',
@@ -337,7 +342,7 @@ _game_data = {
         }, {
             'type':
             'event',
-            'sequence': ['0-0: In play'],
+            'sequence': ['1 0 0 In play, no out'],
             'value':
             'P104 single (Groundball, 6MS) (infield hit). P103 '
             'to second.'
@@ -347,7 +352,7 @@ _game_data = {
             'value': 'P105'
         }, {
             'type': 'event',
-            'sequence': ['0-0: In play'],
+            'sequence': ['1 0 0 In play, out(s)'],
             'value': 'P105 fly out, F9 (Flyball, 9).'
         }, {
             'type': 'sub',
@@ -356,10 +361,8 @@ _game_data = {
         }, {
             'type':
             'event',
-            'sequence': [
-                '0-0: Swinging Strike', '0-1: Foul Ball, location: 2F',
-                '0-2: Swinging Strike'
-            ],
+            'sequence':
+            ['1 0 1 Swinging Strike', '2 0 2 Foul', '3 0 3 Swinging Strike'],
             'value':
             'P106 strikes out swinging.'
         }]

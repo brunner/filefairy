@@ -60,6 +60,10 @@ def _play_sub(subtype, value):
     return {'type': 'sub', 'subtype': subtype, 'value': value}
 
 
+def _sequence(pitch, balls, strikes, value):
+    return '{} {} {} {}'.format(pitch, balls, strikes, value)
+
+
 def _value(batting, values, during=False):
     if values:
         values0 = ('With {} batting, ' if during else '{} ').format(batting)
@@ -200,12 +204,13 @@ def parse_game_log(link):
                 else:
                     play.append(_play_sub('other', l))
             elif r:
-                sequence, values = [], []
+                p, b, s, sequence, values = 0, 0, 0, [], []
                 for part in r.split('<br>'):
                     if not part:
                         continue
                     value = _find('^\d-\d: (.+?)$', part, re.DOTALL)
                     if value:
+                        p += 1
                         if values:
                             play.append(
                                 _play_event(
@@ -213,24 +218,33 @@ def parse_game_log(link):
                                     _value(batting, values, during=True)))
                             sequence, values = [], []
                         if _find('Base on Balls', value):
-                            sequence.append(
-                                part.replace('Base on Balls', 'Ball'))
+                            b += 1
+                            sequence.append(_sequence(p, b, s, 'Ball'))
                             values.append(value)
                         elif _find('Strikes out swinging', value):
-                            sequence.append(
-                                part.replace('Strikes out swinging',
-                                             'Swinging Strike'))
+                            s += 1
+                            sequence.append(_sequence(p, b, s, 'Swinging Strike'))
                             values.append(value)
                         elif _find('Strikes out looking', value):
-                            sequence.append(
-                                part.replace('Strikes out looking',
-                                             'Called Strike'))
-                            values.append('Called out on strikes')
-                        elif _find('Ball|Strike|Bunted foul', value):
-                            sequence.append(
-                                part.replace(' Ball, location: 2F', ''))
+                            s += 1
+                            sequence.append(_sequence(p, b, s, 'Called Strike'))
+                            values.append('Called out on s')
+                        elif _find('Bunted foul', value):
+                            s += 1
+                            sequence.append(_sequence(p, b, s, 'Missed Bunt'))
+                            if _find('Strikeout', value):
+                                values.append('Strikes out on a missed bunt')
+                        elif _find('Foul Ball', value):
+                            s = min(2, s + 1)
+                            sequence.append(_sequence(p, b, s, 'Foul'))
+                        elif _find('Strike', value):
+                            s += 1
+                            sequence.append(_sequence(p, b, s, value))
+                        elif _find('Ball', value):
+                            b += 1
+                            sequence.append(_sequence(p, b, s, value))
                         else:
-                            sequence.append(part.replace(value, 'In play'))
+                            sequence.append(_sequence(p, b, s, 'In play'))
                             values.append(value)
                     else:
                         values.append(part)
