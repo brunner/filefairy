@@ -187,6 +187,8 @@ class StatslabTest(unittest.TestCase):
 
         mock_urlopen.assert_called_once_with(link)
 
+    maxDiff = None
+
     @mock.patch('util.statslab.statslab.urlopen')
     def test_game_log__with_valid_link(self, mock_urlopen):
         content = _game_log_sub.format('Arizona Diamondbacks',
@@ -204,7 +206,7 @@ class StatslabTest(unittest.TestCase):
             'P105': '105',
             'P106': '106'
         }
-        plays = [{
+        plays = [[{
             'label':
             'Top 1st',
             'batting':
@@ -213,30 +215,60 @@ class StatslabTest(unittest.TestCase):
             'RHP P101',
             'footer':
             '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
-            'pitch': [{
-                'before': ['Pitching: RHP P101', 'Batting: RHB P102'],
-                'result': '0-0: Ball'
+            'play': [{
+                'type': 'sub',
+                'subtype': 'pitching',
+                'value': 'P101'
             }, {
-                'result': '1-0: Fly out, F7  (Flyball, 7LSF)'
+                'type': 'sub',
+                'subtype': 'batting',
+                'value': 'P102'
             }, {
-                'before': ['Batting: LHB P103'],
-                'result': '0-0: SINGLE  (Groundball, 56)'
+                'type': 'event',
+                'sequence': ['0-0: Ball', '1-0: In play'],
+                'value': 'P102 fly out, F7 (Flyball, 7LSF).'
             }, {
-                'after': ['P103 to second'],
-                'before': ['Batting: RHB P104'],
-                'result': '0-0: SINGLE  (Groundball, 6MS) (infield hit)'
+                'type': 'sub',
+                'subtype': 'batting',
+                'value': 'P103'
             }, {
-                'before': ['Batting: SHB P105'],
-                'result': '0-0:  Fly out, F9  (Flyball, 9)'
+                'type': 'event',
+                'sequence': ['0-0: In play'],
+                'value': 'P103 single (Groundball, 56).'
             }, {
-                'before': ['Batting: LHB P106'],
-                'result': '0-0: Swinging Strike'
+                'type': 'sub',
+                'subtype': 'batting',
+                'value': 'P104'
             }, {
-                'result': '0-1: Foul Ball, location: 2F'
+                'type':
+                'event',
+                'sequence': ['0-0: In play'],
+                'value':
+                'P104 single (Groundball, 6MS) (infield hit). P103 '
+                'to second.'
             }, {
-                'result': '0-2: Strikes out  swinging'
+                'type': 'sub',
+                'subtype': 'batting',
+                'value': 'P105'
+            }, {
+                'type': 'event',
+                'sequence': ['0-0: In play'],
+                'value': 'P105 fly out, F9 (Flyball, 9).'
+            }, {
+                'type': 'sub',
+                'subtype': 'batting',
+                'value': 'P106'
+            }, {
+                'type':
+                'event',
+                'sequence': [
+                    '0-0: Swinging Strike', '0-1: Foul Ball, location: 2F',
+                    '0-2: Swinging Strike'
+                ],
+                'value':
+                'P106 strikes out swinging.'
             }]
-        }]
+        }]]
         expected = _log('2998', 'Arizona Diamondbacks', _now_encoded,
                         'Los Angeles Dodgers', player, plays)
         self.assertEqual(actual, expected)

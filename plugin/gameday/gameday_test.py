@@ -182,6 +182,8 @@ _game = {
         'name': 'Diamondbacks at Dodgers, 10/09/2022'
     }],
     'tabs': {
+        'style':
+        'tabs',
         'tabs': [{
             'name':
             'log',
@@ -193,13 +195,24 @@ _game = {
                     hcols=[' colspan="2" class="position-relative"'],
                     bcols=[' class="w-50"', ' class="w-50"'],
                     fcols=[' colspan="2"'],
-                    head=[
-                        logo_absolute('31', 'Top 1st', 'left')
-                    ],
-                    body=[['Batting: SHB 102', '0-0: Ball'],
-                          ['', '103 to second']],
+                    head=[logo_absolute('31', 'Top 1st', 'left')],
+                    body=[['Pitching: 101', ''], ['Batting: 102', ''], [
+                        '', '0-0: Ball'
+                    ], ['', '1-0: In play'], [
+                        '', '102 fly out, F7 (Flyball, 7LSF).'
+                    ], ['Batting: 103', ''], ['', '0-0: In play'], [
+                        '', '103 single (Groundball, 56).'
+                    ], ['Batting: 104', ''], ['', '0-0: In play'], [
+                        '', '104 single (Groundball, 6MS) (infield hit). '
+                        '103 to second.'
+                    ], ['Batting: 105', ''], ['', '0-0: In play'], [
+                        '', '105 fly out, F9 (Flyball, 9).'
+                    ], ['Batting: 106', ''], ['', '0-0: Swinging Strike'], [
+                        '', '0-1: Foul Ball, location: 2F'
+                    ], ['', '0-2: Swinging Strike'],
+                          ['', '106 strikes out swinging.']],
                     foot=[
-                        '0 run(s), 0 hit(s), 0 error(s), 0 left on base; '
+                        '0 run(s), 2 hit(s), 0 error(s), 2 left on base; '
                         'Arizona Diamondbacks 0 - Los Angeles Dodgers 0'
                     ])
             ]
@@ -237,6 +250,37 @@ _game = {
                                '10/27/1985 v Arizona Diamondbacks')
                     ]]),
             ]
+        }, {
+            'name': 'plays',
+            'title': 'Plays',
+            'tabs': {
+                'style':
+                'pills',
+                'tabs': [{
+                    'name':
+                    'plays-1',
+                    'title':
+                    '1',
+                    'tables': [
+                        table(
+                            clazz='border mt-3',
+                            hcols=[' colspan="2" class="position-relative"'],
+                            head=[logo_absolute('31', 'Top 1st', 'left')],
+                            body=[['Pitching: 101'], [
+                                '102 fly out, F7 (Flyball, 7LSF).'
+                            ], ['103 single (Groundball, 56).'], [
+                                '104 single (Groundball, 6MS) (infield hit). '
+                                '103 to second.'
+                            ], ['105 fly out, F9 (Flyball, 9).'],
+                                  ['106 strikes out swinging.']],
+                            foot=[
+                                '0 run(s), 2 hit(s), 0 error(s), 2 left on '
+                                'base; Arizona Diamondbacks 0 - Los Angeles '
+                                'Dodgers 0'
+                            ])
+                    ]
+                }]
+            }
         }]
     }
 }
@@ -252,9 +296,12 @@ _game_data = {
     'player': {
         'P101': '101',
         'P102': '102',
-        'P103': '103'
+        'P103': '103',
+        'P104': '104',
+        'P105': '105',
+        'P106': '106',
     },
-    'plays': [{
+    'plays': [[{
         'label':
         'Top 1st',
         'batting':
@@ -262,13 +309,61 @@ _game_data = {
         'pitching':
         'LHP P101',
         'footer':
-        '0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 0 - T45 0',
-        'pitch': [{
-            'before': ['Batting: SHB P102'],
-            'result': '0-0: Ball',
-            'after': ['P103 to second']
+        '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
+        'play': [{
+            'type': 'sub',
+            'subtype': 'pitching',
+            'value': 'P101'
+        }, {
+            'type': 'sub',
+            'subtype': 'batting',
+            'value': 'P102'
+        }, {
+            'type': 'event',
+            'sequence': ['0-0: Ball', '1-0: In play'],
+            'value': 'P102 fly out, F7 (Flyball, 7LSF).'
+        }, {
+            'type': 'sub',
+            'subtype': 'batting',
+            'value': 'P103'
+        }, {
+            'type': 'event',
+            'sequence': ['0-0: In play'],
+            'value': 'P103 single (Groundball, 56).'
+        }, {
+            'type': 'sub',
+            'subtype': 'batting',
+            'value': 'P104'
+        }, {
+            'type':
+            'event',
+            'sequence': ['0-0: In play'],
+            'value':
+            'P104 single (Groundball, 6MS) (infield hit). P103 '
+            'to second.'
+        }, {
+            'type': 'sub',
+            'subtype': 'batting',
+            'value': 'P105'
+        }, {
+            'type': 'event',
+            'sequence': ['0-0: In play'],
+            'value': 'P105 fly out, F9 (Flyball, 9).'
+        }, {
+            'type': 'sub',
+            'subtype': 'batting',
+            'value': 'P106'
+        }, {
+            'type':
+            'event',
+            'sequence': [
+                '0-0: Swinging Strike', '0-1: Foul Ball, location: 2F',
+                '0-2: Swinging Strike'
+            ],
+            'value':
+            'P106 strikes out swinging.'
         }]
-    }]
+    }]]
 }
 
 
@@ -344,6 +439,8 @@ class GamedayTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
+
+    maxDiff = None
 
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')

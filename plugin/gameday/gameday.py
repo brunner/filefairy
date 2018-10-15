@@ -229,6 +229,7 @@ class Gameday(Registrable):
                 'name': subtitle
             }],
             'tabs': {
+                'style': 'tabs',
                 'tabs': []
             }
         }
@@ -240,26 +241,56 @@ class Gameday(Registrable):
         home_decoding = encoding_to_decoding(home_team)
 
         log_tables = []
-        for plays in game_data['plays']:
-            teamid = encoding_to_teamid(plays['batting'])
-            _table = table(
-                hcols=[' colspan="2" class="position-relative"'],
-                head=[logo_absolute(teamid, plays['label'], 'left')],
-                bcols=[' class="w-50"', ' class="w-50"'],
-                body=[])
-            for pitch in plays['pitch']:
-                before_list = pitch.get('before', [''])
-                for before in before_list[:-1]:
-                    _table['body'].append([game_sub(before), ''])
-                _table['body'].append(
-                    [game_sub(before_list[-1]),
-                     game_sub(pitch['result'])])
-                for after in pitch.get('after', []):
-                    _table['body'].append(['', game_sub(after)])
-            if plays['footer']:
-                _table['fcols'] = [' colspan="2"']
-                _table['foot'] = [game_sub(plays['footer'])]
-            log_tables.append(_table)
+        plays = {
+            'name': 'plays',
+            'title': 'Plays',
+            'tabs': {
+                'style': 'pills',
+                'tabs': []
+            }
+        }
+        for i, inning in enumerate(game_data['plays']):
+            plays_tables = []
+            for half in inning:
+                teamid = encoding_to_teamid(half['batting'])
+                log_table = table(
+                    hcols=[' colspan="2" class="position-relative"'],
+                    head=[logo_absolute(teamid, half['label'], 'left')],
+                    bcols=[' class="w-50"', ' class="w-50"'],
+                    body=[])
+                plays_table = table(
+                    hcols=[' colspan="2" class="position-relative"'],
+                    head=[logo_absolute(teamid, half['label'], 'left')],
+                    body=[])
+                for play in half['play']:
+                    if play['type'] == 'sub':
+                        value = game_sub(play['value'])
+                        if play['subtype'] == 'pitching':
+                            text = 'Pitching: ' + value
+                            log_table['body'].append([text, ''])
+                            plays_table['body'].append([text])
+                        elif play['subtype'] == 'batting':
+                            log_table['body'].append(['Batting: ' + value, ''])
+                        else:
+                            log_table['body'].append([value, ''])
+                    elif play['type'] == 'event':
+                        for s in play['sequence']:
+                            log_table['body'].append(['', s])
+                        if play['value']:
+                            value = game_sub(play['value'])
+                            log_table['body'].append(['', value])
+                            plays_table['body'].append([value])
+                if half['footer']:
+                    log_table['fcols'] = [' colspan="2"']
+                    log_table['foot'] = [game_sub(half['footer'])]
+                    plays_table['foot'] = [game_sub(half['footer'])]
+                log_tables.append(log_table)
+                plays_tables.append(plays_table)
+            plays['tabs']['tabs'].append({
+                'name': 'plays-' + str(i + 1),
+                'title': str(i + 1),
+                'tables': plays_tables
+            })
         ret['tabs']['tabs'].append({
             'name': 'log',
             'title': 'Game Log',
@@ -279,7 +310,9 @@ class Gameday(Registrable):
             'tables': schedule_tables
         })
 
+        ret['tabs']['tabs'].append(plays)
         return ret
+
 
 # from util.datetime_.datetime_ import datetime_now
 # from util.jinja2_.jinja2_ import env
@@ -287,6 +320,6 @@ class Gameday(Registrable):
 # date = datetime_now()
 # e = env()
 # gameday = Gameday(date=date, e=e)
-# # gameday.data['games'] = ['1039']
+# gameday.data['games'] = ['1161']
 # gameday._check_games()
 # gameday._setup_internal(date=date)

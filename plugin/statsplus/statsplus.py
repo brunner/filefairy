@@ -553,4 +553,4 @@ class Statsplus(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-05-13T00:00:00-07:00', '1039')
+# statsplus._extract('2024-05-22T00:00:00-07:00', '1161')
