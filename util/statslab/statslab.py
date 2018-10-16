@@ -223,12 +223,14 @@ def parse_game_log(link):
                             values.append(value)
                         elif _find('Strikes out swinging', value):
                             s += 1
-                            sequence.append(_sequence(p, b, s, 'Swinging Strike'))
+                            sequence.append(
+                                _sequence(p, b, s, 'Swinging Strike'))
                             values.append(value)
                         elif _find('Strikes out looking', value):
                             s += 1
-                            sequence.append(_sequence(p, b, s, 'Called Strike'))
-                            values.append('Called out on s')
+                            sequence.append(
+                                _sequence(p, b, s, 'Called Strike'))
+                            values.append('Called out on strikes')
                         elif _find('Bunted foul', value):
                             s += 1
                             sequence.append(_sequence(p, b, s, 'Missed Bunt'))

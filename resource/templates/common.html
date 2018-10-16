@@ -185,9 +185,6 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 
 {% macro tabs(data) -%}
 <!-- ^(common.tabs) -->
-<div class="container">
-<div class="row">
-<div class="col-12">
 
 <!-- ^(common.tabs.tabs) -->
 <ul class="nav nav-{{ data.style }} flex-nowrap mt-3" role="tablist">
@@ -232,8 +229,5 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 </div>
 <!-- $(common.tabs.content) -->
 
-</div>
-</div>
-</div>
 <!-- $(common.tabs) -->
 {%- endmacro -%}

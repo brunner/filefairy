@@ -265,10 +265,10 @@ class Gameday(Registrable):
                 log_table = table(
                     hcols=[' colspan="2" class="position-relative"'],
                     head=[logo_absolute(teamid, half['label'], 'left')],
-                    bcols=['', ' class="text-secondary w-55p"'],
+                    bcols=['', ' class="text-center text-secondary w-55p"'],
                     body=[])
                 plays_table = table(
-                    hcols=[' colspan="2" class="position-relative"'],
+                    hcols=[' class="position-relative"'],
                     head=[logo_absolute(teamid, half['label'], 'left')],
                     body=[])
                 for play in half['play']:
@@ -345,4 +345,5 @@ class Gameday(Registrable):
 
 # gameday = Gameday(date=date, e=e)
 # gameday.data['games'] = ['1161']
+# gameday._check_games()
 # gameday._setup_internal(date=date)

@@ -75,11 +75,23 @@ a.disabled{
 .mr-12p {
   margin-right: 12px;
 }
-.nav {
+.nav-pills {
   overflow-x: auto;
+  overflow-y: hidden;
 }
 .navbar {
   padding: 0;
+}
+.nav-pills .nav-item {
+  margin: 0 .25rem;
+  min-width: 32px;
+  text-align: center;
+}
+.nav-pills .nav-link {
+  padding: .25rem 0;
+}
+.nav-pills .nav-link:not(.active) {
+  border: 1px solid #dee2e6;
 }
 .pl-24p {
   padding-left: 24px;
@@ -165,10 +177,16 @@ a.disabled{
 <!-- ^(base.main) -->
 <main role="main" class="pb-3">
 
-<!-- ^(common.tabs) -->
+<!-- ^(game.container) -->
 <div class="container">
+
+<!-- ^(game.row) -->
 <div class="row">
+
+<!-- ^(game.column) -->
 <div class="col-12">
+
+<!-- ^(common.tabs) -->
 
 <!-- ^(common.tabs.tabs) -->
 <ul class="nav nav- flex-nowrap mt-3" role="tablist">
@@ -375,10 +393,16 @@ Schedule
 </div>
 <!-- $(common.tabs.content) -->
 
-</div>
-</div>
-</div>
 <!-- $(common.tabs) -->
+
+</div>
+<!-- ^(game.column) -->
+
+</div>
+<!-- ^(game.row) -->
+
+</div>
+<!-- $(game.container) -->
 
 </main>
 <!-- $(base.main) -->

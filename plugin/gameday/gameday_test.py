@@ -193,7 +193,7 @@ _game = {
                 table(
                     clazz='border mt-3',
                     hcols=[' colspan="2" class="position-relative"'],
-                    bcols=['', ' class="text-secondary w-55p"'],
+                    bcols=['', ' class="text-center text-secondary w-55p"'],
                     fcols=[' colspan="2"'],
                     head=[logo_absolute('31', 'Top 1st', 'left')],
                     body=[['Pitching: 101', ''], ['&nbsp;', '&nbsp;'], [
@@ -269,7 +269,7 @@ _game = {
                     'tables': [
                         table(
                             clazz='border mt-3',
-                            hcols=[' colspan="2" class="position-relative"'],
+                            hcols=[' class="position-relative"'],
                             head=[logo_absolute('31', 'Top 1st', 'left')],
                             body=[['Pitching: 101'], [
                                 '102 fly out, F7 (Flyball, 7LSF).'
