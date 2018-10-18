@@ -6,6 +6,10 @@ def anchor(url, content):
     return '<a href="{}">{}</a>'.format(url, content)
 
 
+def bold(text):
+    return span(['font-weight-bold'], text)
+
+
 def card(href='',
          title='',
          info='',
@@ -35,6 +39,10 @@ def show(trigger, text):
 def replace(text, replace):
     s = '<a class="repl-toggler" href="#" role="button" data-repl="{}">{}</a>'
     return s.format(replace, text)
+
+
+def secondary(text):
+    return span(['text-secondary'], text)
 
 
 def span(classes, text):

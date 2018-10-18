@@ -14,7 +14,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
 from util.component.component import anchor  # noqa
-from util.component.component import span  # noqa
+from util.component.component import bold  # noqa
+from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -33,53 +34,36 @@ _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
 _s31 = logo_absolute('31', anchor('/gameday/2998/', 'Arizona Diamondbacks'),
                      'left')
-_s32 = logo_absolute('32', span(['text-secondary'], 'Atlanta Braves'), 'left')
-_s33 = logo_absolute('33', span(['text-secondary'], 'Baltimore Orioles'),
-                     'left')
-_s34 = logo_absolute('34', span(['text-secondary'], 'Boston Red Sox'), 'left')
-_s35 = logo_absolute('35', span(['text-secondary'], 'Chicago White Sox'),
-                     'left')
-_s36 = logo_absolute('36', span(['text-secondary'], 'Chicago Cubs'), 'left')
-_s37 = logo_absolute('37', span(['text-secondary'], 'Cincinnati Reds'), 'left')
-_s38 = logo_absolute('38', span(['text-secondary'], 'Cleveland Indians'),
-                     'left')
-_s39 = logo_absolute('39', span(['text-secondary'], 'Colorado Rockies'),
-                     'left')
-_s40 = logo_absolute('40', span(['text-secondary'], 'Detroit Tigers'), 'left')
-_s41 = logo_absolute('41', span(['text-secondary'], 'Miami Marlins'), 'left')
-_s42 = logo_absolute('42', span(['text-secondary'], 'Houston Astros'), 'left')
-_s43 = logo_absolute('43', span(['text-secondary'], 'Kansas City Royals'),
-                     'left')
-_s44 = logo_absolute('44', span(['text-secondary'], 'Los Angeles Angels'),
-                     'left')
+_s32 = logo_absolute('32', secondary('Atlanta Braves'), 'left')
+_s33 = logo_absolute('33', secondary('Baltimore Orioles'), 'left')
+_s34 = logo_absolute('34', secondary('Boston Red Sox'), 'left')
+_s35 = logo_absolute('35', secondary('Chicago White Sox'), 'left')
+_s36 = logo_absolute('36', secondary('Chicago Cubs'), 'left')
+_s37 = logo_absolute('37', secondary('Cincinnati Reds'), 'left')
+_s38 = logo_absolute('38', secondary('Cleveland Indians'), 'left')
+_s39 = logo_absolute('39', secondary('Colorado Rockies'), 'left')
+_s40 = logo_absolute('40', secondary('Detroit Tigers'), 'left')
+_s41 = logo_absolute('41', secondary('Miami Marlins'), 'left')
+_s42 = logo_absolute('42', secondary('Houston Astros'), 'left')
+_s43 = logo_absolute('43', secondary('Kansas City Royals'), 'left')
+_s44 = logo_absolute('44', secondary('Los Angeles Angels'), 'left')
 _s45 = logo_absolute('45', anchor('/gameday/2998/', 'Los Angeles Dodgers'),
                      'left')
-_s46 = logo_absolute('46', span(['text-secondary'], 'Milwaukee Brewers'),
-                     'left')
-_s47 = logo_absolute('47', span(['text-secondary'], 'Minnesota Twins'), 'left')
-_s48 = logo_absolute('48', span(['text-secondary'], 'New York Yankees'),
-                     'left')
-_s49 = logo_absolute('49', span(['text-secondary'], 'New York Mets'), 'left')
-_s50 = logo_absolute('50', span(['text-secondary'], 'Oakland Athletics'),
-                     'left')
-_s51 = logo_absolute('51', span(['text-secondary'], 'Philadelphia Phillies'),
-                     'left')
-_s52 = logo_absolute('52', span(['text-secondary'], 'Pittsburgh Pirates'),
-                     'left')
-_s53 = logo_absolute('53', span(['text-secondary'], 'San Diego Padres'),
-                     'left')
-_s54 = logo_absolute('54', span(['text-secondary'], 'Seattle Mariners'),
-                     'left')
-_s55 = logo_absolute('55', span(['text-secondary'], 'San Francisco Giants'),
-                     'left')
-_s56 = logo_absolute('56', span(['text-secondary'], 'St. Louis Cardinals'),
-                     'left')
-_s57 = logo_absolute('57', span(['text-secondary'], 'Tampa Bay Rays'), 'left')
-_s58 = logo_absolute('58', span(['text-secondary'], 'Texas Rangers'), 'left')
-_s59 = logo_absolute('59', span(['text-secondary'], 'Toronto Blue Jays'),
-                     'left')
-_s60 = logo_absolute('60', span(['text-secondary'], 'Washington Nationals'),
-                     'left')
+_s46 = logo_absolute('46', secondary('Milwaukee Brewers'), 'left')
+_s47 = logo_absolute('47', secondary('Minnesota Twins'), 'left')
+_s48 = logo_absolute('48', secondary('New York Yankees'), 'left')
+_s49 = logo_absolute('49', secondary('New York Mets'), 'left')
+_s50 = logo_absolute('50', secondary('Oakland Athletics'), 'left')
+_s51 = logo_absolute('51', secondary('Philadelphia Phillies'), 'left')
+_s52 = logo_absolute('52', secondary('Pittsburgh Pirates'), 'left')
+_s53 = logo_absolute('53', secondary('San Diego Padres'), 'left')
+_s54 = logo_absolute('54', secondary('Seattle Mariners'), 'left')
+_s55 = logo_absolute('55', secondary('San Francisco Giants'), 'left')
+_s56 = logo_absolute('56', secondary('St. Louis Cardinals'), 'left')
+_s57 = logo_absolute('57', secondary('Tampa Bay Rays'), 'left')
+_s58 = logo_absolute('58', secondary('Texas Rangers'), 'left')
+_s59 = logo_absolute('59', secondary('Toronto Blue Jays'), 'left')
+_s60 = logo_absolute('60', secondary('Washington Nationals'), 'left')
 
 _gameday = {
     'breadcrumbs': [{
@@ -170,6 +154,39 @@ _gameday = {
             ])
     ]
 }
+
+_log_body = [
+    ['Pitching: 101', ''],
+    ['&nbsp;', '&nbsp;'],
+    ['Batting: 102', ''],
+    [Gameday._badge('1', 'Ball'), '1-0'],
+    [Gameday._badge('2', 'In play, out(s)'), ''],
+    ['102 Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
+    ['&nbsp;', '&nbsp;'], ['Batting: 103', ''],
+    [Gameday._badge('1', 'In play, no out'), ''],
+    ['103 SINGLE (Groundball, 56)*.', ''],
+    ['&nbsp;', '&nbsp;'], ['Batting: 104', ''],
+    [Gameday._badge('1', 'In play, no out'), ''],
+    ['104 SINGLE (Groundball, 6MS) (infield hit)*. 103 to second*.', ''],
+    ['&nbsp;', '&nbsp;'], ['Batting: 105', ''],
+    [Gameday._badge('1', 'In play, out(s)'), ''],
+    ['105 Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
+    ['&nbsp;', '&nbsp;'], ['Batting: 106', ''],
+    [Gameday._badge('1', 'Swinging Strike'), '0-1'],
+    [Gameday._badge('2', 'Foul'), '0-2'],
+    [Gameday._badge('3', 'Swinging Strike'), '0-3'],
+    ['106 strikes out swinging. ' + bold('3 out.'), '']
+]  # yapf: disable
+
+_plays_body = [
+    ['Pitching: 101'],
+    ['102 Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.')],
+    ['103 SINGLE (Groundball, 56)*.'],
+    ['104 SINGLE (Groundball, 6MS) (infield hit)*. 103 to second*.'],
+    ['105 Fly out, F9 (Flyball, 9)*. ' + bold('2 out.')],
+    ['106 strikes out swinging. ' + bold('3 out.')]
+]  # yapf: disable
+
 _game = {
     'breadcrumbs': [{
         'href': '/',
@@ -196,26 +213,7 @@ _game = {
                     bcols=['', ' class="text-center text-secondary w-55p"'],
                     fcols=[' colspan="2"'],
                     head=[logo_absolute('31', 'Top 1st', 'left')],
-                    body=[['Pitching: 101', ''], ['&nbsp;', '&nbsp;'], [
-                        'Batting: 102', ''
-                    ], [Gameday._badge('1', 'Ball'),
-                        '1-0'], [Gameday._badge('2', 'In play, out(s)'), ''], [
-                            '102 fly out, F7 (Flyball, 7LSF).', ''
-                        ], ['&nbsp;', '&nbsp;'], ['Batting: 103', ''], [
-                            Gameday._badge('1', 'In play, no out'), ''
-                        ], ['103 single (Groundball, 56).',
-                            ''], ['&nbsp;', '&nbsp;'], ['Batting: 104', ''],
-                          [Gameday._badge('1', 'In play, no out'), ''], [
-                              '104 single (Groundball, 6MS) (infield hit). '
-                              '103 to second.', ''
-                          ], ['&nbsp;', '&nbsp;'], ['Batting: 105', ''], [
-                              Gameday._badge('1', 'In play, out(s)'), ''
-                          ], ['105 fly out, F9 (Flyball, 9).', ''],
-                          ['&nbsp;', '&nbsp;'], ['Batting: 106', ''], [
-                              Gameday._badge('1', 'Swinging Strike'), '0-1'
-                          ], [Gameday._badge('2', 'Foul'), '0-2'], [
-                              Gameday._badge('3', 'Swinging Strike'), '0-3'
-                          ], ['106 strikes out swinging.', '']],
+                    body=_log_body,
                     foot=[
                         '0 run(s), 2 hit(s), 0 error(s), 2 left on base; '
                         'Arizona Diamondbacks 0 - Los Angeles Dodgers 0'
@@ -233,10 +231,7 @@ _game = {
                 table(
                     clazz='table-fixed border',
                     body=[
-                        [
-                            span(['text-secondary'],
-                                 '10/26/1985 @ Los Angeles Dodgers')
-                        ],
+                        [secondary('10/26/1985 @ Los Angeles Dodgers')],
                         [
                             anchor('/gameday/2999/',
                                    '10/27/1985 @ Los Angeles Dodgers')
@@ -247,10 +242,7 @@ _game = {
                     head=['Los Angeles Dodgers']),
                 table(
                     clazz='table-fixed border',
-                    body=[[
-                        span(['text-secondary'],
-                             '10/26/1985 v Arizona Diamondbacks')
-                    ], [
+                    body=[[secondary('10/26/1985 v Arizona Diamondbacks')], [
                         anchor('/gameday/2999/',
                                '10/27/1985 v Arizona Diamondbacks')
                     ]]),
@@ -271,13 +263,7 @@ _game = {
                             clazz='border mt-3',
                             hcols=[' class="position-relative"'],
                             head=[logo_absolute('31', 'Top 1st', 'left')],
-                            body=[['Pitching: 101'], [
-                                '102 fly out, F7 (Flyball, 7LSF).'
-                            ], ['103 single (Groundball, 56).'], [
-                                '104 single (Groundball, 6MS) (infield hit). '
-                                '103 to second.'
-                            ], ['105 fly out, F9 (Flyball, 9).'],
-                                  ['106 strikes out swinging.']],
+                            body=_plays_body,
                             foot=[
                                 '0 run(s), 2 hit(s), 0 error(s), 2 left on '
                                 'base; Arizona Diamondbacks 0 - Los Angeles '
@@ -325,16 +311,18 @@ _game_data = {
             'value': 'P102'
         }, {
             'type': 'event',
+            'outs': 1,
             'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-            'value': 'P102 fly out, F7 (Flyball, 7LSF).'
+            'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.'
         }, {
             'type': 'sub',
             'subtype': 'batting',
             'value': 'P103'
         }, {
             'type': 'event',
+            'outs': 0,
             'sequence': ['1 0 0 In play, no out'],
-            'value': 'P103 single (Groundball, 56).'
+            'value': 'P103 SINGLE (Groundball, 56)*.'
         }, {
             'type': 'sub',
             'subtype': 'batting',
@@ -342,18 +330,21 @@ _game_data = {
         }, {
             'type':
             'event',
+            'outs':
+            0,
             'sequence': ['1 0 0 In play, no out'],
             'value':
-            'P104 single (Groundball, 6MS) (infield hit). P103 '
-            'to second.'
+            'P104 SINGLE (Groundball, 6MS) (infield hit)*. P103 '
+            'to second*.'
         }, {
             'type': 'sub',
             'subtype': 'batting',
             'value': 'P105'
         }, {
             'type': 'event',
+            'outs': 1,
             'sequence': ['1 0 0 In play, out(s)'],
-            'value': 'P105 fly out, F9 (Flyball, 9).'
+            'value': 'P105 Fly out, F9 (Flyball, 9)*.'
         }, {
             'type': 'sub',
             'subtype': 'batting',
@@ -361,6 +352,8 @@ _game_data = {
         }, {
             'type':
             'event',
+            'outs':
+            1,
             'sequence':
             ['1 0 1 Swinging Strike', '2 0 2 Foul', '3 0 3 Swinging Strike'],
             'value':

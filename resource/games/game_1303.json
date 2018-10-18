@@ -53,6 +53,7 @@
             "value": "P21306"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -61,7 +62,7 @@
               "5 2 2 In play, no out"
             ],
             "type": "event",
-            "value": "P21306 double (Flyball, 78XD)."
+            "value": "P21306 DOUBLE (Flyball, 78XD)*."
           },
           {
             "subtype": "batting",
@@ -69,12 +70,13 @@
             "value": "P34118"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 0 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P34118 ground out 6-3 (Groundball, 6)."
+            "value": "P34118 Ground out 6-3 (Groundball, 6)*."
           },
           {
             "subtype": "batting",
@@ -82,6 +84,7 @@
             "value": "P26894"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Called Strike",
@@ -96,12 +99,13 @@
             "value": "P45075"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P45075 double (Groundball, 3L). P21306 scores."
+            "value": "P45075 DOUBLE (Groundball, 3L)*. P21306 scores*."
           },
           {
             "subtype": "batting",
@@ -109,6 +113,7 @@
             "value": "P48806"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -117,7 +122,7 @@
               "5 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P48806 ground out 1-3 (Groundball, 15)."
+            "value": "P48806 Ground out 1-3 (Groundball, 15)*."
           }
         ]
       },
@@ -138,6 +143,7 @@
             "value": "P35777"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -147,7 +153,7 @@
               "6 4 2 Ball"
             ],
             "type": "event",
-            "value": "P35777 base on Balls."
+            "value": "P35777 walks."
           },
           {
             "subtype": "batting",
@@ -155,6 +161,7 @@
             "value": "P29769"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -162,7 +169,7 @@
               "4 1 2 In play, no out"
             ],
             "type": "event",
-            "value": "P29769 single (Groundball, 3S) (infield hit). P35777 to second."
+            "value": "P29769 SINGLE (Groundball, 3S) (infield hit)*. P35777 to second*."
           },
           {
             "subtype": "batting",
@@ -170,11 +177,12 @@
             "value": "P29822"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P29822 fly out, F6 (Popup, 6M)."
+            "value": "P29822 Fly out, F6 (Popup, 6M)*."
           },
           {
             "subtype": "batting",
@@ -182,13 +190,14 @@
             "value": "P21579"
           },
           {
+            "outs": 2,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P21579 grounds into double play, 4-6-3 (Groundball, 4)."
+            "value": "P21579 Grounds into double play, 4-6-3 (Groundball, 4)*."
           }
         ]
       }
@@ -206,6 +215,7 @@
             "value": "P28672"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -214,7 +224,7 @@
               "5 3 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28672 ground out 5-3 (Groundball, 25)."
+            "value": "P28672 Ground out 5-3 (Groundball, 25)*."
           },
           {
             "subtype": "batting",
@@ -222,6 +232,7 @@
             "value": "P27062"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -229,7 +240,7 @@
               "4 1 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P27062 ground out U3 (Groundball, 34S)."
+            "value": "P27062 Ground out U3 (Groundball, 34S)*."
           },
           {
             "subtype": "batting",
@@ -237,6 +248,7 @@
             "value": "P29146"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -261,13 +273,14 @@
             "value": "P25200"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P25200 fly out, F9 (Line Drive, 9)."
+            "value": "P25200 Fly out, F9 (Line Drive, 9)*."
           },
           {
             "subtype": "batting",
@@ -275,13 +288,14 @@
             "value": "P28985"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
               "3 1 1 In play, no out"
             ],
             "type": "event",
-            "value": "P28985 single (Line Drive, 56D)."
+            "value": "P28985 SINGLE (Line Drive, 56D)*."
           },
           {
             "subtype": "batting",
@@ -289,14 +303,16 @@
             "value": "P30062"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball"
             ],
             "type": "event",
-            "value": "With P30062 batting, wild Pitch! P28985 to second."
+            "value": "With P30062 batting, Wild Pitch!*. P28985 to second*."
           },
           {
+            "outs": 1,
             "sequence": [
               "3 2 1 Foul",
               "4 2 2 Foul",
@@ -313,6 +329,7 @@
             "value": "P37613"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -320,7 +337,7 @@
               "4 0 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P37613 fly out, F7 (Flyball, 78D)."
+            "value": "P37613 Fly out, F7 (Flyball, 78D)*."
           }
         ]
       }
@@ -338,6 +355,7 @@
             "value": "P30024"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Swinging Strike",
@@ -354,6 +372,7 @@
             "value": "P21306"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -375,13 +394,14 @@
             "value": "P34118"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
               "3 2 0 In play, no out"
             ],
             "type": "event",
-            "value": "P34118 single (Groundball, 56D)."
+            "value": "P34118 SINGLE (Groundball, 56D)*."
           },
           {
             "subtype": "batting",
@@ -389,6 +409,7 @@
             "value": "P26894"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 0 2 Foul",
@@ -411,11 +432,12 @@
             "value": "P19907"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P19907 fly out, F3 (Popup, 3S)."
+            "value": "P19907 Fly out, F3 (Popup, 3S)*."
           },
           {
             "subtype": "batting",
@@ -423,6 +445,7 @@
             "value": "P35777"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Called Strike",
@@ -432,7 +455,7 @@
               "6 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P35777 ground out 6-3 (Groundball, 6M)."
+            "value": "P35777 Ground out 6-3 (Groundball, 6M)*."
           },
           {
             "subtype": "batting",
@@ -440,6 +463,7 @@
             "value": "P29769"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Called Strike",
@@ -465,12 +489,13 @@
             "value": "P45075"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, no out"
             ],
             "type": "event",
-            "value": "P45075 single (Line Drive, 4M)."
+            "value": "P45075 SINGLE (Line Drive, 4M)*."
           },
           {
             "subtype": "batting",
@@ -478,6 +503,7 @@
             "value": "P48806"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 1 Swinging Strike",
               "2 1 1 Ball",
@@ -487,7 +513,7 @@
               "6 4 2 Ball"
             ],
             "type": "event",
-            "value": "P48806 base on Balls. P45075 to second."
+            "value": "P48806 walks. P45075 to second*."
           },
           {
             "subtype": "batting",
@@ -495,6 +521,7 @@
             "value": "P28672"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -503,15 +530,16 @@
               "5 2 2 Ball"
             ],
             "type": "event",
-            "value": "With P28672 batting, wild Pitch! P45075 to third. P48806 to second."
+            "value": "With P28672 batting, Wild Pitch!*. P45075 to third*. P48806 to second*."
           },
           {
+            "outs": 1,
             "sequence": [
               "6 2 2 Foul",
               "7 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28672 ground out 3-1 (Groundball, 3S)."
+            "value": "P28672 Ground out 3-1 (Groundball, 3S)*."
           },
           {
             "subtype": "batting",
@@ -519,6 +547,7 @@
             "value": "P27062"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -535,11 +564,12 @@
             "value": "P29146"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 0 In play, no out"
             ],
             "type": "event",
-            "value": "P29146 intentional Walk."
+            "value": "P29146 Intentional Walk*."
           },
           {
             "subtype": "batting",
@@ -547,11 +577,12 @@
             "value": "P30024"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P30024 fly out, F7 (Flyball, 7)."
+            "value": "P30024 Fly out, F7 (Flyball, 7)*."
           }
         ]
       },
@@ -567,12 +598,13 @@
             "value": "P29822"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 0 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P29822 fly out, F7 (Flyball, 7LSF)."
+            "value": "P29822 Fly out, F7 (Flyball, 7LSF)*."
           },
           {
             "subtype": "batting",
@@ -580,12 +612,13 @@
             "value": "P21579"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, no out"
             ],
             "type": "event",
-            "value": "P21579 single (Groundball, 56D)."
+            "value": "P21579 SINGLE (Groundball, 56D)*."
           },
           {
             "subtype": "batting",
@@ -593,11 +626,12 @@
             "value": "P25200"
           },
           {
+            "outs": 2,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P25200 grounds into double play, 4-6-3 (Groundball, 34)."
+            "value": "P25200 Grounds into double play, 4-6-3 (Groundball, 34)*."
           }
         ]
       }
@@ -615,6 +649,7 @@
             "value": "P21306"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -623,7 +658,7 @@
               "5 3 1 In play, no out"
             ],
             "type": "event",
-            "value": "P21306 single (Flyball, 8RS)."
+            "value": "P21306 SINGLE (Flyball, 8RS)*."
           },
           {
             "subtype": "batting",
@@ -631,6 +666,7 @@
             "value": "P34118"
           },
           {
+            "outs": 2,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -638,7 +674,7 @@
               "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P34118 grounds into double play, 5-4-3 (Groundball, 5L)."
+            "value": "P34118 Grounds into double play, 5-4-3 (Groundball, 5L)*."
           },
           {
             "subtype": "batting",
@@ -646,6 +682,7 @@
             "value": "P26894"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Swinging Strike",
@@ -653,7 +690,7 @@
               "4 1 3 Swinging Strike"
             ],
             "type": "event",
-            "value": "P26894 strikes out swinging passed ball, reaches first!"
+            "value": "P26894 strikes out swinging."
           },
           {
             "subtype": "batting",
@@ -661,12 +698,13 @@
             "value": "P45075"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 0 1 In play, no out"
             ],
             "type": "event",
-            "value": "P45075 reached via error on a dropped throw, E3. P26894 to second."
+            "value": "P45075 Reached via error on a dropped throw, E3*. P26894 to second*."
           },
           {
             "subtype": "batting",
@@ -674,12 +712,13 @@
             "value": "P48806"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P48806 fly out, F8 (Flyball, 89D)."
+            "value": "P48806 Fly out, F8 (Flyball, 89D)*."
           }
         ]
       },
@@ -695,11 +734,12 @@
             "value": "P28985"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28985 fly out, F7 (Line Drive, 7)."
+            "value": "P28985 Fly out, F7 (Line Drive, 7)*."
           },
           {
             "subtype": "batting",
@@ -707,6 +747,7 @@
             "value": "P30062"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -714,7 +755,7 @@
               "4 4 0 Ball"
             ],
             "type": "event",
-            "value": "P30062 base on Balls."
+            "value": "P30062 walks."
           },
           {
             "subtype": "batting",
@@ -722,12 +763,13 @@
             "value": "P37613"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, no out"
             ],
             "type": "event",
-            "value": "P37613 single (Groundball, 56D). P30062 to second."
+            "value": "P37613 SINGLE (Groundball, 56D)*. P30062 to second*."
           },
           {
             "subtype": "batting",
@@ -735,6 +777,7 @@
             "value": "P25186"
           },
           {
+            "outs": 2,
             "sequence": [
               "1 0 1 Foul",
               "2 0 2 Called Strike",
@@ -743,7 +786,7 @@
               "5 1 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P25186 grounds into double play, 4-6-3 (Groundball, 34)."
+            "value": "P25186 Grounds into double play, 4-6-3 (Groundball, 34)*."
           }
         ]
       }
@@ -766,13 +809,14 @@
             "value": "P28672"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Swinging Strike",
               "3 0 3 Swinging Strike"
             ],
             "type": "event",
-            "value": "P28672 strikes out swinging, 2-3 out at first.."
+            "value": "P28672 strikes out swinging."
           },
           {
             "subtype": "batting",
@@ -780,6 +824,7 @@
             "value": "P27062"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -788,7 +833,7 @@
               "5 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P27062 ground out U3 (Groundball, 3S)."
+            "value": "P27062 Ground out U3 (Groundball, 3S)*."
           },
           {
             "subtype": "batting",
@@ -796,6 +841,7 @@
             "value": "P29146"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -803,7 +849,7 @@
               "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P29146 fly out, F5 (Line Drive, 56)."
+            "value": "P29146 Fly out, F5 (Line Drive, 56)*."
           }
         ]
       },
@@ -819,6 +865,7 @@
             "value": "P35777"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Swinging Strike",
               "2 1 1 Ball",
@@ -831,7 +878,7 @@
               "9 3 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P35777 ground out 3-1 (Groundball, 34S)."
+            "value": "P35777 Ground out 3-1 (Groundball, 34S)*."
           },
           {
             "subtype": "batting",
@@ -839,6 +886,7 @@
             "value": "P29769"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -847,7 +895,7 @@
               "5 4 1 Ball"
             ],
             "type": "event",
-            "value": "P29769 base on Balls."
+            "value": "P29769 walks."
           },
           {
             "subtype": "batting",
@@ -855,12 +903,13 @@
             "value": "P29822"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, no out"
             ],
             "type": "event",
-            "value": "P29822 single (Groundball, 4D). P29769 to second. Runner from 2nd tries for 3rd, SAFE, throw made to third."
+            "value": "P29822 SINGLE (Groundball, 4D)*. P29769 to second*. Runner from 2nd tries for 3rd, SAFE, throw made to third*."
           },
           {
             "subtype": "batting",
@@ -868,12 +917,13 @@
             "value": "P21579"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 1 In play, run(s)"
             ],
             "type": "event",
-            "value": "P21579 single (Groundball, 6MD). P29769 scores. P29822 to second."
+            "value": "P21579 SINGLE (Groundball, 6MD)*. P29769 scores*. P29822 to second*."
           },
           {
             "subtype": "batting",
@@ -881,13 +931,14 @@
             "value": "P25200"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
               "3 1 1 In play, run(s)"
             ],
             "type": "event",
-            "value": "P25200 single (Line Drive, 3D). P29822 to third. P21579 to second. Runner from 3rd tries for Home, SAFE, no throw."
+            "value": "P25200 SINGLE (Line Drive, 3D)*. P29822 to third*. P21579 to second*. Runner from 3rd tries for Home, SAFE, no throw*."
           },
           {
             "subtype": "batting",
@@ -895,6 +946,7 @@
             "value": "P28985"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Swinging Strike",
@@ -912,6 +964,7 @@
             "value": "P30062"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -919,14 +972,15 @@
               "4 3 1 Ball"
             ],
             "type": "event",
-            "value": "With P30062 batting, passed Ball! P21579 to third. P25200 to second."
+            "value": "With P30062 batting, Passed Ball!*. P21579 to third*. P25200 to second*."
           },
           {
+            "outs": 0,
             "sequence": [
               "5 4 1 Ball"
             ],
             "type": "event",
-            "value": "P30062 base on Balls."
+            "value": "P30062 walks."
           },
           {
             "subtype": "batting",
@@ -934,12 +988,13 @@
             "value": "P37613"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P37613 double (Line Drive, 7LD). P21579 scores. P25200 scores. P30062 to third."
+            "value": "P37613 DOUBLE (Line Drive, 7LD)*. P21579 scores*. P25200 scores*. P30062 to third*."
           },
           {
             "subtype": "batting",
@@ -947,13 +1002,14 @@
             "value": "P49974"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P49974 fly out, F6 (Popup, 6MD)."
+            "value": "P49974 Fly out, F6 (Popup, 6MD)*."
           }
         ]
       }
@@ -976,6 +1032,7 @@
             "value": "P23700"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -993,6 +1050,7 @@
             "value": "P21306"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
@@ -1009,11 +1067,12 @@
             "value": "P34118"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P34118 fly out, F7 (Flyball, 78S)."
+            "value": "P34118 Fly out, F7 (Flyball, 78S)*."
           }
         ]
       },
@@ -1034,11 +1093,12 @@
             "value": "P35777"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 0 In play, no out"
             ],
             "type": "event",
-            "value": "P35777 bunt for hit - play at first, batter safe!"
+            "value": "P35777 Bunt for hit - play at first, batter safe!*."
           },
           {
             "subtype": "batting",
@@ -1046,6 +1106,7 @@
             "value": "P29769"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Swinging Strike",
@@ -1053,7 +1114,7 @@
               "4 1 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P29769 fly out, F9 (Flyball, 9S)."
+            "value": "P29769 Fly out, F9 (Flyball, 9S)*."
           },
           {
             "subtype": "batting",
@@ -1061,13 +1122,14 @@
             "value": "P29822"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
               "3 2 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P29822 fly out, F7 (Flyball, 7S)."
+            "value": "P29822 Fly out, F7 (Flyball, 7S)*."
           },
           {
             "subtype": "batting",
@@ -1075,6 +1137,7 @@
             "value": "P21579"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Swinging Strike",
               "2 0 2 Swinging Strike",
@@ -1084,7 +1147,7 @@
               "6 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P21579 ground out 6-3 (Groundball, 56)."
+            "value": "P21579 Ground out 6-3 (Groundball, 56)*."
           }
         ]
       }
@@ -1102,11 +1165,12 @@
             "value": "P26894"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 0 In play, no out"
             ],
             "type": "event",
-            "value": "P26894 double (Line Drive, 9LM)."
+            "value": "P26894 DOUBLE (Line Drive, 9LM)*."
           },
           {
             "subtype": "pitching",
@@ -1119,6 +1183,7 @@
             "value": "P45075"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -1141,12 +1206,13 @@
             "value": "P48806"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Swinging Strike",
               "2 0 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P48806 fly out, F5 (Popup, 5D)."
+            "value": "P48806 Fly out, F5 (Popup, 5D)*."
           },
           {
             "subtype": "batting",
@@ -1154,13 +1220,14 @@
             "value": "P28672"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
               "3 0 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28672 ground out 4-3 (Groundball, 4)."
+            "value": "P28672 Ground out 4-3 (Groundball, 4)*."
           }
         ]
       },
@@ -1176,11 +1243,12 @@
             "value": "P25200"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 0 0 In play, no out"
             ],
             "type": "event",
-            "value": "P25200 single (Line Drive, 56D)."
+            "value": "P25200 SINGLE (Line Drive, 56D)*."
           },
           {
             "subtype": "batting",
@@ -1188,11 +1256,12 @@
             "value": "P28985"
           },
           {
+            "outs": 2,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28985 grounds into double play, 4-6-3 (Groundball, 4)."
+            "value": "P28985 Grounds into double play, 4-6-3 (Groundball, 4)*."
           },
           {
             "subtype": "batting",
@@ -1200,6 +1269,7 @@
             "value": "P30062"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -1207,7 +1277,7 @@
               "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P30062 fly out, F9 (Flyball, 89M)."
+            "value": "P30062 Fly out, F9 (Flyball, 89M)*."
           }
         ]
       }
@@ -1230,6 +1300,7 @@
             "value": "P27062"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -1239,7 +1310,7 @@
               "6 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P27062 ground out 6-3 (Groundball, 6MD)."
+            "value": "P27062 Ground out 6-3 (Groundball, 6MD)*."
           },
           {
             "subtype": "batting",
@@ -1247,12 +1318,13 @@
             "value": "P29146"
           },
           {
+            "outs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, no out"
             ],
             "type": "event",
-            "value": "P29146 triple (Line Drive, 9LD)."
+            "value": "P29146 TRIPLE (Line Drive, 9LD)*."
           },
           {
             "subtype": "batting",
@@ -1260,6 +1332,7 @@
             "value": "P25426"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -1267,7 +1340,7 @@
               "4 2 1 In play, run(s)"
             ],
             "type": "event",
-            "value": "P25426 ground out 5-3 (Groundball, 25). P29146 scores."
+            "value": "P25426 Ground out 5-3 (Groundball, 25)*. P29146 scores*."
           },
           {
             "subtype": "pitching",
@@ -1280,6 +1353,7 @@
             "value": "P21306"
           },
           {
+            "outs": 1,
             "sequence": [
               "1 0 1 Swinging Strike",
               "2 1 1 Ball",

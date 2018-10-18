@@ -43,17 +43,33 @@ def _open(link):
 
 
 def _play_event(sequence, value):
+    outs = 0
+    value_lower = value.lower()
     if sequence and 'In play' in sequence[-1]:
-        value_lower = value.lower()
+        check_outs = False
         if any(s in value_lower for s in ['scores', 'home run', 'home, safe']):
             suffix = ', run(s)'
+            check_outs = True
         elif any(s in value_lower
                  for s in ['out', 'double play', 'fielders choice']):
             suffix = ', out(s)'
+            check_outs = True
         else:
             suffix = ', no out'
+        if check_outs:
+            if 'double play' in value_lower:
+                outs = 2
+            else:
+                outs = value_lower.count('out')
         sequence[-1] += suffix
-    return {'type': 'event', 'sequence': sequence, 'value': value}
+    else:
+        outs = value_lower.count('out') + value_lower.count('caught stealing')
+    return {
+        'type': 'event',
+        'outs': outs,
+        'sequence': sequence,
+        'value': value
+    }
 
 
 def _play_sub(subtype, value):
@@ -66,14 +82,8 @@ def _sequence(pitch, balls, strikes, value):
 
 def _value(batting, values, during=False):
     if values:
-        values0 = ('With {} batting, ' if during else '{} ').format(batting)
-        for i, v in enumerate(values[0]):
-            if v.isupper() or v.isspace():
-                values0 += v.lower()
-            else:
-                values0 += values[0][i:]
-                break
-        values[0] = values0
+        prefix = ('With {} batting, ' if during else '{} ').format(batting)
+        values[0] = prefix + values[0]
     return ' '.join([v + ('.' if v[-1] != '!' else '') for v in values])
 
 
@@ -220,22 +230,22 @@ def parse_game_log(link):
                         if _find('Base on Balls', value):
                             b += 1
                             sequence.append(_sequence(p, b, s, 'Ball'))
-                            values.append(value)
+                            values.append('walks')
                         elif _find('Strikes out swinging', value):
                             s += 1
                             sequence.append(
                                 _sequence(p, b, s, 'Swinging Strike'))
-                            values.append(value)
+                            values.append('strikes out swinging')
                         elif _find('Strikes out looking', value):
                             s += 1
                             sequence.append(
                                 _sequence(p, b, s, 'Called Strike'))
-                            values.append('Called out on strikes')
-                        elif _find('Bunted foul', value):
+                            values.append('called out on strikes')
+                        elif _find('Bunted foul|Bunt missed!', value):
                             s += 1
                             sequence.append(_sequence(p, b, s, 'Missed Bunt'))
                             if _find('Strikeout', value):
-                                values.append('Strikes out on a missed bunt')
+                                values.append('strikes out on a missed bunt')
                         elif _find('Foul Ball', value):
                             s = min(2, s + 1)
                             sequence.append(_sequence(p, b, s, 'Foul'))
@@ -247,9 +257,9 @@ def parse_game_log(link):
                             sequence.append(_sequence(p, b, s, value))
                         else:
                             sequence.append(_sequence(p, b, s, 'In play'))
-                            values.append(value)
+                            values.append(value + '*')
                     else:
-                        values.append(part)
+                        values.append(part + '*')
                 if sequence or values:
                     play.append(
                         _play_event(sequence,

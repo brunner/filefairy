@@ -15,7 +15,8 @@ from api.registrable.registrable import Registrable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
-from util.component.component import span  # noqa
+from util.component.component import bold  # noqa
+from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
@@ -153,7 +154,7 @@ class Gameday(Registrable):
             steam = encoding_to_decoding(steam)
             stext = '{} {} {}'.format(sdate, ssymbol, steam)
             if id_ == sid:
-                body.append([span(['text-secondary'], stext)])
+                body.append([secondary(stext)])
             else:
                 url = '/gameday/{}/'.format(sid)
                 body.append([anchor(url, stext)])
@@ -206,7 +207,7 @@ class Gameday(Registrable):
                     sid = schedule_data[encoding][0][3]
                     stext = anchor('/gameday/{}/'.format(sid), decoding)
                 else:
-                    stext = span(['text-secondary'], decoding)
+                    stext = secondary(decoding)
                 body.append([logo_absolute(teamid, stext, 'left')])
             ret['schedule'].append(
                 table(
@@ -271,6 +272,7 @@ class Gameday(Registrable):
                     hcols=[' class="position-relative"'],
                     head=[logo_absolute(teamid, half['label'], 'left')],
                     body=[])
+                outs = 0
                 for play in half['play']:
                     if play['type'] == 'sub':
                         value = game_sub(play['value'])
@@ -291,10 +293,12 @@ class Gameday(Registrable):
                             count = '' if 'In play' in s else '{}-{}'.format(
                                 balls, strikes)
                             log_table['body'].append([badge, count])
-                        if play['value']:
-                            value = game_sub(play['value'])
-                            log_table['body'].append([value, ''])
-                            plays_table['body'].append([value])
+                        value = game_sub(play['value'])
+                        if play['outs']:
+                            outs += play['outs']
+                            value += ' ' + bold('{} out.'.format(outs))
+                        log_table['body'].append([value, ''])
+                        plays_table['body'].append([value])
                 if half['footer']:
                     log_table['fcols'] = [' colspan="2"']
                     log_table['foot'] = [game_sub(half['footer'])]
@@ -341,9 +345,9 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-05-22T00:00:00-07:00', '1161')
+# statsplus._extract('2024-06-02T00:00:00-07:00', '1298')
 
 # gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1161']
+# gameday.data['games'] = ['1298']
 # gameday._check_games()
 # gameday._setup_internal(date=date)
