@@ -419,10 +419,12 @@ _game_data = {
 }
 
 
-def _data(games=None, started=False):
+def _data(games=None, players=None, started=False):
     if games is None:
         games = []
-    return {'games': games, 'started': started}
+    if players is None:
+        players = {}
+    return {'games': games, 'players': players, 'started': started}
 
 
 class GamedayTest(unittest.TestCase):
@@ -454,7 +456,6 @@ class GamedayTest(unittest.TestCase):
     def create_plugin(self, data):
         self.init_mocks(data)
         plugin = Gameday(date=_now, e=_env)
-        plugin.players = _players
 
         self.mock_open.assert_called_once_with(Gameday._data(), 'r')
         self.mock_handle.write.assert_not_called()
@@ -509,7 +510,7 @@ class GamedayTest(unittest.TestCase):
             'T45': [(_then, 'T31', 'v', '2998'), (_now, 'T31', 'v', '2999')],
         }
 
-        plugin = self.create_plugin(_data(games=['2998']))
+        plugin = self.create_plugin(_data(games=['2998'], players=_players))
         response = plugin._render_internal(date=_now)
         gameday_index = 'gameday/index.html'
         game_index = 'gameday/2998/index.html'

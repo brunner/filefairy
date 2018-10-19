@@ -50,7 +50,6 @@ class Gameday(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.colors = {}
-        self.players = {}
 
     @staticmethod
     def _data():
@@ -80,6 +79,9 @@ class Gameday(Registrable):
         return Response()
 
     def _render_internal(self, **kwargs):
+        data = self.data
+        original = copy.deepcopy(data)
+
         recreate(_fairylab_root + '/gameday/')
 
         games = copy.deepcopy(self.data['games'])
@@ -102,6 +104,9 @@ class Gameday(Registrable):
                 html = 'gameday/{}/index.html'.format(id_)
                 ret.append((html, subtitle, 'game.html', game))
 
+        if data != original:
+            self.write()
+
         return ret
 
     def _run_internal(self, **kwargs):
@@ -120,14 +125,15 @@ class Gameday(Registrable):
 
     def _game_repl(self, game_data, m):
         a = m.group(0)
+        data = self.data
         if a.startswith('P'):
-            return self.players[a]['name'] if a in self.players else a
+            return data['players'][a]['name'] if a in data['players'] else a
         if a.startswith('T'):
             return encoding_to_decoding(a)
         return a
 
     def _game_sub(self, game_data):
-        pattern = '|'.join([id_ for id_ in self.players] +
+        pattern = '|'.join([id_ for id_ in self.data['players']] +
                            [game_data['away_team'], game_data['home_team']])
         return partial(re.sub, pattern, partial(self._game_repl, game_data))
 
@@ -177,11 +183,11 @@ class Gameday(Registrable):
 
     def _add_players(self, players):
         for id_ in players:
-            if 'P' + id_ in self.players:
+            if 'P' + id_ in self.data['players']:
                 continue
             link = _html + _player.format(id_)
             player = parse_player(link)
-            self.players['P' + id_] = player
+            self.data['players']['P' + id_] = player
 
     def _check_games(self):
         games = []
@@ -256,20 +262,20 @@ class Gameday(Registrable):
         return div + span
 
     def _atbat(self, id_, colors):
-        if id_ not in self.players:
+        if id_ not in self.data['players']:
             player = _player_default
         else:
-            player = self.players[id_]
+            player = self.data['players'][id_]
         num = player['number']
         s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}'.format(
             num, _smallcaps.get(player['bats'], 'ʀ'), player['name'])
         return self._profile(num, colors, s)
 
     def _pitching(self, id_, colors):
-        if id_ not in self.players:
+        if id_ not in self.data['players']:
             player = _player_default
         else:
-            player = self.players[id_]
+            player = self.data['players'][id_]
         num = player['number']
         s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}'.format(
             num, _smallcaps.get(player['throws'], 'ʀ'), player['name'])
