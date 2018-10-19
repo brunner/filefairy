@@ -15,6 +15,7 @@ from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa
+from util.component.component import profile  # noqa
 from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -199,27 +200,30 @@ _atbat = '<div class="profile position-absolute">{}</div><span class="alig' + \
 _pitching = '<div class="profile position-absolute">{}</div><span class="a' + \
             'lign-middle d-block pl-60p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}</span>'
 
+_c31 = ('#000000', '#acacac', '#e3d4ad', '')
+_c45 = ('#005a9c', '#ffffff', '#ef3e42', '')
+
 _log_body = [
-    [_pitching.format('JA', '1', 'ʀ', 'Jim Alpha'), ''],
-    [_atbat.format('JB', '2', 'ꜱ', 'Jim Beta'), ''],
+    [_pitching.format(profile('1', _c45), '1', 'ʀ', 'Jim Alpha'), ''],
+    [_atbat.format(profile('2', _c31), '2', 'ꜱ', 'Jim Beta'), ''],
     [Gameday._badge('1', 'Ball'), '1-0'],
     [Gameday._badge('2', 'In play, out(s)'), ''],
     ['Jim Beta Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('JC', '3', 'ʟ', 'Jim Charlie'), ''],
+    [_atbat.format(profile('3', _c31), '3', 'ʟ', 'Jim Charlie'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
     ['Jim Charlie SINGLE (Groundball, 56)*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('JD', '4', 'ʀ', 'Jim Delta'), ''],
+    [_atbat.format(profile('4', _c31), '4', 'ʀ', 'Jim Delta'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
     ['Jim Delta SINGLE (Groundball, 6MS) (infield hit)*. Jim Charlie to second'
      '*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('JE', '5', 'ʀ', 'Jim Echo'), ''],
+    [_atbat.format(profile('5', _c31), '5', 'ʀ', 'Jim Echo'), ''],
     [Gameday._badge('1', 'In play, out(s)'), ''],
     ['Jim Echo Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('JF', '6', 'ʟ', 'Jim Foxtrot'), ''],
+    [_atbat.format(profile('6', _c31), '6', 'ʟ', 'Jim Foxtrot'), ''],
     [Gameday._badge('1', 'Swinging Strike'), '0-1'],
     [Gameday._badge('2', 'Foul'), '0-2'],
     [Gameday._badge('3', 'Swinging Strike'), '0-3'],
@@ -357,6 +361,7 @@ _game_data = {
         }, {
             'type': 'event',
             'outs': 1,
+            'runs': 0,
             'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
             'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.'
         }, {
@@ -366,6 +371,7 @@ _game_data = {
         }, {
             'type': 'event',
             'outs': 0,
+            'runs': 0,
             'sequence': ['1 0 0 In play, no out'],
             'value': 'P103 SINGLE (Groundball, 56)*.'
         }, {
@@ -376,6 +382,8 @@ _game_data = {
             'type':
             'event',
             'outs':
+            0,
+            'runs':
             0,
             'sequence': ['1 0 0 In play, no out'],
             'value':
@@ -388,6 +396,7 @@ _game_data = {
         }, {
             'type': 'event',
             'outs': 1,
+            'runs': 0,
             'sequence': ['1 0 0 In play, out(s)'],
             'value': 'P105 Fly out, F9 (Flyball, 9)*.'
         }, {
@@ -399,6 +408,8 @@ _game_data = {
             'event',
             'outs':
             1,
+            'runs':
+            0,
             'sequence':
             ['1 0 1 Swinging Strike', '2 0 2 Foul', '3 0 3 Swinging Strike'],
             'value':
@@ -487,7 +498,10 @@ class GamedayTest(unittest.TestCase):
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')
     @mock.patch('plugin.gameday.gameday.open')
-    def test_render(self, mock_open, mock_recreate, mock_schedule):
+    @mock.patch('plugin.gameday.gameday.choose_colors')
+    def test_render(self, mock_choose, mock_open, mock_recreate,
+                    mock_schedule):
+        mock_choose.side_effect = [_c31, _c45]
         mo = mock.mock_open(read_data=dumps(_game_data))
         mock_open.side_effect = [mo.return_value]
         mock_schedule.return_value = {

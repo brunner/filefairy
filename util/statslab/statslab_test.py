@@ -229,6 +229,7 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type': 'event',
                 'outs': 1,
+                'runs': 0,
                 'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
                 'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.',
             }, {
@@ -238,6 +239,7 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type': 'event',
                 'outs': 0,
+                'runs': 0,
                 'sequence': ['1 0 0 In play, no out'],
                 'value': 'P103 SINGLE (Groundball, 56)*.'
             }, {
@@ -249,6 +251,7 @@ class StatslabTest(unittest.TestCase):
                 'event',
                 'outs':
                 0,
+                'runs': 0,
                 'sequence': ['1 0 0 In play, no out'],
                 'value':
                 'P104 SINGLE (Groundball, 6MS) (infield hit)*. P103 '
@@ -260,6 +263,7 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type': 'event',
                 'outs': 1,
+                'runs': 0,
                 'sequence': ['1 0 0 In play, out(s)'],
                 'value': 'P105 Fly out, F9 (Flyball, 9)*.'
             }, {
@@ -271,6 +275,7 @@ class StatslabTest(unittest.TestCase):
                 'event',
                 'outs':
                 1,
+                'runs': 0,
                 'sequence': [
                     '1 0 1 Swinging Strike', '2 0 2 Foul',
                     '3 0 3 Swinging Strike'

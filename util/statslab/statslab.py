@@ -40,13 +40,25 @@ def _open(link):
 
 
 def _play_event(sequence, value):
-    outs = 0
+    outs, runs = 0, 0
     value_lower = value.lower()
     if sequence and 'In play' in sequence[-1]:
         check_outs = False
         if any(s in value_lower for s in ['scores', 'home run', 'home, safe']):
             suffix = ', run(s)'
             check_outs = True
+            if 'home run' in value_lower:
+                if 'SOLO' in value_lower:
+                    runs = 1
+                elif '2-run' in value_lower:
+                    runs = 2
+                elif '3-run' in value_lower:
+                    runs = 3
+                else:
+                    runs = 4
+            else:
+                runs = value_lower.count('scores') + value_lower.count(
+                    'home, safe')
         elif any(s in value_lower
                  for s in ['out', 'double play', 'fielders choice']):
             suffix = ', out(s)'
@@ -57,13 +69,15 @@ def _play_event(sequence, value):
             if 'double play' in value_lower:
                 outs = 2
             else:
-                outs = value_lower.count('out')
+                outs = value_lower.count('out') + value_lower.count(
+                    'fielders choice')
         sequence[-1] += suffix
     else:
         outs = value_lower.count('out') + value_lower.count('caught stealing')
     return {
         'type': 'event',
         'outs': outs,
+        'runs': runs,
         'sequence': sequence,
         'value': value
     }

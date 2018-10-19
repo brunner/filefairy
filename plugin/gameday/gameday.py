@@ -16,12 +16,16 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa
+from util.component.component import profile  # noqa
 from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.statslab.statslab import parse_player  # noqa
+from util.team.team import choose_colors  # noqa
 from util.team.team import divisions  # noqa
+from util.team.team import encoding_to_abbreviation  # noqa
+from util.team.team import encoding_to_colors  # noqa
 from util.team.team import encoding_to_decoding  # noqa
 from util.team.team import encoding_to_nickname  # noqa
 from util.team.team import encoding_to_teamid  # noqa
@@ -45,6 +49,7 @@ _smallcaps = {'L': 'ʟ', 'R': 'ʀ', 'S': 'ꜱ'}
 class Gameday(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.colors = {}
         self.players = {}
 
     @staticmethod
@@ -67,6 +72,7 @@ class Gameday(Registrable):
         if kwargs['notify'] == Notify.STATSPLUS_SIM:
             self.data['started'] = False
             self.data['games'] = []
+            self.colors = {}
             self.write()
         return Response()
 
@@ -243,31 +249,31 @@ class Gameday(Registrable):
         return p.format('danger', pitch) + sequence
 
     @staticmethod
-    def _profile(name, s):
-        ins = ''.join([word[0].upper() for word in name.split(' ', 2)])
+    def _profile(num, colors, s):
+        ins = profile(num, colors)
         div = '<div class="profile position-absolute">{}</div>'.format(ins)
         span = '<span class="align-middle d-block pl-60p">{}</span>'.format(s)
         return div + span
 
-    def _atbat(self, id_):
+    def _atbat(self, id_, colors):
         if id_ not in self.players:
             player = _player_default
         else:
             player = self.players[id_]
-        name = player['name']
+        num = player['number']
         s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}'.format(
-            player['number'], _smallcaps.get(player['bats'], 'ʀ'), name)
-        return self._profile(name, s)
+            num, _smallcaps.get(player['bats'], 'ʀ'), player['name'])
+        return self._profile(num, colors, s)
 
-    def _pitching(self, id_):
+    def _pitching(self, id_, colors):
         if id_ not in self.players:
             player = _player_default
         else:
             player = self.players[id_]
-        name = player['name']
+        num = player['number']
         s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}'.format(
-            player['number'], _smallcaps.get(player['throws'], 'ʀ'), name)
-        return self._profile(name, s)
+            num, _smallcaps.get(player['throws'], 'ʀ'), player['name'])
+        return self._profile(num, colors, s)
 
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
@@ -295,6 +301,20 @@ class Gameday(Registrable):
         home_team = game_data['home_team']
         home_decoding = encoding_to_decoding(home_team)
 
+        if game_id_ in self.colors:
+            colors = self.colors[game_id_]
+        else:
+            away_colors = encoding_to_colors(away_team)
+            home_colors = encoding_to_colors(home_team)
+            weekday = decode_datetime(game_data['date']).weekday()
+            colors = {
+                away_team: choose_colors(away_colors, weekday, 'away'),
+                home_team: choose_colors(home_colors, weekday, 'home')
+            }
+            self.colors[game_id_] = colors
+
+        runs = {away_team: 0, home_team: 0}
+
         log_tables = []
         plays = {
             'name': 'plays',
@@ -307,6 +327,8 @@ class Gameday(Registrable):
         for i, inning in enumerate(game_data['plays']):
             plays_tables = []
             for half in inning:
+                batting = half['batting']
+                pitching = away_team if away_team != batting else home_team
                 teamid = encoding_to_teamid(half['batting'])
                 log_table = table(
                     hcols=[' colspan="2" class="position-relative"'],
@@ -325,12 +347,15 @@ class Gameday(Registrable):
                     if play['type'] == 'sub':
                         value = game_sub(play['value'])
                         if play['subtype'] == 'pitching':
-                            log_table['body'].append(
-                                [self._pitching(play['value']), ''])
+                            log_table['body'].append([
+                                self._pitching(play['value'],
+                                               colors[pitching]), ''
+                            ])
                             plays_table['body'].append(['Pitching: ' + value])
                         elif play['subtype'] == 'batting':
-                            log_table['body'].append(
-                                [self._atbat(play['value']), ''])
+                            log_table['body'].append([
+                                self._atbat(play['value'], colors[batting]), ''
+                            ])
                         else:
                             log_table['body'].append([value, ''])
                     elif play['type'] == 'event':
@@ -344,6 +369,13 @@ class Gameday(Registrable):
                         if play['outs']:
                             outs += play['outs']
                             value += ' ' + bold('{} out.'.format(outs))
+                        if play['runs']:
+                            runs[batting] += play['runs']
+                            value += ' ' + bold('{} {}, {} {}.'.format(
+                                encoding_to_abbreviation(away_team),
+                                runs[away_team],
+                                encoding_to_abbreviation(home_team),
+                                runs[home_team]))
                         log_table['body'].append([value, ''])
                         if outs < 3:
                             log_table['body'].append(['&nbsp;', '&nbsp;'])
