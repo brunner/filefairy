@@ -4,41 +4,41 @@
   "home_team": "T47",
   "id": "1298",
   "ok": true,
-  "player": {
-    "P22023": "Kennys Vargas",
-    "P23588": "Willie Hall",
-    "P24176": "Joe Soto",
-    "P24322": "Jarid Joseph",
-    "P24499": "Ed Shaw",
-    "P25788": "Andrew Cabezas",
-    "P28483": "Nick Neville",
-    "P29739": "Tyler Duvall",
-    "P29790": "Gavin Lux",
-    "P34032": "Nick Castellanos",
-    "P35554": "C.J. Cron",
-    "P35889": "Andrew McKirahan",
-    "P37031": "Kevin Gausman",
-    "P37114": "Orlando Arcia",
-    "P37294": "Tyrone Taylor",
-    "P38655": "Kohl Stewart",
-    "P38811": "Ryan McMahon",
-    "P39019": "Malik Collymore",
-    "P41189": "Jose Paulino",
-    "P49108": "Dany Rojas",
-    "P50013": "Adam Martin",
-    "P50252": "Jonathan Windham",
-    "P52260": "James Nelson",
-    "P53426": "Clarence Crosby",
-    "P55249": "Jorge S\u00e1nchez",
-    "P57": "Mike Papi"
-  },
+  "players": [
+    "52260",
+    "24499",
+    "37294",
+    "24176",
+    "25788",
+    "29739",
+    "55249",
+    "22023",
+    "29790",
+    "28483",
+    "57",
+    "41189",
+    "50252",
+    "23588",
+    "37114",
+    "34032",
+    "49108",
+    "39019",
+    "37031",
+    "38811",
+    "50013",
+    "35554",
+    "38655",
+    "53426",
+    "35889",
+    "24322"
+  ],
   "plays": [
     [
       {
         "batting": "T58",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T58 0 - T47 0",
         "label": "Top 1st",
-        "pitching": "LHP P41189",
+        "pitching": "P41189",
         "play": [
           {
             "subtype": "pitching",
@@ -101,7 +101,7 @@
         "batting": "T47",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T58 0 - T47 0",
         "label": "Bot 1st",
-        "pitching": "RHP P23588",
+        "pitching": "P23588",
         "play": [
           {
             "subtype": "pitching",
@@ -178,7 +178,7 @@
         "batting": "T58",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T58 0 - T47 0",
         "label": "Top 2nd",
-        "pitching": "LHP P41189",
+        "pitching": "P41189",
         "play": [
           {
             "subtype": "batting",
@@ -245,7 +245,7 @@
         "batting": "T47",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T58 0 - T47 0",
         "label": "Bot 2nd",
-        "pitching": "RHP P23588",
+        "pitching": "P23588",
         "play": [
           {
             "subtype": "batting",
@@ -298,7 +298,7 @@
         "batting": "T58",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T58 0 - T47 0",
         "label": "Top 3rd",
-        "pitching": "LHP P41189",
+        "pitching": "P41189",
         "play": [
           {
             "subtype": "batting",
@@ -358,7 +358,7 @@
         "batting": "T47",
         "footer": "2 run(s), 3 hit(s), 0 error(s), 2 left on base; T58 0 - T47 2",
         "label": "Bot 3rd",
-        "pitching": "RHP P23588",
+        "pitching": "P23588",
         "play": [
           {
             "subtype": "batting",
@@ -474,7 +474,7 @@
         "batting": "T58",
         "footer": "2 run(s), 4 hit(s), 0 error(s), 2 left on base; T58 2 - T47 2",
         "label": "Top 4th",
-        "pitching": "LHP P41189",
+        "pitching": "P41189",
         "play": [
           {
             "subtype": "batting",
@@ -590,7 +590,7 @@
         "batting": "T47",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T58 2 - T47 2",
         "label": "Bot 4th",
-        "pitching": "RHP P23588",
+        "pitching": "P23588",
         "play": [
           {
             "subtype": "batting",
@@ -647,7 +647,7 @@
         "batting": "T58",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T58 2 - T47 2",
         "label": "Top 5th",
-        "pitching": "LHP P41189",
+        "pitching": "P41189",
         "play": [
           {
             "subtype": "batting",
@@ -718,7 +718,7 @@
         "batting": "T47",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T58 2 - T47 2",
         "label": "Bot 5th",
-        "pitching": "RHP P23588",
+        "pitching": "P23588",
         "play": [
           {
             "subtype": "batting",
@@ -788,7 +788,7 @@
         "batting": "T58",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T58 2 - T47 2",
         "label": "Top 6th",
-        "pitching": "LHP P41189",
+        "pitching": "P41189",
         "play": [
           {
             "subtype": "batting",
@@ -842,7 +842,7 @@
         "batting": "T47",
         "footer": "3 run(s), 3 hit(s), 0 error(s), 0 left on base; T58 2 - T47 5",
         "label": "Bot 6th",
-        "pitching": "RHP P23588",
+        "pitching": "P23588",
         "play": [
           {
             "subtype": "batting",
@@ -950,7 +950,7 @@
         "batting": "T58",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T58 2 - T47 5",
         "label": "Top 7th",
-        "pitching": "LHP P41189",
+        "pitching": "P41189",
         "play": [
           {
             "subtype": "batting",
@@ -1038,7 +1038,7 @@
         "batting": "T47",
         "footer": "5 run(s), 5 hit(s), 0 error(s), 1 left on base; T58 2 - T47 10",
         "label": "Bot 7th",
-        "pitching": "RHP P37031",
+        "pitching": "P37031",
         "play": [
           {
             "subtype": "batting",
@@ -1194,7 +1194,7 @@
         "batting": "T58",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T58 2 - T47 10",
         "label": "Top 8th",
-        "pitching": "LHP P35889",
+        "pitching": "P35889",
         "play": [
           {
             "subtype": "other",
@@ -1254,7 +1254,7 @@
         "batting": "T47",
         "footer": "4 run(s), 3 hit(s), 0 error(s), 1 left on base; T58 2 - T47 14",
         "label": "Bot 8th",
-        "pitching": "RHP P38655",
+        "pitching": "P38655",
         "play": [
           {
             "subtype": "batting",
@@ -1394,7 +1394,7 @@
         "batting": "T58",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T58 2 - T47 14",
         "label": "Top 9th",
-        "pitching": "LHP P35889",
+        "pitching": "P35889",
         "play": [
           {
             "subtype": "batting",

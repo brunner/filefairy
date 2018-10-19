@@ -4,43 +4,43 @@
   "home_team": "T36",
   "id": "1303",
   "ok": true,
-  "player": {
-    "P131": "Jake Ehret",
-    "P19907": "Edinxon Arias",
-    "P21306": "Brett Langhorne",
-    "P21579": "Pavin Smith",
-    "P23700": "Jake Cooley",
-    "P25133": "Garrett Hutson",
-    "P25186": "Eric Jenkins",
-    "P25200": "Tekwaan Whyte",
-    "P25426": "Jake Woodford",
-    "P26062": "Graham Lawson",
-    "P26894": "Logan Gillaspie",
-    "P27062": "Abraham Almonte",
-    "P28672": "Nick Plummer",
-    "P28811": "Jesus Castro",
-    "P28985": "Jake Fraley",
-    "P29146": "Nicholos Hamilton",
-    "P29769": "Ryan Leckich",
-    "P29822": "Taylor Trammell",
-    "P30024": "Ryan Kirk",
-    "P30062": "Grant Bodison",
-    "P32459": "Mauro Maldonado",
-    "P34118": "Gregory Polanco",
-    "P35777": "Taylor Featherston",
-    "P37613": "Luis Torrens",
-    "P45075": "Juan Mata",
-    "P48806": "Julio Mendez",
-    "P49974": "Yeremi Rosario",
-    "P50291": "Jonathan Gates"
-  },
+  "players": [
+    "32459",
+    "45075",
+    "21306",
+    "35777",
+    "25133",
+    "21579",
+    "25186",
+    "49974",
+    "34118",
+    "25200",
+    "26062",
+    "30024",
+    "50291",
+    "29822",
+    "131",
+    "29769",
+    "19907",
+    "28985",
+    "25426",
+    "37613",
+    "29146",
+    "30062",
+    "48806",
+    "27062",
+    "28811",
+    "26894",
+    "28672",
+    "23700"
+  ],
   "plays": [
     [
       {
         "batting": "T46",
         "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T46 1 - T36 0",
         "label": "Top 1st",
-        "pitching": "RHP P19907",
+        "pitching": "P19907",
         "play": [
           {
             "subtype": "pitching",
@@ -130,7 +130,7 @@
         "batting": "T36",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T46 1 - T36 0",
         "label": "Bot 1st",
-        "pitching": "RHP P30024",
+        "pitching": "P30024",
         "play": [
           {
             "subtype": "pitching",
@@ -207,7 +207,7 @@
         "batting": "T46",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T46 1 - T36 0",
         "label": "Top 2nd",
-        "pitching": "RHP P19907",
+        "pitching": "P19907",
         "play": [
           {
             "subtype": "batting",
@@ -265,7 +265,7 @@
         "batting": "T36",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T46 1 - T36 0",
         "label": "Bot 2nd",
-        "pitching": "RHP P30024",
+        "pitching": "P30024",
         "play": [
           {
             "subtype": "batting",
@@ -347,7 +347,7 @@
         "batting": "T46",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T46 1 - T36 0",
         "label": "Top 3rd",
-        "pitching": "RHP P19907",
+        "pitching": "P19907",
         "play": [
           {
             "subtype": "batting",
@@ -424,7 +424,7 @@
         "batting": "T36",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T46 1 - T36 0",
         "label": "Bot 3rd",
-        "pitching": "RHP P30024",
+        "pitching": "P30024",
         "play": [
           {
             "subtype": "batting",
@@ -481,7 +481,7 @@
         "batting": "T46",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 3 left on base; T46 1 - T36 0",
         "label": "Top 4th",
-        "pitching": "RHP P19907",
+        "pitching": "P19907",
         "play": [
           {
             "subtype": "batting",
@@ -590,7 +590,7 @@
         "batting": "T36",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T46 1 - T36 0",
         "label": "Bot 4th",
-        "pitching": "RHP P30024",
+        "pitching": "P30024",
         "play": [
           {
             "subtype": "batting",
@@ -641,7 +641,7 @@
         "batting": "T46",
         "footer": "0 run(s), 1 hit(s), 1 error(s), 2 left on base; T46 1 - T36 0",
         "label": "Top 5th",
-        "pitching": "RHP P19907",
+        "pitching": "P19907",
         "play": [
           {
             "subtype": "batting",
@@ -726,7 +726,7 @@
         "batting": "T36",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T46 1 - T36 0",
         "label": "Bot 5th",
-        "pitching": "RHP P30024",
+        "pitching": "P30024",
         "play": [
           {
             "subtype": "batting",
@@ -796,7 +796,7 @@
         "batting": "T46",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T46 1 - T36 0",
         "label": "Top 6th",
-        "pitching": "RHP P19907",
+        "pitching": "P19907",
         "play": [
           {
             "subtype": "pitching",
@@ -857,7 +857,7 @@
         "batting": "T36",
         "footer": "4 run(s), 4 hit(s), 0 error(s), 2 left on base; T46 1 - T36 4",
         "label": "Bot 6th",
-        "pitching": "RHP P30024",
+        "pitching": "P30024",
         "play": [
           {
             "subtype": "batting",
@@ -1019,7 +1019,7 @@
         "batting": "T46",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T46 1 - T36 4",
         "label": "Top 7th",
-        "pitching": "RHP P32459",
+        "pitching": "P32459",
         "play": [
           {
             "subtype": "pitching",
@@ -1080,7 +1080,7 @@
         "batting": "T36",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T46 1 - T36 4",
         "label": "Bot 7th",
-        "pitching": "RHP P30024",
+        "pitching": "P30024",
         "play": [
           {
             "subtype": "pitching",
@@ -1157,7 +1157,7 @@
         "batting": "T46",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T46 1 - T36 4",
         "label": "Top 8th",
-        "pitching": "RHP P25133",
+        "pitching": "P25133",
         "play": [
           {
             "subtype": "batting",
@@ -1235,7 +1235,7 @@
         "batting": "T36",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T46 1 - T36 4",
         "label": "Bot 8th",
-        "pitching": "RHP P25426",
+        "pitching": "P25426",
         "play": [
           {
             "subtype": "batting",
@@ -1287,7 +1287,7 @@
         "batting": "T46",
         "footer": "1 run(s), 1 hit(s), 0 error(s), 0 left on base; T46 2 - T36 4",
         "label": "Top 9th",
-        "pitching": "RHP P131",
+        "pitching": "P131",
         "play": [
           {
             "subtype": "pitching",

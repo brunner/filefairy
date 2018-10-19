@@ -20,9 +20,6 @@ _game_box_line = '<tr style=\"background-color:#FFFFFE;\">(.+?)</tr>'
 _game_box_line_team = '<td class="dl">(?:<b>)?([^<]+)(?:</b>)?</td>'
 _game_box_line_record = '([^(]+) \(([^)]+)\)'
 _game_box_line_runs = '<td class="dc"><b>(\d+)</b></td>'
-_player_title = '<title>Player Report for #\d+  ([^<]+)</title>'
-_player_subtitle = '<div class="repsubtitle">(.+?)</div>'
-_player_team = 'href=\"..\/teams\/team_\d{2}.html">([^<]+)</a>'
 
 
 def _find(regex, text, flags=0):
@@ -158,13 +155,8 @@ def parse_game_log(link):
     d = datetime.datetime.strptime(date, '%m/%d/%Y')
     date = datetime_datetime_pst(d.year, d.month, d.day)
 
-    player = {}
-    regex = '<a href="../players/player_(\d+).html">([^<]+)</a>'
-    for (
-            id_,
-            name,
-    ) in re.findall(regex, content):
-        player['P' + id_] = name
+    regex = '<a href="../players/player_(\d+).html">'
+    players = list(sorted(set(re.findall(regex, content))))
 
     content = re.sub('</?b>', '', content)
     content = re.sub('  ', ' ', content)
@@ -183,7 +175,7 @@ def parse_game_log(link):
         regex = 'style="padding:4px 0px 4px 4px;">(.+?) batting -'
         cell_batting = _find(regex, c, re.DOTALL)
 
-        regex = 'Pitching for \w+ : (.+?)</th>'
+        regex = 'Pitching for \w+ : \w+ (.+?)</th>'
         cell_pitching = _find(regex, c, re.DOTALL)
 
         regex = 'colspan="2">[^-]+- ([^;]+); [^\d]+(\d+) - [^\d]+(\d+)</td>'
@@ -285,7 +277,7 @@ def parse_game_log(link):
         'away_team': away_team,
         'home_team': home_team,
         'date': encode_datetime(date),
-        'player': player,
+        'players': players,
         'plays': plays,
     })
     # except:
@@ -298,20 +290,19 @@ def parse_player(link):
     ret = {'ok': False}
 
     content = _open(link)
-    title = re.findall(_player_title, content)
-    if not title:
-        return dict(ret, error='invalid_title')
+    number, name = _find('Player Report for #(\d+)  ([^<]+)</title>', content)
+    name = re.sub(' \'[^\']+\' ', ' ', name)
+    subtitle = _find('class="repsubtitle">(.+?)</div>', content, re.DOTALL)
+    team = _find('href=\"..\/teams\/team_\d{2}.html">([^<]+)</a>', subtitle)
+    bats, throws = _find('Bats: (\w)[^T]+Throws: (\w)', content)
 
-    name = title[0]
+    ret.update({
+        'ok': True,
+        'bats': bats,
+        'name': name,
+        'number': number,
+        'team': decoding_to_encoding(team),
+        'throws': throws
+    })
 
-    subtitle = re.findall(_player_subtitle, content, re.DOTALL)
-    if not subtitle:
-        return dict(ret, error='invalid_team')
-
-    team = re.findall(_player_team, subtitle[0])
-    if not team:
-        return dict(ret, error='invalid_team')
-
-    team = decoding_to_encoding(team[0])
-
-    return {'name': name, 'ok': True, 'team': team}
+    return ret

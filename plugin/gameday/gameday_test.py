@@ -65,6 +65,45 @@ _s58 = logo_absolute('58', secondary('Texas Rangers'), 'left')
 _s59 = logo_absolute('59', secondary('Toronto Blue Jays'), 'left')
 _s60 = logo_absolute('60', secondary('Washington Nationals'), 'left')
 
+_players = {
+    'P101': {
+        'name': 'Jim Alpha',
+        'number': '1',
+        'bats': 'R',
+        'throws': 'R'
+    },
+    'P102': {
+        'name': 'Jim Beta',
+        'number': '2',
+        'bats': 'S',
+        'throws': 'R'
+    },
+    'P103': {
+        'name': 'Jim Charlie',
+        'number': '3',
+        'bats': 'L',
+        'throws': 'R'
+    },
+    'P104': {
+        'name': 'Jim Delta',
+        'number': '4',
+        'bats': 'R',
+        'throws': 'R'
+    },
+    'P105': {
+        'name': 'Jim Echo',
+        'number': '5',
+        'bats': 'R',
+        'throws': 'R'
+    },
+    'P106': {
+        'name': 'Jim Foxtrot',
+        'number': '6',
+        'bats': 'L',
+        'throws': 'R'
+    }
+}
+
 _gameday = {
     'breadcrumbs': [{
         'href': '/',
@@ -155,36 +194,46 @@ _gameday = {
     ]
 }
 
+_atbat = '<div class="profile position-absolute">{}</div><span class="alig' + \
+            'n-middle d-block pl-60p">ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}</span>'
+_pitching = '<div class="profile position-absolute">{}</div><span class="a' + \
+            'lign-middle d-block pl-60p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}</span>'
+
 _log_body = [
-    ['Pitching: 101', ''],
-    ['&nbsp;', '&nbsp;'],
-    ['Batting: 102', ''],
+    [_pitching.format('JA', '1', 'ʀ', 'Jim Alpha'), ''],
+    [_atbat.format('JB', '2', 'ꜱ', 'Jim Beta'), ''],
     [Gameday._badge('1', 'Ball'), '1-0'],
     [Gameday._badge('2', 'In play, out(s)'), ''],
-    ['102 Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
-    ['&nbsp;', '&nbsp;'], ['Batting: 103', ''],
+    ['Jim Beta Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
+    ['&nbsp;', '&nbsp;'],
+    [_atbat.format('JC', '3', 'ʟ', 'Jim Charlie'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
-    ['103 SINGLE (Groundball, 56)*.', ''],
-    ['&nbsp;', '&nbsp;'], ['Batting: 104', ''],
+    ['Jim Charlie SINGLE (Groundball, 56)*.', ''],
+    ['&nbsp;', '&nbsp;'],
+    [_atbat.format('JD', '4', 'ʀ', 'Jim Delta'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
-    ['104 SINGLE (Groundball, 6MS) (infield hit)*. 103 to second*.', ''],
-    ['&nbsp;', '&nbsp;'], ['Batting: 105', ''],
+    ['Jim Delta SINGLE (Groundball, 6MS) (infield hit)*. Jim Charlie to second'
+     '*.', ''],
+    ['&nbsp;', '&nbsp;'],
+    [_atbat.format('JE', '5', 'ʀ', 'Jim Echo'), ''],
     [Gameday._badge('1', 'In play, out(s)'), ''],
-    ['105 Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
-    ['&nbsp;', '&nbsp;'], ['Batting: 106', ''],
+    ['Jim Echo Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
+    ['&nbsp;', '&nbsp;'],
+    [_atbat.format('JF', '6', 'ʟ', 'Jim Foxtrot'), ''],
     [Gameday._badge('1', 'Swinging Strike'), '0-1'],
     [Gameday._badge('2', 'Foul'), '0-2'],
     [Gameday._badge('3', 'Swinging Strike'), '0-3'],
-    ['106 strikes out swinging. ' + bold('3 out.'), '']
+    ['Jim Foxtrot strikes out swinging. ' + bold('3 out.'), '']
 ]  # yapf: disable
 
 _plays_body = [
-    ['Pitching: 101'],
-    ['102 Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.')],
-    ['103 SINGLE (Groundball, 56)*.'],
-    ['104 SINGLE (Groundball, 6MS) (infield hit)*. 103 to second*.'],
-    ['105 Fly out, F9 (Flyball, 9)*. ' + bold('2 out.')],
-    ['106 strikes out swinging. ' + bold('3 out.')]
+    ['Pitching: Jim Alpha'],
+    ['Jim Beta Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.')],
+    ['Jim Charlie SINGLE (Groundball, 56)*.'],
+    ['Jim Delta SINGLE (Groundball, 6MS) (infield hit)*. Jim Charlie to second'
+     '*.'],
+    ['Jim Echo Fly out, F9 (Flyball, 9)*. ' + bold('2 out.')],
+    ['Jim Foxtrot strikes out swinging. ' + bold('3 out.')]
 ]  # yapf: disable
 
 _game = {
@@ -210,7 +259,10 @@ _game = {
                 table(
                     clazz='border mt-3',
                     hcols=[' colspan="2" class="position-relative"'],
-                    bcols=['', ' class="text-center text-secondary w-55p"'],
+                    bcols=[
+                        ' class="position-relative"',
+                        ' class="text-center text-secondary w-55p"'
+                    ],
                     fcols=[' colspan="2"'],
                     head=[logo_absolute('31', 'Top 1st', 'left')],
                     body=_log_body,
@@ -284,21 +336,14 @@ _game_data = {
     'T45',
     'date':
     '2022-10-09T00:00:00-07:00',
-    'player': {
-        'P101': '101',
-        'P102': '102',
-        'P103': '103',
-        'P104': '104',
-        'P105': '105',
-        'P106': '106',
-    },
+    'players': ['101', '102', '103', '104', '105', '106'],
     'plays': [[{
         'label':
         'Top 1st',
         'batting':
         'T31',
         'pitching':
-        'LHP P101',
+        'P101',
         'footer':
         '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
         'play': [{
@@ -398,6 +443,7 @@ class GamedayTest(unittest.TestCase):
     def create_plugin(self, data):
         self.init_mocks(data)
         plugin = Gameday(date=_now, e=_env)
+        plugin.players = _players
 
         self.mock_open.assert_called_once_with(Gameday._data(), 'r')
         self.mock_handle.write.assert_not_called()
