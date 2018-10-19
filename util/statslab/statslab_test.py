@@ -76,7 +76,10 @@ _game_log_sub = '<html> ... <title>{0} @ {1}</title> ... <div style="text-' + \
 _player_sub = '<html> ... <title>Player Report for #{0}  {1}</title> ... <' + \
               'div class="repsubtitle"><a class="boxlink" style="font-weig' + \
               'ht:bold; font-size:18px; color:#FFFFFF;" href="../teams/tea' + \
-              'm_{2}.html">{3}</a></div> ... </html>'
+              'm_{2}.html">{3}</a></div><div style="text-align:center;font' + \
+              '-weight:bold; font-size:18px; color:#FFFFFF;">\r\n\tAge: 21' + \
+              ' | \r\n\tBats: R |\r\n\tThrows: R |\r\n\tMorale: Normal  \r' + \
+              '\n\t&nbsp;&nbsp;&nbsp;\r\n\t</div> ... </html>'
 _player_empty_sub = '<html><title>Player Report for #{0}  {1}</title></html>'
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
@@ -98,20 +101,27 @@ def _box(arecord, aruns, ateam, date, hrecord, hruns, hteam):
     }
 
 
-def _log(id_, ateam, date, hteam, player, plays):
+def _log(id_, ateam, date, hteam, players, plays):
     return {
         'id': id_,
         'away_team': decoding_to_encoding(ateam),
         'home_team': decoding_to_encoding(hteam),
         'date': date,
-        'player': player,
+        'players': players,
         'plays': plays,
         'ok': True
     }
 
 
-def _play(name, team):
-    return {'name': name, 'ok': True, 'team': team}
+def _play(bats, name, number, team, throws):
+    return {
+        'ok': True,
+        'bats': bats,
+        'name': name,
+        'number': number,
+        'team': team,
+        'throws': throws
+    }
 
 
 class StatslabTest(unittest.TestCase):
@@ -198,21 +208,14 @@ class StatslabTest(unittest.TestCase):
 
         link = _html + _game_log.format('2998')
         actual = parse_game_log(link)
-        player = {
-            'P101': '101',
-            'P102': '102',
-            'P103': '103',
-            'P104': '104',
-            'P105': '105',
-            'P106': '106'
-        }
+        players = ['101', '102', '103', '104', '105', '106']
         plays = [[{
             'label':
             'Top 1st',
             'batting':
             'T31',
             'pitching':
-            'RHP P101',
+            'P101',
             'footer':
             '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
             'play': [{
@@ -226,6 +229,7 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type': 'event',
                 'outs': 1,
+                'runs': 0,
                 'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
                 'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.',
             }, {
@@ -235,6 +239,7 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type': 'event',
                 'outs': 0,
+                'runs': 0,
                 'sequence': ['1 0 0 In play, no out'],
                 'value': 'P103 SINGLE (Groundball, 56)*.'
             }, {
@@ -244,7 +249,9 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type':
                 'event',
-                'outs': 0,
+                'outs':
+                0,
+                'runs': 0,
                 'sequence': ['1 0 0 In play, no out'],
                 'value':
                 'P104 SINGLE (Groundball, 6MS) (infield hit)*. P103 '
@@ -256,6 +263,7 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type': 'event',
                 'outs': 1,
+                'runs': 0,
                 'sequence': ['1 0 0 In play, out(s)'],
                 'value': 'P105 Fly out, F9 (Flyball, 9)*.'
             }, {
@@ -265,7 +273,9 @@ class StatslabTest(unittest.TestCase):
             }, {
                 'type':
                 'event',
-                'outs': 1,
+                'outs':
+                1,
+                'runs': 0,
                 'sequence': [
                     '1 0 1 Swinging Strike', '2 0 2 Foul',
                     '3 0 3 Swinging Strike'
@@ -275,7 +285,7 @@ class StatslabTest(unittest.TestCase):
             }]
         }]]
         expected = _log('2998', 'Arizona Diamondbacks', _now_encoded,
-                        'Los Angeles Dodgers', player, plays)
+                        'Los Angeles Dodgers', players, plays)
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)
@@ -288,19 +298,7 @@ class StatslabTest(unittest.TestCase):
 
         link = _html + _player.format('29663')
         actual = parse_player(link)
-        expected = _play('Dakota Donovan', 'T44')
-        self.assertEqual(actual, expected)
-
-        mock_urlopen.assert_called_once_with(link)
-
-    @mock.patch('util.statslab.statslab.urlopen')
-    def test_player__with_invalid_team(self, mock_urlopen):
-        content = _player_empty_sub.format(73, 'Dakota Donovan')
-        mock_urlopen.return_value = bytes(content, 'utf-8')
-
-        link = _html + _player.format('29663')
-        actual = parse_player(link)
-        expected = {'ok': False, 'error': 'invalid_team'}
+        expected = _play('R', 'Dakota Donovan', '73', 'T44', 'R')
         self.assertEqual(actual, expected)
 
         mock_urlopen.assert_called_once_with(link)

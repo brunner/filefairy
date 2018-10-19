@@ -4,44 +4,44 @@
   "home_team": "T56",
   "id": "1301",
   "ok": true,
-  "player": {
-    "P1604": "Carl Chester",
-    "P22470": "Ian Happ",
-    "P22503": "Brett Marshall",
-    "P24453": "Alfredo Toledo",
-    "P25146": "Dazmon Cameron",
-    "P25189": "Chris Betts",
-    "P26014": "Seamus Curran",
-    "P26259": "Sean Hjelle",
-    "P28860": "Jeremy Eierman",
-    "P29127": "Zack Jackson",
-    "P29860": "Ruben Alaniz",
-    "P29948": "Jorge Alfaro",
-    "P30248": "Drew Mendoza",
-    "P30583": "Luis Al. Hernandez",
-    "P30874": "Josh Magee",
-    "P33100": "Jon Singleton",
-    "P34049": "Steven Moya",
-    "P36987": "Dilson Herrera",
-    "P37318": "Ty Blach",
-    "P38928": "Riley Unroe",
-    "P40738": "Tyler Viza",
-    "P48694": "Manuel Melendez",
-    "P48985": "Andretty Cordero",
-    "P50246": "Nick Pratto",
-    "P50319": "Noah Campbell",
-    "P50733": "Herbert Iser",
-    "P53182": "Cal Carlisle",
-    "P53522": "Orlando Francisco",
-    "P54605": "Jes\u00fas P\u00e9rez"
-  },
+  "players": [
+    "1604",
+    "22470",
+    "22503",
+    "24453",
+    "25146",
+    "25189",
+    "26014",
+    "26259",
+    "28860",
+    "29127",
+    "29860",
+    "29948",
+    "30248",
+    "30583",
+    "30874",
+    "33100",
+    "34049",
+    "36987",
+    "37318",
+    "38928",
+    "40738",
+    "48694",
+    "48985",
+    "50246",
+    "50319",
+    "50733",
+    "53182",
+    "53522",
+    "54605"
+  ],
   "plays": [
     [
       {
         "batting": "T52",
         "footer": "1 run(s), 3 hit(s), 0 error(s), 1 left on base; T52 1 - T56 0",
         "label": "Top 1st",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "pitching",
@@ -55,6 +55,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Called Strike",
@@ -70,6 +71,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -85,6 +87,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -101,6 +104,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -116,6 +120,7 @@
           },
           {
             "outs": 0,
+            "runs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -131,7 +136,8 @@
             "value": "P22470"
           },
           {
-            "outs": 0,
+            "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
@@ -145,7 +151,7 @@
         "batting": "T56",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T52 1 - T56 0",
         "label": "Bot 1st",
-        "pitching": "RHP P22503",
+        "pitching": "P22503",
         "play": [
           {
             "subtype": "pitching",
@@ -159,6 +165,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -175,6 +182,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -195,6 +203,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Swinging Strike",
@@ -213,7 +222,7 @@
         "batting": "T52",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T52 1 - T56 0",
         "label": "Top 2nd",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "batting",
@@ -222,6 +231,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
@@ -236,6 +246,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
@@ -250,6 +261,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -265,7 +277,7 @@
         "batting": "T56",
         "footer": "3 run(s), 4 hit(s), 0 error(s), 1 left on base; T52 1 - T56 3",
         "label": "Bot 2nd",
-        "pitching": "RHP P22503",
+        "pitching": "P22503",
         "play": [
           {
             "subtype": "batting",
@@ -274,6 +286,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
@@ -289,6 +302,7 @@
           },
           {
             "outs": 0,
+            "runs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, run(s)"
@@ -308,6 +322,7 @@
           },
           {
             "outs": 0,
+            "runs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -323,6 +338,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 0 1 In play, no out"
@@ -337,6 +353,7 @@
           },
           {
             "outs": 1,
+            "runs": 1,
             "sequence": [
               "1 0 1 Foul",
               "2 0 2 Foul",
@@ -353,6 +370,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Swinging Strike",
@@ -368,6 +386,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -384,7 +403,8 @@
             "value": "P25146"
           },
           {
-            "outs": 0,
+            "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -401,7 +421,7 @@
         "batting": "T52",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T52 1 - T56 3",
         "label": "Top 3rd",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "other",
@@ -415,6 +435,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
@@ -429,6 +450,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -445,6 +467,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -455,6 +478,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "4 2 2 Called Strike",
               "5 2 3 Swinging Strike"
@@ -468,7 +492,7 @@
         "batting": "T56",
         "footer": "1 run(s), 3 hit(s), 0 error(s), 2 left on base; T52 1 - T56 4",
         "label": "Bot 3rd",
-        "pitching": "RHP P22503",
+        "pitching": "P22503",
         "play": [
           {
             "subtype": "batting",
@@ -477,6 +501,7 @@
           },
           {
             "outs": 0,
+            "runs": 4,
             "sequence": [
               "1 0 0 In play, run(s)"
             ],
@@ -490,6 +515,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 1 In play, out(s)"
@@ -504,6 +530,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Swinging Strike",
@@ -522,6 +549,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, no out"
@@ -536,6 +564,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
@@ -551,6 +580,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -567,7 +597,7 @@
         "batting": "T52",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T52 1 - T56 4",
         "label": "Top 4th",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "batting",
@@ -576,6 +606,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -594,6 +625,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -610,6 +642,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -625,7 +658,7 @@
         "batting": "T56",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T52 1 - T56 4",
         "label": "Bot 4th",
-        "pitching": "RHP P22503",
+        "pitching": "P22503",
         "play": [
           {
             "subtype": "batting",
@@ -634,6 +667,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -649,6 +683,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -667,6 +702,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Swinging Strike",
@@ -684,7 +720,7 @@
         "batting": "T52",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T52 1 - T56 4",
         "label": "Top 5th",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "batting",
@@ -693,6 +729,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, no out"
@@ -707,6 +744,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
@@ -721,6 +759,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike"
             ],
@@ -729,6 +768,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "2 1 1 Ball",
               "3 1 2 Swinging Strike",
@@ -744,6 +784,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
@@ -757,7 +798,7 @@
         "batting": "T56",
         "footer": "0 run(s), 2 hit(s), 0 error(s), 2 left on base; T52 1 - T56 4",
         "label": "Bot 5th",
-        "pitching": "RHP P22503",
+        "pitching": "P22503",
         "play": [
           {
             "subtype": "pitching",
@@ -771,6 +812,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -789,6 +831,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Swinging Strike",
@@ -804,6 +847,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
@@ -819,6 +863,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -835,6 +880,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 1 1 Ball",
@@ -852,7 +898,7 @@
         "batting": "T52",
         "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T52 2 - T56 4",
         "label": "Top 6th",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "batting",
@@ -861,6 +907,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 0 2 Foul",
@@ -878,6 +925,7 @@
           },
           {
             "outs": 0,
+            "runs": 4,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -897,6 +945,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 0 In play, no out"
             ],
@@ -910,6 +959,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Swinging Strike",
@@ -925,6 +975,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -942,7 +993,7 @@
         "batting": "T56",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T52 2 - T56 4",
         "label": "Bot 6th",
-        "pitching": "RHP P26259",
+        "pitching": "P26259",
         "play": [
           {
             "subtype": "batting",
@@ -951,6 +1002,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -968,6 +1020,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
@@ -985,6 +1038,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 0 1 In play, no out"
@@ -998,7 +1052,8 @@
             "value": "P25146"
           },
           {
-            "outs": 0,
+            "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Called Strike",
@@ -1017,7 +1072,7 @@
         "batting": "T52",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T52 2 - T56 4",
         "label": "Top 7th",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "batting",
@@ -1026,6 +1081,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -1042,6 +1098,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -1058,6 +1115,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -1073,6 +1131,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
@@ -1085,7 +1144,7 @@
         "batting": "T56",
         "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T52 2 - T56 5",
         "label": "Bot 7th",
-        "pitching": "RHP P26259",
+        "pitching": "P26259",
         "play": [
           {
             "subtype": "pitching",
@@ -1099,6 +1158,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 0 2 Foul",
@@ -1117,6 +1177,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -1133,6 +1194,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 0 2 Called Strike",
@@ -1152,6 +1214,7 @@
           },
           {
             "outs": 0,
+            "runs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -1169,6 +1232,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Swinging Strike",
               "2 1 1 Ball",
@@ -1185,7 +1249,7 @@
         "batting": "T52",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T52 2 - T56 5",
         "label": "Top 8th",
-        "pitching": "LHP P37318",
+        "pitching": "P37318",
         "play": [
           {
             "subtype": "batting",
@@ -1194,6 +1258,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -1220,6 +1285,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -1245,6 +1311,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -1266,7 +1333,8 @@
             "value": "P53182"
           },
           {
-            "outs": 0,
+            "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -1283,7 +1351,8 @@
             "value": "P22470"
           },
           {
-            "outs": 0,
+            "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Swinging Strike",
               "2 1 1 Ball",
@@ -1301,7 +1370,7 @@
         "batting": "T56",
         "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T52 2 - T56 5",
         "label": "Bot 8th",
-        "pitching": "RHP P40738",
+        "pitching": "P40738",
         "play": [
           {
             "subtype": "batting",
@@ -1310,6 +1379,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
@@ -1325,6 +1395,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Foul",
               "2 0 2 Called Strike",
@@ -1340,6 +1411,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -1356,7 +1428,7 @@
         "batting": "T52",
         "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T52 2 - T56 5",
         "label": "Top 9th",
-        "pitching": "RHP P29127",
+        "pitching": "P29127",
         "play": [
           {
             "subtype": "pitching",
@@ -1370,6 +1442,7 @@
           },
           {
             "outs": 0,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 2 Foul",
@@ -1385,6 +1458,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
@@ -1403,6 +1477,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Foul",
@@ -1421,6 +1496,7 @@
           },
           {
             "outs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
