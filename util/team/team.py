@@ -55,7 +55,7 @@ _c38 = (('#e31937', '#ffffff', '#0c2340', ''),
 _h39, _n39 = 'Colorado', 'Rockies'
 _c39 = (('#000000', '#ffffff', '#33006f', '#400d7c'),
         ('#33006f', '#acacac', '#ffffff', ''),
-        ('#000000', '#33006f', '#c4ced4', '', ('home|away', _all, .35)),
+        ('#c4ced4', '#33006f', '#000000', '', ('home|away', _all, .35)),
         ('#c4ced4', '#000000', '#33006f', '', ('home|away', _all, .15)))
 _h40, _n40 = 'Detroit', 'Tigers'
 _c40 = (('#0c2340', '#ffffff', '#ffffff', ''),
