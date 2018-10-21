@@ -44,7 +44,6 @@ _player_default = {
     'throws': '-'
 }
 _smallcaps = {'L': 'ʟ', 'R': 'ʀ', 'S': 'ꜱ'}
-_v2_teams = ['T31', 'T47']
 
 
 class Gameday(Registrable):
@@ -257,19 +256,19 @@ class Gameday(Registrable):
         return p.format('danger', pitch) + sequence
 
     @staticmethod
-    def _profile(num, colors, s):
-        color, bg, border, stripes, jersey = colors
-        if jersey:
+    def _profile(encoding, num, colors, s):
+        if isinstance(colors, str):
             div = '<div class="profile position-absolute ' + \
-                  '{}-front"></div>'.format(jersey)
+                  '{}-front"></div>'.format(colors)
         else:
+            color, bg, border, stripes = colors
             ins = profile(num, color, bg, border, stripes)
             div = '<div class="profile position-absolute">{}</div>'.format(ins)
         span = '<span class="align-middle d-block ' + \
                'pl-84p">{}</span>'.format(s)
         return div + span
 
-    def _atbat(self, id_, colors):
+    def _atbat(self, encoding, id_, colors):
         if id_ not in self.data['players']:
             player = _player_default
         else:
@@ -277,9 +276,9 @@ class Gameday(Registrable):
         num = player['number']
         s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>&nbsp;'.format(
             num, _smallcaps.get(player['bats'], 'ʀ'), player['name'])
-        return self._profile(num, colors, s)
+        return self._profile(encoding, num, colors, s)
 
-    def _pitching(self, id_, colors):
+    def _pitching(self, encoding, id_, colors):
         if id_ not in self.data['players']:
             player = _player_default
         else:
@@ -287,7 +286,7 @@ class Gameday(Registrable):
         num = player['number']
         s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>&nbsp;'.format(
             num, _smallcaps.get(player['throws'], 'ʀ'), player['name'])
-        return self._profile(num, colors, s)
+        return self._profile(encoding, num, colors, s)
 
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
@@ -321,17 +320,14 @@ class Gameday(Registrable):
         else:
             away_colors = encoding_to_colors(away_team)
             home_colors = encoding_to_colors(home_team)
-            weekday = decode_datetime(game_data['date']).weekday()
-            away_choose_colors = choose_colors(away_colors, weekday, 'away')
-            if away_choose_colors[4]:
-                ret['jerseys'].append(away_choose_colors[4].split('-', 1))
-            home_choose_colors = choose_colors(home_colors, weekday, 'home')
-            if home_choose_colors[4]:
-                ret['jerseys'].append(home_choose_colors[4].split('-', 1))
-            colors = {
-                away_team: away_choose_colors,
-                home_team: home_choose_colors
-            }
+            w = decode_datetime(game_data['date']).weekday()
+            clash, hc = choose_colors(home_team, home_colors, w, 'home', '')
+            if isinstance(hc, str):
+                ret['jerseys'].append(hc.split('-', 1))
+            _, ac = choose_colors(away_team, away_colors, w, 'away', clash)
+            if isinstance(ac, str):
+                ret['jerseys'].append(ac.split('-', 1))
+            colors = {away_team: ac, home_team: hc}
             self.colors[game_id_] = colors
 
         runs = {away_team: 0, home_team: 0}
@@ -369,13 +365,14 @@ class Gameday(Registrable):
                         value = game_sub(play['value'])
                         if play['subtype'] == 'pitching':
                             log_table['body'].append([
-                                self._pitching(play['value'],
+                                self._pitching(pitching, play['value'],
                                                colors[pitching]), ''
                             ])
                             plays_table['body'].append(['Pitching: ' + value])
                         elif play['subtype'] == 'batting':
                             log_table['body'].append([
-                                self._atbat(play['value'], colors[batting]), ''
+                                self._atbat(batting, play['value'],
+                                            colors[batting]), ''
                             ])
                         else:
                             log_table['body'].append([value, ''])
@@ -447,10 +444,9 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-06-04T00:00:00-07:00', '1331')
-# statsplus._extract('2024-06-06T00:00:00-07:00', '1366')
+# statsplus._extract('2024-06-04T00:00:00-07:00', '1314')
 
 # gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1331', '1366']
+# gameday.data['games'] = ['1314']
 # gameday._check_games()
 # gameday._setup_internal(date=date)
