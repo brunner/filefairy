@@ -258,7 +258,7 @@ class Gameday(Registrable):
     @staticmethod
     def _profile(encoding, num, colors, s):
         if isinstance(colors, str):
-            n = '-'.join(encoding_to_nickname(encoding).lower().split())
+            n = encoding_to_nickname(encoding).lower().replace(' ', '')
             div = '<div class="profile position-absolute ' + \
                   '{}-{}-front"></div>'.format(n, colors)
         else:
@@ -325,11 +325,11 @@ class Gameday(Registrable):
 
             clash, hc = choose_colors(home_team, home_colors, w, 'home', '')
             if isinstance(hc, str):
-                hn = '-'.join(encoding_to_nickname(home_team).lower().split())
+                hn = encoding_to_nickname(home_team).lower().replace(' ', '')
                 ret['jerseys'].append((hn, hc))
             _, ac = choose_colors(away_team, away_colors, w, 'away', clash)
             if isinstance(ac, str):
-                an = '-'.join(encoding_to_nickname(away_team).lower().split())
+                an = encoding_to_nickname(away_team).lower().replace(' ', '')
                 ret['jerseys'].append((an, ac))
             colors = {away_team: ac, home_team: hc}
             self.colors[game_id_] = colors
