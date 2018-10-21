@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
+{% import "style.html" as style %}
+
+{% block style %}
+{{ style.base() }}
+{% for team, name in jerseys %}
+{{ style.jersey(team, name) }}
+{% endfor %}
+{{ style.game() }}
+{% endblock %}
 
 {% block content %}
 

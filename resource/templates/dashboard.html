@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% import "common.html" as common %}
+{% import "style.html" as style %}
+
+{% block style %}
+{{ style.base() }}
+{% endblock %}
 
 {% block content %}
 

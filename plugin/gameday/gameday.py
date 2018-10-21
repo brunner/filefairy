@@ -44,6 +44,7 @@ _player_default = {
     'throws': '-'
 }
 _smallcaps = {'L': 'ʟ', 'R': 'ʀ', 'S': 'ꜱ'}
+_v2_teams = ['T31', 'T47']
 
 
 class Gameday(Registrable):
@@ -133,7 +134,8 @@ class Gameday(Registrable):
         return a
 
     def _game_sub(self, game_data):
-        pattern = '|'.join([id_ for id_ in self.data['players']] +
+        data = self.data
+        pattern = '|'.join([id_ + '(?!\d)' for id_ in data['players']] +
                            [game_data['away_team'], game_data['home_team']])
         return partial(re.sub, pattern, partial(self._game_repl, game_data))
 
@@ -256,9 +258,15 @@ class Gameday(Registrable):
 
     @staticmethod
     def _profile(num, colors, s):
-        ins = profile(num, colors)
-        div = '<div class="profile position-absolute">{}</div>'.format(ins)
-        span = '<span class="align-middle d-block pl-60p">{}</span>'.format(s)
+        color, bg, border, stripes, jersey = colors
+        if jersey:
+            div = '<div class="profile position-absolute ' + \
+                  '{}-front"></div>'.format(jersey)
+        else:
+            ins = profile(num, color, bg, border, stripes)
+            div = '<div class="profile position-absolute">{}</div>'.format(ins)
+        span = '<span class="align-middle d-block ' + \
+               'pl-84p">{}</span>'.format(s)
         return div + span
 
     def _atbat(self, id_, colors):
@@ -267,7 +275,7 @@ class Gameday(Registrable):
         else:
             player = self.data['players'][id_]
         num = player['number']
-        s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}'.format(
+        s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>&nbsp;'.format(
             num, _smallcaps.get(player['bats'], 'ʀ'), player['name'])
         return self._profile(num, colors, s)
 
@@ -277,7 +285,7 @@ class Gameday(Registrable):
         else:
             player = self.data['players'][id_]
         num = player['number']
-        s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}'.format(
+        s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>&nbsp;'.format(
             num, _smallcaps.get(player['throws'], 'ʀ'), player['name'])
         return self._profile(num, colors, s)
 
@@ -293,6 +301,7 @@ class Gameday(Registrable):
                 'href': '',
                 'name': subtitle
             }],
+            'jerseys': [],
             'tabs': {
                 'style': 'tabs',
                 'tabs': []
@@ -313,9 +322,15 @@ class Gameday(Registrable):
             away_colors = encoding_to_colors(away_team)
             home_colors = encoding_to_colors(home_team)
             weekday = decode_datetime(game_data['date']).weekday()
+            away_choose_colors = choose_colors(away_colors, weekday, 'away')
+            if away_choose_colors[4]:
+                ret['jerseys'].append(away_choose_colors[4].split('-', 1))
+            home_choose_colors = choose_colors(home_colors, weekday, 'home')
+            if home_choose_colors[4]:
+                ret['jerseys'].append(home_choose_colors[4].split('-', 1))
             colors = {
-                away_team: choose_colors(away_colors, weekday, 'away'),
-                home_team: choose_colors(home_colors, weekday, 'home')
+                away_team: away_choose_colors,
+                home_team: home_choose_colors
             }
             self.colors[game_id_] = colors
 
@@ -432,9 +447,10 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-06-02T00:00:00-07:00', '1298')
+# statsplus._extract('2024-06-04T00:00:00-07:00', '1331')
+# statsplus._extract('2024-06-06T00:00:00-07:00', '1366')
 
 # gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1298']
+# gameday.data['games'] = ['1331', '1366']
 # gameday._check_games()
 # gameday._setup_internal(date=date)

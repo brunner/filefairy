@@ -196,34 +196,35 @@ _gameday = {
 }
 
 _atbat = '<div class="profile position-absolute">{}</div><span class="alig' + \
-            'n-middle d-block pl-60p">ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}</span>'
+            'n-middle d-block pl-84p">ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>&nbsp;</span>'
 _pitching = '<div class="profile position-absolute">{}</div><span class="a' + \
-            'lign-middle d-block pl-60p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}</span>'
+            'lign-middle d-block pl-84p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ' + \
+            '<br>{}<br>&nbsp;</span>'
 
-_c31 = ('#000000', '#acacac', '#e3d4ad', '')
-_c45 = ('#005a9c', '#ffffff', '#ef3e42', '')
+_c31 = ('#000000', '#acacac', '#e3d4ad', '', '')
+_c45 = ('#005a9c', '#ffffff', '#ef3e42', '', '')
 
 _log_body = [
-    [_pitching.format(profile('1', _c45), '1', 'ʀ', 'Jim Alpha'), ''],
-    [_atbat.format(profile('2', _c31), '2', 'ꜱ', 'Jim Beta'), ''],
+    [_pitching.format(profile('1', *_c45[:4]), '1', 'ʀ', 'Jim Alpha'), ''],
+    [_atbat.format(profile('2', *_c31[:4]), '2', 'ꜱ', 'Jim Beta'), ''],
     [Gameday._badge('1', 'Ball'), '1-0'],
     [Gameday._badge('2', 'In play, out(s)'), ''],
     ['Jim Beta Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('3', _c31), '3', 'ʟ', 'Jim Charlie'), ''],
+    [_atbat.format(profile('3', *_c31[:4]), '3', 'ʟ', 'Jim Charlie'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
     ['Jim Charlie SINGLE (Groundball, 56)*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('4', _c31), '4', 'ʀ', 'Jim Delta'), ''],
+    [_atbat.format(profile('4', *_c31[:4]), '4', 'ʀ', 'Jim Delta'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
     ['Jim Delta SINGLE (Groundball, 6MS) (infield hit)*. Jim Charlie to second'
      '*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('5', _c31), '5', 'ʀ', 'Jim Echo'), ''],
+    [_atbat.format(profile('5', *_c31[:4]), '5', 'ʀ', 'Jim Echo'), ''],
     [Gameday._badge('1', 'In play, out(s)'), ''],
     ['Jim Echo Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('6', _c31), '6', 'ʟ', 'Jim Foxtrot'), ''],
+    [_atbat.format(profile('6', *_c31[:4]), '6', 'ʟ', 'Jim Foxtrot'), ''],
     [Gameday._badge('1', 'Swinging Strike'), '0-1'],
     [Gameday._badge('2', 'Foul'), '0-2'],
     [Gameday._badge('3', 'Swinging Strike'), '0-3'],
@@ -251,6 +252,7 @@ _game = {
         'href': '',
         'name': 'Diamondbacks at Dodgers, 10/09/2022'
     }],
+    'jerseys': [],
     'tabs': {
         'style':
         'tabs',

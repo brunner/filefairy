@@ -79,18 +79,18 @@ class ComponentTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_profile__default(self):
-        actual = profile('1', ('#000000', '#acacac', '#ffffff', ''))
-        expected = '<svg viewBox="0,0,48,48">' + \
-                   '<style>.text { font: bold 24px sans-serif; }</style>' + \
-                   '<rect x="0" y="0" width="48" height="48" ' + \
-                   'fill="#6c757d" rx="8" ry="8"></rect>' + \
-                   '<rect x="1" y="1" width="46" height="46" ' + \
-                   'fill="#000000" rx="7" ry="7"></rect>' + \
-                   '<rect x="4" y="4" width="40" height="40" ' + \
-                   'fill="#ffffff" rx="5" ry="5"></rect>' + \
-                   '<rect x="6" y="6" width="36" height="36" ' + \
-                   'fill="#acacac" rx="4" ry="4"></rect>' + \
-                   '<text x="50%" y="32" text-anchor="middle" ' + \
+        actual = profile('1', '#000000', '#acacac', '#ffffff', '')
+        expected = '<svg viewBox="0,0,78,80">' + \
+                   '<style>.text { font: bold 32px sans-serif; }</style>' + \
+                   '<rect x="0" y="0" width="78" height="80" ' + \
+                   'fill="#6c757d" rx="12" ry="12"></rect>' + \
+                   '<rect x="1" y="1" width="76" height="78" ' + \
+                   'fill="#000000" rx="11" ry="11"></rect>' + \
+                   '<rect x="7" y="7" width="64" height="66" ' + \
+                   'fill="#ffffff" rx="8" ry="8"></rect>' + \
+                   '<rect x="11" y="11" width="56" height="58" ' + \
+                   'fill="#acacac" rx="6" ry="6"></rect>' + \
+                   '<text x="50%" y="52" text-anchor="middle" ' + \
                    'fill="#000000" class="text">1</text>' + \
                    '</svg>'
         self.assertEqual(actual, expected)
