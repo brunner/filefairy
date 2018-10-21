@@ -237,21 +237,19 @@ _inline_span = _span.format('d-inline-block px-2', '{0}')
 
 
 def choose_colors(encoding, colors, day, where, clash):
-    if encoding in _v2_teams:
-        nickname = encoding_to_nickname(encoding).lower()
     for alt in colors[2:]:
         primary, regex, days, pct = alt[-1]
         m = re.search(regex, where)
         if m and day in days and pct >= random.random() and primary != clash:
             if encoding in _v2_teams:
-                return (primary, '{}-alt-{}'.format(nickname, primary))
+                return (primary, 'alt-{}'.format(primary))
             return (primary, alt[:4])
     if re.search('home', where):
         if encoding in _v2_teams:
-            return ('white', '{}-home'.format(nickname))
+            return ('white', 'home')
         return ('white', colors[0])
     if encoding in _v2_teams:
-        return ('grey', '{}-away'.format(nickname))
+        return ('grey', 'away')
     return ('grey', colors[1])
 
 
