@@ -75,7 +75,7 @@ _c46 = (('#0a2351', '#ffffff', '#b6922e', ''),
         ('#0046ae', '#ffffff', '#ffd451', '#0d53bb', ('white', 'home', _all, .25)),
         ('#ffffff', '#0a2351', '#b6922e', '', ('blue', 'home|away', _all, .5)))
 _h47, _n47 = 'Minnesota', 'Twins'
-_c47 = [('cream', 'home', [0, 1, 2, 3, 4, 5], 1.0),
+_c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0),
         ('blue', 'away', _all, .25)]
 _h50, _n50 = 'Oakland', 'Athletics'
 _c50 = (('#003831', '#ffffff', '#efb21e', ''),
