@@ -22,7 +22,7 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
 
 
 # yapf: disable
-_v2_teams = ['T33', 'T34', 'T36', 'T47', 'T48', 'T57', 'T59']
+_v2_teams = ['T33', 'T34', 'T36', 'T47', 'T48', 'T51', 'T57', 'T59']
 _all = [0, 1, 2, 3, 4, 5, 6]
 _h31, _n31 = 'Arizona', 'Diamondbacks'
 _c31 = (('#000000', '#ffffff', '#a71930', ''),
@@ -83,10 +83,8 @@ _c50 = (('#003831', '#ffffff', '#efb21e', ''),
         ('#003831', '#fcb600', '#ffffff', '', ('yellow', 'home', _all, .1)),
         ('#ffffff', '#003831', '#efb21e', '', ('green', 'home|away', _all, .45)))
 _h51, _n51 = 'Philadelphia', 'Phillies'
-_c51 = (('#e81828', '#ffffff', '#ffffff', '#f52535'),
-        ('#e81828', '#acacac', '#ffffff', ''),
-        ('#6f263d', '#6bace4', '#ffffff', '', ('sky', 'home', [3], 1.0)),
-        ('#e81828', '#f0f0dc', '#284898', '', ('cream', 'home', [6], 1.0)))
+_c51 = [('sky', 'home', [3], 1.0),
+        ('cream', 'home', [6], 1.0)]
 _h52, _n52 = 'Pittsburgh', 'Pirates'
 _c52 = (('#27251f', '#ffffff', '#fdb827', ''),
         ('#27251f', '#acacac', '#fdb827', ''),
