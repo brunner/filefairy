@@ -22,7 +22,10 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
 
 
 # yapf: disable
-_v2_teams = ['T33', 'T34', 'T36', 'T47', 'T48', 'T51', 'T57', 'T59']
+_v2_teams = [
+    'T33', 'T34', 'T36', 'T38', 'T40', 'T41', 'T47', 'T48', 'T51', 'T52',
+    'T57', 'T58', 'T59'
+]
 _all = [0, 1, 2, 3, 4, 5, 6]
 _h31, _n31 = 'Arizona', 'Diamondbacks'
 _c31 = (('#000000', '#ffffff', '#a71930', ''),
@@ -44,21 +47,17 @@ _c37 = (('#c6011f', '#ffffff', '#000000', ''),
         ('#c6011f', '#acacac', '#ffffff', ''),
         ('#ffffff', '#c6011f', '#000000', '', ('red', 'home', _all, .35)))
 _h38, _n38 = 'Cleveland', 'Indians'
-_c38 = (('#e31937', '#ffffff', '#0c2340', ''),
-        ('#0c2340', '#acacac', '#e31937', ''),
-        ('#e31937', '#0c2340', '#ffffff', '', ('blue', 'home|away', _all, .6)))
+_c38 = [('blue', 'home|away', _all, .6)]
 _h39, _n39 = 'Colorado', 'Rockies'
 _c39 = (('#000000', '#ffffff', '#33006f', '#400d7c'),
         ('#33006f', '#acacac', '#ffffff', ''),
         ('#c4ced4', '#33006f', '#000000', '', ('purple', 'home|away', _all, .35)),
         ('#c4ced4', '#000000', '#33006f', '', ('black', 'home|away', _all, .15)))
 _h40, _n40 = 'Detroit', 'Tigers'
-_c40 = (('#0c2340', '#ffffff', '#ffffff', ''),
-        ('#0c2340', '#acacac', '#fa4616', ''))
+_c40 = [('blue', 'home', _all, .6),
+        ('orange', 'away', _all, .5)]
 _h41, _n41 = 'Miami', 'Marlins'
-_c41 = (('#000000', '#ffffff', '#ff6600', ''),
-        ('#000000', '#acacac', '#ff6600', ''),
-        ('#ff6600', '#000000', '#ffffff', '', ('black', 'home|away', [4, 5], 1.0)))
+_c41 = []
 _h42, _n42 = 'Houston', 'Astros'
 _c42 = (('#002d62', '#ffffff', '#eb6e1f', ''),
         ('#002d62', '#acacac', '#eb6e1f', ''),
@@ -86,10 +85,8 @@ _h51, _n51 = 'Philadelphia', 'Phillies'
 _c51 = [('sky', 'home', [3], 1.0),
         ('cream', 'home', [6], 1.0)]
 _h52, _n52 = 'Pittsburgh', 'Pirates'
-_c52 = (('#27251f', '#ffffff', '#fdb827', ''),
-        ('#27251f', '#acacac', '#fdb827', ''),
-        ('#27251f', '#fdb827', '#ffffff', '', ('yellow', 'home', [6], 1.0)),
-        ('#fdb827', '#27251f', '#ffffff', '', ('black', 'home|away', _all, .4)))
+_c52 = [('yellow', 'home', [6], 1.0),
+        ('black', 'home|away', _all, .4)]
 _h53, _n53 = 'San Diego', 'Padres'
 _c53 = (('#002d62', '#ffffff', '#ffffff', ''),
         ('#002d62', '#acacac', '#acacac', ''),
@@ -113,10 +110,7 @@ _h57, _n57 = 'Tampa Bay', 'Rays'
 _c57 = [('sky', 'home', [6], 1.0),
         ('blue', 'away', _all, .5)]
 _h58, _n58 = 'Texas', 'Rangers'
-_c58 = (('#003278', '#ffffff', '#c0111f', ''),
-        ('#003278', '#acacac', '#c0111f', ''),
-        ('#ffffff', '#c0111f', '#003278', '', ('red', 'home', _all, .25)),
-        ('#ffffff', '#003278', '#c0111f', '', ('blue', 'home|away', _all, .5)))
+_c58 = [('blue', 'home|away', _all, .5)]
 _h59, _n59 = 'Toronto', 'Blue Jays'
 _c59 = [('blue', 'home|away', _all, .5)]
 _h60, _n60 = 'Washington', 'Nationals'
