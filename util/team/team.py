@@ -22,7 +22,7 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
 
 
 # yapf: disable
-_v2_teams = ['T33', 'T34', 'T47', 'T48', 'T57', 'T59']
+_v2_teams = ['T33', 'T34', 'T36', 'T47', 'T48', 'T57', 'T59']
 _all = [0, 1, 2, 3, 4, 5, 6]
 _h31, _n31 = 'Arizona', 'Diamondbacks'
 _c31 = (('#000000', '#ffffff', '#a71930', ''),
@@ -62,7 +62,6 @@ _c41 = (('#000000', '#ffffff', '#ff6600', ''),
 _h42, _n42 = 'Houston', 'Astros'
 _c42 = (('#002d62', '#ffffff', '#eb6e1f', ''),
         ('#002d62', '#acacac', '#eb6e1f', ''),
-        ('#eb6e1f', '#002d62', '#ffffff', '', ('blue', 'home', [6], .7)),
         ('#002d62', '#eb6e1f', '#ffffff', '', ('orange', 'home|away', _all, .2)))
 _h43, _n43 = 'Kansas City', 'Royals'
 _c43 = (('#004687', '#ffffff', '#bd9B60', ''),
@@ -132,9 +131,7 @@ _c35 = (('#27251f', '#ffffff', '#c4ced4', '#34322c'),
         ('#27251f', '#acacac', '#ffffff', ''),
         ('#002663', '#ffffff', '#cc092f', '', ('white', 'home', [6], 1.0)),
         ('#ffffff', '#27251f', '#c4ced4', '', ('black', 'home|away', _all, .6)))
-_c36 = (('#0e3386', '#ffffff', '#cc3433', '#1b4093'),
-        ('#cc3433', '#acacac', '#0e3386', ''),
-        ('#cc3433', '#0e3386', '#ffffff', '', ('blue', 'away', _all, .4)))
+_c36 = [('blue', 'home|away', [6], 1.0)]
 _hla, _n44, _n45 = 'Los Angeles', 'Angels', 'Dodgers'
 _c44 = (('#ba0021', '#ffffff', '#003263', ''),
         ('#ba0021', '#acacac', '#003263', ''),
