@@ -324,15 +324,15 @@ class Gameday(Registrable):
             w = decode_datetime(game_data['date']).weekday()
 
             clash, hc = choose_colors(home_team, home_colors, w, 'home', '')
-            if isinstance(hc, str):
-                hn = encoding_to_nickname(home_team).lower().replace(' ', '')
-                ret['jerseys'].append((hn, hc))
             _, ac = choose_colors(away_team, away_colors, w, 'away', clash)
-            if isinstance(ac, str):
-                an = encoding_to_nickname(away_team).lower().replace(' ', '')
-                ret['jerseys'].append((an, ac))
             colors = {away_team: ac, home_team: hc}
             self.colors[game_id_] = colors
+
+        for t in colors:
+            c = colors[t]
+            if isinstance(c, str):
+                nickname = encoding_to_nickname(t).lower().replace(' ', '')
+                ret['jerseys'].append((nickname, c))
 
         runs = {away_team: 0, home_team: 0}
 

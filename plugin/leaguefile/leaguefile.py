@@ -41,8 +41,7 @@ _date_pattern = '(\w+\s\d+\s\d+:\d+)'
 _name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
 _server = server()
-_td10 = datetime.timedelta(minutes=10)
-_td20 = datetime.timedelta(minutes=20)
+_td = datetime.timedelta(minutes=2)
 
 
 class Leaguefile(Registrable):
@@ -82,7 +81,6 @@ class Leaguefile(Registrable):
         now = encode_datetime(kwargs['date'])
 
         if data['download'] and data['upload']:
-            td = _td10
             download, upload = data['download'], data['upload']
             size, date, name, fp = self._check_download()
             if fp:
@@ -96,7 +94,6 @@ class Leaguefile(Registrable):
                     data['completed'] = data['completed'][:10]
                 data['download'], data['upload'] = None, None
         else:
-            td = _td20
             for size, date, name, fp in self._check_upload():
                 ddate = self._decode(date, kwargs['date'])
                 if '.filepart' in name:
@@ -112,7 +109,7 @@ class Leaguefile(Registrable):
                         if data['stalled']:
                             render = True
                             data['stalled'] = False
-                    elif ddate < kwargs['date'] - _td10:
+                    elif ddate < kwargs['date'] - _td:
                         if not data['stalled']:
                             render = True
                             data['stalled'] = True
@@ -128,7 +125,7 @@ class Leaguefile(Registrable):
         if data != original:
             self.write()
 
-        wait = decode_datetime(data['date']) < kwargs['date'] - td
+        wait = decode_datetime(data['date']) < kwargs['date'] - _td
         if render or data['upload'] and wait:
             data['date'] = now
             response.append_notify(notify)

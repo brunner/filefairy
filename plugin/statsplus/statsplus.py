@@ -486,10 +486,6 @@ class Statsplus(Registrable):
                     ddate = decode_datetime(encoded_date)
                     if ddate != box_score_['date']:
                         return False
-                    fname = url.format(_root + '/resource/games/', 'game_')
-                    fname = fname.replace('.html', '.json')
-                    with open(fname, 'w') as f:
-                        f.write(dumps(game_log_) + '\n')
                     if count:
                         bruns1 = box_score_['away_runs']
                         bteam1 = box_score_['away_team']
@@ -516,6 +512,10 @@ class Statsplus(Registrable):
                             for key in ['highlights', 'injuries']:
                                 self._clarify(key, encoded_date, cteam1,
                                               cteam2, bteam1, bteam2, count)
+                    fname = url.format(_root + '/resource/games/', 'game_')
+                    fname = fname.replace('.html', '.json')
+                    with open(fname, 'w') as f:
+                        f.write(dumps(game_log_) + '\n')
                 else:
                     valid = False
 
