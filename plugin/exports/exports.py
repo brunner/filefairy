@@ -183,9 +183,10 @@ class Exports(Registrable):
             while len(form[teamid]) > 10:
                 form[teamid] = form[teamid][1:]
 
-            if 'n' not in form[teamid] and teamid not in data['ai']:
-                data['ai'].append(teamid)
+            if 'n' not in form[teamid]:
                 form[teamid] = ''
+                if teamid not in data['ai']:
+                    data['ai'].append(teamid)
 
     def _lock_internal(self):
         data = self.data
