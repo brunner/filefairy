@@ -69,7 +69,8 @@ _c42 = (('#002d62', '#ffffff', '#eb6e1f', ''),
         ('#002d62', '#eb6e1f', '#ffffff', '', ('orange', 'home|away', _all, .2)))
 
 _h43, _n43 = 'Kansas City', 'Royals'
-_c43 = [('sky', 'home', [6], 1.0)]
+_c43 = [('sky', 'home', [6], 1.0),
+        ('blue', 'away', [6], 1.0)]
 
 _h46, _n46 = 'Milwaukee', 'Brewers'
 _c46 = [('sky', 'home|away', [5, 6], 1.0)]
