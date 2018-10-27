@@ -21,13 +21,13 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
     }
 
 
-# yapf: disable
 _v2_teams = [
-    'T33', 'T34', 'T36', 'T38', 'T40', 'T41', 'T47', 'T48', 'T51', 'T52',
-    'T57', 'T58', 'T59'
+    'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40', 'T41', 'T43',
+    'T46', 'T47', 'T48', 'T49', 'T51', 'T52', 'T56', 'T57', 'T58', 'T59'
 ]
 _all = [0, 1, 2, 3, 4, 5, 6]
 
+# yapf: disable
 _h31, _n31 = 'Arizona', 'Diamondbacks'
 _c31 = (('#000000', '#ffffff', '#a71930', ''),
         ('#000000', '#acacac', '#e3d4ad', ''),
