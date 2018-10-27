@@ -512,10 +512,11 @@ class Statsplus(Registrable):
                             for key in ['highlights', 'injuries']:
                                 self._clarify(key, encoded_date, cteam1,
                                               cteam2, bteam1, bteam2, count)
-                    fname = url.format(_root + '/resource/games/', 'game_')
-                    fname = fname.replace('.html', '.json')
-                    with open(fname, 'w') as f:
-                        f.write(dumps(game_log_) + '\n')
+                    if valid:
+                        fname = url.format(_root + '/resource/games/', 'game_')
+                        fname = fname.replace('.html', '.json')
+                        with open(fname, 'w') as f:
+                            f.write(dumps(game_log_) + '\n')
                 else:
                     valid = False
 
