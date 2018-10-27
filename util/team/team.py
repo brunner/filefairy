@@ -145,10 +145,8 @@ _c45 = (('#005a9c', '#ffffff', '#ef3e42', ''),
 
 _hny, _n48, _n49 = 'New York', 'Yankees', 'Mets'
 _c48 = []
-_c49 = (('#002d72', '#ffffff', '#ff5910', '#0d3a7f'),
-        ('#002d72', '#acacac', '#ff5910', ''),
-        ('#ff5910', '#002d72', '#ffffff', '', ('blue', 'home', _all, .15)),
-        ('#aabec8', '#002d72', '#ff5910', '', ('blue', 'away', _all, .2)))
+_c49 = [('black', 'home', _all, .25),
+        ('blue', 'away', _all, .25)]
 # yapf: enable
 
 _teams = [
