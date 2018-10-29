@@ -22,16 +22,14 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
 
 
 _v2_teams = [
-    'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40', 'T41', 'T43',
-    'T46', 'T47', 'T48', 'T49', 'T51', 'T52', 'T56', 'T57', 'T58', 'T59'
+    'T31', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40', 'T41', 'T43',
+    'T46', 'T47', 'T48', 'T49', 'T50', 'T51', 'T52', 'T54', 'T56', 'T57', 'T58', 'T59'
 ]
 _all = [0, 1, 2, 3, 4, 5, 6]
 
 # yapf: disable
 _h31, _n31 = 'Arizona', 'Diamondbacks'
-_c31 = (('#000000', '#ffffff', '#a71930', ''),
-        ('#000000', '#acacac', '#e3d4ad', ''),
-        ('#000000', '#a71930', '#e3d4ad', '', ('red', 'home|away', [6], 1.0)))
+_c31 = [('red', 'home|away', [6], 1.0)]
 
 _h32, _n32 = 'Atlanta', 'Braves'
 _c32 = (('#ce1141', '#ffffff', '#13274f', ''),
@@ -80,11 +78,8 @@ _c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0),
         ('blue', 'away', _all, .25)]
 
 _h50, _n50 = 'Oakland', 'Athletics'
-_c50 = (('#003831', '#ffffff', '#efb21e', ''),
-        ('#003831', '#acacac', '#efb21e', ''),
-        ('#ffffff', '#035a2e', '#efb21e', '', ('green', 'home', [4], 1.0)),
-        ('#003831', '#fcb600', '#ffffff', '', ('yellow', 'home', _all, .1)),
-        ('#ffffff', '#003831', '#efb21e', '', ('green', 'home|away', _all, .45)))
+_c50 = [('yellow', 'home', [4], 1.0),
+        ('green', 'away', _all, .15)]
 
 _h51, _n51 = 'Philadelphia', 'Phillies'
 _c51 = [('sky', 'home', [3], 1.0),
@@ -101,11 +96,8 @@ _c53 = (('#002d62', '#ffffff', '#ffffff', ''),
         ('#ffffff', '#002d62', '#002d62', '', ('blue', 'away', _all, .5)))
 
 _h54, _n54 = 'Seattle', 'Mariners'
-_c54 = (('#0c2c56', '#ffffff', '#005c5c', ''),
-        ('#0c2c56', '#acacac', '#005c5c', ''),
-        ('#c4ced4', '#005c5c', '#0c2c56', '', ('green', 'home', [4], 1.0)),
-        ('#0c2c56', '#f0f0dc', '#005c5c', '', ('cream', 'home', [6], 1.0)),
-        ('#c4ced4', '#0c2c56', '#005c5c', '', ('blue', 'away', _all, .45)))
+_c54 = [('green', 'home', [4], 1.0),
+        ('blue', 'away', _all, .45)]
 
 _h55, _n55 = 'San Francisco', 'Giants'
 _c55 = (('#27251f', '#ffffff', '#fd5a1e', ''),
