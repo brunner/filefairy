@@ -26,6 +26,7 @@ _all = [0, 1, 2, 3, 4, 5, 6]
 _color_clashes = [
     ('black', 'blue', 'green', 'purple'),
     ('cream', 'white'),
+    ('grey')
     ('orange', 'red', 'yellow'),
     ('sky'),
 ]
@@ -207,6 +208,8 @@ _inline_span = _span.format('d-inline-block px-2', '{0}')
 
 
 def _allow(primary, clash):
+    if not clash:
+        return True
     for c in _color_clashes:
         if primary in c and clash in c:
             return False
