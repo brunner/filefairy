@@ -4,8 +4,8 @@
 
 {% block style %}
 {{ style.base() }}
-{% for team, name in jerseys %}
-{{ style.jersey(team, name) }}
+{% for team, name, rawid in jerseys %}
+{{ style.jersey(team, name, rawid) }}
 {% endfor %}
 {{ style.game() }}
 {% endblock %}
