@@ -27,6 +27,7 @@ _color_clashes = [
     ('black', 'blue', 'green', 'purple'),
     ('cream', 'white'),
     ('orange', 'red', 'yellow'),
+    ('sky'),
 ]
 _h31, _n31 = 'Arizona', 'Diamondbacks'
 _c31 = [('red', 'home|away', [6], 1.0)]
