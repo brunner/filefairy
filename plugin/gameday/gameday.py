@@ -21,6 +21,7 @@ from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
+from util.jersey.jersey import get_rawid  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import choose_colors  # noqa
 from util.team.team import divisions  # noqa
@@ -332,7 +333,7 @@ class Gameday(Registrable):
             c = colors[t]
             if isinstance(c, str):
                 nickname = encoding_to_nickname(t).lower().replace(' ', '')
-                ret['jerseys'].append((nickname, c))
+                ret['jerseys'].append((nickname, c, get_rawid(nickname)))
 
         runs = {away_team: 0, home_team: 0}
 
@@ -448,9 +449,9 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-06-04T00:00:00-07:00', '1314')
+# statsplus._extract('2024-06-24T00:00:00-07:00', '1693')
 
 # gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1314']
+# gameday.data['games'] = ['1693']
 # gameday._check_games()
 # gameday._setup_internal(date=date)

@@ -147,11 +147,13 @@ a.disabled{
 }
 {%- endmacro -%}
 
-{% macro jersey(team, name) -%}
+{% macro jersey(team, name, rawid) -%}
 .{{ team }}-{{ name }}-back {
-  background: url('https://fairylab.surge.sh/images/jerseys/{{ team }}/{{ name }}-back.png');
+  background: url('https://fairylab.surge.sh/images/teams/{{ team }}/{{ team }}-{{ name }}-back.png');
+  background: url('https://gistcdn.githack.com/brunner/{{ rawid }}/{{ team }}-{{ name }}-back.svg'), linear-gradient(transparent, transparent);
 }
 .{{ team }}-{{ name }}-front {
-  background: url('https://fairylab.surge.sh/images/jerseys/{{ team }}/{{ name }}-front.png');
+  background: url('https://fairylab.surge.sh/images/teams/{{ team }}/{{ team }}-{{ name }}-front.png');
+  background: url('https://gistcdn.githack.com/brunner/{{ rawid }}/{{ team }}-{{ name }}-front.svg'), linear-gradient(transparent, transparent);
 }
 {%- endmacro -%}

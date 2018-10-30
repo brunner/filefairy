@@ -21,21 +21,19 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
     }
 
 
-_v2_teams = [
-    'T31', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40', 'T41', 'T43',
-    'T46', 'T47', 'T48', 'T49', 'T50', 'T51', 'T52', 'T54', 'T56', 'T57', 'T58', 'T59'
-]
-_all = [0, 1, 2, 3, 4, 5, 6]
-
 # yapf: disable
+_all = [0, 1, 2, 3, 4, 5, 6]
+_color_clashes = [
+    ('black', 'blue', 'green', 'purple'),
+    ('cream', 'white'),
+    ('orange', 'red', 'yellow'),
+]
 _h31, _n31 = 'Arizona', 'Diamondbacks'
 _c31 = [('red', 'home|away', [6], 1.0)]
 
 _h32, _n32 = 'Atlanta', 'Braves'
-_c32 = (('#ce1141', '#ffffff', '#13274f', ''),
-        ('#ce1141', '#acacac', '#13274f', ''),
-        ('#000000', '#f0f0dc', '#13274f', '', ('cream', 'home', [6], 1.0)),
-        ('#ffffff', '#13274f', '#13274f', '', ('blue', 'away', _all, .5)))
+_c32 = [('cream', 'home', [6], 1.0),
+        ('blue', 'away', _all, .5)]
 
 _h33, _n33 = 'Baltimore', 'Orioles'
 _c33 = [('black', 'home|away', [4], 1.0),
@@ -62,9 +60,7 @@ _c40 = [('blue', 'home', _all, .6),
 _h41, _n41, _c41 = 'Miami', 'Marlins', []
 
 _h42, _n42 = 'Houston', 'Astros'
-_c42 = (('#002d62', '#ffffff', '#eb6e1f', ''),
-        ('#002d62', '#acacac', '#eb6e1f', ''),
-        ('#002d62', '#eb6e1f', '#ffffff', '', ('orange', 'home|away', _all, .2)))
+_c42 = [('orange', 'home|away', _all, .2)]
 
 _h43, _n43 = 'Kansas City', 'Royals'
 _c43 = [('sky', 'home', [6], 1.0),
@@ -75,7 +71,7 @@ _c46 = [('sky', 'home|away', [5, 6], 1.0)]
 
 _h47, _n47 = 'Minnesota', 'Twins'
 _c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0),
-        ('blue', 'away', _all, .25)]
+        ('blue', 'away', _all, .15)]
 
 _h50, _n50 = 'Oakland', 'Athletics'
 _c50 = [('yellow', 'home', [4], 1.0),
@@ -90,19 +86,15 @@ _c52 = [('yellow', 'home', [6], 1.0),
         ('black', 'home|away', _all, .4)]
 
 _h53, _n53 = 'San Diego', 'Padres'
-_c53 = (('#002d62', '#ffffff', '#ffffff', ''),
-        ('#002d62', '#acacac', '#acacac', ''),
-        ('#ffc72c', '#473729', '#473729', '', ('brown', 'home', [4], 1.0)),
-        ('#ffffff', '#002d62', '#002d62', '', ('blue', 'away', _all, .5)))
+_c53 = [('cream', 'home', [6], 1.0),
+        ('yellow', 'away', _all, .35)]
 
 _h54, _n54 = 'Seattle', 'Mariners'
 _c54 = [('green', 'home', [4], 1.0),
         ('blue', 'away', _all, .45)]
 
 _h55, _n55 = 'San Francisco', 'Giants'
-_c55 = (('#27251f', '#ffffff', '#fd5a1e', ''),
-        ('#27251f', '#acacac', '#fd5a1e', ''),
-        ('#27251f', '#fd5a1e', '#ffffff', '', ('orange', 'home', [4], 1.0)))
+_c55 = [('orange', 'home', [4], 1.0)]
 
 _h56, _n56 = 'St. Louis', 'Cardinals'
 _c56 = [('cream', 'home', [5], 1.0)]
@@ -119,10 +111,8 @@ _h59, _n59 = 'Toronto', 'Blue Jays'
 _c59 = [('blue', 'home|away', _all, .5)]
 
 _h60, _n60 = 'Washington', 'Nationals'
-_c60 = (('#ab0003', '#ffffff', '#14225a', ''),
-        ('#ab0003', '#acacac', '#14225a', ''),
-        ('#ab0003', '#14225a', '#ffffff', '', ('blue', 'home|away', [1, 4], .5)),
-        ('#ffffff', '#ab0003', '#14225a', '', ('red', 'home|away', [5, 6], .5)))
+_c60 = [('blue', 'home|away', [4], 1.0),
+        ('red', 'home|away', [6], 1.0)]
 
 _hch, _n35, _n36 = 'Chicago', 'White Sox', 'Cubs'
 _c35 = [('blue', 'home', [6], 1.0),
@@ -130,11 +120,8 @@ _c35 = [('blue', 'home', [6], 1.0),
 _c36 = [('blue', 'home|away', [6], 1.0)]
 
 _hla, _n44, _n45 = 'Los Angeles', 'Angels', 'Dodgers'
-_c44 = (('#ba0021', '#ffffff', '#003263', ''),
-        ('#ba0021', '#acacac', '#003263', ''),
-        ('#c4ced4', '#ba0021', '#003263', '', ('red', 'home|away', _all, .55)))
-_c45 = (('#005a9c', '#ffffff', '#ef3e42', ''),
-        ('#005a9c', '#acacac', '#ef3e42', ''))
+_c44 = [('red', 'home|away', _all, .55)]
+_c45 = []
 
 _hny, _n48, _n49 = 'New York', 'Yankees', 'Mets'
 _c48 = []
@@ -218,25 +205,22 @@ _inline_img = _img.format('{0}', 'd-inline-block')
 _inline_span = _span.format('d-inline-block px-2', '{0}')
 
 
-def choose_colors(encoding, colors, day, where, clash):
-    if encoding in _v2_teams:
-        for primary, regex, days, pct in colors:
-            m = re.search(regex, where)
-            if m and day in days and primary != clash:
-                if pct >= random.random():
-                    return (primary, 'alt-{}'.format(primary))
-        if re.search('home', where):
-            return ('white', 'home')
-        return ('grey', 'away')
+def _allow(primary, clash):
+    for c in _color_clashes:
+        if primary in c and clash in c:
+            return False
+    return True
 
-    for alt in colors[2:]:
-        primary, regex, days, pct = alt[-1]
+
+def choose_colors(encoding, colors, day, where, clash):
+    for primary, regex, days, pct in colors:
         m = re.search(regex, where)
-        if m and day in days and pct >= random.random() and primary != clash:
-            return (primary, alt[:4])
+        if m and day in days and _allow(primary, clash):
+            if pct >= random.random():
+                return (primary, 'alt-{}'.format(primary))
     if re.search('home', where):
-        return ('white', colors[0])
-    return ('grey', colors[1])
+        return ('white', 'home')
+    return ('grey', 'away')
 
 
 def chlany():
