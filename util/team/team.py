@@ -26,7 +26,7 @@ _all = [0, 1, 2, 3, 4, 5, 6]
 _color_clashes = [
     ('black', 'blue', 'green', 'purple'),
     ('cream', 'white'),
-    ('grey')
+    ('grey'),
     ('orange', 'red', 'yellow'),
     ('sky'),
 ]
