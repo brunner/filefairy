@@ -21,7 +21,6 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
     }
 
 
-# yapf: disable
 _all = [0, 1, 2, 3, 4, 5, 6]
 _color_clashes = [
     ('black', 'blue', 'green', 'purple'),
@@ -34,16 +33,13 @@ _h31, _n31 = 'Arizona', 'Diamondbacks'
 _c31 = [('red', 'home|away', [6], 1.0)]
 
 _h32, _n32 = 'Atlanta', 'Braves'
-_c32 = [('cream', 'home', [6], 1.0),
-        ('blue', 'away', _all, .5)]
+_c32 = [('cream', 'home', [6], 1.0), ('blue', 'away', _all, .5)]
 
 _h33, _n33 = 'Baltimore', 'Orioles'
-_c33 = [('black', 'home|away', [4], 1.0),
-        ('orange', 'home|away', [5], 1.0)]
+_c33 = [('black', 'home|away', [4], 1.0), ('orange', 'home|away', [5], 1.0)]
 
 _h34, _n34 = 'Boston', 'Red Sox'
-_c34 = [('red', 'home', [4], 1.0),
-        ('blue', 'away', [4], 1.0)]
+_c34 = [('red', 'home', [4], 1.0), ('blue', 'away', [4], 1.0)]
 
 _h37, _n37 = 'Cincinnati', 'Reds'
 _c37 = [('red', 'home', _all, .35)]
@@ -52,12 +48,10 @@ _h38, _n38 = 'Cleveland', 'Indians'
 _c38 = [('blue', 'home|away', _all, .6)]
 
 _h39, _n39 = 'Colorado', 'Rockies'
-_c39 = [('purple', 'home|away', _all, .35),
-        ('black', 'home|away', _all, .15)]
+_c39 = [('purple', 'home|away', _all, .35), ('black', 'home|away', _all, .15)]
 
 _h40, _n40 = 'Detroit', 'Tigers'
-_c40 = [('blue', 'home', _all, .6),
-        ('orange', 'away', _all, .5)]
+_c40 = [('blue', 'home', _all, .6), ('orange', 'away', _all, .5)]
 
 _h41, _n41, _c41 = 'Miami', 'Marlins', []
 
@@ -65,35 +59,28 @@ _h42, _n42 = 'Houston', 'Astros'
 _c42 = [('orange', 'home|away', _all, .2)]
 
 _h43, _n43 = 'Kansas City', 'Royals'
-_c43 = [('sky', 'home', [6], 1.0),
-        ('blue', 'away', [6], 1.0)]
+_c43 = [('sky', 'home', [6], 1.0), ('blue', 'away', [6], 1.0)]
 
 _h46, _n46 = 'Milwaukee', 'Brewers'
 _c46 = [('sky', 'home|away', [5, 6], 1.0)]
 
 _h47, _n47 = 'Minnesota', 'Twins'
-_c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0),
-        ('blue', 'away', _all, .15)]
+_c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0), ('blue', 'away', _all, .15)]
 
 _h50, _n50 = 'Oakland', 'Athletics'
-_c50 = [('yellow', 'home', [4], 1.0),
-        ('green', 'away', _all, .15)]
+_c50 = [('yellow', 'home', [4], 1.0), ('green', 'away', _all, .15)]
 
 _h51, _n51 = 'Philadelphia', 'Phillies'
-_c51 = [('sky', 'home', [3], 1.0),
-        ('cream', 'home', [6], 1.0)]
+_c51 = [('sky', 'home', [3], 1.0), ('cream', 'home', [6], 1.0)]
 
 _h52, _n52 = 'Pittsburgh', 'Pirates'
-_c52 = [('yellow', 'home', [6], 1.0),
-        ('black', 'home|away', _all, .4)]
+_c52 = [('yellow', 'home', [6], 1.0), ('black', 'home|away', _all, .4)]
 
 _h53, _n53 = 'San Diego', 'Padres'
-_c53 = [('cream', 'home', [6], 1.0),
-        ('yellow', 'away', _all, .35)]
+_c53 = [('cream', 'home', [6], 1.0), ('yellow', 'away', _all, .35)]
 
 _h54, _n54 = 'Seattle', 'Mariners'
-_c54 = [('green', 'home', [4], 1.0),
-        ('blue', 'away', _all, .45)]
+_c54 = [('green', 'home', [4], 1.0), ('blue', 'away', _all, .45)]
 
 _h55, _n55 = 'San Francisco', 'Giants'
 _c55 = [('orange', 'home', [4], 1.0)]
@@ -102,23 +89,19 @@ _h56, _n56 = 'St. Louis', 'Cardinals'
 _c56 = [('cream', 'home', [5], 1.0)]
 
 _h57, _n57 = 'Tampa Bay', 'Rays'
-_c57 = [('sky', 'home', [6], 1.0),
-        ('blue', 'away', _all, .5)]
+_c57 = [('sky', 'home', [6], 1.0), ('blue', 'away', _all, .5)]
 
 _h58, _n58 = 'Texas', 'Rangers'
-_c58 = [('sky', 'home', [6], 1.0),
-        ('blue', 'home|away', _all, .5)]
+_c58 = [('sky', 'home', [6], 1.0), ('blue', 'home|away', _all, .5)]
 
 _h59, _n59 = 'Toronto', 'Blue Jays'
 _c59 = [('blue', 'home|away', _all, .5)]
 
 _h60, _n60 = 'Washington', 'Nationals'
-_c60 = [('blue', 'home|away', [4], 1.0),
-        ('red', 'home|away', [6], 1.0)]
+_c60 = [('blue', 'home|away', [4], 1.0), ('red', 'home|away', [6], 1.0)]
 
 _hch, _n35, _n36 = 'Chicago', 'White Sox', 'Cubs'
-_c35 = [('blue', 'home', [6], 1.0),
-        ('black', 'home|away', _all, .6)]
+_c35 = [('blue', 'home', [6], 1.0), ('black', 'home|away', _all, .6)]
 _c36 = [('blue', 'home|away', [6], 1.0)]
 
 _hla, _n44, _n45 = 'Los Angeles', 'Angels', 'Dodgers'
@@ -127,9 +110,7 @@ _c45 = []
 
 _hny, _n48, _n49 = 'New York', 'Yankees', 'Mets'
 _c48 = []
-_c49 = [('black', 'home', _all, .25),
-        ('blue', 'away', _all, .25)]
-# yapf: enable
+_c49 = [('black', 'home', _all, .25), ('blue', 'away', _all, .25)]
 
 _teams = [
     _team(_h31, _n31, 'ARI', _c31, '', '', '{} {}', 'T31', '{}', '{}', '31'),
