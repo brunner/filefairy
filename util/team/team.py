@@ -22,8 +22,9 @@ def _team(_1, _2, abbr, colors, chlany, cross, de, en, hn, pre, teamid):
 
 
 _v2_teams = [
-    'T31', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40', 'T41', 'T43',
-    'T46', 'T47', 'T48', 'T49', 'T50', 'T51', 'T52', 'T54', 'T56', 'T57', 'T58', 'T59'
+    'T31', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40', 'T41',
+    'T42', 'T43', 'T44', 'T45', 'T46', 'T47', 'T48', 'T49', 'T50', 'T51',
+    'T52', 'T54', 'T56', 'T57', 'T58', 'T59', 'T60'
 ]
 _all = [0, 1, 2, 3, 4, 5, 6]
 
@@ -62,9 +63,7 @@ _c40 = [('blue', 'home', _all, .6),
 _h41, _n41, _c41 = 'Miami', 'Marlins', []
 
 _h42, _n42 = 'Houston', 'Astros'
-_c42 = (('#002d62', '#ffffff', '#eb6e1f', ''),
-        ('#002d62', '#acacac', '#eb6e1f', ''),
-        ('#002d62', '#eb6e1f', '#ffffff', '', ('orange', 'home|away', _all, .2)))
+_c42 = [('orange', 'home|away', _all, .2)]
 
 _h43, _n43 = 'Kansas City', 'Royals'
 _c43 = [('sky', 'home', [6], 1.0),
@@ -75,7 +74,7 @@ _c46 = [('sky', 'home|away', [5, 6], 1.0)]
 
 _h47, _n47 = 'Minnesota', 'Twins'
 _c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0),
-        ('blue', 'away', _all, .25)]
+        ('blue', 'away', _all, .15)]
 
 _h50, _n50 = 'Oakland', 'Athletics'
 _c50 = [('yellow', 'home', [4], 1.0),
@@ -119,10 +118,8 @@ _h59, _n59 = 'Toronto', 'Blue Jays'
 _c59 = [('blue', 'home|away', _all, .5)]
 
 _h60, _n60 = 'Washington', 'Nationals'
-_c60 = (('#ab0003', '#ffffff', '#14225a', ''),
-        ('#ab0003', '#acacac', '#14225a', ''),
-        ('#ab0003', '#14225a', '#ffffff', '', ('blue', 'home|away', [1, 4], .5)),
-        ('#ffffff', '#ab0003', '#14225a', '', ('red', 'home|away', [5, 6], .5)))
+_c60 = [('blue', 'home|away', [4], 1.0),
+        ('red', 'home|away', [6], 1.0)]
 
 _hch, _n35, _n36 = 'Chicago', 'White Sox', 'Cubs'
 _c35 = [('blue', 'home', [6], 1.0),
@@ -130,11 +127,8 @@ _c35 = [('blue', 'home', [6], 1.0),
 _c36 = [('blue', 'home|away', [6], 1.0)]
 
 _hla, _n44, _n45 = 'Los Angeles', 'Angels', 'Dodgers'
-_c44 = (('#ba0021', '#ffffff', '#003263', ''),
-        ('#ba0021', '#acacac', '#003263', ''),
-        ('#c4ced4', '#ba0021', '#003263', '', ('red', 'home|away', _all, .55)))
-_c45 = (('#005a9c', '#ffffff', '#ef3e42', ''),
-        ('#005a9c', '#acacac', '#ef3e42', ''))
+_c44 = [('red', 'home|away', _all, .55)]
+_c45 = []
 
 _hny, _n48, _n49 = 'New York', 'Yankees', 'Mets'
 _c48 = []
