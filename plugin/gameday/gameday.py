@@ -16,7 +16,6 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa
-from util.component.component import profile  # noqa
 from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
@@ -258,14 +257,9 @@ class Gameday(Registrable):
 
     @staticmethod
     def _profile(encoding, num, colors, s):
-        if isinstance(colors, str):
-            n = encoding_to_nickname(encoding).lower().replace(' ', '')
-            div = '<div class="profile position-absolute ' + \
-                  '{}-{}-front"></div>'.format(n, colors)
-        else:
-            color, bg, border, stripes = colors
-            ins = profile(num, color, bg, border, stripes)
-            div = '<div class="profile position-absolute">{}</div>'.format(ins)
+        n = encoding_to_nickname(encoding).lower().replace(' ', '')
+        div = '<div class="profile position-absolute ' + \
+              '{}-{}-front"></div>'.format(n, colors)
         span = '<span class="align-middle d-block ' + \
                'pl-84p">{}</span>'.format(s)
         return div + span

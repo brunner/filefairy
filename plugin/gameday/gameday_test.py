@@ -15,7 +15,6 @@ from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa
-from util.component.component import profile  # noqa
 from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -195,36 +194,34 @@ _gameday = {
     ]
 }
 
-_atbat = '<div class="profile position-absolute">{}</div><span class="alig' + \
-            'n-middle d-block pl-84p">ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>&nbsp;</span>'
-_pitching = '<div class="profile position-absolute">{}</div><span class="a' + \
-            'lign-middle d-block pl-84p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ' + \
-            '<br>{}<br>&nbsp;</span>'
-
-_c31 = ('#000000', '#acacac', '#e3d4ad', '')
-_c45 = ('#005a9c', '#ffffff', '#ef3e42', '')
+_atbat = '<div class="profile position-absolute {}-{}-front"></div><span ' + \
+         'class="align-middle d-block pl-84p">ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>' + \
+         '&nbsp;</span>'
+_pitching = '<div class="profile position-absolute {}-{}-front"></div><sp' + \
+            'an class="align-middle d-block pl-84p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br' + \
+            '>{}<br>&nbsp;</span>'
 
 _log_body = [
-    [_pitching.format(profile('1', *_c45), '1', 'ʀ', 'Jim Alpha'), ''],
-    [_atbat.format(profile('2', *_c31), '2', 'ꜱ', 'Jim Beta'), ''],
+    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Alpha'), ''],
+    [_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Beta'), ''],
     [Gameday._badge('1', 'Ball'), '1-0'],
     [Gameday._badge('2', 'In play, out(s)'), ''],
     ['Jim Beta Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('3', *_c31), '3', 'ʟ', 'Jim Charlie'), ''],
+    [_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Charlie'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
     ['Jim Charlie SINGLE (Groundball, 56)*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('4', *_c31), '4', 'ʀ', 'Jim Delta'), ''],
+    [_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Delta'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
     ['Jim Delta SINGLE (Groundball, 6MS) (infield hit)*. Jim Charlie to second'
      '*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('5', *_c31), '5', 'ʀ', 'Jim Echo'), ''],
+    [_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Echo'), ''],
     [Gameday._badge('1', 'In play, out(s)'), ''],
     ['Jim Echo Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format(profile('6', *_c31), '6', 'ʟ', 'Jim Foxtrot'), ''],
+    [_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Foxtrot'), ''],
     [Gameday._badge('1', 'Swinging Strike'), '0-1'],
     [Gameday._badge('2', 'Foul'), '0-2'],
     [Gameday._badge('3', 'Swinging Strike'), '0-3'],
@@ -241,6 +238,9 @@ _plays_body = [
     ['Jim Foxtrot strikes out swinging. ' + bold('3 out.')]
 ]  # yapf: disable
 
+_r31 = '31/raw/31'
+_r45 = '45/raw/45'
+
 _game = {
     'breadcrumbs': [{
         'href': '/',
@@ -252,7 +252,10 @@ _game = {
         'href': '',
         'name': 'Diamondbacks at Dodgers, 10/09/2022'
     }],
-    'jerseys': [],
+    'jerseys': [
+        ('diamondbacks', 'away', _r31),
+        ('dodgers', 'home', _r45),
+    ],
     'tabs': {
         'style':
         'tabs',
@@ -500,13 +503,15 @@ class GamedayTest(unittest.TestCase):
 
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')
+    @mock.patch('plugin.gameday.gameday.get_rawid')
     @mock.patch('plugin.gameday.gameday.open')
     @mock.patch('plugin.gameday.gameday.choose_colors')
-    def test_render(self, mock_choose, mock_open, mock_recreate,
+    def test_render(self, mock_choose, mock_open, mock_rawid, mock_recreate,
                     mock_schedule):
-        mock_choose.side_effect = [('white', _c45), ('grey', _c31)]
+        mock_choose.side_effect = [('white', 'home'), ('grey', 'away')]
         mo = mock.mock_open(read_data=dumps(_game_data))
         mock_open.side_effect = [mo.return_value]
+        mock_rawid.side_effect = [_r31, _r45]
         mock_schedule.return_value = {
             'T31': [(_then, 'T45', '@', '2998'), (_now, 'T45', '@', '2999')],
             'T45': [(_then, 'T31', 'v', '2998'), (_now, 'T31', 'v', '2999')],

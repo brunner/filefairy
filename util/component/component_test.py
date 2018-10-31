@@ -10,7 +10,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/component', '', _path))
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
-from util.component.component import profile  # noqa
 from util.component.component import replace  # noqa
 from util.component.component import show  # noqa
 from util.component.component import span  # noqa
@@ -76,23 +75,6 @@ class ComponentTest(unittest.TestCase):
             'success': '',
             'danger': 'stalled'
         }
-        self.assertEqual(actual, expected)
-
-    def test_profile__default(self):
-        actual = profile('1', '#000000', '#acacac', '#ffffff', '')
-        expected = '<svg viewBox="0,0,78,80">' + \
-                   '<style>.text { font: bold 32px sans-serif; }</style>' + \
-                   '<rect x="0" y="0" width="78" height="80" ' + \
-                   'fill="#6c757d" rx="12" ry="12"></rect>' + \
-                   '<rect x="1" y="1" width="76" height="78" ' + \
-                   'fill="#000000" rx="11" ry="11"></rect>' + \
-                   '<rect x="7" y="7" width="64" height="66" ' + \
-                   'fill="#ffffff" rx="8" ry="8"></rect>' + \
-                   '<rect x="11" y="11" width="56" height="58" ' + \
-                   'fill="#acacac" rx="6" ry="6"></rect>' + \
-                   '<text x="50%" y="52" text-anchor="middle" ' + \
-                   'fill="#000000" class="text">1</text>' + \
-                   '</svg>'
         self.assertEqual(actual, expected)
 
     def test_replace__default(self):
