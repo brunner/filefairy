@@ -170,6 +170,9 @@ def parse_game_log(link):
     home_team = decoding_to_encoding(home_title)
 
     date = _find('padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>', content)
+    if not date:
+        return ret
+
     d = datetime.datetime.strptime(date, '%m/%d/%Y')
     date = datetime_datetime_pst(d.year, d.month, d.day)
 
