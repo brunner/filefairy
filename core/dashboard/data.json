@@ -803,6 +803,107 @@
         "msg": "Reloaded statsplus.",
         "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
       }
+    ],
+    "2018-11-04T00:00:00-07:00": [
+      {
+        "count": 1,
+        "date": "2018-11-04T00:00:36.366163-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 184,
+        "msg": "Automated push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T00:16:32.406137-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T01:07:17.246534-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T02:16:04.427039-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T02:42:32.370033-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T03:14:20.317917-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 4,
+        "date": "2018-11-04T04:39:21.123903-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T07:04:07.249731-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T08:32:24.465893-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T09:04:09.366113-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T11:10:55.315046-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      }
     ]
   }
 }
