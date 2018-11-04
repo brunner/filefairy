@@ -62,15 +62,17 @@ def _play_event(sequence, value):
                 value_lower.count(s)
                 for s in ['scores', 'home, safe', 'is safe']
             ])
-    elif any(s in value_lower
-             for s in ['out', 'double play', 'fielders choice']):
+    elif any(
+            s in value_lower
+            for s in ['out', 'double play', 'lined into dp'
+                      'fielders choice']):
         suffix = ', out(s)'
     elif sequence and 'In play' in sequence[-1]:
         check_outs = False
         suffix = ', no out'
 
     if check_outs:
-        if 'double play' in value_lower:
+        if any(s in value_lower for s in ['double play', 'lined into dp']):
             outs = 2
         else:
             outs = sum([
