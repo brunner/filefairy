@@ -27,8 +27,6 @@ _commit = 'https://github.com/brunner/filefairy/commit/'
 _l = ['d-inline-block', 'w-65p']
 _r = ['d-inline-block', 'text-right', 'w-65p']
 
-_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
-
 
 class Git(Registrable):
     def __init__(self, **kwargs):
@@ -54,11 +52,6 @@ class Git(Registrable):
         notify = kwargs['notify']
         if notify == Notify.FAIRYLAB_DAY:
             self.automate('filefairy', **kwargs)
-        elif notify == Notify.FAIRYLAB_DEPLOY:
-            response = self.status('fairylab', **kwargs)
-            stdout = self._stdout(response)
-            if 'Changes not staged for commit' in stdout:
-                self.automate('fairylab', **kwargs)
         return Response()
 
     def _on_message_internal(self, **kwargs):
@@ -113,13 +106,7 @@ class Git(Registrable):
 
     @staticmethod
     def _call(cmd, *args, **kwargs):
-        cwd = os.getcwd()
-        if len(args) == 1 and args[0] == 'fairylab':
-            os.chdir(_fairylab_root)
-
         output = check_output(cmd)
-        os.chdir(cwd)
-
         response = Response()
         if output.get('ok'):
             response.append_notify(Notify.BASE)
@@ -165,10 +152,7 @@ class Git(Registrable):
 
     def pull(self, *args, **kwargs):
         response = self._call(['git', 'pull'], *args, **kwargs)
-
-        if len(args) == 1 and args[0] == 'fairylab':
-            pass
-        elif response.notify:
+        if response.notify:
             logger_.log(logging.INFO, 'Fetched latest changes.')
             self._save(response, 'pull', self._stdout, **kwargs)
 
@@ -176,10 +160,7 @@ class Git(Registrable):
 
     def push(self, *args, **kwargs):
         response = self._call(['git', 'push'], *args, **kwargs)
-
-        if len(args) == 1 and args[0] == 'fairylab':
-            pass
-        elif response.notify:
+        if response.notify:
             s = 'Manual' if kwargs.get('v') else 'Automated'
             logger_.log(logging.INFO, s + ' push.')
             self._save(response, 'push', self._stderr, **kwargs)

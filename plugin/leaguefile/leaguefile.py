@@ -30,7 +30,7 @@ from util.file_.file_ import wget_file  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.news.news import extract_box_scores  # noqa
 from util.news.news import extract_leagues  # noqa
-from util.secrets.secrets import server  # noqa
+from util.secrets.secrets import statslab  # noqa
 from util.slack.slack import reactions_add  # noqa
 from util.subprocess_.subprocess_ import check_output  # noqa
 
@@ -40,7 +40,7 @@ _size_pattern = '(\d+)'
 _date_pattern = '(\w+\s\d+\s\d+:\d+)'
 _name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
 _line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
-_server = server()
+_statslab = statslab()
 _td = datetime.timedelta(minutes=2)
 
 
@@ -203,7 +203,7 @@ class Leaguefile(Registrable):
     @staticmethod
     def _check_upload():
         ls = 'ls -l /var/www/html/StatsLab/league_file'
-        output = check_output(['ssh', 'brunnerj@' + _server, ls], timeout=8)
+        output = check_output(['ssh', 'brunnerj@' + _statslab, ls], timeout=8)
         if output.get('ok'):
             stdout = output.get('stdout', '')
             fp = '.filepart' in stdout

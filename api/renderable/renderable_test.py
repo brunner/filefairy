@@ -15,8 +15,9 @@ sys.path.append(_root)
 from api.renderable.renderable import Renderable  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
+from util.secrets.secrets import fairylab  # noqa
 
-_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
+_fairylab = fairylab()
 
 
 class FakeRenderable(Renderable):
@@ -100,9 +101,13 @@ class RenderableTest(unittest.TestCase):
     @mock.patch('api.renderable.renderable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch('api.renderable.renderable.fairylab')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__with_valid_input(self, mock_dump, mock_makedirs,
-                                      mock_open, mock_rlog, mock_stream):
+    @mock.patch('api.renderable.renderable.check_output')
+    def test_render__with_valid_input(self, mock_check, mock_dump,
+                                      mock_fairylab, mock_makedirs, mock_open,
+                                      mock_rlog, mock_stream):
+        mock_fairylab.return_value = 'fairylab'
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
@@ -119,23 +124,38 @@ class RenderableTest(unittest.TestCase):
         env = jinja2.Environment(loader=ldr)
         renderable = FakeRenderable(e=env)
         renderable._render(date=date)
+        there = 'brunnerj@' + _fairylab + ':/public_html/fairylab'
         foo = '/foo/index.html'
         sub = '/foo/sub/index.html'
-        rdyn = _fairylab_root + '/foo/dyn/dyn_{}.html'
+        rdyn = _root + '/resource/html/foo/dyn/dyn_{}.html'
+        tdyn = there + '/foo/dyn/dyn_{}.html'
+        resource = _root + '/resource/html'
+        kwargs = {'log': True, 'timeout': 8}
+        check_calls = [
+            mock.call(['scp', resource + foo, there + foo], **kwargs),
+            mock.call(['scp', resource + sub, there + sub], **kwargs),
+            mock.call(
+                ['scp', rdyn.format(0), tdyn.format(0)], **kwargs),
+            mock.call(
+                ['scp', rdyn.format(1), tdyn.format(1)], **kwargs),
+            mock.call(
+                ['scp', rdyn.format(2), tdyn.format(2)], **kwargs),
+        ]
+        mock_check.assert_has_calls(check_calls)
         dump_calls = [
-            mock.call(_fairylab_root + foo),
-            mock.call(_fairylab_root + sub),
+            mock.call(resource + foo),
+            mock.call(resource + sub),
             mock.call(rdyn.format(0)),
             mock.call(rdyn.format(1)),
             mock.call(rdyn.format(2))
         ]
         mock_dump.assert_has_calls(dump_calls)
         calls = [
-            mock.call(_fairylab_root + '/foo'),
-            mock.call(_fairylab_root + '/foo/sub'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
+            mock.call(resource + '/foo'),
+            mock.call(resource + '/foo/sub'),
+            mock.call(resource + '/foo/dyn'),
+            mock.call(resource + '/foo/dyn'),
+            mock.call(resource + '/foo/dyn'),
         ]
         mock_makedirs.assert_has_calls(calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
@@ -177,9 +197,13 @@ class RenderableTest(unittest.TestCase):
     @mock.patch('api.renderable.renderable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch('api.renderable.renderable.fairylab')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__with_test(self, mock_dump, mock_makedirs, mock_open,
-                               mock_rlog, mock_stream):
+    @mock.patch('api.renderable.renderable.check_output')
+    def test_render__with_test(self, mock_check, mock_dump, mock_fairylab,
+                               mock_makedirs, mock_open, mock_rlog,
+                               mock_stream):
+        mock_fairylab.return_value = 'fairylab'
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
@@ -196,9 +220,23 @@ class RenderableTest(unittest.TestCase):
         env = jinja2.Environment(loader=ldr)
         renderable = FakeRenderable(e=env)
         renderable._render(date=date, test=True)
+        there = 'brunnerj@' + _fairylab + ':/public_html/fairylab'
         foo = '/foo/index.html'
         sub = '/foo/sub/index.html'
         rdyn = _root + '/foo/dyn/dyn_{}.html'
+        tdyn = there + '/foo/dyn/dyn_{}.html'
+        kwargs = {'log': True, 'timeout': 8}
+        check_calls = [
+            mock.call(['scp', _root + foo, there + foo], **kwargs),
+            mock.call(['scp', _root + sub, there + sub], **kwargs),
+            mock.call(
+                ['scp', rdyn.format(0), tdyn.format(0)], **kwargs),
+            mock.call(
+                ['scp', rdyn.format(1), tdyn.format(1)], **kwargs),
+            mock.call(
+                ['scp', rdyn.format(2), tdyn.format(2)], **kwargs),
+        ]
+        mock_check.assert_has_calls(check_calls)
         dump_calls = [
             mock.call(_root + foo),
             mock.call(_root + sub),
@@ -254,10 +292,14 @@ class RenderableTest(unittest.TestCase):
     @mock.patch('api.renderable.renderable.logger_.log')
     @mock.patch('api.serializable.serializable.open', create=True)
     @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch('api.renderable.renderable.fairylab')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__with_thrown_exception(self, mock_dump, mock_makedirs,
+    @mock.patch('api.renderable.renderable.check_output')
+    def test_render__with_thrown_exception(self, mock_check, mock_dump,
+                                           mock_fairylab, mock_makedirs,
                                            mock_open, mock_rlog, mock_stream):
         mock_dump.side_effect = Exception()
+        mock_fairylab.return_value = 'fairylab'
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
         mock_open.side_effect = [mo.return_value]
@@ -277,20 +319,22 @@ class RenderableTest(unittest.TestCase):
         foo = '/foo/index.html'
         sub = '/foo/sub/index.html'
         dyn = '/foo/dyn/dyn_{}.html'
+        resource = _root + '/resource/html'
+        mock_check.assert_not_called()
         dump_calls = [
-            mock.call(_fairylab_root + foo),
-            mock.call(_fairylab_root + sub),
-            mock.call(_fairylab_root + dyn.format(0)),
-            mock.call(_fairylab_root + dyn.format(1)),
-            mock.call(_fairylab_root + dyn.format(2))
+            mock.call(resource + foo),
+            mock.call(resource + sub),
+            mock.call(resource + dyn.format(0)),
+            mock.call(resource + dyn.format(1)),
+            mock.call(resource + dyn.format(2))
         ]
         mock_dump.assert_has_calls(dump_calls)
         calls = [
-            mock.call(_fairylab_root + '/foo'),
-            mock.call(_fairylab_root + '/foo/sub'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
+            mock.call(resource + '/foo'),
+            mock.call(resource + '/foo/sub'),
+            mock.call(resource + '/foo/dyn'),
+            mock.call(resource + '/foo/dyn'),
+            mock.call(resource + '/foo/dyn'),
         ]
         mock_makedirs.assert_has_calls(calls)
         mock_open.assert_called_once_with(FakeRenderable._data(), 'r')

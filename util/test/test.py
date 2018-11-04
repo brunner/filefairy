@@ -36,7 +36,8 @@ class Test(unittest.TestCase):
 
 def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
     @mock.patch.object(_cls, '_render_internal')
-    def test_golden(self, mock_render):
+    @mock.patch('api.renderable.renderable.check_output')
+    def test_golden(self, mock_check, mock_render):
         self.init_mocks(_read)
         date = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
         golden = os.path.join(_pth, 'goldens/{}.html'.format(case))
