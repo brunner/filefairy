@@ -45,7 +45,8 @@ def _play_event(sequence, value):
     suffix = ''
     value_lower = value.lower()
 
-    if any(s in value_lower for s in ['scores', 'home run', 'home, safe']):
+    if any(s in value_lower
+           for s in ['scores', 'home run', 'home, safe', 'is safe']):
         suffix = ', run(s)'
         if 'home run' in value_lower:
             if 'solo' in value_lower:
@@ -57,8 +58,10 @@ def _play_event(sequence, value):
             else:
                 runs = 4
         else:
-            runs = sum(
-                [value_lower.count(s) for s in ['scores', 'home, safe']])
+            runs = sum([
+                value_lower.count(s)
+                for s in ['scores', 'home, safe', 'is safe']
+            ])
     elif any(s in value_lower
              for s in ['out', 'double play', 'fielders choice']):
         suffix = ', out(s)'
