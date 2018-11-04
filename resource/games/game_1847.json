@@ -1,0 +1,1341 @@
+{
+  "away_team": "T31",
+  "date": "2024-07-12T00:00:00-07:00",
+  "home_team": "T33",
+  "id": "1847",
+  "ok": true,
+  "players": [
+    "1439",
+    "20479",
+    "2476",
+    "24778",
+    "24980",
+    "25031",
+    "29463",
+    "29836",
+    "30724",
+    "31093",
+    "32425",
+    "33892",
+    "34021",
+    "36905",
+    "37113",
+    "40111",
+    "50263",
+    "51505",
+    "52447",
+    "52484",
+    "53338",
+    "53671",
+    "55381",
+    "55684"
+  ],
+  "plays": [
+    [
+      {
+        "batting": "T31",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T31 0 - T33 0",
+        "label": "Top 1st",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P24980"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P2476"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P2476 SINGLE (Flyball, 8LS)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29836"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P29836 Sac Bunt - play at second, runner OUT -> throw to first, DP!*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50263"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50263 Fly out, F7 (Flyball, 78S)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T31 0 - T33 0",
+        "label": "Bot 1st",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P52484"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P52447"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P52447 Fly out, F9 (Flyball, 9LD)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32425"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 3 2 Foul",
+              "7 3 2 Foul",
+              "8 4 2 Ball"
+            ],
+            "type": "event",
+            "value": "P32425 walks."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55381"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Swinging Strike",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P55381 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P1439"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 2 Foul",
+              "5 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P1439 strikes out swinging."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T33 0",
+        "label": "Top 2nd",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P40111"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P40111 Fly out, F9 (Flyball, 9D)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P20479"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Swinging Strike",
+              "4 2 2 Called Strike",
+              "5 3 2 Ball",
+              "6 3 2 Foul",
+              "7 3 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P20479 SINGLE (Line Drive, 89S)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P24778"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P24778 Ground out 4-3 (Groundball, 4M)*. P20479 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55684"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
+            ],
+            "type": "event",
+            "value": "P55684 walks."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53338"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53338 Fly out, F8 (Flyball, 8RS)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 0 - T33 0",
+        "label": "Bot 2nd",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53671"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 2 Foul",
+              "5 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P53671 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P31093"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P31093 Ground out 5-3 (Groundball, 56)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P33892"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Foul",
+              "4 1 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P33892 Fly out, F9 (Flyball, 9S)*."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 0 - T33 0",
+        "label": "Top 3rd",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P37113"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P37113 Ground out 6-3 (Groundball, 6)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P2476"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Called Strike",
+              "4 1 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P2476 called out on strikes."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29836"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P29836 Fly out, F2 (Popup, 2L)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T33 0",
+        "label": "Bot 3rd",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P51505"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P51505 Ground out 4-3 (Groundball, 4MS)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P36905"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P36905 SINGLE (Line Drive, 8LS)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P52447"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 2 Called Strike",
+              "6 4 2 Ball"
+            ],
+            "type": "event",
+            "value": "P52447 walks. P36905 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32425"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Called Strike",
+              "4 1 2 Foul",
+              "5 1 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P32425 Fly out, F8 (Line Drive, 89M)*. Runner from 2nd tags up, SAFE at 3rd with throw*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55381"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P55381 Fly out, F7 (Flyball, 78S)*."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 0 - T33 0",
+        "label": "Top 4th",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50263"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50263 Ground out 4-3 (Groundball, 4)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P40111"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Swinging Strike",
+              "4 1 2 Foul",
+              "5 1 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P40111 Fly out, F7 (Flyball, 7)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P20479"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P20479 Ground out 1-3 (Groundball, 13S)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "1 run(s), 1 hit(s), 0 error(s), 0 left on base; T31 0 - T33 1",
+        "label": "Bot 4th",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P1439"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 1 2 Foul",
+              "5 1 2 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P1439 SOLO HOME RUN (Line Drive, 89XD), Distance : 389 ft*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53671"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 1 2 Foul",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P53671 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P31093"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P31093 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P33892"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 2 1 Ball",
+              "4 2 2 Swinging Strike",
+              "5 2 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P33892 called out on strikes."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "1 run(s), 0 hit(s), 0 error(s), 0 left on base; T31 1 - T33 1",
+        "label": "Top 5th",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P24778"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 3 1 Called Strike",
+              "5 3 2 Foul",
+              "6 3 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P24778 Hit by Pitch*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55684"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball"
+            ],
+            "type": "event",
+            "value": "With P55684 batting, Wild Pitch!*. P24778 to second*."
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P55684 Sac Bunt - play at first, batter OUT! 5-3*. P24778 to third*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53338"
+          },
+          {
+            "outs": 1,
+            "runs": 1,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P53338 Ground out 5-3 (Groundball, 56S)*. P24778 scores*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P37113"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P37113 Fly out, F7 (Flyball, 7D)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 1 - T33 1",
+        "label": "Bot 5th",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P51505"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P51505 Hit by Pitch*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P36905"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Missed Bunt",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P36905 Sac Bunt - play at first, batter OUT! 5-4*. P51505 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P52447"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P52447 SINGLE (Groundball, 56S) (infield hit)*. P51505 to third*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32425"
+          },
+          {
+            "outs": 2,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P32425 Grounds into double play, 4-6-3 (Groundball, 4D)*."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "1 run(s), 3 hit(s), 0 error(s), 2 left on base; T31 2 - T33 1",
+        "label": "Top 6th",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P2476"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 2 Foul",
+              "4 1 2 Ball",
+              "5 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P2476 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29836"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 2 Foul",
+              "6 3 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P29836 SINGLE (Groundball, 4M) (infield hit)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50263"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 2 Foul",
+              "6 3 2 Foul",
+              "7 3 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P50263 DOUBLE (Flyball, 7D)*. P29836 to third*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P40111"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 2 1 Ball",
+              "4 2 2 Foul",
+              "5 3 2 Ball",
+              "6 3 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P40111 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P20479"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P20479 SINGLE (Groundball, 6) (infield hit)*. P29836 scores*. P50263 to third*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P24778"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 2 2 Foul",
+              "6 3 2 Ball",
+              "7 3 2 Foul",
+              "8 3 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P24778 Ground out 6-3 (Groundball, 6D)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T31 2 - T33 1",
+        "label": "Bot 6th",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55381"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P55381 Hit by Pitch*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P1439"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P1439 Ground out 3-1 (Groundball, 34S)*. P55381 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53671"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 2 Called Strike",
+              "3 1 2 Ball",
+              "4 1 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P53671 called out on strikes."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P31093"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P31093 Ground out 4-3 (Groundball, 4)*."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 2 - T33 1",
+        "label": "Top 7th",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55684"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 2 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P55684 DOUBLE (Flyball, 8LD)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53338"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53338 Ground out 6-3 (Groundball, 56D)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P37113"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P37113 Fly out, F9 (Flyball, 9S)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P2476"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P2476 Fly out, F7 (Line Drive, 7LM)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "1 run(s), 1 hit(s), 0 error(s), 0 left on base; T31 2 - T33 2",
+        "label": "Bot 7th",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P33892"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P33892 Ground out 3-1 (Groundball, 34)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P51505"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 2 2 Foul",
+              "5 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P51505 Fly out, F8 (Flyball, 89XD)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P36905"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P36905 SOLO HOME RUN (Flyball, 78XD), Distance : 438 ft*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P52447"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P52447 strikes out swinging."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 2 - T33 2",
+        "label": "Top 8th",
+        "pitching": "P24980",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P34021"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29836"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P29836 Ground out 6-3 (Groundball, 6)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50263"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P50263 DOUBLE (Line Drive, 78D)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P40111"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P40111 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P20479"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P20479 Ground out 5-3 (Groundball, 56)*."
+          }
+        ]
+      },
+      {
+        "batting": "T33",
+        "footer": "1 run(s), 1 hit(s), 0 error(s), 0 left on base; T31 2 - T33 3",
+        "label": "Bot 8th",
+        "pitching": "P52484",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P29463"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32425"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 1 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P32425 SOLO HOME RUN (Flyball, 9D), Distance : 383 ft*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55381"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P55381 Ground out 4-3 (Groundball, 4)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P1439"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P1439 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53671"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53671 Ground out 5-3 (Groundball, 56)*."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T31",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T31 2 - T33 3",
+        "label": "Top 9th",
+        "pitching": "P34021",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P25031"
+          },
+          {
+            "subtype": "other",
+            "type": "sub",
+            "value": "Now in CF: P30724"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P24778"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P24778 SINGLE (Groundball, 6MD)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55684"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P55684 Sac Bunt - play at first, batter OUT! 1-4*. P24778 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53338"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P53338 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P37113"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P37113 Ground out 4-3 (Groundball, 4)*."
+          }
+        ]
+      }
+    ]
+  ]
+}
