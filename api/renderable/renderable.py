@@ -14,13 +14,11 @@ sys.path.append(_root)
 from api.serializable.serializable import Serializable  # noqa
 from util.abc_.abc_ import abstractstatic  # noqa
 from util.ago.ago import timestamp  # noqa
-from util.secrets.secrets import fairylab  # noqa
 from util.slack.slack import chat_post_message  # noqa
-from util.subprocess_.subprocess_ import check_output  # noqa
 
 logger_ = logging.getLogger('fairylab')
 
-_fairylab = fairylab()
+_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
 
 class Renderable(Serializable):
@@ -60,13 +58,10 @@ class Renderable(Serializable):
                 title = _title + subtitle
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(dict(context, title=title, date=date))
-                root = _root if test else os.path.join(_root, 'resource/html')
-                here = os.path.join(root, html)
-                there = 'brunnerj@{}:/public_html/fairylab/{}'.format(
-                    _fairylab, html)
-                self._mkdir_p(here.rsplit('/', 1)[0])
-                ts.dump(here)
-                check_output(['scp', here, there], log=log, timeout=8)
+                root = _root if test else _fairylab_root
+                path = os.path.join(root, html)
+                self._mkdir_p(path.rsplit('/', 1)[0])
+                ts.dump(path)
             except:
                 if log:
                     logger_.log(

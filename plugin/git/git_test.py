@@ -97,6 +97,49 @@ class GitTest(unittest.TestCase):
 
     @mock.patch.object(Git, 'status')
     @mock.patch.object(Git, 'automate')
+    def test_notify__with_deploy_false(self, mock_automate, mock_status):
+        debug = Debug(
+            msg='Call completed: \'git status\'.',
+            extra={'stdout': 'nothing to commit'})
+        mock_status.return_value = Response(
+            notify=[Notify.BASE], debug=[debug])
+
+        plugin = self.create_plugin(_data())
+        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DEPLOY)
+        self.assertEqual(response, Response())
+
+        mock_automate.assert_not_called()
+        mock_status.assert_called_once_with(
+            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch.object(Git, 'status')
+    @mock.patch.object(Git, 'automate')
+    def test_run__with_deploy_true(self, mock_automate, mock_status):
+        debug = Debug(
+            msg='Call completed: \'git status\'.',
+            extra={'stdout': 'Changes not staged for commit'})
+        mock_status.return_value = Response(
+            notify=[Notify.BASE], debug=[debug])
+
+        plugin = self.create_plugin(_data())
+        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DEPLOY)
+        self.assertEqual(response, Response())
+
+        mock_automate.assert_called_once_with(
+            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+        mock_status.assert_called_once_with(
+            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_check.assert_not_called()
+
+    @mock.patch.object(Git, 'status')
+    @mock.patch.object(Git, 'automate')
     def test_notify__with_other(self, mock_automate, mock_status):
         plugin = self.create_plugin(_data())
         response = plugin._notify_internal(notify=Notify.OTHER)
@@ -383,13 +426,32 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
     @mock.patch.object(Git, '_save')
-    def test_pull(self, mock_save):
+    def test_pull__with_fairylab(self, mock_save):
         stdout = 'remote: Counting...\nUnpacking...\n'
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
-        response = plugin.pull(date=_now, v=True)
+        response = plugin.pull('fairylab', date=_now, v=True)
+        msg = 'Call completed: \'git pull\'.'
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
+        self.assertEqual(response, expected)
+
+        mock_save.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_check.assert_called_once_with(['git', 'pull'])
+        self.mock_log.assert_not_called()
+
+    @mock.patch.object(Git, '_save')
+    def test_pull__with_filefairy(self, mock_save):
+        stdout = 'remote: Counting...\nUnpacking...\n'
+        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
+        self.mock_check.return_value = ret
+
+        plugin = self.create_plugin(_data())
+        response = plugin.pull('filefairy', date=_now, v=True)
         msg = 'Call completed: \'git pull\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -404,13 +466,51 @@ class GitTest(unittest.TestCase):
                                               'Fetched latest changes.')
 
     @mock.patch.object(Git, '_save')
-    def test_push__with_automated(self, mock_save):
+    def test_push__with_fairylab_automated(self, mock_save):
         stderr = 'To github.com...\n'
         ret = {'ok': True, 'stdout': '', 'stderr': stderr}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
-        response = plugin.push(date=_now)
+        response = plugin.push('fairylab', date=_now)
+        msg = 'Call completed: \'git push\'.'
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
+        self.assertEqual(response, expected)
+
+        mock_save.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_check.assert_called_once_with(['git', 'push'])
+        self.mock_log.assert_not_called()
+
+    @mock.patch.object(Git, '_save')
+    def test_push__with_fairylab_manual(self, mock_save):
+        stderr = 'To github.com...\n'
+        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
+        self.mock_check.return_value = ret
+
+        plugin = self.create_plugin(_data())
+        response = plugin.push('fairylab', date=_now, v=True)
+        msg = 'Call completed: \'git push\'.'
+        expected = Response(
+            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
+        self.assertEqual(response, expected)
+
+        mock_save.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_check.assert_called_once_with(['git', 'push'])
+        self.mock_log.assert_not_called()
+
+    @mock.patch.object(Git, '_save')
+    def test_push__with_filefairy_automated(self, mock_save):
+        stderr = 'To github.com...\n'
+        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
+        self.mock_check.return_value = ret
+
+        plugin = self.create_plugin(_data())
+        response = plugin.push('filefairy', date=_now)
         msg = 'Call completed: \'git push\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -424,13 +524,13 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_called_once_with(logging.INFO, 'Automated push.')
 
     @mock.patch.object(Git, '_save')
-    def test_push__with_manual(self, mock_save):
+    def test_push__with_filefairy_manual(self, mock_save):
         stderr = 'To github.com...\n'
         ret = {'ok': True, 'stdout': '', 'stderr': stderr}
         self.mock_check.return_value = ret
 
         plugin = self.create_plugin(_data())
-        response = plugin.push(date=_now, v=True)
+        response = plugin.push('filefairy', date=_now, v=True)
         msg = 'Call completed: \'git push\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])

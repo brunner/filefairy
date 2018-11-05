@@ -21,7 +21,7 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
-from util.secrets.secrets import statslab  # noqa
+from util.secrets.secrets import server  # noqa
 from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
@@ -29,7 +29,7 @@ _channel = 'C1234'
 _env = env()
 _now = datetime_datetime_pst(2018, 1, 29)
 _now_encoded = '2018-01-29T00:00:00-08:00'
-_statslab = statslab()
+_server = server()
 _then = datetime_datetime_pst(2018, 1, 28)
 _then_encoded = '2018-01-28T00:00:00-08:00'
 _ts = '123456789'
@@ -721,7 +721,7 @@ class LeaguefileTest(Test):
 
         mock_check.assert_called_once_with(
             [
-                'ssh', 'brunnerj@' + _statslab,
+                'ssh', 'brunnerj@' + _server,
                 'ls -l /var/www/html/StatsLab/league_file'
             ],
             timeout=8)
@@ -744,7 +744,7 @@ class LeaguefileTest(Test):
 
         mock_check.assert_called_once_with(
             [
-                'ssh', 'brunnerj@' + _statslab,
+                'ssh', 'brunnerj@' + _server,
                 'ls -l /var/www/html/StatsLab/league_file'
             ],
             timeout=8)
@@ -765,7 +765,7 @@ class LeaguefileTest(Test):
 
         mock_check.assert_called_once_with(
             [
-                'ssh', 'brunnerj@' + _statslab,
+                'ssh', 'brunnerj@' + _server,
                 'ls -l /var/www/html/StatsLab/league_file'
             ],
             timeout=8)
