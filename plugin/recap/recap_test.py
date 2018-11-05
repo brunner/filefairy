@@ -576,34 +576,34 @@ class RecapTest(Test):
         self.assertFalse(value)
 
     @mock.patch('plugin.recap.recap.os.listdir')
-    @mock.patch('plugin.recap.recap.parse_box_score')
-    def test_standings(self, mock_box, mock_listdir):
+    @mock.patch('plugin.recap.recap.parse_game_data')
+    def test_standings(self, mock_data, mock_listdir):
         boxes = ['123', '456', '789']
         mock_listdir.return_value = [
             'game_box_{}.html'.format(b) for b in boxes
         ]
-        box1 = {
+        gd1 = {
             'away_record': '76-86',
             'away_team': 'T31',
             'home_record': '97-65',
             'home_team': 'T45',
             'ok': True
         }
-        box2 = {
+        gd2 = {
             'away_record': '77-85',
             'away_team': 'T32',
             'home_record': '70-92',
             'home_team': 'T44',
             'ok': True
         }
-        box3 = {
+        gd3 = {
             'away_record': '75-86',
             'away_team': 'T31',
             'home_record': '97-64',
             'home_team': 'T45',
             'ok': True
         }
-        mock_box.side_effect = [box1, box2, box3]
+        mock_data.side_effect = [gd1, gd2, gd3]
 
         plugin = self.create_plugin(_data())
         plugin._standings()
@@ -615,10 +615,10 @@ class RecapTest(Test):
         dpath = os.path.join(_root, 'resource/extract/box_scores')
         mock_listdir.assert_called_once_with(dpath)
         calls = [
-            mock.call(os.path.join(dpath, 'game_box_{}.html'.format(b)))
+            mock.call(os.path.join(dpath, 'game_box_{}.html'.format(b)), '')
             for b in boxes
         ]
-        mock_box.assert_has_calls(calls)
+        mock_data.assert_has_calls(calls)
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()

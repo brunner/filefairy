@@ -10,8 +10,7 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from util.statslab.statslab import parse_box_score  # noqa
-from util.statslab.statslab import parse_game_log  # noqa
+from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import decoding_to_encoding  # noqa
 
@@ -87,9 +86,88 @@ _game_box = 'box_scores/game_box_{}.html'
 _game_log = 'game_logs/log_{}.html'
 _player = 'players/player_{}.html'
 
+_players = ['101', '102', '103', '104', '105', '106']
+_plays = [[{
+    'label':
+    'Top 1st',
+    'batting':
+    'T31',
+    'pitching':
+    'P101',
+    'footer':
+    '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
+    'play': [{
+        'type': 'sub',
+        'subtype': 'pitching',
+        'value': 'P101'
+    }, {
+        'type': 'sub',
+        'subtype': 'batting',
+        'value': 'P102'
+    }, {
+        'type': 'event',
+        'outs': 1,
+        'runs': 0,
+        'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
+        'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.',
+    }, {
+        'type': 'sub',
+        'subtype': 'batting',
+        'value': 'P103'
+    }, {
+        'type': 'event',
+        'outs': 0,
+        'runs': 0,
+        'sequence': ['1 0 0 In play, no out'],
+        'value': 'P103 SINGLE (Groundball, 56)*.'
+    }, {
+        'type': 'sub',
+        'subtype': 'batting',
+        'value': 'P104'
+    }, {
+        'type':
+        'event',
+        'outs':
+        0,
+        'runs':
+        0,
+        'sequence': ['1 0 0 In play, no out'],
+        'value':
+        'P104 SINGLE (Groundball, 6MS) (infield hit)*. P103 '
+        'to second*.'
+    }, {
+        'type': 'sub',
+        'subtype': 'batting',
+        'value': 'P105'
+    }, {
+        'type': 'event',
+        'outs': 1,
+        'runs': 0,
+        'sequence': ['1 0 0 In play, out(s)'],
+        'value': 'P105 Fly out, F9 (Flyball, 9)*.'
+    }, {
+        'type': 'sub',
+        'subtype': 'batting',
+        'value': 'P106'
+    }, {
+        'type':
+        'event',
+        'outs':
+        1,
+        'runs':
+        0,
+        'sequence':
+        ['1 0 1 Swinging Strike', '2 0 2 Foul', '3 0 3 Swinging Strike'],
+        'value':
+        'P106 strikes out swinging.'
+    }]
+}]]
 
-def _box(arecord, aruns, ateam, date, hrecord, hruns, hteam):
+
+def _data(id_, arecord, aruns, ateam, date, hrecord, hruns, hteam, players,
+          plays):
     return {
+        'id': id_,
         'away_record': arecord,
         'away_runs': aruns,
         'away_team': decoding_to_encoding(ateam),
@@ -97,16 +175,6 @@ def _box(arecord, aruns, ateam, date, hrecord, hruns, hteam):
         'home_record': hrecord,
         'home_runs': hruns,
         'home_team': decoding_to_encoding(hteam),
-        'ok': True
-    }
-
-
-def _log(id_, ateam, date, hteam, players, plays):
-    return {
-        'id': id_,
-        'away_team': decoding_to_encoding(ateam),
-        'home_team': decoding_to_encoding(hteam),
-        'date': date,
         'players': players,
         'plays': plays,
         'ok': True
@@ -125,176 +193,130 @@ def _play(bats, name, number, team, throws):
 
 
 class StatslabTest(unittest.TestCase):
+    @mock.patch('util.statslab.statslab.urlopen')
     @mock.patch('util.statslab.statslab.open', create=True)
     @mock.patch('util.statslab.statslab.os.path.isfile')
-    def test_box_score__with_valid_file(self, mock_isfile, mock_open):
+    def test_game_data__with_valid_box_file(self, mock_isfile, mock_open,
+                                            mock_urlopen):
         mock_isfile.return_value = True
-        content = _game_box_sub.format(
+        box_content = _game_box_sub.format(
             'MLB', 'Arizona Diamondbacks',
             'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
-        mo = mock.mock_open(read_data=content)
+        mo = mock.mock_open(read_data=box_content)
         mock_handle = mo()
         mock_open.side_effect = [mo.return_value]
+        log_content = _game_log_sub.format(
+            'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
+            'Arizona', 'Los Angeles')
+        mock_urlopen.return_value = bytes(log_content, 'utf-8')
 
-        link = _path + _game_box.format('2998')
-        actual = parse_box_score(link)
-        expected = _box('76-86', 4, 'Arizona Diamondbacks', _now, '97-65', 2,
-                        'Los Angeles Dodgers')
+        box_link = _path + _game_box.format('2998')
+        log_link = _html + _game_log.format('2998')
+        actual = parse_game_data(box_link, log_link)
+        expected = _data('2998', '76-86', 4, 'Arizona Diamondbacks',
+                         _now_encoded, '97-65', 2, 'Los Angeles Dodgers',
+                         _players, _plays)
         self.assertEqual(actual, expected)
 
-        mock_isfile.assert_called_once_with(link)
+        mock_isfile.assert_called_once_with(box_link)
         mock_handle.assert_not_called()
-        mock_open.assert_called_once_with(link, 'r', encoding='iso-8859-1')
+        mock_open.assert_called_once_with(box_link, 'r', encoding='iso-8859-1')
+        mock_urlopen.assert_called_once_with(log_link)
 
     @mock.patch('util.statslab.statslab.urlopen')
-    def test_box_score__with_valid_link(self, mock_urlopen):
-        content = _game_box_sub.format(
+    @mock.patch('util.statslab.statslab.open', create=True)
+    @mock.patch('util.statslab.statslab.os.path.isfile')
+    def test_game_data__with_valid_box_link(self, mock_isfile, mock_open,
+                                            mock_urlopen):
+        box_content = _game_box_sub.format(
             'MLB', 'Arizona Diamondbacks',
             'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
-        mock_urlopen.return_value = bytes(content, 'utf-8')
+        log_content = _game_log_sub.format(
+            'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
+            'Arizona', 'Los Angeles')
+        mock_urlopen.side_effect = [
+            bytes(box_content, 'utf-8'),
+            bytes(log_content, 'utf-8')
+        ]
 
-        link = _html + _game_box.format('2998')
-        actual = parse_box_score(link)
-        expected = _box('76-86', 4, 'Arizona Diamondbacks', _now, '97-65', 2,
-                        'Los Angeles Dodgers')
+        box_link = _html + _game_box.format('2998')
+        log_link = _html + _game_log.format('2998')
+        actual = parse_game_data(box_link, log_link)
+        expected = _data('2998', '76-86', 4, 'Arizona Diamondbacks',
+                         _now_encoded, '97-65', 2, 'Los Angeles Dodgers',
+                         _players, _plays)
         self.assertEqual(actual, expected)
 
-        mock_urlopen.assert_called_once_with(link)
+        mock_isfile.assert_not_called()
+        mock_open.assert_not_called()
+        mock_urlopen.assert_has_calls(
+            [mock.call(box_link), mock.call(log_link)])
 
     @mock.patch('util.statslab.statslab.urlopen')
-    def test_box_score__with_invalid_title(self, mock_urlopen):
-        content = _game_box_sub.format(
+    @mock.patch('util.statslab.statslab.open', create=True)
+    @mock.patch('util.statslab.statslab.os.path.isfile')
+    def test_game_data__with_invalid_title(self, mock_isfile, mock_open,
+                                           mock_urlopen):
+        box_content = _game_box_sub.format(
             'NPB', 'Yokohama DeNA BayStars', 'Tokyo Yakult Swallows',
             _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
-        mock_urlopen.return_value = bytes(content, 'utf-8')
+        log_content = _game_log_sub.format(
+            'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
+            'Arizona', 'Los Angeles')
+        mock_urlopen.side_effect = [
+            bytes(box_content, 'utf-8'),
+            bytes(log_content, 'utf-8')
+        ]
 
-        link = _html + _game_box.format('2998')
-        actual = parse_box_score(link)
-        expected = {'ok': False, 'error': 'invalid_title'}
+        box_link = _html + _game_box.format('2998')
+        log_link = _html + _game_log.format('2998')
+        actual = parse_game_data(box_link, log_link)
+        expected = {'ok': False, 'id': '2998', 'error': 'invalid_title'}
         self.assertEqual(actual, expected)
 
-        mock_urlopen.assert_called_once_with(link)
+        mock_isfile.assert_not_called()
+        mock_open.assert_not_called()
+        mock_urlopen.assert_called_once_with(box_link)
 
     @mock.patch('util.statslab.statslab.urlopen')
-    def test_box_score__with_invalid_line(self, mock_urlopen):
-        content = _game_box_sub.format(
+    @mock.patch('util.statslab.statslab.open', create=True)
+    @mock.patch('util.statslab.statslab.os.path.isfile')
+    def test_game_data__with_invalid_line(self, mock_isfile, mock_open,
+                                          mock_urlopen):
+        box_content = _game_box_sub.format(
             'MLB', 'Arizona Diamondbacks', 'Los Angeles Dodgers',
             _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
-        mock_urlopen.return_value = bytes(content, 'utf-8')
+        log_content = _game_log_sub.format(
+            'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
+            'Arizona', 'Los Angeles')
+        mock_urlopen.side_effect = [
+            bytes(box_content, 'utf-8'),
+            bytes(log_content, 'utf-8')
+        ]
 
-        link = _html + _game_box.format('2998')
-        actual = parse_box_score(link)
-        expected = {'ok': False, 'error': 'invalid_line'}
+        box_link = _html + _game_box.format('2998')
+        log_link = _html + _game_log.format('2998')
+        actual = parse_game_data(box_link, log_link)
+        expected = {'ok': False, 'id': '2998', 'error': 'invalid_line'}
         self.assertEqual(actual, expected)
 
-        mock_urlopen.assert_called_once_with(link)
-
-    maxDiff = None
-
-    @mock.patch('util.statslab.statslab.urlopen')
-    def test_game_log__with_valid_link(self, mock_urlopen):
-        content = _game_log_sub.format('Arizona Diamondbacks',
-                                       'Los Angeles Dodgers', _now_displayed,
-                                       'Arizona', 'Los Angeles')
-        mock_urlopen.return_value = bytes(content, 'utf-8')
-
-        link = _html + _game_log.format('2998')
-        actual = parse_game_log(link)
-        players = ['101', '102', '103', '104', '105', '106']
-        plays = [[{
-            'label':
-            'Top 1st',
-            'batting':
-            'T31',
-            'pitching':
-            'P101',
-            'footer':
-            '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
-            'play': [{
-                'type': 'sub',
-                'subtype': 'pitching',
-                'value': 'P101'
-            }, {
-                'type': 'sub',
-                'subtype': 'batting',
-                'value': 'P102'
-            }, {
-                'type': 'event',
-                'outs': 1,
-                'runs': 0,
-                'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-                'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.',
-            }, {
-                'type': 'sub',
-                'subtype': 'batting',
-                'value': 'P103'
-            }, {
-                'type': 'event',
-                'outs': 0,
-                'runs': 0,
-                'sequence': ['1 0 0 In play, no out'],
-                'value': 'P103 SINGLE (Groundball, 56)*.'
-            }, {
-                'type': 'sub',
-                'subtype': 'batting',
-                'value': 'P104'
-            }, {
-                'type':
-                'event',
-                'outs':
-                0,
-                'runs': 0,
-                'sequence': ['1 0 0 In play, no out'],
-                'value':
-                'P104 SINGLE (Groundball, 6MS) (infield hit)*. P103 '
-                'to second*.'
-            }, {
-                'type': 'sub',
-                'subtype': 'batting',
-                'value': 'P105'
-            }, {
-                'type': 'event',
-                'outs': 1,
-                'runs': 0,
-                'sequence': ['1 0 0 In play, out(s)'],
-                'value': 'P105 Fly out, F9 (Flyball, 9)*.'
-            }, {
-                'type': 'sub',
-                'subtype': 'batting',
-                'value': 'P106'
-            }, {
-                'type':
-                'event',
-                'outs':
-                1,
-                'runs': 0,
-                'sequence': [
-                    '1 0 1 Swinging Strike', '2 0 2 Foul',
-                    '3 0 3 Swinging Strike'
-                ],
-                'value':
-                'P106 strikes out swinging.'
-            }]
-        }]]
-        expected = _log('2998', 'Arizona Diamondbacks', _now_encoded,
-                        'Los Angeles Dodgers', players, plays)
-        self.assertEqual(actual, expected)
-
-        mock_urlopen.assert_called_once_with(link)
+        mock_isfile.assert_not_called()
+        mock_open.assert_not_called()
+        mock_urlopen.assert_called_once_with(box_link)
 
     @mock.patch('util.statslab.statslab.urlopen')
     def test_player__with_valid_link(self, mock_urlopen):
-        content = _player_sub.format(73, 'Dakota Donovan', '44',
-                                     'Los Angeles Angels')
-        mock_urlopen.return_value = bytes(content, 'utf-8')
+        player_content = _player_sub.format(73, 'Dakota Donovan', '44',
+                                            'Los Angeles Angels')
+        mock_urlopen.return_value = bytes(player_content, 'utf-8')
 
         link = _html + _player.format('29663')
         actual = parse_player(link)

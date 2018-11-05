@@ -25,8 +25,7 @@ from util.file_.file_ import recreate  # noqa
 from util.json_.json_ import dumps  # noqa
 from util.standings.standings import sort  # noqa
 from util.standings.standings import standings_table  # noqa
-from util.statslab.statslab import parse_box_score  # noqa
-from util.statslab.statslab import parse_game_log  # noqa
+from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import chlany  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
@@ -480,17 +479,15 @@ class Statsplus(Registrable):
                 else:
                     box_link = url.format(_html, _game_box)
                 log_link = url.format(_html, _game_log)
-                box_score_ = parse_box_score(box_link)
-                game_log_ = parse_game_log(log_link)
-                if box_score_['ok'] and game_log_['ok']:
-                    ddate = decode_datetime(encoded_date)
-                    if ddate != box_score_['date']:
+                game_data_ = parse_game_data(box_link, log_link)
+                if game_data_['ok']:
+                    if encoded_date != game_data_['date']:
                         return False
                     if count:
-                        bruns1 = box_score_['away_runs']
-                        bteam1 = box_score_['away_team']
-                        bruns2 = box_score_['home_runs']
-                        bteam2 = box_score_['home_team']
+                        bruns1 = game_data_['away_runs']
+                        bteam1 = game_data_['away_team']
+                        bruns2 = game_data_['home_runs']
+                        bteam2 = game_data_['home_team']
                         swap = False
                         if bruns1 < bruns2:
                             bruns1, bruns2 = bruns2, bruns1
@@ -516,7 +513,7 @@ class Statsplus(Registrable):
                         fname = url.format(_root + '/resource/games/', 'game_')
                         fname = fname.replace('.html', '.json')
                         with open(fname, 'w') as f:
-                            f.write(dumps(game_log_) + '\n')
+                            f.write(dumps(game_data_) + '\n')
                 else:
                     valid = False
 
