@@ -34,7 +34,23 @@ _game_box_sub = '<html> ... <title>{0} Box Scores, {1} at {2}, {3}</title>' + \
                 '\n<td class="dc">0</td>\n<td class="dc">0</td>\n\t<td cla' + \
                 'ss="dc"><b>{7}</b></td>\n\t<td class="dc"><b>9</b></td>\n' + \
                 '\t<td class="dc"><b>0</b></td>\n\t</tr>\n\t</table>\n\t</' + \
-                'td>\n\t</tr> ... </html>'
+                'td>\n\t</tr> ... <th width="30" class="hsn dc">RBI</th></' + \
+                'tr> ... <tr><td class="dl"><a href="../players/player_102' + \
+                '.html">J. Alpha</a> SS</td> ... <td class="dl"><a href=".' + \
+                './players/player_103.html">J. Beta</a> 1B</td> ... <td cl' + \
+                'ass="dl"><a href="../players/player_104.html">J. Charlie<' + \
+                '/a> CF, LF</td> ... <td class="dl"><a href="../players/pl' + \
+                'ayer_105.html">J. Delta</a> C</td> ... <td class="dl"><a ' + \
+                'href="../players/player_106.html">J. Echo</a> 2B</td> ...' + \
+                ' <td class="dl">&#160;&#160; <a href="../players/player_1' + \
+                '07.html">J. Foxtrot</a> PH, 2B</td> ... </table> ... <th ' + \
+                'width="30" class="hsn dc">ERA</th></tr> ... <tr><td class' + \
+                '="dl"><a href="../players/player_108.html">J. Whiskey</a>' + \
+                '</td> ... <tr><td class="dl"><a href="../players/player_1' + \
+                '09.html">J. Victor</a></td> ... </table> ... <th width="3' + \
+                '0" class="hsn dc">ERA</th></tr> ... <tr><td class="dl"><a' + \
+                ' href="../players/player_101.html">J. Unknown</a></td> ..' + \
+                '. </table> ... </html>'
 _game_log_sub = '<html> ... <title>{0} @ {1}</title> ... <div style="text-' + \
                 'align:center; color:#000000; padding-top:4px;">{2}</div> ' + \
                 ' ... <table cellspacing="0" cellpadding="0" class="data" ' + \
@@ -42,36 +58,37 @@ _game_log_sub = '<html> ... <title>{0} @ {1}</title> ... <div style="text-' + \
                 'TOP OF THE 1ST</th></tr>\r\n\t<tr>\r\n\t<th colspan="2" a' + \
                 'lign="left" style="padding:4px 0px 4px 4px;">\r\n\t{0} ba' + \
                 'tting - Pitching for {1} : RHP <a href="../players/player' + \
-                '_101.html">101</a>\r\n\t</th>\r\n\t</tr>\r\n\t<tr>\r\n\t<' + \
-                'td valign="top" width="268px" class="dl">\r\n\tPitching: ' + \
-                'RHP <a href="../players/player_101.html">101</a>\r\n\t</t' + \
-                'd>\r\n\t<td class="dl" width="700px">\r\n\t</td>\r\n\t</t' + \
-                'r>\r\n\t<tr>\r\n\t<td valign="top" width="268px" class="d' + \
-                'l">\r\n\tBatting: RHB <a href="../players/player_102.html' + \
-                '">102</a>\r\n\t</td>\r\n\t<td class="dl" width="700px">\r' + \
-                '\n\t0-0: Ball<br>1-0: Fly out, F7  (Flyball, 7LSF)\r\n\t<' + \
-                '/td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="26' + \
-                '8px" class="dl">\r\n\tBatting: LHB <a href="../players/pl' + \
-                'ayer_103.html">103</a>\r\n\t</td>\r\n\t<td class="dl" wid' + \
-                'th="700px">\r\n\t0-0: SINGLE  (Groundball, 56)\r\n\t</td>' + \
+                '_101.html">Jim Unknown</a>\r\n\t</th>\r\n\t</tr>\r\n\t<tr' + \
+                '>\r\n\t<td valign="top" width="268px" class="dl">\r\n\tPi' + \
+                'tching: RHP <a href="../players/player_101.html">101</a>' + \
+                '\r\n\t</td>\r\n\t<td class="dl" width="700px">\r\n\t</td>' + \
                 '\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="268px"' + \
                 ' class="dl">\r\n\tBatting: RHB <a href="../players/player' + \
-                '_104.html">104</a>\r\n\t</td>\r\n\t<td class="dl" width="' + \
-                '700px">\r\n\t0-0: <b>SINGLE</b>  (Groundball, 6MS) (infie' + \
-                'ld hit)<br><a href="../players/player_103.html">103</a> t' + \
-                'o second\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign=' + \
-                '"top" width="268px" class="dl">\r\n\tBatting: SHB <a href' + \
-                '="../players/player_105.html">105</a>\r\n\t</td>\r\n\t<td' + \
-                ' class="dl" width="700px">\r\n\t0-0:  Fly out, F9  (Flyba' + \
-                'll, 9)\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="t' + \
-                'op" width="268px" class="dl">\r\n\tBatting: LHB <a href="' + \
-                '../players/player_106.html">106</a>\r\n\t</td>\r\n\t<td c' + \
-                'lass="dl" width="700px">\r\n\t0-0: Swinging Strike<br>0-1' + \
-                ': Foul Ball, location: 2F<br>0-2: Strikes out  swinging\r' + \
-                '\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td class="datathbg" ' + \
-                'colspan="2">Top of the 1st over -  0 run(s), 1 hit(s), 0 ' + \
-                'error(s), 2 left on base; {3} 0 - {4} 0</td>\r\n\t</tr>\r' + \
-                '\n\t</table> ... </html>'
+                '_102.html">Jim Alpha</a>\r\n\t</td>\r\n\t<td class="dl" w' + \
+                'idth="700px">\r\n\t0-0: Ball<br>1-0: Fly out, F7  (Flybal' + \
+                'l, 7LSF)\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign=' + \
+                '"top" width="268px" class="dl">\r\n\tBatting: LHB <a href' + \
+                '="../players/player_103.html">Jim Beta</a>\r\n\t</td>\r\n' + \
+                '\t<td class="dl" width="700px">\r\n\t0-0: SINGLE  (Ground' + \
+                'ball, 56)\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign' + \
+                '="top" width="268px" class="dl">\r\n\tBatting: RHB <a hre' + \
+                'f="../players/player_104.html">Jim Charlie</a>\r\n\t</td>' + \
+                '\r\n\t<td class="dl" width="700px">\r\n\t0-0: <b>SINGLE</' + \
+                'b>  (Groundball, 6MS) (infield hit)<br><a href="../player' + \
+                's/player_103.html">Jim Beta</a> to second\r\n\t</td>\r\n' + \
+                '\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="268px" cla' + \
+                'ss="dl">\r\n\tBatting: SHB <a href="../players/player_105' + \
+                '.html">Jim Delta</a>\r\n\t</td>\r\n\t<td class="dl" width' + \
+                '="700px">\r\n\t0-0:  Fly out, F9  (Flyball, 9)\r\n\t</td>' + \
+                '\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="268px"' + \
+                ' class="dl">\r\n\tBatting: LHB <a href="../players/player' + \
+                '_106.html">Jim Echo</a>\r\n\t</td>\r\n\t<td class="dl" wi' + \
+                'dth="700px">\r\n\t0-0: Swinging Strike<br>0-1: Foul Ball,' + \
+                ' location: 2F<br>0-2: Strikes out  swinging\r\n\t</td>\r' + \
+                '\n\t</tr>\r\n\t<tr>\r\n\t<td class="datathbg" colspan="2"' + \
+                '>Top of the 1st over -  0 run(s), 1 hit(s), 0 error(s), 2' + \
+                ' left on base; {3} 0 - {4} 0</td>\r\n\t</tr>\r\n\t</table' + \
+                '> ... </html>'
 _player_sub = '<html> ... <title>Player Report for #{0}  {1}</title> ... <' + \
               'div class="repsubtitle"><a class="boxlink" style="font-weig' + \
               'ht:bold; font-size:18px; color:#FFFFFF;" href="../teams/tea' + \
@@ -86,7 +103,7 @@ _game_box = 'box_scores/game_box_{}.html'
 _game_log = 'game_logs/log_{}.html'
 _player = 'players/player_{}.html'
 
-_players = ['101', '102', '103', '104', '105', '106']
+_players = ['101', '102', '103', '104', '105', '106', '107', '108', '109']
 _plays = [[{
     'label':
     'Top 1st',
@@ -109,7 +126,7 @@ _plays = [[{
         'outs': 1,
         'runs': 0,
         'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-        'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.',
+        'value': 'P102 flies out to left fielder P (zone 7LSF).',
     }, {
         'type': 'sub',
         'subtype': 'batting',
@@ -119,7 +136,7 @@ _plays = [[{
         'outs': 0,
         'runs': 0,
         'sequence': ['1 0 0 In play, no out'],
-        'value': 'P103 SINGLE (Groundball, 56)*.'
+        'value': 'P103 singles on a ground ball to left fielder P (zone 56).'
     }, {
         'type': 'sub',
         'subtype': 'batting',
@@ -133,7 +150,7 @@ _plays = [[{
         0,
         'sequence': ['1 0 0 In play, no out'],
         'value':
-        'P104 SINGLE (Groundball, 6MS) (infield hit)*. P103 '
+        'P104 singles on a ground ball to shortstop P (zone 6MS). P103 '
         'to second*.'
     }, {
         'type': 'sub',
@@ -144,7 +161,7 @@ _plays = [[{
         'outs': 1,
         'runs': 0,
         'sequence': ['1 0 0 In play, out(s)'],
-        'value': 'P105 Fly out, F9 (Flyball, 9)*.'
+        'value': 'P105 flies out to right fielder P (zone 9).'
     }, {
         'type': 'sub',
         'subtype': 'batting',
@@ -193,6 +210,8 @@ def _play(bats, name, number, team, throws):
 
 
 class StatslabTest(unittest.TestCase):
+    maxDiff = None
+
     @mock.patch('util.statslab.statslab.urlopen')
     @mock.patch('util.statslab.statslab.open', create=True)
     @mock.patch('util.statslab.statslab.os.path.isfile')

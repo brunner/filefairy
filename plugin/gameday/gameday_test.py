@@ -67,37 +67,37 @@ _s60 = logo_absolute('60', secondary('Washington Nationals'), 'left')
 
 _players = {
     'P101': {
-        'name': 'Jim Alpha',
+        'name': 'Jim Unknown',
         'number': '1',
         'bats': 'R',
         'throws': 'R'
     },
     'P102': {
-        'name': 'Jim Beta',
+        'name': 'Jim Alpha',
         'number': '2',
         'bats': 'S',
         'throws': 'R'
     },
     'P103': {
-        'name': 'Jim Charlie',
+        'name': 'Jim Beta',
         'number': '3',
         'bats': 'L',
         'throws': 'R'
     },
     'P104': {
-        'name': 'Jim Delta',
+        'name': 'Jim Charlie',
         'number': '4',
         'bats': 'R',
         'throws': 'R'
     },
     'P105': {
-        'name': 'Jim Echo',
+        'name': 'Jim Delta',
         'number': '5',
         'bats': 'R',
         'throws': 'R'
     },
     'P106': {
-        'name': 'Jim Foxtrot',
+        'name': 'Jim Echo',
         'number': '6',
         'bats': 'L',
         'throws': 'R'
@@ -202,40 +202,40 @@ _pitching = '<div class="profile position-absolute {}-{}-front"></div><sp' + \
             '>{}<br>&nbsp;</span>'
 
 _log_body = [
-    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Alpha'), ''],
-    [_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Beta'), ''],
+    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown'), ''],
+    [_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Alpha'), ''],
     [Gameday._badge('1', 'Ball'), '1-0'],
     [Gameday._badge('2', 'In play, out(s)'), ''],
-    ['Jim Beta Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
+    ['Jim Alpha Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Charlie'), ''],
+    [_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Beta'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
-    ['Jim Charlie SINGLE (Groundball, 56)*.', ''],
+    ['Jim Beta SINGLE (Groundball, 56)*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Delta'), ''],
+    [_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Charlie'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
-    ['Jim Delta SINGLE (Groundball, 6MS) (infield hit)*. Jim Charlie to second'
+    ['Jim Charlie SINGLE (Groundball, 6MS) (infield hit)*. Jim Beta to second'
      '*.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Echo'), ''],
+    [_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Delta'), ''],
     [Gameday._badge('1', 'In play, out(s)'), ''],
-    ['Jim Echo Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
+    ['Jim Delta Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Foxtrot'), ''],
+    [_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Echo'), ''],
     [Gameday._badge('1', 'Swinging Strike'), '0-1'],
     [Gameday._badge('2', 'Foul'), '0-2'],
     [Gameday._badge('3', 'Swinging Strike'), '0-3'],
-    ['Jim Foxtrot strikes out swinging. ' + bold('3 out.'), '']
+    ['Jim Echo strikes out swinging. ' + bold('3 out.'), '']
 ]  # yapf: disable
 
 _plays_body = [
-    ['Pitching: Jim Alpha'],
-    ['Jim Beta Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.')],
-    ['Jim Charlie SINGLE (Groundball, 56)*.'],
-    ['Jim Delta SINGLE (Groundball, 6MS) (infield hit)*. Jim Charlie to second'
+    ['Pitching: Jim Unknown'],
+    ['Jim Alpha Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.')],
+    ['Jim Beta SINGLE (Groundball, 56)*.'],
+    ['Jim Charlie SINGLE (Groundball, 6MS) (infield hit)*. Jim Beta to second'
      '*.'],
-    ['Jim Echo Fly out, F9 (Flyball, 9)*. ' + bold('2 out.')],
-    ['Jim Foxtrot strikes out swinging. ' + bold('3 out.')]
+    ['Jim Delta Fly out, F9 (Flyball, 9)*. ' + bold('2 out.')],
+    ['Jim Echo strikes out swinging. ' + bold('3 out.')]
 ]  # yapf: disable
 
 _r31 = '31/raw/31'
@@ -498,8 +498,6 @@ class GamedayTest(unittest.TestCase):
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
-
-    maxDiff = None
 
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')

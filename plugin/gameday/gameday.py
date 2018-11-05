@@ -443,9 +443,9 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-06-24T00:00:00-07:00', '1693')
+# statsplus._extract('2024-07-14T00:00:00-07:00', '1887')
 
 # gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1693']
+# gameday.data['games'] = ['1887']
 # gameday._check_games()
 # gameday._setup_internal(date=date)
