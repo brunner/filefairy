@@ -903,6 +903,141 @@
         "lineno": 24,
         "msg": "Handled warning.",
         "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T17:17:17.733711-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 289,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T17:17:18.248337-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T17:17:18.462279-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T17:17:18.563499-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T17:16:13.250651-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 245, in _reload_internal\n    module, ok = importlib.import_module(package), True\n  File \"/usr/lib/python3.5/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n  File \"<frozen importlib._bootstrap>\", line 986, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 969, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 958, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 673, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 673, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 222, in _call_with_frames_removed\n  File \"/home/pi/filefairy/plugin/leaguefile/leaguefile.py\", line 33, in <module>\n    from util.secrets.secrets import server  # noqa\nImportError: cannot import name 'server'",
+        "levelname": "INFO",
+        "lineno": 254,
+        "msg": "Disabled leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T17:17:18.988167-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T17:17:20.213112-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-04T17:17:20.316107-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T17:16:25.191678-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 114, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 85, in _setup\n    response = self._setup_internal(**kwargs)\n  File \"/home/pi/filefairy/plugin/gameday/gameday.py\", line 120, in _setup_internal\n    self._render(**kwargs)\n  File \"/home/pi/filefairy/api/renderable/renderable.py\", line 55, in _render\n    for html, subtitle, tmpl, context in self._render_internal(**kwargs):\n  File \"/home/pi/filefairy/plugin/gameday/gameday.py\", line 103, in _render_internal\n    game = self._game(id_, subtitle, game_data, schedule_data)\n  File \"/home/pi/filefairy/plugin/gameday/gameday.py\", line 364, in _game\n    value = game_sub(play['value'])\n  File \"/usr/lib/python3.5/re.py\", line 182, in sub\n    return _compile(pattern, flags).sub(repl, string, count)\n  File \"/usr/lib/python3.5/re.py\", line 293, in _compile\n    p = sre_compile.compile(pattern, flags)\n  File \"/usr/lib/python3.5/sre_compile.py\", line 536, in compile\n    p = sre_parse.parse(p, flags)\n  File \"/usr/lib/python3.5/sre_parse.py\", line 829, in parse\n    p = _parse_sub(source, pattern, 0)\n  File \"/usr/lib/python3.5/sre_parse.py\", line 437, in _parse_sub\n    itemsappend(_parse(source, state))\n  File \"/usr/lib/python3.5/sre_parse.py\", line 510, in _parse\n    sourceget()\n  File \"/usr/lib/python3.5/sre_parse.py\", line 249, in get\n    self.__next()\n  File \"/usr/lib/python3.5/sre_parse.py\", line 233, in __next\n    if char == \"\\\\\":\nKeyboardInterrupt",
+        "levelname": "INFO",
+        "lineno": 127,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T17:17:18.846258-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T18:05:06.473940-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T18:31:31.738849-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T21:03:19.339070-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/urllib/request.py\", line 1254, in do_open\n    h.request(req.get_method(), req.selector, req.data, headers)\n  File \"/usr/lib/python3.5/http/client.py\", line 1107, in request\n    self._send_request(method, url, body, headers)\n  File \"/usr/lib/python3.5/http/client.py\", line 1152, in _send_request\n    self.endheaders(body)\n  File \"/usr/lib/python3.5/http/client.py\", line 1103, in endheaders\n    self._send_output(message_body)\n  File \"/usr/lib/python3.5/http/client.py\", line 934, in _send_output\n    self.send(msg)\n  File \"/usr/lib/python3.5/http/client.py\", line 877, in send\n    self.connect()\n  File \"/usr/lib/python3.5/http/client.py\", line 1253, in connect\n    super().connect()\n  File \"/usr/lib/python3.5/http/client.py\", line 849, in connect\n    (self.host,self.port), self.timeout, self.source_address)\n  File \"/usr/lib/python3.5/socket.py\", line 712, in create_connection\n    raise err\n  File \"/usr/lib/python3.5/socket.py\", line 703, in create_connection\n    sock.connect(sa)\nOSError: [Errno 101] Network is unreachable\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/urllib_/urllib_.py\", line 15, in urlopen\n    with request.urlopen(url, data=data, timeout=8) as f:\n  File \"/usr/lib/python3.5/urllib/request.py\", line 163, in urlopen\n    return opener.open(url, data, timeout)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 466, in open\n    response = self._open(req, data)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 484, in _open\n    '_open', req)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 444, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 1297, in https_open\n    context=self._context, check_hostname=self._check_hostname)\n  File \"/usr/lib/python3.5/urllib/request.py\", line 1256, in do_open\n    raise URLError(err)\nurllib.error.URLError: <urlopen error [Errno 101] Network is unreachable>",
+        "levelname": "WARNING",
+        "lineno": 22,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/urllib_/urllib_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T22:30:03.335011-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-04T22:56:34.395329-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/util/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/util/subprocess_/subprocess_.py"
       }
     ]
   }
