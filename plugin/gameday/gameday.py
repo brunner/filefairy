@@ -44,6 +44,16 @@ _player_default = {
     'throws': '-'
 }
 _smallcaps = {'L': 'ʟ', 'R': 'ʀ', 'S': 'ꜱ'}
+_defensive_map = {
+    'C': 'at catcher',
+    '1B': 'at first base',
+    '2B': 'at second base',
+    '3B': 'at third base',
+    'SS': 'at shortstop',
+    'LF': 'in left field',
+    'CF': 'in center field',
+    'RF': 'in right field'
+}
 
 
 class Gameday(Registrable):
@@ -284,6 +294,23 @@ class Gameday(Registrable):
             num, _smallcaps.get(player['throws'], 'ʀ'), player['name'])
         return self._profile(encoding, num, colors, s)
 
+    def _running(self, play):
+        id_ = play['value']
+        if id_ not in self.data['players']:
+            player = _player_default
+        else:
+            player = self.data['players'][id_]
+        return 'Now pinch running: {}'.format(player['name'])
+
+    def _defensive(self, play):
+        position = play['subtype']
+        id_ = play['value']
+        if id_ not in self.data['players']:
+            player = _player_default
+        else:
+            player = self.data['players'][id_]
+        return 'Now {}: {}'.format(_defensive_map[position], player['name'])
+
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
             'breadcrumbs': [{
@@ -362,17 +389,21 @@ class Gameday(Registrable):
                 for play in half['play']:
                     if play['type'] == 'sub':
                         value = game_sub(play['value'])
-                        if play['subtype'] == 'pitching':
+                        if play['subtype'] == 'P':
                             log_table['body'].append([
                                 self._pitching(pitching, play['value'],
                                                colors[pitching]), ''
                             ])
                             plays_table['body'].append(['Pitching: ' + value])
-                        elif play['subtype'] == 'batting':
+                        elif play['subtype'] in ['B', 'PH']:
                             log_table['body'].append([
                                 self._atbat(batting, play['value'],
                                             colors[batting]), ''
                             ])
+                        elif play['subtype'] == 'PR':
+                            log_table['body'].append([self._running(play)])
+                        elif play['subtype'] != 'other':
+                            log_table['body'].append([self._defensive(play)])
                         else:
                             log_table['body'].append([value, ''])
                     elif play['type'] == 'event':
@@ -443,9 +474,9 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-07-14T00:00:00-07:00', '1887')
+# statsplus._extract('2024-07-11T00:00:00-07:00', '1830')
 
 # gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1887']
+# gameday.data['games'] = ['1830']
 # gameday._check_games()
 # gameday._setup_internal(date=date)

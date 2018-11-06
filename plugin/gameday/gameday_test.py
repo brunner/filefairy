@@ -357,11 +357,11 @@ _game_data = {
         '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
         'play': [{
             'type': 'sub',
-            'subtype': 'pitching',
+            'subtype': 'P',
             'value': 'P101'
         }, {
             'type': 'sub',
-            'subtype': 'batting',
+            'subtype': 'B',
             'value': 'P102'
         }, {
             'type': 'event',
@@ -371,7 +371,7 @@ _game_data = {
             'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.'
         }, {
             'type': 'sub',
-            'subtype': 'batting',
+            'subtype': 'B',
             'value': 'P103'
         }, {
             'type': 'event',
@@ -381,7 +381,7 @@ _game_data = {
             'value': 'P103 SINGLE (Groundball, 56)*.'
         }, {
             'type': 'sub',
-            'subtype': 'batting',
+            'subtype': 'B',
             'value': 'P104'
         }, {
             'type':
@@ -396,7 +396,7 @@ _game_data = {
             'to second*.'
         }, {
             'type': 'sub',
-            'subtype': 'batting',
+            'subtype': 'B',
             'value': 'P105'
         }, {
             'type': 'event',
@@ -406,7 +406,7 @@ _game_data = {
             'value': 'P105 Fly out, F9 (Flyball, 9)*.'
         }, {
             'type': 'sub',
-            'subtype': 'batting',
+            'subtype': 'B',
             'value': 'P106'
         }, {
             'type':

@@ -115,31 +115,31 @@ _plays = [[{
     '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
     'play': [{
         'type': 'sub',
-        'subtype': 'pitching',
+        'subtype': 'P',
         'value': 'P101'
     }, {
         'type': 'sub',
-        'subtype': 'batting',
+        'subtype': 'B',
         'value': 'P102'
     }, {
         'type': 'event',
         'outs': 1,
         'runs': 0,
         'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-        'value': 'P102 flies out to left fielder P (zone 7LSF).',
+        'value': 'P102 flies out to left fielder  (zone 7LSF).',
     }, {
         'type': 'sub',
-        'subtype': 'batting',
+        'subtype': 'B',
         'value': 'P103'
     }, {
         'type': 'event',
         'outs': 0,
         'runs': 0,
         'sequence': ['1 0 0 In play, no out'],
-        'value': 'P103 singles on a ground ball to left fielder P (zone 56).'
+        'value': 'P103 singles on a ground ball to left fielder  (zone 56).'
     }, {
         'type': 'sub',
-        'subtype': 'batting',
+        'subtype': 'B',
         'value': 'P104'
     }, {
         'type':
@@ -150,21 +150,21 @@ _plays = [[{
         0,
         'sequence': ['1 0 0 In play, no out'],
         'value':
-        'P104 singles on a ground ball to shortstop P (zone 6MS). P103 '
-        'to second*.'
+        'P104 singles on a ground ball to shortstop  (infield hit) '
+        '(zone 6MS). P103 to second.'
     }, {
         'type': 'sub',
-        'subtype': 'batting',
+        'subtype': 'B',
         'value': 'P105'
     }, {
         'type': 'event',
         'outs': 1,
         'runs': 0,
         'sequence': ['1 0 0 In play, out(s)'],
-        'value': 'P105 flies out to right fielder P (zone 9).'
+        'value': 'P105 flies out to right fielder  (zone 9).'
     }, {
         'type': 'sub',
-        'subtype': 'batting',
+        'subtype': 'B',
         'value': 'P106'
     }, {
         'type':

@@ -49,12 +49,12 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P50132"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P52197"
           },
@@ -70,7 +70,7 @@
             "value": "P52197 grounds out, shortstop P35142 to first baseman P816 (zone 6M)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32460"
           },
@@ -81,10 +81,10 @@
               "1 0 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P32460 SOLO HOME RUN (Line Drive, 89XD), Distance : 449 ft*."
+            "value": "P32460 homers on a line drive to center field (zone 89XD, 449 ft)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P20821"
           },
@@ -95,10 +95,10 @@
               "1 0 0 In play, no out"
             ],
             "type": "event",
-            "value": "P20821 Hit by Pitch*."
+            "value": "P20821 is hit by the pitch."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P31259"
           },
@@ -113,7 +113,7 @@
             "value": "P31259 flies out to left fielder P54899 (zone 7)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38694"
           },
@@ -138,12 +138,12 @@
         "pitching": "P26430",
         "play": [
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P26430"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P49103"
           },
@@ -160,7 +160,7 @@
             "value": "P49103 pops out to shortstop P45359 (zone 6)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P35142"
           },
@@ -177,7 +177,7 @@
             "value": "P35142 flies out to center fielder P25252 (zone 8LD)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38573"
           },
@@ -205,7 +205,7 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32314"
           },
@@ -220,7 +220,7 @@
             "value": "P32314 pops out to second baseman P29923 (zone 3D)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P1150"
           },
@@ -235,10 +235,10 @@
               "5 3 1 In play, no out"
             ],
             "type": "event",
-            "value": "P1150 singles on a ground ball to catcher P28116 (zone 25)."
+            "value": "P1150 singles on a ground ball to catcher P28116 (infield hit) (zone 25)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P45359"
           },
@@ -251,7 +251,7 @@
               "3 1 2 Ball"
             ],
             "type": "event",
-            "value": "With P45359 batting, P1150 steals 2nd base*."
+            "value": "With P45359 batting, P1150 steals second base."
           },
           {
             "outs": 1,
@@ -266,7 +266,7 @@
             "value": "P45359 called out on strikes."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P25252"
           },
@@ -288,7 +288,7 @@
         "pitching": "P26430",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P816"
           },
@@ -305,7 +305,7 @@
             "value": "P816 walks."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P28116"
           },
@@ -317,7 +317,7 @@
               "2 1 1 Ball"
             ],
             "type": "event",
-            "value": "With P28116 batting, Wild Pitch!*. P816 to second*."
+            "value": "With P28116 batting, wild pitch by P26430. P816 to second."
           },
           {
             "outs": 1,
@@ -331,7 +331,7 @@
             "value": "P28116 strikes out swinging."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P30166"
           },
@@ -349,7 +349,7 @@
             "value": "P30166 flies out to center fielder P25252 (zone 8LM)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P54899"
           },
@@ -362,7 +362,7 @@
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P54899 grounds out, pitcher P to first baseman P32314 (zone 15S)."
+            "value": "P54899 grounds out, pitcher P26430 to first baseman P32314 (zone 15S)."
           }
         ]
       }
@@ -375,7 +375,7 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P52197"
           },
@@ -390,7 +390,7 @@
             "value": "P52197 singles on a ground ball to right fielder P25187 (zone 34D)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32460"
           },
@@ -402,7 +402,7 @@
               "2 0 2 Called Strike"
             ],
             "type": "event",
-            "value": "With P32460 batting, Balk!*. P52197 to second*."
+            "value": "With P32460 batting, Balk!*. P52197 to second."
           },
           {
             "outs": 1,
@@ -415,7 +415,7 @@
             "value": "P32460 grounds out, shortstop P35142 to first baseman P816 (zone 6)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P20821"
           },
@@ -431,10 +431,10 @@
               "6 1 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P20821 grounds out, pitcher P26430 to first baseman P816 (zone P). P52197 to third*."
+            "value": "P20821 grounds out, pitcher P50132 to first baseman P816 (zone P). P52197 to third."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P31259"
           },
@@ -457,7 +457,7 @@
         "pitching": "P26430",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P25187"
           },
@@ -475,7 +475,7 @@
             "value": "P25187 lines out to right fielder P52197 (zone 9S)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P29923"
           },
@@ -491,7 +491,7 @@
             "value": "P29923 grounds out, third baseman P31259 to first baseman P32314 (zone 5S)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P49103"
           },
@@ -519,7 +519,7 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38694"
           },
@@ -538,7 +538,7 @@
             "value": "P38694 called out on strikes."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32314"
           },
@@ -554,7 +554,7 @@
             "value": "P32314 doubles on a line drive to left fielder P54899 (zone 7LS)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P1150"
           },
@@ -571,7 +571,7 @@
             "value": "P1150 lines out to first baseman P816 (zone 34)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P45359"
           },
@@ -595,7 +595,7 @@
         "pitching": "P26430",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P35142"
           },
@@ -614,7 +614,7 @@
             "value": "P35142 called out on strikes."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38573"
           },
@@ -631,7 +631,7 @@
             "value": "P38573 strikes out swinging."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P816"
           },
@@ -642,10 +642,10 @@
               "1 0 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P816 SOLO HOME RUN (Flyball, 7D), Distance : 388 ft*."
+            "value": "P816 homers on a fly ball to left field (zone 7D, 388 ft)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P28116"
           },
@@ -661,7 +661,7 @@
               "6 3 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28116 grounds out, pitcher P to first baseman P32314 (zone 13)."
+            "value": "P28116 grounds out, pitcher P26430 to first baseman P32314 (zone 13)."
           }
         ]
       }
@@ -674,7 +674,7 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P25252"
           },
@@ -690,7 +690,7 @@
             "value": "P25252 singles on a fly ball to left fielder P54899 (zone 7LS)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P52197"
           },
@@ -704,10 +704,10 @@
               "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P52197 Grounds into double play, 4-6-3 (Groundball, 4)*."
+            "value": "P52197 grounds into a double play, second baseman P29923 to shortstop P35142 to first baseman P816 (zone 4). P25252 out at second."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32460"
           },
@@ -724,10 +724,10 @@
               "7 3 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P32460 SOLO HOME RUN (Flyball, 89XD), Distance : 443 ft*."
+            "value": "P32460 homers on a fly ball to center field (zone 89XD, 443 ft)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P20821"
           },
@@ -749,13 +749,13 @@
         "pitching": "P26430",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P30166"
           },
           {
             "outs": 0,
-            "runs": 1,
+            "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
@@ -763,13 +763,13 @@
               "4 2 2 Ball",
               "5 3 2 Ball",
               "6 3 2 Foul",
-              "7 3 2 In play, run(s)"
+              "7 3 2 In play, no out"
             ],
             "type": "event",
             "value": "P30166 SOLO HOME RUN (Flyball, 7LD) (Inside the Park)*."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P54899"
           },
@@ -787,12 +787,12 @@
             "value": "P54899 called out on strikes."
           },
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P22516"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P25187"
           },
@@ -808,7 +808,7 @@
             "value": "P25187 lines out to first baseman P32314 (zone 34)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P29923"
           },
@@ -835,7 +835,7 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P31259"
           },
@@ -852,7 +852,7 @@
             "value": "P31259 grounds out to first baseman P816 (zone 3S)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38694"
           },
@@ -870,7 +870,7 @@
             "value": "P38694 singles on a line drive to center fielder P49103 (zone 8LS)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32314"
           },
@@ -884,7 +884,7 @@
               "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P32314 Grounds into double play, 5-4-3 (Groundball, 56)*."
+            "value": "P32314 grounds into a double play, third baseman P38573 to second baseman P29923 to first baseman P816 (zone 56). P38694 out at second."
           }
         ]
       },
@@ -895,7 +895,7 @@
         "pitching": "P22516",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P49103"
           },
@@ -915,7 +915,7 @@
             "value": "P49103 singles on a ground ball to right fielder P52197 (zone 34D)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P35142"
           },
@@ -930,10 +930,10 @@
               "5 2 2 In play, no out"
             ],
             "type": "event",
-            "value": "P35142 Reached on error, E5 (Groundball, 56S)*. P49103 to second*."
+            "value": "P35142 reaches on an error by third baseman P31259 (zone 56S). P49103 to second."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38573"
           },
@@ -948,7 +948,7 @@
             "value": "P38573 flies out to right fielder P52197 (zone 9)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P816"
           },
@@ -960,10 +960,10 @@
               "2 1 0 In play, no out"
             ],
             "type": "event",
-            "value": "P816 Hit by Pitch*. P49103 to third*. P35142 to second*."
+            "value": "P816 is hit by the pitch. P49103 to third. P35142 to second."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P28116"
           },
@@ -977,10 +977,10 @@
               "4 4 0 Ball"
             ],
             "type": "event",
-            "value": "P28116 walks. P49103 scores*. P35142 to third*. P816 to second*."
+            "value": "P28116 walks. P49103 scores. P35142 to third. P816 to second."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P30166"
           },
@@ -995,7 +995,7 @@
               "5 3 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P30166 Grounds into double play, 4-6-3 (Groundball, 4M)*."
+            "value": "P30166 grounds into a double play, second baseman P1150 to shortstop P45359 to first baseman P32314 (zone 4M). P28116 out at second."
           }
         ]
       }
@@ -1008,7 +1008,7 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P1150"
           },
@@ -1024,7 +1024,7 @@
             "value": "P1150 flies out to right fielder P25187 (zone 9LS)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P45359"
           },
@@ -1041,7 +1041,7 @@
             "value": "P45359 singles on a line drive to center fielder P49103 (zone 6MD)."
           },
           {
-            "subtype": "batting",
+            "subtype": "PH",
             "type": "sub",
             "value": "P27864"
           },
@@ -1058,7 +1058,7 @@
             "value": "P27864 strikes out swinging."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P52197"
           },
@@ -1073,7 +1073,7 @@
               "5 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P52197 Fielders Choice at 2nd, 4-6 (Groundball, 34)*."
+            "value": "P52197 grounds into a force play, second baseman P29923 to shortstop P35142 (zone 34). P45359 out at 2nd."
           }
         ]
       },
@@ -1084,12 +1084,12 @@
         "pitching": "P22516",
         "play": [
           {
-            "subtype": "other",
+            "subtype": "RF",
             "type": "sub",
-            "value": "Now in RF: P27864"
+            "value": "P27864"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P54899"
           },
@@ -1106,7 +1106,7 @@
             "value": "P54899 flies out to left fielder P38694 (zone 7S)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P25187"
           },
@@ -1122,7 +1122,7 @@
             "value": "P25187 singles on a fly ball to center fielder P25252 (zone 8RS)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P29923"
           },
@@ -1137,7 +1137,7 @@
             "value": "P29923 lines out to center fielder P25252 (zone 8LM)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P49103"
           },
@@ -1148,7 +1148,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P49103 Fielders Choice at 2nd, 6-4 (Groundball, 56)*."
+            "value": "P49103 grounds into a force play, shortstop P45359 to second baseman P1150 (zone 56). P25187 out at 2nd."
           }
         ]
       }
@@ -1161,12 +1161,12 @@
         "pitching": "P50132",
         "play": [
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P33526"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32460"
           },
@@ -1185,12 +1185,12 @@
             "value": "P32460 walks."
           },
           {
-            "subtype": "other",
+            "subtype": "PR",
             "type": "sub",
-            "value": "Pinch Runner at 1st P53147:"
+            "value": "P53147"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P20821"
           },
@@ -1206,15 +1206,15 @@
               "6 3 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P20821 doubles on a ground ball to right fielder P25187 (zone 3L). P53147 to third*. Runner from 3rd tries for Home, SAFE, no throw*."
+            "value": "P20821 doubles on a ground ball to right fielder P25187 (zone 3L). P53147 scores."
           },
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P1417"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P31259"
           },
@@ -1231,7 +1231,7 @@
             "value": "P31259 walks."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38694"
           },
@@ -1251,7 +1251,7 @@
             "value": "P38694 strikes out swinging."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P32314"
           },
@@ -1264,10 +1264,10 @@
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P32314 grounds out, third baseman P38573 to first baseman P816 (zone 5S). P20821 to third*. P31259 to second*."
+            "value": "P32314 grounds out, third baseman P38573 to first baseman P816 (zone 5S). P20821 to third. P31259 to second."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P1150"
           },
@@ -1292,7 +1292,7 @@
         "pitching": "P22516",
         "play": [
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P35142"
           },
@@ -1309,7 +1309,7 @@
             "value": "P35142 grounds out, shortstop P45359 to first baseman P32314 (zone 6)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P38573"
           },
@@ -1321,10 +1321,10 @@
               "2 0 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P38573 flies out to right fielder P52197 (zone 89S)."
+            "value": "P38573 flies out to right fielder P27864 (zone 89S)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P816"
           },
@@ -1342,7 +1342,7 @@
             "value": "P816 singles on a line drive to left fielder P38694 (zone 6D)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P28116"
           },
@@ -1353,7 +1353,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28116 Fielders Choice at 2nd, 5-4 (Groundball, 5)*."
+            "value": "P28116 grounds into a force play, third baseman P31259 to second baseman P1150 (zone 5). P816 out at 2nd."
           }
         ]
       }
@@ -1366,12 +1366,12 @@
         "pitching": "P1417",
         "play": [
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P33785"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P45359"
           },
@@ -1389,7 +1389,7 @@
             "value": "P45359 singles on a ground ball to center fielder P49103 (zone 6MD)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P27864"
           },
@@ -1407,7 +1407,7 @@
             "value": "P27864 strikes out swinging."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P52197"
           },
@@ -1418,10 +1418,10 @@
               "1 0 0 In play, no out"
             ],
             "type": "event",
-            "value": "P52197 doubles on a fly ball to center fielder P49103 (zone 78D). P45359 to third*."
+            "value": "P52197 doubles on a fly ball to center fielder P49103 (zone 78D). P45359 to third."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P53147"
           },
@@ -1437,15 +1437,15 @@
               "6 2 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P53147 lines out to right fielder P25187 (zone 9). Throwing error, E9*. P45359 scores*. P52197 to third*."
+            "value": "P53147 out on a sacrifice fly to right fielder P25187 (zone 9). P45359 scores. P52197 to third. Throwing error by right fielder P25187."
           },
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P25102"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P20821"
           },
@@ -1462,7 +1462,7 @@
             "value": "P20821 walks."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P31259"
           },
@@ -1486,12 +1486,12 @@
         "pitching": "P22516",
         "play": [
           {
-            "subtype": "pitching",
+            "subtype": "P",
             "type": "sub",
             "value": "P53687"
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P30166"
           },
@@ -1509,7 +1509,7 @@
             "value": "P30166 flies out to center fielder P25252 (zone 8LS)."
           },
           {
-            "subtype": "batting",
+            "subtype": "PH",
             "type": "sub",
             "value": "P2474"
           },
@@ -1524,7 +1524,7 @@
             "value": "P2474 grounds out, second baseman P1150 to first baseman P32314 (zone 4)."
           },
           {
-            "subtype": "batting",
+            "subtype": "B",
             "type": "sub",
             "value": "P25187"
           },
@@ -1542,7 +1542,7 @@
             "value": "P25187 walks."
           },
           {
-            "subtype": "batting",
+            "subtype": "PH",
             "type": "sub",
             "value": "P28405"
           },
@@ -1555,7 +1555,7 @@
               "3 0 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P28405 Fielders Choice at 2nd, 4-6 (Groundball, 4)*."
+            "value": "P28405 grounds into a force play, second baseman P1150 to shortstop P45359 (zone 4). P25187 out at 2nd."
           }
         ]
       }
