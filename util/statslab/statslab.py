@@ -594,7 +594,7 @@ def _parse_value(value, bases, counts, sequence, values, fielders, batting):
     nums, zone = _find('double play, (\d-\d-\d) \(Groundball, (\w+)\)', value)
     if nums:
         base = nums[2]
-        base = 'Home' if base == '2' else 'third' if base == '5' else 'second'
+        base = 'home' if base == '2' else 'third' if base == '5' else 'second'
         pair = _bases_pop(bases, _bases_map[base] - 1, '')
         runner = pair[0] if pair else ''
         fields = _fielders(nums, fielders)
@@ -678,7 +678,7 @@ def _parse_part(value, bases, values, fielders):
         values.append(runner + ' out at third on the throw')
         return
 
-    throw = _find('tries for Home, SAFE, (\w+)', value)
+    throw = _find('tries for home, SAFE, (\w+)', value)
     if throw:
         pair = _bases_pop(bases, 2, '')
         runner = pair[0] if pair else ''
