@@ -776,7 +776,7 @@ def _parse_part(value, bases, values, fielders):
 
 
 def _tweak_runners(values):
-    advance = '(\w+) (?:scores|to third|to second)'
+    advance = '(\w+) (?:scores|to third|to second|on the throw)'
     runners = [_find(advance, v) for v in values[1:]]
     runners = [r for r in runners if r]
     if runners:
