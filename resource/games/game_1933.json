@@ -270,7 +270,7 @@
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P50264 flies out to left fielder P38694 (zone 7D). Runner from 1st tags up, SAFE at 2nd*."
+            "value": "P50264 flies out to left fielder P38694 (zone 7D). Runner from first tags up, SAFE at second*."
           },
           {
             "subtype": "B",
@@ -531,7 +531,7 @@
               "3 1 2 Called Strike"
             ],
             "type": "event",
-            "value": "P32460 P52197 is caught stealing 2nd base*."
+            "value": "With P32460 batting, P52197 is caught stealing second base."
           }
         ]
       }
@@ -1216,14 +1216,14 @@
             "value": "P52197"
           },
           {
-            "outs": 0,
+            "outs": 1,
             "runs": 1,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 1 In play, run(s)"
             ],
             "type": "event",
-            "value": "P52197 doubles on a ground ball to left fielder P49648 (zone 5L). P25252 scores (throw made)."
+            "value": "P52197 doubles on a ground ball to left fielder P49648 (zone 5L). P25252 scores. P52197 out at third on the throw."
           },
           {
             "subtype": "B",
@@ -1232,7 +1232,7 @@
           },
           {
             "outs": 0,
-            "runs": 2,
+            "runs": 1,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -1240,7 +1240,7 @@
               "4 1 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P32460 homers on a fly ball to right field (zone 9D, 383 ft). P52197 scores."
+            "value": "P32460 homers on a fly ball to right field (zone 9D, 383 ft)."
           },
           {
             "subtype": "B",
@@ -1362,7 +1362,7 @@
               "4 2 1 In play, run(s)"
             ],
             "type": "event",
-            "value": "P49648 flies out to left fielder P38694 (zone 7LSF). Runner from 3rd tags up, SCORES, no throw*."
+            "value": "P49648 flies out to left fielder P38694 (zone 7LSF). Runner from third tags up, SCORES, no throw*."
           },
           {
             "subtype": "B",

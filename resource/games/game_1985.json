@@ -236,16 +236,16 @@
             "value": "P21187"
           },
           {
-            "outs": 0,
+            "outs": 1,
             "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 2 0 Ball",
               "3 2 1 Called Strike",
-              "4 2 1 In play, no out"
+              "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P21187 singles on a fly ball to center fielder P50254 (zone 89S)."
+            "value": "P21187 singles on a fly ball to center fielder P50254 (zone 89S). P21187 out at second trying to stretch hit."
           },
           {
             "subtype": "B",
@@ -302,7 +302,7 @@
               "1 1 0 Ball"
             ],
             "type": "event",
-            "value": "With P55104 batting, P24196 is caught stealing 2nd base*."
+            "value": "With P55104 batting, P24196 is caught stealing second base."
           },
           {
             "outs": 1,
@@ -521,11 +521,11 @@
             "value": "P15535"
           },
           {
-            "outs": 1,
+            "outs": 0,
             "runs": 0,
             "sequence": [],
             "type": "event",
-            "value": "With P15535 batting, Pickoff Throw to First - Out!*."
+            "value": "With P15535 batting, P29857 picks off P35967."
           },
           {
             "outs": 1,
@@ -589,13 +589,13 @@
             "value": "P50254"
           },
           {
-            "outs": 0,
+            "outs": 1,
             "runs": 0,
             "sequence": [
-              "1 0 0 In play, no out"
+              "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P50254 singles on a fly ball to center fielder P28985 (zone 8RS)."
+            "value": "P50254 singles on a fly ball to center fielder P28985 (zone 8RS). P50254 out at second trying to stretch hit."
           }
         ]
       }
@@ -750,7 +750,7 @@
               "1 0 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P29857 singles on a fly ball to center fielder P28985 (zone 89S). P53987 to second. P24196 scores."
+            "value": "P29857 singles on a fly ball to center fielder P28985 (zone 89S). P24196 to third. P53987 to second. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "B",
@@ -764,7 +764,7 @@
               "1 0 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P25482 singles on a line drive to center fielder P28985 (zone 8RS). P29857 to second. P53987 scores."
+            "value": "P25482 singles on a line drive to center fielder P28985 (zone 8RS). P53987 to third. P29857 to second. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "B",
@@ -1427,7 +1427,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P25482 grounds into a force play, third baseman P21187 to second baseman P25200 (zone 56). P53987 out at 2nd."
+            "value": "P25482 grounds into a force play, third baseman P21187 to second baseman P25200 (zone 56). P53987 out at second."
           }
         ]
       }

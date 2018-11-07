@@ -502,7 +502,7 @@
             "value": "P1445"
           },
           {
-            "outs": 3,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 1 0 Ball",
@@ -514,7 +514,7 @@
               "7 3 3 Swinging Strike"
             ],
             "type": "event",
-            "value": "P1445 strikes out swinging. P47317 is caught stealing 2nd base*. Batter strikes out.*."
+            "value": "P1445 strikes out swinging. P47317 is caught stealing second base."
           }
         ]
       },
@@ -600,7 +600,7 @@
               "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P50263 grounds into a force play, second baseman P35263 to shortstop P29929 (zone 4). P22620 out at 2nd."
+            "value": "P50263 grounds into a force play, second baseman P35263 to shortstop P29929 (zone 4). P22620 out at second."
           }
         ]
       }
@@ -673,7 +673,7 @@
               "4 1 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P27347 doubles on a line drive to left fielder P22620 (zone 7LD). P25150 scores."
+            "value": "P27347 doubles on a line drive to left fielder P22620 (zone 7LD). P25150 to third. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "PH",
@@ -1371,7 +1371,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P53338 grounds into a force play, first baseman P38604 to shortstop P29929 (zone 34). P24778 out at 2nd."
+            "value": "P53338 grounds into a force play, first baseman P38604 to shortstop P29929 (zone 34). P24778 out at second."
           },
           {
             "subtype": "B",
@@ -1385,7 +1385,7 @@
               "1 0 1 Called Strike"
             ],
             "type": "event",
-            "value": "With P20479 batting, P53338 is caught stealing 2nd base*."
+            "value": "With P20479 batting, P53338 is caught stealing second base."
           },
           {
             "outs": 1,
@@ -1462,7 +1462,7 @@
               "3 1 1 In play, run(s)"
             ],
             "type": "event",
-            "value": "P27347 flies out to right fielder P37113 (zone 89S). Runner from 3rd tags up, SCORES, no throw*."
+            "value": "P27347 flies out to right fielder P37113 (zone 89S). Runner from third tags up, SCORES, no throw*."
           },
           {
             "subtype": "P",
@@ -1617,7 +1617,7 @@
               "2 1 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P40111 singles on a line drive to center fielder P27347 (zone 6MD). P22620 to second. P55684 scores."
+            "value": "P40111 singles on a line drive to center fielder P27347 (zone 6MD). P55684 to third. P22620 to second. Runner from third tries for home, SAFE, no throw*."
           }
         ]
       }

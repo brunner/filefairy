@@ -603,7 +603,7 @@
               "6 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P34824 grounds into a force play, shortstop P53197 to second baseman P30965 (zone 6). P36243 out at 2nd."
+            "value": "P34824 grounds into a force play, shortstop P53197 to second baseman P30965 (zone 6). P36243 out at second."
           }
         ]
       },
@@ -790,7 +790,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P50651 Grounds into fielders choice 6-2 (Groundball, 6)*. P37584 to third. P52954 to second."
+            "value": "P50651 grounds into a force play, shortstop P53197 to catcher P32285 (zone 6). P53008 out at home. P37584 to third. P52954 to second."
           },
           {
             "subtype": "B",
@@ -804,7 +804,7 @@
               "1 0 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P20199 singles on a fly ball to right fielder P29785 (zone 9LS). P37584 scores. P50651 to second. P52954 scores."
+            "value": "P20199 singles on a fly ball to right fielder P29785 (zone 9LS). P37584 scores. P52954 to third. P50651 to second. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "P",
@@ -846,7 +846,7 @@
               "5 1 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P36243 singles on a fly ball to right fielder P29785 (zone 9LS). P50651 scores. P33603 to second. P20199 scores."
+            "value": "P36243 singles on a fly ball to right fielder P29785 (zone 9LS). P50651 scores. P20199 to third. P33603 to second. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "B",
@@ -901,7 +901,7 @@
               "2 1 0 In play, no out"
             ],
             "type": "event",
-            "value": "P193 Sac Bunt - play at second, runner safe!*."
+            "value": "P193 bunt grounds into a failed force play, pitcher P34824 to shortstop P52954 (attempted sacrifice) (zone 1S). P32285 to second."
           },
           {
             "subtype": "B",
@@ -933,7 +933,7 @@
               "4 1 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P30238 Grounds out, U3 (Groundball, 3L)*. P32285 scores. P193 to third."
+            "value": "P30238 grounds out to first baseman P206 (zone 3L). P32285 scores. P193 to third."
           },
           {
             "subtype": "B",
@@ -948,7 +948,7 @@
               "2 1 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P25202 singles on a ground ball to left fielder P53008 (zone 56D). P193 scores. P30965 scores."
+            "value": "P25202 singles on a ground ball to left fielder P53008 (zone 56D). P193 scores. P30965 to third. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "B",
@@ -971,13 +971,13 @@
           },
           {
             "outs": 0,
-            "runs": 3,
+            "runs": 4,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P53197 homers on a fly ball to left field (zone 7LD, 372 ft). P25202 scores. P38657 scores."
+            "value": "P53197 homers on a fly ball to left field (zone 7LD, 372 ft). P30965 scores. P25202 scores. P38657 scores."
           },
           {
             "subtype": "P",
@@ -1295,7 +1295,7 @@
               "3 2 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P39648 singles on a line drive to left fielder P30238 (zone 7LS). P33603 to second. P20199 scores."
+            "value": "P39648 singles on a line drive to left fielder P30238 (zone 7LS). P20199 to third. P33603 to second. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "P",
@@ -1779,7 +1779,7 @@
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P32285 grounds into a force play, shortstop P52954 to second baseman P37584 (zone 6). P29755 out at 2nd."
+            "value": "P32285 grounds into a force play, shortstop P52954 to second baseman P37584 (zone 6). P29755 out at second."
           }
         ]
       }

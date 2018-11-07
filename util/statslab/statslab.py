@@ -26,15 +26,12 @@ _game_box_line_runs = '<td class="dc"><b>(\d+)</b></td>'
 _bases_map = {
     'SINGLE': 0,
     'first': 0,
-    '1st': 0,
     'DOUBLE': 1,
     'second': 1,
-    '2nd': 1,
     'TRIPLE': 2,
     'third': 2,
-    '3rd': 2,
     'scores': 3,
-    'Home': 3
+    'home': 3
 }
 _description_map = {
     'Flyball': ('flies out', 'fly ball'),
@@ -225,6 +222,10 @@ def parse_game_data(box_link, log_link):
 
             log_content = re.sub('</?b>', '', log_content)
             log_content = re.sub('  ', ' ', log_content)
+            log_content = log_content.replace('1st', 'first')
+            log_content = log_content.replace('2nd', 'second')
+            log_content = log_content.replace('3rd', 'third')
+            log_content = log_content.replace('Home', 'home')
             log_content = re.sub(
                 r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)',
                 'P' + r'\2', log_content)
@@ -243,6 +244,8 @@ def parse_game_data(box_link, log_link):
 
                 regex = 'Pitching for (\w+) : \w+ (.+?)</th>'
                 fielding_team, cell_pitching = _find(regex, c, re.DOTALL)
+                if fielding_team not in fielders:
+                    return ret
                 curr_fielders = fielders[fielding_team]
 
                 regex = 'span="2">[^-]+- ([^;]+); [^\d]+(\d+) - [^\d]+(\d+)</td>'
@@ -313,10 +316,14 @@ def parse_game_data(box_link, log_link):
                                 _parse_part(part, bases, values,
                                             fielders[fielding_team])
                         if sequence or values:
+                            d = False
+                            if values and any(
+                                    o in values[0]
+                                    for o in ['caught stealing', 'picks off']):
+                                d = True
                             play.append(
-                                _play_event(
-                                    sequence,
-                                    _value(batting, values, during=False)))
+                                _play_event(sequence,
+                                            _value(batting, values, during=d)))
 
                 inning.append({
                     'label': cell_label,
@@ -476,7 +483,7 @@ def _parse_value(value, bases, counts, sequence, values, fielders, batting):
         values.append('{} to {} (zone {})'.format(desc, field, zone))
         return
 
-    nums, zone = _find('Ground out,? ([^\s]+) \(Groundball, (\w+)\)', value)
+    nums, zone = _find('Grounds? out,? ([^\s]+) \(Groundball, (\w+)\)', value)
     if nums:
         fields = _fielders(nums, fielders)
         values.append('grounds out{} (zone {})'.format(fields, zone))
@@ -532,8 +539,9 @@ def _parse_value(value, bases, counts, sequence, values, fielders, batting):
         runner = pair[0] if pair else ''
         nums = '1-5-3' if base == 'third' else '1-6-3'
         fields = _fielders(nums, fielders)
-        values.append('grounds into a double play{} (attempted sacrifice) '
-                      '(zone 1S). {} out at {}'.format(fields, runner, base))
+        values.append('bunt grounds into a double play{} '
+                      '(attempted sacrifice) (zone 1S). '
+                      '{} out at {}'.format(fields, runner, base))
         return
 
     base, nums = _find('Sac Bunt - play at (\w+), runner OUT! ([\d-]+)', value)
@@ -543,13 +551,26 @@ def _parse_value(value, bases, counts, sequence, values, fielders, batting):
         _bases_push(bases, 'first', (batting, fielders['P']))
         fields = _fielders(nums, fielders)
         zone = nums[0] + ('S' if nums[0] != '2' else '')
-        values.append('grounds into a force play{} (attempted sacrifice) '
+        values.append('bunt grounds into a force play{} (attempted sacrifice) '
                       '(zone {}). {} out at {}'.format(fields, zone, runner,
                                                        base))
         return
 
+    base = _find('Sac Bunt - play at (\w+), runner safe!', value)
+    if base:
+        pair = _bases_pop(bases, _bases_map[base] - 1, '')
+        runner = pair[0] if pair else ''
+        _bases_push(bases, base, pair)
+        _bases_push(bases, 'first', (batting, fielders['P']))
+        nums = '1-5' if base == 'third' else '1-6'
+        fields = _fielders(nums, fielders)
+        values.append('bunt grounds into a failed force play{} '
+                      '(attempted sacrifice) (zone 1S). '
+                      '{} to {}'.format(fields, runner, base))
+        return
+
     base, nums, zone = _find(
-        'Fielders Choice at (\w+), ([\d-]+) \(Groundball, (\w+)\)', value)
+        'Fielders Choice at (\w+), ([^\s]+) \(Groundball, (\w+)\)', value)
     if base:
         pair = _bases_pop(bases, _bases_map[base] - 1, '')
         runner = pair[0] if pair else ''
@@ -557,6 +578,17 @@ def _parse_value(value, bases, counts, sequence, values, fielders, batting):
         fields = _fielders(nums, fielders)
         values.append('grounds into a force play{} (zone {}). '
                       '{} out at {}'.format(fields, zone, runner, base))
+        return
+
+    nums, zone = _find(
+        'Grounds into fielders choice (\d-2) \(Groundball, (\w+)\)', value)
+    if nums:
+        pair = _bases_pop(bases, 2, '')
+        runner = pair[0] if pair else ''
+        _bases_push(bases, 'first', (batting, fielders['P']))
+        fields = _fielders(nums, fielders)
+        values.append('grounds into a force play{} (zone {}). '
+                      '{} out at home'.format(fields, zone, runner))
         return
 
     nums, zone = _find('double play, (\d-\d-\d) \(Groundball, (\w+)\)', value)
@@ -591,6 +623,11 @@ def _parse_value(value, bases, counts, sequence, values, fielders, batting):
         field = _fielder(_location(zone, index), fielders)
         values.append('{} on a {} to {}{} (zone {})'.format(
             base, desc, field, inf, zone))
+        base = _find('OUT at (\w+) base trying to stretch hit', value)
+        if base:
+            _bases_pop(bases, _bases_map[base] - 1, '')
+            values.append(batting +
+                          ' out at {} trying to stretch hit'.format(base))
         return
 
     category, zone, dist = _find(
@@ -612,12 +649,33 @@ def _parse_value(value, bases, counts, sequence, values, fielders, batting):
 
 
 def _parse_part(value, bases, values, fielders):
-    base = '(scores|to third|to second|steals 3rd|steals 2nd)'
+    base = '(scores|to third|to second|steals third|steals second)'
     runner, base = _find('(P\d+) ' + base, value)
     if runner:
         base = base.replace('to ', '').replace('steals ', '')
         _bases_push(bases, base, _bases_pop(bases, -1, runner))
-        values.append(value.replace('3rd', 'third').replace('2nd', 'second'))
+        values.append(value)
+        return
+
+    if _find('home, SAFE, throw made at trailing runner, SAFE', value):
+        pair = _bases_pop(bases, 2, '')
+        runner = pair[0] if pair else ''
+        _bases_push(bases, 'home', pair)
+        values.append(runner + ' scores')
+        pair = _bases_pop(bases, 1, '')
+        runner = pair[0] if pair else ''
+        _bases_push(bases, 'third', pair)
+        values.append(runner + ' to third (throw made)')
+        return
+
+    if _find('home, SAFE, throw made at trailing runner, OUT', value):
+        pair = _bases_pop(bases, 2, '')
+        runner = pair[0] if pair else ''
+        _bases_push(bases, 'home', pair)
+        values.append(runner + ' scores')
+        pair = _bases_pop(bases, 1, '')
+        runner = pair[0] if pair else ''
+        values.append(runner + ' out at third on the throw')
         return
 
     throw = _find('tries for Home, SAFE, (\w+)', value)
@@ -628,13 +686,13 @@ def _parse_part(value, bases, values, fielders):
         values.append(runner + ' scores{}'.format(throw))
         return
 
-    if _find('tries for Home, (?:throw and )?OUT!', value):
+    if _find('tries for home, (?:throw and )?OUT', value):
         pair = _bases_pop(bases, 2, '')
         runner = pair[0] if pair else ''
         values.append(runner + ' out at home on the throw')
         return
 
-    throw = _find('tries for 3rd, SAFE, (\w+)', value)
+    throw = _find('tries for third, SAFE, (\w+)', value)
     if throw:
         pair = _bases_pop(bases, 1, '')
         runner = pair[0] if pair else ''
@@ -643,7 +701,7 @@ def _parse_part(value, bases, values, fielders):
         values.append(runner + ' to third{}'.format(throw))
         return
 
-    if _find('tries for 3rd, OUT!', value):
+    if _find('tries for third, OUT', value):
         pair = _bases_pop(bases, 1, '')
         runner = pair[0] if pair else ''
         values.append(runner + ' out at third on the throw')
@@ -651,6 +709,15 @@ def _parse_part(value, bases, values, fielders):
 
     if _find('Wild Pitch!', value):
         values.append('wild pitch by ' + fielders['P'])
+        return
+
+    if _find('Balk!', value):
+        values.append('balk by ' + fielders['P'])
+        return
+
+    if _find('Passed Ball!', value):
+        field = _fielder('2', fielders)
+        values.append('passed ball by ' + field)
         return
 
     if _find('Throwing error on steal attempt, E2', value):
@@ -662,6 +729,47 @@ def _parse_part(value, bases, values, fielders):
     if num:
         field = _fielder(num, fielders)
         values.append('Throwing error by {}'.format(field))
+        return
+
+    base = _find('caught stealing (\w+) base', value)
+    if base:
+        _bases_pop(bases, _bases_map[base] - 1, '')
+        values.append(value)
+        return
+
+    base = _find('Pickoff Throw to (\w+) - Out!', value)
+    if base:
+        pair = _bases_pop(bases, _bases_map[base.lower()], '')
+        runner = pair[0] if pair else ''
+        values.append('{} picks off {}'.format(fielders['P'], runner))
+        return
+
+    base = _find('Pickoff Throw to (\w+) - Error! E1', value)
+    if base:
+        values.append('throwing error by {} (pickoff attempt)'.format(
+            fielders['P']))
+        return
+
+    base = _find('Pickoff Throw by Catcher to (\w+) - Out!', value)
+    if base:
+        pair = _bases_pop(bases, _bases_map[base.lower()], '')
+        field = _fielder('2', fielders)
+        runner = pair[0] if pair else ''
+        values.append('{} picks off {}'.format(field, runner))
+        return
+
+    nums, zone = _find('Lined into DP, ([^\s]+) \(Line Drive, (\w+)\)', value)
+    if nums:
+        fields = _fielders(nums, fielders)
+        base = 0 if nums[-1] == '3' else 2 if nums[-1] == '5' else 1
+        pair = _bases_pop(bases, base, '')
+        base = 'first' if base == 0 else 'second' if base == 1 else 'third'
+        runner = pair[0] if pair else ''
+        values[-1] = ('lines into a double play{} (zone {}). '
+                      '{} out at {}'.format(fields, zone, runner, base))
+        return
+
+    if _find('Batter strikes out.', value):
         return
 
     values.append(value + '*')

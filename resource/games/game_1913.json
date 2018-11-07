@@ -363,13 +363,13 @@
             "value": "P1473"
           },
           {
-            "outs": 0,
+            "outs": 1,
             "runs": 0,
             "sequence": [
-              "1 0 0 In play, no out"
+              "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P1473 singles on a fly ball to center fielder P50263 (zone 8LS)."
+            "value": "P1473 singles on a fly ball to center fielder P50263 (zone 8LS). P1473 out at second trying to stretch hit."
           },
           {
             "subtype": "B",
@@ -778,7 +778,7 @@
               "4 1 2 In play, run(s)"
             ],
             "type": "event",
-            "value": "P1568 singles on a fly ball to center fielder P50263 (zone 89M). P1515 scores (throw made)."
+            "value": "P1568 singles on a fly ball to center fielder P50263 (zone 89M). P1515 to third. Runner from third tries for home, SAFE, throw made home*."
           },
           {
             "subtype": "B",
@@ -1023,11 +1023,11 @@
             "value": "P23989"
           },
           {
-            "outs": 1,
+            "outs": 0,
             "runs": 0,
             "sequence": [],
             "type": "event",
-            "value": "P23989 Pickoff Throw to First - Out!*."
+            "value": "With P23989 batting, P26904 picks off P1568."
           }
         ]
       },
@@ -1085,7 +1085,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P53420 grounds into a force play, first baseman P1568 to shortstop P1515 (zone 34). P29836 out at 2nd."
+            "value": "P53420 grounds into a force play, first baseman P1568 to shortstop P1515 (zone 34). P29836 out at second."
           },
           {
             "subtype": "B",
@@ -1171,7 +1171,7 @@
               "1 0 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P37079 doubles on a fly ball to left fielder P22620 (zone 7D). P23989 scores. P28185 scores."
+            "value": "P37079 doubles on a fly ball to left fielder P22620 (zone 7D). P23989 scores. P28185 to third. Runner from third tries for home, SAFE, no throw*."
           },
           {
             "subtype": "P",
@@ -1273,17 +1273,17 @@
             "value": "P53338"
           },
           {
-            "outs": 0,
+            "outs": 1,
             "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 1 1 Ball",
               "3 2 1 Ball",
               "4 2 2 Foul",
-              "5 2 2 In play, no out"
+              "5 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P53338 singles on a fly ball to right fielder P23989 (zone 9S)."
+            "value": "P53338 singles on a fly ball to right fielder P23989 (zone 9S). P53338 out at second trying to stretch hit."
           }
         ]
       }
