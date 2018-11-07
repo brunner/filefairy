@@ -1,0 +1,1536 @@
+{
+  "away_record": "53-38",
+  "away_runs": 8,
+  "away_team": "T49",
+  "date": "2024-07-18T00:00:00-07:00",
+  "home_record": "37-55",
+  "home_runs": 2,
+  "home_team": "T41",
+  "id": "1938",
+  "ok": true,
+  "players": [
+    "193",
+    "23227",
+    "24589",
+    "25202",
+    "25310",
+    "28841",
+    "29755",
+    "30238",
+    "30965",
+    "32285",
+    "32849",
+    "38397",
+    "38657",
+    "38709",
+    "39655",
+    "39883",
+    "40985",
+    "41174",
+    "41197",
+    "48460",
+    "49682",
+    "50271",
+    "53197",
+    "53718",
+    "55542"
+  ],
+  "plays": [
+    [
+      {
+        "batting": "T49",
+        "footer": "3 run(s), 5 hit(s), 0 error(s), 1 left on base; T49 3 - T41 0",
+        "label": "Top 1st",
+        "pitching": "P40985",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P40985"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55542"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P55542 Bunt for hit - play at first, batter safe!*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P23227"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P23227 singles on a ground ball to center fielder P29755 (zone 6MD). P55542 to second*. Runner from 2nd tries for 3rd, SAFE, no throw*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32849"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Called Strike",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P32849 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P39655"
+          },
+          {
+            "outs": 1,
+            "runs": 1,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 1 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P39655 flies out to center fielder P29755 (zone 8LD). Runner from 3rd tags up, SCORES, no throw*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38709"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P38709 singles on a ground ball to right fielder P48460 (zone 34D). P23227 to second*. Runner from 2nd tries for 3rd, SAFE, throw made to third*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50271"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 0 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P50271 singles on a line drive to center fielder P29755 (zone 8LS). P23227 scores*. P38709 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53718"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 2 Called Strike",
+              "3 0 2 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P53718 singles on a line drive to center fielder P29755 (zone 6M). P38709 to third*. P50271 to second*. Runner from 3rd tries for Home, SAFE, no throw*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P28841"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 2 Foul",
+              "5 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P28841 Fielders Choice at 2nd, 6-4 (Groundball, 6)*."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T49 3 - T41 0",
+        "label": "Bot 1st",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P25310"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30965"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30965 flies out to center fielder P32849 (zone 8RS)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30238"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 2 Called Strike",
+              "5 3 2 Ball",
+              "6 4 2 Ball"
+            ],
+            "type": "event",
+            "value": "P30238 walks."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P25202"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P25202 called out on strikes."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38657"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P38657 singles on a line drive to right fielder P23227 (zone 9S). P30238 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53197"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53197 Fielders Choice at 2nd, 5-4 (Groundball, 5)*."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T49 3 - T41 0",
+        "label": "Top 2nd",
+        "pitching": "P40985",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P25310"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 2 2 Ball",
+              "5 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25310 grounds out, second baseman P30965 to first baseman P38657 (zone 4M)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55542"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P55542 flies out to right fielder P48460 (zone 9S)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P23227"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 Foul",
+              "4 0 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P23227 called out on strikes."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T49 3 - T41 0",
+        "label": "Bot 2nd",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29755"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 1 2 Foul",
+              "5 1 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P29755 called out on strikes."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P48460"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 1 2 Foul",
+              "5 2 2 Ball",
+              "6 2 2 Foul",
+              "7 3 2 Ball",
+              "8 3 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P48460 flies out to center fielder P32849 (zone 89M)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32285"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P32285 singles on a ground ball to right fielder P23227 (zone 3D)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P40985"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P40985 lines out to shortstop P55542 (zone 6)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T49 3 - T41 0",
+        "label": "Top 3rd",
+        "pitching": "P40985",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32849"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 1 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P32849 grounds out, shortstop P53197 to first baseman P38657 (zone 6)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P39655"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P39655 flies out to left fielder P30238 (zone 7)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38709"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P38709 pops out to catcher P32285 (zone 2R)."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T49 3 - T41 0",
+        "label": "Bot 3rd",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30965"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 2 Foul",
+              "5 2 2 Foul",
+              "6 2 2 Foul",
+              "7 2 2 Foul",
+              "8 3 2 Ball",
+              "9 3 2 Foul",
+              "10 3 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P30965 singles on a ground ball to center fielder P32849 (zone 4MD)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30238"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30238 flies out to left fielder P28841 (zone 7LSF)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P25202"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Foul",
+              "4 1 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25202 pops out to third baseman P39655 (zone 56S)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38657"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball"
+            ],
+            "type": "event",
+            "value": "P38657 P30965 is caught stealing 2nd base*."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "0 run(s), 0 hit(s), 1 error(s), 0 left on base; T49 3 - T41 0",
+        "label": "Top 4th",
+        "pitching": "P40985",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50271"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P50271 Reached on error, E3 (Groundball, 34)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53718"
+          },
+          {
+            "outs": 2,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53718 Grounds into double play, 6-4-3 (Groundball, 56)*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P28841"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 2 Foul",
+              "5 3 2 Ball",
+              "6 3 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P28841 grounds out to first baseman P38657 (zone 34)."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T49 3 - T41 1",
+        "label": "Bot 4th",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38657"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P38657 singles on a line drive to center fielder P32849 (zone 78S)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53197"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53197 grounds out, third baseman P39655 to first baseman P38709 (zone 56S). P38657 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29755"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P29755 grounds out, second baseman P53718 to first baseman P38709 (zone 4S). P38657 to third*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P48460"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P48460 doubles on a fly ball to center fielder P32849 (zone 8RXD). P38657 scores*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32285"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 2 Called Strike",
+              "5 2 2 Foul",
+              "6 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P32285 grounds out, shortstop P55542 to first baseman P38709 (zone 6)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "3 run(s), 3 hit(s), 0 error(s), 1 left on base; T49 6 - T41 1",
+        "label": "Top 5th",
+        "pitching": "P40985",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P25310"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 2 Foul",
+              "6 3 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25310 grounds out, shortstop P53197 to first baseman P38657 (zone 6)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55542"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P55542 singles on a ground ball to right fielder P48460 (zone 4D)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P23227"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P23227 singles on a ground ball to left fielder P30238 (zone 6D). P55542 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32849"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
+            ],
+            "type": "event",
+            "value": "P32849 walks. P55542 to third*. P23227 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P39655"
+          },
+          {
+            "outs": 0,
+            "runs": 3,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 1 1 Ball",
+              "3 1 1 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P39655 doubles on a line drive to center fielder P29755 (zone 89D). P55542 scores*. P23227 scores*. P32849 to third*. Runner from 3rd tries for Home, SAFE, throw made home*."
+          },
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P193"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38709"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P38709 called out on strikes."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50271"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50271 grounds out, pitcher P40985 to first baseman P38657 (zone 15S)."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T49 6 - T41 1",
+        "label": "Bot 5th",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P193"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P193 flies out to center fielder P32849 (zone 8LS)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30965"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 1 2 Foul",
+              "5 1 2 Foul",
+              "6 2 2 Ball",
+              "7 2 2 Foul",
+              "8 2 2 Foul",
+              "9 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30965 grounds out, shortstop P55542 to first baseman P38709 (zone 6)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30238"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30238 grounds out, second baseman P53718 to first baseman P38709 (zone 4)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T49 6 - T41 1",
+        "label": "Top 6th",
+        "pitching": "P193",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53718"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53718 grounds out, second baseman P30965 to first baseman P38657 (zone 4)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P28841"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Called Strike",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 4 2 Ball"
+            ],
+            "type": "event",
+            "value": "P28841 walks."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P25310"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P25310 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55542"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P55542 flies out to center fielder P29755 (zone 78M)."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T49 6 - T41 1",
+        "label": "Bot 6th",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P25202"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25202 flies out to center fielder P32849 (zone 8RD)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38657"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 1 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P38657 singles on a line drive to center fielder P32849 (zone 78S)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53197"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53197 grounds out, third baseman P39655 to first baseman P38709 (zone 25). P38657 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29755"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 2 Foul",
+              "4 0 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P29755 called out on strikes."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "2 run(s), 2 hit(s), 1 error(s), 1 left on base; T49 8 - T41 1",
+        "label": "Top 7th",
+        "pitching": "P193",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P23227"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P23227 lines out to second baseman P30965 (zone 4)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32849"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
+            ],
+            "type": "event",
+            "value": "P32849 walks."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P39655"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P39655 doubles on a line drive to right fielder P48460 (zone 9LS). P32849 to third*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38709"
+          },
+          {
+            "outs": 0,
+            "runs": 2,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 2 1 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P38709 singles on a ground ball to center fielder P29755 (zone 4MD). P32849 scores*. P39655 to third*. Throwing error, E8*. P39655 scores*. P38709 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P50271"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50271 flies out to left fielder P30238 (zone 78D)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53718"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53718 grounds out, shortstop P53197 to first baseman P38657 (zone 6)."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "1 run(s), 1 hit(s), 0 error(s), 0 left on base; T49 8 - T41 2",
+        "label": "Bot 7th",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P48460"
+          },
+          {
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Swinging Strike",
+              "4 1 2 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P48460 SOLO HOME RUN (Flyball, 7D), Distance : 413 ft*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32285"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P32285 grounds out, shortstop P55542 to first baseman P38709 (zone 6M)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38397"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P38397 flies out to center fielder P32849 (zone 8LD)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30965"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 3 1 Called Strike",
+              "5 3 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30965 grounds out, shortstop P55542 to first baseman P38709 (zone 56)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T49 8 - T41 2",
+        "label": "Top 8th",
+        "pitching": "P193",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P41174"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P28841"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Swinging Strike",
+              "4 2 2 Ball",
+              "5 2 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P28841 doubles on a fly ball to center fielder P29755 (zone 78XD)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P49682"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 2 2 Foul",
+              "6 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P49682 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P55542"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 1 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P55542 called out on strikes."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P23227"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P23227 flies out to left fielder P30238 (zone 78D)."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T49 8 - T41 2",
+        "label": "Bot 8th",
+        "pitching": "P25310",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P24589"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30238"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30238 grounds out, shortstop P55542 to first baseman P38709 (zone 6)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P25202"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 1 1 Ball",
+              "3 1 2 Swinging Strike",
+              "4 1 2 Foul",
+              "5 1 2 Foul",
+              "6 2 2 Ball",
+              "7 2 2 Foul",
+              "8 2 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P25202 singles on a ground ball to left fielder P28841 (zone 56D)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38657"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 2 Called Strike",
+              "3 1 2 Ball",
+              "4 1 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P38657 lines out to center fielder P32849 (zone 8LD)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P53197"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 1 1 Ball",
+              "3 1 2 Called Strike",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P53197 strikes out swinging."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T49",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T49 8 - T41 2",
+        "label": "Top 9th",
+        "pitching": "P41174",
+        "play": [
+          {
+            "subtype": "pitching",
+            "type": "sub",
+            "value": "P39883"
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32849"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Swinging Strike",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P32849 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P39655"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 1 2 Ball",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P39655 strikes out swinging."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P38709"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P38709 lines out to first baseman P38657 (zone 34S)."
+          }
+        ]
+      },
+      {
+        "batting": "T41",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T49 8 - T41 2",
+        "label": "Bot 9th",
+        "pitching": "P24589",
+        "play": [
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P29755"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P29755 singles on a line drive to right fielder P23227 (zone 9LS)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P48460"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P48460 called out on strikes."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P32285"
+          },
+          {
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 4 2 Ball"
+            ],
+            "type": "event",
+            "value": "P32285 walks. P29755 to second*."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P41197"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P41197 flies out to left fielder P28841 (zone 78M)."
+          },
+          {
+            "subtype": "batting",
+            "type": "sub",
+            "value": "P30965"
+          },
+          {
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 1 2 Ball",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P30965 strikes out swinging."
+          }
+        ]
+      }
+    ]
+  ]
+}
