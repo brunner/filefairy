@@ -763,12 +763,12 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
     base, category, zone = _find(base + ' \(([^,]+), (\w+)\)', value)
     if base:
         if base != 'SINGLE':
-            _bases_push(bases, 'scores', _bases_pop(bases, 2, ''))
+            _bases_push(bases, 'home', _bases_pop(bases, 2, ''))
         if base == 'TRIPLE':
-            _bases_push(bases, 'scores', _bases_pop(bases, 1, ''))
-            _bases_push(bases, 'scores', _bases_pop(bases, 0, ''))
+            _bases_push(bases, 'home', _bases_pop(bases, 1, ''))
+            _bases_push(bases, 'home', _bases_pop(bases, 0, ''))
         elif base == 'DOUBLE':
-            b = 'scores' if bases[0] else 'third'
+            b = 'home' if bases[0] else 'third'
             _bases_push(bases, b, _bases_pop(bases, 1, ''))
             _bases_push(bases, 'third', _bases_pop(bases, 0, ''))
         _bases_push(bases, base, (batting, fielders['P']))
@@ -840,6 +840,7 @@ def _parse_part(value, bases, values, fielders):
     if _find(advance, value):
         pair = _bases_pop(bases, 2, '')
         runner = pair[0] if pair else ''
+        _bases_push(bases, 'home', pair)
         throw = ' (throw made)' if any([t in value for t in throw]) else ''
         values.append(runner + ' scores{}'.format(throw))
         return

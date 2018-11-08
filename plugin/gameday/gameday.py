@@ -282,7 +282,8 @@ class Gameday(Registrable):
             player = self.data['players'][id_]
         num = player['number']
         s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>{}'.format(
-            num, _smallcaps.get(player['bats'], 'ʀ'), player['name'], batter['stats'])
+            num, _smallcaps.get(player['bats'], 'ʀ'), player['name'],
+            batter['stats'])
         return self._profile(encoding, num, colors, s)
 
     def _pitching(self, encoding, pitcher, colors):
@@ -293,7 +294,8 @@ class Gameday(Registrable):
             player = self.data['players'][id_]
         num = player['number']
         s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>{}'.format(
-            num, _smallcaps.get(player['throws'], 'ʀ'), player['name'], pitcher['stats'])
+            num, _smallcaps.get(player['throws'], 'ʀ'), player['name'],
+            pitcher['stats'])
         return self._profile(encoding, num, colors, s)
 
     def _defensive(self, position):
@@ -446,6 +448,41 @@ class Gameday(Registrable):
             'name': 'schedule',
             'title': 'Schedule',
             'tables': schedule_tables
+        })
+
+        game_box_link = ('StatsLab/reports/news/html/box_scores/'
+                         'game_box_{}.html'.format(game_id_))
+        log_link = ('StatsLab/reports/news/html/game_logs/'
+                    'log_{}.html'.format(game_id_))
+        links_tables = []
+        links_tables.append(
+            table(
+                clazz='table-fixed border border-bottom-0 mt-3',
+                head=['StatsLab Game Box']))
+        links_tables.append(
+            table(
+                clazz='table-fixed border',
+                body=[[
+                    anchor(
+                        'https://orangeandblueleaguebaseball.com/' +
+                        game_box_link, game_box_link)
+                ]]))
+        links_tables.append(
+            table(
+                clazz='table-fixed border border-bottom-0 mt-3',
+                head=['StatsLab Log']))
+        links_tables.append(
+            table(
+                clazz='table-fixed border',
+                body=[[
+                    anchor(
+                        'https://orangeandblueleaguebaseball.com/' + log_link,
+                        log_link)
+                ]]))
+        ret['tabs']['tabs'].append({
+            'name': 'links',
+            'title': 'Links',
+            'tables': links_tables
         })
 
         ret['tabs']['tabs'].append(plays)

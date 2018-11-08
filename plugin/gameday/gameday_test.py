@@ -244,6 +244,9 @@ _plays_body = [
 _r31 = '31/raw/31'
 _r45 = '45/raw/45'
 
+_statslab = 'https://orangeandblueleaguebaseball.com/'
+_game_box_link = 'StatsLab/reports/news/html/box_scores/game_box_2998.html'
+_log_link = 'StatsLab/reports/news/html/game_logs/log_2998.html'
 _game = {
     'breadcrumbs': [{
         'href': '/',
@@ -310,6 +313,29 @@ _game = {
                         anchor('/gameday/2999/',
                                '10/27/1985 v Arizona Diamondbacks')
                     ]]),
+            ]
+        }, {
+            'name':
+            'links',
+            'title':
+            'Links',
+            'tables': [
+                table(
+                    clazz='table-fixed border border-bottom-0 mt-3',
+                    head=['StatsLab Game Box']),
+                table(
+                    clazz='table-fixed border',
+                    body=[
+                        [anchor(_statslab + _game_box_link, _game_box_link)],
+                    ]),
+                table(
+                    clazz='table-fixed border border-bottom-0 mt-3',
+                    head=['StatsLab Log']),
+                table(
+                    clazz='table-fixed border',
+                    body=[
+                        [anchor(_statslab + _log_link, _log_link)],
+                    ]),
             ]
         }, {
             'name': 'plays',
@@ -536,6 +562,7 @@ class GamedayTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
+    maxDiff = None
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')
     @mock.patch('plugin.gameday.gameday.get_rawid')
