@@ -1342,7 +1342,7 @@ class StatsplusTest(Test):
         mock_data.assert_has_calls([
             mock.call(
                 id_.format(extract, _game_box, '.html'),
-                id_.format(_html, _game_log, '.html')) for id_ in ids
+                id_.format(extract, _game_log, '.txt')) for id_ in ids
         ])
         link = '{0}{1}29663.html'.format(_html, _player)
         mock_player.assert_called_once_with(link)

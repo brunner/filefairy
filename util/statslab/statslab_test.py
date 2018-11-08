@@ -19,83 +19,146 @@ _now_displayed = '10/09/2022'
 _now_encoded = '2022-10-09T00:00:00-07:00'
 
 _record_sub = '{} ({})'
-_game_box_sub = '<html> ... <title>{0} Box Scores, {1} at {2}, {3}</title>' + \
-                ' ... <tr style="background-color:#FFFFFE;">\n\t<td class=' + \
-                '"dl"><b>{4}</b></td>\n\t<td class="dc">0</td>\n<td class=' + \
-                '"dc">0</td>\n<td class="dc">0</td>\n<td class="dc">2</td>' + \
-                '\n<td class="dc">2</td>\n<td class="dc">0</td>\n<td class' + \
-                '="dc">0</td>\n<td class="dc">0</td>\n<td class="dc">0</td' + \
-                '>\n\t<td class="dc"><b>{5}</b></td>\n\t<td class="dc"><b>' + \
-                '10</b></td>\n\t<td class="dc"><b>0</b></td>\n\t</tr>\n\t<' + \
-                'tr style="background-color:#FFFFFE;">\n\t<td class="dl">{' + \
-                '6}</td>\n\t<td class="dc">0</td>\n<td class="dc">1</td>\n' + \
-                '<td class="dc">0</td>\n<td class="dc">0</td>\n<td class="' + \
-                'dc">0</td>\n<td class="dc">0</td>\n<td  class="dc">1</td>' + \
-                '\n<td class="dc">0</td>\n<td class="dc">0</td>\n\t<td cla' + \
-                'ss="dc"><b>{7}</b></td>\n\t<td class="dc"><b>9</b></td>\n' + \
-                '\t<td class="dc"><b>0</b></td>\n\t</tr>\n\t</table>\n\t</' + \
-                'td>\n\t</tr> ... <th width="30" class="hsn dc">RBI</th></' + \
-                'tr> ... <tr><td class="dl"><a href="../players/player_102' + \
-                '.html">J. Alpha</a> SS</td> ... <td class="dl"><a href=".' + \
-                './players/player_103.html">J. Beta</a> 1B</td> ... <td cl' + \
-                'ass="dl"><a href="../players/player_104.html">J. Charlie<' + \
-                '/a> CF, LF</td> ... <td class="dl"><a href="../players/pl' + \
-                'ayer_105.html">J. Delta</a> C</td> ... <td class="dl"><a ' + \
-                'href="../players/player_106.html">J. Echo</a> 2B</td> ...' + \
-                ' <td class="dl">&#160;&#160; <a href="../players/player_1' + \
-                '07.html">J. Foxtrot</a> PH, 2B</td> ... </table> ... <th ' + \
-                'width="30" class="hsn dc">ERA</th></tr> ... <tr><td class' + \
-                '="dl"><a href="../players/player_108.html">J. Whiskey</a>' + \
-                '</td> ... <tr><td class="dl"><a href="../players/player_1' + \
-                '09.html">J. Victor</a></td> ... </table> ... <th width="3' + \
-                '0" class="hsn dc">ERA</th></tr> ... <tr><td class="dl"><a' + \
-                ' href="../players/player_101.html">J. Unknown</a></td> ..' + \
-                '. </table> ... </html>'
-_game_log_sub = '<html> ... <title>{0} @ {1}</title> ... <div style="text-' + \
-                'align:center; color:#000000; padding-top:4px;">{2}</div> ' + \
-                ' ... <table cellspacing="0" cellpadding="0" class="data" ' + \
-                'width="968px">\r\n\t<tr><th colspan="2" class="boxtitle">' + \
-                'TOP OF THE 1ST</th></tr>\r\n\t<tr>\r\n\t<th colspan="2" a' + \
-                'lign="left" style="padding:4px 0px 4px 4px;">\r\n\t{0} ba' + \
-                'tting - Pitching for {1} : RHP <a href="../players/player' + \
-                '_101.html">Jim Unknown</a>\r\n\t</th>\r\n\t</tr>\r\n\t<tr' + \
-                '>\r\n\t<td valign="top" width="268px" class="dl">\r\n\tPi' + \
-                'tching: RHP <a href="../players/player_101.html">101</a>' + \
-                '\r\n\t</td>\r\n\t<td class="dl" width="700px">\r\n\t</td>' + \
-                '\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="268px"' + \
-                ' class="dl">\r\n\tBatting: RHB <a href="../players/player' + \
-                '_102.html">Jim Alpha</a>\r\n\t</td>\r\n\t<td class="dl" w' + \
-                'idth="700px">\r\n\t0-0: Ball<br>1-0: Fly out, F7  (Flybal' + \
-                'l, 7LSF)\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign=' + \
-                '"top" width="268px" class="dl">\r\n\tBatting: LHB <a href' + \
-                '="../players/player_103.html">Jim Beta</a>\r\n\t</td>\r\n' + \
-                '\t<td class="dl" width="700px">\r\n\t0-0: SINGLE  (Ground' + \
-                'ball, 56)\r\n\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign' + \
-                '="top" width="268px" class="dl">\r\n\tBatting: RHB <a hre' + \
-                'f="../players/player_104.html">Jim Charlie</a>\r\n\t</td>' + \
-                '\r\n\t<td class="dl" width="700px">\r\n\t0-0: <b>SINGLE</' + \
-                'b>  (Groundball, 6MS) (infield hit)<br><a href="../player' + \
-                's/player_103.html">Jim Beta</a> to second\r\n\t</td>\r\n' + \
-                '\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="268px" cla' + \
-                'ss="dl">\r\n\tBatting: SHB <a href="../players/player_105' + \
-                '.html">Jim Delta</a>\r\n\t</td>\r\n\t<td class="dl" width' + \
-                '="700px">\r\n\t0-0:  Fly out, F9  (Flyball, 9)\r\n\t</td>' + \
-                '\r\n\t</tr>\r\n\t<tr>\r\n\t<td valign="top" width="268px"' + \
-                ' class="dl">\r\n\tBatting: LHB <a href="../players/player' + \
-                '_106.html">Jim Echo</a>\r\n\t</td>\r\n\t<td class="dl" wi' + \
-                'dth="700px">\r\n\t0-0: Swinging Strike<br>0-1: Foul Ball,' + \
-                ' location: 2F<br>0-2: Strikes out  swinging\r\n\t</td>\r' + \
-                '\n\t</tr>\r\n\t<tr>\r\n\t<td class="datathbg" colspan="2"' + \
-                '>Top of the 1st over -  0 run(s), 1 hit(s), 0 error(s), 2' + \
-                ' left on base; {3} 0 - {4} 0</td>\r\n\t</tr>\r\n\t</table' + \
-                '> ... </html>'
-_player_sub = '<html> ... <title>Player Report for #{0}  {1}</title> ... <' + \
-              'div class="repsubtitle"><a class="boxlink" style="font-weig' + \
-              'ht:bold; font-size:18px; color:#FFFFFF;" href="../teams/tea' + \
-              'm_{2}.html">{3}</a></div><div style="text-align:center;font' + \
-              '-weight:bold; font-size:18px; color:#FFFFFF;">\r\n\tAge: 21' + \
-              ' | \r\n\tBats: R |\r\n\tThrows: R |\r\n\tMorale: Normal  \r' + \
-              '\n\t&nbsp;&nbsp;&nbsp;\r\n\t</div> ... </html>'
+_game_box_sub = """<html> ...
+<title>{0} Box Scores, {1} at {2}, {3}</title> ...
+<tr style="background-color:#FFFFFE;">
+\t<td class="dl"><b>{4}</b></td>
+\t<td class="dc">0</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+<td class="dc">2</td>
+<td class="dc">2</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+\t<td class="dc"><b>{5}</b></td>
+\t<td class="dc"><b>10</b></td>
+\t<td class="dc"><b>0</b></td>
+\t</tr>\n\t<tr style="background-color:#FFFFFE;">
+\t<td class="dl">{6}</td>
+\t<td class="dc">0</td>
+<td class="dc">1</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+<td  class="dc">1</td>
+<td class="dc">0</td>
+<td class="dc">0</td>
+\t<td class="dc"><b>{7}</b></td>
+\t<td class="dc"><b>9</b></td>
+\t<td class="dc"><b>0</b></td>
+\t</tr>
+\t</table>
+\t</td>
+\t</tr> ...
+<th width="30" class="hsn dc">RBI</th></tr>
+<tr><td class="dl"><a href="../players/player_102.html">J. Alpha</a> SS</td>
+<td class="dl"><a href="../players/player_103.html">J. Beta</a> 1B</td>
+<td class="dl"><a href="../players/player_104.html">J. Charlie</a> CF, LF</td>
+<td class="dl"><a href="../players/player_105.html">J. Delta</a> C</td>
+<td class="dl"><a href="../players/player_106.html">J. Echo</a> 2B</td>
+<td class="dl">&#160;&#160; <a href="../players/player_107.html">J. Foxtrot</a> PH, 2B</td>
+</table> ...
+<th width="30" class="hsn dc">ERA</th></tr>
+<tr><td class="dl"><a href="../players/player_108.html">J. Whiskey</a></td>
+<tr><td class="dl"><a href="../players/player_109.html">J. Victor</a></td>
+</table> ...
+<th width="30" class="hsn dc">ERA</th></tr>
+<tr><td class="dl"><a href="../players/player_101.html">J. Unknown</a></td>
+</table> ...
+</html>"""
+_game_log_file_sub = """[%T]\tTop of the 1st -  {0} batting - Pitching for {1} : RHP <a href="../players/player_101.html">Jim Unknown</a>
+[%B]\tPitching: RHP <a href="../players/player_101.html">101</a>
+[%B]\tBatting: RHB <a href="../players/player_102.html">Jim Alpha</a>
+[%N]\t0-0: Ball
+[%N]\t1-0: Fly out, F7  (Flyball, 7LSF)
+[%B]\tBatting: LHB <a href="../players/player_103.html">Jim Beta</a>
+[%N]\t0-0: SINGLE  (Groundball, 56)
+[%B]\tBatting: RHB <a href="../players/player_104.html">Jim Charlie</a>
+[%N]\t0-0: <b>SINGLE</b>  (Groundball, 6MS) (infield hit)
+[%N]\t<a href="../players/player_103.html">Jim Beta</a> to second
+[%B]\tBatting: SHB <a href="../players/player_105.html">Jim Delta</a>
+[%N]\t0-0:  Fly out, F9  (Flyball, 9)
+[%B]\tBatting: LHB <a href="../players/player_106.html">Jim Echo</a>
+[%N]\t0-0: Swinging Strike
+[%N]\t0-1: Foul Ball, location: 2F
+[%N]\t0-2: Strikes out  swinging
+[%F]\tTop of the 1st over -  0 run(s), 2 hit(s), 0 error(s), 2 left on base; {3} 0 - {4} 0"""
+_game_log_link_sub = """<html> ...
+<title>{0} @ {1}</title> ...
+<div style="text-align:center; color:#000000; padding-top:4px;">{2}</div> ...
+<table cellspacing="0" cellpadding="0" class="data" width="968px">\r
+\t<tr><th colspan="2" class="boxtitle">TOP OF THE 1ST</th></tr>\r
+\t<tr>\r
+\t<th colspan="2" align="left" style="padding:4px 0px 4px 4px;">\r
+\t{0} batting - Pitching for {1} : RHP <a href="../players/player_101.html">Jim Unknown</a>\r
+\t</th>\r
+\t</tr>\r
+\t<tr>\r
+\t<td valign="top" width="268px" class="dl">\r
+\tPitching: RHP <a href="../players/player_101.html">101</a>\r
+\t</td>\r
+\t<td class="dl" width="700px">\r
+\t</td>\r
+\t</tr>\r
+\t<tr>\r
+\t<td valign="top" width="268px" class="dl">\r
+\tBatting: RHB <a href="../players/player_102.html">Jim Alpha</a>\r
+\t</td>\r
+\t<td class="dl" width="700px">\r
+\t0-0: Ball<br>1-0: Fly out, F7  (Flyball, 7LSF)\r
+\t</td>\r
+\t</tr>\r
+\t<tr>\r
+\t<td valign="top" width="268px" class="dl">\r
+\tBatting: LHB <a href="../players/player_103.html">Jim Beta</a>\r
+\t</td>\r
+\t<td class="dl" width="700px">\r
+\t0-0: SINGLE  (Groundball, 56)\r
+\t</td>\r
+\t</tr>\r
+\t<tr>\r
+\t<td valign="top" width="268px" class="dl">\r
+\tBatting: RHB <a href="../players/player_104.html">Jim Charlie</a>\r
+\t</td>\r
+\t<td class="dl" width="700px">\r
+\t0-0: <b>SINGLE</b>  (Groundball, 6MS) (infield hit)<br><a href="../players/player_103.html">Jim Beta</a> to second\r
+\t</td>\r
+\t</tr>\r
+\t<tr>\r
+\t<td valign="top" width="268px" class="dl">\r
+\tBatting: SHB <a href="../players/player_105.html">Jim Delta</a>\r
+\t</td>\r
+\t<td class="dl" width="700px">\r
+\t0-0:  Fly out, F9  (Flyball, 9)\r
+\t</td>\r
+\t</tr>\r
+\t<tr>\r
+\t<td valign="top" width="268px" class="dl">\r
+\tBatting: LHB <a href="../players/player_106.html">Jim Echo</a>\r
+\t</td>\r
+\t<td class="dl" width="700px">\r
+\t0-0: Swinging Strike<br>0-1: Foul Ball, location: 2F<br>0-2: Strikes out  swinging\r
+\t</td>\r
+\t</tr>\r
+\t<tr>\r
+\t<td class="datathbg" colspan="2">Top of the 1st over -  0 run(s), 2 hit(s), 0 error(s), 2 left on base; {3} 0 - {4} 0</td>\r
+\t</tr>\r
+\t</table> ...
+</html>"""
+_player_sub = """<html> ...
+<title>Player Report for #{0}  {1}</title> ...
+<div class="repsubtitle"><a class="boxlink" style="font-weight:bold; font-size:18px; color:#FFFFFF;" href="../teams/team_{2}.html">{3}</a></div>
+<div style="text-align:center;font-weight:bold; font-size:18px; color:#FFFFFF;">\r
+\tAge: 21 | \r
+\tBats: R |\r
+\tThrows: R |\r
+\tMorale: Normal  \r
+\t&nbsp;&nbsp;&nbsp;\r
+\t</div> ...
+</html>"""
 _player_empty_sub = '<html><title>Player Report for #{0}  {1}</title></html>'
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
@@ -112,15 +175,21 @@ _plays = [[{
     'pitching':
     'P101',
     'footer':
-    '0 run(s), 1 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
+    '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
     'play': [{
         'type': 'sub',
         'subtype': 'P',
         'value': 'P101'
     }, {
-        'type': 'sub',
-        'subtype': 'B',
-        'value': 'P102'
+        'type': 'matchup',
+        'pitcher': {
+            'id': 'P101',
+            'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
+        },
+        'batter': {
+            'id': 'P102',
+            'stats': '0-0'
+        }
     }, {
         'type': 'event',
         'outs': 1,
@@ -128,19 +197,35 @@ _plays = [[{
         'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
         'value': 'P102 flies out to left fielder  (zone 7LSF).',
     }, {
-        'type': 'sub',
-        'subtype': 'B',
-        'value': 'P103'
+        'type': 'matchup',
+        'pitcher': {
+            'id': 'P101',
+            'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
+        },
+        'batter': {
+            'id': 'P103',
+            'stats': '0-0'
+        }
     }, {
-        'type': 'event',
-        'outs': 0,
-        'runs': 0,
+        'type':
+        'event',
+        'outs':
+        0,
+        'runs':
+        0,
         'sequence': ['1 0 0 In play, no out'],
-        'value': 'P103 singles on a ground ball to left fielder  (zone 56).'
+        'value':
+        'P103 singles on a ground ball to left fielder  (zone 56).'
     }, {
-        'type': 'sub',
-        'subtype': 'B',
-        'value': 'P104'
+        'type': 'matchup',
+        'pitcher': {
+            'id': 'P101',
+            'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
+        },
+        'batter': {
+            'id': 'P104',
+            'stats': '0-0'
+        }
     }, {
         'type':
         'event',
@@ -153,9 +238,15 @@ _plays = [[{
         'P104 singles on a ground ball to shortstop  (infield hit) '
         '(zone 6MS). P103 to second.'
     }, {
-        'type': 'sub',
-        'subtype': 'B',
-        'value': 'P105'
+        'type': 'matchup',
+        'pitcher': {
+            'id': 'P101',
+            'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
+        },
+        'batter': {
+            'id': 'P105',
+            'stats': '0-0'
+        }
     }, {
         'type': 'event',
         'outs': 1,
@@ -163,9 +254,15 @@ _plays = [[{
         'sequence': ['1 0 0 In play, out(s)'],
         'value': 'P105 flies out to right fielder  (zone 9).'
     }, {
-        'type': 'sub',
-        'subtype': 'B',
-        'value': 'P106'
+        'type': 'matchup',
+        'pitcher': {
+            'id': 'P101',
+            'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
+        },
+        'batter': {
+            'id': 'P106',
+            'stats': '0-0'
+        }
     }, {
         'type':
         'event',
@@ -210,8 +307,6 @@ def _play(bats, name, number, team, throws):
 
 
 class StatslabTest(unittest.TestCase):
-    maxDiff = None
-
     @mock.patch('util.statslab.statslab.urlopen')
     @mock.patch('util.statslab.statslab.open', create=True)
     @mock.patch('util.statslab.statslab.os.path.isfile')
@@ -223,26 +318,32 @@ class StatslabTest(unittest.TestCase):
             'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
-        mo = mock.mock_open(read_data=box_content)
-        mock_handle = mo()
-        mock_open.side_effect = [mo.return_value]
-        log_content = _game_log_sub.format(
+        mo_box = mock.mock_open(read_data=box_content)
+        mock_handle_box = mo_box()
+        log_content = _game_log_file_sub.format(
             'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
             'Arizona', 'Los Angeles')
-        mock_urlopen.return_value = bytes(log_content, 'utf-8')
+        mo_log = mock.mock_open(read_data=log_content)
+        mock_handle_log = mo_log()
+        mock_open.side_effect = [mo_box.return_value, mo_log.return_value]
 
         box_link = _path + _game_box.format('2998')
-        log_link = _html + _game_log.format('2998')
+        log_link = _path + _game_log.format('2998')
         actual = parse_game_data(box_link, log_link)
         expected = _data('2998', '76-86', 4, 'Arizona Diamondbacks',
                          _now_encoded, '97-65', 2, 'Los Angeles Dodgers',
                          _players, _plays)
         self.assertEqual(actual, expected)
 
-        mock_isfile.assert_called_once_with(box_link)
-        mock_handle.assert_not_called()
-        mock_open.assert_called_once_with(box_link, 'r', encoding='iso-8859-1')
-        mock_urlopen.assert_called_once_with(log_link)
+        mock_isfile.assert_has_calls(
+            [mock.call(box_link), mock.call(log_link)])
+        mock_handle_box.assert_not_called()
+        mock_handle_log.assert_not_called()
+        mock_open.assert_has_calls([
+            mock.call(box_link, 'r', encoding='iso-8859-1'),
+            mock.call(log_link, 'r', encoding='iso-8859-1')
+        ])
+        mock_urlopen.assert_not_called()
 
     @mock.patch('util.statslab.statslab.urlopen')
     @mock.patch('util.statslab.statslab.open', create=True)
@@ -254,7 +355,7 @@ class StatslabTest(unittest.TestCase):
             'Los Angeles Dodgers', _now_displayed,
             _record_sub.format('Arizona Diamondbacks', '76-86'), 4,
             _record_sub.format('Los Angeles Dodgers', '97-65'), 2)
-        log_content = _game_log_sub.format(
+        log_content = _game_log_link_sub.format(
             'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
             'Arizona', 'Los Angeles')
         mock_urlopen.side_effect = [
@@ -285,7 +386,7 @@ class StatslabTest(unittest.TestCase):
             _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
-        log_content = _game_log_sub.format(
+        log_content = _game_log_link_sub.format(
             'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
             'Arizona', 'Los Angeles')
         mock_urlopen.side_effect = [
@@ -313,7 +414,7 @@ class StatslabTest(unittest.TestCase):
             _now_displayed,
             _record_sub.format('Yokohama DeNA BayStars', '76-86'), 4,
             _record_sub.format('Tokyo Yakult Swallows', '97-65'), 2)
-        log_content = _game_log_sub.format(
+        log_content = _game_log_link_sub.format(
             'Arizona Diamondbacks', 'Los Angeles Dodgers', _now_displayed,
             'Arizona', 'Los Angeles')
         mock_urlopen.side_effect = [

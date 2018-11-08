@@ -196,32 +196,36 @@ _gameday = {
 
 _atbat = '<div class="profile position-absolute {}-{}-front"></div><span ' + \
          'class="align-middle d-block pl-84p">ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>' + \
-         '&nbsp;</span>'
+         '{}</span>'
 _pitching = '<div class="profile position-absolute {}-{}-front"></div><sp' + \
             'an class="align-middle d-block pl-84p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br' + \
-            '>{}<br>&nbsp;</span>'
+            '>{}<br>{}</span>'
 
 _log_body = [
-    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown'), ''],
-    [_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Alpha'), ''],
+    ['Pitching: Jim Unknown', ''],
+    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.0 IP, 0 H, 0 R, 0 BB, 0 K'), ''],
+    [_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Alpha', '0-0'), ''],
     [Gameday._badge('1', 'Ball'), '1-0'],
     [Gameday._badge('2', 'In play, out(s)'), ''],
-    ['Jim Alpha Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.'), ''],
+    ['Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Beta'), ''],
+    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 0 H, 0 R, 0 BB, 0 K'), ''],
+    [_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Beta', '0-0'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
-    ['Jim Beta SINGLE (Groundball, 56)*.', ''],
+    ['Jim Beta singles on a ground ball to left fielder  (zone 56).', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Charlie'), ''],
+    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 1 H, 0 R, 0 BB, 0 K'), ''],
+    [_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Charlie', '0-0'), ''],
     [Gameday._badge('1', 'In play, no out'), ''],
-    ['Jim Charlie SINGLE (Groundball, 6MS) (infield hit)*. Jim Beta to second'
-     '*.', ''],
+    ['Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.', ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Delta'), ''],
+    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 2 H, 0 R, 0 BB, 0 K'), ''],
+    [_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Delta', '0-0'), ''],
     [Gameday._badge('1', 'In play, out(s)'), ''],
-    ['Jim Delta Fly out, F9 (Flyball, 9)*. ' + bold('2 out.'), ''],
+    ['Jim Delta flies out to right fielder  (zone 9). ' + bold('2 out.'), ''],
     ['&nbsp;', '&nbsp;'],
-    [_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Echo'), ''],
+    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.2 IP, 2 H, 0 R, 0 BB, 0 K'), ''],
+    [_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Echo', '0-0'), ''],
     [Gameday._badge('1', 'Swinging Strike'), '0-1'],
     [Gameday._badge('2', 'Foul'), '0-2'],
     [Gameday._badge('3', 'Swinging Strike'), '0-3'],
@@ -230,11 +234,10 @@ _log_body = [
 
 _plays_body = [
     ['Pitching: Jim Unknown'],
-    ['Jim Alpha Fly out, F7 (Flyball, 7LSF)*. ' + bold('1 out.')],
-    ['Jim Beta SINGLE (Groundball, 56)*.'],
-    ['Jim Charlie SINGLE (Groundball, 6MS) (infield hit)*. Jim Beta to second'
-     '*.'],
-    ['Jim Delta Fly out, F9 (Flyball, 9)*. ' + bold('2 out.')],
+    ['Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.')],
+    ['Jim Beta singles on a ground ball to left fielder  (zone 56).'],
+    ['Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.'],
+    ['Jim Delta flies out to right fielder  (zone 9). ' + bold('2 out.')],
     ['Jim Echo strikes out swinging. ' + bold('3 out.')]
 ]  # yapf: disable
 
@@ -360,29 +363,31 @@ _game_data = {
             'subtype': 'P',
             'value': 'P101'
         }, {
-            'type': 'sub',
-            'subtype': 'B',
-            'value': 'P102'
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P102',
+                'stats': '0-0'
+            }
         }, {
             'type': 'event',
             'outs': 1,
             'runs': 0,
             'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-            'value': 'P102 Fly out, F7 (Flyball, 7LSF)*.'
+            'value': 'P102 flies out to left fielder  (zone 7LSF).',
         }, {
-            'type': 'sub',
-            'subtype': 'B',
-            'value': 'P103'
-        }, {
-            'type': 'event',
-            'outs': 0,
-            'runs': 0,
-            'sequence': ['1 0 0 In play, no out'],
-            'value': 'P103 SINGLE (Groundball, 56)*.'
-        }, {
-            'type': 'sub',
-            'subtype': 'B',
-            'value': 'P104'
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P103',
+                'stats': '0-0'
+            }
         }, {
             'type':
             'event',
@@ -392,22 +397,54 @@ _game_data = {
             0,
             'sequence': ['1 0 0 In play, no out'],
             'value':
-            'P104 SINGLE (Groundball, 6MS) (infield hit)*. P103 '
-            'to second*.'
+            'P103 singles on a ground ball to left fielder  (zone 56).'
         }, {
-            'type': 'sub',
-            'subtype': 'B',
-            'value': 'P105'
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P104',
+                'stats': '0-0'
+            }
+        }, {
+            'type':
+            'event',
+            'outs':
+            0,
+            'runs':
+            0,
+            'sequence': ['1 0 0 In play, no out'],
+            'value':
+            'P104 singles on a ground ball to shortstop  (infield hit) '
+            '(zone 6MS). P103 to second.'
+        }, {
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P105',
+                'stats': '0-0'
+            }
         }, {
             'type': 'event',
             'outs': 1,
             'runs': 0,
             'sequence': ['1 0 0 In play, out(s)'],
-            'value': 'P105 Fly out, F9 (Flyball, 9)*.'
+            'value': 'P105 flies out to right fielder  (zone 9).'
         }, {
-            'type': 'sub',
-            'subtype': 'B',
-            'value': 'P106'
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P106',
+                'stats': '0-0'
+            }
         }, {
             'type':
             'event',

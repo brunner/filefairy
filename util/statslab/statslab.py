@@ -275,9 +275,9 @@ def parse_game_data(box_link, log_link):
                                                log_content)
                 away_team = decoding_to_encoding(away_title)
                 home_team = decoding_to_encoding(home_title)
-                date = _find('padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>',
+                date_title = _find('padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>',
                              log_content)
-                if not date:
+                if not date_title:
                     return ret
 
             regex = r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)'
@@ -294,6 +294,9 @@ def parse_game_data(box_link, log_link):
                 cells = log_content.split('[%T]')[1:]
 
             for i, c in enumerate(cells):
+                if 'Game Over' in c:
+                    break
+
                 regex = '"boxtitle">(.+?)</th>' if html else '^\t([^-]+)'
                 cell_label = _find(regex, c, re.DOTALL)
                 cell_inning = cell_label.strip().split()[-1]

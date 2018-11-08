@@ -452,21 +452,21 @@ class Gameday(Registrable):
         return ret
 
 
-from plugin.statsplus.statsplus import Statsplus
-from util.datetime_.datetime_ import datetime_now
-from util.jinja2_.jinja2_ import env
+# from plugin.statsplus.statsplus import Statsplus
+# from util.datetime_.datetime_ import datetime_now
+# from util.jinja2_.jinja2_ import env
 
-date = datetime_now()
-e = env()
-statsplus = Statsplus(date=date, e=e)
+# date = datetime_now()
+# e = env()
+# statsplus = Statsplus(date=date, e=e)
 
-for encoded_date in statsplus.data['scores']:
-    for score in statsplus.data['scores'][encoded_date]:
-        id_ = re.findall('(\d+)\.html', score)[0]
-        statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-07-15T00:00:00-07:00', '1902')
+# for encoded_date in statsplus.data['scores']:
+#     for score in statsplus.data['scores'][encoded_date]:
+#         id_ = re.findall('(\d+)\.html', score)[0]
+#         statsplus._extract(encoded_date, id_)
+# statsplus._extract('2024-07-15T00:00:00-07:00', '1896')
 
-gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1902']
-gameday._check_games()
-gameday._setup_internal(date=date)
+# gameday = Gameday(date=date, e=e)
+# gameday.data['games'] = ['1896']
+# gameday._check_games()
+# gameday._setup_internal(date=date)
