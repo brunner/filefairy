@@ -476,9 +476,11 @@ class Statsplus(Registrable):
                 if finished:
                     box_link = url.format(_root + '/resource/extract/',
                                           _game_box)
+                    log_link = url.format(_root + '/resource/extract/',
+                                          _game_log).replace('.html', '.txt')
                 else:
                     box_link = url.format(_html, _game_box)
-                log_link = url.format(_html, _game_log)
+                    log_link = url.format(_html, _game_log)
                 game_data_ = parse_game_data(box_link, log_link)
                 if game_data_['ok']:
                     if encoded_date != game_data_['date']:

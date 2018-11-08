@@ -206,49 +206,59 @@ def parse_game_data(box_link, log_link):
         plays = []
         if log_link:
             log_content = _open(log_link)
+            html = log_link.startswith('http')
 
-            away_title, home_title = _find('<title>(.+?) @ (.+?)</title>',
-                                           log_content)
-            away_team = decoding_to_encoding(away_title)
-            home_team = decoding_to_encoding(home_title)
+            if html:
+                away_title, home_title = _find('<title>(.+?) @ (.+?)</title>',
+                                               log_content)
+                away_team = decoding_to_encoding(away_title)
+                home_team = decoding_to_encoding(home_title)
+                date = _find('padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>',
+                             log_content)
+                if not date:
+                    return ret
 
-            date = _find('padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>',
-                         log_content)
-            if not date:
-                return ret
-
-            d = datetime.datetime.strptime(date, '%m/%d/%Y')
-            date = datetime_datetime_pst(d.year, d.month, d.day)
-
-            log_content = re.sub('</?b>', '', log_content)
+            regex = r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)'
+            log_content = re.sub(regex, 'P' + r'\2', log_content)
             log_content = re.sub('  ', ' ', log_content)
-            log_content = log_content.replace('1st', 'first')
-            log_content = log_content.replace('2nd', 'second')
-            log_content = log_content.replace('3rd', 'third')
-            log_content = log_content.replace('Home', 'home')
-            log_content = re.sub(
-                r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)',
-                'P' + r'\2', log_content)
+            log_content = re.sub('</?b>', '', log_content)
             log_content = decoding_to_encoding_sub(log_content)
 
             inning = []
-            regex = 'class="data" width="968px">(.+?)</table>'
-            for i, c in enumerate(re.findall(regex, log_content, re.DOTALL)):
-                cell_label = _find('"boxtitle">(.+?)</th>', c, re.DOTALL)
+            if html:
+                regex = 'class="data" width="968px">(.+?)</table>'
+                cells = re.findall(regex, log_content, re.DOTALL)
+            else:
+                cells = log_content.split('[%T]')[1:]
+
+            for i, c in enumerate(cells):
+                regex = '"boxtitle">(.+?)</th>' if html else '^\t([^-]+)'
+                cell_label = _find(regex, c, re.DOTALL)
+                cell_inning = cell_label.strip().split()[-1]
                 cell_label = '{}{} {}'.format(cell_label[0],
                                               cell_label[1:3].lower(),
-                                              cell_label.split()[-1].lower())
+                                              cell_inning.lower())
 
-                regex = 'style="padding:4px 0px 4px 4px;">(.+?) batting -'
+                c = c.replace('1st', 'first').replace('2nd', 'second').replace(
+                    '3rd', 'third').replace('Home', 'home')
+
+                if html:
+                    regex = 'style="padding:4px 0px 4px 4px;">(.+?) batting -'
+                else:
+                    regex = '- (\w+) batting -'
                 cell_batting = _find(regex, c, re.DOTALL)
 
-                regex = 'Pitching for (\w+) : \w+ (.+?)</th>'
+                regex = 'Pitching for (\w+) : \w+ (\w+)'
                 fielding_team, cell_pitching = _find(regex, c, re.DOTALL)
                 if fielding_team not in fielders:
                     return ret
                 curr_fielders = fielders[fielding_team]
 
-                regex = 'span="2">[^-]+- ([^;]+); [^\d]+(\d+) - [^\d]+(\d+)</td>'
+                if html:
+                    regex = ('span="2">[^-]+- ([^;]+); [^\d]+(\d+) - '
+                             '[^\d]+(\d+)</td>')
+                else:
+                    regex = 'over - ([^;]+); [^\d]+(\d+) - [^\d]+(\d+)'
                 cell_footer = re.findall(regex, c)
                 if cell_footer:
                     m = list(cell_footer[0]) + [away_team, home_team]
@@ -257,17 +267,37 @@ def parse_game_data(box_link, log_link):
                     cell_footer = ''
 
                 bases = [[], [], [], []]
+                sequence, values = [], []
                 play = []
                 pitching, batting = '', ''
-                left = 'valign="top" width="268px" class="dl"'
-                right = 'class="dl" width="700px"'
-                regex = '(<td (?:{}|{})>.+?</td>)'
-                side = re.findall(regex.format(left, right), c, re.DOTALL)
+                if html:
+                    left = 'valign="top" width="268px" class="dl"'
+                    right = 'class="dl" width="700px"'
+                    regex = '(<td (?:{}|{})>.+?</td>)'
+                    side = re.findall(regex.format(left, right), c, re.DOTALL)
+                else:
+                    regex = '(?:\[%B\]|\[%N\])\t[^\n]+'
+                    side = re.findall(regex, c, re.DOTALL)
                 for s in side:
-                    regex = '<td {}>(.+?)</td>'
-                    l = _find(regex.format(left), s, re.DOTALL)
-                    r = _find(regex.format(right), s, re.DOTALL)
+                    if html:
+                        regex = '<td {}>(.+?)</td>'
+                        l = _find(regex.format(left), s, re.DOTALL)
+                        r = _find(regex.format(right), s, re.DOTALL)
+                    else:
+                        l = s.split('\t', 1)[1] if _find('\[%B\]', s) else ''
+                        r = s.split('\t', 1)[1] if _find('\[%N\]', s) else ''
                     if l:
+                        if sequence or values:
+                            d = False
+                            if values and any(
+                                    o in values[0]
+                                    for o in ['caught stealing', 'picks off']):
+                                d = True
+                            play.append(
+                                _play_event(sequence,
+                                            _value(batting, values, during=d)))
+                        sequence, values = [], []
+                        counts = [0, 0, 0]
                         pitching = _find('Pitching: \w+ (\w+)', l)
                         batting = _find('Batting: \w+ (\w+)', l)
                         hitting = _find('Pinch Hitting: \w+ (\w+)', l)
@@ -294,8 +324,6 @@ def parse_game_data(box_link, log_link):
                         else:
                             play.append(_play_sub('other', l, {}))
                     elif r:
-                        counts = [0, 0, 0]
-                        sequence, values = [], []
                         for part in r.split('<br>'):
                             if not part:
                                 continue
@@ -315,15 +343,16 @@ def parse_game_data(box_link, log_link):
                             else:
                                 _parse_part(part, bases, values,
                                             fielders[fielding_team])
-                        if sequence or values:
-                            d = False
-                            if values and any(
-                                    o in values[0]
-                                    for o in ['caught stealing', 'picks off']):
-                                d = True
-                            play.append(
-                                _play_event(sequence,
-                                            _value(batting, values, during=d)))
+
+                if sequence or values:
+                    d = False
+                    if values and any(
+                            o in values[0]
+                            for o in ['caught stealing', 'picks off']):
+                        d = True
+                    play.append(
+                        _play_event(sequence,
+                                    _value(batting, values, during=d)))
 
                 inning.append({
                     'label': cell_label,
@@ -428,9 +457,6 @@ def _location(zone, index):
 
 
 def _parse_value(value, bases, counts, sequence, values, fielders, batting):
-    if 'error in OF' in value:
-        print(value)
-
     if _find('Base on Balls', value):
         _bases_push(bases, 'first', (batting, fielders['P']))
         counts[1] += 1
