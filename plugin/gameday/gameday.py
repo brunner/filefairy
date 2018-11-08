@@ -274,42 +274,30 @@ class Gameday(Registrable):
                'pl-84p">{}</span>'.format(s)
         return div + span
 
-    def _atbat(self, encoding, id_, colors):
+    def _atbat(self, encoding, batter, colors):
+        id_ = batter['id']
         if id_ not in self.data['players']:
             player = _player_default
         else:
             player = self.data['players'][id_]
         num = player['number']
-        s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>&nbsp;'.format(
-            num, _smallcaps.get(player['bats'], 'ʀ'), player['name'])
+        s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>{}'.format(
+            num, _smallcaps.get(player['bats'], 'ʀ'), player['name'], batter['stats'])
         return self._profile(encoding, num, colors, s)
 
-    def _pitching(self, encoding, id_, colors):
+    def _pitching(self, encoding, pitcher, colors):
+        id_ = pitcher['id']
         if id_ not in self.data['players']:
             player = _player_default
         else:
             player = self.data['players'][id_]
         num = player['number']
-        s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>&nbsp;'.format(
-            num, _smallcaps.get(player['throws'], 'ʀ'), player['name'])
+        s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>{}'.format(
+            num, _smallcaps.get(player['throws'], 'ʀ'), player['name'], pitcher['stats'])
         return self._profile(encoding, num, colors, s)
 
-    def _running(self, play):
-        id_ = play['value']
-        if id_ not in self.data['players']:
-            player = _player_default
-        else:
-            player = self.data['players'][id_]
-        return 'Now pinch running: {}'.format(player['name'])
-
-    def _defensive(self, play):
-        position = play['subtype']
-        id_ = play['value']
-        if id_ not in self.data['players']:
-            player = _player_default
-        else:
-            player = self.data['players'][id_]
-        return 'Now {}: {}'.format(_defensive_map[position], player['name'])
+    def _defensive(self, position):
+        return 'Now {}'.format(_defensive_map.get(position, ''))
 
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
@@ -390,22 +378,24 @@ class Gameday(Registrable):
                     if play['type'] == 'sub':
                         value = game_sub(play['value'])
                         if play['subtype'] == 'P':
-                            log_table['body'].append([
-                                self._pitching(pitching, play['value'],
-                                               colors[pitching]), ''
-                            ])
-                            plays_table['body'].append(['Pitching: ' + value])
-                        elif play['subtype'] in ['B', 'PH']:
-                            log_table['body'].append([
-                                self._atbat(batting, play['value'],
-                                            colors[batting]), ''
-                            ])
+                            title = 'Pitching: '
+                        elif play['subtype'] == 'PH':
+                            title = 'Pinch hitting: '
                         elif play['subtype'] == 'PR':
-                            log_table['body'].append([self._running(play)])
+                            title = 'Pinch running: '
                         elif play['subtype'] != 'other':
-                            log_table['body'].append([self._defensive(play)])
-                        else:
-                            log_table['body'].append([value, ''])
+                            title = self._defensive(play['subtype']) + ': '
+                        log_table['body'].append([title + value, ''])
+                        plays_table['body'].append([title + value])
+                    elif play['type'] == 'matchup':
+                        log_table['body'].append([
+                            self._pitching(pitching, play['pitcher'],
+                                           colors[pitching]), ''
+                        ])
+                        log_table['body'].append([
+                            self._atbat(batting, play['batter'],
+                                        colors[batting]), ''
+                        ])
                     elif play['type'] == 'event':
                         for s in play['sequence']:
                             pitch, balls, strikes, value = s.split(' ', 3)
@@ -462,21 +452,21 @@ class Gameday(Registrable):
         return ret
 
 
-# from plugin.statsplus.statsplus import Statsplus
-# from util.datetime_.datetime_ import datetime_now
-# from util.jinja2_.jinja2_ import env
+from plugin.statsplus.statsplus import Statsplus
+from util.datetime_.datetime_ import datetime_now
+from util.jinja2_.jinja2_ import env
 
-# date = datetime_now()
-# e = env()
-# statsplus = Statsplus(date=date, e=e)
+date = datetime_now()
+e = env()
+statsplus = Statsplus(date=date, e=e)
 
-# # for encoded_date in statsplus.data['scores']:
-# #     for score in statsplus.data['scores'][encoded_date]:
-# #         id_ = re.findall('(\d+)\.html', score)[0]
-# #         statsplus._extract(encoded_date, id_)
-# # statsplus._extract('2024-07-15T00:00:00-07:00', '1902')
+for encoded_date in statsplus.data['scores']:
+    for score in statsplus.data['scores'][encoded_date]:
+        id_ = re.findall('(\d+)\.html', score)[0]
+        statsplus._extract(encoded_date, id_)
+# statsplus._extract('2024-07-15T00:00:00-07:00', '1902')
 
-# gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1830']
-# gameday._check_games()
-# gameday._setup_internal(date=date)
+gameday = Gameday(date=date, e=e)
+# gameday.data['games'] = ['1902']
+gameday._check_games()
+gameday._setup_internal(date=date)
