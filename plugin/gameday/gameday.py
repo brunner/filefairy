@@ -463,11 +463,11 @@ class Gameday(Registrable):
 
 
 # from plugin.statsplus.statsplus import Statsplus
-from util.datetime_.datetime_ import datetime_now
-from util.jinja2_.jinja2_ import env
+# from util.datetime_.datetime_ import datetime_now
+# from util.jinja2_.jinja2_ import env
 
-date = datetime_now()
-e = env()
+# date = datetime_now()
+# e = env()
 # statsplus = Statsplus(date=date, e=e)
 
 # # for encoded_date in statsplus.data['scores']:
@@ -476,7 +476,7 @@ e = env()
 # #         statsplus._extract(encoded_date, id_)
 # # statsplus._extract('2024-07-15T00:00:00-07:00', '1902')
 
-gameday = Gameday(date=date, e=e)
+# gameday = Gameday(date=date, e=e)
 # gameday.data['games'] = ['1830']
-gameday._check_games()
-gameday._setup_internal(date=date)
+# gameday._check_games()
+# gameday._setup_internal(date=date)
