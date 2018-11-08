@@ -428,6 +428,9 @@ def _location(zone, index):
 
 
 def _parse_value(value, bases, counts, sequence, values, fielders, batting):
+    if 'error in OF' in value:
+        print(value)
+
     if _find('Base on Balls', value):
         _bases_push(bases, 'first', (batting, fielders['P']))
         counts[1] += 1
@@ -678,33 +681,50 @@ def _parse_part(value, bases, values, fielders):
         values.append(runner + ' out at third on the throw')
         return
 
-    throw = _find('tries for home, SAFE, (\w+)', value)
-    if throw:
+    throw = ['throw made', 'with throw']
+    advance = '(?:tries for home, SAFE|tags up, SCORES)'
+    if _find(advance, value):
         pair = _bases_pop(bases, 2, '')
         runner = pair[0] if pair else ''
-        throw = ' (throw made)' if throw == 'throw' else ''
+        throw = ' (throw made)' if any([t in value for t in throw]) else ''
         values.append(runner + ' scores{}'.format(throw))
         return
 
-    if _find('tries for home, (?:throw and )?OUT', value):
+    advance = '(?:tries for home, (?:throw and )?OUT|tags up, OUT at HOME)'
+    if _find(advance, value):
         pair = _bases_pop(bases, 2, '')
         runner = pair[0] if pair else ''
         values.append(runner + ' out at home on the throw')
         return
 
-    throw = _find('tries for third, SAFE, (\w+)', value)
-    if throw:
+    advance = '(?:tries for third, SAFE|tags up, SAFE at third)'
+    if _find(advance, value):
         pair = _bases_pop(bases, 1, '')
         runner = pair[0] if pair else ''
         _bases_push(bases, 'third', pair)
-        throw = ' (throw made)' if throw == 'throw' else ''
+        throw = ' (throw made)' if any([t in value for t in throw]) else ''
         values.append(runner + ' to third{}'.format(throw))
         return
 
-    if _find('tries for third, OUT', value):
+    if _find('(?:tries for third, OUT|tags up, OUT at third)', value):
         pair = _bases_pop(bases, 1, '')
         runner = pair[0] if pair else ''
         values.append(runner + ' out at third on the throw')
+        return
+
+    advance = '(?:tries for second, SAFE|tags up, SAFE at second)'
+    if _find(advance, value):
+        pair = _bases_pop(bases, 0, '')
+        runner = pair[0] if pair else ''
+        _bases_push(bases, 'second', pair)
+        throw = ' (throw made)' if any([t in value for t in throw]) else ''
+        values.append(runner + ' to second{}'.format(throw))
+        return
+
+    if _find('(?:tries for second, OUT|tags up, OUT at second)', value):
+        pair = _bases_pop(bases, 0, '')
+        runner = pair[0] if pair else ''
+        values.append(runner + ' out at second on the throw')
         return
 
     if _find('Wild Pitch!', value):
