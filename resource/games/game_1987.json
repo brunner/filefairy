@@ -1197,7 +1197,7 @@
             "runs": 0,
             "sequence": [],
             "type": "event",
-            "value": "With P29739 batting, Error on foul ball, E5*."
+            "value": "With P29739 batting, error by third baseman P37049 (foul catch attempt)."
           },
           {
             "outs": 0,
@@ -1270,7 +1270,7 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
@@ -1278,7 +1278,7 @@
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P50252 grounds into a force play, shortstop P33871 to second baseman P53592 (zone 6). P37294 out at second. P29739 to third."
+            "value": "P50252 grounds into a fielders choice, shortstop P33871 to second baseman P53592 (zone 6). P37294 out at second. P29739 to third."
           },
           {
             "batter": {
@@ -1292,7 +1292,7 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 1 0 Ball",
@@ -1300,7 +1300,7 @@
               "3 1 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P29790 grounds into a force play, second baseman P53592 to shortstop P33871 (zone 34). P50252 out at second."
+            "value": "P29790 grounds into a fielders choice, second baseman P53592 to shortstop P33871 (zone 34). P50252 out at second."
           }
         ]
       },
@@ -1718,7 +1718,7 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 0,
             "runs": 0,
             "sequence": [
               "1 1 0 Ball",
@@ -1728,7 +1728,7 @@
               "5 2 3 Swinging Strike"
             ],
             "type": "event",
-            "value": "P37049 strikes out swinging."
+            "value": "P37049 strikes out swinging. Passed ball by catcher P29739. P37049 to first."
           },
           {
             "batter": {
@@ -1737,7 +1737,7 @@
             },
             "pitcher": {
               "id": "P35889",
-              "stats": "1.2 IP, 0 H, 0 R, 0 BB, 1 K"
+              "stats": "1.1 IP, 0 H, 0 R, 0 BB, 1 K"
             },
             "type": "matchup"
           },
@@ -1759,7 +1759,7 @@
             },
             "pitcher": {
               "id": "P35889",
-              "stats": "2.0 IP, 0 H, 0 R, 0 BB, 2 K"
+              "stats": "1.2 IP, 0 H, 0 R, 0 BB, 2 K"
             },
             "type": "matchup"
           },
@@ -1779,7 +1779,7 @@
             },
             "pitcher": {
               "id": "P35889",
-              "stats": "2.0 IP, 0 H, 0 R, 0 BB, 2 K"
+              "stats": "1.2 IP, 0 H, 0 R, 0 BB, 2 K"
             },
             "type": "matchup"
           },
@@ -1804,7 +1804,7 @@
             },
             "pitcher": {
               "id": "P35889",
-              "stats": "2.1 IP, 0 H, 0 R, 0 BB, 2 K"
+              "stats": "2.0 IP, 0 H, 0 R, 0 BB, 2 K"
             },
             "type": "matchup"
           },

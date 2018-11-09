@@ -54,6 +54,8 @@ _defensive_map = {
     'CF': 'in center field',
     'RF': 'in right field'
 }
+_statslab_link = ('https://orangeandblueleaguebaseball.com/StatsLab/'
+                  'reports/news/html/')
 
 
 class Gameday(Registrable):
@@ -175,7 +177,8 @@ class Gameday(Registrable):
     @staticmethod
     def _schedule_head(decoding):
         return table(
-            clazz='table-fixed border border-bottom-0 mt-3', head=[decoding])
+            clazz='table-fixed border border-bottom-0 mt-3',
+            head=[decoding + ' Schedule'])
 
     @staticmethod
     def _schedule_body(encoding, id_, schedule_data):
@@ -437,48 +440,31 @@ class Gameday(Registrable):
             'tables': log_tables
         })
 
-        schedule_tables = []
-        schedule_tables.append(self._schedule_head(away_decoding))
-        schedule_tables.append(
-            self._schedule_body(away_team, game_id_, schedule_data))
-        schedule_tables.append(self._schedule_head(home_decoding))
-        schedule_tables.append(
-            self._schedule_body(home_team, game_id_, schedule_data))
-        ret['tabs']['tabs'].append({
-            'name': 'schedule',
-            'title': 'Schedule',
-            'tables': schedule_tables
-        })
+        game_box_link = 'box_scores/game_box_{}.html'.format(game_id_)
+        log_link = 'game_logs/log_{}.html'.format(game_id_)
+        sdate = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
 
-        game_box_link = ('StatsLab/reports/news/html/box_scores/'
-                         'game_box_{}.html'.format(game_id_))
-        log_link = ('StatsLab/reports/news/html/game_logs/'
-                    'log_{}.html'.format(game_id_))
         links_tables = []
         links_tables.append(
             table(
                 clazz='table-fixed border border-bottom-0 mt-3',
-                head=['StatsLab Game Box']))
+                head=['Gameday Sources']))
         links_tables.append(
             table(
                 clazz='table-fixed border',
                 body=[[
-                    anchor(
-                        'https://orangeandblueleaguebaseball.com/' +
-                        game_box_link, game_box_link)
+                    anchor(_statslab_link + game_box_link,
+                           sdate + ' StatsLab Game Box')
+                ], [
+                    anchor(_statslab_link + log_link,
+                           sdate + ' StatsLab Log')
                 ]]))
+        links_tables.append(self._schedule_head(away_decoding))
         links_tables.append(
-            table(
-                clazz='table-fixed border border-bottom-0 mt-3',
-                head=['StatsLab Log']))
+            self._schedule_body(away_team, game_id_, schedule_data))
+        links_tables.append(self._schedule_head(home_decoding))
         links_tables.append(
-            table(
-                clazz='table-fixed border',
-                body=[[
-                    anchor(
-                        'https://orangeandblueleaguebaseball.com/' + log_link,
-                        log_link)
-                ]]))
+            self._schedule_body(home_team, game_id_, schedule_data))
         ret['tabs']['tabs'].append({
             'name': 'links',
             'title': 'Links',
@@ -501,7 +487,7 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-07-15T00:00:00-07:00', '1896')
+# statsplus._extract('2024-07-28T00:00:00-07:00', '2030')
 
 # gameday = Gameday(date=date, e=e)
 # gameday.data['games'] = ['1896']

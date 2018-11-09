@@ -91,7 +91,9 @@ def _play_event(sequence, value):
         suffix = ', no out'
 
     if check_outs:
-        if any(o in value_lower for o in out2_list):
+        if 'strikes' in value and 'to first' in value:
+            outs = 0
+        elif any(o in value_lower for o in out2_list):
             outs = 2
         else:
             outs = sum([value_lower.count(o) for o in out1_list])
@@ -144,7 +146,9 @@ def _value(values, bases, pitching, batting, pitchers, batters, during=False):
     value = ' '.join([v + ('.' if v[-1] != '!' else '') for v in values])
 
     out1_list = ['out', 'caught stealing', 'picks off']
-    if 'double play' in value:
+    if 'strikes' in value and 'to first' in value:
+        outs = 0
+    elif 'double play' in value:
         outs = 2
     else:
         outs = sum([value.count(o) for o in out1_list])
@@ -176,7 +180,8 @@ def _value(values, bases, pitching, batting, pitchers, batters, during=False):
 
     for r, p in bases[3]:
         pitchers[p]['R'] += 1
-        bat['RBI'] += 1
+        if not any([o in value for o in ['double play', 'steals home']]):
+            bat['RBI'] += 1
     bases[3] = []
 
     return value
@@ -275,13 +280,18 @@ def parse_game_data(box_link, log_link):
                                                log_content)
                 away_team = decoding_to_encoding(away_title)
                 home_team = decoding_to_encoding(home_title)
-                date_title = _find('padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>',
-                             log_content)
+                date_title = _find(
+                    'padding-top:4px;">(\d{2}\/\d{2}\/\d{4})</div>',
+                    log_content)
                 if not date_title:
                     return ret
 
             regex = r'(<a href="../players/player_)(\d+)(.html">[^<]+</a>)'
             log_content = re.sub(regex, 'P' + r'\2', log_content)
+
+            regex = r'(\[%T\]\tRain delay of [^\n]+\n)'
+            log_content = re.sub(regex, '', log_content)
+
             log_content = re.sub('  ', ' ', log_content)
             log_content = re.sub('</?b>', '', log_content)
             log_content = decoding_to_encoding_sub(log_content)
@@ -600,6 +610,14 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         counts[2] += 1
         sequence.append(_sequence(counts, 'Swinging Strike'))
         values.append('strikes out swinging')
+        if 'reaches first' in value:
+            if 'passed ball' in value:
+                field = _fielder('2', fielders)
+                values.append('Passed ball by ' + field)
+            else:
+                values.append('Wild pitch by ' + fielders['P'])
+            values.append(batting + ' to first')
+            _bases_push(bases, 'first', (batting, fielders['P']))
         return
 
     if _find('Strikes out looking', value):
@@ -653,6 +671,15 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
             field, zone))
         return
 
+    num = _find('Reached via error on a dropped throw, E(\d)', value)
+    if num:
+        _bases_push(bases, 'first', (batting, fielders['P']))
+        field = _fielder(num, fielders)
+        zone = '34' if num == '1' else '56'
+        values.append('reaches on an error by {} (zone {})'.format(
+            field, zone))
+        return
+
     if _find('Hit by Pitch', value):
         _bases_push(bases, 'first', (batting, fielders['P']))
         values.append('is hit by the pitch')
@@ -666,11 +693,19 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
                       '(zone 1S)'.format(field))
         return
 
-    nums = _find('Bunt for hit - play at first, batter OUT! ([\d-]+)', value)
+    nums = _find('Bunt for hit - play at first, batter OUT! ([^\s]+)', value)
     if nums:
         fields = _fielders(nums, fielders)
-        zone = nums[0] + ('S' if nums[0] != '2' else '')
+        field = nums[1] if nums[0] == 'U' else nums[2]
+        zone = field + ('S' if field != '2' else '')
         values.append('bunt grounds out{} (zone {})'.format(fields, zone))
+        return
+
+    num = _find('Bunt - Flyout! F(\d)', value)
+    if num:
+        field = _fielder(num, fielders)
+        zone = field + ('S' if field != '2' else '')
+        values.append('bunt pops out to {} (zone {})'.format(field, zone))
         return
 
     if _find('Sac Bunt - play at first, batter safe!', value):
@@ -680,10 +715,11 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
                       '(attempted sacrifice) (zone 1S)'.format(field))
         return
 
-    nums = _find('Sac Bunt - play at first, batter OUT! ([\d-]+)', value)
+    nums = _find('Sac Bunt - play at first, batter OUT! ([^\s]+)', value)
     if nums:
         fields = _fielders(nums, fielders)
-        zone = nums[0] + ('S' if nums[0] != '2' else '')
+        field = nums[1] if nums[0] == 'U' else nums[2]
+        zone = field + ('S' if field != '2' else '')
         values.append('out on a sacrifice bunt{} (zone {})'.format(
             fields, zone))
         return
@@ -700,16 +736,17 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
                       '{} out at {}'.format(fields, runner, base))
         return
 
-    base, nums = _find('Sac Bunt - play at (\w+), runner OUT! ([\d-]+)', value)
+    base, nums = _find('Sac Bunt - play at (\w+), runner OUT! ([^\s]+)', value)
     if base:
         pair = _bases_pop(bases, _bases_map[base] - 1, '')
         runner = pair[0] if pair else ''
         _bases_push(bases, 'first', (batting, fielders['P']))
         fields = _fielders(nums, fielders)
-        zone = nums[0] + ('S' if nums[0] != '2' else '')
-        values.append('bunt grounds into a force play{} (attempted sacrifice) '
-                      '(zone {}). {} out at {}'.format(fields, zone, runner,
-                                                       base))
+        field = nums[1] if nums[0] == 'U' else nums[2]
+        zone = field + ('S' if field != '2' else '')
+        values.append('bunt grounds into a fielders choice{} '
+                      '(attempted sacrifice) (zone {}). '
+                      '{} out at {}'.format(fields, zone, runner, base))
         return
 
     base = _find('Sac Bunt - play at (\w+), runner safe!', value)
@@ -720,10 +757,23 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         _bases_push(bases, 'first', (batting, fielders['P']))
         nums = '1-5' if base == 'third' else '1-6'
         fields = _fielders(nums, fielders)
-        values.append('bunt grounds into a failed force play{} '
+        values.append('bunt grounds into a failed fielders choice{} '
                       '(attempted sacrifice) (zone 1S). '
                       '{} to {}'.format(fields, runner, base))
         return
+
+    nums = _find('Squeeze Bunt - play home, runner OUT, batter safe! ([^\s]+)',
+                 value)
+    if nums:
+        pair = _bases_pop(bases, 2, '')
+        runner = pair[0] if pair else ''
+        _bases_push(bases, 'first', (batting, fielders['P']))
+        fields = _fielders(nums, fielders)
+        field = nums[1] if nums[0] == 'U' else nums[2]
+        zone = field + ('S' if field != '2' else '')
+        values.append('bunt grounds into a fielders choice{} '
+                      '(attempted sacrifice) (zone {}). '
+                      '{} out at home'.format(fields, zone, runner))
 
     base, nums, zone = _find(
         'Fielders Choice at (\w+), ([^\s]+) \(Groundball, (\w+)\)', value)
@@ -732,7 +782,7 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         runner = pair[0] if pair else ''
         _bases_push(bases, 'first', (batting, fielders['P']))
         fields = _fielders(nums, fielders)
-        values.append('grounds into a force play{} (zone {}). '
+        values.append('grounds into a fielders choice{} (zone {}). '
                       '{} out at {}'.format(fields, zone, runner, base))
         return
 
@@ -743,13 +793,13 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         runner = pair[0] if pair else ''
         _bases_push(bases, 'first', (batting, fielders['P']))
         fields = _fielders(nums, fielders)
-        values.append('grounds into a force play{} (zone {}). '
+        values.append('grounds into a fielders choice{} (zone {}). '
                       '{} out at home'.format(fields, zone, runner))
         return
 
-    nums, zone = _find('double play, (\d-\d-\d) \(Groundball, (\w+)\)', value)
+    nums, zone = _find('double play, ([^\s]+) \(Groundball, (\w+)\)', value)
     if nums:
-        base = nums[2]
+        base = nums[1] if nums[0] == 'U' else nums[2]
         base = 'home' if base == '2' else 'third' if base == '5' else 'second'
         pair = _bases_pop(bases, _bases_map[base] - 1, '')
         runner = pair[0] if pair else ''
@@ -786,6 +836,22 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
                           ' out at {} trying to stretch hit'.format(base))
         return
 
+    num, base = _find(
+        '(?:Single|Double), Error in OF, E(\d), batter to (\w+) base', value)
+    if num:
+        if base != 'second':
+            _bases_push(bases, 'home', _bases_pop(bases, 2, ''))
+        if base == 'third':
+            b = 'home' if bases[0] else 'third'
+            _bases_push(bases, b, _bases_pop(bases, 1, ''))
+            _bases_push(bases, 'third', _bases_pop(bases, 0, ''))
+        _bases_push(bases, base, (batting, fielders['P']))
+        base = 'singles' if base == 'second' else 'doubles'
+        field = _fielder(num, fielders)
+        zone = num + 'S'
+        values.append('{} on a line drive to {} (zone {})'.format(
+            base, field, zone))
+
     category, zone, dist = _find(
         'HOME RUN \(([^,]+), (\w+)\), '
         'Distance : (\d+) ft', value)
@@ -813,6 +879,17 @@ def _parse_part(value, bases, values, fielders):
         _bases_push(bases, base, _bases_pop(bases, -1, runner))
         values.append(value)
         return
+
+    if _find('Steal of home', value):
+        pair = _bases_pop(bases, 2, '')
+        runner = pair[0] if pair else ''
+        if 'is safe' in value:
+            _bases_push(bases, 'home', pair)
+            values.append(runner + ' steals home')
+            return
+        else:
+            values.append(runner + ' caught stealing home')
+            return
 
     if _find('home, SAFE, throw made at trailing runner, SAFE', value):
         pair = _bases_pop(bases, 2, '')
@@ -895,6 +972,12 @@ def _parse_part(value, bases, values, fielders):
         values.append('passed ball by ' + field)
         return
 
+    num = _find('Error on foul ball, E(\d)', value)
+    if num:
+        field = _fielder(num, fielders)
+        values.append('error by {} (foul catch attempt)'.format(field))
+        return
+
     if _find('Throwing error on steal attempt, E2', value):
         field = _fielder('2', fielders)
         values.append('throwing error by {} (steal attempt)'.format(field))
@@ -931,6 +1014,12 @@ def _parse_part(value, bases, values, fielders):
         field = _fielder('2', fielders)
         runner = pair[0] if pair else ''
         values.append('{} picks off {}'.format(field, runner))
+        return
+
+    base = _find('Pickoff Throw by Catcher to (\w+) - Error! E2', value)
+    if base:
+        field = _fielder('2', fielders)
+        values.append('throwing error by {} (pickoff attempt)'.format(field))
         return
 
     nums, zone = _find('Lined into DP, ([^\s]+) \(Line Drive, (\w+)\)', value)

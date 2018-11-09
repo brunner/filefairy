@@ -244,9 +244,10 @@ _plays_body = [
 _r31 = '31/raw/31'
 _r45 = '45/raw/45'
 
-_statslab = 'https://orangeandblueleaguebaseball.com/'
-_game_box_link = 'StatsLab/reports/news/html/box_scores/game_box_2998.html'
-_log_link = 'StatsLab/reports/news/html/game_logs/log_2998.html'
+_statslab_link = ('https://orangeandblueleaguebaseball.com/StatsLab/'
+                  'reports/news/html/')
+_game_box_link = 'box_scores/game_box_2998.html'
+_log_link = 'game_logs/log_2998.html'
 _game = {
     'breadcrumbs': [{
         'href': '/',
@@ -256,7 +257,7 @@ _game = {
         'name': 'Gameday'
     }, {
         'href': '',
-        'name': 'Diamondbacks at Dodgers, 10/09/2022'
+        'name': 'Diamondbacks at Dodgers, 10/26/1985'
     }],
     'jerseys': [
         ('diamondbacks', 'away', _r31),
@@ -288,13 +289,27 @@ _game = {
             ]
         }, {
             'name':
-            'schedule',
+            'links',
             'title':
-            'Schedule',
+            'Links',
             'tables': [
                 table(
                     clazz='table-fixed border border-bottom-0 mt-3',
-                    head=['Arizona Diamondbacks']),
+                    head=['Gameday Sources']),
+                table(
+                    clazz='table-fixed border',
+                    body=[
+                        [
+                            anchor(_statslab_link + _game_box_link,
+                                   '10/26/1985 StatsLab Game Box')
+                        ], [
+                            anchor(_statslab_link + _log_link,
+                                   '10/26/1985 StatsLab Log')
+                        ],
+                    ]),
+                table(
+                    clazz='table-fixed border border-bottom-0 mt-3',
+                    head=['Arizona Diamondbacks Schedule']),
                 table(
                     clazz='table-fixed border',
                     body=[
@@ -306,36 +321,13 @@ _game = {
                     ]),
                 table(
                     clazz='table-fixed border border-bottom-0 mt-3',
-                    head=['Los Angeles Dodgers']),
+                    head=['Los Angeles Dodgers Schedule']),
                 table(
                     clazz='table-fixed border',
                     body=[[secondary('10/26/1985 v Arizona Diamondbacks')], [
                         anchor('/gameday/2999/',
                                '10/27/1985 v Arizona Diamondbacks')
                     ]]),
-            ]
-        }, {
-            'name':
-            'links',
-            'title':
-            'Links',
-            'tables': [
-                table(
-                    clazz='table-fixed border border-bottom-0 mt-3',
-                    head=['StatsLab Game Box']),
-                table(
-                    clazz='table-fixed border',
-                    body=[
-                        [anchor(_statslab + _game_box_link, _game_box_link)],
-                    ]),
-                table(
-                    clazz='table-fixed border border-bottom-0 mt-3',
-                    head=['StatsLab Log']),
-                table(
-                    clazz='table-fixed border',
-                    body=[
-                        [anchor(_statslab + _log_link, _log_link)],
-                    ]),
             ]
         }, {
             'name': 'plays',
@@ -373,7 +365,7 @@ _game_data = {
     'home_team':
     'T45',
     'date':
-    '2022-10-09T00:00:00-07:00',
+    '1985-10-26T00:00:00-07:00',
     'players': ['101', '102', '103', '104', '105', '106'],
     'plays': [[{
         'label':
@@ -583,7 +575,7 @@ class GamedayTest(unittest.TestCase):
         response = plugin._render_internal(date=_now)
         gameday_index = 'gameday/index.html'
         game_index = 'gameday/2998/index.html'
-        subtitle = 'Diamondbacks at Dodgers, 10/09/2022'
+        subtitle = 'Diamondbacks at Dodgers, 10/26/1985'
         self.assertEqual(response,
                          [(gameday_index, '', 'gameday.html', _gameday),
                           (game_index, subtitle, 'game.html', _game)])

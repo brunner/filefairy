@@ -153,7 +153,7 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
@@ -163,7 +163,7 @@
               "5 2 2 In play, out(s)"
             ],
             "type": "event",
-            "value": "P30965 grounds into a force play, second baseman P18 to shortstop P42045 (zone 4). P25202 out at second."
+            "value": "P30965 grounds into a fielders choice, second baseman P18 to shortstop P42045 (zone 4). P25202 out at second."
           }
         ]
       },
@@ -423,7 +423,7 @@
               "4 2 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P36132 bunt grounds out, pitcher P40985 to first baseman P29785 (zone 1S)."
+            "value": "P36132 bunt grounds out, pitcher P40985 to first baseman P29785 (zone 3S)."
           },
           {
             "batter": {
@@ -809,14 +809,14 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 0 1 Called Strike",
               "2 0 1 In play, out(s)"
             ],
             "type": "event",
-            "value": "P42045 grounds into a force play, third baseman P25202 to second baseman P30965 (zone 56). P27803 out at second."
+            "value": "P42045 grounds into a fielders choice, third baseman P25202 to second baseman P30965 (zone 56). P27803 out at second."
           }
         ]
       }
@@ -1074,7 +1074,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P55267 out on a sacrifice bunt, pitcher P38786 to second baseman P18 (zone 1S). P29785 to second."
+            "value": "P55267 out on a sacrifice bunt, pitcher P38786 to second baseman P18 (zone 4S). P29785 to second."
           },
           {
             "batter": {
@@ -1576,7 +1576,7 @@
           },
           {
             "outs": 0,
-            "runs": 1,
+            "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 1 Called Strike",
@@ -1584,7 +1584,7 @@
               "4 2 2 Called Strike"
             ],
             "type": "event",
-            "value": "With P25202 batting, Steal of home, P61326 is safe*."
+            "value": "With P25202 batting, P61326 steals home."
           },
           {
             "outs": 1,

@@ -173,7 +173,7 @@
               "2 1 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P25190 bunt grounds out, pitcher P26336 to first baseman P25419 (zone 1S)."
+            "value": "P25190 bunt grounds out, pitcher P26336 to first baseman P25419 (zone 3S)."
           },
           {
             "batter": {
@@ -842,7 +842,7 @@
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P53704 Grounds into double play, U5-3 (Groundball, 5L)*."
+            "value": "P53704 grounds into a double play, third baseman P28815 to first baseman P25419 (zone 5L). P33558 out at third."
           }
         ]
       }
@@ -1523,14 +1523,14 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 1 0 Ball",
               "2 1 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P25190 grounds into a force play, third baseman P28815 to second baseman P56787 (zone 56). P25047 out at second."
+            "value": "P25190 grounds into a fielders choice, third baseman P28815 to second baseman P56787 (zone 56). P25047 out at second."
           }
         ]
       }
@@ -2150,13 +2150,13 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 0 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P22632 bunt grounds into a force play, catcher P33558 to shortstop P25190 (attempted sacrifice) (zone 2). P28815 out at second."
+            "value": "P22632 bunt grounds into a fielders choice, catcher P33558 to shortstop P25190 (attempted sacrifice) (zone 6S). P28815 out at second."
           },
           {
             "batter": {
@@ -2594,7 +2594,7 @@
             "type": "matchup"
           },
           {
-            "outs": 1,
+            "outs": 2,
             "runs": 0,
             "sequence": [
               "1 1 0 Ball",
@@ -2602,7 +2602,7 @@
               "3 2 0 In play, out(s)"
             ],
             "type": "event",
-            "value": "P52940 grounds into a force play, second baseman P35498 to shortstop P25190 (zone 4). P55254 out at second."
+            "value": "P52940 grounds into a fielders choice, second baseman P35498 to shortstop P25190 (zone 4). P55254 out at second."
           }
         ]
       },
