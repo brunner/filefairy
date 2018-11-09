@@ -554,7 +554,6 @@ class GamedayTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    maxDiff = None
     @mock.patch.object(Gameday, '_schedule_data')
     @mock.patch('plugin.gameday.gameday.recreate')
     @mock.patch('plugin.gameday.gameday.get_rawid')
