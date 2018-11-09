@@ -76,7 +76,7 @@ def _play_event(sequence, value):
     suffix = ''
     value_lower = value.lower()
 
-    runs_list = ['scores', 'homers', 'home, safe', 'is safe']
+    runs_list = ['scores', 'homers', 'home, safe', 'is safe', 'steals home']
     out1_list = ['out', 'fielders choice', 'caught stealing']
     out2_list = ['double play', 'lined into dp', 'first, dp']
     outs_list = out1_list + out2_list
