@@ -290,7 +290,9 @@ class Gameday(Registrable):
         s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>{}'.format(
             num, _smallcaps.get(player['bats'], 'ʀ'), player['name'],
             batter['stats'])
-        return cell(content=self._profile(encoding, num, colors, s))
+        return cell(
+            col=col(clazz='bg-light', colspan='2'),
+            content=self._profile(encoding, num, colors, s))
 
     def _pitching(self, encoding, pitcher, colors):
         id_ = pitcher['id']
@@ -302,7 +304,9 @@ class Gameday(Registrable):
         s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>{}'.format(
             num, _smallcaps.get(player['throws'], 'ʀ'), player['name'],
             pitcher['stats'])
-        return cell(content=self._profile(encoding, num, colors, s))
+        return cell(
+            col=col(clazz='bg-light', colspan='2'),
+            content=self._profile(encoding, num, colors, s))
 
     def _defensive(self, position):
         return 'Now {}'.format(_defensive_map.get(position, ''))
@@ -395,28 +399,34 @@ class Gameday(Registrable):
                         elif play['subtype'] != 'other':
                             title = self._defensive(play['subtype']) + ': '
                         bcontent = title + value
-                        log_table['body'].append(
-                            [cell(content=bcontent),
-                             cell()])
+                        log_table['body'].append([
+                            cell(
+                                col=col(clazz='bg-light', colspan='2'),
+                                content=bcontent)
+                        ])
                         plays_table['body'].append([cell(content=bcontent)])
                     elif play['type'] == 'matchup':
                         log_table['body'].append([
                             self._pitching(pitching, play['pitcher'],
-                                           colors[pitching]), cell()
+                                           colors[pitching])
                         ])
                         log_table['body'].append([
                             self._atbat(batting, play['batter'],
-                                        colors[batting]), cell()
+                                        colors[batting])
                         ])
                     elif play['type'] == 'event':
                         for s in play['sequence']:
                             pitch, balls, strikes, value = s.split(' ', 3)
                             badge = self._badge(pitch, value)
-                            count = '' if 'In play' in s else '{}-{}'.format(
-                                balls, strikes)
-                            log_table['body'].append(
-                                [cell(content=badge),
-                                 cell(content=count)])
+                            if 'In play' in s:
+                                log_table['body'].append([
+                                    cell(col=col(colspan='2'), content=badge)
+                                ])
+                            else:
+                                count = '{}-{}'.format(balls, strikes)
+                                log_table['body'].append(
+                                    [cell(content=badge),
+                                     cell(content=count)])
                         value = game_sub(play['value'])
                         if play['outs']:
                             outs += play['outs']
@@ -428,12 +438,8 @@ class Gameday(Registrable):
                                 runs[away_team],
                                 encoding_to_abbreviation(home_team),
                                 runs[home_team]))
-                        log_table['body'].append([cell(content=value), cell()])
-                        if outs < 3:
-                            log_table['body'].append([
-                                cell(content='&nbsp;'),
-                                cell(content='&nbsp;')
-                            ])
+                        log_table['body'].append(
+                            [cell(col=col(colspan='2'), content=value)])
                         plays_table['body'].append([cell(content=value)])
                 if half['footer']:
                     log_table['fcols'] = [col(colspan='2')]

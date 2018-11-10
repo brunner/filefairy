@@ -30,7 +30,7 @@ def card(href='',
     }
 
 
-def cell(ccol=None, content=''):
+def cell(col=None, content=''):
     return {'col': col, 'content': content}
 
 
