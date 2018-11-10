@@ -19,6 +19,8 @@ from core.response.response import Response  # noqa
 from util.ago.ago import elapsed  # noqa
 from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_as_pst  # noqa
 from util.datetime_.datetime_ import datetime_datetime_est  # noqa
@@ -173,15 +175,18 @@ class Leaguefile(Registrable):
 
     @staticmethod
     def _card(start, time, size, ts, success, danger):
-        cols = [' class="w-55p"', '']
+        cols = [col(clazz='w-55p'), col()]
         return card(
             title=Leaguefile._filedate(start),
             table=table(
                 clazz='table-sm',
                 hcols=cols,
                 bcols=cols,
-                body=[['Time: ', time], ['Size: ',
-                                         Leaguefile._size(size)]]),
+                body=[[cell(content='Time: '),
+                       cell(content=time)], [
+                           cell(content='Size: '),
+                           cell(content=Leaguefile._size(size))
+                       ]]),
             ts=ts,
             success=success,
             danger=danger)
@@ -321,7 +326,8 @@ class Leaguefile(Registrable):
                     max_ = seconds
                 if not min_ or min_ > seconds:
                     min_ = seconds
-            seconds = self._seconds(upload['start'], upload['end'], kwargs['date'])
+            seconds = self._seconds(upload['start'], upload['end'],
+                                    kwargs['date'])
             if seconds < min_:
                 reactions_add('zap', channel, ts)
             elif seconds > max_:
@@ -355,7 +361,8 @@ class Leaguefile(Registrable):
         ret['download'] = None
         if data['download'] and data['download'].get('end'):
             download = data['download']
-            time = self._time(download['start'], download['end'], kwargs['date'])
+            time = self._time(download['start'], download['end'],
+                              kwargs['date'])
             ts = timestamp(decode_datetime(download['now']))
             ret['download'] = self._card(upload['start'], time,
                                          download['size'], ts, 'ongoing', '')
@@ -368,17 +375,26 @@ class Leaguefile(Registrable):
             if c['dstart'] and c['dend']:
                 dtime = self._time(c['dstart'], c['dend'], kwargs['date'])
             body.append([
-                self._filedate(c['date']), utime, dtime,
-                self._size(c['size'])
+                cell(content=self._filedate(c['date'])),
+                cell(content=utime),
+                cell(content=dtime),
+                cell(content=self._size(c['size']))
             ])
         cols = [
-            '', ' class="text-center"', ' class="text-center"',
-            ' class="text-right"'
+            col(),
+            col(clazz='text-center'),
+            col(clazz='text-center'),
+            col(clazz='text-right')
         ]
         ret['completed'] = table(
             hcols=cols,
             bcols=cols,
-            head=['Date', 'Upload', 'Download', 'Size'],
+            head=[
+                cell(content='Date'),
+                cell(content='Upload'),
+                cell(content='Download'),
+                cell(content='Size')
+            ],
             body=body)
 
         return ret

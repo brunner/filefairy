@@ -9,16 +9,12 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/git/samples', '', _path)
 sys.path.append(_root)
 from util.component.component import anchor  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 
-_breadcrumbs = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '',
-    'name': 'Git'
-}]
+_breadcrumbs = [{'href': '/', 'name': 'Fairylab'}, {'href': '', 'name': 'Git'}]
 
 _commit = 'https://github.com/brunner/filefairy/commit/'
 _ebf = anchor(_commit + 'ebf3b76317d286fdccc314fa2865e351f56e04ad', 'ebf3b76')
@@ -31,17 +27,23 @@ _r = ['d-inline-block', 'text-right', 'w-65p']
 
 _pull = table(
     clazz='border mt-3',
-    head=['Range'],
-    hcols=[' colspan="2"'],
-    bcols=['', ' class="text-right"'],
-    body=[[span(_l, _ebf) + ' ... ' + span(_r, _4ce), 'Jun 14 22:11']])
+    head=[cell(content='Range')],
+    hcols=[col(colspan='2')],
+    bcols=[col(), col(clazz='text-right')],
+    body=[[
+        cell(content=(span(_l, _ebf) + ' ... ' + span(_r, _4ce))),
+        cell(content='Jun 14 22:11')
+    ]])
 
 _push = table(
     clazz='border mt-3',
-    head=['Range'],
-    hcols=[' colspan="2"'],
-    bcols=['', ' class="text-right"'],
-    body=[[span(_l, _d03) + ' ... ' + span(_r, _fd1), 'Jun 14 00:01']])
+    head=[cell(content='Range')],
+    hcols=[col(colspan='2')],
+    bcols=[col(), col(clazz='text-right')],
+    body=[[
+        cell(content=(span(_l, _d03) + ' ... ' + span(_r, _fd1))),
+        cell(content='Jun 14 00:01')
+    ]])
 
 subtitle = ''
 

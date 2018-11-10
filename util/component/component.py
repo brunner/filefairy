@@ -30,6 +30,14 @@ def card(href='',
     }
 
 
+def cell(ccol=None, content=''):
+    return {'col': col, 'content': content}
+
+
+def col(clazz='', colspan=''):
+    return {'clazz': clazz, 'colspan': colspan}
+
+
 def show(trigger, text):
     s = '<a data-toggle="collapse" href="#{0}" role="button" ' + \
         'aria-expanded="false" aria-controls="{0}">{1}</a>'

@@ -9,6 +9,8 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/standings', '', _path))
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.standings.standings import elimination_number  # noqa
 from util.standings.standings import games_behind  # noqa
@@ -23,17 +25,34 @@ def _fake_logo(*args, **kwargs):
 
 
 def _row(teamid, w, l, gb, mn):
-    return [_fake_logo(teamid, '', ''), w, l, gb, mn]
+    return [
+        cell(content=_fake_logo(teamid, '', '')),
+        cell(content=w),
+        cell(content=l),
+        cell(content=gb),
+        cell(content=mn)
+    ]
 
 
 def _table(title, body):
     cols = [
-        'class="position-relative text-truncate"', ' class="text-right w-55p"',
-        ' class="text-right w-55p"', ' class="text-right w-75p"',
-        ' class="text-right w-55p"'
+        col(clazz='position-relative text-truncate'),
+        col(clazz='text-right w-55p'),
+        col(clazz='text-right w-55p'),
+        col(clazz='text-right w-75p'),
+        col(clazz='text-right w-55p')
     ]
     return table(
-        hcols=cols, bcols=cols, head=[title, 'W', 'L', 'GB', 'M#'], body=body)
+        hcols=cols,
+        bcols=cols,
+        head=[
+            cell(content=title),
+            cell(content='W'),
+            cell(content='L'),
+            cell(content='GB'),
+            cell(content='M#')
+        ],
+        body=body)
 
 
 class StandingsTest(unittest.TestCase):

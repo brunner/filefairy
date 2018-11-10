@@ -8,8 +8,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/core/dashboard/samples', '', _path)
 sys.path.append(_root)
 from util.component.component import anchor  # noqa
-from util.component.component import span  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
+from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 
 _breadcrumbs = [{
@@ -35,7 +37,12 @@ _etrace = """Traceback (most recent call last):
 FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/resource/corpus'
 """
 _exceptions = [
-    card(href=_ehref, title=_etitle, info=_einfo, code=_etrace, ts='06:02:30 EDT (1985-10-26)')
+    card(
+        href=_ehref,
+        title=_etitle,
+        info=_einfo,
+        code=_etrace,
+        ts='06:02:30 EDT (1985-10-26)')
 ]
 
 _whref = _link + 'util/subprocess_/subprocess_.py#L19'
@@ -49,51 +56,65 @@ _wtrace = """Traceback (most recent call last):
 subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' returned non-zero exit status 255
 """
 _warnings = [
-    card(href=_whref, title=_wtitle, info=_winfo, code=_wtrace, ts='06:02:30 EDT (1985-10-26)')
+    card(
+        href=_whref,
+        title=_wtitle,
+        info=_winfo,
+        code=_wtrace,
+        ts='06:02:30 EDT (1985-10-26)')
 ]
 
 _dlink = _link + 'core/fairylab/fairylab.py#L127'
 _disabled_snacks = [
-    '<div class="d-inline-block pr-1">' + anchor(_dlink, 'fairylab.py#L127') +
-    '</div><div class="d-inline-block">Disabled snacks plugin.</div>', '17:09'
+    cell(content='<div class="d-inline-block pr-1">' +
+         anchor(_dlink, 'fairylab.py#L127') +
+         '</div><div class="d-inline-block">Disabled snacks plugin.</div>'),
+    cell(content='17:09')
 ]
 _slink = _link + 'util/subprocess_/subprocess_.py#L19'
 _subprocess = [
-    '<div class="d-inline-block pr-1">' +
-    anchor(_slink, 'subprocess_.py#L19') +
-    '</div><div class="d-inline-block">Handled subprocess warning (x10).</div>',
-    '14:47'
+    cell(content='<div class="d-inline-block pr-1">' +
+         anchor(_slink, 'subprocess_.py#L19') +
+         '</div><div class="d-inline-block">Handled subprocess warning (x10).'
+         '</div>'),
+    cell(content='14:47')
 ]
 _tlink = _link + 'plugin/exports/exports.py#L92'
 _tracker = [
-    '<div class="d-inline-block pr-1">' + anchor(_tlink, 'exports.py#L92') +
-    '</div><div class="d-inline-block">Tracker updated (x6).</div>',
-    '14:21'
+    cell(content='<div class="d-inline-block pr-1">' +
+         anchor(_tlink, 'exports.py#L92') +
+         '</div><div class="d-inline-block">Tracker updated (x6).</div>'),
+    cell(content='14:21')
 ]
 _rlink = _link + 'core/fairylab/fairylab.py#L252'
 _reloaded_download = [
-    '<div class="d-inline-block pr-1">' + anchor(_rlink, 'fairylab.py#L252') +
-    '</div><div class="d-inline-block">Reloaded download plugin.</div>',
-    '06:02'
+    cell(content='<div class="d-inline-block pr-1">' +
+         anchor(_rlink, 'fairylab.py#L252') +
+         '</div><div class="d-inline-block">Reloaded download plugin.</div>'),
+    cell(content='06:02')
 ]
 _reloaded_exports = [
-    '<div class="d-inline-block pr-1">' + anchor(_rlink, 'fairylab.py#L252') +
-    '</div><div class="d-inline-block">Reloaded exports plugin.</div>', '06:02'
+    cell(content='<div class="d-inline-block pr-1">' +
+         anchor(_rlink, 'fairylab.py#L252') +
+         '</div><div class="d-inline-block">Reloaded exports plugin.</div>'),
+    cell(content='06:02')
 ]
 
-_cols = ['', ' class="text-right w-75p"']
+_cols = [col(), col(clazz='text-right w-75p')]
 _logs = [
     table(
         clazz='border mt-3 table-fixed',
         hcols=_cols,
         bcols=_cols,
-        head=['Monday, July 4th, 2022', ''],
+        head=[cell(content='Monday, July 4th, 2022'),
+              cell()],
         body=[_disabled_snacks, _subprocess, _tracker]),
     table(
         clazz='border mt-3 table-fixed',
         hcols=_cols,
         bcols=_cols,
-        head=['Sunday, July 3rd, 2022', ''],
+        head=[cell(content='Sunday, July 3rd, 2022'),
+              cell()],
         body=[_reloaded_exports, _reloaded_download]),
 ]
 

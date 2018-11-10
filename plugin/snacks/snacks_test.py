@@ -18,6 +18,8 @@ from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
 from plugin.snacks.snacks import _wafflelist  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -26,7 +28,7 @@ from util.test.test import Test  # noqa
 from util.test.test import main  # noqa
 
 _collect = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
-_cols = [' class="text-center w-75p"', '', ' class="text-right"']
+_cols = [col(clazz='text-center w-75p'), col(), col(clazz='text-right')]
 _env = env()
 _members_new = {'U1234': '1000.789', 'U5678': '100.456'}
 _members_old = {'U1234': '100.123', 'U5678': '100.456'}
@@ -766,16 +768,37 @@ class SnacksTest(Test):
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Emoji', 'Name', 'Count'],
-            body=[['\U0001F34E', 'apple', '6'],
-                  ['\U0001f956', 'baguette bread', '3']])
+            head=[
+                cell(content='Emoji'),
+                cell(content='Name'),
+                cell(content='Count')
+            ],
+            body=[[
+                cell(content='\U0001F34E'),
+                cell(content='apple'),
+                cell(content='6')
+            ], [
+                cell(content='\U0001f956'),
+                cell(content='baguette bread'),
+                cell(content='3')
+            ]])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple', '00:00:00 PDT (1985-10-27)'], [
-                '\U0001f956', 'baguette bread', '00:02:30 PDT (1985-10-26)'
+            head=[
+                cell(content='Emoji'),
+                cell(content='Name'),
+                cell(content='Last activity')
+            ],
+            body=[[
+                cell(content='\U0001F34E'),
+                cell(content='apple'),
+                cell(content='00:00:00 PDT (1985-10-27)')
+            ], [
+                cell(content='\U0001f956'),
+                cell(content='baguette bread'),
+                cell(content='00:02:30 PDT (1985-10-26)')
             ]])
         expected = {
             'breadcrumbs': breadcrumbs,
@@ -816,18 +839,46 @@ class SnacksTest(Test):
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Emoji', 'Name', 'Count'],
-            body=[['\U0001F34E', 'apple',
-                   '6'], ['\U0001f956', 'baguette bread', '2'],
-                  ['\u2B50', 'star', '1']])
+            head=[
+                cell(content='Emoji'),
+                cell(content='Name'),
+                cell(content='Count')
+            ],
+            body=[[
+                cell(content='\U0001F34E'),
+                cell(content='apple'),
+                cell(content='6')
+            ], [
+                cell(content='\U0001f956'),
+                cell(content='baguette bread'),
+                cell(content='2')
+            ], [
+                cell(content='\u2B50'),
+                cell(content='star'),
+                cell(content='1')
+            ]])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple', '00:00:00 PDT (1985-10-27)'], [
-                '\U0001f956', 'baguette bread', '00:02:30 PDT (1985-10-26)'
-            ], ['\u2B50', 'star', '00:02:30 PDT (1985-10-26)']])
+            head=[
+                cell(content='Emoji'),
+                cell(content='Name'),
+                cell(content='Last activity')
+            ],
+            body=[[
+                cell(content='\U0001F34E'),
+                cell(content='apple'),
+                cell(content='00:00:00 PDT (1985-10-27)')
+            ], [
+                cell(content='\U0001f956'),
+                cell(content='baguette bread'),
+                cell(content='00:02:30 PDT (1985-10-26)')
+            ], [
+                cell(content='\u2B50'),
+                cell(content='star'),
+                cell(content='00:02:30 PDT (1985-10-26)')
+            ]])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -870,17 +921,46 @@ class SnacksTest(Test):
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Emoji', 'Name', 'Count'],
-            body=[['\U0001F34E', 'apple', '1'], ['\u2B50', 'star', '1'],
-                  ['\U0001F3C6', 'trophy', '1']])
+            head=[
+                cell(content='Emoji'),
+                cell(content='Name'),
+                cell(content='Count')
+            ],
+            body=[[
+                cell(content='\U0001F34E'),
+                cell(content='apple'),
+                cell(content='1')
+            ], [
+                cell(content='\u2B50'),
+                cell(content='star'),
+                cell(content='1')
+            ], [
+                cell(content='\U0001F3C6'),
+                cell(content='trophy'),
+                cell(content='1')
+            ]])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
             bcols=_cols,
-            head=['Emoji', 'Name', 'Last activity'],
-            body=[['\U0001F34E', 'apple', '00:00:00 PDT (1985-10-27)'],
-                  ['\u2B50', 'star', '00:00:00 PDT (1985-10-27)'],
-                  ['\U0001F3C6', 'trophy', '00:00:00 PDT (1985-10-27)']])
+            head=[
+                cell(content='Emoji'),
+                cell(content='Name'),
+                cell(content='Last activity')
+            ],
+            body=[[
+                cell(content='\U0001F34E'),
+                cell(content='apple'),
+                cell(content='00:00:00 PDT (1985-10-27)')
+            ], [
+                cell(content='\u2B50'),
+                cell(content='star'),
+                cell(content='00:00:00 PDT (1985-10-27)')
+            ], [
+                cell(content='\U0001F3C6'),
+                cell(content='trophy'),
+                cell(content='00:00:00 PDT (1985-10-27)')
+            ]])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,

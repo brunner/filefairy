@@ -15,6 +15,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.git.git import Git  # noqa
 from util.component.component import anchor  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -609,10 +611,13 @@ class GitTest(unittest.TestCase):
         flast = span(_r, anchor(_commit + 'nopqrstuvwxyz', 'nopqrst'))
         pull = table(
             clazz='border mt-3',
-            head=['Range'],
-            hcols=[' colspan="2"'],
-            bcols=['', ' class="text-right"'],
-            body=[[ffirst + ' ... ' + flast, 'Oct 27 00:00']])
+            head=[cell(content='Range')],
+            hcols=[col(colspan='2')],
+            bcols=[col(), col(clazz='text-right')],
+            body=[[
+                cell(content=(ffirst + ' ... ' + flast)),
+                cell(content='Oct 27 00:00')
+            ]])
         expected = {'breadcrumbs': breadcrumbs, 'pull': pull}
         self.assertEqual(actual, expected)
 
@@ -636,10 +641,13 @@ class GitTest(unittest.TestCase):
         flast = span(_r, anchor(_commit + 'nopqrstuvwxyz', 'nopqrst'))
         push = table(
             clazz='border mt-3',
-            head=['Range'],
-            hcols=[' colspan="2"'],
-            bcols=['', ' class="text-right"'],
-            body=[[ffirst + ' ... ' + flast, 'Oct 27 00:00']])
+            head=[cell(content='Range')],
+            hcols=[col(colspan='2')],
+            bcols=[col(), col(clazz='text-right')],
+            body=[[
+                cell(content=(ffirst + ' ... ' + flast)),
+                cell(content='Oct 27 00:00')
+            ]])
         expected = {'breadcrumbs': breadcrumbs, 'push': push}
         self.assertEqual(actual, expected)
 

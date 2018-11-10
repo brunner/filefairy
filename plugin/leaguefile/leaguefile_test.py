@@ -17,6 +17,8 @@ from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
 from plugin.leaguefile.leaguefile import Leaguefile  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -236,9 +238,8 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(
             _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
+        self.assertEqual(
+            response, Response(notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -288,9 +289,8 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(
             _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
+        self.assertEqual(
+            response, Response(notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -341,9 +341,8 @@ class LeaguefileTest(Test):
         plugin = self.create_plugin(
             _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
-        self.assertEqual(response,
-                         Response(
-                             notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
+        self.assertEqual(
+            response, Response(notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -595,12 +594,13 @@ class LeaguefileTest(Test):
         self.assertEqual(
             response,
             Response(task=[
-                Task(target='_download_internal', kwargs={
-                    'date': _now
-                })
+                Task(target='_download_internal', kwargs={'date': _now})
             ]))
 
-        download = {'start': 'Jan 29 00:00', 'now': '2018-01-29T00:00:00-08:00'}
+        download = {
+            'start': 'Jan 29 00:00',
+            'now': '2018-01-29T00:00:00-08:00'
+        }
         write = _data(upload=upload, download=download)
         mock_check.assert_not_called()
         mock_render.assert_called_once_with(date=_now)
@@ -817,9 +817,7 @@ class LeaguefileTest(Test):
         self.assertEqual(
             response,
             Response(task=[
-                Task(target='_download_internal', kwargs={
-                    'date': _now
-                })
+                Task(target='_download_internal', kwargs={'date': _now})
             ]))
 
         self.mock_open.assert_not_called()
@@ -840,7 +838,10 @@ class LeaguefileTest(Test):
         mock_file.return_value = {'ok': True}
         mock_leagues.return_value = _year
 
-        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-08:00'}
+        download = {
+            'start': 'Jan 29 18:05',
+            'now': '2018-01-29T00:00:00-08:00'
+        }
         plugin = self.create_plugin(
             _data(download=download, now=_then_encoded))
 
@@ -867,7 +868,10 @@ class LeaguefileTest(Test):
         mock_file.return_value = {'ok': True}
         mock_leagues.return_value = _now
 
-        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-08:00'}
+        download = {
+            'start': 'Jan 29 18:05',
+            'now': '2018-01-29T00:00:00-08:00'
+        }
         plugin = self.create_plugin(
             _data(download=download, now=_then_encoded))
 
@@ -892,7 +896,10 @@ class LeaguefileTest(Test):
                                               mock_leagues):
         mock_file.return_value = {'ok': False}
 
-        download = {'start': 'Jan 29 18:05', 'now': '2018-01-29T00:00:00-08:00'}
+        download = {
+            'start': 'Jan 29 18:05',
+            'now': '2018-01-29T00:00:00-08:00'
+        }
         plugin = self.create_plugin(
             _data(download=download, now=_then_encoded))
 
@@ -918,13 +925,20 @@ class LeaguefileTest(Test):
             'name': 'Leaguefile'
         }]
         cols = [
-            '', ' class="text-center"', ' class="text-center"',
-            ' class="text-right"'
+            col(),
+            col(clazz='text-center'),
+            col(clazz='text-center'),
+            col(clazz='text-right')
         ]
         completed = table(
             hcols=cols,
             bcols=cols,
-            head=['Date', 'Upload', 'Download', 'Size'],
+            head=[
+                cell(content='Date'),
+                cell(content='Upload'),
+                cell(content='Download'),
+                cell(content='Size')
+            ],
             body=[])
         expected = {
             'breadcrumbs': breadcrumbs,
@@ -954,19 +968,29 @@ class LeaguefileTest(Test):
             title='Jan 29',
             table=table(
                 clazz='table-sm',
-                hcols=[' class="w-55p"', ''],
-                bcols=[' class="w-55p"', ''],
-                body=[['Time: ', '2h 0m'], ['Size: ', '100,000']]),
+                hcols=[col(clazz='w-55p'), col()],
+                bcols=[col(clazz='w-55p'), col()],
+                body=[[cell(content='Time: '),
+                       cell(content='2h 0m')],
+                      [cell(content='Size: '),
+                       cell(content='100,000')]]),
             ts='18:04:00 PST (2018-01-29)',
             success='ongoing')
         cols = [
-            '', ' class="text-center"', ' class="text-center"',
-            ' class="text-right"'
+            col(),
+            col(clazz='text-center'),
+            col(clazz='text-center'),
+            col(clazz='text-right')
         ]
         completed = table(
             hcols=cols,
             bcols=cols,
-            head=['Date', 'Upload', 'Download', 'Size'],
+            head=[
+                cell(content='Date'),
+                cell(content='Upload'),
+                cell(content='Download'),
+                cell(content='Size')
+            ],
             body=[])
         expected = {
             'breadcrumbs': breadcrumbs,
@@ -1002,28 +1026,41 @@ class LeaguefileTest(Test):
             title='Jan 29',
             table=table(
                 clazz='table-sm',
-                hcols=[' class="w-55p"', ''],
-                bcols=[' class="w-55p"', ''],
-                body=[['Time: ', '2h 0m'], ['Size: ', '345,678,901']]),
+                hcols=[col(clazz='w-55p'), col()],
+                bcols=[col(clazz='w-55p'), col()],
+                body=[[cell(content='Time: '),
+                       cell(content='2h 0m')],
+                      [cell(content='Size: '),
+                       cell(content='345,678,901')]]),
             ts='18:02:00 PST (2018-01-29)',
             success='completed')
         download = card(
             title='Jan 29',
             table=table(
                 clazz='table-sm',
-                hcols=[' class="w-55p"', ''],
-                bcols=[' class="w-55p"', ''],
-                body=[['Time: ', '5m'], ['Size: ', '100,000']]),
+                hcols=[col(clazz='w-55p'), col()],
+                bcols=[col(clazz='w-55p'), col()],
+                body=[[cell(content='Time: '),
+                       cell(content='5m')],
+                      [cell(content='Size: '),
+                       cell(content='100,000')]]),
             ts='18:14:00 PST (2018-01-29)',
             success='ongoing')
         cols = [
-            '', ' class="text-center"', ' class="text-center"',
-            ' class="text-right"'
+            col(),
+            col(clazz='text-center'),
+            col(clazz='text-center'),
+            col(clazz='text-right')
         ]
         completed = table(
             hcols=cols,
             bcols=cols,
-            head=['Date', 'Upload', 'Download', 'Size'],
+            head=[
+                cell(content='Date'),
+                cell(content='Upload'),
+                cell(content='Download'),
+                cell(content='Size')
+            ],
             body=[])
         expected = {
             'breadcrumbs': breadcrumbs,
@@ -1052,14 +1089,26 @@ class LeaguefileTest(Test):
             'name': 'Leaguefile'
         }]
         cols = [
-            '', ' class="text-center"', ' class="text-center"',
-            ' class="text-right"'
+            col(),
+            col(clazz='text-center'),
+            col(clazz='text-center'),
+            col(clazz='text-right')
         ]
         completed = table(
             hcols=cols,
             bcols=cols,
-            head=['Date', 'Upload', 'Download', 'Size'],
-            body=[['Jan 27', '0m', '0m', '345,678,901']])
+            head=[
+                cell(content='Date'),
+                cell(content='Upload'),
+                cell(content='Download'),
+                cell(content='Size')
+            ],
+            body=[[
+                cell(content='Jan 27'),
+                cell(content='0m'),
+                cell(content='0m'),
+                cell(content='345,678,901')
+            ]])
         expected = {
             'breadcrumbs': breadcrumbs,
             'upload': None,

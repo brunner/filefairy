@@ -8,6 +8,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/gameday', '', _path))
 from util.component.component import anchor  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import replace  # noqa
 from util.component.component import show  # noqa
 from util.component.component import span  # noqa
@@ -24,68 +26,83 @@ _breadcrumbs = [{
     'name': 'Diamondbacks at Dodgers, 10/09/2022'
 }]
 
+_replace = cell(
+    content=replace('Previous game', 'Previous game not found') + ' - ' +
+    replace('Next game', 'Next game not found'))
 _log = [
     table(
         clazz='border mt-3',
-        bcols=[' class="w-50"', ' class="w-50"'],
-        hcols=[' colspan="2"'],
-        fcols=[' colspan="2"'],
+        bcols=[col(clazz='w-50'), col(clazz='w-50')],
+        hcols=[col(colspan='2')],
+        fcols=[col(colspan='2')],
         head=[
-            'Arizona Diamondbacks batting - Pitching for Los Angeles ' +
-            'Dodgers : LHP 101'
+            cell(content='Arizona Diamondbacks batting - Pitching for Los '
+                 'Angeles Dodgers : LHP 101')
         ],
-        body=[['Batting: SHB 102', '0-0: Ball'], ['', '103 to second']],
-        foot=['0 run(s), 0 hit(s), 0 error(s), 0 left on base'])
+        body=[[cell(content='Batting: SHB 102'),
+               cell(content='0-0: Ball')],
+              [cell(), cell(content='103 to second')]],
+        foot=[cell(content='0 run(s), 0 hit(s), 0 error(s), 0 left on base')])
 ]
 
 _schedule = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=['Arizona Diamondbacks']),
-    table(
-        clazz='table-fixed border border-bottom-0',
-        body=[
-            [
-                replace('Previous game', 'Previous game not found') + ' - ' +
-                replace('Next game', 'Next game not found')
-            ],
-        ]),
+        head=[cell(content='Arizona Diamondbacks')]),
+    table(clazz='table-fixed border border-bottom-0', body=[[_replace]]),
     table(
         clazz='table-fixed border show-toggler',
         body=[
-            [show('schedule-t31', 'Toggle full schedule')],
+            [cell(content=show('schedule-t31', 'Toggle full schedule'))],
         ]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t31',
         body=[
-            [span(['text-secondary'], '10/09/2022 @ Los Angeles Dodgers')],
-            [anchor('/gameday/1000/', '10/10/2022 @ Los Angeles Dodgers')],
-            [anchor('/gameday/2000/', '10/11/2022 @ Los Angeles Dodgers')],
-        ]),
-    table(
-        clazz='table-fixed border border-bottom-0 mt-3',
-        head=['Los Angeles Dodgers']),
-    table(
-        clazz='table-fixed border border-bottom-0',
-        body=[
             [
-                replace('Previous game', 'Previous game not found') + ' - ' +
-                replace('Next game', 'Next game not found')
+                cell(
+                    content=span(['text-secondary'],
+                                 '10/09/2022 @ Los Angeles Dodgers'))
+            ],
+            [
+                cell(
+                    content=anchor('/gameday/1000/',
+                                   '10/10/2022 @ Los Angeles Dodgers'))
+            ],
+            [
+                cell(
+                    content=anchor('/gameday/2000/',
+                                   '10/11/2022 @ Los Angeles Dodgers'))
             ],
         ]),
     table(
+        clazz='table-fixed border border-bottom-0 mt-3',
+        head=[cell(content='Los Angeles Dodgers')]),
+    table(clazz='table-fixed border border-bottom-0', body=[[_replace]]),
+    table(
         clazz='table-fixed border show-toggler',
         body=[
-            [show('schedule-t45', 'Toggle full schedule')],
+            [cell(content=show('schedule-t45', 'Toggle full schedule'))],
         ]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t45',
         body=[
-            [span(['text-secondary'], '10/09/2022 v Arizona Diamondbacks')],
-            [anchor('/gameday/1000/', '10/10/2022 v Arizona Diamondbacks')],
-            [anchor('/gameday/2000/', '10/11/2022 v Arizona Diamondbacks')],
+            [
+                cell(
+                    content=span(['text-secondary'],
+                                 '10/09/2022 v Arizona Diamondbacks'))
+            ],
+            [
+                cell(
+                    content=anchor('/gameday/1000/',
+                                   '10/10/2022 v Arizona Diamondbacks'))
+            ],
+            [
+                cell(
+                    content=anchor('/gameday/2000/',
+                                   '10/11/2022 v Arizona Diamondbacks'))
+            ],
         ]),
 ]
 

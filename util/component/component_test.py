@@ -10,6 +10,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/component', '', _path))
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import replace  # noqa
 from util.component.component import show  # noqa
 from util.component.component import span  # noqa
@@ -110,18 +112,27 @@ class ComponentTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_table__leaguefile(self):
+        cols = [col(clazz='text-secondary'), col(), col()]
+        head = [
+            cell(content='Date'),
+            cell(content='Time'),
+            cell(content='Size')
+        ]
+        body = [[
+            cell(content='Jan 1'),
+            cell(content='5h 0m'),
+            cell(content='300,000,000')
+        ]]
         actual = table(
-            clazz='table-sm',
-            head=['Date', 'Time', 'Size'],
-            body=[['Jan 1', '5h 0m', '300,000,000']])
+            clazz='table-sm', hcols=cols, bcols=cols, head=head, body=body)
         expected = {
             'clazz': 'table-sm',
             'id': '',
-            'hcols': None,
-            'bcols': None,
+            'hcols': cols,
+            'bcols': cols,
             'fcols': None,
-            'head': ['Date', 'Time', 'Size'],
-            'body': [['Jan 1', '5h 0m', '300,000,000']],
+            'head': head,
+            'body': body,
             'foot': None
         }
         self.assertEqual(actual, expected)

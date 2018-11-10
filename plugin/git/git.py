@@ -15,6 +15,8 @@ from core.debug.debug import Debug  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
@@ -201,7 +203,9 @@ class Git(Registrable):
             ddate = decode_datetime(value['date'])
             date = ddate.strftime('%b %d')
             time = ddate.strftime('%H:%M')
-            body.append([range_, date + ' ' + time])
+            body.append(
+                [cell(content=range_),
+                 cell(content=date + ' ' + time)])
         return body
 
     def _home(self, **kwargs):
@@ -219,17 +223,17 @@ class Git(Registrable):
         if data['pull']:
             ret['pull'] = table(
                 clazz='border mt-3',
-                head=['Range'],
-                hcols=[' colspan="2"'],
-                bcols=['', ' class="text-right"'],
+                head=[cell(content='Range')],
+                hcols=[col(colspan='2')],
+                bcols=[col(), col(clazz='text-right')],
                 body=self._body('pull'))
 
         if data['push']:
             ret['push'] = table(
                 clazz='border mt-3',
-                head=['Range'],
-                hcols=[' colspan="2"'],
-                bcols=['', ' class="text-right"'],
+                head=[cell(content='Range')],
+                hcols=[col(colspan='2')],
+                bcols=[col(), col(clazz='text-right')],
                 body=self._body('push'))
 
         return ret

@@ -15,6 +15,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from plugin.recap.recap import Recap  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -56,148 +58,220 @@ _encoded_old = {
 _injuries_table_all_new = [
     table(
         clazz='border mt-3',
-        head=['Wednesday, August 17th, 2022'],
+        head=[cell(content='Wednesday, August 17th, 2022')],
         body=[[
-            'Colorado Rockies: RF <a href=\"https://orangeandblueleaguebaseb' +
-            'all.com/StatsLab/reports/news/html/players/player_24198.html\">' +
-            'Eddie Hoffman</a> was injured being hit by a pitch.  The Diagno' +
-            'sis: bruised knee. This is a day-to-day injury expected to last' +
-            ' 5 days.'
+            cell(
+                content=
+                'Colorado Rockies: RF <a href=\"https://orangeandblueleaguebaseb'
+                +
+                'all.com/StatsLab/reports/news/html/players/player_24198.html\">'
+                +
+                'Eddie Hoffman</a> was injured being hit by a pitch.  The Diagno'
+                +
+                'sis: bruised knee. This is a day-to-day injury expected to last'
+                + ' 5 days.')
         ], [
-            'Minnesota Twins: 1B <a href=\"https://orangeandblueleaguebaseba' +
-            'll.com/StatsLab/reports/news/html/players/player_34032.html\">N' +
-            'ick Castellanos</a> was injured while running the bases.  The D' +
-            'iagnosis: sprained ankle. This is a day-to-day injury expected ' +
-            'to last 5 days.'
+            cell(
+                content=
+                'Minnesota Twins: 1B <a href=\"https://orangeandblueleaguebaseba'
+                +
+                'll.com/StatsLab/reports/news/html/players/player_34032.html\">N'
+                +
+                'ick Castellanos</a> was injured while running the bases.  The D'
+                +
+                'iagnosis: sprained ankle. This is a day-to-day injury expected '
+                + 'to last 5 days.')
         ]]),
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Tampa Bay Rays: <a href=\"https://orangeandblueleaguebaseball.c' +
-            'om/StatsLab/reports/news/html/players/player_1.html\">Zack Weis' +
-            's</a> diagnosed with a strained hamstring, will miss 8 months.'
+            cell(
+                content=
+                'Tampa Bay Rays: <a href=\"https://orangeandblueleaguebaseball.c'
+                +
+                'om/StatsLab/reports/news/html/players/player_1.html\">Zack Weis'
+                +
+                's</a> diagnosed with a strained hamstring, will miss 8 months.'
+            )
         ]])
 ]
 _injuries_table_team_new = [
     table(
         clazz='border mt-3',
-        head=['Wednesday, August 17th, 2022'],
+        head=[cell(content='Wednesday, August 17th, 2022')],
         body=[[
-            'Minnesota Twins: 1B <a href=\"https://orangeandblueleaguebaseba' +
-            'll.com/StatsLab/reports/news/html/players/player_34032.html\">N' +
-            'ick Castellanos</a> was injured while running the bases.  The D' +
-            'iagnosis: sprained ankle. This is a day-to-day injury expected ' +
-            'to last 5 days.'
+            cell(
+                content=
+                'Minnesota Twins: 1B <a href=\"https://orangeandblueleaguebaseba'
+                +
+                'll.com/StatsLab/reports/news/html/players/player_34032.html\">N'
+                +
+                'ick Castellanos</a> was injured while running the bases.  The D'
+                +
+                'iagnosis: sprained ankle. This is a day-to-day injury expected '
+                + 'to last 5 days.')
         ]])
 ]
 _injuries_table_old = [
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Los Angeles Angels: CF <a href=\"https://orangeandblueleaguebas' +
-            'eball.com/StatsLab/reports/news/html/players/player_0.html\">Al' +
-            'ex Aristy</a> was injured while running the bases.  The Diagnos' +
-            'is: knee inflammation. He\'s expected to miss about 3 weeks.'
+            cell(
+                content=
+                'Los Angeles Angels: CF <a href=\"https://orangeandblueleaguebas'
+                +
+                'eball.com/StatsLab/reports/news/html/players/player_0.html\">Al'
+                +
+                'ex Aristy</a> was injured while running the bases.  The Diagnos'
+                +
+                'is: knee inflammation. He\'s expected to miss about 3 weeks.')
         ]])
 ]
 _news_table_all_new = [
     table(
         clazz='border mt-3',
-        head=['Thursday, August 18th, 2022'],
+        head=[cell(content='Thursday, August 18th, 2022')],
         body=[[
-            'Colorado Rockies: <a href=\"https://orangeandblueleaguebaseball' +
-            '.com/StatsLab/reports/news/html/players/player_30965.html\">Spe' +
-            'ncer Taylorr</a> got suspended 3 games after ejection following' +
-            ' a brawl.'
+            cell(
+                content=
+                'Colorado Rockies: <a href=\"https://orangeandblueleaguebaseball'
+                +
+                '.com/StatsLab/reports/news/html/players/player_30965.html\">Spe'
+                +
+                'ncer Taylorr</a> got suspended 3 games after ejection following'
+                + ' a brawl.')
         ], [
-            'Miami Marlins: <a href=\"https://orangeandblueleaguebaseball.co' +
-            'm/StatsLab/reports/news/html/players/player_131.html\">Jake Ehr' +
-            'et</a> got suspended 3 games after ejection following a brawl.'
+            cell(
+                content=
+                'Miami Marlins: <a href=\"https://orangeandblueleaguebaseball.co'
+                +
+                'm/StatsLab/reports/news/html/players/player_131.html\">Jake Ehr'
+                +
+                'et</a> got suspended 3 games after ejection following a brawl.'
+            )
         ]]),
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Houston Astros: <a href=\"https://orangeandblueleaguebaseball.c' +
-            'om/StatsLab/reports/news/html/players/player_39044.html\">Mark ' +
-            'Appel</a> pitches a 2-hit shutout against the Los Angeles Angel' +
-            's with 8 strikeouts and 0 BB allowed!'
+            cell(
+                content=
+                'Houston Astros: <a href=\"https://orangeandblueleaguebaseball.c'
+                +
+                'om/StatsLab/reports/news/html/players/player_39044.html\">Mark '
+                +
+                'Appel</a> pitches a 2-hit shutout against the Los Angeles Angel'
+                + 's with 8 strikeouts and 0 BB allowed!')
         ]])
 ]
 _news_table_team_new = [
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Houston Astros: <a href=\"https://orangeandblueleaguebaseball.c' +
-            'om/StatsLab/reports/news/html/players/player_39044.html\">Mark ' +
-            'Appel</a> pitches a 2-hit shutout against the Los Angeles Angel' +
-            's with 8 strikeouts and 0 BB allowed!'
+            cell(
+                content=
+                'Houston Astros: <a href=\"https://orangeandblueleaguebaseball.c'
+                +
+                'om/StatsLab/reports/news/html/players/player_39044.html\">Mark '
+                +
+                'Appel</a> pitches a 2-hit shutout against the Los Angeles Angel'
+                + 's with 8 strikeouts and 0 BB allowed!')
         ]])
 ]
 _news_table_old = [
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Tampa Bay Rays: <a href=\"https://orangeandblueleaguebaseball.c' +
-            'om/StatsLab/reports/news/html/players/player_27.html\">A.J. Ree' +
-            'd</a> got suspended 4 games after ejection following arguing a ' +
-            'strike call.'
+            cell(
+                content=
+                'Tampa Bay Rays: <a href=\"https://orangeandblueleaguebaseball.c'
+                +
+                'om/StatsLab/reports/news/html/players/player_27.html\">A.J. Ree'
+                +
+                'd</a> got suspended 4 games after ejection following arguing a '
+                + 'strike call.')
         ]])
 ]
 _transactions_table_all_new = [
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
-            'uebaseball.com/StatsLab/reports/news/html/players/player_1439.h' +
-            'tml\">Evan Skoug</a> on the active roster.'
+            cell(
+                content=
+                'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag'
+                +
+                'uebaseball.com/StatsLab/reports/news/html/players/player_1439.h'
+                + 'tml\">Evan Skoug</a> on the active roster.')
         ], [
-            'Baltimore Orioles: Activated C <a href=\"https://orangeandbluel' +
-            'eaguebaseball.com/StatsLab/reports/news/html/players/player_143' +
-            '9.html\">Evan Skoug</a> from the disabled list.'
+            cell(
+                content=
+                'Baltimore Orioles: Activated C <a href=\"https://orangeandbluel'
+                +
+                'eaguebaseball.com/StatsLab/reports/news/html/players/player_143'
+                + '9.html\">Evan Skoug</a> from the disabled list.')
         ], [
-            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
-            'uebaseball.com/StatsLab/reports/news/html/players/player_31093.' +
-            'html\">Salvador Perez</a> on waivers.'
+            cell(
+                content=
+                'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag'
+                +
+                'uebaseball.com/StatsLab/reports/news/html/players/player_31093.'
+                + 'html\">Salvador Perez</a> on waivers.')
         ], [
-            'Kansas City Royals: Signed C <a href=\"https://orangeandbluelea' +
-            'guebaseball.com/StatsLab/reports/news/html/players/player_29806' +
-            '.html\">Thomas Dillard</a> to a 7-year contract extension worth' +
-            ' a total of $119,640,000.'
+            cell(
+                content=
+                'Kansas City Royals: Signed C <a href=\"https://orangeandbluelea'
+                +
+                'guebaseball.com/StatsLab/reports/news/html/players/player_29806'
+                +
+                '.html\">Thomas Dillard</a> to a 7-year contract extension worth'
+                + ' a total of $119,640,000.')
         ]])
 ]
 _transactions_table_team_new = [
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
-            'uebaseball.com/StatsLab/reports/news/html/players/player_1439.h' +
-            'tml\">Evan Skoug</a> on the active roster.'
+            cell(
+                content=
+                'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag'
+                +
+                'uebaseball.com/StatsLab/reports/news/html/players/player_1439.h'
+                + 'tml\">Evan Skoug</a> on the active roster.')
         ], [
-            'Baltimore Orioles: Activated C <a href=\"https://orangeandbluel' +
-            'eaguebaseball.com/StatsLab/reports/news/html/players/player_143' +
-            '9.html\">Evan Skoug</a> from the disabled list.'
+            cell(
+                content=
+                'Baltimore Orioles: Activated C <a href=\"https://orangeandbluel'
+                +
+                'eaguebaseball.com/StatsLab/reports/news/html/players/player_143'
+                + '9.html\">Evan Skoug</a> from the disabled list.')
         ], [
-            'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag' +
-            'uebaseball.com/StatsLab/reports/news/html/players/player_31093.' +
-            'html\">Salvador Perez</a> on waivers.'
+            cell(
+                content=
+                'Baltimore Orioles: Placed C <a href=\"https://orangeandblueleag'
+                +
+                'uebaseball.com/StatsLab/reports/news/html/players/player_31093.'
+                + 'html\">Salvador Perez</a> on waivers.')
         ]])
 ]
 _transactions_table_old = [
     table(
         clazz='border mt-3',
-        head=['Monday, August 15th, 2022'],
+        head=[cell(content='Monday, August 15th, 2022')],
         body=[[
-            'Baltimore Orioles: Placed 2B <a href=\"https://orangeandbluelea' +
-            'guebaseball.com/StatsLab/reports/news/html/players/player_292.h' +
-            'tml\">Austin Slater</a> on the 7-day disabled list, retroactive' +
-            ' to 08/12/2022.'
+            cell(
+                content=
+                'Baltimore Orioles: Placed 2B <a href=\"https://orangeandbluelea'
+                +
+                'guebaseball.com/StatsLab/reports/news/html/players/player_292.h'
+                +
+                'tml\">Austin Slater</a> on the 7-day disabled list, retroactive'
+                + ' to 08/12/2022.')
         ]])
 ]
 _table_new = {
@@ -518,18 +592,54 @@ class RecapTest(Test):
     @mock.patch('plugin.recap.recap.standings_table')
     def test_home(self, mock_standings):
         cols = [
-            'class="position-relative text-truncate"',
-            ' class="text-right w-55p"', ' class="text-right w-55p"',
-            ' class="text-right w-55p"', ' class="text-right w-55p"'
+            col(clazz='position-relative text-truncate'),
+            col(clazz='text-right w-55p'),
+            col(clazz='text-right w-55p'),
+            col(clazz='text-right w-55p'),
+            col(clazz='text-right w-55p')
         ]
-        body = [['33', '0', '0', '-', '163'], ['34', '0', '0', '-', '163'],
-                ['48', '0', '0', '-', '163'], ['57', '0', '0', '-', '163'],
-                ['59', '0', '0', '-', '163']]
+        body = [[
+            cell(content='33'),
+            cell(content='0'),
+            cell(content='0'),
+            cell(content='-'),
+            cell(content='163')
+        ], [
+            cell(content='34'),
+            cell(content='0'),
+            cell(content='0'),
+            cell(content='-'),
+            cell(content='163')
+        ], [
+            cell(content='48'),
+            cell(content='0'),
+            cell(content='0'),
+            cell(content='-'),
+            cell(content='163')
+        ], [
+            cell(content='57'),
+            cell(content='0'),
+            cell(content='0'),
+            cell(content='-'),
+            cell(content='163')
+        ], [
+            cell(content='59'),
+            cell(content='0'),
+            cell(content='0'),
+            cell(content='-'),
+            cell(content='163')
+        ]]
         standings_table = [
             table(
                 hcols=cols,
                 bcols=cols,
-                head=['AL East', 'W', 'L', 'GB', 'M#'],
+                head=[
+                    cell(content='AL East'),
+                    cell(content='W'),
+                    cell(content='L'),
+                    cell(content='GB'),
+                    cell(content='M#')
+                ],
                 body=body)
         ]
         mock_standings.return_value = standings_table

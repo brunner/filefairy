@@ -17,6 +17,8 @@ from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa
 from util.component.component import secondary  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
@@ -178,7 +180,7 @@ class Gameday(Registrable):
     def _schedule_head(decoding):
         return table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[decoding + ' Schedule'])
+            head=[cell(content=decoding + ' Schedule')])
 
     @staticmethod
     def _schedule_body(encoding, id_, schedule_data):
@@ -188,10 +190,10 @@ class Gameday(Registrable):
             steam = encoding_to_decoding(steam)
             stext = '{} {} {}'.format(sdate, ssymbol, steam)
             if id_ == sid:
-                body.append([secondary(stext)])
+                body.append([cell(content=secondary(stext))])
             else:
                 url = '/gameday/{}/'.format(sid)
-                body.append([anchor(url, stext)])
+                body.append([cell(content=anchor(url, stext))])
 
         return table(clazz='table-fixed border', body=body)
 
@@ -240,7 +242,7 @@ class Gameday(Registrable):
             ret['schedule'].append(
                 table(
                     clazz='table-fixed border border-bottom-0 mt-3',
-                    head=[division]))
+                    head=[cell(content=division)]))
             body = []
             for teamid in ts:
                 encoding = teamid_to_encoding(teamid)
@@ -250,11 +252,12 @@ class Gameday(Registrable):
                     stext = anchor('/gameday/{}/'.format(sid), decoding)
                 else:
                     stext = secondary(decoding)
-                body.append([logo_absolute(teamid, stext, 'left')])
+                tcontent = logo_absolute(teamid, stext, 'left')
+                body.append([cell(content=tcontent)])
             ret['schedule'].append(
                 table(
                     clazz='table-fixed border',
-                    bcols=[' class="position-relative text-truncate"'],
+                    bcols=[col(clazz='position-relative text-truncate')],
                     body=body))
 
         return ret
@@ -287,7 +290,7 @@ class Gameday(Registrable):
         s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>{}'.format(
             num, _smallcaps.get(player['bats'], 'ʀ'), player['name'],
             batter['stats'])
-        return self._profile(encoding, num, colors, s)
+        return cell(content=self._profile(encoding, num, colors, s))
 
     def _pitching(self, encoding, pitcher, colors):
         id_ = pitcher['id']
@@ -299,7 +302,7 @@ class Gameday(Registrable):
         s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>{}'.format(
             num, _smallcaps.get(player['throws'], 'ʀ'), player['name'],
             pitcher['stats'])
-        return self._profile(encoding, num, colors, s)
+        return cell(content=self._profile(encoding, num, colors, s))
 
     def _defensive(self, position):
         return 'Now {}'.format(_defensive_map.get(position, ''))
@@ -366,17 +369,18 @@ class Gameday(Registrable):
                 batting = half['batting']
                 pitching = away_team if away_team != batting else home_team
                 teamid = encoding_to_teamid(half['batting'])
+                hcontent = logo_absolute(teamid, half['label'], 'left')
                 log_table = table(
-                    hcols=[' colspan="2" class="position-relative"'],
-                    head=[logo_absolute(teamid, half['label'], 'left')],
+                    hcols=[col(clazz='position-relative', colspan='2')],
+                    head=[cell(content=hcontent)],
                     bcols=[
-                        ' class="position-relative"',
-                        ' class="text-center text-secondary w-55p"'
+                        col(clazz='position-relative'),
+                        col(clazz='text-center text-secondary w-55p')
                     ],
                     body=[])
                 plays_table = table(
-                    hcols=[' class="position-relative"'],
-                    head=[logo_absolute(teamid, half['label'], 'left')],
+                    hcols=[col(clazz='position-relative')],
+                    head=[cell(content=hcontent)],
                     body=[])
                 outs = 0
                 for play in half['play']:
@@ -390,16 +394,19 @@ class Gameday(Registrable):
                             title = 'Pinch running: '
                         elif play['subtype'] != 'other':
                             title = self._defensive(play['subtype']) + ': '
-                        log_table['body'].append([title + value, ''])
-                        plays_table['body'].append([title + value])
+                        bcontent = title + value
+                        log_table['body'].append(
+                            [cell(content=bcontent),
+                             cell()])
+                        plays_table['body'].append([cell(content=bcontent)])
                     elif play['type'] == 'matchup':
                         log_table['body'].append([
                             self._pitching(pitching, play['pitcher'],
-                                           colors[pitching]), ''
+                                           colors[pitching]), cell()
                         ])
                         log_table['body'].append([
                             self._atbat(batting, play['batter'],
-                                        colors[batting]), ''
+                                        colors[batting]), cell()
                         ])
                     elif play['type'] == 'event':
                         for s in play['sequence']:
@@ -407,7 +414,9 @@ class Gameday(Registrable):
                             badge = self._badge(pitch, value)
                             count = '' if 'In play' in s else '{}-{}'.format(
                                 balls, strikes)
-                            log_table['body'].append([badge, count])
+                            log_table['body'].append(
+                                [cell(content=badge),
+                                 cell(content=count)])
                         value = game_sub(play['value'])
                         if play['outs']:
                             outs += play['outs']
@@ -419,14 +428,18 @@ class Gameday(Registrable):
                                 runs[away_team],
                                 encoding_to_abbreviation(home_team),
                                 runs[home_team]))
-                        log_table['body'].append([value, ''])
+                        log_table['body'].append([cell(content=value), cell()])
                         if outs < 3:
-                            log_table['body'].append(['&nbsp;', '&nbsp;'])
-                        plays_table['body'].append([value])
+                            log_table['body'].append([
+                                cell(content='&nbsp;'),
+                                cell(content='&nbsp;')
+                            ])
+                        plays_table['body'].append([cell(content=value)])
                 if half['footer']:
-                    log_table['fcols'] = [' colspan="2"']
-                    log_table['foot'] = [game_sub(half['footer'])]
-                    plays_table['foot'] = [game_sub(half['footer'])]
+                    log_table['fcols'] = [col(colspan='2')]
+                    fcontent = game_sub(half['footer'])
+                    log_table['foot'] = [cell(content=fcontent)]
+                    plays_table['foot'] = [cell(content=fcontent)]
                 log_tables.append(log_table)
                 plays_tables.append(plays_table)
             plays['tabs']['tabs'].append({
@@ -448,16 +461,18 @@ class Gameday(Registrable):
         links_tables.append(
             table(
                 clazz='table-fixed border border-bottom-0 mt-3',
-                head=['Gameday Sources']))
+                head=[cell(content='Gameday Sources')]))
         links_tables.append(
             table(
                 clazz='table-fixed border',
                 body=[[
-                    anchor(_statslab_link + game_box_link,
-                           sdate + ' StatsLab Game Box')
+                    cell(
+                        content=anchor(_statslab_link + game_box_link, sdate +
+                                       ' StatsLab Game Box'))
                 ], [
-                    anchor(_statslab_link + log_link,
-                           sdate + ' StatsLab Log')
+                    cell(
+                        content=anchor(_statslab_link + log_link, sdate +
+                                       ' StatsLab Log'))
                 ]]))
         links_tables.append(self._schedule_head(away_decoding))
         links_tables.append(

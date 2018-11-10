@@ -9,6 +9,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/leaguefile/samples', '', _path)
 sys.path.append(_root)
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 
 _breadcrumbs = [{
@@ -19,12 +21,14 @@ _breadcrumbs = [{
     'name': 'Leaguefile'
 }]
 
-_ucols = [' class="w-55p"', '']
+_ucols = [col(clazz='w-55p'), col()]
 _table = table(
     clazz='table-sm',
     hcols=_ucols,
     bcols=_ucols,
-    body=[['Time: ', '56m'], ['Size: ', '59,969,530']])
+    body=[[cell(content='Time: '), cell(content='56m')],
+          [cell(content='Size: '),
+           cell(content='59,969,530')]])
 _upload = card(
     title='Mar 10',
     table=_table,
@@ -32,15 +36,32 @@ _upload = card(
     success='ongoing')
 
 _ccols = [
-    '', ' class="text-center"', ' class="text-center"', ' class="text-right"'
+    col(),
+    col(clazz='text-center'),
+    col(clazz='text-center'),
+    col(clazz='text-right')
 ]
 _completed = table(
     clazz='border mt-3',
     hcols=_ccols,
     bcols=_ccols,
-    head=['Date', 'Upload', 'Download', 'Size'],
-    body=[['Mar 8', '10h 11m', '11m', '358,347,534'],
-          ['Mar 6', '9h 34m', '6m', '356,922,996']])
+    head=[
+        cell(content='Date'),
+        cell(content='Upload'),
+        cell(content='Download'),
+        cell(content='Size')
+    ],
+    body=[[
+        cell(content='Mar 8'),
+        cell(content='10h 11m'),
+        cell(content='11m'),
+        cell(content='358,347,534')
+    ], [
+        cell(content='Mar 6'),
+        cell(content='9h 34m'),
+        cell(content='6m'),
+        cell(content='356,922,996')
+    ]])
 
 subtitle = ''
 

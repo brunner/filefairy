@@ -9,40 +9,162 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/exports/samples', '', _path)
 sys.path.append(_root)
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.team.team import logo_absolute  # noqa
 
-_t31 = [logo_absolute('31', 'Arizona', 'left'), '5 - 5', 'W1']
-_t32 = [logo_absolute('32', 'Atlanta', 'left'), '10 - 0', 'W10']
-_t33 = [logo_absolute('33', 'Baltimore', 'left'), '6 - 4', 'W1']
-_t34 = [logo_absolute('34', 'Boston', 'left'), '10 - 0', 'W10']
-_t35 = [logo_absolute('35', 'Chicago', 'left'), '9 - 1', 'L1']
-_t36 = [logo_absolute('36', 'Chicago', 'left'), '8 - 2', 'L1']
-_t37 = [logo_absolute('37', 'Cincinnati', 'left'), '10 - 0', 'W10']
-_t38 = [logo_absolute('38', 'Cleveland', 'left'), '8 - 2', 'W2']
-_t39 = [logo_absolute('39', 'Colorado', 'left'), '10 - 0', 'W10']
-_t40 = [logo_absolute('40', 'Detroit', 'left'), '10 - 0', 'W10']
-_t41 = [logo_absolute('41', 'Miami', 'left'), '4 - 6', 'W1']
-_t42 = [logo_absolute('42', 'Houston', 'left'), '10 - 0', 'W10']
-_t43 = [logo_absolute('43', 'Kansas City', 'left'), '9 - 1', 'W5']
-_t44 = [logo_absolute('44', 'Los Angeles', 'left'), '7 - 3', 'L1']
-_t45 = [logo_absolute('45', 'Los Angeles', 'left'), '5 - 5', 'W2']
-_t46 = [logo_absolute('46', 'Milwaukee', 'left'), '10 - 0', 'W10']
-_t47 = [logo_absolute('47', 'Minnesota', 'left'), '10 - 0', 'W10']
-_t48 = [logo_absolute('48', 'New York', 'left'), '10 - 0', 'W10']
-_t49 = [logo_absolute('49', 'New York', 'left'), '8 - 2', 'L1']
-_t50 = [logo_absolute('50', 'Oakland', 'left'), '7 - 3', 'L3']
-_t51 = [logo_absolute('51', 'Philadelphia', 'left'), '3 - 7', 'L5']
-_t52 = [logo_absolute('52', 'Pittsburgh', 'left'), '6 - 4', 'L1']
-_t53 = [logo_absolute('53', 'San Diego', 'left'), '9 - 1', 'W8']
-_t54 = [logo_absolute('54', 'Seattle', 'left'), '10 - 0', 'W10']
-_t55 = [logo_absolute('55', 'San Francisco', 'left'), '2 - 8', 'L4']
-_t56 = [logo_absolute('56', 'St. Louis', 'left'), '10 - 0', 'W10']
-_t57 = [logo_absolute('57', 'Tampa Bay', 'left'), '10 - 0', 'W10']
-_t58 = [logo_absolute('58', 'Texas', 'left'), '9 - 1', 'W9']
-_t59 = [logo_absolute('59', 'Toronto', 'left'), '9 - 1', 'W4']
-_t60 = [logo_absolute('60', 'Washington', 'left'), '5 - 5', 'L1']
+_t31 = [
+    cell(content=logo_absolute('31', 'Arizona', 'left')),
+    cell(content='5 - 5'),
+    cell(content='W1')
+]
+_t32 = [
+    cell(content=logo_absolute('32', 'Atlanta', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t33 = [
+    cell(content=logo_absolute('33', 'Baltimore', 'left')),
+    cell(content='6 - 4'),
+    cell(content='W1')
+]
+_t34 = [
+    cell(content=logo_absolute('34', 'Boston', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t35 = [
+    cell(content=logo_absolute('35', 'Chicago', 'left')),
+    cell(content='9 - 1'),
+    cell(content='L1')
+]
+_t36 = [
+    cell(content=logo_absolute('36', 'Chicago', 'left')),
+    cell(content='8 - 2'),
+    cell(content='L1')
+]
+_t37 = [
+    cell(content=logo_absolute('37', 'Cincinnati', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t38 = [
+    cell(content=logo_absolute('38', 'Cleveland', 'left')),
+    cell(content='8 - 2'),
+    cell(content='W2')
+]
+_t39 = [
+    cell(content=logo_absolute('39', 'Colorado', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t40 = [
+    cell(content=logo_absolute('40', 'Detroit', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t41 = [
+    cell(content=logo_absolute('41', 'Miami', 'left')),
+    cell(content='4 - 6'),
+    cell(content='W1')
+]
+_t42 = [
+    cell(content=logo_absolute('42', 'Houston', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t43 = [
+    cell(content=logo_absolute('43', 'Kansas City', 'left')),
+    cell(content='9 - 1'),
+    cell(content='W5')
+]
+_t44 = [
+    cell(content=logo_absolute('44', 'Los Angeles', 'left')),
+    cell(content='7 - 3'),
+    cell(content='L1')
+]
+_t45 = [
+    cell(content=logo_absolute('45', 'Los Angeles', 'left')),
+    cell(content='5 - 5'),
+    cell(content='W2')
+]
+_t46 = [
+    cell(content=logo_absolute('46', 'Milwaukee', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t47 = [
+    cell(content=logo_absolute('47', 'Minnesota', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t48 = [
+    cell(content=logo_absolute('48', 'New York', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t49 = [
+    cell(content=logo_absolute('49', 'New York', 'left')),
+    cell(content='8 - 2'),
+    cell(content='L1')
+]
+_t50 = [
+    cell(content=logo_absolute('50', 'Oakland', 'left')),
+    cell(content='7 - 3'),
+    cell(content='L3')
+]
+_t51 = [
+    cell(content=logo_absolute('51', 'Philadelphia', 'left')),
+    cell(content='3 - 7'),
+    cell(content='L5')
+]
+_t52 = [
+    cell(content=logo_absolute('52', 'Pittsburgh', 'left')),
+    cell(content='6 - 4'),
+    cell(content='L1')
+]
+_t53 = [
+    cell(content=logo_absolute('53', 'San Diego', 'left')),
+    cell(content='9 - 1'),
+    cell(content='W8')
+]
+_t54 = [
+    cell(content=logo_absolute('54', 'Seattle', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t55 = [
+    cell(content=logo_absolute('55', 'San Francisco', 'left')),
+    cell(content='2 - 8'),
+    cell(content='L4')
+]
+_t56 = [
+    cell(content=logo_absolute('56', 'St. Louis', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t57 = [
+    cell(content=logo_absolute('57', 'Tampa Bay', 'left')),
+    cell(content='10 - 0'),
+    cell(content='W10')
+]
+_t58 = [
+    cell(content=logo_absolute('58', 'Texas', 'left')),
+    cell(content='9 - 1'),
+    cell(content='W9')
+]
+_t59 = [
+    cell(content=logo_absolute('59', 'Toronto', 'left')),
+    cell(content='9 - 1'),
+    cell(content='W4')
+]
+_t60 = [
+    cell(content=logo_absolute('60', 'Washington', 'left')),
+    cell(content='5 - 5'),
+    cell(content='L1')
+]
 
 _breadcrumbs = [{
     'href': '/',
@@ -52,36 +174,53 @@ _breadcrumbs = [{
     'name': 'Exports'
 }]
 
-_tcols = [''] + [' class="text-center"'] * 5
+_tcols = [col()] + [col(clazz='text-center')] * 5
 _table = table(
     clazz='table-sm',
     hcols=_tcols,
     bcols=_tcols,
-    body=[['AL East', 'BAL', 'BOS', 'NYY', 'TB', 'TOR'], [
-        'AL Central',
-        span(['text-success', 'border', 'px-1'], 'CWS'), 'CLE',
-        span(['text-success', 'border', 'px-1'], 'DET'), 'KC',
-        span(['text-success', 'border', 'px-1'], 'MIN')
+    body=[[
+        cell(content='AL East'),
+        cell(content='BAL'),
+        cell(content='BOS'),
+        cell(content='NYY'),
+        cell(content='TB'),
+        cell(content='TOR')
     ], [
-        'AL West', 'HOU',
-        span(['text-success', 'border', 'px-1'], 'LAA'), 'OAK',
-        span(['text-success', 'border', 'px-1'], 'SEA'),
-        span(['text-success', 'border', 'px-1'], 'TEX')
+        cell(content='AL Central'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'CWS')),
+        cell(content='CLE'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'DET')),
+        cell(content='KC'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'MIN'))
     ], [
-        'NL East',
-        span(['text-success', 'border', 'px-1'], 'ATL'), 'MIA',
-        span(['text-success', 'border', 'px-1'], 'NYM'), 'PHI',
-        span(['text-success', 'border', 'px-1'], 'WAS')
+        cell(content='AL West'),
+        cell(content='HOU'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'LAA')),
+        cell(content='OAK'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'SEA')),
+        cell(content=span(['text-success', 'border', 'px-1'], 'TEX'))
     ], [
-        'NL Central',
-        span(['text-success', 'border', 'px-1'], 'CHC'),
-        span(['text-success', 'border', 'px-1'], 'CIN'),
-        span(['text-success', 'border', 'px-1'], 'MIL'), 'PIT',
-        span(['text-success', 'border', 'px-1'], 'STL')
+        cell(content='NL East'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'ATL')),
+        cell(content='MIA'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'NYM')),
+        cell(content='PHI'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'WAS'))
     ], [
-        'NL West', 'ARI', 'COL',
-        span(['text-success', 'border', 'px-1'], 'LAD'),
-        span(['text-success', 'border', 'px-1'], 'SD'), 'SF'
+        cell(content='NL Cental'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'CHC')),
+        cell(content=span(['text-success', 'border', 'px-1'], 'CIN')),
+        cell(content=span(['text-success', 'border', 'px-1'], 'MIL')),
+        cell(content='PIT'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'STL'))
+    ], [
+        cell(content='NL West'),
+        cell(content='ARI'),
+        cell(content='COL'),
+        cell(content=span(['text-success', 'border', 'px-1'], 'LAD')),
+        cell(content=span(['text-success', 'border', 'px-1'], 'SD')),
+        cell(content='SF')
     ]])
 
 _breakdown = [
@@ -93,45 +232,70 @@ _live = card(
     title='53%', info=_info, table=_table, ts='06:02:30 EDT (1985-10-26)')
 
 _scols = [
-    'class="position-relative"', ' class="text-center w-25"',
-    ' class="text-center w-25"'
+    col(clazz='position-relative'),
+    col(clazz='text-center w-25'),
+    col(clazz='text-center w-25')
 ]
 _standings = [
     table(
         clazz='border mt-3',
         hcols=_scols,
         bcols=_scols,
-        head=['AL East', 'Last 10', 'Streak'],
+        head=[
+            cell(content='AL East'),
+            cell(content='Last 10'),
+            cell(content='Streak')
+        ],
         body=[_t34, _t48, _t57, _t59, _t33]),
     table(
         clazz='border mt-3',
         hcols=_scols,
         bcols=_scols,
-        head=['AL Central', 'Last 10', 'Streak'],
+        head=[
+            cell(content='AL Central'),
+            cell(content='Last 10'),
+            cell(content='Streak')
+        ],
         body=[_t40, _t47, _t43, _t35, _t38]),
     table(
         clazz='border mt-3',
         hcols=_scols,
         bcols=_scols,
-        head=['AL West', 'Last 10', 'Streak'],
+        head=[
+            cell(content='AL West'),
+            cell(content='Last 10'),
+            cell(content='Streak')
+        ],
         body=[_t42, _t54, _t58, _t44, _t50]),
     table(
         clazz='border mt-3',
         hcols=_scols,
         bcols=_scols,
-        head=['NL East', 'Last 10', 'Streak'],
+        head=[
+            cell(content='NL East'),
+            cell(content='Last 10'),
+            cell(content='Streak')
+        ],
         body=[_t32, _t49, _t60, _t41, _t51]),
     table(
         clazz='border mt-3',
         hcols=_scols,
         bcols=_scols,
-        head=['NL Central', 'Last 10', 'Streak'],
+        head=[
+            cell(content='NL Central'),
+            cell(content='Last 10'),
+            cell(content='Streak')
+        ],
         body=[_t37, _t46, _t56, _t36, _t52]),
     table(
         clazz='border mt-3',
         hcols=_scols,
         bcols=_scols,
-        head=['NL West', 'Last 10', 'Streak'],
+        head=[
+            cell(content='NL West'),
+            cell(content='Last 10'),
+            cell(content='Streak')
+        ],
         body=[_t39, _t53, _t45, _t31, _t55])
 ]
 

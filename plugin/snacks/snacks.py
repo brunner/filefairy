@@ -18,6 +18,8 @@ from core.task.task import Task  # noqa
 from util.ago.ago import timestamp  # noqa
 from util.corpus.corpus import collect  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
@@ -35,13 +37,10 @@ _n = 4
 _td20 = datetime.timedelta(minutes=20)
 
 _chooselist = [
-    '{}. Did you even need to ask?',
-    'Definitely {}.',
-    'It\'s {}, any day of the week.',
-    'Easy, I prefer {}.',
+    '{}. Did you even need to ask?', 'Definitely {}.',
+    'It\'s {}, any day of the week.', 'Easy, I prefer {}.',
     'I suppose {}, if I had to pick one.',
-    'It\'s not ideal, but I\'ll go with {}.',
-    '{}... I guess?',
+    'It\'s not ideal, but I\'ll go with {}.', '{}... I guess?',
     'That\'s a tough one. Maybe {}?'
 ]
 
@@ -362,9 +361,9 @@ class Snacks(Registrable):
         count = self.data['count']
         for snack in sorted(count, key=lambda x: (-count[x], x)):
             body.append([
-                _snackdict[snack],
-                snack.replace('_', ' '),
-                str(count[snack])
+                cell(content=_snackdict[snack]),
+                cell(content=snack.replace('_', ' ')),
+                cell(content=str(count[snack]))
             ])
             if len(body) == 15:
                 break
@@ -375,9 +374,9 @@ class Snacks(Registrable):
         last = self.data['last']
         for snack in sorted(last, key=lambda x: (self._flip(last[x]), x)):
             body.append([
-                _snackdict[snack],
-                snack.replace('_', ' '),
-                self._ts(last[snack])
+                cell(content=_snackdict[snack]),
+                cell(content=snack.replace('_', ' ')),
+                cell(content=self._ts(last[snack]))
             ])
             if len(body) == 15:
                 break
@@ -432,13 +431,17 @@ class Snacks(Registrable):
 
         ret['statistics'] = [servings, stars, trophies]
 
-        cols = [' class="text-center w-75p"', '', ' class="text-right"']
+        cols = [col(clazz='text-center w-75p'), col(), col(clazz='text-right')]
         if data['count']:
             ret['count'] = table(
                 clazz='border mt-3',
                 hcols=cols,
                 bcols=cols,
-                head=['Emoji', 'Name', 'Count'],
+                head=[
+                    cell(content='Emoji'),
+                    cell(content='Name'),
+                    cell(content='Count')
+                ],
                 body=self._body_count())
 
         if data['last']:
@@ -446,7 +449,11 @@ class Snacks(Registrable):
                 clazz='border mt-3',
                 hcols=cols,
                 bcols=cols,
-                head=['Emoji', 'Name', 'Last activity'],
+                head=[
+                    cell(content='Emoji'),
+                    cell(content='Name'),
+                    cell(content='Last activity')
+                ],
                 body=self._body_recent(date))
 
         return ret

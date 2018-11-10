@@ -18,6 +18,8 @@ from core.response.response import Response  # noqa
 from util.ago.ago import timestamp  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.datetime_.datetime_ import datetime_now  # noqa
@@ -28,7 +30,7 @@ from util.secrets.secrets import secrets_sub  # noqa
 from util.slack.slack import chat_post_message  # noqa
 from util.slack.slack import files_upload  # noqa
 
-_cols = ['', ' class="text-right w-75p"']
+_cols = [col(), col(clazz='text-right w-75p')]
 _link = 'https://github.com/brunner/filefairy/blob/master/'
 
 
@@ -154,7 +156,7 @@ class Dashboard(Registrable):
         date = record['date']
         ddate = decode_datetime(date)
         fdate = ddate.strftime('%H:%M')
-        return [left + right, fdate]
+        return [cell(content=left + right), cell(content=fdate)]
 
     @staticmethod
     def _sort(record):
@@ -197,7 +199,7 @@ class Dashboard(Registrable):
                 clazz='border mt-3 table-fixed',
                 hcols=_cols,
                 bcols=_cols,
-                head=[fday, ''],
+                head=[cell(content=fday), cell()],
                 body=body)
             ret['logs'].insert(0, t)
 

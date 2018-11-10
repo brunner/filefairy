@@ -19,6 +19,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
@@ -64,7 +66,7 @@ _record_warning = {
     'msg': 'baz',
     'exc': 'Traceback [baz] ...',
 }
-_cols = ['', ' class="text-right w-75p"']
+_cols = [col(), col(clazz='text-right w-75p')]
 _link = 'https://github.com/brunner/filefairy/blob/master/'
 _breadcrumbs = [{
     'href': '/',
@@ -94,25 +96,30 @@ _logs = [
         clazz='border mt-3 table-fixed',
         hcols=_cols,
         bcols=_cols,
-        head=['Saturday, October 26th, 1985', ''],
+        head=[cell(content='Saturday, October 26th, 1985'),
+              cell()],
         body=[[
-            '<div class="d-inline-block pr-1">' + anchor(
-                _link + 'path/to/file.py#L789', 'file.py#L789') + '</div>' +
-            '<div class="d-inline-block">baz (x6).</div>', '00:02'
+            cell(content='<div class="d-inline-block pr-1">' +
+                 anchor(_link + 'path/to/file.py#L789', 'file.py#L789') +
+                 '</div>' + '<div class="d-inline-block">baz (x6).</div>'),
+            cell(content='00:02')
         ]]),
     table(
         clazz='border mt-3 table-fixed',
         hcols=_cols,
         bcols=_cols,
-        head=['Friday, October 25th, 1985', ''],
+        head=[cell(content='Friday, October 25th, 1985'),
+              cell()],
         body=[[
-            '<div class="d-inline-block pr-1">' + anchor(
-                _link + 'path/to/file.py#L456', 'file.py#L456') + '</div>' +
-            '<div class="d-inline-block">bar (x5).</div>', '12:55'
+            cell(content='<div class="d-inline-block pr-1">' +
+                 anchor(_link + 'path/to/file.py#L456', 'file.py#L456') +
+                 '</div>' + '<div class="d-inline-block">bar (x5).</div>'),
+            cell(content='12:55')
         ], [
-            '<div class="d-inline-block pr-1">' + anchor(
-                _link + 'path/to/file.py#L123', 'file.py#L123') + '</div>' +
-            '<div class="d-inline-block">Disabled foo.</div>', '12:55'
+            cell(content='<div class="d-inline-block pr-1">' +
+                 anchor(_link + 'path/to/file.py#L123', 'file.py#L123') +
+                 '</div>' + '<div class="d-inline-block">Disabled foo.</div>'),
+            cell(content='12:55')
         ]])
 ]
 

@@ -15,6 +15,8 @@ from core.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import secondary  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -115,81 +117,81 @@ _gameday = {
     'schedule': [
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=['American League East']),
+            head=[cell(content='American League East')]),
         table(
             clazz='table-fixed border',
-            bcols=[' class="position-relative text-truncate"'],
+            bcols=[col(clazz='position-relative text-truncate')],
             body=[
-                [_s33],
-                [_s34],
-                [_s48],
-                [_s57],
-                [_s59],
+                [cell(content=_s33)],
+                [cell(content=_s34)],
+                [cell(content=_s48)],
+                [cell(content=_s57)],
+                [cell(content=_s59)],
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=['American League Central']),
+            head=[cell(content='American League Central')]),
         table(
             clazz='table-fixed border',
-            bcols=[' class="position-relative text-truncate"'],
+            bcols=[col(clazz='position-relative text-truncate')],
             body=[
-                [_s35],
-                [_s38],
-                [_s40],
-                [_s43],
-                [_s47],
+                [cell(content=_s35)],
+                [cell(content=_s38)],
+                [cell(content=_s40)],
+                [cell(content=_s43)],
+                [cell(content=_s47)],
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=['American League West']),
+            head=[cell(content='American League West')]),
         table(
             clazz='table-fixed border',
-            bcols=[' class="position-relative text-truncate"'],
+            bcols=[col(clazz='position-relative text-truncate')],
             body=[
-                [_s42],
-                [_s44],
-                [_s50],
-                [_s54],
-                [_s58],
+                [cell(content=_s42)],
+                [cell(content=_s44)],
+                [cell(content=_s50)],
+                [cell(content=_s54)],
+                [cell(content=_s58)],
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=['National League East']),
+            head=[cell(content='National League East')]),
         table(
             clazz='table-fixed border',
-            bcols=[' class="position-relative text-truncate"'],
+            bcols=[col(clazz='position-relative text-truncate')],
             body=[
-                [_s32],
-                [_s41],
-                [_s49],
-                [_s51],
-                [_s60],
+                [cell(content=_s32)],
+                [cell(content=_s41)],
+                [cell(content=_s49)],
+                [cell(content=_s51)],
+                [cell(content=_s60)],
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=['National League Central']),
+            head=[cell(content='National League Central')]),
         table(
             clazz='table-fixed border',
-            bcols=[' class="position-relative text-truncate"'],
+            bcols=[col(clazz='position-relative text-truncate')],
             body=[
-                [_s36],
-                [_s37],
-                [_s46],
-                [_s52],
-                [_s56],
+                [cell(content=_s36)],
+                [cell(content=_s37)],
+                [cell(content=_s46)],
+                [cell(content=_s52)],
+                [cell(content=_s56)],
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=['National League West']),
+            head=[cell(content='National League West')]),
         table(
             clazz='table-fixed border',
-            bcols=[' class="position-relative text-truncate"'],
+            bcols=[col(clazz='position-relative text-truncate')],
             body=[
-                [_s31],
-                [_s39],
-                [_s45],
-                [_s53],
-                [_s55],
+                [cell(content=_s31)],
+                [cell(content=_s39)],
+                [cell(content=_s45)],
+                [cell(content=_s53)],
+                [cell(content=_s55)],
             ])
     ]
 }
@@ -202,43 +204,43 @@ _pitching = '<div class="profile position-absolute {}-{}-front"></div><sp' + \
             '>{}<br>{}</span>'
 
 _log_body = [
-    ['Pitching: Jim Unknown', ''],
-    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.0 IP, 0 H, 0 R, 0 BB, 0 K'), ''],
-    [_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Alpha', '0-0'), ''],
-    [Gameday._badge('1', 'Ball'), '1-0'],
-    [Gameday._badge('2', 'In play, out(s)'), ''],
-    ['Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.'), ''],
-    ['&nbsp;', '&nbsp;'],
-    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 0 H, 0 R, 0 BB, 0 K'), ''],
-    [_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Beta', '0-0'), ''],
-    [Gameday._badge('1', 'In play, no out'), ''],
-    ['Jim Beta singles on a ground ball to left fielder  (zone 56).', ''],
-    ['&nbsp;', '&nbsp;'],
-    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 1 H, 0 R, 0 BB, 0 K'), ''],
-    [_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Charlie', '0-0'), ''],
-    [Gameday._badge('1', 'In play, no out'), ''],
-    ['Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.', ''],
-    ['&nbsp;', '&nbsp;'],
-    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 2 H, 0 R, 0 BB, 0 K'), ''],
-    [_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Delta', '0-0'), ''],
-    [Gameday._badge('1', 'In play, out(s)'), ''],
-    ['Jim Delta flies out to right fielder  (zone 9). ' + bold('2 out.'), ''],
-    ['&nbsp;', '&nbsp;'],
-    [_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.2 IP, 2 H, 0 R, 0 BB, 0 K'), ''],
-    [_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Echo', '0-0'), ''],
-    [Gameday._badge('1', 'Swinging Strike'), '0-1'],
-    [Gameday._badge('2', 'Foul'), '0-2'],
-    [Gameday._badge('3', 'Swinging Strike'), '0-3'],
-    ['Jim Echo strikes out swinging. ' + bold('3 out.'), '']
+    [cell(content='Pitching: Jim Unknown'), cell()],
+    [cell(content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.0 IP, 0 H, 0 R, 0 BB, 0 K')), cell()],
+    [cell(content=_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Alpha', '0-0')), cell()],
+    [cell(content=Gameday._badge('1', 'Ball')), cell(content='1-0')],
+    [cell(content=Gameday._badge('2', 'In play, out(s)')), cell()],
+    [cell(content=('Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.'))), cell()],
+    [cell(content='&nbsp;'), cell(content='&nbsp;')],
+    [cell(content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 0 H, 0 R, 0 BB, 0 K')), cell()],
+    [cell(content=_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Beta', '0-0')), cell()],
+    [cell(content=Gameday._badge('1', 'In play, no out')), cell()],
+    [cell(content='Jim Beta singles on a ground ball to left fielder  (zone 56).'), cell()],
+    [cell(content='&nbsp;'), cell(content='&nbsp;')],
+    [cell(content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 1 H, 0 R, 0 BB, 0 K')), cell()],
+    [cell(content=_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Charlie', '0-0')), cell()],
+    [cell(content=Gameday._badge('1', 'In play, no out')), cell()],
+    [cell(content='Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.'), cell()],
+    [cell(content='&nbsp;'), cell(content='&nbsp;')],
+    [cell(content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 2 H, 0 R, 0 BB, 0 K')), cell()],
+    [cell(content=_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Delta', '0-0')), cell()],
+    [cell(content=Gameday._badge('1', 'In play, out(s)')), cell()],
+    [cell(content=('Jim Delta flies out to right fielder  (zone 9). ' + bold('2 out.'))), cell()],
+    [cell(content='&nbsp;'), cell(content='&nbsp;')],
+    [cell(content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.2 IP, 2 H, 0 R, 0 BB, 0 K')), cell()],
+    [cell(content=_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Echo', '0-0')), cell()],
+    [cell(content=Gameday._badge('1', 'Swinging Strike')), cell(content='0-1')],
+    [cell(content=Gameday._badge('2', 'Foul')), cell(content='0-2')],
+    [cell(content=Gameday._badge('3', 'Swinging Strike')), cell(content='0-3')],
+    [cell(content=('Jim Echo strikes out swinging. ' + bold('3 out.'))), cell()]
 ]  # yapf: disable
 
 _plays_body = [
-    ['Pitching: Jim Unknown'],
-    ['Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.')],
-    ['Jim Beta singles on a ground ball to left fielder  (zone 56).'],
-    ['Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.'],
-    ['Jim Delta flies out to right fielder  (zone 9). ' + bold('2 out.')],
-    ['Jim Echo strikes out swinging. ' + bold('3 out.')]
+    [cell(content='Pitching: Jim Unknown')],
+    [cell(content=('Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.')))],
+    [cell(content='Jim Beta singles on a ground ball to left fielder  (zone 56).')],
+    [cell(content='Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.')],
+    [cell(content=('Jim Delta flies out to right fielder  (zone 9). ' + bold('2 out.')))],
+    [cell(content=('Jim Echo strikes out swinging. ' + bold('3 out.')))]
 ]  # yapf: disable
 
 _r31 = '31/raw/31'
@@ -274,17 +276,21 @@ _game = {
             'tables': [
                 table(
                     clazz='border mt-3',
-                    hcols=[' colspan="2" class="position-relative"'],
+                    hcols=[col(clazz='position-relative', colspan='2')],
                     bcols=[
-                        ' class="position-relative"',
-                        ' class="text-center text-secondary w-55p"'
+                        col(clazz='position-relative'),
+                        col(clazz='text-center text-secondary w-55p')
                     ],
-                    fcols=[' colspan="2"'],
-                    head=[logo_absolute('31', 'Top 1st', 'left')],
+                    fcols=[col(colspan='2')],
+                    head=[
+                        cell(content=logo_absolute('31', 'Top 1st', 'left'))
+                    ],
                     body=_log_body,
                     foot=[
-                        '0 run(s), 2 hit(s), 0 error(s), 2 left on base; '
-                        'Arizona Diamondbacks 0 - Los Angeles Dodgers 0'
+                        cell(
+                            content=('0 run(s), 2 hit(s), 0 error(s), 2 left '
+                                     'on base; Arizona Diamondbacks 0 - '
+                                     'Los Angeles Dodgers 0'))
                     ])
             ]
         }, {
@@ -295,38 +301,53 @@ _game = {
             'tables': [
                 table(
                     clazz='table-fixed border border-bottom-0 mt-3',
-                    head=['Gameday Sources']),
+                    head=[cell(content='Gameday Sources')]),
                 table(
                     clazz='table-fixed border',
                     body=[
                         [
-                            anchor(_statslab_link + _game_box_link,
-                                   '10/26/1985 StatsLab Game Box')
-                        ], [
-                            anchor(_statslab_link + _log_link,
-                                   '10/26/1985 StatsLab Log')
+                            cell(
+                                content=anchor(_statslab_link + _game_box_link,
+                                               '10/26/1985 StatsLab Game Box'))
+                        ],
+                        [
+                            cell(
+                                content=anchor(_statslab_link + _log_link,
+                                               '10/26/1985 StatsLab Log'))
                         ],
                     ]),
                 table(
                     clazz='table-fixed border border-bottom-0 mt-3',
-                    head=['Arizona Diamondbacks Schedule']),
+                    head=[cell(content='Arizona Diamondbacks Schedule')]),
                 table(
                     clazz='table-fixed border',
                     body=[
-                        [secondary('10/26/1985 @ Los Angeles Dodgers')],
                         [
-                            anchor('/gameday/2999/',
-                                   '10/27/1985 @ Los Angeles Dodgers')
+                            cell(
+                                content=secondary(
+                                    '10/26/1985 @ Los Angeles Dodgers'))
+                        ],
+                        [
+                            cell(
+                                content=anchor(
+                                    '/gameday/2999/',
+                                    '10/27/1985 @ Los Angeles Dodgers'))
                         ],
                     ]),
                 table(
                     clazz='table-fixed border border-bottom-0 mt-3',
-                    head=['Los Angeles Dodgers Schedule']),
+                    head=[cell(content='Los Angeles Dodgers Schedule')]),
                 table(
                     clazz='table-fixed border',
-                    body=[[secondary('10/26/1985 v Arizona Diamondbacks')], [
-                        anchor('/gameday/2999/',
-                               '10/27/1985 v Arizona Diamondbacks')
+                    body=[[
+                        cell(
+                            content=secondary(
+                                '10/26/1985 v Arizona Diamondbacks'))
+                    ], [
+                        cell(
+                            content=anchor(
+                                '/gameday/2999/',
+                                '10/27/1985 v Arizona Diamondbacks'))
                     ]]),
             ]
         }, {
@@ -343,13 +364,17 @@ _game = {
                     'tables': [
                         table(
                             clazz='border mt-3',
-                            hcols=[' class="position-relative"'],
-                            head=[logo_absolute('31', 'Top 1st', 'left')],
+                            hcols=[col(clazz='position-relative')],
+                            head=[
+                                cell(
+                                    content=logo_absolute(
+                                        '31', 'Top 1st', 'left'))
+                            ],
                             body=_plays_body,
                             foot=[
-                                '0 run(s), 2 hit(s), 0 error(s), 2 left on '
-                                'base; Arizona Diamondbacks 0 - Los Angeles '
-                                'Dodgers 0'
+                                cell(content='0 run(s), 2 hit(s), 0 error(s), '
+                                     '2 left on base; Arizona Diamondbacks 0 '
+                                     '- Los Angeles Dodgers 0')
                             ])
                     ]
                 }]

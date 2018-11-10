@@ -15,6 +15,7 @@ from api.registrable.registrable import Registrable  # noqa
 from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
+from util.component.component import cell  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import suffix  # noqa
 from util.slack.slack import reactions_add  # noqa
@@ -136,7 +137,7 @@ class Recap(Registrable):
         for table_ in injuries:
             body = table_['body']
             for row in body:
-                match = re.findall(pattern, row[0])
+                match = re.findall(pattern, row[0]['content'])
                 if match:
                     for length in [int(m) for m in match[0].split('-')]:
                         if length > 6:
@@ -169,7 +170,7 @@ class Recap(Registrable):
         for table_ in transactions:
             body = table_['body']
             for row in body:
-                match = re.findall(pattern, row[0])
+                match = re.findall(pattern, row[0]['content'])
                 if match:
                     amount = int(match[0].replace(',', ''))
                     if amount > 100000000:
@@ -232,7 +233,7 @@ class Recap(Registrable):
                     pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                     fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                         '{S}', suffix(pdate.day))
-                    ret.insert(0, table(head=[fdate]))
+                    ret.insert(0, table(head=[cell(content=fdate)]))
                 if ret[0]['body'] is None:
                     ret[0]['body'] = []
                 if then and then == self._encode(date, line):
@@ -240,7 +241,7 @@ class Recap(Registrable):
                 else:
                     body = self._rewrite_players(self._strip_teams(line))
                     if not team or team in body:
-                        ret[0]['body'].append([body])
+                        ret[0]['body'].append([cell(content=body)])
 
         ret = [table for table in ret if table['body']]
         self.data['now'][key] = self._encode(date, line)

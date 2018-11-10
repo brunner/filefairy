@@ -16,6 +16,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from core.shadow.shadow import Shadow  # noqa
 from core.task.task import Task  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
@@ -58,13 +60,15 @@ _precodings = '|'.join(precodings())
 _url_pattern = '<([^|]+)\|([^<]+)>'
 _chlany = chlany()
 _lhclazz = 'table-fixed border border-bottom-0 mt-3'
-_lhcols = [' class="text-center"']
+_lhcols = [col(clazz='text-center')]
 _lbclazz = 'table-fixed border'
 _lbpcols = [
-    ' class="position-relative w-40"', ' class="text-center w-10"',
-    ' class="text-center w-10"', ' class="position-relative text-right w-40"'
+    col(clazz='position-relative w-40'),
+    col(clazz='text-center w-10'),
+    col(clazz='text-center w-10'),
+    col(clazz='position-relative text-right w-40')
 ]
-_lbrcols = [' class="td-sm position-relative text-center w-20"'] * 5
+_lbrcols = [col(clazz='td-sm position-relative text-center w-20')] * 5
 
 
 class Statsplus(Registrable):
@@ -311,7 +315,8 @@ class Statsplus(Registrable):
     def _live_postseason(self):
         lpb = self._live_postseason_body()
 
-        lh = table(clazz=_lhclazz, hcols=_lhcols, head=['Postseason'])
+        lh = table(
+            clazz=_lhclazz, hcols=_lhcols, head=[cell(content='Postseason')])
         lb = table(clazz=_lbclazz, bcols=_lbpcols, body=lpb)
         return [lh, lb]
 
@@ -322,8 +327,12 @@ class Statsplus(Registrable):
             (t1, r1), (t2, r2) = group
             w1, w2 = [r.split('-')[0] for r in (r1, r2)]
             inner = [
-                logo_absolute(t1, teamid_to_hometown(t1), 'left'), w1, w2,
-                logo_absolute(t2, teamid_to_hometown(t2), 'right')
+                cell(
+                    content=logo_absolute(t1, teamid_to_hometown(t1), 'left')),
+                cell(content=w1),
+                cell(content=w2),
+                cell(
+                    content=logo_absolute(t2, teamid_to_hometown(t2), 'right'))
             ]
             body.append(inner)
         return body
@@ -347,9 +356,15 @@ class Statsplus(Registrable):
         lrba = self._live_regular_body(al)
         lrbn = self._live_regular_body(nl)
 
-        lhal = table(clazz=_lhclazz, hcols=_lhcols, head=['American League'])
+        lhal = table(
+            clazz=_lhclazz,
+            hcols=_lhcols,
+            head=[cell(content='American League')])
         lbal = table(clazz=_lbclazz, bcols=_lbrcols, body=lrba)
-        lhnl = table(clazz=_lhclazz, hcols=_lhcols, head=['National League'])
+        lhnl = table(
+            clazz=_lhclazz,
+            hcols=_lhcols,
+            head=[cell(content='National League')])
         lbnl = table(clazz=_lbclazz, bcols=_lbrcols, body=lrbn)
 
         return [lhal, lbal, lhnl, lbnl]
@@ -358,7 +373,10 @@ class Statsplus(Registrable):
         body = []
         for division in league:
             group = [self._team_tuple(teamid) for teamid in division[1]]
-            inner = [logo_inline(*team_tuple) for team_tuple in sort(group)]
+            inner = [
+                cell(content=logo_inline(*team_tuple))
+                for team_tuple in sort(group)
+            ]
             body.append(inner)
         return body
 
@@ -525,19 +543,22 @@ class Statsplus(Registrable):
         lines = self.data[key][date]
         body = self._table_body(date, lines, path)
         head = self._table_head(date)
-        return table(hcols=[''], bcols=[''], head=head, body=body)
+        return table(head=head, body=body)
 
     def _table_body(self, date, lines, path):
         body = []
         for line in lines:
             line = re.sub('<([^|]+)\|([^<]+)>', r'<a href="\1">\2</a>', line)
-            body.append([encoding_to_decoding_sub(line).format(_html, path)])
+            body.append([
+                cell(
+                    content=encoding_to_decoding_sub(line).format(_html, path))
+            ])
         return body
 
     def _table_head(self, date):
         ddate = decode_datetime(date)
         fdate = ddate.strftime('%A, %B %-d{S}, %Y')
-        return [fdate.replace('{S}', suffix(ddate.day))]
+        return [cell(content=fdate.replace('{S}', suffix(ddate.day)))]
 
     def _team_tuple(self, teamid):
         return (teamid, self._record(teamid))

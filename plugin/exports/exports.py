@@ -14,6 +14,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import encode_datetime  # noqa
@@ -156,16 +158,24 @@ class Exports(Registrable):
                     n, o = self._form(teamid)
                     l = '{0} - {1}'.format(n, o)
                     s = self._streak(teamid)
-                body.append([t, l, s])
+                body.append(
+                    [cell(content=t),
+                     cell(content=l),
+                     cell(content=s)])
             cols = [
-                'class="position-relative"', ' class="text-center w-25"',
-                ' class="text-center w-25"'
+                col(clazz='position-relative'),
+                col(clazz='text-center w-25'),
+                col(clazz='text-center w-25')
             ]
             ret['standings'].append(
                 table(
                     hcols=cols,
                     bcols=cols,
-                    head=[division, 'Last 10', 'Streak'],
+                    head=[
+                        cell(content=division),
+                        cell(content='Last 10'),
+                        cell(content='Streak')
+                    ],
                     body=body))
 
         return ret

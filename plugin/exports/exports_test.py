@@ -13,6 +13,8 @@ from core.notify.notify import Notify  # noqa
 from core.response.response import Response  # noqa
 from plugin.exports.exports import Exports  # noqa
 from util.component.component import card  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
 from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -45,11 +47,7 @@ _url = 'https://orangeandblueleaguebaseball.com/StatsLab/exports.php'
 _urlopen = '<html><head><title>Export Tracker - StatsLab for ...'
 
 
-def _data(ai=[],
-          channel=_channel,
-          emails=False,
-          form={},
-          locked=False,
+def _data(ai=[], channel=_channel, emails=False, form={}, locked=False,
           ts=_ts):
     return {
         'ai': ai,
@@ -573,31 +571,62 @@ class ExportsTest(Test):
             'name': 'Exports'
         }]
         cols = [
-            'class="position-relative"', ' class="text-center w-25"',
-            ' class="text-center w-25"'
+            col(clazz='position-relative'),
+            col(clazz='text-center w-25'),
+            col(clazz='text-center w-25')
         ]
         e = table(
             hcols=cols,
             bcols=cols,
-            head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            head=[
+                cell(content='AL East'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('33', 'Baltimore', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('34', 'Boston', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
         c = table(
             hcols=cols,
             bcols=cols,
-            head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            head=[
+                cell(content='AL Central'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('35', 'Chicago', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('40', 'Detroit', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
         w = table(
             hcols=cols,
             bcols=cols,
-            head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'standings': [e, c, w]
-        }
+            head=[
+                cell(content='AL West'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('42', 'Houston', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('44', 'Los Angeles', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
+        expected = {'breadcrumbs': breadcrumbs, 'standings': [e, c, w]}
         self.assertEqual(response, expected)
 
         mock_divisions.assert_called_once_with()
@@ -634,31 +663,62 @@ class ExportsTest(Test):
             'name': 'Exports'
         }]
         cols = [
-            'class="position-relative"', ' class="text-center w-25"',
-            ' class="text-center w-25"'
+            col(clazz='position-relative'),
+            col(clazz='text-center w-25'),
+            col(clazz='text-center w-25')
         ]
         e = table(
             hcols=cols,
             bcols=cols,
-            head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            head=[
+                cell(content='AL East'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('33', 'Baltimore', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('34', 'Boston', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
         c = table(
             hcols=cols,
             bcols=cols,
-            head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            head=[
+                cell(content='AL Central'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('35', 'Chicago', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('40', 'Detroit', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
         w = table(
             hcols=cols,
             bcols=cols,
-            head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'standings': [e, c, w]
-        }
+            head=[
+                cell(content='AL West'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('42', 'Houston', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('44', 'Los Angeles', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
+        expected = {'breadcrumbs': breadcrumbs, 'standings': [e, c, w]}
         self.assertEqual(response, expected)
 
         mock_divisions.assert_called_once_with()
@@ -696,31 +756,62 @@ class ExportsTest(Test):
             'name': 'Exports'
         }]
         cols = [
-            'class="position-relative"', ' class="text-center w-25"',
-            ' class="text-center w-25"'
+            col(clazz='position-relative'),
+            col(clazz='text-center w-25'),
+            col(clazz='text-center w-25')
         ]
         e = table(
             hcols=cols,
             bcols=cols,
-            head=['AL East', 'Last 10', 'Streak'],
-            body=[[logo_absolute('33', 'Baltimore', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('34', 'Boston', 'left'), '1 - 0', 'W1']])
+            head=[
+                cell(content='AL East'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('33', 'Baltimore', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('34', 'Boston', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
         c = table(
             hcols=cols,
             bcols=cols,
-            head=['AL Central', 'Last 10', 'Streak'],
-            body=[[logo_absolute('35', 'Chicago', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('40', 'Detroit', 'left'), '1 - 0', 'W1']])
+            head=[
+                cell(content='AL Central'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('35', 'Chicago', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('40', 'Detroit', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
         w = table(
             hcols=cols,
             bcols=cols,
-            head=['AL West', 'Last 10', 'Streak'],
-            body=[[logo_absolute('42', 'Houston', 'left'), '1 - 0', 'W1'],
-                  [logo_absolute('44', 'Los Angeles', 'left'), '1 - 0', 'W1']])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'standings': [e, c, w]
-        }
+            head=[
+                cell(content='AL West'),
+                cell(content='Last 10'),
+                cell(content='Streak')
+            ],
+            body=[[
+                cell(content=logo_absolute('42', 'Houston', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ], [
+                cell(content=logo_absolute('44', 'Los Angeles', 'left')),
+                cell(content='1 - 0'),
+                cell(content='W1')
+            ]])
+        expected = {'breadcrumbs': breadcrumbs, 'standings': [e, c, w]}
         self.assertEqual(response, expected)
 
         mock_divisions.assert_called_once_with()

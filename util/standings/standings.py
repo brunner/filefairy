@@ -7,6 +7,8 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/standings', '', _path))
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.team.team import divisions  # noqa
 from util.team.team import logo_absolute  # noqa
@@ -14,9 +16,11 @@ from util.team.team import teamid_to_hometown  # noqa
 from util.team.team import teamids  # noqa
 
 _cols = [
-    'class="position-relative text-truncate"', ' class="text-right w-55p"',
-    ' class="text-right w-55p"', ' class="text-right w-75p"',
-    ' class="text-right w-55p"'
+    col(clazz='position-relative text-truncate'),
+    col(clazz='text-right w-55p'),
+    col(clazz='text-right w-55p'),
+    col(clazz='text-right w-75p'),
+    col(clazz='text-right w-55p')
 ]
 _divisions = divisions()
 _teamids = teamids()
@@ -150,12 +154,24 @@ def standings_table(records):
                 gb, mn = teams[t][kgb], teams[t][kmn]
                 tgb = str(-gb) if gb < 0 else '+' + str(gb) if gb > 0 else '-'
                 tmn = '' if mn == [] or mn < 0 else str(mn) if mn > 0 else 'X'
-                body.append([tname, tw, tl, tgb, tmn])
+                body.append([
+                    cell(content=tname),
+                    cell(content=tw),
+                    cell(content=tl),
+                    cell(content=tgb),
+                    cell(content=tmn)
+                ])
             tables.append(
                 table(
                     hcols=_cols,
                     bcols=_cols,
-                    head=[group, 'W', 'L', 'GB', 'M#'],
+                    head=[
+                        cell(content=group),
+                        cell(content='W'),
+                        cell(content='L'),
+                        cell(content='GB'),
+                        cell(content='M#')
+                    ],
                     body=body))
 
     return tables

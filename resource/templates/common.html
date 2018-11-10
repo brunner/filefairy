@@ -139,8 +139,14 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <thead class="thead-light">
 <tr>
 {% for cell in data.head %}
-{% set hcol = data.hcols[loop.index0] if data.hcols else '' %}
-<td scope="col"{{ hcol | safe }}>{{ cell }}</td>
+{% set hcol = data.hcols[loop.index0] if data.hcols else None %}
+{% set hclazz = hcol['clazz'] if hcol else '' %}
+{% set cclazz = cell.ccol.clazz if cell.ccol else '' %}
+{% set cl = cclazz + (' ' if cclazz else '') + hclazz %}
+{% set hcolspan = hcol['colspan'] if hcol else '' %}
+{% set ccolspan = cell.ccol.colspan if cell.ccol else '' %}
+{% set co = ccolspan if ccolspan else hcolspan %}
+<td scope="col"{% if cl %} class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
 {% endfor %}
 </tr>
 </thead>
@@ -153,12 +159,16 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 {% for row in data.body %}
 <tr>
 {% for cell in row %}
-{% if loop.first %}
-{% set bcol = data.bcols[loop.index0] if data.bcols else '' %}
-<td scope="row"{{ bcol | safe }}>{{ cell }}</td>
-{% else %}
-<td{{ data.bcols[loop.index0] | safe }}>{{ cell }}</td>
-{% endif %}
+{% set scope = ' scope="row"' if loop.first else '' %}
+{% set bcol = data.bcols[loop.index0] if data.bcols else None %}
+{% set bclazz = bcol['clazz'] if bcol else '' %}
+{% set cclazz = cell.ccol.clazz if cell.ccol else '' %}
+{% set cl = cclazz + (' ' if cclazz else '') + bclazz %}
+{% set bcolspan = bcol['colspan'] if bcol else '' %}
+{% set ccolspan = cell.ccol.colspan if cell.ccol else '' %}
+{% set co = ccolspan if ccolspan else bcolspan %}
+{% set scope = scope + (' ' if cl or co else '') %}
+<td{{ scope }}{% if cl %}class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
 {% endfor %}
 </tr>
 {% endfor %}
@@ -171,8 +181,14 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <tfoot class="thead-light">
 <tr>
 {% for cell in data.foot %}
-{% set hcol = data.fcols[loop.index0] if data.fcols else '' %}
-<td scope="col"{{ hcol | safe }}>{{ cell }}</td>
+{% set fcol = data.fcols[loop.index0] if data.fcols else None %}
+{% set fclazz = fcol['clazz'] if fcol else '' %}
+{% set cclazz = cell.ccol.clazz if cell.ccol else '' %}
+{% set cl = cclazz + (' ' if cclazz else '') + fclazz %}
+{% set fcolspan = fcol['colspan'] if fcol else '' %}
+{% set ccolspan = cell.ccol.colspan if cell.ccol else '' %}
+{% set co = ccolspan if ccolspan else fcolspan %}
+<td scope="col"{% if cl %} class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
 {% endfor %}
 </tr>
 </tfoot>

@@ -8,6 +8,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/gameday', '', _path))
 from util.component.component import anchor  # noqa
+from util.component.component import cell  # noqa
+from util.component.component import col  # noqa
 from util.component.component import table  # noqa
 from util.team.team import logo_absolute  # noqa
 
@@ -53,81 +55,81 @@ _breadcrumbs = [{
 _schedule = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=['American League East']),
+        head=[cell(content='American League East')]),
     table(
         clazz='table-fixed border',
-        bcols=[' class="position-relative text-truncate"'],
+        bcols=[col(clazz='position-relative text-truncate')],
         body=[
-            [_s33],
-            [_s34],
-            [_s48],
-            [_s57],
-            [_s59],
+            [cell(content=_s33)],
+            [cell(content=_s34)],
+            [cell(content=_s48)],
+            [cell(content=_s57)],
+            [cell(content=_s59)],
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=['American League Central']),
+        head=[cell(content='American League Central')]),
     table(
         clazz='table-fixed border',
-        bcols=[' class="position-relative text-truncate"'],
+        bcols=[col(clazz='position-relative text-truncate')],
         body=[
-            [_s35],
-            [_s38],
-            [_s40],
-            [_s43],
-            [_s47],
+            [cell(content=_s35)],
+            [cell(content=_s38)],
+            [cell(content=_s40)],
+            [cell(content=_s43)],
+            [cell(content=_s47)],
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=['American League West']),
+        head=[cell(content='American League West')]),
     table(
         clazz='table-fixed border',
-        bcols=[' class="position-relative text-truncate"'],
+        bcols=[col(clazz='position-relative text-truncate')],
         body=[
-            [_s42],
-            [_s44],
-            [_s50],
-            [_s54],
-            [_s58],
+            [cell(content=_s42)],
+            [cell(content=_s44)],
+            [cell(content=_s50)],
+            [cell(content=_s54)],
+            [cell(content=_s58)],
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=['National League East']),
+        head=[cell(content='National League East')]),
     table(
         clazz='table-fixed border',
-        bcols=[' class="position-relative text-truncate"'],
+        bcols=[col(clazz='position-relative text-truncate')],
         body=[
-            [_s32],
-            [_s41],
-            [_s49],
-            [_s51],
-            [_s60],
+            [cell(content=_s32)],
+            [cell(content=_s41)],
+            [cell(content=_s49)],
+            [cell(content=_s51)],
+            [cell(content=_s60)],
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=['National League Central']),
+        head=[cell(content='National League Central')]),
     table(
         clazz='table-fixed border',
-        bcols=[' class="position-relative text-truncate"'],
+        bcols=[col(clazz='position-relative text-truncate')],
         body=[
-            [_s36],
-            [_s37],
-            [_s46],
-            [_s52],
-            [_s56],
+            [cell(content=_s36)],
+            [cell(content=_s37)],
+            [cell(content=_s46)],
+            [cell(content=_s52)],
+            [cell(content=_s56)],
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=['National League West']),
+        head=[cell(content='National League West')]),
     table(
         clazz='table-fixed border',
-        bcols=[' class="position-relative text-truncate"'],
+        bcols=[col(clazz='position-relative text-truncate')],
         body=[
-            [_s31],
-            [_s39],
-            [_s45],
-            [_s53],
-            [_s55],
+            [cell(content=_s31)],
+            [cell(content=_s39)],
+            [cell(content=_s45)],
+            [cell(content=_s53)],
+            [cell(content=_s55)],
         ]),
 ]
 
