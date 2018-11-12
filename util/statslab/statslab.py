@@ -731,8 +731,8 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         nums = '1-5-3' if base == 'third' else '1-6-3'
         fields = _fielders(nums, fielders)
         values.append('bunt grounds into a double play{} '
-                      '(attempted sacrifice) (zone 1S). '
-                      '{} out at {}'.format(fields, runner, base))
+                      '(attempted sacrifice) (zone 1S)'.format(fields))
+        values.append('{} out at {}'.format(runner, base))
         return
 
     base, nums = _find('Sac Bunt - play at (\w+), runner OUT! ([^\s]+)', value)
@@ -744,8 +744,8 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         field = nums[1] if nums[0] == 'U' else nums[2]
         zone = field + ('S' if field != '2' else '')
         values.append('bunt grounds into a fielders choice{} '
-                      '(attempted sacrifice) (zone {}). '
-                      '{} out at {}'.format(fields, zone, runner, base))
+                      '(attempted sacrifice) (zone {})'.format(fields, zone))
+        values.append('{} out at {}'.format(runner, base))
         return
 
     base = _find('Sac Bunt - play at (\w+), runner safe!', value)
@@ -757,8 +757,8 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         nums = '1-5' if base == 'third' else '1-6'
         fields = _fielders(nums, fielders)
         values.append('bunt grounds into a failed fielders choice{} '
-                      '(attempted sacrifice) (zone 1S). '
-                      '{} to {}'.format(fields, runner, base))
+                      '(attempted sacrifice) (zone 1S)'.format(fields))
+        values.append('{} to {}'.format(runner, base))
         return
 
     nums = _find('Squeeze Bunt - play home, runner OUT, batter safe! ([^\s]+)',
@@ -771,8 +771,8 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         field = nums[1] if nums[0] == 'U' else nums[2]
         zone = field + ('S' if field != '2' else '')
         values.append('bunt grounds into a fielders choice{} '
-                      '(attempted sacrifice) (zone {}). '
-                      '{} out at home'.format(fields, zone, runner))
+                      '(attempted sacrifice) (zone {})'.format(fields, zone))
+        values.append('{} out at home'.format(runner))
 
     base, nums, zone = _find(
         'Fielders Choice at (\w+), ([^\s]+) \(Groundball, (\w+)\)', value)
@@ -781,8 +781,9 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         runner = pair[0] if pair else ''
         _bases_push(bases, 'first', (batting, fielders['P']))
         fields = _fielders(nums, fielders)
-        values.append('grounds into a fielders choice{} (zone {}). '
-                      '{} out at {}'.format(fields, zone, runner, base))
+        values.append('grounds into a fielders choice{} (zone {})'.format(
+            fields, zone))
+        values.append('{} out at {}'.format(runner, base))
         return
 
     nums, zone = _find(
@@ -792,8 +793,9 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         runner = pair[0] if pair else ''
         _bases_push(bases, 'first', (batting, fielders['P']))
         fields = _fielders(nums, fielders)
-        values.append('grounds into a fielders choice{} (zone {}). '
-                      '{} out at home'.format(fields, zone, runner))
+        values.append('grounds into a fielders choice{} (zone {})'.format(
+            fields, zone))
+        values.append('{} out at home'.format(runner))
         return
 
     nums, zone = _find('double play, ([^\s]+) \(Groundball, (\w+)\)', value)
@@ -803,9 +805,9 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         pair = _bases_pop(bases, _bases_map[base] - 1, '')
         runner = pair[0] if pair else ''
         fields = _fielders(nums, fielders)
-        values.append('grounds into a double play{} (zone {}). '
-                      '{} out at {}'.format(fields, zone, runner,
-                                            base.lower()))
+        values.append('grounds into a double play{} (zone {})'.format(
+            fields, zone))
+        values.append('{} out at {}'.format(runner, base.lower()))
         return
 
     base = '(SINGLE|DOUBLE|TRIPLE)'
@@ -845,11 +847,14 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
             _bases_push(bases, b, _bases_pop(bases, 1, ''))
             _bases_push(bases, 'third', _bases_pop(bases, 0, ''))
         _bases_push(bases, base, (batting, fielders['P']))
-        base = 'singles' if base == 'second' else 'doubles'
+        hit = 'singles' if base == 'second' else 'doubles'
         field = _fielder(num, fielders)
         zone = num + 'S'
         values.append('{} on a line drive to {} (zone {})'.format(
-            base, field, zone))
+            hit, field, zone))
+        values.append('{} to {} on an error by {}'.format(
+            batting, base, field))
+        return
 
     category, zone, dist = _find(
         'HOME RUN \(([^,]+), (\w+)\), '
@@ -1039,21 +1044,34 @@ def _parse_part(value, bases, values, fielders):
 
 
 def _tweak_runners(values):
-    advance = '(\w+) (?:scores|to third|to second|on the throw)'
-    runners = [_find(advance, v) for v in values[1:]]
-    runners = [r for r in runners if r]
-    if runners:
-        sac = 'out on a sacrifice fly'
-        values[0] = re.sub('flies out|lines out|pops out', sac, values[0])
+    sac = 'out on a sacrifice fly'
+    adv_list = ['scores', 'to third', 'to second']
+    run_list = adv_list + ['out at']
+    regex = '(\w+) (?:{})'.format('|'.join(run_list))
+    lines, runners = [], []
     throw = None
-    for v in list(values):
-        r = _find(advance, v)
-        if runners.count(r) > 1:
+    for v in list(values[1:]):
+        if sac and any([a in v for a in adv_list]):
+            values[0] = re.sub('flies out|lines out|pops out', sac, values[0])
+            sac = ''
+        if any([r in v for r in run_list]):
+            lines.append(v)
+            runners.append(_find(regex, v))
             values.remove(v)
-            runners.remove(r)
-        if v.startswith('Throwing error'):
+        if v.startswith('Throwing error '):
             throw = v
             values.remove(v)
+
+    for r, l in list(zip(runners, lines)):
+        if runners.count(r) > 1:
+            lines.remove(l)
+            runners.remove(r)
+
+    for r in run_list:
+        for l in lines:
+            if r in l:
+                values.append(l)
+
     if throw:
         values.append(throw)
 
