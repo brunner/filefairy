@@ -74,17 +74,16 @@ def _play_event(sequence, value):
     check_outs = True
     outs, runs = 0, 0
     suffix = ''
-    value_lower = value.lower()
 
-    runs_list = ['scores', 'homers', 'home, safe', 'is safe', 'steals home']
-    out1_list = ['out', 'fielders choice', 'caught stealing']
-    out2_list = ['double play', 'lined into dp', 'first, dp']
+    runs_list = ['scores', 'homers', 'steals home']
+    out1_list = ['out', 'caught stealing', 'picks off']
+    out2_list = ['double play']
     outs_list = out1_list + out2_list
 
-    if any(r in value_lower for r in runs_list):
+    if any(r in value for r in runs_list):
         suffix = ', run(s)'
-        runs = sum([value_lower.count(r) for r in runs_list])
-    elif any(o in value_lower for o in outs_list):
+        runs = sum([value.count(r) for r in runs_list])
+    elif any(o in value for o in outs_list):
         suffix = ', out(s)'
     elif sequence and 'In play' in sequence[-1]:
         check_outs = False
@@ -93,10 +92,10 @@ def _play_event(sequence, value):
     if check_outs:
         if 'strikes' in value and 'to first' in value:
             outs = 0
-        elif any(o in value_lower for o in out2_list):
+        elif any(o in value for o in out2_list):
             outs = 2
         else:
-            outs = sum([value_lower.count(o) for o in out1_list])
+            outs = sum([value.count(o) for o in out1_list])
 
     if sequence and 'In play' in sequence[-1]:
         sequence[-1] += suffix
