@@ -343,7 +343,7 @@ def parse_game_data(box_link, log_link):
                 bases = [[], [], [], []]
                 sequence, values = [], []
                 play = []
-                batting = ''
+                curr_batting = ''
                 if html:
                     left = 'valign="top" width="268px" class="dl"'
                     right = 'class="dl" width="700px"'
@@ -374,7 +374,7 @@ def parse_game_data(box_link, log_link):
                                         values,
                                         bases,
                                         curr_pitching,
-                                        batting,
+                                        curr_batting,
                                         pitchers,
                                         batters,
                                         during=d)))
@@ -391,12 +391,14 @@ def parse_game_data(box_link, log_link):
                             play.append(
                                 _play_sub('P', curr_pitching, curr_fielders))
                         elif batting or hitting:
+                            if batting:
+                                curr_batting = batting
                             if hitting:
-                                batting = hitting
-                                play.append(_play_sub('PH', batting, {}))
+                                curr_batting = hitting
+                                play.append(_play_sub('PH', curr_batting, {}))
                             play.append(
-                                _play_matchup(curr_pitching, batting, pitchers,
-                                              batters))
+                                _play_matchup(curr_pitching, curr_batting,
+                                              pitchers, batters))
                         elif running[0]:
                             b, value = running
                             base = _bases_map[b]
@@ -424,13 +426,13 @@ def parse_game_data(box_link, log_link):
                                                 values,
                                                 bases,
                                                 curr_pitching,
-                                                batting,
+                                                curr_batting,
                                                 pitchers,
                                                 batters,
                                                 during=True)))
                                     sequence, values = [], []
                                 _parse_value(value, bases, counts, sequence,
-                                             values, batting,
+                                             values, curr_batting,
                                              fielders[fielding_team])
                             else:
                                 _parse_part(part, bases, values,
@@ -449,7 +451,7 @@ def parse_game_data(box_link, log_link):
                                 values,
                                 bases,
                                 curr_pitching,
-                                batting,
+                                curr_batting,
                                 pitchers,
                                 batters,
                                 during=d)))
