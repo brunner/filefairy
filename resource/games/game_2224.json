@@ -1526,13 +1526,13 @@
           },
           {
             "outs": 0,
-            "runs": 0,
+            "runs": 1,
             "sequence": [
               "1 1 0 Ball",
-              "2 1 0 In play, no out"
+              "2 1 0 In play, run(s)"
             ],
             "type": "event",
-            "value": "P25200 SOLO HOME RUN (Flyball, 8LXD) (Inside the Park)*."
+            "value": "P25200 homers on a fly ball to center fielder P32849 (inside the park) (zone 8LXD)."
           },
           {
             "batter": {
@@ -1541,7 +1541,7 @@
             },
             "pitcher": {
               "id": "P29811",
-              "stats": "1.1 IP, 0 H, 0 R, 0 BB, 2 K"
+              "stats": "1.1 IP, 1 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
           },

@@ -686,6 +686,12 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         values.append('is hit by the pitch')
         return
 
+    if _find('Reaches on Catchers interference', value):
+        _bases_push(bases, 'first', (batting, fielders['P']))
+        field = _fielder('2', fielders)
+        values.append('reaches on an error by {} (interference)'.format(field))
+        return
+
     nums = _find('Bunt for hit - play at first, batter safe!', value)
     if nums:
         _bases_push(bases, 'first', (batting, fielders['P']))
@@ -858,15 +864,17 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
             batting, base, field))
         return
 
-    category, zone, dist = _find(
-        'HOME RUN \(([^,]+), (\w+)\), '
-        'Distance : (\d+) ft', value)
+    category, zone = _find('HOME RUN \(([^,]+), (\w+)\)', value)
     if category:
         desc = _description(category, 1)
+        ins = ' (inside the park)' if _find('Inside the Park', value) else ''
         index = 0 if _find('infield hit', value) else 1
-        homer = _homer_map.get(_location(zone, index), '')
-        values.append('homers on a {} to {} (zone {}, {} ft)'.format(
-            desc, homer, zone, dist))
+        loc = _location(zone, index)
+        field = _fielder(loc, fielders) if ins else _homer_map.get(loc, '')
+        dist = _find('Distance : (\d+) ft', value)
+        dist = ', {} ft'.format(dist) if dist else ''
+        values.append('homers on a {} to {}{} (zone {}{})'.format(
+            desc, field, ins, zone, dist))
         for b in [2, 1, 0]:
             if len(bases[b]):
                 values.append(bases[b][0][0] + ' scores')
