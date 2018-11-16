@@ -89,7 +89,7 @@ class Gameday(Registrable):
             self.write()
         if kwargs['notify'] == Notify.LEAGUEFILE_DOWNLOAD:
             if self.data['started']:
-                self.backfill()
+                self._backfill()
         return Response()
 
     def _on_message_internal(self, **kwargs):
@@ -200,7 +200,7 @@ class Gameday(Registrable):
 
         return table(clazz='table-fixed border', body=body)
 
-    def backfill(self, *args, **kwargs):
+    def _backfill(self):
         self._clear()
 
         extract = _root + '/resource/extract'
