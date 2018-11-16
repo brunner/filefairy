@@ -200,7 +200,7 @@ class Gameday(Registrable):
 
         return table(clazz='table-fixed border', body=body)
 
-    def backfill(self):
+    def backfill(self, *args, **kwargs):
         self._clear()
 
         extract = _root + '/resource/extract'
