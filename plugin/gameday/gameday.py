@@ -23,6 +23,8 @@ from util.component.component import table  # noqa
 from util.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.jersey.jersey import get_rawid  # noqa
+from util.json_.json_ import dumps  # noqa
+from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import choose_colors  # noqa
 from util.team.team import divisions  # noqa
@@ -83,10 +85,11 @@ class Gameday(Registrable):
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.STATSPLUS_SIM:
-            self.data['started'] = False
-            self.data['games'] = []
-            self.colors = {}
+            self._clear()
             self.write()
+        if kwargs['notify'] == Notify.LEAGUEFILE_DOWNLOAD:
+            if self.data['started']:
+                self.backfill()
         return Response()
 
     def _on_message_internal(self, **kwargs):
@@ -196,6 +199,31 @@ class Gameday(Registrable):
                 body.append([cell(content=anchor(url, stext))])
 
         return table(clazz='table-fixed border', body=body)
+
+    def backfill(self):
+        self._clear()
+
+        extract = _root + '/resource/extract'
+        games = []
+        for game in os.listdir(extract + '/box_scores/'):
+            id_ = re.findall('game_box_(\d+).html', game)[0]
+            games.append(id_)
+
+        recreate(_root + '/resource/games/')
+        for id_ in games:
+            box_link = extract + '/box_scores/game_box_{}.html'.format(id_)
+            log_link = extract + '/game_logs/log_{}.txt'.format(id_)
+            game_data_ = parse_game_data(box_link, log_link)
+            fname = _root + '/resource/games/game_{}.json'.format(id_)
+            with open(fname, 'w') as f:
+                f.write(dumps(game_data_) + '\n')
+
+        self.write()
+
+    def _clear(self):
+        self.data['started'] = False
+        self.data['games'] = []
+        self.colors = {}
 
     def _add_players(self, players):
         for id_ in players:
