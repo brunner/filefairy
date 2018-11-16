@@ -885,6 +885,87 @@
         "lineno": 64,
         "msg": "News updated.",
         "pathname": "/home/pi/filefairy/plugin/recap/recap.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:04.598602-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 289,
+        "msg": "Restarted fairylab.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:05.262728-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:05.562842-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:05.696532-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:05.820147-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:05.942688-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:07.163958-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 2,
+        "date": "2018-11-15T18:10:07.284555-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 252,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-15T18:09:05.387116-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"core/fairylab/fairylab.py\", line 114, in _try\n    response = item(*args, **dict(kwargs, date=date))\n  File \"/home/pi/filefairy/api/messageable/messageable.py\", line 49, in _on_message\n    response = item(*args, **dict(kwargs, v=True))\nTypeError: backfill() got an unexpected keyword argument 'date'",
+        "levelname": "INFO",
+        "lineno": 127,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
       }
     ]
   }
