@@ -88,8 +88,9 @@ class Gameday(Registrable):
             self._clear()
             self.write()
         if kwargs['notify'] == Notify.LEAGUEFILE_DOWNLOAD:
-            if self.data['started']:
+            if not self.data['started']:
                 self._backfill()
+            self.data['started'] = False
         return Response()
 
     def _on_message_internal(self, **kwargs):
@@ -221,7 +222,6 @@ class Gameday(Registrable):
         self.write()
 
     def _clear(self):
-        self.data['started'] = False
         self.data['games'] = []
         self.colors = {}
 

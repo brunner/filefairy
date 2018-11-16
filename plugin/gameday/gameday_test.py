@@ -548,7 +548,7 @@ class GamedayTest(unittest.TestCase):
         return plugin
 
     def test_notify__with_start(self):
-        plugin = self.create_plugin(_data(started=True))
+        plugin = self.create_plugin(_data(games=['2998']))
         response = plugin._notify_internal(notify=Notify.STATSPLUS_SIM)
         self.assertEqual(response, Response())
 
@@ -558,7 +558,7 @@ class GamedayTest(unittest.TestCase):
         self.mock_chat.assert_not_called()
 
     def test_notify__with_other(self):
-        plugin = self.create_plugin(_data(started=True))
+        plugin = self.create_plugin(_data(games=['2998']))
         response = plugin._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
