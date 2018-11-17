@@ -292,10 +292,10 @@ class Gameday(Registrable):
     @staticmethod
     def _profile(encoding, num, colors, s):
         n = encoding_to_nickname(encoding).lower().replace(' ', '')
-        div = '<div class="profile position-absolute ' + \
+        div = '<div class="profile-image position-absolute ' + \
               '{}-{}-front"></div>'.format(n, colors)
-        span = '<span class="align-middle d-block ' + \
-               'pl-84p">{}</span>'.format(s)
+        span = '<span class="profile-text align-middle ' + \
+               'd-block">{}</span>'.format(s)
         return div + span
 
     def _player(self, key, encoding, player, colors):
@@ -314,9 +314,40 @@ class Gameday(Registrable):
             col=col(clazz='bg-light', colspan='2'),
             content=self._profile(encoding, num, colors, s))
 
-    def _substitution(self, title, value):
+    @staticmethod
+    def _count(sequence):
+        balls, strikes = [0, 0, 0, 0], [0, 0, 0]
+        if sequence:
+            _1, ball, strike, _2 = sequence[-1].split(' ', 3)
+            for b in range(int(ball)):
+                balls[b] = 1
+            for s in range(int(strike)):
+                strikes[s] = 1
+        bpitch, spitch = '', ''
+        for b in balls:
+            active = ' active' if b else ''
+            bpitch += '<div class="pitch ball border{}"></div>'.format(active)
+        for s in strikes:
+            active = ' active' if s else ''
+            spitch += '<div class="pitch strike border{}"></div>'.format(
+                active)
+        return '<div class="count">{}<br>{}</div>'.format(bpitch, spitch)
+
+    def _play(self, value, encoding, id_, colors, sequence, colspan):
+        if id_ not in self.data['players']:
+            player_data = _player_default
+        else:
+            player_data = self.data['players'][id_]
+        num = player_data['number']
+        count = self._count(sequence)
+        s = '{}<br>{}'.format(value, count)
+        return cell(
+            col=col(clazz='bg-light', colspan=colspan),
+            content=self._profile(encoding, num, colors, s))
+
+    def _substitution(self, title, value, colspan):
         s = '<b>{}</b><br>{}'.format(title, value)
-        return cell(col=col(clazz='bg-light', colspan='2'), content=s)
+        return cell(col=col(clazz='bg-light', colspan=colspan), content=s)
 
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
@@ -399,8 +430,9 @@ class Gameday(Registrable):
                         for title, value in play['values']:
                             value = game_sub(value)
                             log_table['body'].append(
-                                [self._substitution(title, value)])
-                            plays_table['body'].append([cell(content=value)])
+                                [self._substitution(title, value, '2')])
+                            plays_table['body'].append(
+                                [self._substitution(title, value, '')])
                     elif play['type'] == 'matchup':
                         log_table['body'].append([
                             self._player('throws', pitching, play['pitcher'],
@@ -436,7 +468,14 @@ class Gameday(Registrable):
                                 runs[home_team]))
                         log_table['body'].append(
                             [cell(col=col(colspan='2'), content=value)])
-                        plays_table['body'].append([cell(content=value)])
+                        if play['batter']:
+                            plays_table['body'].append([
+                                self._play(value, batting, play['batter'],
+                                           colors[batting], play['sequence'],
+                                           '')
+                            ])
+                        else:
+                            plays_table['body'].append([cell(content=value)])
                 if half['footer']:
                     log_table['fcols'] = [col(colspan='2')]
                     fcontent = game_sub(half['footer'])

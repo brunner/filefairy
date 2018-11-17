@@ -94,7 +94,7 @@ def _open(link):
     return ''
 
 
-def _play_event(sequence, value):
+def _play_event(batter, sequence, value):
     check_outs = True
     outs, runs = 0, 0
     suffix = ''
@@ -126,6 +126,7 @@ def _play_event(sequence, value):
 
     return {
         'type': 'event',
+        'batter': batter,
         'outs': outs,
         'runs': runs,
         'sequence': sequence,
@@ -477,6 +478,7 @@ def parse_game_data(box_link, log_link):
                                 d = True
                             play.append(
                                 _play_event(
+                                    '' if d else curr_batting,
                                     sequence,
                                     _value(
                                         values,
@@ -537,6 +539,7 @@ def parse_game_data(box_link, log_link):
                                 if values:
                                     play.append(
                                         _play_event(
+                                            '',
                                             sequence,
                                             _value(
                                                 values,
@@ -562,6 +565,7 @@ def parse_game_data(box_link, log_link):
                         d = True
                     play.append(
                         _play_event(
+                            '' if d else curr_batting,
                             sequence,
                             _value(
                                 values,

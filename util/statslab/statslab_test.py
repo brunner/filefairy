@@ -171,7 +171,10 @@ _game_box = 'box_scores/game_box_{}.html'
 _game_log = 'game_logs/log_{}.html'
 _player = 'players/player_{}.html'
 
-_players = ['101', '102', '103', '104', '105', '106', '107', '108', '109', '110', '111', '112']
+_players = [
+    '101', '102', '103', '104', '105', '106', '107', '108', '109', '110',
+    '111', '112'
+]
 _plays = [[{
     'label':
     'Top 1st',
@@ -195,6 +198,7 @@ _plays = [[{
         }
     }, {
         'type': 'event',
+        'batter': 'P102',
         'outs': 1,
         'runs': 0,
         'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
@@ -214,6 +218,8 @@ _plays = [[{
     }, {
         'type':
         'event',
+        'batter':
+        'P103',
         'outs':
         0,
         'runs':
@@ -236,6 +242,8 @@ _plays = [[{
     }, {
         'type':
         'event',
+        'batter':
+        'P104',
         'outs':
         0,
         'runs':
@@ -258,6 +266,7 @@ _plays = [[{
         }
     }, {
         'type': 'event',
+        'batter': 'P105',
         'outs': 1,
         'runs': 0,
         'sequence': ['1 0 0 In play, out(s)'],
@@ -277,6 +286,8 @@ _plays = [[{
     }, {
         'type':
         'event',
+        'batter':
+        'P106',
         'outs':
         1,
         'runs':
