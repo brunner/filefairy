@@ -196,34 +196,30 @@ _gameday = {
     ]
 }
 
-_atbat = '<div class="profile position-absolute {}-{}-front"></div><span ' + \
-         'class="align-middle d-block pl-84p">ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>' + \
-         '{}</span>'
-_pitching = '<div class="profile position-absolute {}-{}-front"></div><sp' + \
-            'an class="align-middle d-block pl-84p">ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br' + \
-            '>{}<br>{}</span>'
+_player = '<div class="profile position-absolute {}-{}-front"></div><span ' + \
+          'class="align-middle d-block pl-84p">{}: {} #{} ({})<br>{}<br>' + \
+          '{}</span>'
 
 _log_body = [
-    [cell(col=col(clazz='bg-light', colspan='2'), content='Pitching: Jim Unknown')],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.0 IP, 0 H, 0 R, 0 BB, 0 K'))],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_atbat.format('diamondbacks', 'away', '2', 'ꜱ', 'Jim Alpha', '0-0'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('dodgers', 'home', 'ᴘɪᴛᴄʜɪɴɢ', 'sᴘ', '1', 'ʀ', 'Jim Unknown', '0.0 IP, 0 H, 0 R, 0 BB, 0 K'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('diamondbacks', 'away', 'ᴀᴛ ʙᴀᴛ', 'ss', '2', 's', 'Jim Alpha', '0-0'))],
     [cell(content=Gameday._badge('1', 'Ball')), cell(content='1-0')],
     [cell(col=col(colspan='2'), content=Gameday._badge('2', 'In play, out(s)'))],
     [cell(col=col(colspan='2'), content=('Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.')))],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 0 H, 0 R, 0 BB, 0 K'))],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_atbat.format('diamondbacks', 'away', '3', 'ʟ', 'Jim Beta', '0-0'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('dodgers', 'home', 'ᴘɪᴛᴄʜɪɴɢ', 'sᴘ', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 0 H, 0 R, 0 BB, 0 K'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('diamondbacks', 'away', 'ᴀᴛ ʙᴀᴛ', 'ʟꜰ', '3', 'ʟ', 'Jim Beta', '0-0'))],
     [cell(col=col(colspan='2'), content=Gameday._badge('1', 'In play, no out'))],
     [cell(col=col(colspan='2'), content='Jim Beta singles on a ground ball to left fielder  (zone 56).')],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 1 H, 0 R, 0 BB, 0 K'))],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_atbat.format('diamondbacks', 'away', '4', 'ʀ', 'Jim Charlie', '0-0'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('dodgers', 'home', 'ᴘɪᴛᴄʜɪɴɢ', 'sᴘ', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 1 H, 0 R, 0 BB, 0 K'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('diamondbacks', 'away', 'ᴀᴛ ʙᴀᴛ', '1ʙ', '4', 'ʀ', 'Jim Charlie', '0-0'))],
     [cell(col=col(colspan='2'), content=Gameday._badge('1', 'In play, no out'))],
     [cell(col=col(colspan='2'), content='Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.')],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 2 H, 0 R, 0 BB, 0 K'))],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_atbat.format('diamondbacks', 'away', '5', 'ʀ', 'Jim Delta', '0-0'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('dodgers', 'home', 'ᴘɪᴛᴄʜɪɴɢ', 'sᴘ', '1', 'ʀ', 'Jim Unknown', '0.1 IP, 2 H, 0 R, 0 BB, 0 K'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('diamondbacks', 'away', 'ᴀᴛ ʙᴀᴛ', 'ʀꜰ', '5', 'ʀ', 'Jim Delta', '0-0'))],
     [cell(col=col(colspan='2'), content=Gameday._badge('1', 'In play, out(s)'))],
     [cell(col=col(colspan='2'), content=('Jim Delta flies out to right fielder  (zone 9). ' + bold('2 out.')))],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_pitching.format('dodgers', 'home', '1', 'ʀ', 'Jim Unknown', '0.2 IP, 2 H, 0 R, 0 BB, 0 K'))],
-    [cell(col=col(clazz='bg-light', colspan='2'), content=_atbat.format('diamondbacks', 'away', '6', 'ʟ', 'Jim Echo', '0-0'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('dodgers', 'home', 'ᴘɪᴛᴄʜɪɴɢ', 'sᴘ', '1', 'ʀ', 'Jim Unknown', '0.2 IP, 2 H, 0 R, 0 BB, 0 K'))],
+    [cell(col=col(clazz='bg-light', colspan='2'), content=_player.format('diamondbacks', 'away', 'ᴀᴛ ʙᴀᴛ', 'ᴄ', '6', 'ʟ', 'Jim Echo', '0-0'))],
     [cell(content=Gameday._badge('1', 'Swinging Strike')), cell(content='0-1')],
     [cell(content=Gameday._badge('2', 'Foul')), cell(content='0-2')],
     [cell(content=Gameday._badge('3', 'Swinging Strike')), cell(content='0-3')],
@@ -231,7 +227,6 @@ _log_body = [
 ]  # yapf: disable
 
 _plays_body = [
-    [cell(content='Pitching: Jim Unknown')],
     [cell(content=('Jim Alpha flies out to left fielder  (zone 7LSF). ' + bold('1 out.')))],
     [cell(content='Jim Beta singles on a ground ball to left fielder  (zone 56).')],
     [cell(content='Jim Charlie singles on a ground ball to shortstop  (infield hit) (zone 6MS). Jim Beta to second.')],
@@ -398,17 +393,15 @@ _game_data = {
         'footer':
         '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
         'play': [{
-            'type': 'sub',
-            'subtype': 'P',
-            'value': 'P101'
-        }, {
             'type': 'matchup',
             'pitcher': {
                 'id': 'P101',
+                'pos': 'SP',
                 'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
             },
             'batter': {
                 'id': 'P102',
+                'pos': 'SS',
                 'stats': '0-0'
             }
         }, {
@@ -421,10 +414,12 @@ _game_data = {
             'type': 'matchup',
             'pitcher': {
                 'id': 'P101',
+                'pos': 'SP',
                 'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
             },
             'batter': {
                 'id': 'P103',
+                'pos': 'LF',
                 'stats': '0-0'
             }
         }, {
@@ -441,10 +436,12 @@ _game_data = {
             'type': 'matchup',
             'pitcher': {
                 'id': 'P101',
+                'pos': 'SP',
                 'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
             },
             'batter': {
                 'id': 'P104',
+                'pos': '1B',
                 'stats': '0-0'
             }
         }, {
@@ -462,10 +459,12 @@ _game_data = {
             'type': 'matchup',
             'pitcher': {
                 'id': 'P101',
+                'pos': 'SP',
                 'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
             },
             'batter': {
                 'id': 'P105',
+                'pos': 'RF',
                 'stats': '0-0'
             }
         }, {
@@ -478,10 +477,12 @@ _game_data = {
             'type': 'matchup',
             'pitcher': {
                 'id': 'P101',
+                'pos': 'SP',
                 'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
             },
             'batter': {
                 'id': 'P106',
+                'pos': 'C',
                 'stats': '0-0'
             }
         }, {

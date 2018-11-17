@@ -47,17 +47,14 @@
         "pitching": "P52269",
         "play": [
           {
-            "subtype": "P",
-            "type": "sub",
-            "value": "P52269"
-          },
-          {
             "batter": {
               "id": "P53593",
+              "pos": "LF",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -78,10 +75,12 @@
           {
             "batter": {
               "id": "P22807",
+              "pos": "2B",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "0.1 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -100,10 +99,12 @@
           {
             "batter": {
               "id": "P39648",
+              "pos": "RF",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "0.1 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -120,10 +121,12 @@
           {
             "batter": {
               "id": "P46346",
+              "pos": "3B",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "0.2 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -148,17 +151,14 @@
         "pitching": "P49654",
         "play": [
           {
-            "subtype": "P",
-            "type": "sub",
-            "value": "P49654"
-          },
-          {
             "batter": {
               "id": "P33564",
+              "pos": "2B",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -177,10 +177,12 @@
           {
             "batter": {
               "id": "P38709",
+              "pos": "1B",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "0.0 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -201,10 +203,12 @@
           {
             "batter": {
               "id": "P32849",
+              "pos": "CF",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "0.0 IP, 2 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -224,10 +228,12 @@
           {
             "batter": {
               "id": "P39655",
+              "pos": "3B",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "0.1 IP, 2 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -248,10 +254,12 @@
           {
             "batter": {
               "id": "P50271",
+              "pos": "C",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "0.2 IP, 2 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -283,10 +291,12 @@
           {
             "batter": {
               "id": "P53008",
+              "pos": "CF",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "1.0 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -305,10 +315,12 @@
           {
             "batter": {
               "id": "P52954",
+              "pos": "SS",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "1.1 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -328,10 +340,12 @@
           {
             "batter": {
               "id": "P39487",
+              "pos": "1B",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "1.2 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -353,10 +367,12 @@
           {
             "batter": {
               "id": "P36243",
+              "pos": "C",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "1.2 IP, 2 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -393,10 +409,12 @@
           {
             "batter": {
               "id": "P28841",
+              "pos": "LF",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "1.0 IP, 2 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -417,17 +435,23 @@
             "value": "P28841 lines out to center fielder P53008 (zone 8LS)."
           },
           {
-            "subtype": "CF",
             "type": "sub",
-            "value": "P37584"
+            "values": [
+              [
+                "Defensive Substitution",
+                "P37584 replaces center fielder P53008, batting 5th, playing center field."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P32323",
+              "pos": "RF",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "1.1 IP, 2 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -446,10 +470,12 @@
           {
             "batter": {
               "id": "P52269",
+              "pos": "P",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "1.1 IP, 3 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -468,10 +494,12 @@
           {
             "batter": {
               "id": "P55542",
+              "pos": "SS",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "1.2 IP, 3 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -502,10 +530,12 @@
           {
             "batter": {
               "id": "P49654",
+              "pos": "P",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "2.0 IP, 2 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -524,10 +554,12 @@
           {
             "batter": {
               "id": "P53593",
+              "pos": "LF",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "2.1 IP, 2 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -547,10 +579,12 @@
           {
             "batter": {
               "id": "P22807",
+              "pos": "2B",
               "stats": "1-1, 2B"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "2.1 IP, 3 H, 1 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -570,10 +604,12 @@
           {
             "batter": {
               "id": "P39648",
+              "pos": "RF",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "2.2 IP, 3 H, 1 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -602,10 +638,12 @@
           {
             "batter": {
               "id": "P33564",
+              "pos": "2B",
               "stats": "1-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "2.0 IP, 3 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -629,10 +667,12 @@
           {
             "batter": {
               "id": "P38709",
+              "pos": "1B",
               "stats": "1-1, HR, 2 RBI"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "2.0 IP, 4 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -651,10 +691,12 @@
           {
             "batter": {
               "id": "P32849",
+              "pos": "CF",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "2.0 IP, 5 H, 2 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -675,10 +717,12 @@
           {
             "batter": {
               "id": "P39655",
+              "pos": "3B",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "2.2 IP, 5 H, 3 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -705,10 +749,12 @@
           {
             "batter": {
               "id": "P46346",
+              "pos": "3B",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "3.0 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -727,10 +773,12 @@
           {
             "batter": {
               "id": "P37584",
+              "pos": "CF",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "3.1 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -749,10 +797,12 @@
           {
             "batter": {
               "id": "P52954",
+              "pos": "SS",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "3.2 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -778,10 +828,12 @@
           {
             "batter": {
               "id": "P50271",
+              "pos": "C",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "3.0 IP, 5 H, 3 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -802,10 +854,12 @@
           {
             "batter": {
               "id": "P28841",
+              "pos": "LF",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "3.1 IP, 5 H, 3 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -829,10 +883,12 @@
           {
             "batter": {
               "id": "P32323",
+              "pos": "RF",
               "stats": "1-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "3.2 IP, 5 H, 3 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -861,10 +917,12 @@
           {
             "batter": {
               "id": "P39487",
+              "pos": "1B",
               "stats": "1-1"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "4.0 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -882,10 +940,12 @@
           {
             "batter": {
               "id": "P36243",
+              "pos": "C",
               "stats": "0-2"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "4.1 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -904,10 +964,12 @@
           {
             "batter": {
               "id": "P49654",
+              "pos": "P",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "4.2 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -926,10 +988,12 @@
           {
             "batter": {
               "id": "P53593",
+              "pos": "LF",
               "stats": "1-2, HR, RBI"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "4.2 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -957,10 +1021,12 @@
           {
             "batter": {
               "id": "P52269",
+              "pos": "P",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "4.0 IP, 5 H, 3 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -979,10 +1045,12 @@
           {
             "batter": {
               "id": "P55542",
+              "pos": "SS",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "4.1 IP, 5 H, 3 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -999,10 +1067,12 @@
           {
             "batter": {
               "id": "P33564",
+              "pos": "2B",
               "stats": "2-2"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "4.1 IP, 6 H, 3 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -1021,10 +1091,12 @@
           {
             "batter": {
               "id": "P38709",
+              "pos": "1B",
               "stats": "2-2, HR, 2 RBI"
             },
             "pitcher": {
               "id": "P49654",
+              "pos": "SP",
               "stats": "4.2 IP, 6 H, 3 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -1041,17 +1113,23 @@
             "value": "P38709 homers on a fly ball to left field (zone 7D, 387 ft). P55542 scores."
           },
           {
-            "subtype": "P",
             "type": "sub",
-            "value": "P29624"
+            "values": [
+              [
+                "Pitching Substitution",
+                "P29624 replaces P49654, batting 9th."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P32849",
+              "pos": "CF",
               "stats": "0-2"
             },
             "pitcher": {
               "id": "P29624",
+              "pos": "RP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1080,10 +1158,12 @@
           {
             "batter": {
               "id": "P22807",
+              "pos": "2B",
               "stats": "1-2, 2B, K"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "5.0 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -1105,10 +1185,12 @@
           {
             "batter": {
               "id": "P39648",
+              "pos": "RF",
               "stats": "0-2, K"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "5.1 IP, 3 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -1127,10 +1209,12 @@
           {
             "batter": {
               "id": "P46346",
+              "pos": "3B",
               "stats": "0-2"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "5.1 IP, 4 H, 1 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -1158,10 +1242,12 @@
           {
             "batter": {
               "id": "P37584",
+              "pos": "CF",
               "stats": "0-1"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "5.1 IP, 4 H, 1 R, 1 BB, 2 K"
             },
             "type": "matchup"
@@ -1180,10 +1266,12 @@
           {
             "batter": {
               "id": "P52954",
+              "pos": "SS",
               "stats": "0-2"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "5.1 IP, 5 H, 2 R, 1 BB, 2 K"
             },
             "type": "matchup"
@@ -1204,10 +1292,12 @@
           {
             "batter": {
               "id": "P39487",
+              "pos": "1B",
               "stats": "1-2"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "5.2 IP, 5 H, 2 R, 1 BB, 3 K"
             },
             "type": "matchup"
@@ -1225,10 +1315,12 @@
           {
             "batter": {
               "id": "P36243",
+              "pos": "C",
               "stats": "0-3"
             },
             "pitcher": {
               "id": "P52269",
+              "pos": "SP",
               "stats": "5.2 IP, 6 H, 3 R, 1 BB, 3 K"
             },
             "type": "matchup"
@@ -1253,10 +1345,12 @@
           {
             "batter": {
               "id": "P39655",
+              "pos": "3B",
               "stats": "0-2"
             },
             "pitcher": {
               "id": "P29624",
+              "pos": "RP",
               "stats": "0.1 IP, 0 H, 0 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -1279,10 +1373,12 @@
           {
             "batter": {
               "id": "P50271",
+              "pos": "C",
               "stats": "0-2, K"
             },
             "pitcher": {
               "id": "P29624",
+              "pos": "RP",
               "stats": "0.2 IP, 0 H, 0 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -1301,10 +1397,12 @@
           {
             "batter": {
               "id": "P28841",
+              "pos": "LF",
               "stats": "0-2"
             },
             "pitcher": {
               "id": "P29624",
+              "pos": "RP",
               "stats": "0.2 IP, 0 H, 0 R, 0 BB, 2 K"
             },
             "type": "matchup"
@@ -1319,10 +1417,12 @@
           {
             "batter": {
               "id": "P32323",
+              "pos": "RF",
               "stats": "1-2"
             },
             "pitcher": {
               "id": "P29624",
+              "pos": "RP",
               "stats": "0.2 IP, 0 H, 0 R, 1 BB, 2 K"
             },
             "type": "matchup"
@@ -1341,17 +1441,23 @@
             "value": "P32323 strikes out swinging."
           },
           {
-            "subtype": "PH",
             "type": "sub",
-            "value": "P49682"
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-hitter P49682 replaces P52269."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P49682",
+              "pos": "PH",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P29624",
+              "pos": "RP",
               "stats": "1.0 IP, 0 H, 0 R, 1 BB, 3 K"
             },
             "type": "matchup"
@@ -1371,10 +1477,12 @@
           {
             "batter": {
               "id": "P55542",
+              "pos": "SS",
               "stats": "1-2"
             },
             "pitcher": {
               "id": "P29624",
+              "pos": "RP",
               "stats": "1.0 IP, 0 H, 0 R, 2 BB, 3 K"
             },
             "type": "matchup"
@@ -1402,22 +1510,32 @@
         "pitching": "P29811",
         "play": [
           {
-            "subtype": "P",
             "type": "sub",
-            "value": "P29811"
+            "values": [
+              [
+                "Pitching Substitution",
+                "P29811 replaces P52269, batting 8th, replacing P49682."
+              ]
+            ]
           },
           {
-            "subtype": "PH",
             "type": "sub",
-            "value": "P20199"
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-hitter P20199 replaces P29624."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P20199",
+              "pos": "PH",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P29811",
+              "pos": "RP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1435,10 +1553,12 @@
           {
             "batter": {
               "id": "P53593",
+              "pos": "LF",
               "stats": "1-3, HR, RBI"
             },
             "pitcher": {
               "id": "P29811",
+              "pos": "RP",
               "stats": "0.1 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1457,10 +1577,12 @@
           {
             "batter": {
               "id": "P22807",
+              "pos": "2B",
               "stats": "1-3, 2B, K"
             },
             "pitcher": {
               "id": "P29811",
+              "pos": "RP",
               "stats": "0.1 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1482,10 +1604,12 @@
           {
             "batter": {
               "id": "P39648",
+              "pos": "RF",
               "stats": "1-3, K"
             },
             "pitcher": {
               "id": "P29811",
+              "pos": "RP",
               "stats": "0.2 IP, 1 H, 0 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -1510,17 +1634,23 @@
         "pitching": "P50245",
         "play": [
           {
-            "subtype": "P",
             "type": "sub",
-            "value": "P50245"
+            "values": [
+              [
+                "Pitching Substitution",
+                "P50245 replaces P29624, batting 9th, replacing P20199."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P33564",
+              "pos": "2B",
               "stats": "2-3"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1543,10 +1673,12 @@
           {
             "batter": {
               "id": "P38709",
+              "pos": "1B",
               "stats": "3-3, 2 HR, 4 RBI"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "0.1 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1565,10 +1697,12 @@
           {
             "batter": {
               "id": "P32849",
+              "pos": "CF",
               "stats": "0-3, K"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "0.2 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1586,10 +1720,12 @@
           {
             "batter": {
               "id": "P39655",
+              "pos": "3B",
               "stats": "0-3, K"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "0.2 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1620,10 +1756,12 @@
           {
             "batter": {
               "id": "P46346",
+              "pos": "3B",
               "stats": "0-3, BB"
             },
             "pitcher": {
               "id": "P29811",
+              "pos": "RP",
               "stats": "1.0 IP, 1 H, 0 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -1640,17 +1778,23 @@
             "value": "P46346 doubles on a pop up to left fielder P28841 (zone 56D)."
           },
           {
-            "subtype": "P",
             "type": "sub",
-            "value": "P24589"
+            "values": [
+              [
+                "Pitching Substitution",
+                "P24589 replaces P29811, batting 8th."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P37584",
+              "pos": "CF",
               "stats": "1-2, RBI"
             },
             "pitcher": {
               "id": "P24589",
+              "pos": "RP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1668,10 +1812,12 @@
           {
             "batter": {
               "id": "P52954",
+              "pos": "SS",
               "stats": "0-3, K"
             },
             "pitcher": {
               "id": "P24589",
+              "pos": "RP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1690,10 +1836,12 @@
           {
             "batter": {
               "id": "P39487",
+              "pos": "1B",
               "stats": "2-3, RBI"
             },
             "pitcher": {
               "id": "P24589",
+              "pos": "RP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1710,10 +1858,12 @@
           {
             "batter": {
               "id": "P36243",
+              "pos": "C",
               "stats": "0-4"
             },
             "pitcher": {
               "id": "P24589",
+              "pos": "RP",
               "stats": "0.2 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1742,10 +1892,12 @@
           {
             "batter": {
               "id": "P50271",
+              "pos": "C",
               "stats": "0-3, K"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "1.0 IP, 1 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1766,10 +1918,12 @@
           {
             "batter": {
               "id": "P28841",
+              "pos": "LF",
               "stats": "0-2, BB"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "1.0 IP, 1 H, 0 R, 1 BB, 0 K"
             },
             "type": "matchup"
@@ -1787,10 +1941,12 @@
           {
             "batter": {
               "id": "P32323",
+              "pos": "RF",
               "stats": "1-3, K"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "1.1 IP, 1 H, 0 R, 1 BB, 0 K"
             },
             "type": "matchup"
@@ -1806,17 +1962,23 @@
             "value": "P32323 lines out to right fielder P39648 (zone 89M)."
           },
           {
-            "subtype": "PH",
             "type": "sub",
-            "value": "P53351"
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-hitter P53351 replaces P24589."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P53351",
+              "pos": "PH",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P50245",
+              "pos": "RP",
               "stats": "1.2 IP, 1 H, 0 R, 1 BB, 0 K"
             },
             "type": "matchup"
@@ -1841,22 +2003,32 @@
         "pitching": "P33997",
         "play": [
           {
-            "subtype": "P",
             "type": "sub",
-            "value": "P33997"
+            "values": [
+              [
+                "Pitching Substitution",
+                "P33997 replaces P24589, batting 8th, replacing P53351."
+              ]
+            ]
           },
           {
-            "subtype": "PH",
             "type": "sub",
-            "value": "P33603"
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-hitter P33603 replaces P50245."
+              ]
+            ]
           },
           {
             "batter": {
               "id": "P33603",
+              "pos": "PH",
               "stats": "0-0"
             },
             "pitcher": {
               "id": "P33997",
+              "pos": "RP",
               "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K"
             },
             "type": "matchup"
@@ -1876,10 +2048,12 @@
           {
             "batter": {
               "id": "P53593",
+              "pos": "LF",
               "stats": "2-4, HR, RBI"
             },
             "pitcher": {
               "id": "P33997",
+              "pos": "RP",
               "stats": "0.1 IP, 0 H, 0 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -1897,10 +2071,12 @@
           {
             "batter": {
               "id": "P22807",
+              "pos": "2B",
               "stats": "1-4, 2B, 2 K"
             },
             "pitcher": {
               "id": "P33997",
+              "pos": "RP",
               "stats": "0.2 IP, 0 H, 0 R, 0 BB, 1 K"
             },
             "type": "matchup"
@@ -1919,10 +2095,12 @@
           {
             "batter": {
               "id": "P39648",
+              "pos": "RF",
               "stats": "1-4, K"
             },
             "pitcher": {
               "id": "P33997",
+              "pos": "RP",
               "stats": "0.2 IP, 1 H, 0 R, 0 BB, 1 K"
             },
             "type": "matchup"

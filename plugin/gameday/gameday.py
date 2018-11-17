@@ -40,24 +40,14 @@ _divisions = divisions()
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 _game_path = '/resource/games/game_{}.json'
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
-_player = 'players/player_{}.html'
+_html_player = 'players/player_{}.html'
 _player_default = {
     'name': 'Jim Unknown',
     'number': '0',
     'bats': '-',
     'throws': '-'
 }
-_smallcaps = {'L': 'ʟ', 'R': 'ʀ', 'S': 'ꜱ'}
-_defensive_map = {
-    'C': 'at catcher',
-    '1B': 'at first base',
-    '2B': 'at second base',
-    '3B': 'at third base',
-    'SS': 'at shortstop',
-    'LF': 'in left field',
-    'CF': 'in center field',
-    'RF': 'in right field'
-}
+_smallcaps = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 _statslab_link = ('https://orangeandblueleaguebaseball.com/StatsLab/'
                   'reports/news/html/')
 
@@ -229,7 +219,7 @@ class Gameday(Registrable):
         for id_ in players:
             if 'P' + id_ in self.data['players']:
                 continue
-            link = _html + _player.format(id_)
+            link = _html + _html_player.format(id_)
             player = parse_player(link)
             self.data['players']['P' + id_] = player
 
@@ -308,36 +298,25 @@ class Gameday(Registrable):
                'pl-84p">{}</span>'.format(s)
         return div + span
 
-    def _atbat(self, encoding, batter, colors):
-        id_ = batter['id']
+    def _player(self, key, encoding, player, colors):
+        id_ = player['id']
         if id_ not in self.data['players']:
-            player = _player_default
+            player_data = _player_default
         else:
-            player = self.data['players'][id_]
-        num = player['number']
-        s = 'ᴀᴛ ʙᴀᴛ: #{} ({})<br>{}<br>{}'.format(
-            num, _smallcaps.get(player['bats'], 'ʀ'), player['name'],
-            batter['stats'])
+            player_data = self.data['players'][id_]
+        title = 'ᴀᴛ ʙᴀᴛ' if key == 'bats' else 'ᴘɪᴛᴄʜɪɴɢ'
+        pos = ''.join(_smallcaps.get(c, c) for c in player['pos'])
+        num = player_data['number']
+        s = '{}: {} #{} ({})<br>{}<br>{}'.format(
+            title, pos, num, _smallcaps.get(player_data[key], 'ʀ'),
+            player_data['name'], player['stats'])
         return cell(
             col=col(clazz='bg-light', colspan='2'),
             content=self._profile(encoding, num, colors, s))
 
-    def _pitching(self, encoding, pitcher, colors):
-        id_ = pitcher['id']
-        if id_ not in self.data['players']:
-            player = _player_default
-        else:
-            player = self.data['players'][id_]
-        num = player['number']
-        s = 'ᴘɪᴛᴄʜɪɴɢ: #{} {}ʜᴘ<br>{}<br>{}'.format(
-            num, _smallcaps.get(player['throws'], 'ʀ'), player['name'],
-            pitcher['stats'])
-        return cell(
-            col=col(clazz='bg-light', colspan='2'),
-            content=self._profile(encoding, num, colors, s))
-
-    def _defensive(self, position):
-        return 'Now {}'.format(_defensive_map.get(position, ''))
+    def _substitution(self, title, value):
+        s = '<b>{}</b><br>{}'.format(title, value)
+        return cell(col=col(clazz='bg-light', colspan='2'), content=s)
 
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
@@ -417,30 +396,19 @@ class Gameday(Registrable):
                 outs = 0
                 for play in half['play']:
                     if play['type'] == 'sub':
-                        value = game_sub(play['value'])
-                        if play['subtype'] == 'P':
-                            title = 'Pitching: '
-                        elif play['subtype'] == 'PH':
-                            title = 'Pinch hitting: '
-                        elif play['subtype'] == 'PR':
-                            title = 'Pinch running: '
-                        elif play['subtype'] != 'other':
-                            title = self._defensive(play['subtype']) + ': '
-                        bcontent = title + value
-                        log_table['body'].append([
-                            cell(
-                                col=col(clazz='bg-light', colspan='2'),
-                                content=bcontent)
-                        ])
-                        plays_table['body'].append([cell(content=bcontent)])
+                        for title, value in play['values']:
+                            value = game_sub(value)
+                            log_table['body'].append(
+                                [self._substitution(title, value)])
+                            plays_table['body'].append([cell(content=value)])
                     elif play['type'] == 'matchup':
                         log_table['body'].append([
-                            self._pitching(pitching, play['pitcher'],
-                                           colors[pitching])
+                            self._player('throws', pitching, play['pitcher'],
+                                         colors[pitching])
                         ])
                         log_table['body'].append([
-                            self._atbat(batting, play['batter'],
-                                        colors[batting])
+                            self._player('bats', batting, play['batter'],
+                                         colors[batting])
                         ])
                     elif play['type'] == 'event':
                         for s in play['sequence']:
@@ -536,9 +504,10 @@ class Gameday(Registrable):
 #     for score in statsplus.data['scores'][encoded_date]:
 #         id_ = re.findall('(\d+)\.html', score)[0]
 #         statsplus._extract(encoded_date, id_)
-# statsplus._extract('2024-07-28T00:00:00-07:00', '2030')
+# statsplus._extract('2024-08-16T00:00:00-07:00', '2285')
 
 # gameday = Gameday(date=date, e=e)
-# gameday.data['games'] = ['1896']
+# gameday._backfill()
+# gameday.data['games'] = ['2285']
 # gameday._check_games()
 # gameday._setup_internal(date=date)

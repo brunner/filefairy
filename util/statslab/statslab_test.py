@@ -61,6 +61,11 @@ _game_box_sub = """<html> ...
 <td class="dl"><a href="../players/player_106.html">J. Echo</a> 2B</td>
 <td class="dl">&#160;&#160; <a href="../players/player_107.html">J. Foxtrot</a> PH, 2B</td>
 </table> ...
+<th width="30" class="hsn dc">RBI</th></tr>
+<tr><td class="dl"><a href="../players/player_110.html">J. Golf</a> RF</td>
+<td class="dl"><a href="../players/player_111.html">J. Juliet</a> LF</td>
+<td class="dl"><a href="../players/player_112.html">J. Kilo</a> SS</td>
+</table> ...
 <th width="30" class="hsn dc">ERA</th></tr>
 <tr><td class="dl"><a href="../players/player_108.html">J. Whiskey</a></td>
 <tr><td class="dl"><a href="../players/player_109.html">J. Victor</a></td>
@@ -166,7 +171,7 @@ _game_box = 'box_scores/game_box_{}.html'
 _game_log = 'game_logs/log_{}.html'
 _player = 'players/player_{}.html'
 
-_players = ['101', '102', '103', '104', '105', '106', '107', '108', '109']
+_players = ['101', '102', '103', '104', '105', '106', '107', '108', '109', '110', '111', '112']
 _plays = [[{
     'label':
     'Top 1st',
@@ -177,17 +182,15 @@ _plays = [[{
     'footer':
     '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
     'play': [{
-        'type': 'sub',
-        'subtype': 'P',
-        'value': 'P101'
-    }, {
         'type': 'matchup',
         'pitcher': {
             'id': 'P101',
+            'pos': 'SP',
             'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
         },
         'batter': {
             'id': 'P102',
+            'pos': 'SS',
             'stats': '0-0'
         }
     }, {
@@ -195,15 +198,17 @@ _plays = [[{
         'outs': 1,
         'runs': 0,
         'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-        'value': 'P102 flies out to left fielder  (zone 7LSF).',
+        'value': 'P102 flies out to left fielder P111 (zone 7LSF).',
     }, {
         'type': 'matchup',
         'pitcher': {
             'id': 'P101',
+            'pos': 'SP',
             'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
         },
         'batter': {
             'id': 'P103',
+            'pos': '1B',
             'stats': '0-0'
         }
     }, {
@@ -215,15 +220,17 @@ _plays = [[{
         0,
         'sequence': ['1 0 0 In play, no out'],
         'value':
-        'P103 singles on a ground ball to left fielder  (zone 56).'
+        'P103 singles on a ground ball to left fielder P111 (zone 56).'
     }, {
         'type': 'matchup',
         'pitcher': {
             'id': 'P101',
+            'pos': 'SP',
             'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
         },
         'batter': {
             'id': 'P104',
+            'pos': 'CF',
             'stats': '0-0'
         }
     }, {
@@ -235,16 +242,18 @@ _plays = [[{
         0,
         'sequence': ['1 0 0 In play, no out'],
         'value':
-        'P104 singles on a ground ball to shortstop  (infield hit) '
+        'P104 singles on a ground ball to shortstop P112 (infield hit) '
         '(zone 6MS). P103 to second.'
     }, {
         'type': 'matchup',
         'pitcher': {
             'id': 'P101',
+            'pos': 'SP',
             'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
         },
         'batter': {
             'id': 'P105',
+            'pos': 'C',
             'stats': '0-0'
         }
     }, {
@@ -252,15 +261,17 @@ _plays = [[{
         'outs': 1,
         'runs': 0,
         'sequence': ['1 0 0 In play, out(s)'],
-        'value': 'P105 flies out to right fielder  (zone 9).'
+        'value': 'P105 flies out to right fielder P110 (zone 9).'
     }, {
         'type': 'matchup',
         'pitcher': {
             'id': 'P101',
+            'pos': 'SP',
             'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
         },
         'batter': {
             'id': 'P106',
+            'pos': '2B',
             'stats': '0-0'
         }
     }, {
