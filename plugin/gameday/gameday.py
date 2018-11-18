@@ -335,18 +335,58 @@ class Gameday(Registrable):
         for s in strikes:
             active = ' active' if s else ''
             sdot += '<div class="dot strike border{}"></div>'.format(active)
-        return '<div class="count">{}<br>{}</div>'.format(bdot, sdot)
+        return '<div class="count mr-8p">{}<br>{}</div>'.format(bdot, sdot)
 
     @staticmethod
     def _score(away_team, home_team, runs):
-        return '<span class="badge border tag">{} {} · {} {}</span>'.format(
+        s = '{} {} · {} {}'.format(
             encoding_to_abbreviation(away_team), runs[away_team],
             encoding_to_abbreviation(home_team), runs[home_team])
+        return '<span class="badge border tag tag-light">{}</span>'.format(s)
 
     @staticmethod
     def _substitution(title, value, colspan):
         s = '<b>{}</b><br>{}'.format(title, value)
         return cell(col=col(clazz='bg-light', colspan=colspan), content=s)
+
+    @staticmethod
+    def _tag(value):
+        tag = '<span class="badge border tag tag-{} mr-8p">{}</span>'
+        if 'walk' in value:
+            return tag.format('success', 'WALK')
+        if 'hit by pitch' in value:
+            return tag.format('success', 'HIT BY PITCH')
+        if any([x in value for x in ['strikes out', 'called out on strikes']]):
+            return tag.format('danger', 'STRIKEOUT')
+        if 'singles' in value:
+            return tag.format('primary', 'SINGLE')
+        if 'doubles' in value:
+            return tag.format('primary', 'DOUBLE')
+        if 'triples' in value:
+            return tag.format('primary', 'TRIPLE')
+        if 'homers' in value:
+            return tag.format('primary', 'HOME RUN')
+        if 'sacrifice fly' in value:
+            return tag.format('primary', 'SAC FLY')
+        if 'sacrifice bunt' in value:
+            return tag.format('primary', 'SAC BUNT')
+        if 'reaches on an error' in value:
+            return tag.format('primary', 'FIELD ERROR')
+        if 'grounds into a double play' in value:
+            return tag.format('secondary', 'GROUNDED INTO DP')
+        if 'lines into a double play' in value:
+            return tag.format('secondary', 'LINED INTO DP')
+        if 'grounds into a fielders choice' in value:
+            return tag.format('secondary', 'FORCE OUT')
+        if 'flies out' in value:
+            return tag.format('secondary', 'FLYOUT')
+        if 'grounds out' in value:
+            return tag.format('secondary', 'GROUNDOUT')
+        if 'lines out' in value:
+            return tag.format('secondary', 'LINEOUT')
+        if 'pops out' in value:
+            return tag.format('secondary', 'POP OUT')
+        return tag.format('secondary', 'UNKNOWN*')
 
     def _play(self, value, encoding, id_, colors, sequence, score, colspan):
         if id_ not in self.data['players']:
@@ -355,7 +395,8 @@ class Gameday(Registrable):
             player_data = self.data['players'][id_]
         num = player_data['number']
         count = self._count(sequence)
-        row = '<div class="d-flex">{}{}</div>'.format(count, score)
+        tag = self._tag(value)
+        row = '<div class="d-flex">{}{}{}</div>'.format(count, tag, score)
         s = '{}<br>{}'.format(value, row)
         return cell(
             col=col(clazz='bg-light', colspan=colspan),

@@ -850,7 +850,7 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
 
     if _find('Hit by Pitch', value):
         _bases_push(bases, 'first', (batting, _pitcher(fielders)))
-        values.append('is hit by the pitch')
+        values.append('hit by pitch')
         return
 
     if _find('Reaches on Catchers interference', value):
@@ -931,8 +931,7 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
         _bases_push(bases, 'first', (batting, _pitcher(fielders)))
         nums = '1-5' if base == 'third' else '1-6'
         fields = _fielders(nums, fielders)
-        values.append('bunt grounds into a failed fielders choice{} '
-                      '(attempted sacrifice) (zone 1S)'.format(fields))
+        values.append('safe on a sacrifice bunt (zone 1S)'.format(fields))
         values.append('{} to {}'.format(runner, base))
         return
 
