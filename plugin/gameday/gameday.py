@@ -81,6 +81,7 @@ class Gameday(Registrable):
             if not self.data['started']:
                 self._backfill()
             self.data['started'] = False
+            self.write()
         return Response()
 
     def _on_message_internal(self, **kwargs):
