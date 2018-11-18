@@ -1022,8 +1022,8 @@
         "pathname": "/home/pi/filefairy/plugin/statsplus/statsplus.py"
       },
       {
-        "count": 35,
-        "date": "2018-11-17T16:47:30.443504-08:00",
+        "count": 52,
+        "date": "2018-11-17T17:05:59.123863-08:00",
         "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 531, in parse_game_data\n    players[pitching_team], bases, subs))\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 222, in _play_sub\n    i, pos = j, bplayer['pos'][0]\nIndexError: list index out of range",
         "levelname": "WARNING",
         "lineno": 611,
@@ -1031,8 +1031,8 @@
         "pathname": "/home/pi/filefairy/util/statslab/statslab.py"
       },
       {
-        "count": 34,
-        "date": "2018-11-17T16:47:32.911116-08:00",
+        "count": 51,
+        "date": "2018-11-17T17:06:00.643344-08:00",
         "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 518, in parse_game_data\n    subs))\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 183, in _play_sub\n    i, xplayer = _player('B', subs[id_], players)\nTypeError: 'NoneType' object is not iterable",
         "levelname": "WARNING",
         "lineno": 611,
@@ -1040,12 +1040,93 @@
         "pathname": "/home/pi/filefairy/util/statslab/statslab.py"
       },
       {
-        "count": 32,
-        "date": "2018-11-17T16:47:34.564071-08:00",
+        "count": 49,
+        "date": "2018-11-17T17:06:02.286524-08:00",
         "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 531, in parse_game_data\n    players[pitching_team], bases, subs))\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 222, in _play_sub\n    i, pos = j, bplayer['pos'][0]\nIndexError: list index out of range",
         "levelname": "WARNING",
         "lineno": 611,
         "msg": "Unable to parse https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/game_logs/log_2387.html.",
+        "pathname": "/home/pi/filefairy/util/statslab/statslab.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-17T16:48:32.175836-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 186,
+        "msg": "Manual push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-17T17:00:41.914273-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 106,
+        "msg": "Upload started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-17T17:06:10.352707-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 317,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-17T17:06:11.448566-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 311,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-17T17:12:52.502735-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 293,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-17T17:12:53.538775-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 64,
+        "msg": "News updated.",
+        "pathname": "/home/pi/filefairy/plugin/recap/recap.py"
+      },
+      {
+        "count": 7,
+        "date": "2018-11-17T17:13:01.209145-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 531, in parse_game_data\n    players[pitching_team], bases, subs))\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 222, in _play_sub\n    i, pos = j, bplayer['pos'][0]\nIndexError: list index out of range",
+        "levelname": "WARNING",
+        "lineno": 611,
+        "msg": "Unable to parse /home/pi/filefairy/resource/extract/game_logs/log_2329.txt.",
+        "pathname": "/home/pi/filefairy/util/statslab/statslab.py"
+      },
+      {
+        "count": 7,
+        "date": "2018-11-17T17:13:01.413279-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 518, in parse_game_data\n    subs))\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 183, in _play_sub\n    i, xplayer = _player('B', subs[id_], players)\nTypeError: 'NoneType' object is not iterable",
+        "levelname": "WARNING",
+        "lineno": 611,
+        "msg": "Unable to parse /home/pi/filefairy/resource/extract/game_logs/log_2364.txt.",
+        "pathname": "/home/pi/filefairy/util/statslab/statslab.py"
+      },
+      {
+        "count": 7,
+        "date": "2018-11-17T17:13:01.636392-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 531, in parse_game_data\n    players[pitching_team], bases, subs))\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 222, in _play_sub\n    i, pos = j, bplayer['pos'][0]\nIndexError: list index out of range",
+        "levelname": "WARNING",
+        "lineno": 611,
+        "msg": "Unable to parse /home/pi/filefairy/resource/extract/game_logs/log_2387.txt.",
         "pathname": "/home/pi/filefairy/util/statslab/statslab.py"
       }
     ]
