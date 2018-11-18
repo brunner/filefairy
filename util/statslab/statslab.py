@@ -162,8 +162,9 @@ def _pos(pos, subtype):
     return pos[i:]
 
 
-def _play_sub(subtype, id_, players, bases, subs):
+def _play_sub(subtype, id_, players, bases, injuries, subs):
     values = []
+    xbid, xpid = None, None
     if subtype == 'P':
         xpid = players['P'][0]['id']
         players['P'].insert(0, _new_pitcher(id_))
@@ -205,11 +206,12 @@ def _play_sub(subtype, id_, players, bases, subs):
             values.append(('Defensive Switch', value))
         else:
             players['B'][i] = _new_batter(id_, _pos(pos, subtype))
+            xbid = xplayer['id']
             xsub = _sub_map[xplayer['pos'][0]][0]
             if 'Pinch' in xsub:
-                xsub = xplayer['id']
+                xsub = xbid
             else:
-                xsub = xsub + ' ' + xplayer['id']
+                xsub = xsub + ' ' + xbid
             sub = _sub_map[subtype][1]
             value = '{} replaces {}, batting {}, playing {}.'.format(
                 id_, xsub, _batting_map[i], sub)
@@ -230,6 +232,11 @@ def _play_sub(subtype, id_, players, bases, subs):
                     break
             else:
                 pos = None
+
+    for id_ in [xbid, xpid]:
+        if id_ in injuries:
+            inj = '{} was injured {}.'.format(id_, injuries[id_])
+            values.append(('Injury Delay', inj))
 
     return {'type': 'sub', 'values': values}
 
@@ -375,6 +382,13 @@ def parse_game_data(box_link, log_link):
 
     player_ids = list(sorted(set(player_ids)))
 
+    injuries = {}
+    regex = ('<a href="../players/player_(\d+).html">[^<]+</a> was '
+             'injured ([^.]+).')
+    for match in re.findall(regex, box_content, re.DOTALL):
+        id_, text = match
+        injuries['P' + id_] = text
+
     try:
         plays = []
         if log_link:
@@ -447,7 +461,7 @@ def parse_game_data(box_link, log_link):
                 if curr_pitching != curr_fielders['P'][0]['id']:
                     play.append(
                         _play_sub('P', curr_pitching, curr_fielders, bases,
-                                  subs))
+                                  injuries, subs))
 
                 if html:
                     regex = ('span="2">[^-]+- ([^;]+); [^\d]+(\d+) - '
@@ -507,7 +521,7 @@ def parse_game_data(box_link, log_link):
                             curr_pitching = pitching
                             play.append(
                                 _play_sub('P', curr_pitching, curr_fielders,
-                                          bases, subs))
+                                          bases, injuries, subs))
                         elif batting or hitting:
                             if batting:
                                 curr_batting = batting
@@ -518,13 +532,13 @@ def parse_game_data(box_link, log_link):
                                     play.append(
                                         _play_sub('PH', curr_batting,
                                                   players[batting_team], bases,
-                                                  subs))
+                                                  injuries, subs))
                             if hitting:
                                 curr_batting = hitting
                                 play.append(
                                     _play_sub('PH', curr_batting,
                                               players[batting_team], bases,
-                                              subs))
+                                              injuries, subs))
                             play.append(
                                 _play_matchup(curr_pitching, curr_batting,
                                               pitching_team, batting_team,
@@ -532,12 +546,13 @@ def parse_game_data(box_link, log_link):
                         elif running:
                             play.append(
                                 _play_sub('PR', running, players[batting_team],
-                                          bases, subs))
+                                          bases, injuries, subs))
                         elif defensive[0]:
                             subtype, value = defensive
                             play.append(
                                 _play_sub(subtype, value,
-                                          players[pitching_team], bases, subs))
+                                          players[pitching_team], bases,
+                                          injuries, subs))
                     elif r:
                         for part in r.split('<br>'):
                             if not part:
@@ -584,6 +599,7 @@ def parse_game_data(box_link, log_link):
                                 players,
                                 during=d)))
 
+                play = _tweak_subs(play)
                 inning.append({
                     'label': cell_label,
                     'batting': cell_batting,
@@ -1202,6 +1218,30 @@ def _parse_part(value, bases, values, fielders):
         return
 
     values.append(value + '*')
+
+
+def _tweak_subs(play):
+    order = [
+        'Injury Delay', 'Defensive Substitution', 'Defensive Switch',
+        'Pitching Substitution', 'Offensive Substitution'
+    ]
+    pcopy = []
+    subs = []
+    for p in list(play):
+        if p['type'] == 'sub':
+            for value in p['values']:
+                subs.append(value)
+        else:
+            if subs:
+                values = []
+                for t in order:
+                    for value in subs:
+                        if value[0] == t:
+                            values.append(value)
+                pcopy.append({'type': 'sub', 'values': values})
+                subs = []
+            pcopy.append(p)
+    return pcopy
 
 
 def _tweak_runners(values):
