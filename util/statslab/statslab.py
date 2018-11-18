@@ -135,11 +135,11 @@ def _play_event(batter, sequence, value):
 
 
 def _play_matchup(pnum, bnum, pteam, bteam, players):
-    _, pplayer = _player('P', pnum, players[pteam])
+    _, pplayer = _player('P', players[pteam], id_=pnum)
     ppos = 'SP' if len(players[pteam]['P']) == 1 else 'RP'
     pitch = _stats('P', pplayer)
 
-    _, bplayer = _player('B', bnum, players[bteam])
+    _, bplayer = _player('B', players[bteam], id_=bnum)
     bat = _stats('B', bplayer)
 
     return {
@@ -157,22 +157,26 @@ def _play_matchup(pnum, bnum, pteam, bteam, players):
     }
 
 
+def _pos(pos, subtype):
+    i = pos.index(subtype)
+    return pos[i:]
+
+
 def _play_sub(subtype, id_, players, bases, subs):
     values = []
     if subtype == 'P':
         xpid = players['P'][0]['id']
         players['P'].insert(0, _new_pitcher(id_))
         if id_ in subs:
-            player = _player('B', subs[id_], players)
-            if player is None:
-                i, _ = _player('B', id_, players)
-                players['B'][i]['pos'] = [subtype]
+            i, pos = subs[id_]
+            i, xplayer = _player('B', players, index=i)
+            if xplayer['id'] == id_:
+                players['B'][i]['pos'] = _pos(pos, subtype)
                 value = ('{} remains in the game as the pitcher, replacing '
                          '{}.').format(id_, xpid)
             else:
-                i, xplayer = player
                 xbid = xplayer['id']
-                players['B'][i] = _new_batter(id_, [subtype])
+                players['B'][i] = _new_batter(id_, _pos(pos, subtype))
                 replacing = ', replacing ' + xbid if xbid != xpid else ''
                 value = '{} replaces {}, batting {}{}.'.format(
                     id_, xpid, _batting_map[i], replacing)
@@ -180,9 +184,10 @@ def _play_sub(subtype, id_, players, bases, subs):
             value = '{} replaces {}.'.format(id_, xpid)
         values.append(('Pitching Substitution', value))
     elif subtype in ['PH', 'PR']:
-        i, xplayer = _player('B', subs[id_], players)
+        i, pos = subs[id_]
+        i, xplayer = _player('B', players, index=i)
         xbid = xplayer['id']
-        players['B'][i] = _new_batter(id_, [subtype])
+        players['B'][i] = _new_batter(id_, pos)
         sub = _sub_map[subtype][0]
         value = '{} {} replaces {}.'.format(sub, id_, xbid)
         for base in range(3):
@@ -191,16 +196,15 @@ def _play_sub(subtype, id_, players, bases, subs):
                     bases[base] = [(id_, p)]
         values.append(('Offensive Substitution', value))
     else:
-        player = _player('B', subs[id_], players)
-        if player is None:
-            i, _ = _player('B', id_, players)
-            players['B'][i]['pos'] = [subtype]
+        i, pos = subs[id_]
+        i, xplayer = _player('B', players, index=i)
+        if xplayer['id'] == id_:
+            players['B'][i]['pos'] = _pos(pos, subtype)
             sub = _sub_map[subtype][0]
             value = '{} remains in the game as the {}.'.format(id_, sub)
             values.append(('Defensive Switch', value))
         else:
-            i, xplayer = player
-            players['B'][i] = _new_batter(id_, [subtype])
+            players['B'][i] = _new_batter(id_, _pos(pos, subtype))
             xsub = _sub_map[xplayer['pos'][0]][0]
             if 'Pinch' in xsub:
                 xsub = xplayer['id']
@@ -235,10 +239,10 @@ def _sequence(counts, value):
 
 
 def _value(values, bases, pnum, bnum, pteam, bteam, players, during=False):
-    _, pplayer = _player('P', pnum, players[pteam])
+    _, pplayer = _player('P', players[pteam], id_=pnum)
     pstats = pplayer['stats']
 
-    _, bplayer = _player('B', bnum, players[bteam])
+    _, bplayer = _player('B', players[bteam], id_=bnum)
     bstats = bplayer['stats']
 
     if values:
@@ -280,10 +284,14 @@ def _value(values, bases, pnum, bnum, pteam, bteam, players, during=False):
         if 'homers' in value:
             bstats['HR'] += 1
 
+    norbi_list = [
+        'balk', 'double play', 'hrowing error', 'passed ball',
+        'reaches on an error', 'steals home', 'wild pitch'
+    ]
     for r, p in bases[3]:
-        _, xplayer = _player('P', p, players[pteam])
+        _, xplayer = _player('P', players[pteam], id_=p)
         xplayer['stats']['R'] += 1
-        if not any([o in value for o in ['double play', 'steals home']]):
+        if not any([o in value for o in norbi_list]):
             bstats['RBI'] += 1
     bases[3] = []
 
@@ -340,20 +348,20 @@ def parse_game_data(box_link, log_link):
     player_ids = []
     subs = {}
 
-    last = ''
     regex = '"hsn dc">RBI</th>\s*</tr>(.+?)</table>'
     batting_linescores = re.findall(regex, box_content, re.DOTALL)
     for i, line in enumerate(batting_linescores):
         t = away_team if i == 0 else home_team
         regex = '(>)?<a href="../players/player_(\d+).html">[^<]+</a>([^<]+)<'
+        scount = 0
         for starter, id_, pos in re.findall(regex, line):
             player_ids.append(id_)
+            pos = pos.strip().split(', ')
             if starter:
-                pos = pos.strip().split(', ')
                 players[t]['B'].append(_new_batter('P' + id_, pos))
+                scount += 1
             else:
-                subs['P' + id_] = last
-            last = 'P' + id_
+                subs['P' + id_] = (scount - 1, pos)
 
     regex = '"hsn dc">ERA</th>\s*</tr>(.+?)</table>'
     pitching_linescores = re.findall(regex, box_content, re.DOTALL)
@@ -478,8 +486,7 @@ def parse_game_data(box_link, log_link):
                                 d = True
                             play.append(
                                 _play_event(
-                                    '' if d else curr_batting,
-                                    sequence,
+                                    '' if d else curr_batting, sequence,
                                     _value(
                                         values,
                                         bases,
@@ -504,8 +511,10 @@ def parse_game_data(box_link, log_link):
                         elif batting or hitting:
                             if batting:
                                 curr_batting = batting
-                                if not _player('B', curr_batting,
-                                               players[batting_team]):
+                                if not _player(
+                                        'B',
+                                        players[batting_team],
+                                        id_=curr_batting):
                                     play.append(
                                         _play_sub('PH', curr_batting,
                                                   players[batting_team], bases,
@@ -539,8 +548,7 @@ def parse_game_data(box_link, log_link):
                                 if values:
                                     play.append(
                                         _play_event(
-                                            '',
-                                            sequence,
+                                            '', sequence,
                                             _value(
                                                 values,
                                                 bases,
@@ -565,8 +573,7 @@ def parse_game_data(box_link, log_link):
                         d = True
                     play.append(
                         _play_event(
-                            '' if d else curr_batting,
-                            sequence,
+                            '' if d else curr_batting, sequence,
                             _value(
                                 values,
                                 bases,
@@ -679,6 +686,7 @@ def _fielder(num, fielders):
         if pos == fielder['pos'][0]:
             return title + ' ' + fielder['id']
 
+    from util.json_.json_ import dumps
     return title + '*'
 
 
@@ -688,7 +696,9 @@ def _fielders(nums, fielders):
     return ' to ' + f[0] if len(f) == 1 else ', ' + ' to '.join(f)
 
 
-def _player(key, id_, players):
+def _player(key, players, id_=None, index=None):
+    if index is not None:
+        return index, players[key][index]
     for i, player in enumerate(players[key]):
         if id_ == player['id']:
             return i, player
@@ -859,7 +869,7 @@ def _parse_value(value, bases, counts, sequence, values, batting, fielders):
     if _find('Sac Bunt - play at first, batter safe!', value):
         _bases_push(bases, 'first', (batting, _pitcher(fielders)))
         field = _fielder('1', fielders)
-        values.append('reaches a bunt ground ball to {} '
+        values.append('reaches on a bunt ground ball to {} '
                       '(attempted sacrifice) (zone 1S)'.format(field))
         return
 

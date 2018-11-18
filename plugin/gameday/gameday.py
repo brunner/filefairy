@@ -105,13 +105,16 @@ class Gameday(Registrable):
         for id_ in games:
             with open(_root + _game_path.format(id_), 'r') as f:
                 game_data = json.loads(f.read())
-                away_team = encoding_to_nickname(game_data['away_team'])
-                home_team = encoding_to_nickname(game_data['home_team'])
-                date = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
-                subtitle = '{} at {}, {}'.format(away_team, home_team, date)
-                game = self._game(id_, subtitle, game_data, schedule_data)
-                html = 'gameday/{}/index.html'.format(id_)
-                ret.append((html, subtitle, 'game.html', game))
+                if game_data['ok']:
+                    away_team = encoding_to_nickname(game_data['away_team'])
+                    home_team = encoding_to_nickname(game_data['home_team'])
+                    date = decode_datetime(
+                        game_data['date']).strftime('%m/%d/%Y')
+                    subtitle = '{} at {}, {}'.format(away_team, home_team,
+                                                     date)
+                    game = self._game(id_, subtitle, game_data, schedule_data)
+                    html = 'gameday/{}/index.html'.format(id_)
+                    ret.append((html, subtitle, 'game.html', game))
 
         if data != original:
             self.write()
@@ -149,27 +152,28 @@ class Gameday(Registrable):
 
     @staticmethod
     def _schedule_data(games):
-        schedule_data = {}
+        sdata = {}
         for id_ in games:
             with open(_root + _game_path.format(id_), 'r') as f:
                 game_data = json.loads(f.read())
-                date = decode_datetime(game_data['date'])
+                if game_data['ok']:
+                    date = decode_datetime(game_data['date'])
 
-                away_team = game_data['away_team']
-                if away_team not in schedule_data:
-                    schedule_data[away_team] = []
+                    away_team = game_data['away_team']
+                    if away_team not in sdata:
+                        sdata[away_team] = []
 
-                home_team = game_data['home_team']
-                if home_team not in schedule_data:
-                    schedule_data[home_team] = []
+                    home_team = game_data['home_team']
+                    if home_team not in sdata:
+                        sdata[home_team] = []
 
-                schedule_data[away_team].append((date, home_team, '@', id_))
-                schedule_data[home_team].append((date, away_team, 'v', id_))
+                    sdata[away_team].append((date, home_team, '@', id_))
+                    sdata[home_team].append((date, away_team, 'v', id_))
 
-        for encoding in schedule_data:
-            schedule_data[encoding] = sorted(schedule_data[encoding])
+        for encoding in sdata:
+            sdata[encoding] = sorted(sdata[encoding])
 
-        return schedule_data
+        return sdata
 
     @staticmethod
     def _schedule_head(decoding):
@@ -282,8 +286,8 @@ class Gameday(Registrable):
         return ret
 
     @staticmethod
-    def _badge(pitch, sequence):
-        p = '<div class="badge badge-pill alert-pitch alert-{0}">{1}</div>'
+    def _pitch(pitch, sequence):
+        p = '<div class="badge badge-pill pitch alert-{}">{}</div>'
         if 'In play' in sequence:
             return p.format('primary', pitch) + sequence
         if 'Ball' in sequence:
@@ -324,31 +328,38 @@ class Gameday(Registrable):
                 balls[b] = 1
             for s in range(int(strike)):
                 strikes[s] = 1
-        bpitch, spitch = '', ''
+        bdot, sdot = '', ''
         for b in balls:
             active = ' active' if b else ''
-            bpitch += '<div class="pitch ball border{}"></div>'.format(active)
+            bdot += '<div class="dot ball border{}"></div>'.format(active)
         for s in strikes:
             active = ' active' if s else ''
-            spitch += '<div class="pitch strike border{}"></div>'.format(
-                active)
-        return '<div class="count">{}<br>{}</div>'.format(bpitch, spitch)
+            sdot += '<div class="dot strike border{}"></div>'.format(active)
+        return '<div class="count">{}<br>{}</div>'.format(bdot, sdot)
 
-    def _play(self, value, encoding, id_, colors, sequence, colspan):
+    @staticmethod
+    def _score(away_team, home_team, runs):
+        return '<span class="badge border tag">{} {} · {} {}</span>'.format(
+            encoding_to_abbreviation(away_team), runs[away_team],
+            encoding_to_abbreviation(home_team), runs[home_team])
+
+    @staticmethod
+    def _substitution(title, value, colspan):
+        s = '<b>{}</b><br>{}'.format(title, value)
+        return cell(col=col(clazz='bg-light', colspan=colspan), content=s)
+
+    def _play(self, value, encoding, id_, colors, sequence, score, colspan):
         if id_ not in self.data['players']:
             player_data = _player_default
         else:
             player_data = self.data['players'][id_]
         num = player_data['number']
         count = self._count(sequence)
-        s = '{}<br>{}'.format(value, count)
+        row = '<div class="d-flex">{}{}</div>'.format(count, score)
+        s = '{}<br>{}'.format(value, row)
         return cell(
             col=col(clazz='bg-light', colspan=colspan),
             content=self._profile(encoding, num, colors, s))
-
-    def _substitution(self, title, value, colspan):
-        s = '<b>{}</b><br>{}'.format(title, value)
-        return cell(col=col(clazz='bg-light', colspan=colspan), content=s)
 
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
@@ -446,37 +457,38 @@ class Gameday(Registrable):
                     elif play['type'] == 'event':
                         for s in play['sequence']:
                             pitch, balls, strikes, value = s.split(' ', 3)
-                            badge = self._badge(pitch, value)
+                            pcontent = self._pitch(pitch, value)
                             if 'In play' in s:
                                 log_table['body'].append([
-                                    cell(col=col(colspan='2'), content=badge)
+                                    cell(
+                                        col=col(colspan='2'), content=pcontent)
                                 ])
                             else:
                                 count = '{}-{}'.format(balls, strikes)
-                                log_table['body'].append(
-                                    [cell(content=badge),
-                                     cell(content=count)])
+                                log_table['body'].append([
+                                    cell(content=pcontent),
+                                    cell(content=count)
+                                ])
+                        score = ''
                         value = game_sub(play['value'])
                         if play['outs']:
                             outs += play['outs']
-                            value += ' ' + bold('{} out.'.format(outs))
+                            value += ' ' + bold('{} out'.format(outs))
+                        content = value
                         if play['runs']:
                             runs[batting] += play['runs']
-                            value += ' ' + bold('{} {}, {} {}.'.format(
-                                encoding_to_abbreviation(away_team),
-                                runs[away_team],
-                                encoding_to_abbreviation(home_team),
-                                runs[home_team]))
+                            score = self._score(away_team, home_team, runs)
+                            content += '<br>' + score
                         log_table['body'].append(
-                            [cell(col=col(colspan='2'), content=value)])
+                            [cell(col=col(colspan='2'), content=content)])
                         if play['batter']:
                             plays_table['body'].append([
                                 self._play(value, batting, play['batter'],
                                            colors[batting], play['sequence'],
-                                           '')
+                                           score, '')
                             ])
                         else:
-                            plays_table['body'].append([cell(content=value)])
+                            plays_table['body'].append([cell(content=content)])
                 if half['footer']:
                     log_table['fcols'] = [col(colspan='2')]
                     fcontent = game_sub(half['footer'])
@@ -548,6 +560,7 @@ class Gameday(Registrable):
 
 # gameday = Gameday(date=date, e=e)
 # gameday._backfill()
-# gameday.data['games'] = ['2285']
+# gameday.data['started'] = True
 # gameday._check_games()
+# gameday.data['started'] = False
 # gameday._setup_internal(date=date)
