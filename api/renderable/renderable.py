@@ -51,7 +51,7 @@ class Renderable(Serializable):
         test = kwargs.get('test')
         log = kwargs.get('log', True)
 
-        _documentation = 'https://github.com/brunner/filefairy/README.md'
+        _documentation = 'https://github.com/brunner/filefairy/'
         _title = self._title()
         for html, subtitle, tmpl, context in self._render_internal(**kwargs):
             try:

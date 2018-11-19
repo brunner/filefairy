@@ -18,7 +18,7 @@ from util.jinja2_.jinja2_ import env  # noqa
 
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
-_documentation = 'https://github.com/brunner/filefairy/README.md'
+_documentation = 'https://github.com/brunner/filefairy/'
 
 
 class FakeRenderable(Renderable):
