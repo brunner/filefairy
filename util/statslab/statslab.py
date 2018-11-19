@@ -306,7 +306,8 @@ def _value(values, bases, pnum, bnum, pteam, bteam, players, during=False):
 
 
 def parse_game_data(box_link, log_link):
-    ret = {'ok': False, 'id': _find('log_(\d+)\.', log_link)}
+    game_id_ = _find('log_(\d+)\.', log_link)
+    ret = {'ok': False, 'id': game_id_}
 
     box_content = _open(box_link)
     title = re.findall(_game_box_title, box_content, re.DOTALL)
@@ -630,7 +631,7 @@ def parse_game_data(box_link, log_link):
     except:
         logger_.log(
             logging.WARNING,
-            'Unable to parse {}.'.format(log_link),
+            'Unable to parse log_{}.'.format(game_id_),
             exc_info=True)
 
     return ret

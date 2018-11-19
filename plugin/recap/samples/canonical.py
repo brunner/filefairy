@@ -170,7 +170,7 @@ _s52 = [
 _s53 = [
     cell(content=logo_absolute('53', 'San Diego', 'left')),
     cell(content='104'),
-    cell(content='58.0'),
+    cell(content='58'),
     cell(content='-'),
     cell(content='X')
 ]

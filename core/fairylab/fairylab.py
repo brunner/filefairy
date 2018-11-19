@@ -60,7 +60,7 @@ class Fairylab(Messageable, Renderable):
 
     @staticmethod
     def _title():
-        return 'home'
+        return 'fairylab'
 
     @staticmethod
     def _info():

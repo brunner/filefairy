@@ -51,13 +51,19 @@ class Renderable(Serializable):
         test = kwargs.get('test')
         log = kwargs.get('log', True)
 
+        _documentation = 'https://github.com/brunner/filefairy/README.md'
         _title = self._title()
         for html, subtitle, tmpl, context in self._render_internal(**kwargs):
             try:
                 subtitle = ' » ' + subtitle if subtitle else ''
                 title = _title + subtitle
                 tmpl = self.environment.get_template(tmpl)
-                ts = tmpl.stream(dict(context, title=title, date=date))
+                ts = tmpl.stream(
+                    dict(
+                        context,
+                        documentation=_documentation,
+                        title=title,
+                        date=date))
                 root = _root if test else _fairylab_root
                 path = os.path.join(root, html)
                 self._mkdir_p(path.rsplit('/', 1)[0])

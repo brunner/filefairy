@@ -18,6 +18,8 @@ from util.jinja2_.jinja2_ import env  # noqa
 
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
+_documentation = 'https://github.com/brunner/filefairy/README.md'
+
 
 class FakeRenderable(Renderable):
     def __init__(self, **kwargs):
@@ -142,6 +144,7 @@ class RenderableTest(unittest.TestCase):
         stream_calls = [
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo',
                 'a': 1,
                 'b': True,
@@ -149,22 +152,26 @@ class RenderableTest(unittest.TestCase):
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » sub',
                 'm': 2,
                 'n': 'bar'
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn0',
                 'z': True
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn1',
                 'z': False
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn2',
                 'z': True
             })
@@ -219,6 +226,7 @@ class RenderableTest(unittest.TestCase):
         stream_calls = [
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo',
                 'a': 1,
                 'b': True,
@@ -226,22 +234,26 @@ class RenderableTest(unittest.TestCase):
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » sub',
                 'm': 2,
                 'n': 'bar'
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn0',
                 'z': True
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn1',
                 'z': False
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn2',
                 'z': True
             })
@@ -305,6 +317,7 @@ class RenderableTest(unittest.TestCase):
         stream_calls = [
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo',
                 'a': 1,
                 'b': True,
@@ -312,22 +325,26 @@ class RenderableTest(unittest.TestCase):
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » sub',
                 'm': 2,
                 'n': 'bar'
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn0',
                 'z': True
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn1',
                 'z': False
             }),
             mock.call({
                 'date': '00:02:30 PDT (1985-10-26)',
+                'documentation': _documentation,
                 'title': 'foo » dyn2',
                 'z': True
             })

@@ -25,6 +25,14 @@ header {
   background-color: #f5f5f5;
   width: 100%;
 }
+footer {
+  background-color: #f5f5f5;
+  bottom: 0;
+  height: 60px;
+  line-height: 60px;
+  position: absolute;
+  width: 100%;
+}
 a.disabled{
   pointer-events: none;
   cursor: default;
@@ -990,7 +998,7 @@ a.disabled{
 <tr>
 <td scope="row" class="position-relative text-truncate"><img src="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/images/team_logos/san_diego_padres_40.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="align-middle d-block text-truncate pl-24p">San Diego</span></td>
 <td class="text-right w-55p">104</td>
-<td class="text-right w-55p">58.0</td>
+<td class="text-right w-55p">58</td>
 <td class="text-right w-75p">-</td>
 <td class="text-right w-55p">X</td>
 </tr>
@@ -1090,6 +1098,16 @@ a.disabled{
 
 </main>
 <!-- $(base.main) -->
+
+<!-- ^(base.footer) -->
+<footer class="border-top">
+<div class="container text-center">
+<a href="https://github.com/brunner/filefairy/README.md">
+<small>Statsplus Documentation</small>
+</a>
+</div>
+</footer>
+<!-- $(base.footer) -->
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
