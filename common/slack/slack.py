@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Common (non-reloadable) util methods for Slack API integrations."""
 
 import logging
 import json
@@ -9,21 +10,33 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/slack', '', _path))
+
 from common.secrets.secrets import filefairy  # noqa
 from common.urllib_.urllib_ import urlopen  # noqa
 
-logger_ = logging.getLogger('fairylab')
+_logger = logging.getLogger('fairylab')
 _filefairy = filefairy()
 
 
 def _call(method, params):
+    """Helper function for calling Slack API endpoints.
+
+    Args:
+        method: The endpoint name.
+        params: Params to pass to the endpoint.
+
+    Returns:
+        The endpoint response.
+    """
     url = 'https://slack.com/api/{}'.format(method)
     obj = {'ok': False}
+
     try:
         response = urlopen(url, params).decode('utf-8')
         obj = json.loads(response)
-    except:
-        logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
+    except Exception:
+        _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
+
     return obj
 
 

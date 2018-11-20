@@ -9,6 +9,7 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/re_', '', _path))
+
 from common.re_.re_ import find  # noqa
 
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Common (non-reloadable) util methods for secret strings."""
 
 import re
 

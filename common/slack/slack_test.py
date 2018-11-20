@@ -29,7 +29,7 @@ _ok = {'ok': True}
 
 class SlackTest(unittest.TestCase):
     @mock.patch('common.slack.slack.urlopen')
-    @mock.patch('common.slack.slack.logger_.log')
+    @mock.patch('common.slack.slack._logger.log')
     def test_call__with_valid_input(self, mock_log, mock_urlopen):
         mock_urlopen.return_value = bytes('{"ok":true,"a":1}', 'utf-8')
         params = {'token': _filefairy}
@@ -41,7 +41,7 @@ class SlackTest(unittest.TestCase):
         mock_urlopen.assert_called_once_with(url, params)
 
     @mock.patch('common.slack.slack.urlopen')
-    @mock.patch('common.slack.slack.logger_.log')
+    @mock.patch('common.slack.slack._logger.log')
     def test_call__with_thrown_exception(self, mock_log, mock_urlopen):
         mock_urlopen.side_effect = Exception('response')
         params = {'token': _filefairy}

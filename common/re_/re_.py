@@ -5,7 +5,7 @@
 import re
 
 
-def find(pattern, string, flags=0):
+def find(pattern, string):
     """Convenience wrapper around re.findall.
 
     Returns the first match of pattern in string, or None if no match is found.

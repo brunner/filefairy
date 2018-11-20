@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for abc_.py."""
 
 import abc
 import os
@@ -9,6 +10,7 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/abc_', '', _path))
+
 from common.abc_.abc_ import abstractstatic  # noqa
 
 

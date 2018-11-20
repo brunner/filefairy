@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for json_.py."""
 
 import logging
 import os
@@ -19,21 +20,24 @@ class FakeObject(object):
 
 
 class JsonTest(unittest.TestCase):
-    @mock.patch('common.json_.json_.logger_.log')
-    def test_dumps__with_valid_input(self, mock_log):
-        data = {'c': 1, 'b': False, 'a': 'foo'}
-        actual = dumps(data)
+    def setUp(self):
+        patch_log = mock.patch('common.json_.json_._logger.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
+
+    def test_dumps__with_valid_input(self):
+        actual = dumps({'c': 1, 'b': False, 'a': 'foo'})
         expected = '{\n  "a": "foo",\n  "b": false,\n  "c": 1\n}'
         self.assertEqual(actual, expected)
-        mock_log.assert_not_called()
 
-    @mock.patch('common.json_.json_.logger_.log')
-    def test_dumps__with_thrown_exception(self, mock_log):
-        data = {'a': FakeObject()}
-        actual = dumps(data)
+        self.mock_log.assert_not_called()
+
+    def test_dumps__with_thrown_exception(self):
+        actual = dumps({'a': FakeObject()})
         expected = '{\n  "a": ""\n}'
         self.assertEqual(actual, expected)
-        mock_log.assert_called_once_with(
+
+        self.mock_log.assert_called_once_with(
             logging.WARNING, 'Handled warning.', exc_info=True)
 
 

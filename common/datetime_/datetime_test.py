@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for datetime_.py."""
 
 import datetime
 import os
@@ -11,6 +12,7 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/datetime_', '', _path))
+
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -21,36 +23,36 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.datetime_.datetime_ import timedelta  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 
-_est = pytz.timezone('America/New_York')
-_pst = pytz.timezone('America/Los_Angeles')
+EST = pytz.timezone('America/New_York')
+PST = pytz.timezone('America/Los_Angeles')
 
 
 class DatetimeTest(unittest.TestCase):
     def test_datetime_as_pst(self):
         d = datetime_datetime_est(2018, 3, 13)
         actual = datetime_as_pst(d)
-        expected = d.astimezone(_pst)
+        expected = d.astimezone(PST)
         self.assertEqual(actual, expected)
 
     def test_datetime_datetime_est_minimal(self):
         actual = datetime_datetime_est(2018, 3, 13)
-        expected = _est.localize(datetime.datetime(2018, 3, 13))
+        expected = EST.localize(datetime.datetime(2018, 3, 13))
         self.assertEqual(actual, expected)
 
     def test_datetime_datetime_est_full(self):
         actual = datetime_datetime_est(2018, 3, 13, 22, 43, 13, 337756)
-        expected = _est.localize(
+        expected = EST.localize(
             datetime.datetime(2018, 3, 13, 22, 43, 13, 337756))
         self.assertEqual(actual, expected)
 
     def test_datetime_datetime_pst_minimal(self):
         actual = datetime_datetime_pst(2018, 3, 13)
-        expected = _pst.localize(datetime.datetime(2018, 3, 13))
+        expected = PST.localize(datetime.datetime(2018, 3, 13))
         self.assertEqual(actual, expected)
 
     def test_datetime_datetime_pst_full(self):
         actual = datetime_datetime_pst(2018, 3, 13, 22, 43, 13, 337756)
-        expected = _pst.localize(
+        expected = PST.localize(
             datetime.datetime(2018, 3, 13, 22, 43, 13, 337756))
         self.assertEqual(actual, expected)
 
@@ -59,19 +61,19 @@ class DatetimeTest(unittest.TestCase):
         date = datetime.datetime(2018, 3, 13, 22, 43, 13, 337756)
         mock_datetime.datetime.now.return_value = date
         actual = datetime_now()
-        expected = _pst.localize(date)
+        expected = PST.localize(date)
         self.assertEqual(actual, expected)
         mock_datetime.datetime.now.assert_called_once_with()
 
     def test_decode(self):
         actual = decode_datetime('2018-03-13T22:43:13.337756-07:00')
-        expected = _pst.localize(
+        expected = PST.localize(
             datetime.datetime(2018, 3, 13, 22, 43, 13, 337756))
         self.assertEqual(actual, expected)
 
     def test_encode(self):
         actual = encode_datetime(
-            _pst.localize(datetime.datetime(2018, 3, 13, 22, 43, 13, 337756)))
+            PST.localize(datetime.datetime(2018, 3, 13, 22, 43, 13, 337756)))
         expected = '2018-03-13T22:43:13.337756-07:00'
         self.assertEqual(actual, expected)
 
