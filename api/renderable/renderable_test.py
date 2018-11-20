@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for renderable.py."""
 
 import jinja2
 import logging
@@ -10,15 +11,84 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/api/renderable', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/api/renderable', '', _path))
+
 from api.renderable.renderable import Renderable  # noqa
-from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from util.jinja2_.jinja2_ import env  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.jinja2_.jinja2_ import env  # noqa
+from common.json_.json_ import dumps  # noqa
 
-_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
+CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
+FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
+FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
+GITHUB_LINK = 'https://github.com/brunner/filefairy/'
+LDR = jinja2.DictLoader({
+    'foo.html':
+    '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
+    'sub.html':
+    '{{ title }}: Hello {{ m }}, {{ n }} -- {{ date }}',
+    'dyn.html':
+    '{{ title }}: Hello {{ z }} -- {{ date }}'
+})
+THEN = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
+THEN_DISPLAYED = '00:02:30 PDT (1985-10-26)'
+STREAM_CALLS = [
+    mock.call({
+        'date': THEN_DISPLAYED,
+        'documentation': GITHUB_LINK,
+        'title': 'foo',
+        'a': 1,
+        'b': True,
+        'd': THEN
+    }),
+    mock.call({
+        'date': THEN_DISPLAYED,
+        'documentation': GITHUB_LINK,
+        'title': 'foo » sub',
+        'm': 2,
+        'n': 'bar'
+    }),
+    mock.call({
+        'date': THEN_DISPLAYED,
+        'documentation': GITHUB_LINK,
+        'title': 'foo » dyn0',
+        'z': True
+    }),
+    mock.call({
+        'date': THEN_DISPLAYED,
+        'documentation': GITHUB_LINK,
+        'title': 'foo » dyn1',
+        'z': False
+    }),
+    mock.call({
+        'date': THEN_DISPLAYED,
+        'documentation': GITHUB_LINK,
+        'title': 'foo » dyn2',
+        'z': True
+    })
+]
 
-_documentation = 'https://github.com/brunner/filefairy/'
+_env = env()
+
+
+def get_dump_calls(root_dir):
+    return [
+        mock.call(root_dir + '/foo/index.html'),
+        mock.call(root_dir + '/foo/sub/index.html'),
+        mock.call(root_dir + '/foo/dyn/dyn_0.html'),
+        mock.call(root_dir + '/foo/dyn/dyn_1.html'),
+        mock.call(root_dir + '/foo/dyn/dyn_2.html')
+    ]
+
+
+def get_makedirs_calls(root_dir):
+    return [
+        mock.call(root_dir + '/foo'),
+        mock.call(root_dir + '/foo/sub'),
+        mock.call(root_dir + '/foo/dyn'),
+        mock.call(root_dir + '/foo/dyn'),
+        mock.call(root_dir + '/foo/dyn'),
+    ]
 
 
 class FakeRenderable(Renderable):
@@ -65,300 +135,42 @@ class FakeRenderable(Renderable):
 
 
 class RenderableTest(unittest.TestCase):
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_init__with_valid_input(self, mock_open):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        FakeRenderable(e=env())
+    def setUp(self):
+        patch_log = mock.patch('api.renderable.renderable._logger.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
 
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_init__with_invalid_input(self, mock_open):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        with self.assertRaises(KeyError):
-            FakeRenderable()
+        patch_open = mock.patch(
+            'api.serializable.serializable.open', create=True)
+        self.addCleanup(patch_open.stop)
+        self.mock_open = patch_open.start()
 
-    @mock.patch('api.serializable.serializable.open', create=True)
-    @mock.patch('api.renderable.renderable.chat_post_message')
-    @mock.patch.object(FakeRenderable, '_attachments')
-    def test_chat(self, mock_attachments, mock_chat, mock_open):
-        attachments = [{'title': 'title', 'text': 'text'}]
-        mock_attachments.return_value = attachments
-        mock_chat.return_value = {'ok': True, 'message': {'text': 'foo'}}
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        plugin = FakeRenderable(e=env())
-        actual = plugin._chat('channel', 'foo')
-        expected = {'ok': True, 'message': {'text': 'foo'}}
-        self.assertEqual(actual, expected)
-        mock_attachments.assert_called_once_with()
-        mock_chat.assert_called_once_with(
-            'channel', 'foo', attachments=attachments)
+    def init_mocks(self):
+        mo = mock.mock_open(read_data=dumps({}))
+        self.mock_handle = mo()
+        self.mock_open.side_effect = [mo.return_value]
 
-    @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('api.renderable.renderable.logger_.log')
-    @mock.patch('api.serializable.serializable.open', create=True)
-    @mock.patch('api.renderable.renderable.os.makedirs')
-    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__with_valid_input(self, mock_dump, mock_makedirs,
-                                      mock_open, mock_rlog, mock_stream):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
-        ldr = jinja2.DictLoader({
-            'foo.html':
-            '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
-            'sub.html':
-            '{{ title }}: Hello {{ m }}, {{ n }} -- {{ date }}',
-            'dyn.html':
-            '{{ title }}: Hello {{ z }} -- {{ date }}'
-        })
-        date = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
-        env = jinja2.Environment(loader=ldr)
-        renderable = FakeRenderable(e=env)
-        renderable._render(date=date)
-        foo = '/foo/index.html'
-        sub = '/foo/sub/index.html'
-        rdyn = _fairylab_root + '/foo/dyn/dyn_{}.html'
-        dump_calls = [
-            mock.call(_fairylab_root + foo),
-            mock.call(_fairylab_root + sub),
-            mock.call(rdyn.format(0)),
-            mock.call(rdyn.format(1)),
-            mock.call(rdyn.format(2))
-        ]
-        mock_dump.assert_has_calls(dump_calls)
-        calls = [
-            mock.call(_fairylab_root + '/foo'),
-            mock.call(_fairylab_root + '/foo/sub'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-        ]
-        mock_makedirs.assert_has_calls(calls)
-        mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
-        stream_calls = [
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo',
-                'a': 1,
-                'b': True,
-                'd': date
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » sub',
-                'm': 2,
-                'n': 'bar'
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn0',
-                'z': True
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn1',
-                'z': False
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn2',
-                'z': True
-            })
-        ]
-        mock_stream.assert_has_calls(stream_calls)
-        self.assertEqual(renderable.data, {'a': 1, 'b': True})
-        mock_rlog.assert_not_called()
+    def reset_mocks(self):
+        self.mock_log.reset_mock()
+        self.mock_open.reset_mock()
+        self.mock_handle.write.reset_mock()
 
-    @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('api.renderable.renderable.logger_.log')
-    @mock.patch('api.serializable.serializable.open', create=True)
-    @mock.patch('api.renderable.renderable.os.makedirs')
-    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__with_test(self, mock_dump, mock_makedirs, mock_open,
-                               mock_rlog, mock_stream):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
-        ldr = jinja2.DictLoader({
-            'foo.html':
-            '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
-            'sub.html':
-            '{{ title }}: Hello {{ m }}, {{ n }} -- {{ date }}',
-            'dyn.html':
-            '{{ title }}: Hello {{ z }} -- {{ date }}'
-        })
-        date = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
-        env = jinja2.Environment(loader=ldr)
-        renderable = FakeRenderable(e=env)
-        renderable._render(date=date, test=True)
-        foo = '/foo/index.html'
-        sub = '/foo/sub/index.html'
-        rdyn = _root + '/foo/dyn/dyn_{}.html'
-        dump_calls = [
-            mock.call(_root + foo),
-            mock.call(_root + sub),
-            mock.call(rdyn.format(0)),
-            mock.call(rdyn.format(1)),
-            mock.call(rdyn.format(2))
-        ]
-        mock_dump.assert_has_calls(dump_calls)
-        calls = [
-            mock.call(_root + '/foo'),
-            mock.call(_root + '/foo/sub'),
-            mock.call(_root + '/foo/dyn'),
-            mock.call(_root + '/foo/dyn'),
-            mock.call(_root + '/foo/dyn'),
-        ]
-        mock_makedirs.assert_has_calls(calls)
-        mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
-        stream_calls = [
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo',
-                'a': 1,
-                'b': True,
-                'd': date
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » sub',
-                'm': 2,
-                'n': 'bar'
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn0',
-                'z': True
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn1',
-                'z': False
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn2',
-                'z': True
-            })
-        ]
-        mock_stream.assert_has_calls(stream_calls)
-        self.assertEqual(renderable.data, {'a': 1, 'b': True})
-        mock_rlog.assert_not_called()
+    def create_renderable(self, e):
+        self.init_mocks()
+        renderable = FakeRenderable(e=e)
 
-    @mock.patch.object(jinja2.environment.Template, 'stream')
-    @mock.patch('api.renderable.renderable.logger_.log')
-    @mock.patch('api.serializable.serializable.open', create=True)
-    @mock.patch('api.renderable.renderable.os.makedirs')
-    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__with_thrown_exception(self, mock_dump, mock_makedirs,
-                                           mock_open, mock_rlog, mock_stream):
-        mock_dump.side_effect = Exception()
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
-        ldr = jinja2.DictLoader({
-            'foo.html':
-            '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
-            'sub.html':
-            '{{ title }}: Hello {{ m }}, {{ n }} -- {{ date }}',
-            'dyn.html':
-            '{{ title }}: Hello {{ z }} -- {{ date }}'
-        })
-        date = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
-        env = jinja2.Environment(loader=ldr)
-        renderable = FakeRenderable(e=env)
-        renderable._render(date=date)
-        foo = '/foo/index.html'
-        sub = '/foo/sub/index.html'
-        dyn = '/foo/dyn/dyn_{}.html'
-        dump_calls = [
-            mock.call(_fairylab_root + foo),
-            mock.call(_fairylab_root + sub),
-            mock.call(_fairylab_root + dyn.format(0)),
-            mock.call(_fairylab_root + dyn.format(1)),
-            mock.call(_fairylab_root + dyn.format(2))
-        ]
-        mock_dump.assert_has_calls(dump_calls)
-        calls = [
-            mock.call(_fairylab_root + '/foo'),
-            mock.call(_fairylab_root + '/foo/sub'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-            mock.call(_fairylab_root + '/foo/dyn'),
-        ]
-        mock_makedirs.assert_has_calls(calls)
-        mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
-        log_calls = [
-            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
-            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
-            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
-            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
-            mock.call(logging.WARNING, 'Handled warning.', exc_info=True)
-        ]
-        mock_rlog.assert_has_calls(log_calls)
-        stream_calls = [
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo',
-                'a': 1,
-                'b': True,
-                'd': date
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » sub',
-                'm': 2,
-                'n': 'bar'
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn0',
-                'z': True
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn1',
-                'z': False
-            }),
-            mock.call({
-                'date': '00:02:30 PDT (1985-10-26)',
-                'documentation': _documentation,
-                'title': 'foo » dyn2',
-                'z': True
-            })
-        ]
-        mock_stream.assert_has_calls(stream_calls)
-        self.assertEqual(renderable.data, {'a': 1, 'b': True})
+        self.mock_log.assert_not_called()
+        self.mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
+        self.mock_handle.write.assert_not_called()
+        self.reset_mocks()
+        self.init_mocks()
 
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_attachments(self, mock_open):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        plugin = FakeRenderable(e=env())
-        actual = plugin._attachments()
+        return renderable
+
+    def test_attachments(self):
+        renderable = self.create_renderable(_env)
+
+        actual = renderable._attachments()
         expected = [{
             'fallback': 'Description.',
             'title': 'Fairylab | foo',
@@ -366,6 +178,86 @@ class RenderableTest(unittest.TestCase):
             'text': 'Description.'
         }]
         self.assertEqual(actual, expected)
+
+        self.mock_log.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.assert_not_called()
+
+    @mock.patch('api.renderable.renderable.chat_post_message')
+    @mock.patch.object(FakeRenderable, '_attachments')
+    def test_chat(self, mock_attachments, mock_chat):
+        attachments = [{'title': 'title', 'text': 'text'}]
+        mock_attachments.return_value = attachments
+        mock_chat.return_value = {'ok': True, 'message': {'text': 'foo'}}
+
+        renderable = self.create_renderable(_env)
+
+        actual = renderable._chat('channel', 'foo')
+        expected = {'ok': True, 'message': {'text': 'foo'}}
+        self.assertEqual(actual, expected)
+
+        mock_attachments.assert_called_once_with()
+        mock_chat.assert_called_once_with(
+            'channel', 'foo', attachments=attachments)
+        self.mock_log.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.assert_not_called()
+
+    @mock.patch.object(jinja2.environment.Template, 'stream')
+    @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
+    def test_render__live(self, mock_dump, mock_makedirs, mock_stream):
+        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
+
+        renderable = self.create_renderable(jinja2.Environment(loader=LDR))
+        renderable._render(date=THEN)
+
+        mock_dump.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
+        mock_makedirs.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
+        mock_stream.assert_has_calls(STREAM_CALLS)
+        self.mock_log.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.assert_not_called()
+
+    @mock.patch.object(jinja2.environment.Template, 'stream')
+    @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
+    def test_render__test(self, mock_dump, mock_makedirs, mock_stream):
+        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
+
+        renderable = self.create_renderable(jinja2.Environment(loader=LDR))
+        renderable._render(date=THEN, test=True)
+
+        mock_dump.assert_has_calls(get_dump_calls(FILEFAIRY_DIR))
+        mock_makedirs.assert_has_calls(get_makedirs_calls(FILEFAIRY_DIR))
+        mock_stream.assert_has_calls(STREAM_CALLS)
+        self.mock_log.assert_not_called()
+        self.mock_open.assert_not_called()
+        self.mock_handle.assert_not_called()
+
+    @mock.patch.object(jinja2.environment.Template, 'stream')
+    @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
+    def test_render__exception(self, mock_dump, mock_makedirs, mock_stream):
+        mock_dump.side_effect = Exception()
+        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
+
+        renderable = self.create_renderable(jinja2.Environment(loader=LDR))
+        renderable._render(date=THEN)
+
+        log_calls = [
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
+            mock.call(logging.WARNING, 'Handled warning.', exc_info=True)
+        ]
+        mock_dump.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
+        mock_makedirs.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
+        mock_stream.assert_has_calls(STREAM_CALLS)
+        self.mock_log.assert_has_calls(log_calls)
+        self.mock_open.assert_not_called()
+        self.mock_handle.assert_not_called()
 
 
 if __name__ == '__main__':

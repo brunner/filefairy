@@ -39,3 +39,26 @@ def suffix(day):
         2: 'nd',
         3: 'rd'
     }.get(day % 10, 'th')
+
+
+def timedelta(then, now):
+    diff = now - then
+    s, d = diff.seconds, diff.days
+
+    if s < 0 or d < 0:
+        return timedelta(now, then)
+
+    if d > 0:
+        s += 86400 * d
+
+    h, m = s // 3600, (s // 60) % 60
+    hm = []
+    if h > 0:
+        hm.append('{}h'.format(h))
+    hm.append('{}m'.format(m))
+
+    return ' '.join(hm)
+
+
+def timestamp(date):
+    return date.strftime('%H:%M:%S %Z (%Y-%m-%d)')

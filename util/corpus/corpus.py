@@ -8,7 +8,7 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/corpus', '', _path))
-from util.slack.slack import channels_history  # noqa
+from common.slack.slack import channels_history  # noqa
 
 _bots = ['U3ULC7DBP']
 _snacks = ['C9YE6NQG0']

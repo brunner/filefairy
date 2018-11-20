@@ -9,27 +9,27 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/slack', '', _path))
-from util.secrets.secrets import filefairy  # noqa
-from util.slack.slack import _call  # noqa
-from util.slack.slack import channels_history  # noqa
-from util.slack.slack import channels_list  # noqa
-from util.slack.slack import chat_post_message  # noqa
-from util.slack.slack import files_upload  # noqa
-from util.slack.slack import pins_add  # noqa
-from util.slack.slack import reactions_add  # noqa
-from util.slack.slack import reactions_get  # noqa
-from util.slack.slack import reactions_remove  # noqa
-from util.slack.slack import rtm_connect  # noqa
-from util.slack.slack import users_list  # noqa
+sys.path.append(re.sub(r'/common/slack', '', _path))
+from common.secrets.secrets import filefairy  # noqa
+from common.slack.slack import _call  # noqa
+from common.slack.slack import channels_history  # noqa
+from common.slack.slack import channels_list  # noqa
+from common.slack.slack import chat_post_message  # noqa
+from common.slack.slack import files_upload  # noqa
+from common.slack.slack import pins_add  # noqa
+from common.slack.slack import reactions_add  # noqa
+from common.slack.slack import reactions_get  # noqa
+from common.slack.slack import reactions_remove  # noqa
+from common.slack.slack import rtm_connect  # noqa
+from common.slack.slack import users_list  # noqa
 
 _filefairy = filefairy()
 _ok = {'ok': True}
 
 
 class SlackTest(unittest.TestCase):
-    @mock.patch('util.slack.slack.urlopen')
-    @mock.patch('util.slack.slack.logger_.log')
+    @mock.patch('common.slack.slack.urlopen')
+    @mock.patch('common.slack.slack.logger_.log')
     def test_call__with_valid_input(self, mock_log, mock_urlopen):
         mock_urlopen.return_value = bytes('{"ok":true,"a":1}', 'utf-8')
         params = {'token': _filefairy}
@@ -40,8 +40,8 @@ class SlackTest(unittest.TestCase):
         mock_log.assert_not_called()
         mock_urlopen.assert_called_once_with(url, params)
 
-    @mock.patch('util.slack.slack.urlopen')
-    @mock.patch('util.slack.slack.logger_.log')
+    @mock.patch('common.slack.slack.urlopen')
+    @mock.patch('common.slack.slack.logger_.log')
     def test_call__with_thrown_exception(self, mock_log, mock_urlopen):
         mock_urlopen.side_effect = Exception('response')
         params = {'token': _filefairy}
@@ -53,7 +53,7 @@ class SlackTest(unittest.TestCase):
             logging.WARNING, 'Handled warning.', exc_info=True)
         mock_urlopen.assert_called_once_with(url, params)
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_channels_history(self, mock_call):
         mock_call.return_value = _ok
         actual = channels_history('channel', 0)
@@ -67,7 +67,7 @@ class SlackTest(unittest.TestCase):
                 'latest': 0,
             })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_channels_list(self, mock_call):
         mock_call.return_value = _ok
         actual = channels_list()
@@ -80,7 +80,7 @@ class SlackTest(unittest.TestCase):
                 'exclude_archived': True,
             })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_chat_post_message(self, mock_call):
         mock_call.return_value = _ok
         attachments = [{'fallback': 'a', 'title': 'b', 'text': 'c'}]
@@ -97,7 +97,7 @@ class SlackTest(unittest.TestCase):
                 'link_names': 'true',
             })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_files_upload(self, mock_call):
         mock_call.return_value = _ok
         actual = files_upload('content', 'filename.txt', 'channel')
@@ -111,7 +111,7 @@ class SlackTest(unittest.TestCase):
                 'channels': 'channel',
             })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_pins_add(self, mock_call):
         mock_call.return_value = _ok
         actual = pins_add('C1234', 'timestamp')
@@ -123,7 +123,7 @@ class SlackTest(unittest.TestCase):
             'timestamp': 'timestamp',
         })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_reactions_add(self, mock_call):
         mock_call.return_value = _ok
         actual = reactions_add('name', 'C1234', 'timestamp')
@@ -137,7 +137,7 @@ class SlackTest(unittest.TestCase):
                 'timestamp': 'timestamp',
             })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_reactions_get(self, mock_call):
         mock_call.return_value = _ok
         actual = reactions_get('C1234', 'timestamp')
@@ -150,7 +150,7 @@ class SlackTest(unittest.TestCase):
                 'timestamp': 'timestamp',
             })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_reactions_remove(self, mock_call):
         mock_call.return_value = _ok
         actual = reactions_remove('name', 'C1234', 'timestamp')
@@ -164,7 +164,7 @@ class SlackTest(unittest.TestCase):
                 'timestamp': 'timestamp',
             })
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_rtm_connect(self, mock_call):
         mock_call.return_value = _ok
         actual = rtm_connect()
@@ -172,7 +172,7 @@ class SlackTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_call.assert_called_once_with('rtm.connect', {'token': _filefairy})
 
-    @mock.patch('util.slack.slack._call')
+    @mock.patch('common.slack.slack._call')
     def test_users_list(self, mock_call):
         mock_call.return_value = _ok
         actual = users_list()

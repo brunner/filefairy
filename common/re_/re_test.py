@@ -15,12 +15,12 @@ from common.re_.re_ import find  # noqa
 class ReTest(unittest.TestCase):
     def test_find__empty_multiple_match(self):
         actual = find(r'(\d)\D(\d)', 'abcd1234')
-        expected = ['', '']
+        expected = [None, None]
         self.assertEqual(actual, expected)
 
     def test_find__empty_single_match(self):
         actual = find(r'\d(\D)\d', 'abcd1234')
-        expected = ''
+        expected = None
         self.assertEqual(actual, expected)
 
     def test_find__found_multiple_match(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for serializable.py."""
 
-import logging
 import os
 import re
 import sys
@@ -10,7 +10,13 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/serializable', '', _path))
+
 from api.serializable.serializable import Serializable  # noqa
+from common.json_.json_ import dumps  # noqa
+
+
+def _data(a, b):
+    return {'a': a, 'b': b}
 
 
 class FakeSerializable(Serializable):
@@ -23,70 +29,61 @@ class FakeSerializable(Serializable):
 
 
 class SerializableTest(unittest.TestCase):
-    @mock.patch('api.serializable.serializable.logger_.log')
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_init(self, mock_open, mock_log):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        serializable = FakeSerializable()
-        mock_open.assert_called_once_with(FakeSerializable._data(), 'r')
-        mock_log.assert_not_called()
-        self.assertEqual(serializable.data, {'a': 1, 'b': True})
+    def setUp(self):
+        patch_open = mock.patch(
+            'api.serializable.serializable.open', create=True)
+        self.addCleanup(patch_open.stop)
+        self.mock_open = patch_open.start()
 
-    @mock.patch('api.serializable.serializable.logger_.log')
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_read(self, mock_open, mock_log):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
+    def init_mocks(self, data):
+        mo = mock.mock_open(read_data=dumps(data))
+        self.mock_handle = mo()
+        self.mock_open.side_effect = [mo.return_value]
+
+    def reset_mocks(self):
+        self.mock_open.reset_mock()
+        self.mock_handle.write.reset_mock()
+
+    def create_serializable(self, data):
+        self.init_mocks(data)
         serializable = FakeSerializable()
-        data = '{"a": 2, "b": false}'
-        mock_open.reset_mock()
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        mock_log.reset_mock()
+
+        self.assertEqual(serializable.data, data)
+        self.mock_open.assert_called_once_with(FakeSerializable._data(), 'r')
+        self.mock_handle.write.assert_not_called()
+        self.reset_mocks()
+        self.init_mocks(data)
+
+        return serializable
+
+    def test_read(self):
+        old = _data(1, True)
+        serializable = self.create_serializable(old)
+
+        new = _data(2, False)
+        mo = mock.mock_open(read_data=dumps(new))
+        self.mock_handle = mo()
+        self.mock_open.side_effect = [mo.return_value]
+
         serializable.read()
-        mock_open.assert_called_once_with(FakeSerializable._data(), 'r')
-        mock_log.assert_not_called()
-        self.assertEqual(serializable.data, {'a': 2, 'b': False})
+        self.assertEqual(serializable.data, new)
 
-    @mock.patch('api.serializable.serializable.logger_.log')
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_write(self, mock_open, mock_log):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        serializable = FakeSerializable()
+        self.mock_open.assert_called_once_with(FakeSerializable._data(), 'r')
+        self.mock_handle.write.assert_not_called()
+
+    def test_write(self):
+        old = _data(1, True)
+        serializable = self.create_serializable(old)
+
         serializable.data['a'] = 2
         serializable.data['b'] = False
-        mock_open.reset_mock()
-        mock_open.side_effect = [mo.return_value]
-        mock_log.reset_mock()
-        serializable.write()
-        mock_open.assert_called_once_with(serializable._data(), 'w')
-        handle = mo()
-        calls = [mock.call('{\n  "a": 2,\n  "b": false\n}\n')]
-        handle.write.assert_has_calls(calls)
-        mock_log.assert_not_called()
-        self.assertEqual(serializable.data, {'a': 2, 'b': False})
 
-    @mock.patch('api.serializable.serializable.logger_.log')
-    @mock.patch('api.serializable.serializable.open', create=True)
-    def test_dump(self, mock_open, mock_log):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        mock_open.side_effect = [mo.return_value]
-        serializable = FakeSerializable()
-        mock_log.reset_mock()
-        mock_log.return_value = {'a': 1, 'b': True}
-        serializable.dump()
-        mock_log.assert_called_once_with(
-            logging.DEBUG,
-            'Dump completed.',
-            extra={
-                'stdout': '{\n  "a": 1,\n  "b": true\n}'
-            })
+        serializable.write()
+        new = _data(2, False)
+        self.assertEqual(serializable.data, new)
+
+        self.mock_open.assert_called_once_with(FakeSerializable._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(new) + '\n')
 
 
 if __name__ == '__main__':

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Extend the messageable API to enable processing Slack messages.
+"""Extend the messageable API to process Slack messages from a class.
 
-This base class sets up a task endpoint to process messages in the league
-Slack. If the message describes a function that the task can perform, then the
-function is invoked, otherwise the message is passed through to the task
-implementation for custom handling.
+This base class enhances a task endpoint which can process messages in the
+league Slack. If the message describes a function that the task can perform,
+then the function is invoked, otherwise the message is passed through to the
+task implementation for custom handling.
 
 Example:
     class Task(Messageable):
@@ -22,15 +22,15 @@ Example:
         def _bar(self):
             pass
 
-    If the message ``Task.foo(a,b)`` is sent in the Slack testing channel, then
-    the function foo is invoked with *args equal to ['a', 'b'].
+If the message ``Task.foo(a,b)`` is sent in the Slack testing channel, then the
+function foo is invoked with *args equal to ['a', 'b'].
 
-    Or, if any other message is sent in the entire Slack, then the function
-    _on_message_internal is invoked with **kwargs containing the message data.
+Or, if any other message is sent in the entire Slack, then the function
+_on_message_internal is invoked with **kwargs containing the message data.
 
-    Tasks are required to return a Response instance from _on_message_internal.
+Tasks are required to return Response data from _on_message_internal.
 
-    Functions named with a leading underscore cannot be invoked by messageable.
+Functions named with a leading underscore cannot be invoked by messageable.
 """
 
 import abc
@@ -39,7 +39,6 @@ import os
 import re
 import sys
 
-_logger = logging.getLogger('fairylab')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 
@@ -50,6 +49,8 @@ from data.response.response import Response  # noqa
 
 ARGS_PATTERN = r'^{}\.{}\((.*)\)$'
 TESTING_CHANNEL = 'G3SUFLMK4'
+
+_logger = logging.getLogger('fairylab')
 
 
 class Messageable(Nameable):

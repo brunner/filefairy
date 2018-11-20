@@ -1,4 +1,4 @@
-#!/usr/bin/env pythonutils
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import abc
@@ -11,12 +11,12 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/util/test', '', _path)
+_root = re.sub(r'/common/test', '', _path)
 sys.path.append(_root)
 from api.renderable.renderable import Renderable  # noqa
-from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from util.jinja2_.jinja2_ import env  # noqa
-from util.json_.json_ import dumps  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.jinja2_.jinja2_ import env  # noqa
+from common.json_.json_ import dumps  # noqa
 
 
 class Test(unittest.TestCase):

@@ -45,11 +45,11 @@ _exceptions = [
         ts='06:02:30 EDT (1985-10-26)')
 ]
 
-_whref = _link + 'util/subprocess_/subprocess_.py#L19'
+_whref = _link + 'common.subprocess_/subprocess_.py#L19'
 _wtitle = 'subprocess_.py#L19'
 _winfo = 'Handled subprocess warning (x6).'
 _wtrace = """Traceback (most recent call last):
-  File "/home/jbrunner/filefairy/util/subprocess_/subprocess_.py", line 16, in check_output
+  File "/home/jbrunner/filefairy/common.subprocess_/subprocess_.py", line 16, in check_output
     check=True)
   File "/usr/lib/python3.5/subprocess.py", line 708, in run
     stdout=stdout, stderr=stderr)
@@ -71,7 +71,7 @@ _disabled_snacks = [
          '</div><div class="d-inline-block">Disabled snacks plugin.</div>'),
     cell(content='17:09')
 ]
-_slink = _link + 'util/subprocess_/subprocess_.py#L19'
+_slink = _link + 'common.subprocess_/subprocess_.py#L19'
 _subprocess = [
     cell(content='<div class="d-inline-block pr-1">' +
          anchor(_slink, 'subprocess_.py#L19') +

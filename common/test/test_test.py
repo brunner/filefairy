@@ -8,11 +8,11 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/util/test', '', _path)
+_root = re.sub(r'/common/test', '', _path)
 sys.path.append(_root)
 from api.renderable.renderable import Renderable  # noqa
-from util.test.test import Test  # noqa
-from util.test.test import main  # noqa
+from common.test.test import Test  # noqa
+from common.test.test import main  # noqa
 
 
 class FakeRenderable(Renderable):
@@ -40,7 +40,7 @@ class FakeRenderableTest(Test):
 
 
 class TestTest(unittest.TestCase):
-    @mock.patch('util.test.test.open', create=True)
+    @mock.patch('common.test.test.open', create=True)
     def test_write(self, mock_open):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
@@ -51,7 +51,7 @@ class TestTest(unittest.TestCase):
         calls = [mock.call('{\n  "a": 2,\n  "b": false\n}\n')]
         handle.write.assert_has_calls(calls)
 
-    @mock.patch('util.test.test.os.listdir')
+    @mock.patch('common.test.test.os.listdir')
     def test_main(self, mock_listdir):
         mock_listdir.return_value = ['foo.py', 'bar.py']
         main(FakeRenderableTest, FakeRenderable, 'path.to.fake',

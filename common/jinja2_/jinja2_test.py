@@ -7,9 +7,9 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/util/jinja2_', '', _path)
+_root = re.sub(r'/common/jinja2_', '', _path)
 sys.path.append(_root)
-from util.jinja2_.jinja2_ import env  # noqa
+from common.jinja2_.jinja2_ import env  # noqa
 
 
 class Jinja2Test(unittest.TestCase):

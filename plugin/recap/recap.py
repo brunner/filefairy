@@ -17,8 +17,8 @@ from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from util.component.component import cell  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import suffix  # noqa
-from util.slack.slack import reactions_add  # noqa
+from common.datetime_.datetime_ import suffix  # noqa
+from common.slack.slack import reactions_add  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
 from util.team.team import decoding_to_nickname  # noqa

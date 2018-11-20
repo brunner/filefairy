@@ -13,11 +13,12 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
-from api.messageable.messageable import TESTING_CHANNEL  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.task.task import Task  # noqa
+
+TESTING_CHANNEL = 'G3SUFLMK4'
 
 
 class FakeMessageable(Messageable):

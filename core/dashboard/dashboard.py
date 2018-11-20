@@ -12,23 +12,23 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/dashboard', '', _path))
 from api.registrable.registrable import Registrable  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import datetime_now  # noqa
+from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.datetime_.datetime_ import suffix  # noqa
+from common.datetime_.datetime_ import timestamp  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from util.ago.ago import timestamp  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa
 from util.component.component import cell  # noqa
 from util.component.component import col  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from util.datetime_.datetime_ import datetime_now  # noqa
-from util.datetime_.datetime_ import decode_datetime  # noqa
-from util.datetime_.datetime_ import encode_datetime  # noqa
-from util.datetime_.datetime_ import suffix  # noqa
-from util.secrets.secrets import secrets_sub  # noqa
-from util.slack.slack import chat_post_message  # noqa
-from util.slack.slack import files_upload  # noqa
+from common.secrets.secrets import secrets_sub  # noqa
+from common.slack.slack import chat_post_message  # noqa
+from common.slack.slack import files_upload  # noqa
 
 _cols = [col(), col(clazz='text-right w-75p')]
 _link = 'https://github.com/brunner/filefairy/blob/master/'

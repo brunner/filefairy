@@ -19,12 +19,12 @@ from plugin.statsplus.statsplus import Statsplus  # noqa
 from util.component.component import cell  # noqa
 from util.component.component import col  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from util.jinja2_.jinja2_ import env  # noqa
-from util.json_.json_ import dumps  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.jinja2_.jinja2_ import env  # noqa
+from common.json_.json_ import dumps  # noqa
 from util.team.team import logo_inline  # noqa
-from util.test.test import Test  # noqa
-from util.test.test import main  # noqa
+from common.test.test import Test  # noqa
+from common.test.test import main  # noqa
 
 _env = env()
 _now = datetime_datetime_pst(2022, 10, 10)
@@ -183,8 +183,6 @@ def _player_sub(s):
 
 
 class StatsplusTest(Test):
-    maxDiff = None
-
     def setUp(self):
         patch_open = mock.patch(
             'api.serializable.serializable.open', create=True)

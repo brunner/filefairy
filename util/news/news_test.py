@@ -10,7 +10,7 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/news', '', _path)
 sys.path.append(_root)
-from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.news.news import extract_box_scores  # noqa
 from util.news.news import extract_leagues  # noqa
 

@@ -8,9 +8,9 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/slack', '', _path))
-from util.secrets.secrets import filefairy  # noqa
-from util.urllib_.urllib_ import urlopen  # noqa
+sys.path.append(re.sub(r'/common/slack', '', _path))
+from common.secrets.secrets import filefairy  # noqa
+from common.urllib_.urllib_ import urlopen  # noqa
 
 logger_ = logging.getLogger('fairylab')
 _filefairy = filefairy()

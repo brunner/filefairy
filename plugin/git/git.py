@@ -19,9 +19,9 @@ from util.component.component import cell  # noqa
 from util.component.component import col  # noqa
 from util.component.component import span  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import decode_datetime  # noqa
-from util.datetime_.datetime_ import encode_datetime  # noqa
-from util.subprocess_.subprocess_ import check_output  # noqa
+from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.subprocess_.subprocess_ import check_output  # noqa
 
 logger_ = logging.getLogger('fairylab')
 

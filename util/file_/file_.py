@@ -8,7 +8,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/file_', '', _path)
 sys.path.append(_root)
-from util.subprocess_.subprocess_ import check_output  # noqa
+from common.subprocess_.subprocess_ import check_output  # noqa
 
 _download = os.path.join(_root, 'resource/download')
 _host = 'www.orangeandblueleaguebaseball.com'

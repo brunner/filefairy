@@ -9,7 +9,7 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
-from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import decoding_to_encoding  # noqa

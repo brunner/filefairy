@@ -1,5 +1,46 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Extend the renderable API to provide generated HTML from a class.
+
+This base class abstracts the transformation from template input data to one or
+more rendered templates. The rendered templates are deposited into a colocated
+``fairylab`` repository, and are then deployed to live by a separate task.
+
+Example:
+    class Task(Renderable):
+        def __init__(self, **kwargs):
+            super(Task, self).__init__(**kwargs)
+
+        @staticmethod
+        def _data():
+            return os.path.join(_path, 'data.json')
+
+        @staticmethod
+        def _href():
+            return '/foo/'
+
+        @staticmethod
+        def _info():
+            return 'Description.'
+
+        @staticmethod
+        def _title():
+            return 'foo'
+
+        def _render_internal(self, **kwargs):
+            return [('foo/index.html', '', 'tmpl.html', {'a': 1, 'b': True}]
+
+When the _render function is called, the template input data produced by
+_render_internal is passed to the corresponding template (in the above example,
+this is ``tmpl.html``) and dumped to the given location (``foo/index.html``).
+
+For golden tests, the rendered templates are dumped to a specified location
+within the ``filefairy`` (current) repository.
+
+The base class also has a helper function for generating attachment data for
+alerts posted to Slack. The attachment describes the link and behavior of the
+particular rendered template which is related to the alert.
+"""
 
 import abc
 import errno
@@ -9,16 +50,19 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/api/renderable', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/api/renderable', '', _path))
+
 from api.serializable.serializable import Serializable  # noqa
-from util.abc_.abc_ import abstractstatic  # noqa
-from util.ago.ago import timestamp  # noqa
-from util.slack.slack import chat_post_message  # noqa
+from common.abc_.abc_ import abstractstatic  # noqa
+from common.datetime_.datetime_ import timestamp  # noqa
+from common.slack.slack import chat_post_message  # noqa
 
-logger_ = logging.getLogger('fairylab')
+CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
+FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
+FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
+GITHUB_LINK = 'https://github.com/brunner/filefairy/'
 
-_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
+_logger = logging.getLogger('fairylab')
 
 
 class Renderable(Serializable):
@@ -51,26 +95,26 @@ class Renderable(Serializable):
         test = kwargs.get('test')
         log = kwargs.get('log', True)
 
-        _documentation = 'https://github.com/brunner/filefairy/'
-        _title = self._title()
         for html, subtitle, tmpl, context in self._render_internal(**kwargs):
             try:
                 subtitle = ' » ' + subtitle if subtitle else ''
-                title = _title + subtitle
+                title = self._title() + subtitle
+
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(
                     dict(
                         context,
-                        documentation=_documentation,
+                        documentation=GITHUB_LINK,
                         title=title,
                         date=date))
-                root = _root if test else _fairylab_root
+
+                root = FILEFAIRY_DIR if test else FAIRYLAB_DIR
                 path = os.path.join(root, html)
                 self._mkdir_p(path.rsplit('/', 1)[0])
                 ts.dump(path)
-            except:
+            except Exception:
                 if log:
-                    logger_.log(
+                    _logger.log(
                         logging.WARNING, 'Handled warning.', exc_info=True)
 
     @staticmethod

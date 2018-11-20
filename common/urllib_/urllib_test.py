@@ -10,13 +10,13 @@ import unittest.mock as mock
 import urllib.parse as parse
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/urllib_', '', _path))
-from util.urllib_.urllib_ import urlopen  # noqa
+sys.path.append(re.sub(r'/common/urllib_', '', _path))
+from common.urllib_.urllib_ import urlopen  # noqa
 
 
 class UrllibTest(unittest.TestCase):
-    @mock.patch('util.urllib_.urllib_.request.urlopen')
-    @mock.patch('util.urllib_.urllib_.logger_.log')
+    @mock.patch('common.urllib_.urllib_.request.urlopen')
+    @mock.patch('common.urllib_.urllib_.logger_.log')
     def test_urlopen__with_valid_input(self, mock_log, mock_urlopen):
         r = bytes('response', 'utf-8')
         mock_urlopen.return_value.__enter__.return_value.read.return_value = r
@@ -30,8 +30,8 @@ class UrllibTest(unittest.TestCase):
         mock_urlopen.assert_called_once_with(
             'http://url', data=encoded_data, timeout=8)
 
-    @mock.patch('util.urllib_.urllib_.request.urlopen')
-    @mock.patch('util.urllib_.urllib_.logger_.log')
+    @mock.patch('common.urllib_.urllib_.request.urlopen')
+    @mock.patch('common.urllib_.urllib_.logger_.log')
     def test_urlopen__with_thrown_exception(self, mock_log, mock_urlopen):
         e = Exception('response')
         mock_urlopen.return_value.__enter__.return_value.read.side_effect = e

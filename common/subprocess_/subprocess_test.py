@@ -10,13 +10,13 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/util/subprocess_', '', _path))
-from util.subprocess_.subprocess_ import check_output  # noqa
+sys.path.append(re.sub(r'/common/subprocess_', '', _path))
+from common.subprocess_.subprocess_ import check_output  # noqa
 
 
 class SubprocessTest(unittest.TestCase):
-    @mock.patch('util.subprocess_.subprocess_.subprocess.run')
-    @mock.patch('util.subprocess_.subprocess_.logger_.log')
+    @mock.patch('common.subprocess_.subprocess_.subprocess.run')
+    @mock.patch('common.subprocess_.subprocess_.logger_.log')
     def test_run__with_valid_input(self, mock_log, mock_run):
         cmd = ['cmd', 'foo', 'bar']
         t = 10
@@ -35,8 +35,8 @@ class SubprocessTest(unittest.TestCase):
             timeout=t,
             check=True)
 
-    @mock.patch('util.subprocess_.subprocess_.subprocess.run')
-    @mock.patch('util.subprocess_.subprocess_.logger_.log')
+    @mock.patch('common.subprocess_.subprocess_.subprocess.run')
+    @mock.patch('common.subprocess_.subprocess_.logger_.log')
     def test_run__with_thrown_exception(self, mock_log, mock_run):
         cmd = ['cmd', 'foo', 'bar']
         t = 10

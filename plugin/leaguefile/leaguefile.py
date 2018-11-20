@@ -12,29 +12,29 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/leaguefile', '', _path)
 sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
+from common.datetime_.datetime_ import datetime_as_pst  # noqa
+from common.datetime_.datetime_ import datetime_datetime_est  # noqa
+from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.datetime_.datetime_ import timedelta  # noqa
+from common.datetime_.datetime_ import timestamp  # noqa
 from data.notify.notify import Notify  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from data.task.task import Task  # noqa
 from data.response.response import Response  # noqa
-from util.ago.ago import elapsed  # noqa
-from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
 from util.component.component import cell  # noqa
 from util.component.component import col  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import datetime_as_pst  # noqa
-from util.datetime_.datetime_ import datetime_datetime_est  # noqa
-from util.datetime_.datetime_ import decode_datetime  # noqa
-from util.datetime_.datetime_ import encode_datetime  # noqa
 from util.file_.file_ import ping  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.file_.file_ import wget_file  # noqa
-from util.jinja2_.jinja2_ import env  # noqa
+from common.jinja2_.jinja2_ import env  # noqa
 from util.news.news import extract_box_scores  # noqa
 from util.news.news import extract_leagues  # noqa
-from util.secrets.secrets import server  # noqa
-from util.slack.slack import reactions_add  # noqa
-from util.subprocess_.subprocess_ import check_output  # noqa
+from common.secrets.secrets import server  # noqa
+from common.slack.slack import reactions_add  # noqa
+from common.subprocess_.subprocess_ import check_output  # noqa
 
 logger_ = logging.getLogger('fairylab')
 
@@ -254,7 +254,7 @@ class Leaguefile(Registrable):
 
     @staticmethod
     def _time(s, e, n):
-        return elapsed(Leaguefile._decode(s, n), Leaguefile._decode(e, n))
+        return timedelta(Leaguefile._decode(s, n), Leaguefile._decode(e, n))
 
     def download(self, **kwargs):
         data = self.data

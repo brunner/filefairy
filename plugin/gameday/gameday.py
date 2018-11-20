@@ -20,10 +20,10 @@ from util.component.component import secondary  # noqa
 from util.component.component import cell  # noqa
 from util.component.component import col  # noqa
 from util.component.component import table  # noqa
-from util.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.jersey.jersey import get_rawid  # noqa
-from util.json_.json_ import dumps  # noqa
+from common.json_.json_ import dumps  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
 from util.team.team import choose_colors  # noqa
@@ -586,8 +586,8 @@ class Gameday(Registrable):
 
 
 # from plugin.statsplus.statsplus import Statsplus
-# from util.datetime_.datetime_ import datetime_now
-# from util.jinja2_.jinja2_ import env
+# from common.datetime_.datetime_ import datetime_now
+# from common.jinja2_.jinja2_ import env
 
 # date = datetime_now()
 # e = env()

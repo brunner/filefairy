@@ -9,7 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/util/news', '', _path)
 sys.path.append(_root)
-from util.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from util.file_.file_ import recreate  # noqa
 
 _box_here = os.path.join(_root, 'resource/download/news/html/box_scores')
