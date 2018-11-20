@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for messageable.py."""
 
 import logging
 import os
@@ -10,11 +11,13 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
+
 from api.messageable.messageable import Messageable  # noqa
-from core.debug.debug import Debug  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
-from core.task.task import Task  # noqa
+from api.messageable.messageable import TESTING_CHANNEL  # noqa
+from data.debug.debug import Debug  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
+from data.task.task import Task  # noqa
 
 
 class FakeMessageable(Messageable):
@@ -34,94 +37,120 @@ class FakeMessageable(Messageable):
 
 
 class MessageableTest(unittest.TestCase):
-    @mock.patch('plugin.git.git.logger_.log')
-    @mock.patch.object(FakeMessageable, 'foo')
-    def test_on_message__with_no_arguments(self, mock_foo, mock_log):
-        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo()'}
+    def setUp(self):
+        patch_log = mock.patch('api.messageable.messageable._logger.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
+
+    def reset_mocks(self):
+        self.mock_log.reset_mock()
+
+    def create_messageable(self):
         messageable = FakeMessageable()
+
+        self.mock_log.assert_not_called()
+        self.reset_mocks()
+
+        return messageable
+
+    @mock.patch.object(FakeMessageable, 'foo')
+    def test_on_message__no_arguments(self, mock_foo):
+        messageable = self.create_messageable()
+
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
+
         mock_foo.assert_called_once_with(obj=data, v=True)
-        mock_log.assert_not_called()
+        self.mock_log.assert_not_called()
 
-    @mock.patch('plugin.git.git.logger_.log')
     @mock.patch.object(FakeMessageable, 'foo')
-    def test_on_message__with_one_argument(self, mock_foo, mock_log):
-        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo(a)'}
-        messageable = FakeMessageable()
+    def test_on_message__one_argument(self, mock_foo):
+        messageable = self.create_messageable()
+
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo(a)'}
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
+
         mock_foo.assert_called_once_with('a', obj=data, v=True)
-        mock_log.assert_not_called()
+        self.mock_log.assert_not_called()
 
-    @mock.patch('plugin.git.git.logger_.log')
     @mock.patch.object(FakeMessageable, 'foo')
-    def test_on_message__with_two_arguments(self, mock_foo, mock_log):
-        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo(a,b)'}
-        messageable = FakeMessageable()
+    def test_on_message__two_arguments(self, mock_foo):
+        messageable = self.create_messageable()
+
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo(a,b)'}
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
-        mock_foo.assert_called_once_with('a', 'b', obj=data, v=True)
-        mock_log.assert_not_called()
 
-    @mock.patch('plugin.git.git.logger_.log')
+        mock_foo.assert_called_once_with('a', 'b', obj=data, v=True)
+        self.mock_log.assert_not_called()
+
     @mock.patch.object(FakeMessageable, 'foo')
-    def test_on_message__with_response(self, mock_foo, mock_log):
-        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.foo()'}
-        messageable = FakeMessageable()
+    def test_on_message__response(self, mock_foo):
         debug = Debug(msg='msg', extra={'a': 1})
         task = Task(target='_bar')
         mock_foo.return_value = Response(debug=[debug], task=[task])
+
+        messageable = self.create_messageable()
+
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE], debug=[debug], task=[task])
         self.assertEqual(actual, expected)
+
         mock_foo.assert_called_once_with(obj=data, v=True)
-        mock_log.assert_called_once_with(logging.DEBUG, 'msg', extra={'a': 1})
+        self.mock_log.assert_called_once_with(
+            logging.DEBUG, 'msg', extra={'a': 1})
 
-    @mock.patch('plugin.git.git.logger_.log')
     @mock.patch.object(FakeMessageable, 'foo')
-    def test_on_message__with_invalid_channel(self, mock_foo, mock_log):
-        data = {'channel': 'ABCDEFGH1', 'text': 'FakeMessageable.foo(a,b,c)'}
-        messageable = FakeMessageable()
+    def test_on_message__invalid_channel(self, mock_foo):
+        messageable = self.create_messageable()
+
+        data = {'channel': 'INVALID', 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
         expected = Response()
         self.assertEqual(actual, expected)
-        mock_foo.assert_not_called()
-        mock_log.assert_not_called()
 
-    @mock.patch('plugin.git.git.logger_.log')
+        mock_foo.assert_not_called()
+        self.mock_log.assert_not_called()
+
     @mock.patch.object(FakeMessageable, 'foo')
-    def test_on_message__with_invalid_text(self, mock_foo, mock_log):
-        data = {'channel': 'G3SUFLMK4', 'text': '!FakeMessageable.foo(a,b,c)'}
-        messageable = FakeMessageable()
+    def test_on_message__invalid_text(self, mock_foo):
+        messageable = self.create_messageable()
+
+        data = {'channel': TESTING_CHANNEL, 'text': 'Invalid.foo()'}
         actual = messageable._on_message(obj=data)
         expected = Response()
         self.assertEqual(actual, expected)
-        mock_foo.assert_not_called()
-        mock_log.assert_not_called()
 
-    @mock.patch('plugin.git.git.logger_.log')
+        mock_foo.assert_not_called()
+        self.mock_log.assert_not_called()
+
     @mock.patch.object(FakeMessageable, '_bar')
-    def test_on_message__with_invalid_private_attr(self, mock_bar, mock_log):
-        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable._bar(a,b,c)'}
-        messageable = FakeMessageable()
-        actual = messageable._on_message(obj=data)
-        expected = Response()
-        self.assertEqual(actual, expected)
-        mock_bar.assert_not_called()
-        mock_log.assert_not_called()
+    def test_on_message__private_attr(self, mock_bar):
+        messageable = self.create_messageable()
 
-    @mock.patch('plugin.git.git.logger_.log')
-    def test_on_message__with_invalid_uncallable_attr(self, mock_log):
-        data = {'channel': 'G3SUFLMK4', 'text': 'FakeMessageable.var(a,b,c)'}
-        messageable = FakeMessageable()
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable._bar()'}
         actual = messageable._on_message(obj=data)
         expected = Response()
         self.assertEqual(actual, expected)
-        mock_log.assert_not_called()
+
+        mock_bar.assert_not_called()
+        self.mock_log.assert_not_called()
+
+    def test_on_message__uncallable_attr(self):
+        messageable = self.create_messageable()
+
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.var()'}
+        actual = messageable._on_message(obj=data)
+        expected = Response()
+        self.assertEqual(actual, expected)
+
+        self.mock_log.assert_not_called()
 
 
 if __name__ == '__main__':

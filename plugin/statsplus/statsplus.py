@@ -12,10 +12,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/statsplus', '', _path)
 sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
-from core.shadow.shadow import Shadow  # noqa
-from core.task.task import Task  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
+from data.shadow.shadow import Shadow  # noqa
+from data.task.task import Task  # noqa
 from util.component.component import cell  # noqa
 from util.component.component import col  # noqa
 from util.component.component import table  # noqa

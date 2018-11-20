@@ -22,9 +22,9 @@ from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from core.dashboard.dashboard import Dashboard  # noqa
 from core.dashboard.dashboard import LoggingHandler  # noqa
-from core.debug.debug import Debug  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
+from data.debug.debug import Debug  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
 from util.ago.ago import timestamp  # noqa
 from util.component.component import card  # noqa
 from util.datetime_.datetime_ import datetime_now  # noqa

@@ -7,12 +7,12 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/core/response', '', _path))
-from core.debug.debug import Debug  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
-from core.shadow.shadow import Shadow  # noqa
-from core.task.task import Task  # noqa
+sys.path.append(re.sub(r'/data/response', '', _path))
+from data.debug.debug import Debug  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
+from data.shadow.shadow import Shadow  # noqa
+from data.task.task import Task  # noqa
 
 
 class ResponseTest(unittest.TestCase):

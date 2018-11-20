@@ -7,8 +7,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/core/task', '', _path))
-from core.task.task import Task  # noqa
+sys.path.append(re.sub(r'/data/task', '', _path))
+from data.task.task import Task  # noqa
 
 
 class TaskTest(unittest.TestCase):

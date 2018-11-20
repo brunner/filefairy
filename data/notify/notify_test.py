@@ -7,8 +7,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/core/notify', '', _path))
-from core.notify.notify import Notify  # noqa
+sys.path.append(re.sub(r'/data/notify', '', _path))
+from data.notify.notify import Notify  # noqa
 
 
 class NotifyTest(unittest.TestCase):

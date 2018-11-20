@@ -12,8 +12,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/gameday', '', _path)
 sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa
 from util.component.component import secondary  # noqa

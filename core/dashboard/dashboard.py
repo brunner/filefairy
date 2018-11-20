@@ -12,9 +12,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/core/dashboard', '', _path))
 from api.registrable.registrable import Registrable  # noqa
-from core.debug.debug import Debug  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
+from data.debug.debug import Debug  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
 from util.ago.ago import timestamp  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import card  # noqa

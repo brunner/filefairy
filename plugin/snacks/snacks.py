@@ -12,9 +12,9 @@ _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
-from core.task.task import Task  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
+from data.task.task import Task  # noqa
 from util.ago.ago import timestamp  # noqa
 from util.corpus.corpus import collect  # noqa
 from util.component.component import card  # noqa

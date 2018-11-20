@@ -10,8 +10,8 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/gameday', '', _path)
 sys.path.append(_root)
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import bold  # noqa

@@ -11,9 +11,9 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(_path)
 _root = re.sub(r'/plugin/recap', '', _path)
 sys.path.append(_root)
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
-from core.shadow.shadow import Shadow  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
+from data.shadow.shadow import Shadow  # noqa
 from plugin.recap.recap import Recap  # noqa
 from util.component.component import cell  # noqa
 from util.component.component import col  # noqa

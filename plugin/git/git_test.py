@@ -10,9 +10,9 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/git', '', _path))
-from core.debug.debug import Debug  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
+from data.debug.debug import Debug  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
 from plugin.git.git import Git  # noqa
 from util.component.component import anchor  # noqa
 from util.component.component import cell  # noqa

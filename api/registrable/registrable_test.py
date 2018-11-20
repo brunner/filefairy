@@ -11,9 +11,9 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/registrable', '', _path))
 from api.registrable.registrable import Registrable  # noqa
-from core.notify.notify import Notify  # noqa
-from core.response.response import Response  # noqa
-from core.shadow.shadow import Shadow  # noqa
+from data.notify.notify import Notify  # noqa
+from data.response.response import Response  # noqa
+from data.shadow.shadow import Shadow  # noqa
 from util.jinja2_.jinja2_ import env  # noqa
 from util.json_.json_ import dumps  # noqa
 
