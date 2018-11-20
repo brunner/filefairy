@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for test.py."""
 
 import os
 import re
@@ -8,8 +9,8 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/common/test', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/common/test', '', _path))
+
 from api.renderable.renderable import Renderable  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import main  # noqa
@@ -44,18 +45,22 @@ class TestTest(unittest.TestCase):
     def test_write(self, mock_open):
         data = '{"a": 1, "b": true}'
         mo = mock.mock_open(read_data=data)
+        handle = mo()
         mock_open.side_effect = [mo.return_value]
+
         actual = FakeRenderableTest.write('data.json', {'a': 2, 'b': False})
         self.assertEqual(actual, {'a': 1, 'b': True})
-        handle = mo()
-        calls = [mock.call('{\n  "a": 2,\n  "b": false\n}\n')]
-        handle.write.assert_has_calls(calls)
+
+        handle.write.assert_called_once_with('{\n  "a": 2,\n  "b": false\n}\n')
 
     @mock.patch('common.test.test.os.listdir')
     def test_main(self, mock_listdir):
         mock_listdir.return_value = ['foo.py', 'bar.py']
+
+        root = re.sub(r'/common/test', '', _path)
         main(FakeRenderableTest, FakeRenderable, 'path.to.fake',
-             os.path.join(_root, 'path/to/fake'), {}, False)
+             os.path.join(root, 'path/to/fake'), {}, False)
+
         self.assertTrue(hasattr(FakeRenderableTest, 'test_golden__foo'))
         self.assertTrue(hasattr(FakeRenderableTest, 'test_golden__bar'))
 
