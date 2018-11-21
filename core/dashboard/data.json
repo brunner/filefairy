@@ -73,6 +73,90 @@
         "msg": "Reloaded statsplus.",
         "pathname": "/home/pi/filefairy/core/fairylab/fairylab.py"
       }
-    ]
+    ],
+    "2018-11-20T00:00:00-08:00": [
+      {
+        "count": 1,
+        "date": "2018-11-20T00:00:17.348845-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 186,
+        "msg": "Automated push.",
+        "pathname": "/home/pi/filefairy/plugin/git/git.py"
+      },
+      {
+        "count": 5,
+        "date": "2018-11-20T14:26:41.158875-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"/usr/lib/python3.5/subprocess.py\", line 385, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 801, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 1447, in _communicate\n    self._check_timeout(endtime, orig_timeout)\n  File \"/usr/lib/python3.5/subprocess.py\", line 829, in _check_timeout\n    raise TimeoutExpired(self.args, orig_timeout)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/pi/filefairy/common/subprocess_/subprocess_.py\", line 18, in check_output\n    check=True)\n  File \"/usr/lib/python3.5/subprocess.py\", line 390, in run\n    stderr=stderr)\nsubprocess.TimeoutExpired: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' timed out after 8 seconds",
+        "levelname": "WARNING",
+        "lineno": 24,
+        "msg": "Handled warning.",
+        "pathname": "/home/pi/filefairy/common/subprocess_/subprocess_.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-20T15:15:20.522477-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 205,
+        "msg": "Tracker locked.",
+        "pathname": "/home/pi/filefairy/plugin/exports/exports.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-20T16:05:18.027679-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 158,
+        "msg": "Sim in progress.",
+        "pathname": "/home/pi/filefairy/plugin/statsplus/statsplus.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-20T17:47:17.965665-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 106,
+        "msg": "Upload started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-20T17:51:39.751624-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 317,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-20T17:51:41.111872-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 311,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-20T18:07:42.256972-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 293,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/plugin/leaguefile/leaguefile.py"
+      },
+      {
+        "count": 1,
+        "date": "2018-11-20T18:07:43.444826-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 64,
+        "msg": "News updated.",
+        "pathname": "/home/pi/filefairy/plugin/recap/recap.py"
+      }
+    ],
+    "2018-11-21T00:00:00-08:00": []
   }
 }
