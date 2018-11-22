@@ -19,10 +19,10 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.task.task import Task  # noqa
 from util.corpus.corpus import collect  # noqa
-from util.component.component import card  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import card  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import table  # noqa
 from util.nltk_.nltk_ import cfd  # noqa
 from util.nltk_.nltk_ import discuss  # noqa
 from util.nltk_.nltk_ import imitate  # noqa

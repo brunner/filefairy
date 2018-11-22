@@ -13,12 +13,11 @@ sys.path.append(_root)
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from plugin.gameday.gameday import Gameday  # noqa
-from util.component.component import anchor  # noqa
-from util.component.component import bold  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import secondary  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import anchor  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
@@ -31,6 +30,15 @@ _env = env()
 _now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
 _then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 _ts = '123456789'
+
+
+def bold(text):
+    return span(['text-bold'], text)
+
+
+def secondary(text):
+    return span(['text-secondary'], text)
+
 
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
@@ -426,7 +434,8 @@ _game_data = {
         }, {
             'type':
             'event',
-            'batter': 'P103',
+            'batter':
+            'P103',
             'outs':
             0,
             'runs':
@@ -449,7 +458,8 @@ _game_data = {
         }, {
             'type':
             'event',
-            'batter': 'P104',
+            'batter':
+            'P104',
             'outs':
             0,
             'runs':
@@ -492,7 +502,8 @@ _game_data = {
         }, {
             'type':
             'event',
-            'batter': 'P106',
+            'batter':
+            'P106',
             'outs':
             1,
             'runs':

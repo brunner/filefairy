@@ -8,9 +8,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/recap/samples', '', _path)
 sys.path.append(_root)
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import table  # noqa
 from util.team.team import logo_absolute  # noqa
 
 _s31 = [

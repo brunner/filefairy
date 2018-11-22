@@ -16,9 +16,9 @@ from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from data.task.task import Task  # noqa
 from plugin.statsplus.statsplus import Statsplus  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa

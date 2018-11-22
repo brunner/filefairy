@@ -15,7 +15,7 @@ import websocket
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
-import core.dashboard.dashboard  # noqa
+import impl.dashboard.dashboard  # noqa
 from api.messageable.messageable import Messageable  # noqa
 from api.nameable.nameable import Nameable  # noqa
 from api.registrable.registrable import Registrable  # noqa
@@ -24,12 +24,12 @@ from common.datetime_.datetime_ import datetime_now  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
-from core.dashboard.dashboard import Dashboard  # noqa
-from core.dashboard.dashboard import LoggingHandler  # noqa
+from impl.dashboard.dashboard import Dashboard  # noqa
+from impl.dashboard.dashboard import LoggingHandler  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from util.component.component import card  # noqa
+from common.elements.elements import card  # noqa
 from common.slack.slack import rtm_connect  # noqa
 
 logger_ = logging.getLogger('fairylab')

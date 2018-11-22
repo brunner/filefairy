@@ -393,19 +393,6 @@ a.disabled{
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
-<script>
-$('.repl-toggler').on('click', function(e) {
-  if ($(this).hasClass('disabled')) {
-    e.preventDefault();
-  } else {
-    $(this).toggleClass('disabled text-secondary');
-    $(this).html($(this).data('repl'));
-  }
-});
-$('.show-toggler').on('click', function(e) {
-  $(this).toggleClass('border-bottom-0');
-});
-</script>
 
 
 </body>

@@ -19,8 +19,8 @@ from data.shadow.shadow import Shadow  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 
-NOW = datetime.datetime(1985, 10, 27, 0, 0, 0)
-THEN = datetime.datetime(1985, 10, 26, 0, 2, 30)
+DATE_10260602 = datetime.datetime(1985, 10, 26, 6, 2, 30)
+DATE_10270000 = datetime.datetime(1985, 10, 27)
 
 _env = env()
 
@@ -82,7 +82,7 @@ class ResponseTest(unittest.TestCase):
 
     def create_registrable(self):
         self.init_mocks()
-        registrable = FakeRegistrable(date=THEN, e=_env)
+        registrable = FakeRegistrable(date=DATE_10260602, e=_env)
 
         self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')
         self.mock_handle.write.assert_not_called()
@@ -94,15 +94,15 @@ class ResponseTest(unittest.TestCase):
     def test_init(self):
         registrable = self.create_registrable()
 
-        self.assertEqual(registrable.date, THEN)
+        self.assertEqual(registrable.date, DATE_10260602)
         self.assertEqual(registrable.ok, True)
 
     def test_set__valid(self):
         registrable = self.create_registrable()
-        registrable.date = NOW
+        registrable.date = DATE_10270000
         registrable.ok = False
 
-        self.assertEqual(registrable.date, NOW)
+        self.assertEqual(registrable.date, DATE_10270000)
         self.assertEqual(registrable.ok, False)
 
     def test_set__invalid_date(self):

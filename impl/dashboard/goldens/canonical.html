@@ -173,7 +173,7 @@ a.disabled{
 <div class="row">
 <div class="col-12">
 <div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-fire text-secondary"></span>Exceptions
+<span class="oi oi-warning text-secondary"></span>Exceptions
 </div>
 </div>
 </div>
@@ -192,27 +192,27 @@ a.disabled{
 <div class="card-body d-flex flex-column">
 <div class="d-flex flex-row">
 <h5 class="card-title flex-grow">
-<a href="https://github.com/brunner/filefairy/blob/master/core/fairylab/fairylab.py#L127">fairylab.py#L127</a>
+<a href="https://github.com/brunner/filefairy/blob/master/impl/filefairy/filefairy.py#L127">filefairy.py#L127</a>
 </h5>
 <div></div>
 </div>
 
 <p class="card-text flex-grow">Disabled snacks plugin.</p>
 <pre class="pre-scrollable d-flex"><code>Traceback (most recent call last):
-  File "core/fairylab/fairylab.py", line 117, in _try
-    response = item(*args, **dict(kwargs, date=date))
-  File "/home/pi/filefairy/plugin/snacks/snacks.py", line 234, in _load_internal
-    fnames = self._fnames()
-  File "/home/pi/filefairy/plugin/snacks/snacks.py", line 190, in _fnames
-    return [os.path.join(d, c) for c in os.listdir(d)]
-FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/resource/corpus'
+  File "impl/filefairy/filefairy.py", line 127, in _foo
+    a = func(*args, **kwargs)
+  File "/home/pi/filefairy/plugin/snacks/snacks.py", line 234, in _bar
+    b = self._baz()
+  File "/home/pi/filefairy/plugin/snacks/snacks.py", line 190, in _baz
+    return variable
+NameError: name 'variable' is not defined
 </code></pre>
 </div>
 <!-- $(common.card.body) -->
 
 <!-- ^(common.card.footer) -->
 <div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
+<small>Last activity: 06:02:30 PDT (1985-10-26)</small>
 </div>
 <!-- $(common.card.footer) -->
 
@@ -227,66 +227,6 @@ FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/reso
 
 </div>
 <!-- $(dashboard.exceptions) -->
-
-<!-- ^(dashboard.warnings) -->
-<div class="container anchor" id="warnings">
-
-<!-- ^(common.heading) -->
-<div class="row">
-<div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-warning text-secondary"></span>Warnings
-</div>
-</div>
-</div>
-<!-- $(common.heading) -->
-
-<!-- ^(dashboard.row) -->
-<div class="row">
-
-<!-- ^(dashboard.column) -->
-<div class="col-12">
-
-<!-- ^(common.card) -->
-<div class="card d-flex flex-column flex-grow mt-3">
-
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-<a href="https://github.com/brunner/filefairy/blob/master/common.subprocess_/subprocess_.py#L19">subprocess_.py#L19</a>
-</h5>
-<div></div>
-</div>
-
-<p class="card-text flex-grow">Handled subprocess warning (x6).</p>
-<pre class="pre-scrollable d-flex"><code>Traceback (most recent call last):
-  File "/home/jbrunner/filefairy/common.subprocess_/subprocess_.py", line 16, in check_output
-    check=True)
-  File "/usr/lib/python3.5/subprocess.py", line 708, in run
-    stdout=stdout, stderr=stderr)
-subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/www/html/StatsLab/league_file']' returned non-zero exit status 255
-</code></pre>
-</div>
-<!-- $(common.card.body) -->
-
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
-
-</div>
-<!-- $(common.card) -->
-
-</div>
-<!-- $(dashboard.column) -->
-
-</div>
-<!-- $(dashboard.row) -->
-
-</div>
-<!-- $(dashboard.warnings) -->
 
 <!-- ^(dashboard.filter) -->
 <div class="container anchor" id="filter">
@@ -337,13 +277,12 @@ subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/w
 <div class="col-12">
 
 <!-- ^(common.table) -->
-<table class="table border mt-3 table-fixed">
+<table class="table border mt-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col">Monday, July 4th, 2022</td>
-<td scope="col" class="text-right w-75p"></td>
+<td scope="col" colspan="3">Saturday, October 26th, 1985</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -351,43 +290,14 @@ subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/w
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/filefairy/blob/master/core/fairylab/fairylab.py#L127">fairylab.py#L127</a></div><div class="d-inline-block">Disabled snacks plugin.</div></td>
-<td class="text-right w-75p">17:09</td>
-</tr>
-<tr>
-<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/filefairy/blob/master/common.subprocess_/subprocess_.py#L19">subprocess_.py#L19</a></div><div class="d-inline-block">Handled subprocess warning (x10).</div></td>
-<td class="text-right w-75p">14:47</td>
-</tr>
-<tr>
-<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/filefairy/blob/master/plugin/exports/exports.py#L92">exports.py#L92</a></div><div class="d-inline-block">Tracker updated (x6).</div></td>
-<td class="text-right w-75p">14:21</td>
-</tr>
-</tbody>
-<!-- $(common.table.body) -->
-
-</table>
-<!-- $(common.table) -->
-<!-- ^(common.table) -->
-<table class="table border mt-3 table-fixed">
-
-<!-- ^(common.table.head) -->
-<thead class="thead-light">
-<tr>
-<td scope="col">Sunday, July 3rd, 2022</td>
-<td scope="col" class="text-right w-75p"></td>
-</tr>
-</thead>
-<!-- $(common.table.head) -->
-
-<!-- ^(common.table.body) -->
-<tbody>
-<tr>
-<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/filefairy/blob/master/core/fairylab/fairylab.py#L252">fairylab.py#L252</a></div><div class="d-inline-block">Reloaded exports plugin.</div></td>
+<td scope="row"><a href="https://github.com/brunner/filefairy/blob/master/impl/filefairy/filefairy.py#L127">filefairy.py#L127</a></td>
+<td>Disabled snacks plugin.</td>
 <td class="text-right w-75p">06:02</td>
 </tr>
 <tr>
-<td scope="row"><div class="d-inline-block pr-1"><a href="https://github.com/brunner/filefairy/blob/master/core/fairylab/fairylab.py#L252">fairylab.py#L252</a></div><div class="d-inline-block">Reloaded download plugin.</div></td>
-<td class="text-right w-75p">06:02</td>
+<td scope="row"><a href="https://github.com/brunner/filefairy/blob/master/tasks/leaguefile/leaguefile.py#L317">leaguefile.py#L317</a></td>
+<td>File is up.</td>
+<td class="text-right w-75p">02:30</td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -426,19 +336,6 @@ subprocess.CalledProcessError: Command '['ssh', 'brunnerj@server', 'ls -l /var/w
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
-<script>
-$('.repl-toggler').on('click', function(e) {
-  if ($(this).hasClass('disabled')) {
-    e.preventDefault();
-  } else {
-    $(this).toggleClass('disabled text-secondary');
-    $(this).html($(this).data('repl'));
-  }
-});
-$('.show-toggler').on('click', function(e) {
-  $(this).toggleClass('border-bottom-0');
-});
-</script>
 
 <!-- ^(common.form_js) -->
 <script>
