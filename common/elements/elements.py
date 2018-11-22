@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Common (non-reloadable) util methods for rendering templates."""
 
 
 def anchor(url, content):
+    """Builds an anchor element.
+
+    Args:
+        url: The link url.
+        content: The inner HTML of the anchor element.
+
+    Returns:
+        The anchor element.
+    """
     return '<a href="{}">{}</a>'.format(url, content)
-
-
-def bold(text):
-    return span(['font-weight-bold'], text)
 
 
 def card(href='',
@@ -38,22 +44,16 @@ def col(clazz='', colspan=''):
     return {'clazz': clazz, 'colspan': colspan}
 
 
-def show(trigger, text):
-    s = '<a data-toggle="collapse" href="#{0}" role="button" ' + \
-        'aria-expanded="false" aria-controls="{0}">{1}</a>'
-    return s.format(trigger, text)
-
-
-def replace(text, replace):
-    s = '<a class="repl-toggler" href="#" role="button" data-repl="{}">{}</a>'
-    return s.format(replace, text)
-
-
-def secondary(text):
-    return span(['text-secondary'], text)
-
-
 def span(classes, text):
+    """Builds a span element.
+
+    Args:
+        classes: The list of CSS classes to apply to the span.
+        content: The inner HTML of the span element.
+
+    Returns:
+        The span element.
+    """
     return '<span class="{}">{}</span>'.format(' '.join(classes), text)
 
 

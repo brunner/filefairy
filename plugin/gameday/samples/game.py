@@ -7,13 +7,11 @@ import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/plugin/gameday', '', _path))
-from util.component.component import anchor  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import replace  # noqa
-from util.component.component import show  # noqa
-from util.component.component import span  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import anchor  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 
 _breadcrumbs = [{
     'href': '/',
@@ -26,9 +24,6 @@ _breadcrumbs = [{
     'name': 'Diamondbacks at Dodgers, 10/09/2022'
 }]
 
-_replace = cell(
-    content=replace('Previous game', 'Previous game not found') + ' - ' +
-    replace('Next game', 'Next game not found'))
 _log = [
     table(
         clazz='border mt-3',
@@ -49,12 +44,6 @@ _schedule = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
         head=[cell(content='Arizona Diamondbacks')]),
-    table(clazz='table-fixed border border-bottom-0', body=[[_replace]]),
-    table(
-        clazz='table-fixed border show-toggler',
-        body=[
-            [cell(content=show('schedule-t31', 'Toggle full schedule'))],
-        ]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t31',
@@ -78,12 +67,6 @@ _schedule = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
         head=[cell(content='Los Angeles Dodgers')]),
-    table(clazz='table-fixed border border-bottom-0', body=[[_replace]]),
-    table(
-        clazz='table-fixed border show-toggler',
-        body=[
-            [cell(content=show('schedule-t45', 'Toggle full schedule'))],
-        ]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t45',

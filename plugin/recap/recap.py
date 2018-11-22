@@ -15,8 +15,8 @@ from api.registrable.registrable import Registrable  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
 from common.slack.slack import reactions_add  # noqa
 from util.standings.standings import standings_table  # noqa

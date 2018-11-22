@@ -8,11 +8,11 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/git/samples', '', _path)
 sys.path.append(_root)
-from util.component.component import anchor  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import span  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import anchor  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 
 _breadcrumbs = [{'href': '/', 'name': 'Fairylab'}, {'href': '', 'name': 'Git'}]
 

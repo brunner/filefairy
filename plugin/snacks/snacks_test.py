@@ -17,10 +17,10 @@ from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
 from plugin.snacks.snacks import _wafflelist  # noqa
-from util.component.component import card  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import card  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa

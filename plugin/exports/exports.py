@@ -14,11 +14,11 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from util.component.component import card  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import span  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import card  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 from common.slack.slack import reactions_add  # noqa
 from common.slack.slack import reactions_get  # noqa
 from common.slack.slack import reactions_remove  # noqa

@@ -12,7 +12,7 @@
 <!-- ^(dashboard.exceptions) -->
 <div class="container anchor" id="exceptions">
 
-{{ common.heading('fire', 'Exceptions') }}
+{{ common.heading('warning', 'Exceptions') }}
 
 <!-- ^(dashboard.row) -->
 <div class="row">
@@ -32,32 +32,6 @@
 
 </div>
 <!-- $(dashboard.exceptions) -->
-{% endif %}
-
-{% if warnings %}
-<!-- ^(dashboard.warnings) -->
-<div class="container anchor" id="warnings">
-
-{{ common.heading('warning', 'Warnings') }}
-
-<!-- ^(dashboard.row) -->
-<div class="row">
-
-{% for card in warnings %}
-<!-- ^(dashboard.column) -->
-<div class="col-12">
-
-{{ common.card(card) }}
-
-</div>
-<!-- $(dashboard.column) -->
-
-{% endfor %}
-</div>
-<!-- $(dashboard.row) -->
-
-</div>
-<!-- $(dashboard.warnings) -->
 {% endif %}
 
 {% if logs %}

@@ -9,9 +9,9 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/standings', '', _path))
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import table  # noqa
 from util.standings.standings import elimination_number  # noqa
 from util.standings.standings import games_behind  # noqa
 from util.standings.standings import sort  # noqa

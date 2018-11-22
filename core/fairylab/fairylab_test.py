@@ -13,14 +13,14 @@ sys.path.append(_path)
 _root = re.sub(r'/core/fairylab', '', _path)
 sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
-from core.dashboard.dashboard import Dashboard  # noqa
+from impl.dashboard.dashboard import Dashboard  # noqa
 from core.fairylab.fairylab import Fairylab  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from data.task.task import Task  # noqa
-from util.component.component import card  # noqa
+from common.elements.elements import card  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa

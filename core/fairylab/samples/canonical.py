@@ -8,7 +8,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/core/fairylab/samples', '', _path)
 sys.path.append(_root)
-from util.component.component import card  # noqa
+from common.elements.elements import card  # noqa
 
 _breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
 

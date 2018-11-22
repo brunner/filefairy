@@ -14,12 +14,11 @@ sys.path.append(_root)
 from api.registrable.registrable import Registrable  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from util.component.component import anchor  # noqa
-from util.component.component import bold  # noqa
-from util.component.component import secondary  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import anchor  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from util.file_.file_ import recreate  # noqa
 from util.jersey.jersey import get_rawid  # noqa
@@ -50,6 +49,14 @@ _player_default = {
 _smallcaps = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 _statslab_link = ('https://orangeandblueleaguebaseball.com/StatsLab/'
                   'reports/news/html/')
+
+
+def bold(text):
+    return span(['text-bold'], text)
+
+
+def secondary(text):
+    return span(['text-secondary'], text)
 
 
 class Gameday(Registrable):

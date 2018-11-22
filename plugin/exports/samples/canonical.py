@@ -8,11 +8,11 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/plugin/exports/samples', '', _path)
 sys.path.append(_root)
-from util.component.component import card  # noqa
-from util.component.component import cell  # noqa
-from util.component.component import col  # noqa
-from util.component.component import span  # noqa
-from util.component.component import table  # noqa
+from common.elements.elements import card  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import col  # noqa
+from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 from util.team.team import logo_absolute  # noqa
 
 _t31 = [

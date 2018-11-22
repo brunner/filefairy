@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Common (non-reloadable) util methods for testing other modules."""
 
 import abc
 import json
@@ -11,8 +12,8 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/common/test', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/common/test', '', _path))
+
 from api.renderable.renderable import Renderable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
@@ -38,6 +39,7 @@ def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
     @mock.patch.object(_cls, '_render_internal')
     def test_golden(self, mock_render):
         self.init_mocks(_read)
+
         date = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
         golden = os.path.join(_pth, 'goldens/{}.html'.format(case))
         sample = '{}.samples.{}'.format(_pkg, case)
@@ -46,6 +48,7 @@ def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
             getattr(module, attr) for attr in ['subtitle', 'tmpl', 'context']
         ]
         mock_render.return_value = [(golden, subtitle, tmpl, context)]
+
         plugin = _cls(**kwargs)
         plugin._render(date=date, test=True)
 
@@ -54,9 +57,10 @@ def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
 
 def main(_tst, _cls, _pkg, _pth, _read, _main, **kwargs):
     if issubclass(_cls, Renderable):
-        d = os.path.join(_root, _pth, 'samples')
-        cs = filter(lambda x: '_' not in x, os.listdir(d))
-        for c in cs:
+        root = re.sub(r'/common/test', '', _path)
+        d = os.path.join(root, _pth, 'samples')
+
+        for c in filter(lambda x: '_' not in x, os.listdir(d)):
             case = re.sub('.py', '', c)
             test_golden = _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs)
             setattr(_tst, 'test_golden__{}'.format(case), test_golden)
