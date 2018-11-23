@@ -15,7 +15,7 @@ from api.registrable.registrable import Registrable  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
@@ -125,7 +125,7 @@ class Statsplus(Registrable):
         if ddate < ndate:
             return response
 
-        response.append_notify(Notify.BASE)
+        response.append(notify=Notify.BASE)
         shadow = False
 
         if self.data['finished']:
@@ -181,8 +181,8 @@ class Statsplus(Registrable):
 
         if data['unchecked']:
             unchecked = copy.deepcopy(data)['unchecked']
-            response.append_task(
-                Task(target='_extract_all', args=(unchecked, )))
+            response.append(
+                thread_=Thread(target='_extract_all', args=(unchecked, )))
 
         return response
 
@@ -200,11 +200,11 @@ class Statsplus(Registrable):
             Shadow(
                 destination='recap',
                 key='statsplus.offseason',
-                data=self.data['offseason']),
+                info=self.data['offseason']),
             Shadow(
                 destination='recap',
                 key='statsplus.postseason',
-                data=self.data['postseason'])
+                info=self.data['postseason'])
         ]
 
     def _clear(self):

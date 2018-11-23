@@ -31,7 +31,6 @@ DATE_10250007 = datetime_datetime_pst(1985, 10, 25, 0, 7)
 DATE_10260000 = datetime_datetime_pst(1985, 10, 26)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
-DATE_10262018 = datetime_datetime_pst(1985, 10, 26, 20, 18, 45)
 ENV = env()
 EXC = (Exception, Exception(), Exception().__traceback__)
 PATH = '/home/pi/filefairy/path/to/module.py'
@@ -96,10 +95,6 @@ class DashboardTest(Test):
         self.addCleanup(patch_upload.stop)
         self.mock_upload = patch_upload.start()
 
-    def assert_not_called(self, *mocks):
-        for m in mocks:
-            m.assert_not_called()
-
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
@@ -113,10 +108,9 @@ class DashboardTest(Test):
         self.init_mocks(data)
         dashboard = Dashboard(date=DATE_10250007, e=ENV)
 
-        self.mock_chat.assert_not_called()
         self.mock_open.assert_called_once_with(Dashboard._data(), 'r')
-        self.mock_handle.write.assert_not_called()
-        self.mock_upload.assert_not_called()
+        self.assertNotCalled(self.mock_chat, self.mock_handle.write,
+                             self.mock_upload)
         self.assertEqual(dashboard.data, data)
 
         self.reset_mocks()
@@ -127,35 +121,42 @@ class DashboardTest(Test):
 
         return dashboard
 
+    def test_init(self):
+        dashboard = self.create_dashboard(_data())
+
+        self.assertFalse(len(dashboard.warnings))
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
+
     @mock.patch.object(Dashboard, '_cleanup')
     def test_notify__fairylab_day(self, mock_cleanup):
         dashboard = self.create_dashboard(_data())
         response = dashboard._notify_internal(
-            date=DATE_10262018, notify=Notify.FAIRYLAB_DAY)
+            date=DATE_10260602, notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
         mock_cleanup.assert_called_once_with(
-            date=DATE_10262018, notify=Notify.FAIRYLAB_DAY)
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+            date=DATE_10260602, notify=Notify.FILEFAIRY_DAY)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_cleanup')
     def test_notify__with_other(self, mock_cleanup):
         dashboard = self.create_dashboard(_data())
         response = dashboard._notify_internal(
-            date=DATE_10262018, notify=Notify.OTHER)
+            date=DATE_10260602, notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assert_not_called(mock_cleanup, self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(mock_cleanup, self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_on_message(self):
         dashboard = self.create_dashboard(_data())
-        response = dashboard._on_message_internal(date=DATE_10262018)
+        response = dashboard._on_message_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_index_html')
     def test_render(self, mock_index):
@@ -163,38 +164,38 @@ class DashboardTest(Test):
         mock_index.return_value = index_html
 
         dashboard = self.create_dashboard(_data())
-        actual = dashboard._render_internal(date=DATE_10262018)
+        actual = dashboard._render_internal(date=DATE_10260602)
         expected = [('dashboard/index.html', '', 'dashboard.html', index_html)]
         self.assertEqual(actual, expected)
 
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_run(self):
         dashboard = self.create_dashboard(_data())
-        response = dashboard._run_internal(date=DATE_10262018)
+        response = dashboard._run_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_render')
     def test_setup(self, mock_render):
         dashboard = self.create_dashboard(_data())
-        response = dashboard._setup_internal(date=DATE_10262018)
+        response = dashboard._setup_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=DATE_10262018, log=False)
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        mock_render.assert_called_once_with(date=DATE_10260602, log=False)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_shadow(self):
         dashboard = self.create_dashboard(_data())
-        value = dashboard._shadow_internal(date=DATE_10262018)
+        value = dashboard._shadow_internal(date=DATE_10260602)
         self.assertEqual(value, [])
 
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_cleanup(self):
         old = encode_datetime(DATE_10190000)
@@ -212,7 +213,7 @@ class DashboardTest(Test):
         data = _data({new: [error]})
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
-        self.assert_not_called(self.mock_chat, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_warning')
     @mock.patch('impl.dashboard.dashboard.datetime_now')
@@ -231,9 +232,9 @@ class DashboardTest(Test):
         path = '/home/pi/filefairy/path/to/module.py'
         record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
         mock_alert.assert_called_once_with(record, **kwargs)
-        self.assert_not_called(mock_log, mock_warning, self.mock_chat,
-                               self.mock_open, self.mock_handle.write,
-                               self.mock_upload)
+        self.assertNotCalled(mock_log, mock_warning, self.mock_chat,
+                             self.mock_open, self.mock_handle.write,
+                             self.mock_upload)
 
     @mock.patch.object(Dashboard, '_warning')
     @mock.patch('impl.dashboard.dashboard.datetime_now')
@@ -253,8 +254,8 @@ class DashboardTest(Test):
         record = _record(path, 123, 'ERROR', 'foo', 'Exception', DATE_10260602)
         mock_alert.assert_called_once_with(record, **kwargs)
         mock_log.assert_called_once_with(record)
-        self.assert_not_called(mock_warning, self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(mock_warning, self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_warning')
     @mock.patch('impl.dashboard.dashboard.datetime_now')
@@ -273,9 +274,9 @@ class DashboardTest(Test):
         path = '/home/pi/filefairy/path/to/module.py'
         record = _record(path, 456, 'INFO', 'bar', '', DATE_10260602)
         mock_log.assert_called_once_with(record)
-        self.assert_not_called(mock_alert, mock_warning, self.mock_chat,
-                               self.mock_open, self.mock_handle.write,
-                               self.mock_upload)
+        self.assertNotCalled(mock_alert, mock_warning, self.mock_chat,
+                             self.mock_open, self.mock_handle.write,
+                             self.mock_upload)
 
     @mock.patch.object(Dashboard, '_warning')
     @mock.patch('impl.dashboard.dashboard.datetime_now')
@@ -295,9 +296,9 @@ class DashboardTest(Test):
         record = _record(path, 789, 'WARNING', 'baz', 'Exception',
                          DATE_10260602)
         mock_warning.assert_called_once_with(record, **kwargs)
-        self.assert_not_called(mock_alert, mock_log, self.mock_chat,
-                               self.mock_open, self.mock_handle.write,
-                               self.mock_upload)
+        self.assertNotCalled(mock_alert, mock_log, self.mock_chat,
+                             self.mock_open, self.mock_handle.write,
+                             self.mock_upload)
 
     @mock.patch.object(Dashboard, '_render')
     def test_log__other(self, mock_render):
@@ -313,7 +314,7 @@ class DashboardTest(Test):
         mock_render.assert_called_once_with(date=DATE_10260602, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
-        self.assert_not_called(self.mock_chat, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_render')
     def test_log__reloaded(self, mock_render):
@@ -330,7 +331,7 @@ class DashboardTest(Test):
         mock_render.assert_called_once_with(date=DATE_10260602, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
-        self.assert_not_called(self.mock_chat, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_alert')
     def test_warning__alert(self, mock_alert):
@@ -343,8 +344,8 @@ class DashboardTest(Test):
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 10)
         self.assertEqual(dashboard.warnings, [warning])
         mock_alert.assert_called_once_with(record, **kwargs)
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_alert')
     def test_warning__multiple(self, mock_alert):
@@ -356,8 +357,8 @@ class DashboardTest(Test):
 
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 2)
         self.assertEqual(dashboard.warnings, [warning])
-        self.assert_not_called(mock_alert, self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(mock_alert, self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_alert')
     def test_warning__single(self, mock_alert):
@@ -368,8 +369,8 @@ class DashboardTest(Test):
 
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 1)
         self.assertEqual(dashboard.warnings, [warning])
-        self.assert_not_called(mock_alert, self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(mock_alert, self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_index_html(self):
         old = encode_datetime(DATE_10250000)
@@ -430,8 +431,8 @@ class DashboardTest(Test):
             'exceptions': exceptions
         }
         self.assertEqual(actual, expected)
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_alert(self):
         path = '/home/pi/filefairy/path/to/module.py'
@@ -446,7 +447,7 @@ class DashboardTest(Test):
             mock.call('stderr', 'module.err.txt', 'testing'),
             mock.call('stdout', 'module.out.txt', 'testing'),
         ])
-        self.assert_not_called(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_record_link(self):
         link = 'https://github.com/brunner/filefairy/blob/master/'
@@ -457,8 +458,8 @@ class DashboardTest(Test):
         actual = dashboard._record_link(record)
         expected = link + 'path/to/module.py#L55'
         self.assertEqual(actual, expected)
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_record_title(self):
         path = '/home/pi/filefairy/path/to/module.py'
@@ -468,8 +469,8 @@ class DashboardTest(Test):
         actual = dashboard._record_title(record)
         expected = 'module.py#L55'
         self.assertEqual(actual, expected)
-        self.assert_not_called(self.mock_chat, self.mock_open,
-                               self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
 
     def test_sort(self):
         path1 = '/home/pi/filefairy/path/to/a.py'

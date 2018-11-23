@@ -3,7 +3,6 @@
 """Common (non-reloadable) util methods for testing other modules."""
 
 import abc
-import json
 import importlib
 import os
 import re
@@ -25,14 +24,9 @@ class Test(unittest.TestCase):
     def init_mocks(self):
         pass
 
-    @staticmethod
-    def write(fname, data):
-        with open(fname, 'r+') as f:
-            original = json.loads(f.read())
-            f.seek(0)
-            f.write(dumps(data) + '\n')
-            f.truncate()
-            return original
+    def assertNotCalled(self, *mocks):
+        for m in mocks:
+            m.assert_not_called()
 
 
 def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):

@@ -12,7 +12,7 @@ _root = re.sub(r'/plugin/snacks', '', _path)
 sys.path.append(_root)
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 from plugin.snacks.snacks import Snacks  # noqa
 from plugin.snacks.snacks import _chooselist  # noqa
 from plugin.snacks.snacks import _snacklist  # noqa
@@ -119,8 +119,8 @@ class SnacksTest(Test):
 
         self.reset_mocks()
 
-        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
-        self.assertEqual(response, Response(task=[Task(target='_load')]))
+        response = plugin._notify_internal(notify=Notify.FILEFAIRY_DAY)
+        self.assertEqual(response, Response(thread_=[Thread(target='_load')]))
 
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
@@ -577,7 +577,7 @@ class SnacksTest(Test):
         plugin = self.create_plugin(_data(members=_members_old))
         response = plugin._setup_internal(date=_then)
         self.assertEqual(
-            response, Response(task=[Task(target='_load_internal')]))
+            response, Response(thread_=[Thread(target='_load_internal')]))
 
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()

@@ -17,7 +17,7 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 from util.corpus.corpus import collect  # noqa
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
@@ -185,9 +185,9 @@ class Snacks(Registrable):
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         response = Response()
-        if notify == Notify.FAIRYLAB_DAY:
+        if notify == Notify.FILEFAIRY_DAY:
             self.loaded = False
-            response.append_task(Task(target='_load'))
+            response.append(thread_=Thread(target='_load'))
         return response
 
     def _on_message_internal(self, **kwargs):
@@ -309,7 +309,7 @@ class Snacks(Registrable):
 
     def _setup_internal(self, **kwargs):
         self._render(**kwargs)
-        return Response(task=[Task(target='_load_internal')])
+        return Response(thread_=[Thread(target='_load_internal')])
 
     def _shadow_internal(self, **kwargs):
         return []

@@ -14,7 +14,7 @@ sys.path.append(_root)
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 from plugin.leaguefile.leaguefile import Leaguefile  # noqa
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
@@ -218,8 +218,8 @@ class LeaguefileTest(Test):
         check = ('328706052', 'Jan 29 15:55',
                  'orange_and_blue_league_baseball.tar.gz', False)
         mock_check_upload.return_value = iter([check])
-        task = Task(target='_download_internal', kwargs={'date': _now})
-        mock_download.return_value = Response(task=[task])
+        thread_ = Thread(target='_download_internal', kwargs={'date': _now})
+        mock_download.return_value = Response(thread_=[thread_])
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -239,7 +239,8 @@ class LeaguefileTest(Test):
             _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
         self.assertEqual(
-            response, Response(notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
+            response,
+            Response(notify=[Notify.LEAGUEFILE_FINISH], thread_=[thread_]))
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -269,8 +270,8 @@ class LeaguefileTest(Test):
         check = ('328706052', 'Jan 29 07:55',
                  'orange_and_blue_league_baseball.tar.gz', False)
         mock_check_upload.return_value = iter([check])
-        task = Task(target='_download_internal', kwargs={'date': _now})
-        mock_download.return_value = Response(task=[task])
+        thread_ = Thread(target='_download_internal', kwargs={'date': _now})
+        mock_download.return_value = Response(thread_=[thread_])
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -290,7 +291,8 @@ class LeaguefileTest(Test):
             _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
         self.assertEqual(
-            response, Response(notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
+            response,
+            Response(notify=[Notify.LEAGUEFILE_FINISH], thread_=[thread_]))
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -321,8 +323,8 @@ class LeaguefileTest(Test):
         check_c = ('328706052', 'Jan 29 12:55',
                    'orange_and_blue_league_baseball.tar.gz', False)
         mock_check_upload.return_value = iter([check_c])
-        task = Task(target='_download_internal', kwargs={'date': _now})
-        mock_download.return_value = Response(task=[task])
+        thread_ = Thread(target='_download_internal', kwargs={'date': _now})
+        mock_download.return_value = Response(thread_=[thread_])
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -342,7 +344,8 @@ class LeaguefileTest(Test):
             _data(upload=upload, completed=[completed]))
         response = plugin._run_internal(date=_now)
         self.assertEqual(
-            response, Response(notify=[Notify.LEAGUEFILE_FINISH], task=[task]))
+            response,
+            Response(notify=[Notify.LEAGUEFILE_FINISH], thread_=[thread_]))
 
         upload = {
             'start': 'Jan 29 16:00',
@@ -593,8 +596,8 @@ class LeaguefileTest(Test):
         response = plugin._setup_internal(date=_now)
         self.assertEqual(
             response,
-            Response(task=[
-                Task(target='_download_internal', kwargs={'date': _now})
+            Response(thread_=[
+                Thread(target='_download_internal', kwargs={'date': _now})
             ]))
 
         download = {
@@ -626,7 +629,7 @@ class LeaguefileTest(Test):
             Shadow(
                 destination='statsplus',
                 key='leaguefile.now',
-                data=_now_encoded)
+                info=_now_encoded)
         ])
 
         self.mock_open.assert_not_called()
@@ -816,8 +819,8 @@ class LeaguefileTest(Test):
         response = plugin.download(date=_now)
         self.assertEqual(
             response,
-            Response(task=[
-                Task(target='_download_internal', kwargs={'date': _now})
+            Response(thread_=[
+                Thread(target='_download_internal', kwargs={'date': _now})
             ]))
 
         self.mock_open.assert_not_called()

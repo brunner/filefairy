@@ -527,7 +527,7 @@ class RecapTest(Test):
             Shadow(
                 destination='statsplus',
                 key='recap.standings',
-                data=_standings)
+                info=_standings)
         ])
 
         self.mock_open.assert_not_called()

@@ -61,10 +61,10 @@ class FakeRegistrable(Registrable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return [Shadow(destination='bar', key='foo.a', data='b')]
+        return [Shadow(destination='bar', key='foo.a', info='b')]
 
 
-class ResponseTest(unittest.TestCase):
+class RegistrableTest(unittest.TestCase):
     def setUp(self):
         patch_open = mock.patch(
             'api.serializable.serializable.open', create=True)
@@ -134,13 +134,13 @@ class ResponseTest(unittest.TestCase):
         self.assertEqual(
             response,
             Response(
-                shadow=[Shadow(destination='bar', key='foo.a', data='b')]))
+                shadow=[Shadow(destination='bar', key='foo.a', info='b')]))
 
     @mock.patch.object(FakeRegistrable, '_setup')
     def test_shadow(self, mock_setup):
         registrable = self.create_registrable()
 
-        shadow = Shadow(destination='bar', key='foo.a', data='b')
+        shadow = Shadow(destination='bar', key='foo.a', info='b')
         response = registrable._shadow(shadow=shadow)
         self.assertEqual(response, Response())
         self.assertEqual(registrable.shadow, {'foo.a': 'b'})

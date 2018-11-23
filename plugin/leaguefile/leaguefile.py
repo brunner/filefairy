@@ -20,7 +20,7 @@ from common.datetime_.datetime_ import timedelta  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from data.notify.notify import Notify  # noqa
 from data.shadow.shadow import Shadow  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 from data.response.response import Response  # noqa
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
@@ -130,7 +130,7 @@ class Leaguefile(Registrable):
         wait = decode_datetime(data['date']) < kwargs['date'] - _td
         if render or data['upload'] and wait:
             data['date'] = now
-            response.append_notify(notify)
+            response.append(notify=notify)
             self._render(**kwargs)
 
         return response
@@ -170,7 +170,7 @@ class Leaguefile(Registrable):
             Shadow(
                 destination='statsplus',
                 key='leaguefile.now',
-                data=self.data['now'])
+                info=self.data['now'])
         ]
 
     @staticmethod
@@ -291,9 +291,9 @@ class Leaguefile(Registrable):
             self.data['then'] = encode_datetime(then)
 
             logger_.log(logging.INFO, 'Download finished.')
-            response.append_notify(Notify.LEAGUEFILE_DOWNLOAD)
+            response.append(notify=Notify.LEAGUEFILE_DOWNLOAD)
             if then.year != now.year:
-                response.append_notify(Notify.LEAGUEFILE_YEAR)
+                response.append(notify=Notify.LEAGUEFILE_YEAR)
             response.shadow = self._shadow_internal(**kwargs)
         else:
             logger_.log(logging.INFO, 'Download failed.')
@@ -310,7 +310,7 @@ class Leaguefile(Registrable):
         }
         logger_.log(logging.INFO, 'Download started.')
         return Response(
-            task=[Task(target='_download_internal', kwargs=kwargs)])
+            thread_=[Thread(target='_download_internal', kwargs=kwargs)])
 
     def _file_is_up(self, **kwargs):
         obj = self._chat('fairylab', 'File is up.')

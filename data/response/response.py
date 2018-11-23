@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Data (non-reloadable) object for grouping task return values."""
 
 import os
 import re
@@ -10,15 +11,25 @@ sys.path.append(re.sub(r'/data/response', '', _path))
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.shadow.shadow import Shadow  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 
 
 class Response(object):
-    def __init__(self, debug=None, notify=None, shadow=None, task=None):
+    """Describe a group of data types that a task might return to the app."""
+
+    def __init__(self, debug=None, notify=None, shadow=None, thread_=None):
+        """Create a Response object.
+
+        Args:
+            debug: The optional Debug object(s) in the response.
+            notify: The optional Notify object(s) in the response.
+            shadow: The optional Shadow object(s) in the response.
+            thread_: The optional Thread object(s) in the response.
+        """
         self.debug = debug
         self.notify = notify
         self.shadow = shadow
-        self.task = task
+        self.thread_ = thread_
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -63,15 +74,15 @@ class Response(object):
             raise ValueError(value)
 
     @staticmethod
-    def check_task_list(values):
+    def check_thread_list(values):
         if not isinstance(values, list):
             raise TypeError(values)
         for value in values:
-            Response.check_task_value(value)
+            Response.check_thread_value(value)
 
     @staticmethod
-    def check_task_value(value):
-        if not isinstance(value, Task):
+    def check_thread_value(value):
+        if not isinstance(value, Thread):
             raise ValueError(value)
 
     def get_debug(self):
@@ -83,8 +94,8 @@ class Response(object):
     def get_shadow(self):
         return self._shadow
 
-    def get_task(self):
-        return self._task
+    def get_thread(self):
+        return self._thread_
 
     def set_debug(self, values):
         if values is None:
@@ -107,30 +118,39 @@ class Response(object):
             self.check_shadow_list(values)
             self._shadow = values
 
-    def set_task(self, values):
+    def set_thread(self, values):
         if values is None:
-            self._task = []
+            self._thread_ = []
         else:
-            self.check_task_list(values)
-            self._task = values
+            self.check_thread_list(values)
+            self._thread_ = values
 
     debug = property(get_debug, set_debug)
     notify = property(get_notify, set_notify)
     shadow = property(get_shadow, set_shadow)
-    task = property(get_task, set_task)
+    thread_ = property(get_thread, set_thread)
 
-    def append_debug(self, value):
-        self.check_debug_value(value)
-        self._debug.append(value)
+    def append(self, debug=None, notify=None, shadow=None, thread_=None):
+        """Append additional data to a Response object.
 
-    def append_notify(self, value):
-        self.check_notify_value(value)
-        self._notify.append(value)
+        Args:
+            debug: The optional Debug object to append.
+            notify: The optional Notify object to append.
+            shadow: The optional Shadow object to append.
+            thread_: The optional Thread object to append.
+        """
+        if debug:
+            self.check_debug_value(debug)
+            self._debug.append(debug)
 
-    def append_shadow(self, value):
-        self.check_shadow_value(value)
-        self._shadow.append(value)
+        if notify:
+            self.check_notify_value(notify)
+            self._notify.append(notify)
 
-    def append_task(self, value):
-        self.check_task_value(value)
-        self._task.append(value)
+        if shadow:
+            self.check_shadow_value(shadow)
+            self._shadow.append(shadow)
+
+        if thread_:
+            self.check_thread_value(thread_)
+            self._thread_.append(thread_)

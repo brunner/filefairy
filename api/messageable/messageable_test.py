@@ -16,7 +16,7 @@ from api.messageable.messageable import Messageable  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 
 TESTING_CHANNEL = 'G3SUFLMK4'
 
@@ -93,14 +93,15 @@ class MessageableTest(unittest.TestCase):
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__response(self, mock_foo):
         debug = Debug(msg='msg', extra={'a': 1})
-        task = Task(target='_bar')
-        mock_foo.return_value = Response(debug=[debug], task=[task])
+        thread_ = Thread(target='_bar')
+        mock_foo.return_value = Response(debug=[debug], thread_=[thread_])
 
         messageable = self.create_messageable()
 
         data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
-        expected = Response(notify=[Notify.BASE], debug=[debug], task=[task])
+        expected = Response(
+            notify=[Notify.BASE], debug=[debug], thread_=[thread_])
         self.assertEqual(actual, expected)
 
         mock_foo.assert_called_once_with(obj=data, v=True)

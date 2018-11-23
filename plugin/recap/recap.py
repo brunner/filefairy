@@ -96,7 +96,7 @@ class Recap(Registrable):
             Shadow(
                 destination='statsplus',
                 key='recap.standings',
-                data=self.data['standings'])
+                info=self.data['standings'])
         ]
 
     @staticmethod

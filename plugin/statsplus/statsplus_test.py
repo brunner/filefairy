@@ -14,7 +14,7 @@ sys.path.append(_root)
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
-from data.task.task import Task  # noqa
+from data.thread_.thread_ import Thread  # noqa
 from plugin.statsplus.statsplus import Statsplus  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -585,8 +585,8 @@ class StatsplusTest(Test):
     def test_run__with_unchecked(self, mock_render):
         plugin = self.create_plugin(_data(unchecked=[_then_encoded]))
         response = plugin._run_internal(date=_now)
-        task = Task(target='_extract_all', args=([_then_encoded], ))
-        self.assertEqual(response, Response(task=[task]))
+        thread_ = Thread(target='_extract_all', args=([_then_encoded], ))
+        self.assertEqual(response, Response(thread_=[thread_]))
 
         mock_render.assert_not_called()
         self.mock_open.assert_not_called()
@@ -626,9 +626,9 @@ class StatsplusTest(Test):
         plugin = self.create_plugin(_data())
         value = plugin._shadow_internal()
         self.assertEqual(value, [
-            Shadow(destination='recap', key='statsplus.offseason', data=False),
+            Shadow(destination='recap', key='statsplus.offseason', info=False),
             Shadow(
-                destination='recap', key='statsplus.postseason', data=False)
+                destination='recap', key='statsplus.postseason', info=False)
         ])
 
         self.mock_open.assert_not_called()

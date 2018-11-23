@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for debug.py."""
 
 import os
 import re
@@ -8,6 +9,7 @@ import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/data/debug', '', _path))
+
 from data.debug.debug import Debug  # noqa
 
 
@@ -18,22 +20,23 @@ class DebugTest(unittest.TestCase):
             Debug(extra=extra)
 
     def test_init__empty_extra(self):
-        msg = 'foo'
-        debug = Debug(msg=msg)
-        self.assertEqual(debug.msg, msg)
+        debug = Debug(msg='foo')
+        self.assertEqual(debug.msg, 'foo')
         self.assertEqual(debug.extra, {})
 
-    def test_init__debug_invalid_msg(self):
+    def test_init__filled(self):
         extra = {'key': 'value'}
-        with self.assertRaises(ValueError):
-            Debug(msg=[1], extra=extra)
-
-    def test_init__debug_valid(self):
-        msg = 'foo'
-        extra = {'key': 'value'}
-        debug = Debug(msg=msg, extra=extra)
-        self.assertEqual(debug.msg, msg)
+        debug = Debug(msg='foo', extra=extra)
+        self.assertEqual(debug.msg, 'foo')
         self.assertEqual(debug.extra, extra)
+
+    def test_init__invalid_msg(self):
+        with self.assertRaises(ValueError):
+            Debug(msg=1)
+
+    def test_init__invalid_extra(self):
+        with self.assertRaises(ValueError):
+            Debug(extra=1)
 
 
 if __name__ == '__main__':

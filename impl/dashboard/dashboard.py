@@ -53,12 +53,24 @@ LINK = 'https://github.com/brunner/filefairy/blob/master/'
 
 
 class Dashboard(Registrable):
+    """Logging framework for all tasks and the main app."""
+
     def __init__(self, **kwargs):
+        """Create a Dashboard object.
+
+        Attributes:
+            warnings: List of handled warning logs and their count.
+        """
         super(Dashboard, self).__init__(**kwargs)
         self.warnings = []
 
     @staticmethod
     def _data():
+        """Store Dashboard information.
+
+        Attributes:
+            logs: List of stored info and error logs.
+        """
         return os.path.join(_path, 'data.json')
 
     @staticmethod
@@ -75,7 +87,7 @@ class Dashboard(Registrable):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
-        if notify == Notify.FAIRYLAB_DAY:
+        if notify == Notify.FILEFAIRY_DAY:
             self._cleanup(**kwargs)
         return Response()
 
@@ -185,11 +197,11 @@ class Dashboard(Registrable):
             }, {
                 'href': '',
                 'name': 'Dashboard'
-            }]
+            }],
+            'exceptions': [],
+            'logs': []
         }
 
-        ret['exceptions'] = []
-        ret['logs'] = []
         for date in sorted(self.data['logs']):
             d = decode_datetime(date)
             head_content = d.strftime('%A, %B %-d{}, %Y').format(suffix(d.day))

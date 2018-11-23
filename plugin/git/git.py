@@ -54,9 +54,9 @@ class Git(Registrable):
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
-        if notify == Notify.FAIRYLAB_DAY:
+        if notify == Notify.FILEFAIRY_DAY:
             self.automate('filefairy', **kwargs)
-        elif notify == Notify.FAIRYLAB_DEPLOY:
+        elif notify == Notify.FILEFAIRY_DEPLOY:
             response = self.status('fairylab', **kwargs)
             stdout = self._stdout(response)
             if 'Changes not staged for commit' in stdout:
@@ -124,14 +124,14 @@ class Git(Registrable):
 
         response = Response()
         if output.get('ok'):
-            response.append_notify(Notify.BASE)
+            response.append(notify=Notify.BASE)
             status = 'completed'
         else:
             status = 'failed'
 
         fcmd = '\'{}\''.format(Git._format(cmd))
         msg = 'Call {}: {}.'.format(status, fcmd)
-        response.append_debug(Debug(msg=msg, extra=output))
+        response.append(debug=Debug(msg=msg, extra=output))
         return response
 
     def add(self, *args, **kwargs):
@@ -144,19 +144,19 @@ class Git(Registrable):
         if not sub.notify:
             return sub
         for debug in sub.debug:
-            response.append_debug(debug)
+            response.append(debug=debug)
 
         sub = self.commit(*args, **kwargs)
         if not sub.notify:
             return sub
         for debug in sub.debug:
-            response.append_debug(debug)
+            response.append(debug=debug)
 
         sub = self.push(*args, **kwargs)
         if not sub.notify:
             return sub
         for debug in sub.debug:
-            response.append_debug(debug)
+            response.append(debug=debug)
 
         return response
 

@@ -86,11 +86,11 @@ class GitTest(unittest.TestCase):
     @mock.patch.object(Git, 'automate')
     def test_notify__with_day(self, mock_automate, mock_status):
         plugin = self.create_plugin(_data())
-        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DAY)
+        response = plugin._notify_internal(notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
         mock_automate.assert_called_once_with(
-            'filefairy', notify=Notify.FAIRYLAB_DAY)
+            'filefairy', notify=Notify.FILEFAIRY_DAY)
         mock_status.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -107,12 +107,12 @@ class GitTest(unittest.TestCase):
             notify=[Notify.BASE], debug=[debug])
 
         plugin = self.create_plugin(_data())
-        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DEPLOY)
+        response = plugin._notify_internal(notify=Notify.FILEFAIRY_DEPLOY)
         self.assertEqual(response, Response())
 
         mock_automate.assert_not_called()
         mock_status.assert_called_once_with(
-            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+            'fairylab', notify=Notify.FILEFAIRY_DEPLOY)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -128,13 +128,13 @@ class GitTest(unittest.TestCase):
             notify=[Notify.BASE], debug=[debug])
 
         plugin = self.create_plugin(_data())
-        response = plugin._notify_internal(notify=Notify.FAIRYLAB_DEPLOY)
+        response = plugin._notify_internal(notify=Notify.FILEFAIRY_DEPLOY)
         self.assertEqual(response, Response())
 
         mock_automate.assert_called_once_with(
-            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+            'fairylab', notify=Notify.FILEFAIRY_DEPLOY)
         mock_status.assert_called_once_with(
-            'fairylab', notify=Notify.FAIRYLAB_DEPLOY)
+            'fairylab', notify=Notify.FILEFAIRY_DEPLOY)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()

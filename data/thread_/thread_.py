@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Data (non-reloadable) object for threaded functions."""
 
 
-class Task(object):
+class Thread(object):
+    """Describe a function to be run in a thread in the app background."""
+
     def __init__(self, target=None, args=None, kwargs=None):
+        """Create a Thread object.
+
+        Args:
+            target: The function name.
+            args: The optional positional argument(s) to pass to the function.
+            kwargs: The optional keyword argument(s) to pass to the function.
+        """
         self.target = target
         self.args = args
         self.kwargs = kwargs

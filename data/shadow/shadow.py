@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Data (non-reloadable) object for sharing information between tasks."""
 
 import copy
 
 
 class Shadow(object):
-    def __init__(self, destination=None, key=None, data=None):
+    """Describe a piece of information that one task shares with another."""
+
+    def __init__(self, destination=None, key=None, info=None):
+        """Create a Shadow object.
+
+        Args:
+            destination: The task to share the information with.
+            key: The key the destination should use to index the information.
+            info: The information to share.
+        """
         self.destination = destination
         self.key = key
-        self.data = data
+        self.info = info
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -40,12 +50,12 @@ class Shadow(object):
         self.check_key_value(value)
         self._key = value
 
-    def get_data(self):
-        return self._data
+    def get_info(self):
+        return self._info
 
-    def set_data(self, value):
-        self._data = copy.deepcopy(value)
+    def set_info(self, value):
+        self._info = copy.deepcopy(value)
 
     destination = property(get_destination, set_destination)
     key = property(get_key, set_key)
-    data = property(get_data, set_data)
+    info = property(get_info, set_info)

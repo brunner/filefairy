@@ -41,18 +41,6 @@ class FakeRenderableTest(Test):
 
 
 class TestTest(unittest.TestCase):
-    @mock.patch('common.test.test.open', create=True)
-    def test_write(self, mock_open):
-        data = '{"a": 1, "b": true}'
-        mo = mock.mock_open(read_data=data)
-        handle = mo()
-        mock_open.side_effect = [mo.return_value]
-
-        actual = FakeRenderableTest.write('data.json', {'a': 2, 'b': False})
-        self.assertEqual(actual, {'a': 1, 'b': True})
-
-        handle.write.assert_called_once_with('{\n  "a": 2,\n  "b": false\n}\n')
-
     @mock.patch('common.test.test.os.listdir')
     def test_main(self, mock_listdir):
         mock_listdir.return_value = ['foo.py', 'bar.py']

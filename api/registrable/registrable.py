@@ -8,7 +8,7 @@ following interactions that the app expects to perform on a running task.
     * Notify: Receive signals indicating global state from the app.
     * Run: Perform some repeating (about once per minute) functionality.
     * Setup: Execute some code during task initialization.
-    * Shadow: Store some data which was calculated by a different task.
+    * Shadow: Store some information which was calculated by a different task.
 
 The base class also has properties for ``date``, used to timestamp the most
 recent usage of the task, and ``ok``, used to represent whether the task is
@@ -107,6 +107,6 @@ class Registrable(Messageable, Renderable):
 
     def _shadow(self, **kwargs):
         shadow = kwargs['shadow']
-        self.shadow[shadow.key] = shadow.data
+        self.shadow[shadow.key] = shadow.info
         self._setup(**kwargs)
         return Response()

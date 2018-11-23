@@ -132,7 +132,7 @@ class Gameday(Registrable):
         response = Response()
         if self._check_games():
             self._render(**kwargs)
-            response.append_notify(Notify.BASE)
+            response.append(notify=Notify.BASE)
         return response
 
     def _setup_internal(self, **kwargs):
