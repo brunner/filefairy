@@ -16,31 +16,31 @@ from data.shadow.shadow import Shadow  # noqa
 class ShadowTest(unittest.TestCase):
     def test_init__empty_destination(self):
         with self.assertRaises(ValueError):
-            Shadow(key='plugin.bar', info={'key': 'value'})
+            Shadow(key='foo.baz', info={'key': 'value'})
 
     def test_init__empty_key(self):
         with self.assertRaises(ValueError):
-            Shadow(destination='foo', info={'key': 'value'})
+            Shadow(destination='bar', info={'key': 'value'})
 
     def test_init__empty_info(self):
-        shadow = Shadow(destination='foo', key='plugin.bar')
-        self.assertEqual(shadow.destination, 'foo')
-        self.assertEqual(shadow.key, 'plugin.bar')
+        shadow = Shadow(destination='bar', key='foo.baz')
+        self.assertEqual(shadow.destination, 'bar')
+        self.assertEqual(shadow.key, 'foo.baz')
         self.assertEqual(shadow.info, None)
 
     def test_init__invalid_destination(self):
         with self.assertRaises(ValueError):
-            Shadow(destination=[1], key='plugin.bar', info={'key': 'value'})
+            Shadow(destination=[1], key='foo.baz', info={'key': 'value'})
 
     def test_init__invalid_key(self):
         with self.assertRaises(ValueError):
-            Shadow(destination='foo', key=[1], info={'key': 'value'})
+            Shadow(destination='bar', key=[1], info={'key': 'value'})
 
     def test_init__filled(self):
         shadow = Shadow(
-            destination='foo', key='plugin.bar', info={'key': 'value'})
-        self.assertEqual(shadow.destination, 'foo')
-        self.assertEqual(shadow.key, 'plugin.bar')
+            destination='bar', key='foo.baz', info={'key': 'value'})
+        self.assertEqual(shadow.destination, 'bar')
+        self.assertEqual(shadow.key, 'foo.baz')
         self.assertEqual(shadow.info, {'key': 'value'})
 
 

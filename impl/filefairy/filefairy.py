@@ -31,7 +31,7 @@ from data.response.response import Response  # noqa
 from impl.dashboard.dashboard import Dashboard  # noqa
 from impl.dashboard.dashboard import LoggingHandler  # noqa
 
-TASK_DIR = re.sub(r'/impl/filefairy', '/plugin', _path)
+TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
 _logger = logging.getLogger('filefairy')
 
@@ -142,8 +142,8 @@ class Filefairy(Messageable, Renderable):
     def _install(self, t, module, clazz, **kwargs):
         date = kwargs['date']
         try:
-            plugin = getattr(module, clazz)
-            self.registered[t] = plugin(date=date, e=self.environment)
+            registrable = getattr(module, clazz)
+            self.registered[t] = registrable(date=date, e=self.environment)
         except Exception:
             _logger.log(logging.ERROR, 'Disabled ' + t + '.', exc_info=True)
             return False
@@ -162,7 +162,7 @@ class Filefairy(Messageable, Renderable):
         response = Response()
 
         clazz = t.capitalize()
-        package = 'plugin.{}.{}'.format(t, t)
+        package = 'tasks.{}.{}'.format(t, t)
 
         if package in sys.modules:
             del sys.modules[package]
@@ -217,7 +217,7 @@ class Filefairy(Messageable, Renderable):
         self.data['date'] = encode_datetime(date)
         self.day = date.day
 
-        for t in self._get_dirs(TASK_DIR):
+        for t in self._get_dirs(TASKS_DIR):
             self._reload_internal(t, **kwargs)
         self._try_all('_setup', **kwargs)
 

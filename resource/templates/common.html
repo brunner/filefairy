@@ -59,7 +59,7 @@
 <!-- $(common.card) -->
 {%- endmacro -%}
 
-{% macro dropdown(plugin, teams) -%}
+{% macro dropdown(task, teams) -%}
 <!-- ^(common.dropdown) -->
 <div class="row">
 <div class="col-12">
@@ -72,7 +72,7 @@
 <div class="dropdown-menu w-100" aria-labelledby="dropdown-button">
 {% for name, path in teams %}
 <a class="dropdown-item py-2"
-   href="{{ plugin + '/' + path.replace(' ', '').lower() + '/' }}">
+   href="{{ task + '/' + path.replace(' ', '').lower() + '/' }}">
 {{ name }}
 </a>
 {% endfor %}

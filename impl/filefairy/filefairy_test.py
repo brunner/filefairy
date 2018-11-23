@@ -36,7 +36,7 @@ DATE_10250007 = datetime_datetime_pst(1985, 10, 25, 0, 7)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
 ENV = env()
-TASK_DIR = re.sub(r'/impl/filefairy', '/plugin', _path)
+TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
 
 def _data(date):
@@ -64,7 +64,7 @@ class FakeRegistrable(Registrable):
 
     @staticmethod
     def _data():
-        return re.sub(r'/impl/filefairy', '/plugin/snacks/data.json', _path)
+        return re.sub(r'/impl/filefairy', '/tasks/snacks/data.json', _path)
 
     @staticmethod
     def _href():
@@ -379,7 +379,7 @@ class FilefairyTest(Test):
         expected = Response()
         self.assertEqual(actual, expected)
 
-        mock_import.assert_called_once_with('plugin.task.task')
+        mock_import.assert_called_once_with('tasks.task.task')
         self.mock_log.assert_called_once_with(
             logging.ERROR, 'Disabled task.', exc_info=True)
         self.assertNotCalled(mock_install, self.mock_open,
@@ -398,7 +398,7 @@ class FilefairyTest(Test):
         expected = Response()
         self.assertEqual(actual, expected)
 
-        mock_import.assert_called_once_with('plugin.task.task')
+        mock_import.assert_called_once_with('tasks.task.task')
         mock_install.assert_called_once_with(
             'task', module, 'Task', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
@@ -418,7 +418,7 @@ class FilefairyTest(Test):
         expected = Response(notify=[Notify.BASE], debug=[Debug(msg=msg)])
         self.assertEqual(actual, expected)
 
-        mock_import.assert_called_once_with('plugin.task.task')
+        mock_import.assert_called_once_with('tasks.task.task')
         mock_install.assert_called_once_with(
             'task', module, 'Task', date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO, msg)
@@ -595,7 +595,7 @@ class FilefairyTest(Test):
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
         filefairy._setup(date=DATE_10260604)
 
-        mock_get_dirs.assert_called_once_with(TASK_DIR)
+        mock_get_dirs.assert_called_once_with(TASKS_DIR)
         mock_reload.assert_called_once_with('task', date=DATE_10260604)
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
@@ -796,13 +796,13 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        actual = filefairy._get_dirs(TASK_DIR)
+        actual = filefairy._get_dirs(TASKS_DIR)
         expected = ['bar', 'foo']
         self.assertEqual(actual, expected)
 
         mock_isdir.assert_has_calls(
-            [mock.call(os.path.join(TASK_DIR, d)) for d in dirs])
-        mock_listdir.assert_called_once_with(TASK_DIR)
+            [mock.call(os.path.join(TASKS_DIR, d)) for d in dirs])
+        mock_listdir.assert_called_once_with(TASKS_DIR)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
