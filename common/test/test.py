@@ -18,6 +18,8 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 
+ISO = 'iso-8859-1'
+
 
 class Test(unittest.TestCase):
     @abc.abstractmethod
@@ -47,6 +49,18 @@ def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
         renderable._render(date=date, test=True)
 
     return test_golden
+
+
+def get_testdata(path):
+    testdata = {}
+    for name in os.listdir(path):
+        if name == '__init__.py':
+            continue
+        filename = os.path.join(path, name)
+        if os.path.isfile(filename):
+            testdata[name] = open(filename, 'r', encoding=ISO).read()
+
+    return testdata
 
 
 def main(_tst, _cls, _pkg, _pth, _read, _main, **kwargs):

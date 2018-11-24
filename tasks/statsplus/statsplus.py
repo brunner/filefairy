@@ -9,8 +9,8 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/tasks/statsplus', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/tasks/statsplus', '', _path))
+
 from api.registrable.registrable import Registrable  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
@@ -23,8 +23,8 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
-from util.file_.file_ import recreate  # noqa
 from common.json_.json_ import dumps  # noqa
+from common.subprocess_.subprocess_ import check_output  # noqa
 from util.standings.standings import sort  # noqa
 from util.standings.standings import standings_table  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
@@ -48,6 +48,9 @@ from util.team.team import teamid_to_hometown  # noqa
 from util.team.team import teamids  # noqa
 
 logger_ = logging.getLogger('fairylab')
+
+EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
+GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _game_box = 'box_scores/game_box_'
@@ -213,7 +216,8 @@ class Statsplus(Registrable):
         self.data['scores'] = {}
         self.data['table'] = {}
         self.data['unchecked'] = []
-        recreate(_root + '/resource/games/')
+        check_output(['rm', '-rf', GAMES_DIR])
+        check_output(['mkdir', GAMES_DIR])
 
     def _handle_key(self, key, encoded_date, text, pattern, append):
         if not append or encoded_date not in self.data[key]:
@@ -492,10 +496,9 @@ class Statsplus(Registrable):
                 valid = True
                 cteam1, cruns1, cteam2, cruns2 = score_match[0]
                 if finished:
-                    box_link = url.format(_root + '/resource/extract/',
-                                          _game_box)
-                    log_link = url.format(_root + '/resource/extract/',
-                                          _game_log).replace('.html', '.txt')
+                    box_link = url.format(EXTRACT_DIR, _game_box)
+                    log_link = url.format(EXTRACT_DIR, _game_log).replace(
+                        '.html', '.txt')
                 else:
                     box_link = url.format(_html, _game_box)
                     log_link = url.format(_html, _game_log)
@@ -530,7 +533,7 @@ class Statsplus(Registrable):
                                 self._clarify(key, encoded_date, cteam1,
                                               cteam2, bteam1, bteam2, count)
                     if valid:
-                        fname = url.format(_root + '/resource/games/', 'game_')
+                        fname = url.format(GAMES_DIR + '/', 'game_')
                         fname = fname.replace('.html', '.json')
                         with open(fname, 'w') as f:
                             f.write(dumps(game_data_) + '\n')

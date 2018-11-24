@@ -9,8 +9,8 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/tasks/leaguefile', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
+
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_est  # noqa
@@ -18,25 +18,26 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timedelta  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
-from data.notify.notify import Notify  # noqa
-from data.shadow.shadow import Shadow  # noqa
-from data.thread_.thread_ import Thread  # noqa
-from data.response.response import Response  # noqa
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
-from util.file_.file_ import ping  # noqa
-from util.file_.file_ import recreate  # noqa
-from util.file_.file_ import wget_file  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
-from util.news.news import extract_box_scores  # noqa
-from util.news.news import extract_leagues  # noqa
 from common.secrets.secrets import server  # noqa
 from common.slack.slack import reactions_add  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
+from data.notify.notify import Notify  # noqa
+from data.shadow.shadow import Shadow  # noqa
+from data.thread_.thread_ import Thread  # noqa
+from data.response.response import Response  # noqa
+from services.leaguefile.leaguefile import download_file  # noqa
+from services.leaguefile.leaguefile import extract_file  # noqa
 
-logger_ = logging.getLogger('fairylab')
+_logger = logging.getLogger('fairylab')
+
+FILE_HOST = 'www.orangeandblueleaguebaseball.com'
+FILE_NAME = 'orange_and_blue_league_baseball.tar.gz'
+FILE_URL = 'https://{}/StatsLab/league_file/{}'.format(FILE_HOST, FILE_NAME)
 
 _size_pattern = '(\d+)'
 _date_pattern = '(\w+\s\d+\s\d+:\d+)'
@@ -103,7 +104,7 @@ class Leaguefile(Registrable):
                         render = True
                         data['upload'] = {'start': date}
                         self._chat('fairylab', 'Upload started.')
-                        logger_.log(logging.INFO, 'Upload started.')
+                        _logger.log(logging.INFO, 'Upload started.')
                         notify = Notify.LEAGUEFILE_START
                     if data['upload'].get('size') != size:
                         u = {'size': size, 'end': date, 'now': now}
@@ -193,7 +194,7 @@ class Leaguefile(Registrable):
 
     @staticmethod
     def _check_download():
-        download = os.path.join(_root, 'resource/download')
+        download = re.sub(r'/tasks/leaguefile', '/resource/download', _path)
         output = check_output(['ls', '-l', download], timeout=8)
         if output.get('ok'):
             stdout = output.get('stdout', '')
@@ -259,11 +260,11 @@ class Leaguefile(Registrable):
     def download(self, **kwargs):
         data = self.data
 
-        output = ping()
+        output = check_output(['ping', '-c 1', FILE_HOST], timeout=8)
         if output.get('ok') and data['upload']:
             return self._download_start(**kwargs)
         else:
-            logger_.log(
+            _logger.log(
                 logging.WARNING,
                 'Download failed.',
                 extra={
@@ -274,29 +275,22 @@ class Leaguefile(Registrable):
 
     def _download_internal(self, *args, **kwargs):
         response = Response()
-        output = wget_file()
+        output = download_file(FILE_URL)
 
         if output.get('ok'):
-            now = decode_datetime(self.data['now'])
-            then = now
-
-            box_scores_now = extract_box_scores(then)
-            leagues_now = extract_leagues(then)
-            if box_scores_now > now:
-                now = box_scores_now
-            if leagues_now > then:
-                now = leagues_now
+            then = decode_datetime(self.data['now'])
+            now = extract_file(then)
 
             self.data['now'] = encode_datetime(now)
             self.data['then'] = encode_datetime(then)
 
-            logger_.log(logging.INFO, 'Download finished.')
+            _logger.log(logging.INFO, 'Download finished.')
             response.append(notify=Notify.LEAGUEFILE_DOWNLOAD)
             if then.year != now.year:
                 response.append(notify=Notify.LEAGUEFILE_YEAR)
             response.shadow = self._shadow_internal(**kwargs)
         else:
-            logger_.log(logging.INFO, 'Download failed.')
+            _logger.log(logging.INFO, 'Download failed.')
             self.data['download'] = None
 
         self.write()
@@ -308,13 +302,13 @@ class Leaguefile(Registrable):
             'start': self._encode(kwargs['date']),
             'now': now
         }
-        logger_.log(logging.INFO, 'Download started.')
+        _logger.log(logging.INFO, 'Download started.')
         return Response(
             thread_=[Thread(target='_download_internal', kwargs=kwargs)])
 
     def _file_is_up(self, **kwargs):
         obj = self._chat('fairylab', 'File is up.')
-        logger_.log(logging.INFO, 'File is up.')
+        _logger.log(logging.INFO, 'File is up.')
         channel = obj.get('channel')
         upload = self.data['upload']
         ts = obj.get('ts')

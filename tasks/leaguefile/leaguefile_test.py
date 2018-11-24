@@ -27,6 +27,10 @@ from common.secrets.secrets import server  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import main  # noqa
 
+FILE_HOST = 'www.orangeandblueleaguebaseball.com'
+FILE_NAME = 'orange_and_blue_league_baseball.tar.gz'
+FILE_URL = 'https://{}/StatsLab/league_file/{}'.format(FILE_HOST, FILE_NAME)
+
 _channel = 'C1234'
 _env = env()
 _now = datetime_datetime_pst(2018, 1, 29)
@@ -68,7 +72,7 @@ class LeaguefileTest(Test):
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
-        patch_log = mock.patch('tasks.leaguefile.leaguefile.logger_.log')
+        patch_log = mock.patch('tasks.leaguefile.leaguefile._logger.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
@@ -391,7 +395,8 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 18:00',
             'now': '2018-01-29T00:00:00-08:00'
         }
-        leaguefile = self.create_leaguefile(_data(download=download, upload=upload))
+        leaguefile = self.create_leaguefile(
+            _data(download=download, upload=upload))
         response = leaguefile._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
@@ -439,7 +444,8 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 18:00',
             'now': '2018-01-29T00:00:00-08:00'
         }
-        leaguefile = self.create_leaguefile(_data(download=download, upload=upload))
+        leaguefile = self.create_leaguefile(
+            _data(download=download, upload=upload))
         response = leaguefile._run_internal(date=_now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
@@ -655,7 +661,7 @@ class LeaguefileTest(Test):
         expected = '2h 0m'
         self.assertEqual(actual, expected)
 
-    @mock.patch('tasks.leaguefile.leaguefile.logger_.log')
+    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
     @mock.patch('tasks.leaguefile.leaguefile.check_output')
     def test_check_download__with_filepart(self, mock_check, mock_log):
         ls = 'total 60224\n' + \
@@ -672,7 +678,7 @@ class LeaguefileTest(Test):
             ['ls', '-l', os.path.join(_root, 'resource/download')], timeout=8)
         mock_log.assert_not_called()
 
-    @mock.patch('tasks.leaguefile.leaguefile.logger_.log')
+    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
     @mock.patch('tasks.leaguefile.leaguefile.check_output')
     def test_check_download__without_filepart(self, mock_check, mock_log):
         ls = 'total 60224\n' + \
@@ -690,7 +696,7 @@ class LeaguefileTest(Test):
             ['ls', '-l', os.path.join(_root, 'resource/download')], timeout=8)
         mock_log.assert_not_called()
 
-    @mock.patch('tasks.leaguefile.leaguefile.logger_.log')
+    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
     @mock.patch('tasks.leaguefile.leaguefile.check_output')
     def test_check_download__with_ok_false(self, mock_check, mock_log):
         mock_check.return_value = {'ok': False}
@@ -703,7 +709,7 @@ class LeaguefileTest(Test):
             ['ls', '-l', os.path.join(_root, 'resource/download')], timeout=8)
         mock_log.assert_not_called()
 
-    @mock.patch('tasks.leaguefile.leaguefile.logger_.log')
+    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
     @mock.patch('tasks.leaguefile.leaguefile.check_output')
     def test_check_upload__with_filepart(self, mock_check, mock_log):
         ls = 'total 321012\n' + \
@@ -730,7 +736,7 @@ class LeaguefileTest(Test):
             timeout=8)
         mock_log.assert_not_called()
 
-    @mock.patch('tasks.leaguefile.leaguefile.logger_.log')
+    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
     @mock.patch('tasks.leaguefile.leaguefile.check_output')
     def test_check_upload__without_filepart(self, mock_check, mock_log):
         ls = 'total 321012\n' + \
@@ -753,7 +759,7 @@ class LeaguefileTest(Test):
             timeout=8)
         mock_log.assert_not_called()
 
-    @mock.patch('tasks.leaguefile.leaguefile.logger_.log')
+    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
     @mock.patch('tasks.leaguefile.leaguefile.check_output')
     def test_check_upload__with_ok_false(self, mock_check, mock_log):
         mock_check.return_value = {
@@ -774,9 +780,9 @@ class LeaguefileTest(Test):
             timeout=8)
         mock_log.assert_not_called()
 
-    @mock.patch('tasks.leaguefile.leaguefile.ping')
-    def test_download__with_ok_false(self, mock_ping):
-        mock_ping.return_value = {
+    @mock.patch('tasks.leaguefile.leaguefile.check_output')
+    def test_download__with_ok_false(self, mock_check):
+        mock_check.return_value = {
             'ok': False,
             'stdout': 'out',
             'stderr': 'err'
@@ -803,9 +809,9 @@ class LeaguefileTest(Test):
             })
         self.assertFalse(leaguefile.data['download'])
 
-    @mock.patch('tasks.leaguefile.leaguefile.ping')
-    def test_download__with_ok_true(self, mock_ping):
-        mock_ping.return_value = {'ok': True}
+    @mock.patch('tasks.leaguefile.leaguefile.check_output')
+    def test_download__with_ok_true(self, mock_check):
+        mock_check.return_value = {'ok': True}
 
         completed = {
             'size': '345678901',
@@ -832,14 +838,12 @@ class LeaguefileTest(Test):
             'now': _now_encoded
         })
 
-    @mock.patch('tasks.leaguefile.leaguefile.extract_leagues')
-    @mock.patch('tasks.leaguefile.leaguefile.wget_file')
-    @mock.patch('tasks.leaguefile.leaguefile.extract_box_scores')
-    def test_download_internal__with_new_year(self, mock_box_scores, mock_file,
-                                              mock_leagues):
-        mock_box_scores.return_value = _then
-        mock_file.return_value = {'ok': True}
-        mock_leagues.return_value = _year
+    @mock.patch('tasks.leaguefile.leaguefile.extract_file')
+    @mock.patch('tasks.leaguefile.leaguefile.download_file')
+    def test_download_internal__with_new_year(self, mock_download_file,
+                                              mock_extract_file):
+        mock_extract_file.return_value = _year
+        mock_download_file.return_value = {'ok': True}
 
         download = {
             'start': 'Jan 29 18:05',
@@ -854,22 +858,19 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(notify=notify, shadow=shadow))
 
         write = _data(download=download, now=_year_encoded)
-        mock_box_scores.assert_called_once_with(_then)
-        mock_file.assert_called_once_with()
-        mock_leagues.assert_called_once_with(_then)
+        mock_download_file.assert_called_once_with(FILE_URL)
+        mock_extract_file.assert_called_once_with(_then)
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch('tasks.leaguefile.leaguefile.extract_leagues')
-    @mock.patch('tasks.leaguefile.leaguefile.wget_file')
-    @mock.patch('tasks.leaguefile.leaguefile.extract_box_scores')
-    def test_download_internal__with_same_year(self, mock_box_scores,
-                                               mock_file, mock_leagues):
-        mock_box_scores.return_value = _now
-        mock_file.return_value = {'ok': True}
-        mock_leagues.return_value = _now
+    @mock.patch('tasks.leaguefile.leaguefile.extract_file')
+    @mock.patch('tasks.leaguefile.leaguefile.download_file')
+    def test_download_internal__with_same_year(self, mock_download_file,
+                                               mock_extract_file):
+        mock_download_file.return_value = {'ok': True}
+        mock_extract_file.return_value = _now
 
         download = {
             'start': 'Jan 29 18:05',
@@ -884,20 +885,18 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(notify=notify, shadow=shadow))
 
         write = _data(download=download, now=_now_encoded)
-        mock_box_scores.assert_called_once_with(_then)
-        mock_file.assert_called_once_with()
-        mock_leagues.assert_called_once_with(_then)
+        mock_download_file.assert_called_once_with(FILE_URL)
+        mock_extract_file.assert_called_once_with(_then)
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch('tasks.leaguefile.leaguefile.extract_leagues')
-    @mock.patch('tasks.leaguefile.leaguefile.wget_file')
-    @mock.patch('tasks.leaguefile.leaguefile.extract_box_scores')
-    def test_download_internal__with_ok_false(self, mock_box_scores, mock_file,
-                                              mock_leagues):
-        mock_file.return_value = {'ok': False}
+    @mock.patch('tasks.leaguefile.leaguefile.extract_file')
+    @mock.patch('tasks.leaguefile.leaguefile.download_file')
+    def test_download_internal__with_ok_false(self, mock_download_file,
+                                              mock_extract_file):
+        mock_download_file.return_value = {'ok': False}
 
         download = {
             'start': 'Jan 29 18:05',
@@ -910,9 +909,8 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response())
 
         write = _data(now=_then_encoded)
-        mock_box_scores.assert_not_called()
-        mock_file.assert_called_once_with()
-        mock_leagues.assert_not_called()
+        mock_download_file.assert_called_once_with(FILE_URL)
+        mock_extract_file.assert_not_called()
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO, 'Download failed.')
@@ -1016,7 +1014,8 @@ class LeaguefileTest(Test):
             'end': 'Jan 29 18:00',
             'now': '2018-01-29T18:02:00-08:00'
         }
-        leaguefile = self.create_leaguefile(_data(download=download, upload=upload))
+        leaguefile = self.create_leaguefile(
+            _data(download=download, upload=upload))
         actual = leaguefile._home(date=_now)
         breadcrumbs = [{
             'href': '/',

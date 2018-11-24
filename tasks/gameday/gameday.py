@@ -9,8 +9,7 @@ import sys
 from functools import partial
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/tasks/gameday', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/tasks/gameday', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
 from common.elements.elements import anchor  # noqa
@@ -19,10 +18,10 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.subprocess_.subprocess_ import check_output  # noqa
 from common.json_.json_ import dumps  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from util.file_.file_ import recreate  # noqa
 from util.jersey.jersey import get_rawid  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
@@ -36,8 +35,10 @@ from util.team.team import encoding_to_teamid  # noqa
 from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_encoding  # noqa
 
+FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/gameday', '/fairylab/static', _path)
+FILEFAIRY_DIR = re.sub(r'/tasks/gameday', '', _path)
+
 _divisions = divisions()
-_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 _game_path = '/resource/games/game_{}.json'
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _html_player = 'players/player_{}.html'
@@ -99,7 +100,9 @@ class Gameday(Registrable):
         data = self.data
         original = copy.deepcopy(data)
 
-        recreate(_fairylab_root + '/gameday/')
+        d = FAIRYLAB_DIR + '/gameday/'
+        check_output(['rm', '-rf', d])
+        check_output(['mkdir', d])
 
         games = copy.deepcopy(self.data['games'])
         schedule_data = self._schedule_data(games)
@@ -111,7 +114,7 @@ class Gameday(Registrable):
         ret.append((html, '', 'gameday.html', gameday))
 
         for id_ in games:
-            with open(_root + _game_path.format(id_), 'r') as f:
+            with open(FILEFAIRY_DIR + _game_path.format(id_), 'r') as f:
                 game_data = json.loads(f.read())
                 if game_data['ok']:
                     away_team = encoding_to_nickname(game_data['away_team'])
@@ -162,7 +165,7 @@ class Gameday(Registrable):
     def _schedule_data(games):
         sdata = {}
         for id_ in games:
-            with open(_root + _game_path.format(id_), 'r') as f:
+            with open(FILEFAIRY_DIR + _game_path.format(id_), 'r') as f:
                 game_data = json.loads(f.read())
                 if game_data['ok']:
                     date = decode_datetime(game_data['date'])
@@ -207,18 +210,21 @@ class Gameday(Registrable):
     def _backfill(self):
         self._clear()
 
-        extract = _root + '/resource/extract'
+        extract = FILEFAIRY_DIR + '/resource/extract'
         games = []
         for game in os.listdir(extract + '/box_scores/'):
             id_ = re.findall('game_box_(\d+).html', game)[0]
             games.append(id_)
 
-        recreate(_root + '/resource/games/')
+        d = FILEFAIRY_DIR + '/resource/games/'
+        check_output(['rm', '-rf', d])
+        check_output(['mkdir', d])
+
         for id_ in games:
             box_link = extract + '/box_scores/game_box_{}.html'.format(id_)
             log_link = extract + '/game_logs/log_{}.txt'.format(id_)
             game_data_ = parse_game_data(box_link, log_link)
-            fname = _root + '/resource/games/game_{}.json'.format(id_)
+            fname = FILEFAIRY_DIR + '/resource/games/game_{}.json'.format(id_)
             with open(fname, 'w') as f:
                 f.write(dumps(game_data_) + '\n')
 
@@ -238,7 +244,7 @@ class Gameday(Registrable):
 
     def _check_games(self):
         games = []
-        for game in os.listdir(_root + '/resource/games/'):
+        for game in os.listdir(FILEFAIRY_DIR + '/resource/games/'):
             id_ = re.findall('game_(\d+).json', game)[0]
             games.append(id_)
 

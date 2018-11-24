@@ -8,9 +8,8 @@ import sys
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(_path)
-_root = re.sub(r'/tasks/statsplus', '', _path)
-sys.path.append(_root)
+sys.path.extend((_path, re.sub(r'/tasks/statsplus', '', _path)))
+
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
@@ -25,6 +24,10 @@ from common.json_.json_ import dumps  # noqa
 from util.team.team import logo_inline  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import main  # noqa
+
+EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
+GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
+RESOURCE_DIR = re.sub(r'/tasks/statsplus', '/resource', _path)
 
 _env = env()
 _now = datetime_datetime_pst(2022, 10, 10)
@@ -636,8 +639,8 @@ class StatsplusTest(Test):
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch('tasks.statsplus.statsplus.recreate')
-    def test_clear(self, mock_recreate):
+    @mock.patch('tasks.statsplus.statsplus.check_output')
+    def test_clear(self, mock_check):
         read = _data(
             highlights={_then_encoded: _highlights_encoded},
             injuries={_then_encoded: _injuries_encoded},
@@ -645,7 +648,10 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(read)
         statsplus._clear()
 
-        mock_recreate.assert_called_once_with(_root + '/resource/games/')
+        mock_check.assert_has_calls([
+            mock.call(['rm', '-rf', GAMES_DIR]),
+            mock.call(['mkdir', GAMES_DIR]),
+        ])
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
@@ -1306,7 +1312,7 @@ class StatsplusTest(Test):
         mock_player.assert_called_once_with(link)
         mock_open.assert_has_calls([
             mock.call(
-                id_.format(_root + '/resource/', _game_game, '.json'), 'w')
+                id_.format(RESOURCE_DIR + '/', _game_game, '.json'), 'w')
             for id_ in ids
         ])
         mock_handle.write.assert_has_calls(
@@ -1386,21 +1392,20 @@ class StatsplusTest(Test):
             injuries={_then_encoded: _injuries_clarified},
             scores={_then_encoded: _scores_regular_clarified},
             unchecked=[])
-        extract = _root + '/resource/extract/'
         ids = [
             '{0}{1}2998{2}', '{0}{1}3002{2}', '{0}{1}14721{2}',
             '{0}{1}3001{2}', '{0}{1}3000{2}'
         ]
         mock_data.assert_has_calls([
             mock.call(
-                id_.format(extract, _game_box, '.html'),
-                id_.format(extract, _game_log, '.txt')) for id_ in ids
+                id_.format(EXTRACT_DIR, _game_box, '.html'),
+                id_.format(EXTRACT_DIR, _game_log, '.txt')) for id_ in ids
         ])
         link = '{0}{1}29663.html'.format(_html, _player)
         mock_player.assert_called_once_with(link)
         mock_open.assert_has_calls([
             mock.call(
-                id_.format(_root + '/resource/', _game_game, '.json'), 'w')
+                id_.format(RESOURCE_DIR + '/', _game_game, '.json'), 'w')
             for id_ in ids
         ])
         mock_handle.write.assert_has_calls(
