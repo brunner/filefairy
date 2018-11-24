@@ -12,6 +12,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from api.reloadable.reloadable import Reloadable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
@@ -30,8 +31,6 @@ from data.notify.notify import Notify  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from data.thread_.thread_ import Thread  # noqa
 from data.response.response import Response  # noqa
-from services.leaguefile.leaguefile import download_file  # noqa
-from services.leaguefile.leaguefile import extract_file  # noqa
 
 _logger = logging.getLogger('fairylab')
 
@@ -47,7 +46,7 @@ _server = server()
 _td = datetime.timedelta(minutes=2)
 
 
-class Leaguefile(Registrable):
+class Leaguefile(Registrable, Reloadable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -72,6 +71,9 @@ class Leaguefile(Registrable):
 
     def _on_message_internal(self, **kwargs):
         return Response()
+
+    def _reload_internal(self, **kwargs):
+        return {'leaguefile': ['download_file', 'extract_file']}
 
     def _run_internal(self, **kwargs):
         data = self.data
@@ -275,11 +277,11 @@ class Leaguefile(Registrable):
 
     def _download_internal(self, *args, **kwargs):
         response = Response()
-        output = download_file(FILE_URL)
+        output = self._call('download_file', (FILE_URL, ))
 
         if output.get('ok'):
             then = decode_datetime(self.data['now'])
-            now = extract_file(then)
+            now = self._call('extract_file', (then, ))
 
             self.data['now'] = encode_datetime(now)
             self.data['then'] = encode_datetime(then)

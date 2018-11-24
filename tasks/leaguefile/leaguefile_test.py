@@ -838,12 +838,9 @@ class LeaguefileTest(Test):
             'now': _now_encoded
         })
 
-    @mock.patch('tasks.leaguefile.leaguefile.extract_file')
-    @mock.patch('tasks.leaguefile.leaguefile.download_file')
-    def test_download_internal__with_new_year(self, mock_download_file,
-                                              mock_extract_file):
-        mock_extract_file.return_value = _year
-        mock_download_file.return_value = {'ok': True}
+    @mock.patch.object(Leaguefile, '_call')
+    def test_download_internal__with_new_year(self, mock_call):
+        mock_call.side_effect = [{'ok': True}, _year]
 
         download = {
             'start': 'Jan 29 18:05',
@@ -858,20 +855,18 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(notify=notify, shadow=shadow))
 
         write = _data(download=download, now=_year_encoded)
-        mock_download_file.assert_called_once_with(FILE_URL)
-        mock_extract_file.assert_called_once_with(_then)
+        mock_call.assert_has_calls([
+            mock.call('download_file', (FILE_URL, )),
+            mock.call('extract_file', (_then, ))
+        ])
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch('tasks.leaguefile.leaguefile.extract_file')
-    @mock.patch('tasks.leaguefile.leaguefile.download_file')
-    def test_download_internal__with_same_year(self, mock_download_file,
-                                               mock_extract_file):
-        mock_download_file.return_value = {'ok': True}
-        mock_extract_file.return_value = _now
-
+    @mock.patch.object(Leaguefile, '_call')
+    def test_download_internal__with_same_year(self, mock_call):
+        mock_call.side_effect = [{'ok': True}, _now]
         download = {
             'start': 'Jan 29 18:05',
             'now': '2018-01-29T00:00:00-08:00'
@@ -885,18 +880,18 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(notify=notify, shadow=shadow))
 
         write = _data(download=download, now=_now_encoded)
-        mock_download_file.assert_called_once_with(FILE_URL)
-        mock_extract_file.assert_called_once_with(_then)
+        mock_call.assert_has_calls([
+            mock.call('download_file', (FILE_URL, )),
+            mock.call('extract_file', (_then, ))
+        ])
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
 
-    @mock.patch('tasks.leaguefile.leaguefile.extract_file')
-    @mock.patch('tasks.leaguefile.leaguefile.download_file')
-    def test_download_internal__with_ok_false(self, mock_download_file,
-                                              mock_extract_file):
-        mock_download_file.return_value = {'ok': False}
+    @mock.patch.object(Leaguefile, '_call')
+    def test_download_internal__with_ok_false(self, mock_call):
+        mock_call.side_effect = [{'ok': False}]
 
         download = {
             'start': 'Jan 29 18:05',
@@ -909,8 +904,7 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response())
 
         write = _data(now=_then_encoded)
-        mock_download_file.assert_called_once_with(FILE_URL)
-        mock_extract_file.assert_not_called()
+        mock_call.assert_called_once_with('download_file', (FILE_URL, ))
         self.mock_open.assert_called_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_log.assert_called_once_with(logging.INFO, 'Download failed.')
