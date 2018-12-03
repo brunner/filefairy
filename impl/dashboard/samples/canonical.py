@@ -27,7 +27,7 @@ _breadcrumbs = [{
 
 _error_title = 'filefairy.py#L127'
 _error_link = LINK + 'impl/filefairy/' + _error_title
-_error_msg = 'Disabled snacks plugin.'
+_error_msg = 'Disabled snacks.'
 
 _info_title = 'leaguefile.py#L317'
 _info_link = LINK + 'tasks/leaguefile/' + _info_title
@@ -53,9 +53,9 @@ _logs = [
 _exc = """Traceback (most recent call last):
   File "impl/filefairy/filefairy.py", line 127, in _foo
     a = func(*args, **kwargs)
-  File "/home/pi/filefairy/plugin/snacks/snacks.py", line 234, in _bar
+  File "/home/pi/filefairy/tasks/snacks/snacks.py", line 234, in _bar
     b = self._baz()
-  File "/home/pi/filefairy/plugin/snacks/snacks.py", line 190, in _baz
+  File "/home/pi/filefairy/tasks/snacks/snacks.py", line 190, in _baz
     return variable
 NameError: name 'variable' is not defined
 """

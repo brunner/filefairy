@@ -18,7 +18,7 @@ from data.thread_.thread_ import Thread  # noqa
 
 DEBUG = Debug(msg='foo')
 NOTIFY = Notify.BASE
-SHADOW = Shadow(destination='foo', key='plugin.bar')
+SHADOW = Shadow(destination='bar', key='foo.baz')
 THREAD = Thread(target='foo')
 
 
@@ -56,7 +56,7 @@ class ResponseTest(unittest.TestCase):
 
     def test_init__invalid_shadow_type(self):
         with self.assertRaises(TypeError):
-            Response(shadow=Shadow(destination='foo', key='plugin.bar'))
+            Response(shadow=Shadow(destination='bar', key='foo.baz'))
 
     def test_init__invalid_shadow_element_value(self):
         with self.assertRaises(ValueError):
