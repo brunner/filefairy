@@ -370,7 +370,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_called_once_with('skull', _channel, _ts)
         self.assertEqual(recap.tables, _table_new)
 
@@ -402,7 +402,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_called_once_with('moneybag', _channel, _ts)
         self.assertEqual(recap.tables, _table_new)
 
@@ -434,7 +434,7 @@ class RecapTest(Test):
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'News updated.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'News updated.')
+        self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
         self.assertEqual(recap.tables, _table_new)
 

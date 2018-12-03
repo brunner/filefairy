@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for leaguefile.py."""
 
 import logging
 import os
@@ -21,53 +22,74 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.secrets.secrets import server  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import main  # noqa
 
+COLS = [col(clazz=c) for c in ('', 'text-center', 'text-center', 'text-right')]
+DATE_01010000 = datetime_datetime_pst(2025, 1, 1)
+DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
+DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
+DATE_10250007 = datetime_datetime_pst(1985, 10, 25, 0, 7)
+DATE_10260000 = datetime_datetime_pst(1985, 10, 26)
+DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
+DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
+DATE_10260605 = datetime_datetime_pst(1985, 10, 26, 6, 5)
+ENV = env()
 FILE_HOST = 'www.orangeandblueleaguebaseball.com'
 FILE_NAME = 'orange_and_blue_league_baseball.tar.gz'
 FILE_URL = 'https://{}/StatsLab/league_file/{}'.format(FILE_HOST, FILE_NAME)
-
-_channel = 'C1234'
-_env = env()
-_now = datetime_datetime_pst(2018, 1, 29)
-_now_encoded = '2018-01-29T00:00:00-08:00'
-_server = server()
-_then = datetime_datetime_pst(2018, 1, 28)
-_then_encoded = '2018-01-28T00:00:00-08:00'
-_ts = '123456789'
-_year = datetime_datetime_pst(2019, 1, 1)
-_year_encoded = '2019-01-01T00:00:00-08:00'
+HEAD = [cell(content=c) for c in ('Date', 'Upload', 'Download', 'Size')]
 
 
-def _data(completed=[],
-          date=_then_encoded,
+def _data(completed=None,
+          date=None,
           download=None,
-          now=_now_encoded,
+          end=None,
           stalled=False,
-          then=_then_encoded,
+          start=None,
           upload=None):
+    if completed is None:
+        completed = []
+
     return {
         'completed': completed,
-        'date': date,
+        'date': encode_datetime(date) if date else '',
         'download': download,
-        'now': now,
+        'end': encode_datetime(end) if end else '',
         'stalled': stalled,
-        'then': then,
+        'start': encode_datetime(start) if start else '',
         'upload': upload
     }
 
 
+def _completed(download=None, size=None, start=None, upload=None):
+    return {
+        'download': download if download else '',
+        'size': size if size else '',
+        'start': encode_datetime(start) if start else '',
+        'upload': upload if upload else ''
+    }
+
+
+def _state(end=None, now=None, size=None, start=None):
+    d = {}
+    if end:
+        d['end'] = encode_datetime(end)
+    if now:
+        d['now'] = encode_datetime(now)
+    if size:
+        d['size'] = size
+    if start:
+        d['start'] = encode_datetime(start)
+    return d
+
+
 class LeaguefileTest(Test):
     def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
-
         patch_chat = mock.patch.object(Leaguefile, '_chat')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
@@ -76,37 +98,29 @@ class LeaguefileTest(Test):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
-        patch_reactions = mock.patch(
-            'tasks.leaguefile.leaguefile.reactions_add')
-        self.addCleanup(patch_reactions.stop)
-        self.mock_reactions = patch_reactions.start()
+        patch_open = mock.patch(
+            'api.serializable.serializable.open', create=True)
+        self.addCleanup(patch_open.stop)
+        self.mock_open = patch_open.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
-        self.mock_chat.return_value = {
-            'ok': True,
-            'channel': _channel,
-            'ts': _ts
-        }
 
     def reset_mocks(self):
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
         self.mock_chat.reset_mock()
         self.mock_log.reset_mock()
-        self.mock_reactions.reset_mock()
+        self.mock_open.reset_mock()
+        self.mock_handle.write.reset_mock()
 
     def create_leaguefile(self, data):
         self.init_mocks(data)
-        leaguefile = Leaguefile(date=_now, e=_env)
+        leaguefile = Leaguefile(date=DATE_10250007, e=ENV)
 
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'r')
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.assertNotCalled(self.mock_chat, self.mock_log,
+                             self.mock_handle.write)
         self.assertEqual(leaguefile.data, data)
 
         self.reset_mocks()
@@ -116,802 +130,535 @@ class LeaguefileTest(Test):
 
     def test_notify(self):
         leaguefile = self.create_leaguefile(_data())
-        response = leaguefile._notify_internal()
+        response = leaguefile._notify_internal(
+            date=DATE_10260602, notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
     def test_on_message(self):
         leaguefile = self.create_leaguefile(_data())
-        response = leaguefile._on_message_internal()
+        response = leaguefile._on_message_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
+    def test_reload(self):
+        leaguefile = self.create_leaguefile(_data())
+        actual = leaguefile._reload_internal(date=DATE_10260602)
+        expected = {'leaguefile': ['download_file', 'extract_file']}
+        self.assertEqual(actual, expected)
+
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_get_upload')
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, 'download')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    @mock.patch.object(Leaguefile, '_check_download')
-    def test_run__with_valid_input(self, mock_check_download,
-                                   mock_check_upload, mock_download,
-                                   mock_render):
-        check_u = ('100000', 'Jan 29 16:00',
-                   'orange_and_blue_league_baseball.tar.gz.filepart', True)
-        check_c = ('345678901', 'Jan 27 12:00',
-                   'orange_and_blue_league_baseball.tar.gz', True)
-        mock_check_upload.return_value = iter([check_u, check_c])
+    @mock.patch.object(Leaguefile, '_get_download')
+    def test_run__download(self, mock_download, mock_render, mock_upload):
+        mock_download.return_value = Response(notify=[Notify.BASE])
 
-        read = _data()
+        read = _data(
+            download=_state(now=DATE_10260602),
+            upload=_state(now=DATE_10260602))
         leaguefile = self.create_leaguefile(read)
-        response = leaguefile._run_internal(date=_now)
-        self.assertEqual(response, Response(notify=[Notify.LEAGUEFILE_START]))
-
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 16:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        write = _data(upload=upload)
-        mock_check_download.assert_not_called()
-        mock_check_upload.assert_called_once_with()
-        mock_download.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_with('fairylab', 'Upload started.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'Upload started.')
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, 'download')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    @mock.patch.object(Leaguefile, '_check_download')
-    def test_run__with_no_change(self, mock_check_download, mock_check_upload,
-                                 mock_download, mock_render):
-        check_u = ('100000', 'Jan 29 16:00',
-                   'orange_and_blue_league_baseball.tar.gz.filepart', True)
-        check_c = ('345678901', 'Jan 27 12:00',
-                   'orange_and_blue_league_baseball.tar.gz', True)
-        mock_check_upload.return_value = iter([check_u, check_c])
-
-        upload = {
-            'start': 'Jan 29 15:00',
-            'size': '100000',
-            'end': 'Jan 29 16:00',
-            'now': '2018-01-29T16:02:00-08:00'
-        }
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 12:00',
-            'uend': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(upload=upload, completed=[completed]))
-        response = leaguefile._run_internal(date=_now)
+        response = leaguefile._run_internal(date=DATE_10260604)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        mock_check_download.assert_not_called()
-        mock_check_upload.assert_called_once_with()
-        mock_download.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        mock_download.assert_called_once_with(date=DATE_10260604)
+        mock_render.assert_called_once_with(date=DATE_10260604)
+        self.assertNotCalled(mock_upload, self.mock_chat, self.mock_log,
+                             self.mock_open, self.mock_handle.write)
 
+    @mock.patch.object(Leaguefile, '_get_upload')
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, 'download')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    @mock.patch.object(Leaguefile, '_check_download')
-    def test_run__with_file_is_up_fast(self, mock_check_download,
-                                       mock_check_upload, mock_download,
-                                       mock_render):
-        check = ('328706052', 'Jan 29 15:55',
-                 'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check_upload.return_value = iter([check])
-        thread_ = Thread(target='_download_internal', kwargs={'date': _now})
-        mock_download.return_value = Response(thread_=[thread_])
+    @mock.patch.object(Leaguefile, '_get_download')
+    def test_run__inside_delta(self, mock_download, mock_render, mock_upload):
+        mock_upload.return_value = Response()
 
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 8:00',
-            'uend': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(upload=upload, completed=[completed]))
-        response = leaguefile._run_internal(date=_now)
-        self.assertEqual(
-            response,
-            Response(notify=[Notify.LEAGUEFILE_FINISH], thread_=[thread_]))
+        read = _data(date=DATE_10260602, upload=_state(now=DATE_10260602))
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._run_internal(date=DATE_10260604)
+        self.assertEqual(response, Response())
 
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '328706052',
-            'end': 'Jan 29 18:00',
-            'date': 'Jan 29 15:55',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        write = _data(upload=upload, completed=[completed])
-        mock_check_download.assert_not_called()
-        mock_check_upload.assert_called_once_with()
-        mock_download.assert_called_once_with(date=_now)
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
-        self.mock_reactions.assert_called_once_with('zap', _channel, _ts)
+        mock_upload.assert_called_once_with(date=DATE_10260604)
+        self.assertNotCalled(mock_download, mock_render, self.mock_chat,
+                             self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
+    @mock.patch.object(Leaguefile, '_get_upload')
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, 'download')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    @mock.patch.object(Leaguefile, '_check_download')
-    def test_run__with_file_is_up_slow(self, mock_check_download,
-                                       mock_check_upload, mock_download,
-                                       mock_render):
-        check = ('328706052', 'Jan 29 07:55',
-                 'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check_upload.return_value = iter([check])
-        thread_ = Thread(target='_download_internal', kwargs={'date': _now})
-        mock_download.return_value = Response(thread_=[thread_])
+    @mock.patch.object(Leaguefile, '_get_download')
+    def test_run__outside_delta(self, mock_download, mock_render, mock_upload):
+        mock_upload.return_value = Response()
 
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 11:00',
-            'uend': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(upload=upload, completed=[completed]))
-        response = leaguefile._run_internal(date=_now)
-        self.assertEqual(
-            response,
-            Response(notify=[Notify.LEAGUEFILE_FINISH], thread_=[thread_]))
-
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '328706052',
-            'end': 'Jan 29 18:00',
-            'date': 'Jan 29 07:55',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        write = _data(upload=upload, completed=[completed])
-        mock_check_download.assert_not_called()
-        mock_check_upload.assert_called_once_with()
-        mock_download.assert_called_once_with(date=_now)
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
-        timer = 'timer_clock'
-        self.mock_reactions.assert_called_once_with(timer, _channel, _ts)
-
-    @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, 'download')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    @mock.patch.object(Leaguefile, '_check_download')
-    def test_run__with_file_is_up_typical(self, mock_check_download,
-                                          mock_check_upload, mock_download,
-                                          mock_render):
-        check_c = ('328706052', 'Jan 29 12:55',
-                   'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check_upload.return_value = iter([check_c])
-        thread_ = Thread(target='_download_internal', kwargs={'date': _now})
-        mock_download.return_value = Response(thread_=[thread_])
-
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 10:00',
-            'uend': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(upload=upload, completed=[completed]))
-        response = leaguefile._run_internal(date=_now)
-        self.assertEqual(
-            response,
-            Response(notify=[Notify.LEAGUEFILE_FINISH], thread_=[thread_]))
-
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '328706052',
-            'end': 'Jan 29 18:00',
-            'date': 'Jan 29 12:55',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        write = _data(upload=upload, completed=[completed])
-        mock_check_download.assert_not_called()
-        mock_check_upload.assert_called_once_with()
-        mock_download.assert_called_once_with(date=_now)
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, 'download')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    @mock.patch.object(Leaguefile, '_check_download')
-    def test_run__with_download_in_progress(self, mock_check_download,
-                                            mock_check_upload, mock_download,
-                                            mock_render):
-        check_d = ('100000', 'Jan 29 18:10',
-                   'orange_and_blue_league_baseball.tar.gz', True)
-        mock_check_download.return_value = check_d
-        check_c = ('328706052', 'Jan 29 12:55',
-                   'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check_upload.return_value = iter([check_c])
-
-        download = {
-            'start': 'Jan 29 18:05',
-            'size': '20000',
-            'end': 'Jan 29 18:05',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '328706052',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(download=download, upload=upload))
-        response = leaguefile._run_internal(date=_now)
+        read = _data(date=DATE_10260602, upload=_state(now=DATE_10260602))
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._run_internal(date=DATE_10260605)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        download = {
-            'start': 'Jan 29 18:05',
-            'size': '100000',
-            'end': 'Jan 29 00:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        write = _data(download=download, upload=upload)
-        mock_check_download.assert_called_once_with()
-        mock_check_upload.assert_not_called()
-        mock_download.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
+        write = _data(date=DATE_10260605, upload=_state(now=DATE_10260602))
+        mock_render.assert_called_once_with(date=DATE_10260605)
+        mock_upload.assert_called_once_with(date=DATE_10260605)
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.assertNotCalled(mock_download, self.mock_chat, self.mock_log)
 
+    @mock.patch.object(Leaguefile, '_get_upload')
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, 'download')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    @mock.patch.object(Leaguefile, '_check_download')
-    def test_run__with_download_completed(self, mock_check_download,
-                                          mock_check_upload, mock_download,
-                                          mock_render):
-        check_d = ('328706052', 'Jan 29 18:00',
-                   'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check_download.return_value = check_d
-        check_c = ('328706052', 'Jan 29 12:55',
-                   'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check_upload.return_value = iter([check_c])
-
-        download = {
-            'start': 'Jan 29 18:05',
-            'size': '100000',
-            'end': 'Jan 29 18:10',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        upload = {
-            'start': 'Jan 29 16:00',
-            'date': 'Jan 29 12:55',
-            'size': '328706052',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(download=download, upload=upload))
-        response = leaguefile._run_internal(date=_now)
-        self.assertEqual(response, Response(notify=[Notify.BASE]))
-
-        completed = {
-            'size': '328706052',
-            'date': 'Jan 29 12:55',
-            'ustart': 'Jan 29 16:00',
-            'uend': 'Jan 29 18:00',
-            'dstart': 'Jan 29 18:05',
-            'dend': 'Jan 29 18:10'
-        }
-        write = _data(completed=[completed])
-        mock_check_download.assert_called_once_with()
-        mock_check_upload.assert_not_called()
-        mock_download.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Leaguefile, '_home')
-    def test_render(self, mock_home):
-        home = {'breadcrumbs': [], 'upload': {}, 'completed': {}}
-        mock_home.return_value = home
+    @mock.patch.object(Leaguefile, '_get_download')
+    def test_run__upload(self, mock_download, mock_render, mock_upload):
+        mock_upload.return_value = Response(notify=[Notify.BASE])
 
         leaguefile = self.create_leaguefile(_data())
-        response = leaguefile._render_internal(date=_now)
-        index = 'leaguefile/index.html'
-        self.assertEqual(response, [(index, '', 'leaguefile.html', home)])
+        response = leaguefile._run_internal(date=DATE_10260604)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        mock_home.assert_called_once_with(date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        mock_render.assert_called_once_with(date=DATE_10260604)
+        mock_upload.assert_called_once_with(date=DATE_10260604)
+        self.assertNotCalled(mock_download, self.mock_chat, self.mock_log,
+                             self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_index_html')
+    def test_render(self, mock_index):
+        index_html = {'breadcrumbs': []}
+        mock_index.return_value = index_html
+
+        leaguefile = self.create_leaguefile(_data())
+        actual = leaguefile._render_internal(date=DATE_10260602)
+        expected = [('leaguefile/index.html', '', 'leaguefile.html',
+                     index_html)]
+        self.assertEqual(actual, expected)
+
+        mock_index.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_valid_input(self, mock_check, mock_render):
-        check_u = ('100000', 'Jan 29 16:00',
-                   'orange_and_blue_league_baseball.tar.gz.filepart', True)
-        check_c = ('345678901', 'Jan 27 12:00',
-                   'orange_and_blue_league_baseball.tar.gz', True)
-        mock_check.return_value = iter([check_u, check_c])
-
-        upload = {
-            'start': 'Jan 29 15:00',
-            'size': '50000',
-            'end': 'Jan 29 15:00',
-            'now': '2018-01-28T23:55:00'
-        }
-        read = _data(upload=upload)
+    @mock.patch.object(Leaguefile, '_reload')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_setup__download(self, mock_call, mock_reload, mock_render):
+        read = _data(download=_state(now=DATE_10260602))
         leaguefile = self.create_leaguefile(read)
-        response = leaguefile._setup_internal(date=_now)
+        response = leaguefile._setup_internal(date=DATE_10260604)
+        thread_ = Thread(
+            target='_download_start', kwargs={'date': DATE_10260604})
+        self.assertEqual(response, Response(thread_=[thread_]))
+
+        mock_reload.assert_called_once_with(date=DATE_10260604)
+        self.assertNotCalled(mock_call, mock_render, self.mock_chat,
+                             self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_render')
+    @mock.patch.object(Leaguefile, '_reload')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_setup__ongoing(self, mock_call, mock_reload, mock_render):
+        mock_call.return_value = ('100000', DATE_10260602, True)
+
+        read = _data(date=DATE_10260604)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._setup_internal(date=DATE_10260604)
         self.assertEqual(response, Response())
 
-        upload = {
-            'start': 'Jan 29 15:00',
-            'size': '100000',
-            'end': 'Jan 29 16:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        write = _data(upload=upload)
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_now)
+        upload = _state(
+            end=DATE_10260602,
+            now=DATE_10260604,
+            size='100000',
+            start=DATE_10260602)
+        write = _data(date=DATE_10260604, upload=upload)
+        mock_call.assert_called_once_with('find_upload', (DATE_10260604, ))
+        mock_reload.assert_called_once_with(date=DATE_10260604)
+        mock_render.assert_called_once_with(date=DATE_10260604)
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
+        self.assertNotCalled(self.mock_chat, self.mock_log)
 
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_no_change(self, mock_check, mock_render):
-        check = ('345678901', 'Jan 27 12:00',
-                 'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check.return_value = iter([check])
+    @mock.patch.object(Leaguefile, '_reload')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_setup__uploaded(self, mock_call, mock_reload, mock_render):
+        mock_call.return_value = ('345678901', DATE_10260602, False)
 
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 12:00',
-            'uend': 'Jan 27 12:00'
-        }
-        read = _data(completed=[completed])
+        read = _data(date=DATE_10260604)
         leaguefile = self.create_leaguefile(read)
-        response = leaguefile._setup_internal(date=_now)
+        response = leaguefile._setup_internal(date=DATE_10260604)
         self.assertEqual(response, Response())
 
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_no_upload(self, mock_check, mock_render):
-        check = ('345678901', 'Jan 27 12:00',
-                 'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check.return_value = iter([check])
-
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 16:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 12:00',
-            'uend': 'Jan 27 12:00'
-        }
-        read = _data(upload=upload, completed=[completed])
-        leaguefile = self.create_leaguefile(read)
-        response = leaguefile._setup_internal(date=_now)
-        self.assertEqual(response, Response())
-
-        write = _data(completed=[completed])
-        mock_check.assert_called_once_with()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_check_upload')
-    def test_setup__with_download(self, mock_check, mock_render):
-        check = ('345678901', 'Jan 27 12:00',
-                 'orange_and_blue_league_baseball.tar.gz', False)
-        mock_check.return_value = iter([check])
-
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 16:00',
-            'now': '2018-01-28T23:55:00'
-        }
-        download = {'start': 'Jan 28 12:00', 'now': '2018-01-28T12:00:00'}
-        read = _data(upload=upload, download=download)
-        leaguefile = self.create_leaguefile(read)
-        response = leaguefile._setup_internal(date=_now)
-        self.assertEqual(
-            response,
-            Response(thread_=[
-                Thread(target='_download_internal', kwargs={'date': _now})
-            ]))
-
-        download = {
-            'start': 'Jan 29 00:00',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        write = _data(upload=upload, download=download)
-        mock_check.assert_not_called()
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_called_once_with(logging.INFO,
-                                              'Download started.')
-        self.mock_reactions.assert_not_called()
+        mock_call.assert_called_once_with('find_upload', (DATE_10260604, ))
+        mock_reload.assert_called_once_with(date=DATE_10260604)
+        mock_render.assert_called_once_with(date=DATE_10260604)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
     def test_shadow(self):
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 12:00',
-            'uend': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(_data(completed=[completed]))
-        value = leaguefile._shadow_internal()
-        self.assertEqual(value, [
-            Shadow(
-                destination='statsplus',
-                key='leaguefile.now',
-                info=_now_encoded)
-        ])
+        leaguefile = self.create_leaguefile(_data(end=DATE_10260602))
+        actual = leaguefile._shadow_internal(date=DATE_10260604)
+        date = encode_datetime(DATE_10260602)
+        shadow = Shadow(
+            destination='statsplus', key='leaguefile.end', info=date)
+        self.assertEqual(actual, [shadow])
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
-    def test_filedate(self):
-        s = 'Jan 29 15:55'
-        actual = Leaguefile._filedate(s)
-        expected = 'Jan 29'
-        self.assertEqual(actual, expected)
+    def test_download(self):
+        leaguefile = self.create_leaguefile(_data(end=DATE_10260602))
+        response = leaguefile.download(date=DATE_10260604)
+        thread_ = Thread(
+            target='_download_start', kwargs={'date': DATE_10260604})
+        self.assertEqual(response, Response(thread_=[thread_]))
 
-    def test_size(self):
-        s = '328706052'
-        actual = Leaguefile._size(s)
-        expected = '328,706,052'
-        self.assertEqual(actual, expected)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
-    def test_time(self):
-        s = 'Jan 29 14:00'
-        e = 'Jan 29 16:00'
-        actual = Leaguefile._time(s, e, _now)
-        expected = '2h 0m'
-        self.assertEqual(actual, expected)
+    @mock.patch.object(Leaguefile, '_extract_file')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_download_file__failed(self, mock_call, mock_extract):
+        mock_call.return_value = {'ok': False, 'stdout': 'o', 'stderr': 'e'}
 
-    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
-    @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_check_download__with_filepart(self, mock_check, mock_log):
-        ls = 'total 60224\n' + \
-             '-rw-rw-r-- 1 user user 100000 Jan 29 16:00 ' + \
-             'orange_and_blue_league_baseball.tar.gz'
-        mock_check.return_value = {'ok': True, 'stdout': ls}
+        read = _data(date=DATE_10260604)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._download_file(date=DATE_10260604)
+        thread_ = Thread(
+            target='_download_start', kwargs={'date': DATE_10260604})
+        self.assertEqual(response, Response(thread_=[thread_]))
 
-        actual = Leaguefile._check_download()
-        expected = ('100000', 'Jan 29 16:00',
-                    'orange_and_blue_league_baseball.tar.gz', True)
-        self.assertEqual(actual, expected)
-
-        mock_check.assert_called_once_with(
-            ['ls', '-l', os.path.join(_root, 'resource/download')], timeout=8)
-        mock_log.assert_not_called()
-
-    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
-    @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_check_download__without_filepart(self, mock_check, mock_log):
-        ls = 'total 60224\n' + \
-             'drwxrwxr-x 4 user user      4096 Jan 29 00:00 news\n' + \
-             '-rw-rw-r-- 1 user user 345678901 Jan 29 16:00 ' + \
-             'orange_and_blue_league_baseball.tar.gz'
-        mock_check.return_value = {'ok': True, 'stdout': ls}
-
-        actual = Leaguefile._check_download()
-        expected = ('345678901', 'Jan 29 16:00',
-                    'orange_and_blue_league_baseball.tar.gz', False)
-        self.assertEqual(actual, expected)
-
-        mock_check.assert_called_once_with(
-            ['ls', '-l', os.path.join(_root, 'resource/download')], timeout=8)
-        mock_log.assert_not_called()
-
-    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
-    @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_check_download__with_ok_false(self, mock_check, mock_log):
-        mock_check.return_value = {'ok': False}
-
-        actual = Leaguefile._check_download()
-        expected = ('0', '', '', False)
-        self.assertEqual(actual, expected)
-
-        mock_check.assert_called_once_with(
-            ['ls', '-l', os.path.join(_root, 'resource/download')], timeout=8)
-        mock_log.assert_not_called()
-
-    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
-    @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_check_upload__with_filepart(self, mock_check, mock_log):
-        ls = 'total 321012\n' + \
-             '-rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html\n' + \
-             '-rwxrwxrwx 1 user user 345678901 Jan 27 12:00 ' + \
-             'orange_and_blue_league_baseball.tar.gz\n' + \
-             '-rwxrwxrwx 1 user user 100000 Jan 29 16:00 ' + \
-             'orange_and_blue_league_baseball.tar.gz.filepart'
-        mock_check.return_value = {'ok': True, 'stdout': ls}
-
-        actual = Leaguefile._check_upload()
-        check_u = ('100000', 'Jan 29 16:00',
-                   'orange_and_blue_league_baseball.tar.gz.filepart', True)
-        check_c = ('345678901', 'Jan 27 12:00',
-                   'orange_and_blue_league_baseball.tar.gz', True)
-        expected = iter([check_u, check_c])
-        self.assertCountEqual(actual, expected)
-
-        mock_check.assert_called_once_with(
-            [
-                'ssh', 'brunnerj@' + _server,
-                'ls -l /var/www/html/StatsLab/league_file'
-            ],
-            timeout=8)
-        mock_log.assert_not_called()
-
-    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
-    @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_check_upload__without_filepart(self, mock_check, mock_log):
-        ls = 'total 321012\n' + \
-             '-rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html\n' + \
-             '-rwxrwxrwx 1 user user 328706052 Jan 29 12:55 ' + \
-             'orange_and_blue_league_baseball.tar.gz'
-        mock_check.return_value = {'ok': True, 'stdout': ls}
-
-        actual = Leaguefile._check_upload()
-        check_c = ('328706052', 'Jan 29 12:55',
-                   'orange_and_blue_league_baseball.tar.gz', False)
-        expected = iter([check_c])
-        self.assertCountEqual(actual, expected)
-
-        mock_check.assert_called_once_with(
-            [
-                'ssh', 'brunnerj@' + _server,
-                'ls -l /var/www/html/StatsLab/league_file'
-            ],
-            timeout=8)
-        mock_log.assert_not_called()
-
-    @mock.patch('tasks.leaguefile.leaguefile._logger.log')
-    @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_check_upload__with_ok_false(self, mock_check, mock_log):
-        mock_check.return_value = {
-            'ok': False,
-            'stdout': 'out',
-            'stderr': 'err'
-        }
-
-        actual = Leaguefile._check_upload()
-        expected = iter([])
-        self.assertCountEqual(actual, expected)
-
-        mock_check.assert_called_once_with(
-            [
-                'ssh', 'brunnerj@' + _server,
-                'ls -l /var/www/html/StatsLab/league_file'
-            ],
-            timeout=8)
-        mock_log.assert_not_called()
-
-    @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_download__with_ok_false(self, mock_check):
-        mock_check.return_value = {
-            'ok': False,
-            'stdout': 'out',
-            'stderr': 'err'
-        }
-
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 12:00',
-            'uend': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(_data(upload=completed))
-        response = leaguefile.download(date=_now)
-        self.assertEqual(response, Response())
-
+        download = _state(end=DATE_10260604, start=DATE_10260604)
+        extra = {'stdout': 'o', 'stderr': 'e'}
+        write = _data(date=DATE_10260604, download=download)
+        mock_call.assert_called_once_with('download_file', (FILE_URL, ))
         self.mock_log.assert_called_once_with(
-            logging.WARNING,
-            'Download failed.',
-            extra={
-                'stdout': 'out',
-                'stderr': 'err'
-            })
-        self.assertFalse(leaguefile.data['download'])
+            logging.WARNING, 'Download failed.', extra=extra)
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(mock_extract, self.mock_chat)
 
+    @mock.patch.object(Leaguefile, '_extract_file')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_download_file__finished(self, mock_call, mock_extract):
+        mock_call.return_value = {'ok': True}
+        mock_extract.return_value = Response(notify=[Notify.BASE])
+
+        read = _data(date=DATE_10260604)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._download_file(date=DATE_10260604)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        download = _state(end=DATE_10260604, start=DATE_10260604)
+        write = _data(date=DATE_10260604, download=download)
+        mock_call.assert_called_once_with('download_file', (FILE_URL, ))
+        mock_extract.assert_called_once_with(date=DATE_10260604)
+        self.mock_log.assert_called_once_with(logging.INFO,
+                                              'Download finished.')
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(self.mock_chat)
+
+    @mock.patch.object(Leaguefile, '_download_file')
     @mock.patch('tasks.leaguefile.leaguefile.check_output')
-    def test_download__with_ok_true(self, mock_check):
+    def test_download_start__failed(self, mock_check, mock_download):
+        mock_check.return_value = {'ok': False, 'stdout': 'o', 'stderr': 'e'}
+
+        read = _data(upload=_state(now=DATE_10260602))
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._download_start(date=DATE_10260604)
+        thread_ = Thread(
+            target='_download_start', kwargs={'date': DATE_10260604})
+        self.assertEqual(response, Response(thread_=[thread_]))
+
+        extra = {'stdout': 'o', 'stderr': 'e'}
+        mock_check.assert_called_once_with(
+            ['ping', '-c 1', FILE_HOST], timeout=8)
+        self.mock_log.assert_called_once_with(
+            logging.WARNING, 'Download failed.', extra=extra)
+        self.assertNotCalled(mock_download, self.mock_chat, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_download_file')
+    @mock.patch('tasks.leaguefile.leaguefile.check_output')
+    def test_download_start__started(self, mock_check, mock_download):
         mock_check.return_value = {'ok': True}
+        mock_download.return_value = Response(notify=[Notify.BASE])
 
-        completed = {
-            'size': '345678901',
-            'date': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'ustart': 'Jan 27 12:00',
-            'uend': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(_data(upload=completed))
-        response = leaguefile.download(date=_now)
-        self.assertEqual(
-            response,
-            Response(thread_=[
-                Thread(target='_download_internal', kwargs={'date': _now})
-            ]))
+        read = _data(upload=_state(now=DATE_10260602))
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._download_start(date=DATE_10260604)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
+        mock_check.assert_called_once_with(
+            ['ping', '-c 1', FILE_HOST], timeout=8)
+        mock_download.assert_called_once_with(date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download started.')
-        self.assertEqual(leaguefile.data['download'], {
-            'start': 'Jan 29 00:00',
-            'now': _now_encoded
-        })
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write)
 
+    @mock.patch.object(Leaguefile, '_shadow_internal')
     @mock.patch.object(Leaguefile, '_call')
-    def test_download_internal__with_new_year(self, mock_call):
-        mock_call.side_effect = [{'ok': True}, _year]
+    def test_extract_file__start(self, mock_call, mock_shadow):
+        mock_call.return_value = DATE_08310000
 
-        download = {
-            'start': 'Jan 29 18:05',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(download=download, now=_then_encoded))
+        read = _data(end=DATE_08280000)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._extract_file(date=DATE_10260604)
+        self.assertEqual(
+            response, Response(notify=[Notify.LEAGUEFILE_DOWNLOAD]))
 
-        response = leaguefile._download_internal(v=True)
-        notify = [Notify.LEAGUEFILE_DOWNLOAD, Notify.LEAGUEFILE_YEAR]
-        shadow = leaguefile._shadow_internal()
-        self.assertEqual(response, Response(notify=notify, shadow=shadow))
-
-        write = _data(download=download, now=_year_encoded)
-        mock_call.assert_has_calls([
-            mock.call('download_file', (FILE_URL, )),
-            mock.call('extract_file', (_then, ))
-        ])
-        self.mock_open.assert_called_with(Leaguefile._data(), 'w')
+        write = _data(end=DATE_08310000, start=DATE_08280000)
+        mock_call.assert_called_once_with('extract_file', (DATE_08280000, ))
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_log.assert_called_once_with(logging.INFO,
-                                              'Download finished.')
+        self.assertNotCalled(mock_shadow, self.mock_chat, self.mock_log)
 
+    @mock.patch.object(Leaguefile, '_shadow_internal')
     @mock.patch.object(Leaguefile, '_call')
-    def test_download_internal__with_same_year(self, mock_call):
-        mock_call.side_effect = [{'ok': True}, _now]
-        download = {
-            'start': 'Jan 29 18:05',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(download=download, now=_then_encoded))
+    def test_extract_file__year(self, mock_call, mock_shadow):
+        shadow = Shadow(destination='statsplus', key='leaguefile.end', info='')
+        mock_call.return_value = DATE_01010000
+        mock_shadow.return_value = [shadow]
 
-        response = leaguefile._download_internal(v=True)
-        notify = [Notify.LEAGUEFILE_DOWNLOAD]
-        shadow = leaguefile._shadow_internal()
-        self.assertEqual(response, Response(notify=notify, shadow=shadow))
+        read = _data(end=DATE_08280000)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._extract_file(date=DATE_10260604)
+        self.assertEqual(
+            response,
+            Response(
+                notify=[Notify.LEAGUEFILE_DOWNLOAD, Notify.LEAGUEFILE_YEAR],
+                shadow=[shadow]))
 
-        write = _data(download=download, now=_now_encoded)
-        mock_call.assert_has_calls([
-            mock.call('download_file', (FILE_URL, )),
-            mock.call('extract_file', (_then, ))
-        ])
-        self.mock_open.assert_called_with(Leaguefile._data(), 'w')
+        write = _data(end=DATE_01010000, start=DATE_08280000)
+        mock_call.assert_called_once_with('extract_file', (DATE_08280000, ))
+        mock_shadow.assert_called_once_with(date=DATE_10260604)
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_log.assert_called_once_with(logging.INFO,
-                                              'Download finished.')
+        self.assertNotCalled(self.mock_chat, self.mock_log)
 
+    @mock.patch.object(Leaguefile, '_set_completed')
     @mock.patch.object(Leaguefile, '_call')
-    def test_download_internal__with_ok_false(self, mock_call):
-        mock_call.side_effect = [{'ok': False}]
+    def test_get_download__downloaded(self, mock_call, mock_set):
+        mock_call.return_value = ('345678901', DATE_10260604, False)
 
-        download = {
-            'start': 'Jan 29 18:05',
-            'now': '2018-01-29T00:00:00-08:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(download=download, now=_then_encoded))
+        leaguefile = self.create_leaguefile(_data())
+        response = leaguefile._get_download(date=DATE_10260605)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        response = leaguefile._download_internal(v=True)
+        mock_call.assert_called_once_with('find_download', (DATE_10260605, ))
+        mock_set.assert_called_once_with()
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_set_completed')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_get_download__ongoing(self, mock_call, mock_set):
+        mock_call.return_value = ('100000', DATE_10260604, True)
+
+        read = _data(download=_state(start=DATE_10260602))
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._get_download(date=DATE_10260605)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        download = _state(
+            end=DATE_10260604,
+            now=DATE_10260605,
+            size='100000',
+            start=DATE_10260602)
+        write = _data(download=download)
+        mock_call.assert_called_once_with('find_download', (DATE_10260605, ))
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(mock_set, self.mock_chat, self.mock_log)
+
+    @mock.patch.object(Leaguefile, '_handle_uploaded')
+    @mock.patch.object(Leaguefile, '_handle_ongoing')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_get_upload__inactive(self, mock_call, mock_ongoing,
+                                  mock_uploaded):
+        mock_call.return_value = ('345678901', DATE_10260604, False)
+        mock_uploaded.return_value = Response(notify=[Notify.BASE])
+
+        leaguefile = self.create_leaguefile(_data())
+        response = leaguefile._get_upload(date=DATE_10260605)
         self.assertEqual(response, Response())
 
-        write = _data(now=_then_encoded)
-        mock_call.assert_called_once_with('download_file', (FILE_URL, ))
-        self.mock_open.assert_called_with(Leaguefile._data(), 'w')
+        mock_call.assert_called_once_with('find_upload', (DATE_10260605, ))
+        self.assertNotCalled(mock_ongoing, mock_uploaded, self.mock_chat,
+                             self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_handle_uploaded')
+    @mock.patch.object(Leaguefile, '_handle_ongoing')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_get_upload__ongoing(self, mock_call, mock_ongoing, mock_uploaded):
+        mock_call.return_value = ('100000', DATE_10260604, True)
+        mock_ongoing.return_value = Response(notify=[Notify.BASE])
+
+        read = _data(upload=_state(start=DATE_10260602))
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._get_upload(date=DATE_10260605)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        mock_call.assert_called_once_with('find_upload', (DATE_10260605, ))
+        mock_ongoing.assert_called_once_with(
+            '100000', DATE_10260604, date=DATE_10260605)
+        self.assertNotCalled(mock_uploaded, self.mock_chat, self.mock_log,
+                             self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_handle_uploaded')
+    @mock.patch.object(Leaguefile, '_handle_ongoing')
+    @mock.patch.object(Leaguefile, '_call')
+    def test_get_upload__uploaded(self, mock_call, mock_ongoing,
+                                  mock_uploaded):
+        mock_call.return_value = ('345678901', DATE_10260604, False)
+        mock_uploaded.return_value = Response(notify=[Notify.BASE])
+
+        read = _data(upload=_state(start=DATE_10260602))
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._get_upload(date=DATE_10260605)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        mock_call.assert_called_once_with('find_upload', (DATE_10260605, ))
+        mock_uploaded.assert_called_once_with(
+            '345678901', DATE_10260604, date=DATE_10260605)
+        self.assertNotCalled(mock_ongoing, self.mock_chat, self.mock_log,
+                             self.mock_open, self.mock_handle.write)
+
+    def test_handle_ongoing__ongoing(self):
+        upload = _state(
+            end=DATE_10260602,
+            now=DATE_10260602,
+            size='100000',
+            start=DATE_10260602)
+        read = _data(upload=upload)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._handle_ongoing(
+            '200000', DATE_10260604, date=DATE_10260605)
+        self.assertEqual(response, Response())
+
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260605,
+            size='200000',
+            start=DATE_10260602)
+        write = _data(upload=upload)
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_log.assert_called_once_with(logging.INFO, 'Download failed.')
+        self.assertNotCalled(self.mock_chat, self.mock_log)
 
-    def test_home__with_empty(self):
+    def test_handle_ongoing__resumed(self):
+        upload = _state(
+            end=DATE_10260602,
+            now=DATE_10260602,
+            size='100000',
+            start=DATE_10260602)
+        read = _data(stalled=True, upload=upload)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._handle_ongoing(
+            '200000', DATE_10260604, date=DATE_10260605)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260605,
+            size='200000',
+            start=DATE_10260602)
+        write = _data(upload=upload)
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(self.mock_chat, self.mock_log)
+
+    def test_handle_ongoing__stalled(self):
+        upload = _state(
+            end=DATE_10260602,
+            now=DATE_10260604,
+            size='100000',
+            start=DATE_10260602)
+        read = _data(upload=upload)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._handle_ongoing(
+            '100000', DATE_10260602, date=DATE_10260605)
+        self.assertEqual(response, Response(notify=[Notify.BASE]))
+
+        write = _data(stalled=True, upload=upload)
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(self.mock_chat, self.mock_log)
+
+    def test_handle_ongoing__started(self):
         leaguefile = self.create_leaguefile(_data())
-        actual = leaguefile._home(date=_now)
+        response = leaguefile._handle_ongoing(
+            '100000', DATE_10260604, date=DATE_10260605)
+        self.assertEqual(response, Response(notify=[Notify.LEAGUEFILE_START]))
+
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260605,
+            size='100000',
+            start=DATE_10260604)
+        write = _data(upload=upload)
+        self.mock_chat.assert_called_once_with('fairylab', 'Upload started.')
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(self.mock_log)
+
+    def test_handle_uploaded(self):
+        upload = _state(
+            end=DATE_10260602,
+            now=DATE_10260602,
+            size='320000000',
+            start=DATE_10260602)
+        read = _data(upload=upload)
+        leaguefile = self.create_leaguefile(read)
+        response = leaguefile._handle_uploaded(
+            '345678901', DATE_10260604, date=DATE_10260605)
+        thread_ = Thread(
+            target='_download_start', kwargs={'date': DATE_10260605})
+        self.assertEqual(
+            response,
+            Response(notify=[Notify.LEAGUEFILE_FINISH], thread_=[thread_]))
+
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260605,
+            size='345678901',
+            start=DATE_10260602)
+        write = _data(upload=upload)
+        self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(self.mock_log)
+
+    def test_set_completed(self):
+        download = _state(
+            end=DATE_10260605,
+            now=DATE_10260605,
+            size='345678901',
+            start=DATE_10260604)
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260604,
+            size='345678901',
+            start=DATE_10260602)
+        read = _data(download=download, upload=upload)
+        leaguefile = self.create_leaguefile(read)
+        leaguefile._set_completed()
+
+        completed = _completed(
+            download='1m', size='345678901', start=DATE_10260602, upload='1m')
+        write = _data(completed=[completed])
+        self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(self.mock_chat, self.mock_log)
+
+    @mock.patch.object(Leaguefile, '_card')
+    def test_index_html__completed(self, mock_card):
+        completed = _completed(
+            download='1m', size='345678901', start=DATE_10260602, upload='1m')
+        read = _data(completed=[completed])
+        leaguefile = self.create_leaguefile(read)
+
         breadcrumbs = [{
             'href': '/',
             'name': 'Fairylab'
@@ -919,39 +666,41 @@ class LeaguefileTest(Test):
             'href': '',
             'name': 'Leaguefile'
         }]
-        cols = [
-            col(),
-            col(clazz='text-center'),
-            col(clazz='text-center'),
-            col(clazz='text-right')
+        actual = leaguefile._index_html(date=DATE_10260602)
+        row = [
+            cell(content='Oct 26'),
+            cell(content='1m'),
+            cell(content='1m'),
+            cell(content='345,678,901')
         ]
-        completed = table(
-            hcols=cols,
-            bcols=cols,
-            head=[
-                cell(content='Date'),
-                cell(content='Upload'),
-                cell(content='Download'),
-                cell(content='Size')
-            ],
-            body=[])
         expected = {
             'breadcrumbs': breadcrumbs,
-            'upload': None,
-            'download': None,
-            'completed': completed
+            'completed': table(hcols=COLS, bcols=COLS, head=HEAD, body=[row])
         }
         self.assertEqual(actual, expected)
+        self.assertNotCalled(mock_card, self.mock_chat, self.mock_log,
+                             self.mock_open, self.mock_handle.write)
 
-    def test_home__with_upload(self):
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '100000',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T18:04:00-08:00'
-        }
-        leaguefile = self.create_leaguefile(_data(upload=upload))
-        actual = leaguefile._home(date=_now)
+    @mock.patch.object(Leaguefile, '_card')
+    def test_index_html__download(self, mock_card):
+        mock_card.side_effect = [
+            card(success='completed'),
+            card(success='ongoing')
+        ]
+
+        download = _state(
+            end=DATE_10260605,
+            now=DATE_10260605,
+            size='100000',
+            start=DATE_10260604)
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260604,
+            size='345678901',
+            start=DATE_10260602)
+        read = _data(download=download, upload=upload)
+        leaguefile = self.create_leaguefile(read)
+
         breadcrumbs = [{
             'href': '/',
             'name': 'Fairylab'
@@ -959,58 +708,33 @@ class LeaguefileTest(Test):
             'href': '',
             'name': 'Leaguefile'
         }]
-        upload = card(
-            title='Jan 29',
-            table=table(
-                clazz='table-sm',
-                hcols=[col(clazz='w-55p'), col()],
-                bcols=[col(clazz='w-55p'), col()],
-                body=[[cell(content='Time: '),
-                       cell(content='2h 0m')],
-                      [cell(content='Size: '),
-                       cell(content='100,000')]]),
-            ts='18:04:00 PST (2018-01-29)',
-            success='ongoing')
-        cols = [
-            col(),
-            col(clazz='text-center'),
-            col(clazz='text-center'),
-            col(clazz='text-right')
-        ]
-        completed = table(
-            hcols=cols,
-            bcols=cols,
-            head=[
-                cell(content='Date'),
-                cell(content='Upload'),
-                cell(content='Download'),
-                cell(content='Size')
-            ],
-            body=[])
+        actual = leaguefile._index_html(date=DATE_10260602)
         expected = {
             'breadcrumbs': breadcrumbs,
-            'upload': upload,
-            'download': None,
-            'completed': completed
+            'download': card(success='ongoing'),
+            'upload': card(success='completed'),
+            'completed': table(hcols=COLS, bcols=COLS, head=HEAD, body=[])
         }
+        mock_card.assert_has_calls([
+            mock.call(upload, '06:04:00 PDT (1985-10-26)', 'completed', ''),
+            mock.call(download, '06:05:00 PDT (1985-10-26)', 'ongoing', '')
+        ])
         self.assertEqual(actual, expected)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
-    def test_home__with_download(self):
-        download = {
-            'start': 'Jan 29 18:05',
-            'size': '100000',
-            'end': 'Jan 29 18:10',
-            'now': '2018-01-29T18:14:00-08:00'
-        }
-        upload = {
-            'start': 'Jan 29 16:00',
-            'size': '345678901',
-            'end': 'Jan 29 18:00',
-            'now': '2018-01-29T18:02:00-08:00'
-        }
-        leaguefile = self.create_leaguefile(
-            _data(download=download, upload=upload))
-        actual = leaguefile._home(date=_now)
+    @mock.patch.object(Leaguefile, '_card')
+    def test_index_html__stalled(self, mock_card):
+        mock_card.return_value = card(danger='stalled')
+
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260604,
+            size='100000',
+            start=DATE_10260602)
+        read = _data(stalled=True, upload=upload)
+        leaguefile = self.create_leaguefile(read)
+
         breadcrumbs = [{
             'href': '/',
             'name': 'Fairylab'
@@ -1018,104 +742,106 @@ class LeaguefileTest(Test):
             'href': '',
             'name': 'Leaguefile'
         }]
-        upload = card(
-            title='Jan 29',
+        actual = leaguefile._index_html(date=DATE_10260602)
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'upload': card(danger='stalled'),
+            'completed': table(hcols=COLS, bcols=COLS, head=HEAD, body=[])
+        }
+        mock_card.assert_called_once_with(upload, '06:04:00 PDT (1985-10-26)',
+                                          '', 'stalled')
+        self.assertEqual(actual, expected)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Leaguefile, '_card')
+    def test_index_html__upload(self, mock_card):
+        mock_card.return_value = card(success='ongoing')
+
+        upload = _state(
+            end=DATE_10260604,
+            now=DATE_10260604,
+            size='345678901',
+            start=DATE_10260602)
+        read = _data(upload=upload)
+        leaguefile = self.create_leaguefile(read)
+
+        breadcrumbs = [{
+            'href': '/',
+            'name': 'Fairylab'
+        }, {
+            'href': '',
+            'name': 'Leaguefile'
+        }]
+        actual = leaguefile._index_html(date=DATE_10260602)
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'upload': card(success='ongoing'),
+            'completed': table(hcols=COLS, bcols=COLS, head=HEAD, body=[])
+        }
+        mock_card.assert_called_once_with(upload, '06:04:00 PDT (1985-10-26)',
+                                          'ongoing', '')
+        self.assertEqual(actual, expected)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    def test_card__success(self):
+        state = _state(
+            end=DATE_10260604,
+            now=DATE_10260604,
+            size='345678901',
+            start=DATE_10260602)
+        leaguefile = self.create_leaguefile(_data())
+        actual = leaguefile._card(state, '06:04:00 PDT (1985-10-26)',
+                                  'ongoing', '')
+        expected = card(
+            title='Oct 26',
             table=table(
                 clazz='table-sm',
-                hcols=[col(clazz='w-55p'), col()],
                 bcols=[col(clazz='w-55p'), col()],
                 body=[[cell(content='Time: '),
-                       cell(content='2h 0m')],
+                       cell(content='1m')],
                       [cell(content='Size: '),
                        cell(content='345,678,901')]]),
-            ts='18:02:00 PST (2018-01-29)',
-            success='completed')
-        download = card(
-            title='Jan 29',
+            ts='06:04:00 PDT (1985-10-26)',
+            success='ongoing',
+            danger='')
+        self.assertEqual(actual, expected)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    def test_card__danger(self):
+        state = _state(
+            end=DATE_10260604,
+            now=DATE_10260604,
+            size='345678901',
+            start=DATE_10260602)
+        leaguefile = self.create_leaguefile(_data())
+        actual = leaguefile._card(state, '06:04:00 PDT (1985-10-26)',
+                                  '', 'stalled')
+        expected = card(
+            title='Oct 26',
             table=table(
                 clazz='table-sm',
-                hcols=[col(clazz='w-55p'), col()],
                 bcols=[col(clazz='w-55p'), col()],
                 body=[[cell(content='Time: '),
-                       cell(content='5m')],
+                       cell(content='1m')],
                       [cell(content='Size: '),
-                       cell(content='100,000')]]),
-            ts='18:14:00 PST (2018-01-29)',
-            success='ongoing')
-        cols = [
-            col(),
-            col(clazz='text-center'),
-            col(clazz='text-center'),
-            col(clazz='text-right')
-        ]
-        completed = table(
-            hcols=cols,
-            bcols=cols,
-            head=[
-                cell(content='Date'),
-                cell(content='Upload'),
-                cell(content='Download'),
-                cell(content='Size')
-            ],
-            body=[])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'upload': upload,
-            'download': download,
-            'completed': completed
-        }
+                       cell(content='345,678,901')]]),
+            ts='06:04:00 PDT (1985-10-26)',
+            success='',
+            danger='stalled')
         self.assertEqual(actual, expected)
-
-    def test_home__with_completed(self):
-        completed = {
-            'size': '345678901',
-            'ustart': 'Jan 27 12:00',
-            'uend': 'Jan 27 12:00',
-            'dstart': 'Jan 27 12:00',
-            'dend': 'Jan 27 12:00',
-            'date': 'Jan 27 12:00'
-        }
-        leaguefile = self.create_leaguefile(_data(completed=[completed]))
-        actual = leaguefile._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Leaguefile'
-        }]
-        cols = [
-            col(),
-            col(clazz='text-center'),
-            col(clazz='text-center'),
-            col(clazz='text-right')
-        ]
-        completed = table(
-            hcols=cols,
-            bcols=cols,
-            head=[
-                cell(content='Date'),
-                cell(content='Upload'),
-                cell(content='Download'),
-                cell(content='Size')
-            ],
-            body=[[
-                cell(content='Jan 27'),
-                cell(content='0m'),
-                cell(content='0m'),
-                cell(content='345,678,901')
-            ]])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'upload': None,
-            'download': None,
-            'completed': completed
-        }
-        self.assertEqual(actual, expected)
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
 
 if __name__ in ['__main__', 'tasks.leaguefile.leaguefile_test']:
-    _main = __name__ == '__main__'
-    _pkg = 'tasks.leaguefile'
-    _pth = 'tasks/leaguefile'
-    main(LeaguefileTest, Leaguefile, _pkg, _pth, {}, _main, date=_now, e=_env)
+    main(
+        LeaguefileTest,
+        Leaguefile,
+        'tasks.leaguefile',
+        'tasks/leaguefile', {},
+        __name__ == '__main__',
+        date=DATE_10260602,
+        e=ENV)

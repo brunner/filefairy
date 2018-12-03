@@ -214,7 +214,7 @@ class StatsplusTest(Test):
     def create_statsplus(self, data):
         self.init_mocks(data)
         statsplus = Statsplus(date=_now, e=_env)
-        statsplus.shadow['leaguefile.now'] = _now_encoded
+        statsplus.shadow['leaguefile.end'] = _now_encoded
 
         self.mock_open.assert_called_once_with(Statsplus._data(), 'r')
         self.mock_handle.write.assert_not_called()
@@ -286,7 +286,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_called_once_with('fairylab', 'Sim in progress.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'Sim in progress.')
+        self.mock_log.assert_not_called()
 
     @mock.patch.object(Statsplus, '_handle_table')
     @mock.patch.object(Statsplus, '_render')

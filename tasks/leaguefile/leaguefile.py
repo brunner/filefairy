@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Reports current file upload progress. Downloads file when upload is done."""
 
 import copy
 import datetime
@@ -8,13 +9,12 @@ import os
 import re
 import sys
 
+_logger = logging.getLogger('fairylab')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
 from api.reloadable.reloadable import Reloadable  # noqa
-from common.datetime_.datetime_ import datetime_as_pst  # noqa
-from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timedelta  # noqa
@@ -23,27 +23,20 @@ from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
-from common.jinja2_.jinja2_ import env  # noqa
 from common.secrets.secrets import server  # noqa
-from common.slack.slack import reactions_add  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from data.notify.notify import Notify  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from data.thread_.thread_ import Thread  # noqa
 from data.response.response import Response  # noqa
 
-_logger = logging.getLogger('fairylab')
-
+COLS = [col(clazz=c) for c in ('', 'text-center', 'text-center', 'text-right')]
+DELTA_2_MIN = datetime.timedelta(minutes=2)
+DOWNLOAD_DIR = re.sub(r'/tasks/leaguefile', '/resource/download', _path)
 FILE_HOST = 'www.orangeandblueleaguebaseball.com'
 FILE_NAME = 'orange_and_blue_league_baseball.tar.gz'
 FILE_URL = 'https://{}/StatsLab/league_file/{}'.format(FILE_HOST, FILE_NAME)
-
-_size_pattern = '(\d+)'
-_date_pattern = '(\w+\s\d+\s\d+:\d+)'
-_name_pattern = '(orange_and_blue_league_baseball.tar.gz(?:.filepart)?)'
-_line_pattern = '\s'.join([_size_pattern, _date_pattern, _name_pattern])
-_server = server()
-_td = datetime.timedelta(minutes=2)
+HEAD = [cell(content=c) for c in ('Date', 'Upload', 'Download', 'Size')]
 
 
 class Leaguefile(Registrable, Reloadable):
@@ -77,260 +70,217 @@ class Leaguefile(Registrable, Reloadable):
 
     def _run_internal(self, **kwargs):
         data = self.data
-        original = copy.deepcopy(data)
-
-        notify = Notify.BASE
-        response = Response()
-
-        render = False
-        now = encode_datetime(kwargs['date'])
 
         if data['download'] and data['upload']:
-            download, upload = data['download'], data['upload']
-            size, date, name, fp = self._check_download()
-            if fp:
-                if download.get('size', 0) != size:
-                    end = self._encode(kwargs['date'])
-                    download.update({'size': size, 'end': end, 'now': now})
-            elif upload['size'] == size:
-                render = True
-                data['completed'].insert(0, self._completed(download, upload))
-                if len(data['completed']) > 10:
-                    data['completed'] = data['completed'][:10]
-                data['download'], data['upload'] = None, None
+            response = self._get_download(**kwargs)
         else:
-            for size, date, name, fp in self._check_upload():
-                ddate = self._decode(date, kwargs['date'])
-                if '.filepart' in name:
-                    if not data['upload']:
-                        render = True
-                        data['upload'] = {'start': date}
-                        self._chat('fairylab', 'Upload started.')
-                        _logger.log(logging.INFO, 'Upload started.')
-                        notify = Notify.LEAGUEFILE_START
-                    if data['upload'].get('size') != size:
-                        u = {'size': size, 'end': date, 'now': now}
-                        data['upload'].update(u)
-                        if data['stalled']:
-                            render = True
-                            data['stalled'] = False
-                    elif ddate < kwargs['date'] - _td:
-                        if not data['stalled']:
-                            render = True
-                            data['stalled'] = True
-                elif data['upload'] and not fp:
-                    render = True
-                    upload = data['upload']
-                    if upload.get('size', 0) != size:
-                        upload.update({'size': size, 'date': date, 'now': now})
-                        self._file_is_up(**kwargs)
-                        notify = Notify.LEAGUEFILE_FINISH
-                    response = self.download(**kwargs)
+            response = self._get_upload(**kwargs)
 
-        if data != original:
-            self.write()
+        if data['upload'] and not response.notify:
+            now = kwargs['date']
+            if decode_datetime(data['date']) < now - DELTA_2_MIN:
+                data['date'] = encode_datetime(now)
+                response.notify = [Notify.BASE]
+                self.write()
 
-        wait = decode_datetime(data['date']) < kwargs['date'] - _td
-        if render or data['upload'] and wait:
-            data['date'] = now
-            response.append(notify=notify)
+        if response.notify:
             self._render(**kwargs)
 
         return response
 
     def _render_internal(self, **kwargs):
-        html = 'leaguefile/index.html'
-        _home = self._home(**kwargs)
-        return [(html, '', 'leaguefile.html', _home)]
+        index_html = self._index_html(**kwargs)
+        return [('leaguefile/index.html', '', 'leaguefile.html', index_html)]
 
     def _setup_internal(self, **kwargs):
+        self._reload(**kwargs)
+
+        if self.data['download']:
+            return Response(
+                thread_=[Thread(target='_download_start', kwargs=kwargs)])
+
         data = self.data
         original = copy.deepcopy(data)
 
-        response = Response()
-        if data['download']:
-            response = self._download_start(**kwargs)
-        else:
-            for size, date, name, fp in self._check_upload():
-                if not fp:
-                    data['upload'] = None
-                elif '.filepart' in name:
-                    if not data['upload']:
-                        data['upload'] = {'start': date}
-                    if data['upload'].get('size', 0) != size:
-                        now = encode_datetime(kwargs['date'])
-                        u = {'size': size, 'end': date, 'now': now}
-                        data['upload'].update(u)
+        now = kwargs['date']
+        upload = self._call('find_upload', (now, ))
+        if upload:
+            size, time, ongoing = upload
+            if ongoing:
+                encoded_time = encode_datetime(time)
+                data['upload'] = {
+                    'end': encoded_time,
+                    'now': encode_datetime(now),
+                    'size': size,
+                    'start': encoded_time
+                }
 
         if data != original:
             self.write()
 
         self._render(**kwargs)
-        return response
+        return Response()
 
     def _shadow_internal(self, **kwargs):
         return [
             Shadow(
                 destination='statsplus',
-                key='leaguefile.now',
-                info=self.data['now'])
+                key='leaguefile.end',
+                info=self.data['end'])
         ]
 
-    @staticmethod
-    def _card(start, time, size, ts, success, danger):
-        cols = [col(clazz='w-55p'), col()]
-        return card(
-            title=Leaguefile._filedate(start),
-            table=table(
-                clazz='table-sm',
-                hcols=cols,
-                bcols=cols,
-                body=[[cell(content='Time: '),
-                       cell(content=time)], [
-                           cell(content='Size: '),
-                           cell(content=Leaguefile._size(size))
-                       ]]),
-            ts=ts,
-            success=success,
-            danger=danger)
+    def download(self, *args, **kwargs):
+        return Response(
+            thread_=[Thread(target='_download_start', kwargs=kwargs)])
 
-    @staticmethod
-    def _check_download():
-        download = re.sub(r'/tasks/leaguefile', '/resource/download', _path)
-        output = check_output(['ls', '-l', download], timeout=8)
-        if output.get('ok'):
-            stdout = output.get('stdout', '')
-            fp = 'news' not in stdout
-            for line in stdout.splitlines():
-                line = re.sub(r'\s+', ' ', line)
-                match = re.findall(_line_pattern, line)
-                if match:
-                    return match[0] + (fp, )
-        return ('0', '', '', False)
+    def _download_file(self, *args, **kwargs):
+        now = encode_datetime(kwargs['date'])
+        self.data['download'] = {'end': now, 'start': now}
 
-    @staticmethod
-    def _check_upload():
-        ls = 'ls -l /var/www/html/StatsLab/league_file'
-        output = check_output(['ssh', 'brunnerj@' + _server, ls], timeout=8)
-        if output.get('ok'):
-            stdout = output.get('stdout', '')
-            fp = '.filepart' in stdout
-            for line in stdout.splitlines():
-                line = re.sub(r'\s+', ' ', line)
-                match = re.findall(_line_pattern, line)
-                if match:
-                    yield match[0] + (fp, )
-
-    @staticmethod
-    def _completed(download, upload):
-        return {
-            'size': upload['size'],
-            'date': upload['date'],
-            'ustart': upload['start'],
-            'uend': upload['end'],
-            'dstart': download['start'],
-            'dend': download['end']
-        }
-
-    @staticmethod
-    def _decode(date, n):
-        d = datetime.datetime.strptime(date, '%b %d %H:%M')
-        est = datetime_datetime_est(n.year, d.month, d.day, d.hour, d.minute)
-        return datetime_as_pst(est)
-
-    @staticmethod
-    def _encode(date):
-        return date.strftime('%b %d %H:%M')
-
-    @staticmethod
-    def _seconds(then, now, n):
-        diff = Leaguefile._decode(now, n) - Leaguefile._decode(then, n)
-        return diff.total_seconds()
-
-    @staticmethod
-    def _filedate(s):
-        return s.rsplit(' ', 1)[0]
-
-    @staticmethod
-    def _size(s):
-        return '{:,}'.format(int(s))
-
-    @staticmethod
-    def _time(s, e, n):
-        return timedelta(Leaguefile._decode(s, n), Leaguefile._decode(e, n))
-
-    def download(self, **kwargs):
-        data = self.data
-
-        output = check_output(['ping', '-c 1', FILE_HOST], timeout=8)
-        if output.get('ok') and data['upload']:
-            return self._download_start(**kwargs)
-        else:
-            _logger.log(
-                logging.WARNING,
-                'Download failed.',
-                extra={
-                    'stdout': output.get('stdout', ''),
-                    'stderr': output.get('stderr', '')
-                })
-            return Response()
-
-    def _download_internal(self, *args, **kwargs):
-        response = Response()
         output = self._call('download_file', (FILE_URL, ))
-
         if output.get('ok'):
-            then = decode_datetime(self.data['now'])
-            now = self._call('extract_file', (then, ))
-
-            self.data['now'] = encode_datetime(now)
-            self.data['then'] = encode_datetime(then)
-
             _logger.log(logging.INFO, 'Download finished.')
-            response.append(notify=Notify.LEAGUEFILE_DOWNLOAD)
-            if then.year != now.year:
-                response.append(notify=Notify.LEAGUEFILE_YEAR)
-            response.shadow = self._shadow_internal(**kwargs)
+            response = self._extract_file(**kwargs)
         else:
-            _logger.log(logging.INFO, 'Download failed.')
-            self.data['download'] = None
+            extra = {'stdout': output['stdout'], 'stderr': output['stderr']}
+            _logger.log(logging.WARNING, 'Download failed.', extra=extra)
+            response = Response(
+                thread_=[Thread(target='_download_start', kwargs=kwargs)])
 
         self.write()
         return response
 
     def _download_start(self, **kwargs):
-        now = encode_datetime(kwargs['date'])
-        self.data['download'] = {
-            'start': self._encode(kwargs['date']),
-            'now': now
-        }
-        _logger.log(logging.INFO, 'Download started.')
+        output = check_output(['ping', '-c 1', FILE_HOST], timeout=8)
+        if output.get('ok') and self.data['upload']:
+            _logger.log(logging.INFO, 'Download started.')
+            return self._download_file(**kwargs)
+
+        extra = {'stdout': output['stdout'], 'stderr': output['stderr']}
+        _logger.log(logging.WARNING, 'Download failed.', extra=extra)
         return Response(
-            thread_=[Thread(target='_download_internal', kwargs=kwargs)])
+            thread_=[Thread(target='_download_start', kwargs=kwargs)])
 
-    def _file_is_up(self, **kwargs):
-        obj = self._chat('fairylab', 'File is up.')
-        _logger.log(logging.INFO, 'File is up.')
-        channel = obj.get('channel')
-        upload = self.data['upload']
-        ts = obj.get('ts')
-        if channel and ts:
-            max_, min_ = 0, 0
-            for c in self.data['completed']:
-                seconds = self._seconds(c['ustart'], c['uend'], kwargs['date'])
-                if not max_ or max_ < seconds:
-                    max_ = seconds
-                if not min_ or min_ > seconds:
-                    min_ = seconds
-            seconds = self._seconds(upload['start'], upload['end'],
-                                    kwargs['date'])
-            if seconds < min_:
-                reactions_add('zap', channel, ts)
-            elif seconds > max_:
-                reactions_add('timer_clock', channel, ts)
+    def _extract_file(self, **kwargs):
+        start = decode_datetime(self.data['end'])
+        end = self._call('extract_file', (start, ))
+        response = Response(notify=[Notify.LEAGUEFILE_DOWNLOAD])
 
-    def _home(self, **kwargs):
+        self.data['end'] = encode_datetime(end)
+        self.data['start'] = encode_datetime(start)
+        if start.year != end.year:
+            response.append(notify=Notify.LEAGUEFILE_YEAR)
+            response.shadow = self._shadow_internal(**kwargs)
+
+        self.write()
+        return response
+
+    def _get_download(self, **kwargs):
+        now = kwargs['date']
+
+        download = self._call('find_download', (now, ))
+        if download is None:
+            return Response()
+
+        size, timestamp, ongoing = download
+        if ongoing:
+            self.data['download'].update({
+                'end': encode_datetime(timestamp),
+                'now': encode_datetime(now),
+                'size': size
+            })
+            self.write()
+        else:
+            self._set_completed()
+
+        return Response(notify=[Notify.BASE])
+
+    def _get_upload(self, **kwargs):
+        response = Response()
+        upload = self._call('find_upload', (kwargs['date'], ))
+        if upload is None:
+            return response
+
+        size, timestamp, ongoing = upload
+        if ongoing:
+            response = self._handle_ongoing(size, timestamp, **kwargs)
+        elif self.data['upload']:
+            response = self._handle_uploaded(size, timestamp, **kwargs)
+
+        return response
+
+    def _handle_ongoing(self, size, timestamp, **kwargs):
         data = self.data
+        original = copy.deepcopy(data)
+
+        response = Response()
+
+        now = kwargs['date']
+        encoded_date = encode_datetime(timestamp)
+        encoded_now = encode_datetime(now)
+
+        if not data['upload']:
+            data['upload'] = {'start': encoded_date}
+            self._chat('fairylab', 'Upload started.')
+            response.notify = [Notify.LEAGUEFILE_START]
+
+        if data['upload'].get('size') != size:
+            data['upload'].update({
+                'end': encoded_date,
+                'now': encoded_now,
+                'size': size
+            })
+            if data['stalled'] and not response.notify:
+                response.notify = [Notify.BASE]
+            data['stalled'] = False
+        elif timestamp < now - DELTA_2_MIN:
+            if not data['stalled'] and not response.notify:
+                response.notify = [Notify.BASE]
+            data['stalled'] = True
+
+        if data != original:
+            self.write()
+
+        return response
+
+    def _handle_uploaded(self, size, timestamp, **kwargs):
+        encoded_now = encode_datetime(kwargs['date'])
+        encoded_time = encode_datetime(timestamp)
+
+        self.data['upload'].update({
+            'end': encoded_time,
+            'now': encoded_now,
+            'size': size
+        })
+        self.write()
+
+        self._chat('fairylab', 'File is up.')
+        return Response(
+            notify=[Notify.LEAGUEFILE_FINISH],
+            thread_=[Thread(target='_download_start', kwargs=kwargs)])
+
+    def _set_completed(self):
+        download = self.data['download']
+        download_end = decode_datetime(download['end'])
+        download_start = decode_datetime(download['start'])
+
+        upload = self.data['upload']
+        upload_end = decode_datetime(upload['end'])
+        upload_start = decode_datetime(upload['start'])
+
+        completed = {
+            'download': timedelta(download_start, download_end),
+            'size': upload['size'],
+            'start': upload['start'],
+            'upload': timedelta(upload_start, upload_end),
+        }
+        self.data['completed'].insert(0, completed)
+        self.data['download'] = None
+        self.data['upload'] = None
+
+        self.write()
+
+    def _index_html(self, **kwargs):
         ret = {
             'breadcrumbs': [{
                 'href': '/',
@@ -341,56 +291,50 @@ class Leaguefile(Registrable, Reloadable):
             }]
         }
 
-        ret['upload'] = None
-        if data['upload']:
-            upload = data['upload']
-            time = self._time(upload['start'], upload['end'], kwargs['date'])
-            ts = timestamp(decode_datetime(upload['now']))
-            if data['download']:
-                success, danger = 'completed', ''
-            else:
-                success = 'ongoing' if not data['stalled'] else ''
-                danger = 'stalled' if data['stalled'] else ''
-            ret['upload'] = self._card(upload['start'], time, upload['size'],
-                                       ts, success, danger)
+        download = self.data['download']
+        upload = self.data['upload']
+        stalled = self.data['stalled']
 
-        ret['download'] = None
-        if data['download'] and data['download'].get('end'):
-            download = data['download']
-            time = self._time(download['start'], download['end'],
-                              kwargs['date'])
-            ts = timestamp(decode_datetime(download['now']))
-            ret['download'] = self._card(upload['start'], time,
-                                         download['size'], ts, 'ongoing', '')
+        if upload:
+            ts = timestamp(decode_datetime(upload['now']))
+            success = 'completed' if download else '' if stalled else 'ongoing'
+            danger = 'stalled' if stalled else ''
+            ret['upload'] = self._card(upload, ts, success, danger)
+
+        if download:
+            ts = timestamp(decode_datetime(download['end']))
+            ret['download'] = self._card(download, ts, 'ongoing', '')
 
         body = []
-        for c in data['completed']:
-            utime, dtime = '-', '-'
-            if c['ustart'] and c['uend']:
-                utime = self._time(c['ustart'], c['uend'], kwargs['date'])
-            if c['dstart'] and c['dend']:
-                dtime = self._time(c['dstart'], c['dend'], kwargs['date'])
+        for completed in self.data['completed']:
+            date = decode_datetime(completed['start']).strftime('%b %d')
             body.append([
-                cell(content=self._filedate(c['date'])),
-                cell(content=utime),
-                cell(content=dtime),
-                cell(content=self._size(c['size']))
+                cell(content=date),
+                cell(content=completed['upload']),
+                cell(content=completed['download']),
+                cell(content='{:,}'.format(int(completed['size'])))
             ])
-        cols = [
-            col(),
-            col(clazz='text-center'),
-            col(clazz='text-center'),
-            col(clazz='text-right')
-        ]
-        ret['completed'] = table(
-            hcols=cols,
-            bcols=cols,
-            head=[
-                cell(content='Date'),
-                cell(content='Upload'),
-                cell(content='Download'),
-                cell(content='Size')
-            ],
-            body=body)
+        ret['completed'] = table(hcols=COLS, bcols=COLS, head=HEAD, body=body)
 
         return ret
+
+    @staticmethod
+    def _card(obj, ts, success, danger):
+        decoded_start = decode_datetime(obj['start'])
+        decoded_end = decode_datetime(obj['end'])
+
+        return card(
+            title=decoded_start.strftime('%b %d'),
+            table=table(
+                clazz='table-sm',
+                bcols=[col(clazz='w-55p'), col()],
+                body=[[
+                    cell(content='Time: '),
+                    cell(content=timedelta(decoded_start, decoded_end))
+                ], [
+                    cell(content='Size: '),
+                    cell(content='{:,}'.format(int(obj['size'])))
+                ]]),
+            ts=ts,
+            success=success,
+            danger=danger)

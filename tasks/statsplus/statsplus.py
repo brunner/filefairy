@@ -124,7 +124,7 @@ class Statsplus(Registrable):
         d = datetime.datetime.strptime(date[0], '%m/%d/%Y')
         ddate = datetime_datetime_pst(d.year, d.month, d.day)
         edate = encode_datetime(ddate)
-        ndate = decode_datetime(self.shadow.get('leaguefile.now', edate))
+        ndate = decode_datetime(self.shadow.get('leaguefile.end', edate))
         if ddate < ndate:
             return response
 
@@ -158,7 +158,6 @@ class Statsplus(Registrable):
             if self.data['started']:
                 self.data['started'] = False
                 self._chat('fairylab', 'Sim in progress.')
-                logger_.log(logging.INFO, 'Sim in progress.')
                 response.notify = [Notify.STATSPLUS_SIM]
 
         pattern = 'MAJOR LEAGUE BASEBALL Live Table'

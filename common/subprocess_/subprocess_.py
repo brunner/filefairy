@@ -20,7 +20,7 @@ def check_output(cmd, log=True, timeout=None):
         A representation of whether the command finished successfully, as well
         as stdout and stderr captured from the return value of subprocess.run.
     """
-    output = {'ok': True}
+    output = {'ok': True, 'stdout': '', 'stderr': ''}
     try:
         proc = subprocess.run(
             cmd,

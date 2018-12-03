@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Sample data for leaguefile.py golden test."""
 
 import os
 import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/tasks/leaguefile/samples', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/tasks/leaguefile/samples', '', _path))
+
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
+
+COLS = [col(clazz=c) for c in ('', 'text-center', 'text-center', 'text-right')]
+HEAD = [cell(content=c) for c in ('Date', 'Upload', 'Download', 'Size')]
 
 _breadcrumbs = [{
     'href': '/',
@@ -20,22 +24,11 @@ _breadcrumbs = [{
     'name': 'Leaguefile'
 }]
 
-_cols = [
-    col(),
-    col(clazz='text-center'),
-    col(clazz='text-center'),
-    col(clazz='text-right')
-]
 _completed = table(
     clazz='border mt-3',
-    hcols=_cols,
-    bcols=_cols,
-    head=[
-        cell(content='Date'),
-        cell(content='Upload'),
-        cell(content='Download'),
-        cell(content='Size')
-    ],
+    hcols=COLS,
+    bcols=COLS,
+    head=HEAD,
     body=[[
         cell(content='Mar 10'),
         cell(content='4h 56m'),

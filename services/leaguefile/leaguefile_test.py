@@ -12,13 +12,18 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/leaguefile', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.secrets.secrets import server  # noqa
 from common.test.test import get_testdata  # noqa
 from services.leaguefile.leaguefile import download_file  # noqa
 from services.leaguefile.leaguefile import extract_file  # noqa
+from services.leaguefile.leaguefile import find_download  # noqa
+from services.leaguefile.leaguefile import find_upload  # noqa
 
 CWD_DIR = re.sub(r'/services/leaguefile', '', _path)
 DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
+DATE_10260000 = datetime_datetime_pst(1985, 10, 26)
+DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
 DOWNLOAD_DIR = re.sub(r'/services/leaguefile', '/resource/download', _path)
 DOWNLOAD_BOX_SCORES = os.path.join(DOWNLOAD_DIR, 'news/html/box_scores')
 DOWNLOAD_LEAGUES = os.path.join(DOWNLOAD_DIR, 'news/txt/leagues')
@@ -29,6 +34,7 @@ EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 FILE_HOST = 'https://www.orangeandblueleaguebaseball.com/StatsLab/league_file/'
 FILE_NAME = 'orange_and_blue_league_baseball.tar.gz'
 ISO = 'iso-8859-1'
+SERVER = server()
 TESTDATA_DIR = os.path.join(_path, 'testdata')
 TESTDATA = get_testdata(TESTDATA_DIR)
 
@@ -163,6 +169,69 @@ class LeaguefileTest(unittest.TestCase):
         mock_listdir.assert_called_once_with(DOWNLOAD_BOX_SCORES)
         mock_open.assert_has_calls(suite.calls())
         suite.verify()
+
+    @mock.patch('services.leaguefile.leaguefile.check_output')
+    def test_find_download__done(self, mock_check):
+        stdout = ('total 60224\n'
+                  'drwxrwxr-x 4 user user      4096 Oct 26 00:00 news\n'
+                  '-rw-rw-r-- 1 user user 345678901 Oct 26 06:04 '
+                  'orange_and_blue_league_baseball.tar.gz')
+        mock_check.return_value = {'ok': True, 'stdout': stdout}
+
+        actual = find_download(DATE_10260000)
+        expected = ('345678901', DATE_10260604, False)
+        self.assertEqual(actual, expected)
+
+        mock_check.assert_called_once_with(
+            ['ls', '-l', DOWNLOAD_DIR], timeout=8)
+
+    @mock.patch('services.leaguefile.leaguefile.check_output')
+    def test_find_download__ongoing(self, mock_check):
+        stdout = ('total 60224\n'
+                  '-rw-rw-r-- 1 user user 100000 Oct 26 06:04 '
+                  'orange_and_blue_league_baseball.tar.gz')
+        mock_check.return_value = {'ok': True, 'stdout': stdout}
+
+        actual = find_download(DATE_10260000)
+        expected = ('100000', DATE_10260604, True)
+        self.assertEqual(actual, expected)
+
+        mock_check.assert_called_once_with(
+            ['ls', '-l', DOWNLOAD_DIR], timeout=8)
+
+    @mock.patch('services.leaguefile.leaguefile.check_output')
+    def test_find_upload__done(self, mock_check):
+        stdout = ('total 60224\n'
+                  'drwxrwxr-x 4 user user      4096 Oct 26 00:00 news\n'
+                  '-rw-rw-r-- 1 user user 345678901 Oct 26 09:04 {}'
+                  ).format(FILE_NAME)
+        mock_check.return_value = {'ok': True, 'stdout': stdout}
+
+        actual = find_upload(DATE_10260000)
+        expected = ('345678901', DATE_10260604, False)
+        self.assertEqual(actual, expected)
+
+        ls = 'ls -l /var/www/html/StatsLab/league_file'
+        mock_check.assert_called_once_with(
+            ['ssh', 'brunnerj@' + SERVER, ls], timeout=8)
+
+    @mock.patch('services.leaguefile.leaguefile.check_output')
+    def test_find_upload__ongoing(self, mock_check):
+        stdout = (
+            'total 321012\n'
+            '-rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html\n'
+            '-rwxrwxrwx 1 user user 345678901 Oct 24 12:00 {}\n'
+            '-rwxrwxrwx 1 user user 100000 Oct 26 09:04 {}.filepart').format(
+                FILE_NAME, FILE_NAME)
+        mock_check.return_value = {'ok': True, 'stdout': stdout}
+
+        actual = find_upload(DATE_10260000)
+        expected = ('100000', DATE_10260604, True)
+        self.assertEqual(actual, expected)
+
+        ls = 'ls -l /var/www/html/StatsLab/league_file'
+        mock_check.assert_called_once_with(
+            ['ssh', 'brunnerj@' + SERVER, ls], timeout=8)
 
 
 if __name__ == '__main__':

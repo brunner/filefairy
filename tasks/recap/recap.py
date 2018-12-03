@@ -61,7 +61,6 @@ class Recap(Registrable):
             self.write()
 
             self._render(**kwargs)
-            logger_.log(logging.INFO, 'News updated.')
             obj = self._chat('fairylab', 'News updated.')
             channel = obj.get('channel')
             ts = obj.get('ts')

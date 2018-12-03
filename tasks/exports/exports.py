@@ -203,7 +203,6 @@ class Exports(Registrable):
         data = self.data
 
         if not data['emails']:
-            logger_.log(logging.INFO, 'Tracker locked.')
             obj = self._chat('fairylab', 'Tracker locked.')
             data['channel'] = obj.get('channel', '')
             data['ts'] = obj.get('ts', '')

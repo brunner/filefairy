@@ -199,7 +199,7 @@ class RenderableTest(unittest.TestCase):
         mock_attachments.assert_called_once_with()
         mock_chat.assert_called_once_with(
             'channel', 'foo', attachments=attachments)
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_called_once_with(logging.INFO, 'foo')
         self.mock_open.assert_not_called()
         self.mock_handle.assert_not_called()
 

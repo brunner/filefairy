@@ -12,6 +12,7 @@ import threading
 import time
 import websocket
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/filefairy', '', _path))
 
@@ -32,8 +33,6 @@ from impl.dashboard.dashboard import Dashboard  # noqa
 from impl.dashboard.dashboard import LoggingHandler  # noqa
 
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
-
-_logger = logging.getLogger('filefairy')
 
 
 class Filefairy(Messageable, Renderable):
@@ -270,7 +269,7 @@ class Filefairy(Messageable, Renderable):
         ret = {
             'breadcrumbs': [{
                 'href': '',
-                'name': 'Filefairy'
+                'name': 'Fairylab'
             }],
             'registered': [],
         }

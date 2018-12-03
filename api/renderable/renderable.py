@@ -87,6 +87,7 @@ class Renderable(Serializable):
         pass
 
     def _chat(self, channel, text):
+        _logger.log(logging.INFO, text)
         attachments = self._attachments()
         return chat_post_message(channel, text, attachments=attachments)
 

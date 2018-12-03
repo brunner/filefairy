@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Sample data for leaguefile.py golden test."""
 
 import os
 import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/tasks/leaguefile/samples', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/tasks/leaguefile/samples', '', _path))
+
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
+
+COLS = [col(clazz=c) for c in ('', 'text-center', 'text-center', 'text-right')]
+HEAD = [cell(content=c) for c in ('Date', 'Upload', 'Download', 'Size')]
 
 _breadcrumbs = [{
     'href': '/',
@@ -21,37 +25,23 @@ _breadcrumbs = [{
     'name': 'Leaguefile'
 }]
 
-_ucols = [col(clazz='w-55p'), col()]
-_table = table(
-    clazz='table-sm',
-    hcols=_ucols,
-    bcols=_ucols,
-    body=[[cell(content='Time: '),
-           cell(content='1h 8m')],
-          [cell(content='Size: '),
-           cell(content='59,969,530')]])
 _upload = card(
     title='Mar 10',
-    table=_table,
+    table=table(
+        clazz='table-sm',
+        bcols=[col(clazz='w-55p'), col()],
+        body=[[cell(content='Time: '),
+               cell(content='1h 8m')],
+              [cell(content='Size: '),
+               cell(content='59,969,530')]]),
     ts='06:02:30 EDT (1985-10-26)',
     danger='stalled')
 
-_ccols = [
-    col(),
-    col(clazz='text-center'),
-    col(clazz='text-center'),
-    col(clazz='text-right')
-]
 _completed = table(
     clazz='border mt-3',
-    hcols=_ccols,
-    bcols=_ccols,
-    head=[
-        cell(content='Date'),
-        cell(content='Upload'),
-        cell(content='Download'),
-        cell(content='Size')
-    ],
+    hcols=COLS,
+    bcols=COLS,
+    head=HEAD,
     body=[[
         cell(content='Mar 8'),
         cell(content='10h 11m'),

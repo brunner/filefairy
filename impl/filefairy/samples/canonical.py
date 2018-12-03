@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Sample data for filefairy.py golden test."""
 
 import os
 import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/core/fairylab/samples', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/core/fairylab/samples', '', _path))
+
 from common.elements.elements import card  # noqa
 
 _breadcrumbs = [{'href': '', 'name': 'Fairylab'}]

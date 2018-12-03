@@ -743,7 +743,7 @@ class FilefairyTest(Test):
         registrable.ok = False
         filefairy.registered['foo'] = registrable
 
-        breadcrumbs = [{'href': '', 'name': 'Filefairy'}]
+        breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
         registered = [
             card(
                 href='/dashboard/',
@@ -768,7 +768,7 @@ class FilefairyTest(Test):
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
         filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
 
-        breadcrumbs = [{'href': '', 'name': 'Filefairy'}]
+        breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
         registered = [
             card(
                 href='/dashboard/',
