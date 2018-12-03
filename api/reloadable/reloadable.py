@@ -47,9 +47,10 @@ class Reloadable():
 
     def _reload(self, **kwargs):
         services = self._reload_internal(**kwargs)
-        for service in services:
+        for service in sorted(services):
             package = 'services.{}.{}'.format(service, service)
             module = importlib.import_module(package)
 
             for method in services[service]:
                 self.attrs[method] = getattr(module, method)
+
