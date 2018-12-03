@@ -241,9 +241,10 @@ class Dashboard(Registrable):
         title = Dashboard._record_title(record)
         chat_post_message('testing', title + ': ' + record['msg'])
 
-        for key in ['err', 'out']:
-            if kwargs.get('std' + key):
-                content = secrets_sub(kwargs['std' + key])
+        for key in ['exc', 'stderr', 'stdout']:
+            value = record.get(key, kwargs.get(key, ''))
+            if value:
+                content = secrets_sub(value)
                 filename = kwargs.get('module', '') + '.' + key + '.txt'
                 files_upload(content, filename, 'testing')
 

@@ -444,8 +444,8 @@ class DashboardTest(Test):
 
         self.mock_chat.assert_called_once_with('testing', 'module.py#L55: foo')
         self.mock_upload.assert_has_calls([
-            mock.call('stderr', 'module.err.txt', 'testing'),
-            mock.call('stdout', 'module.out.txt', 'testing'),
+            mock.call('stderr', 'module.stderr.txt', 'testing'),
+            mock.call('stdout', 'module.stdout.txt', 'testing'),
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
