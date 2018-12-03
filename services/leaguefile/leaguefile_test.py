@@ -75,15 +75,12 @@ class Suite(object):
 
 
 class LeaguefileTest(unittest.TestCase):
-    @mock.patch('services.leaguefile.leaguefile.os.getcwd')
-    @mock.patch('services.leaguefile.leaguefile.os.chdir')
+    @mock.patch('services.leaguefile.leaguefile.chdir')
     @mock.patch('services.leaguefile.leaguefile.check_output')
-    def test_download_file__ok(self, mock_check, mock_chdir, mock_cwd):
+    def test_download_file__ok(self, mock_check, mock_chdir):
         url = FILE_HOST + FILE_NAME
         expected = {'ok': True}
-
         mock_check.return_value = expected
-        mock_cwd.return_value = CWD_DIR
 
         actual = download_file(url)
         self.assertEqual(actual, expected)
@@ -94,21 +91,15 @@ class LeaguefileTest(unittest.TestCase):
             mock.call(['wget', url], timeout=4800),
             mock.call(['tar', '-xzf', FILE_NAME]),
         ])
-        mock_chdir.assert_has_calls(
-            [mock.call(DOWNLOAD_DIR),
-             mock.call(CWD_DIR)])
-        mock_cwd.assert_called_once_with()
+        mock_chdir.assert_called_once_with(DOWNLOAD_DIR)
 
-    @mock.patch('services.leaguefile.leaguefile.os.getcwd')
-    @mock.patch('services.leaguefile.leaguefile.os.chdir')
+    @mock.patch('services.leaguefile.leaguefile.chdir')
     @mock.patch('services.leaguefile.leaguefile.check_output')
-    def test_download_file__timeout(self, mock_check, mock_chdir, mock_cwd):
+    def test_download_file__timeout(self, mock_check, mock_chdir):
         url = FILE_HOST + FILE_NAME
         e = 'Command \'wget {}\' timed out after {} seconds'.format(url, 4800)
         expected = {'ok': False, 'stdout': e, 'stderr': e}
-
         mock_check.return_value = expected
-        mock_cwd.return_value = CWD_DIR
 
         actual = download_file(url)
         self.assertEqual(actual, expected)
@@ -118,10 +109,7 @@ class LeaguefileTest(unittest.TestCase):
             mock.call(['mkdir', DOWNLOAD_DIR]),
             mock.call(['wget', url], timeout=4800),
         ])
-        mock_chdir.assert_has_calls(
-            [mock.call(DOWNLOAD_DIR),
-             mock.call(CWD_DIR)])
-        mock_cwd.assert_called_once_with()
+        mock_chdir.assert_called_once_with(DOWNLOAD_DIR)
 
     @mock.patch('services.leaguefile.leaguefile.open', create=True)
     @mock.patch('services.leaguefile.leaguefile.os.listdir')

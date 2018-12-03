@@ -21,6 +21,7 @@ from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.os_.os_ import chdir  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 
 logger_ = logging.getLogger('fairylab')
@@ -115,12 +116,11 @@ class Git(Registrable):
 
     @staticmethod
     def _call(cmd, *args, **kwargs):
-        cwd = os.getcwd()
         if len(args) == 1 and args[0] == 'fairylab':
-            os.chdir(_fairylab_root)
-
-        output = check_output(cmd)
-        os.chdir(cwd)
+            with chdir(_fairylab_root):
+                output = check_output(cmd)
+        else:
+            output = check_output(cmd)
 
         response = Response()
         if output.get('ok'):

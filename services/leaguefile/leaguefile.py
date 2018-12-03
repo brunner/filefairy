@@ -13,6 +13,7 @@ sys.path.append(re.sub(r'/services/leaguefile', '', _path))
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.os_.os_ import chdir  # noqa
 from common.re_.re_ import find  # noqa
 from common.secrets.secrets import server  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
@@ -40,15 +41,12 @@ def download_file(url):
     check_output(['rm', '-rf', DOWNLOAD_DIR])
     check_output(['mkdir', DOWNLOAD_DIR])
 
-    cwd = os.getcwd()
-    os.chdir(DOWNLOAD_DIR)
+    with chdir(DOWNLOAD_DIR):
+        output = check_output(['wget', url], timeout=4800)
+        if output.get('ok'):
+            filename = url.rsplit('/', 1)[1]
+            check_output(['tar', '-xzf', filename])
 
-    output = check_output(['wget', url], timeout=4800)
-    if output.get('ok'):
-        filename = url.rsplit('/', 1)[1]
-        check_output(['tar', '-xzf', filename])
-
-    os.chdir(cwd)
     return output
 
 
