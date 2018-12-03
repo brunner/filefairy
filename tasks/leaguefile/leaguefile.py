@@ -66,7 +66,10 @@ class Leaguefile(Registrable, Reloadable):
         return Response()
 
     def _reload_internal(self, **kwargs):
-        return {'leaguefile': ['download_file', 'extract_file']}
+        return {
+            'leaguefile':
+            ['download_file', 'extract_file', 'find_download', 'find_upload']
+        }
 
     def _run_internal(self, **kwargs):
         data = self.data

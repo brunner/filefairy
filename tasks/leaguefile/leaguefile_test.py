@@ -148,7 +148,10 @@ class LeaguefileTest(Test):
     def test_reload(self):
         leaguefile = self.create_leaguefile(_data())
         actual = leaguefile._reload_internal(date=DATE_10260602)
-        expected = {'leaguefile': ['download_file', 'extract_file']}
+        expected = {
+            'leaguefile':
+            ['download_file', 'extract_file', 'find_download', 'find_upload']
+        }
         self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
@@ -817,8 +820,8 @@ class LeaguefileTest(Test):
             size='345678901',
             start=DATE_10260602)
         leaguefile = self.create_leaguefile(_data())
-        actual = leaguefile._card(state, '06:04:00 PDT (1985-10-26)',
-                                  '', 'stalled')
+        actual = leaguefile._card(state, '06:04:00 PDT (1985-10-26)', '',
+                                  'stalled')
         expected = card(
             title='Oct 26',
             table=table(
