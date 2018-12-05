@@ -189,7 +189,7 @@ class Recap(Registrable):
         dpath = os.path.join(_root, 'resource/extract/box_scores')
         for box in os.listdir(dpath):
             bdname = os.path.join(dpath, box)
-            _game_data = parse_game_data(bdname, '')
+            _game_data = parse_game_data(None, bdname, '')
             if _game_data['ok']:
                 away_teamid = encoding_to_teamid(_game_data['away_team'])
                 away_record = _game_data['away_record']

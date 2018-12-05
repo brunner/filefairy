@@ -725,7 +725,8 @@ class RecapTest(Test):
         dpath = os.path.join(_root, 'resource/extract/box_scores')
         mock_listdir.assert_called_once_with(dpath)
         calls = [
-            mock.call(os.path.join(dpath, 'game_box_{}.html'.format(b)), '')
+            mock.call(
+                None, os.path.join(dpath, 'game_box_{}.html'.format(b)), '')
             for b in boxes
         ]
         mock_data.assert_has_calls(calls)
