@@ -39,7 +39,7 @@ class Reloadable():
         self.attrs = {}
 
     def _call(self, method, fargs, *args, **kwargs):
-        self.attrs[method](*fargs, *args, **kwargs)
+        return self.attrs[method](*fargs, *args, **kwargs)
 
     @abc.abstractmethod
     def _reload_internal(self, **kwargs):
