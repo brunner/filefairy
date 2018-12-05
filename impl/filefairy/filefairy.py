@@ -117,14 +117,15 @@ class Filefairy(Messageable, Renderable):
 
     def _background(self):
         while self.keep_running:
-            original = list(self.threads)
-            self.threads = []
+            with self.lock:
+                original = list(self.threads)
+                self.threads = []
 
+            print(original)
             for t, thread_ in original:
                 self._try(t, thread_.target, *thread_.args, **thread_.kwargs)
 
-            if not self.threads:
-                time.sleep(self.sleep)
+            time.sleep(5)
 
     def _connect(self):
         def _recv(ws, message):
@@ -150,12 +151,11 @@ class Filefairy(Messageable, Renderable):
         return True
 
     def _recv(self, message):
-        with self.lock:
-            date = datetime_now()
-            obj = json.loads(message)
+        date = datetime_now()
+        obj = json.loads(message)
 
-            self._on_message(obj=obj, date=date)
-            self._try_all('_on_message', obj=obj, date=date)
+        self._on_message(obj=obj, date=date)
+        self._try_all('_on_message', obj=obj, date=date)
 
     def _reload_internal(self, t, **kwargs):
         response = Response()
@@ -191,25 +191,25 @@ class Filefairy(Messageable, Renderable):
         for shadow in response.shadow:
             self._try(shadow.destination, '_shadow',
                       **dict(kwargs, shadow=shadow))
-        for thread_ in response.thread_:
-            self.threads.append((t, thread_))
+        with self.lock:
+            for thread_ in response.thread_:
+                self.threads.append((t, thread_))
 
     def _run(self):
-        with self.lock:
-            date = datetime_now()
-            self._try_all('_run', date=date)
+        date = datetime_now()
+        self._try_all('_run', date=date)
 
-            if self.day != date.day:
-                notify = Notify.FILEFAIRY_DAY
-                self._try_all('_notify', notify=notify, date=date)
-                self.day = date.day
+        if self.day != date.day:
+            notify = Notify.FILEFAIRY_DAY
+            self._try_all('_notify', notify=notify, date=date)
+            self.day = date.day
 
-            if self.data != self.original:
-                self._render(date=date)
-                if 'git' in self.registered.keys():
-                    notify = Notify.FILEFAIRY_DEPLOY
-                    self._try('git', '_notify', notify=notify, date=date)
-                self.original = copy.deepcopy(self.data)
+        if self.data != self.original:
+            self._render(date=date)
+            if 'git' in self.registered.keys():
+                notify = Notify.FILEFAIRY_DEPLOY
+                self._try('git', '_notify', notify=notify, date=date)
+            self.original = copy.deepcopy(self.data)
 
     def _setup(self, **kwargs):
         date = kwargs['date']
@@ -302,6 +302,7 @@ if __name__ == '__main__':
 
     handler = LoggingHandler(dashboard)
     _logger.addHandler(handler)
+    _logger.propagate = False
     _logger.setLevel(logging.DEBUG)
 
     filefairy = Filefairy(d=dashboard, e=e)

@@ -177,7 +177,7 @@ class Dashboard(Registrable):
             if items.items() <= warning.items():
                 date = warning['date']
                 diff = d - date
-                if diff.days == 0 and diff.seconds < 180:
+                if diff.days == 0 and diff.seconds < 300:
                     warning['count'] += 1
                     warning['date'] = d
                     if warning['count'] == 10:
