@@ -351,7 +351,7 @@ class StatslabTest(unittest.TestCase):
 
         box_link = _path + _game_box.format('2998')
         log_link = _path + _game_log.format('2998')
-        actual = parse_game_data(box_link, log_link)
+        actual = parse_game_data(_now, box_link, log_link)
         expected = _data('2998', '76-86', 4, 'Arizona Diamondbacks',
                          _now_encoded, '97-65', 2, 'Los Angeles Dodgers',
                          _players, _plays)
@@ -387,7 +387,7 @@ class StatslabTest(unittest.TestCase):
 
         box_link = _html + _game_box.format('2998')
         log_link = _html + _game_log.format('2998')
-        actual = parse_game_data(box_link, log_link)
+        actual = parse_game_data(_now, box_link, log_link)
         expected = _data('2998', '76-86', 4, 'Arizona Diamondbacks',
                          _now_encoded, '97-65', 2, 'Los Angeles Dodgers',
                          _players, _plays)
@@ -418,7 +418,7 @@ class StatslabTest(unittest.TestCase):
 
         box_link = _html + _game_box.format('2998')
         log_link = _html + _game_log.format('2998')
-        actual = parse_game_data(box_link, log_link)
+        actual = parse_game_data(_now, box_link, log_link)
         expected = {'ok': False, 'id': '2998', 'error': 'invalid_title'}
         self.assertEqual(actual, expected)
 
@@ -446,7 +446,7 @@ class StatslabTest(unittest.TestCase):
 
         box_link = _html + _game_box.format('2998')
         log_link = _html + _game_log.format('2998')
-        actual = parse_game_data(box_link, log_link)
+        actual = parse_game_data(_now, box_link, log_link)
         expected = {'ok': False, 'id': '2998', 'error': 'invalid_line'}
         self.assertEqual(actual, expected)
 

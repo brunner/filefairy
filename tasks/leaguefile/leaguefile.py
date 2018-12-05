@@ -138,7 +138,12 @@ class Leaguefile(Registrable, Reloadable):
 
     def _download_file(self, *args, **kwargs):
         now = encode_datetime(kwargs['date'])
-        self.data['download'] = {'end': now, 'start': now}
+        self.data['download'] = {
+            'end': now,
+            'now': now,
+            'size': '0',
+            'start': now
+        }
 
         output = self._call('download_file', (FILE_URL, ))
         if output.get('ok'):

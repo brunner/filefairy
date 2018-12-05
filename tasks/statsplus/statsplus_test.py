@@ -1305,6 +1305,7 @@ class StatsplusTest(Test):
         ]
         mock_data.assert_has_calls([
             mock.call(
+                _then,
                 id_.format(_html, _game_box, '.html'),
                 id_.format(_html, _game_log, '.html')) for id_ in ids
         ])
@@ -1398,6 +1399,7 @@ class StatsplusTest(Test):
         ]
         mock_data.assert_has_calls([
             mock.call(
+                _then,
                 id_.format(EXTRACT_DIR, _game_box, '.html'),
                 id_.format(EXTRACT_DIR, _game_log, '.txt')) for id_ in ids
         ])
@@ -1414,38 +1416,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_once_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-
-    @mock.patch.object(Statsplus, '_render')
-    @mock.patch('tasks.statsplus.statsplus.parse_player')
-    @mock.patch('tasks.statsplus.statsplus.open')
-    @mock.patch('tasks.statsplus.statsplus.parse_game_data')
-    def test_extract_all__with_invalid_date(self, mock_data, mock_open,
-                                            mock_player, mock_render):
-        mock_data.return_value = {
-            'away_runs': 4,
-            'away_team': 'T31',
-            'date': _now,
-            'home_runs': 2,
-            'home_team': 'T45',
-            'ok': True
-        }
-        scores = ['<{0}{1}2998.html|T31 4, TLA 2>']
-        unchecked = [[_then_encoded, '2998']]
-        read = _data(scores={_then_encoded: scores}, unchecked=unchecked)
-        statsplus = self.create_statsplus(read)
-        response = statsplus._extract_all(unchecked, date=_then)
-        self.assertEqual(response, Response())
-
-        mock_data.assert_called_once_with(
-            _game_box_sub('{0}{1}2998.html'), _game_log_sub('{0}{1}2998.html'))
-        mock_player.assert_not_called()
-        mock_open.assert_not_called()
-        mock_render.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
+        self.mock_log.assert_not_called() 
 
     def test_table__highlights(self):
         read = _data(highlights={_then_encoded: _highlights_encoded})

@@ -298,7 +298,7 @@ def _value(values, bases, pnum, bnum, pteam, bteam, players, during=False):
     return value
 
 
-def parse_game_data(box_link, log_link):
+def parse_game_data(expected_date, box_link, log_link):
     game_id_ = find('log_(\d+)\.', log_link)
     ret = {'ok': False, 'id': game_id_}
 
@@ -310,11 +310,13 @@ def parse_game_data(box_link, log_link):
     away_title, home_title, date = title[0]
     away_team = decoding_to_encoding(away_title)
     home_team = decoding_to_encoding(home_title)
+    if not away_team or not home_team:
+        return dict(ret, error='invalid_title')
 
     d = datetime.datetime.strptime(date, '%m/%d/%Y')
     date = datetime_datetime_pst(d.year, d.month, d.day)
-    if not away_team or not home_team:
-        return dict(ret, error='invalid_title')
+    if expected_date != date:
+        return dict(ret, error='invalid_date') 
 
     lines = re.findall(_game_box_line, box_content)
     if len(lines) != 2:

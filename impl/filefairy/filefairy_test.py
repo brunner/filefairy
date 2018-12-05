@@ -185,7 +185,6 @@ class FilefairyTest(Test):
         self.assertIsNone(filefairy.bg)
         self.assertIsNone(filefairy.day)
         self.assertTrue(filefairy.keep_running)
-        self.assertTrue(isinstance(filefairy.lock, type(threading.Lock())))
         self.assertEqual(filefairy.registered, {'dashboard': dashboard})
         self.assertEqual(filefairy.sleep, 60)
         self.assertFalse(len(filefairy.threads))

@@ -57,8 +57,7 @@ class Filefairy(Messageable, Renderable):
 
         self.bg = None
         self.day = None
-        self.keep_running = True
-        self.lock = threading.Lock()
+        self.keep_running = True 
         self.original = copy.deepcopy(self.data)
         self.registered = {'dashboard': d}
         self.sleep = 60
@@ -117,15 +116,13 @@ class Filefairy(Messageable, Renderable):
 
     def _background(self):
         while self.keep_running:
-            with self.lock:
-                original = list(self.threads)
-                self.threads = []
+            original = list(self.threads)
+            self.threads = []
 
-            print(original)
             for t, thread_ in original:
                 self._try(t, thread_.target, *thread_.args, **thread_.kwargs)
 
-            time.sleep(5)
+            time.sleep(self.sleep)
 
     def _connect(self):
         def _recv(ws, message):
@@ -191,9 +188,8 @@ class Filefairy(Messageable, Renderable):
         for shadow in response.shadow:
             self._try(shadow.destination, '_shadow',
                       **dict(kwargs, shadow=shadow))
-        with self.lock:
-            for thread_ in response.thread_:
-                self.threads.append((t, thread_))
+        for thread_ in response.thread_:
+            self.threads.append((t, thread_))
 
     def _run(self):
         date = datetime_now()

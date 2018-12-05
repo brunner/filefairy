@@ -76,16 +76,12 @@ def _completed(download=None, size=None, start=None, upload=None):
 
 
 def _state(end=None, now=None, size=None, start=None):
-    d = {}
-    if end:
-        d['end'] = encode_datetime(end)
-    if now:
-        d['now'] = encode_datetime(now)
-    if size:
-        d['size'] = size
-    if start:
-        d['start'] = encode_datetime(start)
-    return d
+    return {
+        'end': encode_datetime(end) if end else '',
+        'now': encode_datetime(now) if now else '',
+        'size': size if size else '',
+        'start': encode_datetime(start) if start else ''
+    }
 
 
 class LeaguefileTest(Test):
@@ -322,14 +318,15 @@ class LeaguefileTest(Test):
     def test_download_file__failed(self, mock_call, mock_extract):
         mock_call.return_value = {'ok': False, 'stdout': 'o', 'stderr': 'e'}
 
-        read = _data(date=DATE_10260604)
+        now = DATE_10260604
+        read = _data(date=now)
         leaguefile = self.create_leaguefile(read)
-        response = leaguefile._download_file(date=DATE_10260604)
+        response = leaguefile._download_file(date=now)
         thread_ = Thread(
-            target='_download_start', kwargs={'date': DATE_10260604})
+            target='_download_start', kwargs={'date': now})
         self.assertEqual(response, Response(thread_=[thread_]))
 
-        download = _state(end=DATE_10260604, start=DATE_10260604)
+        download = _state(end=now, now=now, size='0', start=now)
         extra = {'stdout': 'o', 'stderr': 'e'}
         write = _data(date=DATE_10260604, download=download)
         mock_call.assert_called_once_with('download_file', (FILE_URL, ))
@@ -345,15 +342,16 @@ class LeaguefileTest(Test):
         mock_call.return_value = {'ok': True}
         mock_extract.return_value = Response(notify=[Notify.BASE])
 
-        read = _data(date=DATE_10260604)
+        now = DATE_10260604
+        read = _data(date=now)
         leaguefile = self.create_leaguefile(read)
-        response = leaguefile._download_file(date=DATE_10260604)
+        response = leaguefile._download_file(date=now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        download = _state(end=DATE_10260604, start=DATE_10260604)
+        download = _state(end=now, now=now, size='0', start=now)
         write = _data(date=DATE_10260604, download=download)
         mock_call.assert_called_once_with('download_file', (FILE_URL, ))
-        mock_extract.assert_called_once_with(date=DATE_10260604)
+        mock_extract.assert_called_once_with(date=now)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')

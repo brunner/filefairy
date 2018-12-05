@@ -501,10 +501,9 @@ class Statsplus(Registrable):
                 else:
                     box_link = url.format(_html, _game_box)
                     log_link = url.format(_html, _game_log)
-                game_data_ = parse_game_data(box_link, log_link)
+                date = decode_datetime(encoded_date)
+                game_data_ = parse_game_data(date, box_link, log_link)
                 if game_data_['ok']:
-                    if encoded_date != game_data_['date']:
-                        return False
                     if count:
                         bruns1 = game_data_['away_runs']
                         bteam1 = game_data_['away_team']
