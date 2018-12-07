@@ -789,6 +789,16 @@
         "msg": "Reloaded statsplus.",
         "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
       }
+    ],
+    "2018-12-06T00:00:00-08:00": [
+      {
+        "date": "2018-12-06T17:45:03.824523-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 252, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/tasks/statsplus/statsplus.py\", line 442, in _extract_all\n    ret = self._extract(encoded_date, id_)\n  File \"/home/pi/filefairy/tasks/statsplus/statsplus.py\", line 505, in _extract\n    game_data_ = parse_game_data(date, box_link, log_link)\n  File \"/home/pi/filefairy/util/statslab/statslab.py\", line 318, in parse_game_data\n    if expected_date is not None and expected_dat != date:\nNameError: name 'expected_dat' is not defined",
+        "levelname": "ERROR",
+        "lineno": 255,
+        "msg": "Disabled statsplus.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      }
     ]
   }
 }
