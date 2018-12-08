@@ -145,7 +145,7 @@ def find_download(now):
     Returns:
         The size, timestamp, and state of the downloaded league file.
     """
-    output = check_output(['ls', '-l', DOWNLOAD_DIR], timeout=8)
+    output = check_output(['ls', '-l', DOWNLOAD_DIR], timeout=10)
     if output.get('ok'):
         stdout = re.sub(r'[ ]+', ' ', output.get('stdout', ''))
         ongoing = 'news' not in stdout
@@ -176,7 +176,7 @@ def find_upload(now):
         The size, timestamp, and state of the uploaded league file.
     """
     ls = 'ls -l /var/www/html/StatsLab/league_file'
-    output = check_output(['ssh', 'brunnerj@' + SERVER, ls], timeout=8)
+    output = check_output(['ssh', 'brunnerj@' + SERVER, ls], timeout=10)
     if output.get('ok'):
         stdout = re.sub(r'[ ]+', ' ', output.get('stdout', ''))
         ongoing = '.filepart' in stdout

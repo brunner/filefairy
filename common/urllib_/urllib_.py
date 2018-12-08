@@ -12,7 +12,7 @@ logger_ = logging.getLogger('filefairy')
 def urlopen(url, params={}):
     try:
         data = parse.urlencode(params).encode('utf-8')
-        with request.urlopen(url, data=data, timeout=8) as f:
+        with request.urlopen(url, data=data, timeout=10) as f:
             return f.read()
     except error.HTTPError as e:
         if e.code not in [403, 404]:

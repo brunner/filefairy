@@ -159,7 +159,7 @@ class Leaguefile(Registrable, Reloadable):
         return response
 
     def _download_start(self, **kwargs):
-        output = check_output(['ping', '-c 1', FILE_HOST], timeout=8)
+        output = check_output(['ping', '-c 1', FILE_HOST], timeout=10)
         if output.get('ok') and self.data['upload']:
             _logger.log(logging.INFO, 'Download started.')
             return self._download_file(**kwargs)

@@ -372,7 +372,7 @@ class LeaguefileTest(Test):
 
         extra = {'stdout': 'o', 'stderr': 'e'}
         mock_check.assert_called_once_with(
-            ['ping', '-c 1', FILE_HOST], timeout=8)
+            ['ping', '-c 1', FILE_HOST], timeout=10)
         self.mock_log.assert_called_once_with(
             logging.WARNING, 'Download failed.', extra=extra)
         self.assertNotCalled(mock_download, self.mock_chat, self.mock_open,
@@ -390,7 +390,7 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
         mock_check.assert_called_once_with(
-            ['ping', '-c 1', FILE_HOST], timeout=8)
+            ['ping', '-c 1', FILE_HOST], timeout=10)
         mock_download.assert_called_once_with(date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download started.')
