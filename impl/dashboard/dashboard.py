@@ -158,12 +158,11 @@ class Dashboard(Registrable):
 
         module = find('^Reloaded (\w+).$', record['msg'])
         if module:
+            disabled = 'Disabled {}.'.format(module)
             logs = self.data['logs']
             for date in logs:
                 for record in list(logs[date]):
-                    levelname = record['levelname']
-                    pathname = record['pathname']
-                    if module + '.py' in pathname and levelname == 'ERROR':
+                    if disabled == record['msg']:
                         logs[date].remove(record)
 
         self._render(date=d, log=False)

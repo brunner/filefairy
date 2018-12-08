@@ -319,11 +319,10 @@ class DashboardTest(Test):
     @mock.patch.object(Dashboard, '_render')
     def test_log__reloaded(self, mock_render):
         new = encode_datetime(DATE_10260000)
-        error = _record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
+        error = _record(PATH, 123, 'ERROR', 'Disabled foo.', '', DATE_10260602)
 
         data = _data({new: [error]})
-        record = _record(PATH, 456, 'INFO', 'Reloaded module.', '',
-                         DATE_10260602)
+        record = _record(PATH, 456, 'INFO', 'Reloaded foo.', '', DATE_10260602)
         dashboard = self.create_dashboard(data)
         dashboard._log(record)
 
