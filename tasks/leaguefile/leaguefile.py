@@ -336,13 +336,16 @@ class Leaguefile(Registrable, Reloadable):
             table=table(
                 clazz='table-sm',
                 bcols=[col(clazz='w-55p'), col()],
-                body=[[
-                    cell(content='Time: '),
-                    cell(content=timedelta(decoded_start, decoded_end))
-                ], [
-                    cell(content='Size: '),
-                    cell(content='{:,}'.format(int(obj['size'])))
-                ]]),
+                body=[
+                    [
+                        cell(content='Time: '),
+                        cell(content=timedelta(decoded_start, decoded_end))
+                    ],
+                    [
+                        cell(content='Size: '),
+                        cell(content='{:,}'.format(int(obj['size'])))
+                    ],
+                ]),
             ts=ts,
             success=success,
             danger=danger)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-\
 
-
 _jerseys = {
     'angels': '9780ce2762db67b17831a0c908aaf725/raw/1018f1ba85a160d74d5a924749a6cd28cae44a40',
     'astros': '2d3444f09ba1f0c9a06b6e9bdd27eda7/raw/b19253b93017682124fe778e0a8624c12bcc6332',

@@ -322,8 +322,7 @@ class LeaguefileTest(Test):
         read = _data(date=now)
         leaguefile = self.create_leaguefile(read)
         response = leaguefile._download_file(date=now)
-        thread_ = Thread(
-            target='_download_start', kwargs={'date': now})
+        thread_ = Thread(target='_download_start', kwargs={'date': now})
         self.assertEqual(response, Response(thread_=[thread_]))
 
         download = _state(end=now, now=now, size='0', start=now)
@@ -371,8 +370,8 @@ class LeaguefileTest(Test):
         self.assertEqual(response, Response(thread_=[thread_]))
 
         extra = {'stdout': 'o', 'stderr': 'e'}
-        mock_check.assert_called_once_with(
-            ['ping', '-c 1', FILE_HOST], timeout=10)
+        mock_check.assert_called_once_with(['ping', '-c 1', FILE_HOST],
+                                           timeout=10)
         self.mock_log.assert_called_once_with(
             logging.WARNING, 'Download failed.', extra=extra)
         self.assertNotCalled(mock_download, self.mock_chat, self.mock_open,
@@ -389,8 +388,8 @@ class LeaguefileTest(Test):
         response = leaguefile._download_start(date=DATE_10260604)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        mock_check.assert_called_once_with(
-            ['ping', '-c 1', FILE_HOST], timeout=10)
+        mock_check.assert_called_once_with(['ping', '-c 1', FILE_HOST],
+                                           timeout=10)
         mock_download.assert_called_once_with(date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download started.')
@@ -405,8 +404,8 @@ class LeaguefileTest(Test):
         read = _data(end=DATE_08280000)
         leaguefile = self.create_leaguefile(read)
         response = leaguefile._extract_file(date=DATE_10260604)
-        self.assertEqual(
-            response, Response(notify=[Notify.LEAGUEFILE_DOWNLOAD]))
+        self.assertEqual(response,
+                         Response(notify=[Notify.LEAGUEFILE_DOWNLOAD]))
 
         write = _data(end=DATE_08310000, start=DATE_08280000)
         mock_call.assert_called_once_with('extract_file', (DATE_08280000, ))

@@ -10,6 +10,7 @@ _logger = logging.getLogger('filefairy')
 
 class Encoder(json.JSONEncoder):
     """Encoder guarding against accidental failures if storing complex data."""
+
     def default(self, obj):
         try:
             return json.JSONEncoder.default(self, obj)

@@ -53,4 +53,3 @@ class Reloadable():
 
             for method in services[service]:
                 self.attrs[method] = getattr(module, method)
-

@@ -347,214 +347,299 @@ _scores = [
     table(
         clazz='border mt-3',
         head=[cell(content='Sunday, October 9th, 2022')],
-        body=[[
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2998.html">Arizona Diamondbacks 4, Los Angeles Dodgers 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3003.html">Atlanta Braves 2, Los Angeles Angels 1</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2996.html">Cincinnati Reds 7, Milwaukee Brewers 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3002.html">Detroit Tigers 11, Chicago White Sox 4</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2993.html">Houston Astros 7, Seattle Mariners 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2991.html">Kansas City Royals 8, Cleveland Indians 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_14721.html">Miami Marlins 6, Chicago Cubs 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3001.html">New York Mets 1, San Francisco Giants 0</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_3000.html">New York Yankees 5, Baltimore Orioles 3</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2992.html">Philadelphia Phillies 3, Washington Nationals 1</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2999.html">San Diego Padres 8, Colorado Rockies 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2990.html">St. Louis Cardinals 5, Pittsburgh Pirates 4</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2997.html">Tampa Bay Rays 12, Boston Red Sox 9</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2994.html">Texas Rangers 5, Oakland Athletics 3</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2995.html">Toronto Blue Jays 8, Minnesota Twins 2</a>'
-            )
-        ]]),
+        body=[
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2998.html">Arizona Diamondbacks 4, Los Angeles D'
+                             'odgers 2</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '3003.html">Atlanta Braves 2, Los Angeles Angels '
+                             '1</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2996.html">Cincinnati Reds 7, Milwaukee Brewers '
+                             '2</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '3002.html">Detroit Tigers 11, Chicago White Sox '
+                             '4</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2993.html">Houston Astros 7, Seattle Mariners 2<'
+                             '/a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2991.html">Kansas City Royals 8, Cleveland India'
+                             'ns 2</a>'))
+            ],
+            [
+                cell(
+                    content=(
+                        '<a href="https://orangeandblueleaguebaseball.com'
+                        '/StatsLab/reports/news/html/box_scores/game_box_'
+                        '14721.html">Miami Marlins 6, Chicago Cubs 2</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '3001.html">New York Mets 1, San Francisco Giants'
+                             ' 0</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '3000.html">New York Yankees 5, Baltimore Orioles'
+                             ' 3</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2992.html">Philadelphia Phillies 3, Washington N'
+                             'ationals 1</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2999.html">San Diego Padres 8, Colorado Rockies '
+                             '2</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2990.html">St. Louis Cardinals 5, Pittsburgh Pir'
+                             'ates 4</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2997.html">Tampa Bay Rays 12, Boston Red Sox 9</'
+                             'a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2994.html">Texas Rangers 5, Oakland Athletics 3<'
+                             '/a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2995.html">Toronto Blue Jays 8, Minnesota Twins '
+                             '2</a>'))
+            ],
+        ]),
     table(
         clazz='border mt-3',
         head=[cell(content='Saturday, October 8th, 2022')],
-        body=[[
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2979.html">Atlanta Braves 10, Los Angeles Angels 5</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2984.html">Boston Red Sox 10, Tampa Bay Rays 5</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2975.html">Chicago Cubs 10, Miami Marlins 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2977.html">Chicago White Sox 5, Detroit Tigers 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2983.html">Cincinnati Reds 8, Milwaukee Brewers 0</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2989.html">Cleveland Indians 3, Kansas City Royals 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2976.html">Houston Astors 6, Seattle Mariners 3</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2978.html">Los Angeles Dodgers 5, Arizona Diamondbacks 1</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2981.html">Minnesota Twins 10, Toronto Blue Jays 7</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2987.html">New York Yankees 5, Baltimore Orioles 4</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2982.html">Philadelphia Phillies 3, Washington Nationals 2</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2986.html">San Diego Padres 6, Colorado Rockies 5</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2985.html">San Francisco Giants 5, New York Mets 4</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2988.html">St. Louis Cardinals 4, Pittsburgh Pirates 1</a>'
-            )
-        ], [
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/box_scores/game_box_2980.html">Texas Rangers 9, Oakland Athletics 1</a>'
-            )
-        ]])
+        body=[
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2979.html">Atlanta Braves 10, Los Angeles Angels'
+                             ' 5</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2984.html">Boston Red Sox 10, Tampa Bay Rays 5</'
+                             'a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '297.html">Chicago Cubs 10, Miami Marlins 2</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2977.html">Chicago White Sox 5, Detroit Tigers 2'
+                             '</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2983.html">Cincinnati Reds 8, Milwaukee Brewers '
+                             '0</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2989.html">Cleveland Indians 3, Kansas City Roya'
+                             'ls 2</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2976.html">Houston Astors 6, Seattle Mariners 3<'
+                             '/a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2978.html">Los Angeles Dodgers 5, Arizona Diamon'
+                             'dbacks 1</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2981.html">Minnesota Twins 10, Toronto Blue Jays'
+                             ' 7</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2987.html">New York Yankees 5, Baltimore Orioles'
+                             ' 4</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2982.html">Philadelphia Phillies 3, Washington N'
+                             'ationals 2</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2986.html">San Diego Padres 6, Colorado Rockies '
+                             '5</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2985.html">San Francisco Giants 5, New York Mets'
+                             ' 4</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2988.html">St. Louis Cardinals 4, Pittsburgh Pir'
+                             'ates 1</a>'))
+            ],
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/box_scores/game_box_'
+                             '2980.html">Texas Rangers 9, Oakland Athletics 1<'
+                             '/a>'))
+            ],
+        ])
 ]
 
 _injuries = [
     table(
         clazz='border mt-3',
         head=[cell(content='Sunday, October 9th, 2022')],
-        body=[[
-            cell(
-                content=
-                'RF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_36649.html">Elier Hernandez</a> was injured while running the bases (Cleveland Indians @ Kansas City Royals)'
-            )
-        ], [
-            cell(
-                content=
-                'RF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_34118.html">Gregory Polanco</a> was injured on a defensive play (Milwaukee Brewers @ Cincinnati Reds)'
-            )
-        ], [
-            cell(
-                content=
-                'SS <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_30016.html">Austin Bodrato</a> was injured while running the bases (Milwaukee Brewers @ Cincinnati Reds)'
-            )
-        ]]),
+        body=[
+            [
+                cell(
+                    content=('RF <a href="https://orangeandblueleaguebaseball.'
+                             'com/StatsLab/reports/news/html/players/player_36'
+                             '649.html">Elier Hernandez</a> was injured while '
+                             'running the bases (Cleveland Indians @ Kansas Ci'
+                             'ty Royals)'))
+            ],
+            [
+                cell(
+                    content=('RF <a href="https://orangeandblueleaguebaseball.'
+                             'com/StatsLab/reports/news/html/players/player_34'
+                             '118.html">Gregory Polanco</a> was injured on a d'
+                             'efensive play (Milwaukee Brewers @ Cincinnati Re'
+                             'ds)'))
+            ],
+            [
+                cell(
+                    content=('SS <a href="https://orangeandblueleaguebaseball.'
+                             'com/StatsLab/reports/news/html/players/player_30'
+                             '016.html">Austin Bodrato</a> was injured while r'
+                             'unning the bases (Milwaukee Brewers @ Cincinnati'
+                             ' Reds)'))
+            ],
+        ]),
     table(
         clazz='border mt-3',
         head=[cell(content='Saturday, October 8th, 2022')],
-        body=[[
-            cell(
-                content=
-                '3B <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_33777.html">Kaleb Cowart</a> was injured in a collision at a base (Cleveland Indians @ Kansas City Royals)'
-            )
-        ], [
-            cell(
-                content=
-                'LF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_29996.html">Keon Broxton</a> was injured while throwing the ball (Houston Astros @ Seattle Mariners)'
-            )
-        ], [
-            cell(
-                content=
-                'LF <a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_26747.html">Desmond Lindsay</a> was injured on a defensive play (New York Yankees @ Baltimore Orioles)'
-            )
-        ]])
+        body=[
+            [
+                cell(
+                    content=('3B <a href="https://orangeandblueleaguebaseball.'
+                             'com/StatsLab/reports/news/html/players/player_33'
+                             '777.html">Kaleb Cowart</a> was injured in a coll'
+                             'ision at a base (Cleveland Indians @ Kansas City'
+                             ' Royals)'))
+            ],
+            [
+                cell(
+                    content=('LF <a href="https://orangeandblueleaguebaseball.'
+                             'com/StatsLab/reports/news/html/players/player_29'
+                             '996.html">Keon Broxton</a> was injured while thr'
+                             'owing the ball (Houston Astros @ Seattle Mariner'
+                             's)'))
+            ],
+            [
+                cell(
+                    content=('LF <a href="https://orangeandblueleaguebaseball.'
+                             'com/StatsLab/reports/news/html/players/player_26'
+                             '747.html">Desmond Lindsay</a> was injured on a d'
+                             'efensive play (New York Yankees @ Baltimore Orio'
+                             'les)'))
+            ],
+        ])
 ]
 
 _highlights = [
     table(
         clazz='border mt-3',
         head=[cell(content='Saturday, October 8th, 2022')],
-        body=[[
-            cell(
-                content=
-                '<a href="https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/players/player_38868.html">Connor Harrell</a> ties the BOS regular season game record for runs with 4 (Boston Red Sox @ Tampa Bay Rays)'
-            )
-        ]])
+        body=[
+            [
+                cell(
+                    content=('<a href="https://orangeandblueleaguebaseball.com'
+                             '/StatsLab/reports/news/html/players/player_38868'
+                             '.html">Connor Harrell</a> ties the BOS regular s'
+                             'eason game record for runs with 4 (Boston Red So'
+                             'x @ Tampa Bay Rays)'))
+            ],
+        ])
 ]
 
 _fcols = [

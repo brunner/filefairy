@@ -574,15 +574,18 @@ class Gameday(Registrable):
         links_tables.append(
             table(
                 clazz='table-fixed border',
-                body=[[
-                    cell(
-                        content=anchor(_statslab_link + game_box_link, sdate +
-                                       ' StatsLab Game Box'))
-                ], [
-                    cell(
-                        content=anchor(_statslab_link + log_link, sdate +
-                                       ' StatsLab Log'))
-                ]]))
+                body=[
+                    [
+                        cell(
+                            content=anchor(_statslab_link + game_box_link,
+                                           sdate + ' StatsLab Game Box'))
+                    ],
+                    [
+                        cell(
+                            content=anchor(_statslab_link + log_link, sdate +
+                                           ' StatsLab Log'))
+                    ],
+                ]))
         links_tables.append(self._schedule_head(away_decoding))
         links_tables.append(
             self._schedule_body(away_team, game_id_, schedule_data))

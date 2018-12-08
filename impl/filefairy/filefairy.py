@@ -57,7 +57,7 @@ class Filefairy(Messageable, Renderable):
 
         self.bg = None
         self.day = None
-        self.keep_running = True 
+        self.keep_running = True
         self.original = copy.deepcopy(self.data)
         self.registered = {'dashboard': d}
         self.sleep = 60

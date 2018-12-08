@@ -160,12 +160,11 @@ def reactions_get(channel, timestamp):
     Returns:
         The endpoint response.
     """
-    return _call(
-        'reactions.get', {
-            'token': _filefairy,
-            'channel': channel,
-            'timestamp': timestamp,
-        })
+    return _call('reactions.get', {
+        'token': _filefairy,
+        'channel': channel,
+        'timestamp': timestamp,
+    })
 
 
 def reactions_remove(name, channel, timestamp):

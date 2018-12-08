@@ -576,8 +576,8 @@ class SnacksTest(Test):
     def test_setup(self, mock_render):
         snacks = self.create_snacks(_data(members=_members_old))
         response = snacks._setup_internal(date=_then)
-        self.assertEqual(
-            response, Response(thread_=[Thread(target='_load_internal')]))
+        self.assertEqual(response,
+                         Response(thread_=[Thread(target='_load_internal')]))
 
         mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
@@ -615,28 +615,32 @@ class SnacksTest(Test):
         mock_users.return_value = {
             'ok':
             True,
-            'members': [{
-                'deleted': False,
-                'id': 'U1234',
-                'name': 'foo',
-                'profile': {
-                    'display_name': 'foo1'
-                }
-            }, {
-                'deleted': True,
-                'id': 'U5678',
-                'name': 'bar',
-                'profile': {
-                    'display_name': 'bar1'
-                }
-            }, {
-                'deleted': False,
-                'id': 'U9012',
-                'name': 'baz',
-                'profile': {
-                    'display_name': ''
-                }
-            }]
+            'members': [
+                {
+                    'deleted': False,
+                    'id': 'U1234',
+                    'name': 'foo',
+                    'profile': {
+                        'display_name': 'foo1'
+                    }
+                },
+                {
+                    'deleted': True,
+                    'id': 'U5678',
+                    'name': 'bar',
+                    'profile': {
+                        'display_name': 'bar1'
+                    }
+                },
+                {
+                    'deleted': False,
+                    'id': 'U9012',
+                    'name': 'baz',
+                    'profile': {
+                        'display_name': ''
+                    }
+                },
+            ]
         }
 
         actual = Snacks._names()
@@ -773,15 +777,18 @@ class SnacksTest(Test):
                 cell(content='Name'),
                 cell(content='Count')
             ],
-            body=[[
-                cell(content='\U0001F34E'),
-                cell(content='apple'),
-                cell(content='6')
-            ], [
-                cell(content='\U0001f956'),
-                cell(content='baguette bread'),
-                cell(content='3')
-            ]])
+            body=[
+                [
+                    cell(content='\U0001F34E'),
+                    cell(content='apple'),
+                    cell(content='6')
+                ],
+                [
+                    cell(content='\U0001f956'),
+                    cell(content='baguette bread'),
+                    cell(content='3')
+                ],
+            ])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
@@ -791,15 +798,18 @@ class SnacksTest(Test):
                 cell(content='Name'),
                 cell(content='Last activity')
             ],
-            body=[[
-                cell(content='\U0001F34E'),
-                cell(content='apple'),
-                cell(content='00:00:00 PDT (1985-10-27)')
-            ], [
-                cell(content='\U0001f956'),
-                cell(content='baguette bread'),
-                cell(content='00:02:30 PDT (1985-10-26)')
-            ]])
+            body=[
+                [
+                    cell(content='\U0001F34E'),
+                    cell(content='apple'),
+                    cell(content='00:00:00 PDT (1985-10-27)')
+                ],
+                [
+                    cell(content='\U0001f956'),
+                    cell(content='baguette bread'),
+                    cell(content='00:02:30 PDT (1985-10-26)')
+                ],
+            ])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -844,19 +854,23 @@ class SnacksTest(Test):
                 cell(content='Name'),
                 cell(content='Count')
             ],
-            body=[[
-                cell(content='\U0001F34E'),
-                cell(content='apple'),
-                cell(content='6')
-            ], [
-                cell(content='\U0001f956'),
-                cell(content='baguette bread'),
-                cell(content='2')
-            ], [
-                cell(content='\u2B50'),
-                cell(content='star'),
-                cell(content='1')
-            ]])
+            body=[
+                [
+                    cell(content='\U0001F34E'),
+                    cell(content='apple'),
+                    cell(content='6')
+                ],
+                [
+                    cell(content='\U0001f956'),
+                    cell(content='baguette bread'),
+                    cell(content='2')
+                ],
+                [
+                    cell(content='\u2B50'),
+                    cell(content='star'),
+                    cell(content='1')
+                ],
+            ])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
@@ -866,19 +880,23 @@ class SnacksTest(Test):
                 cell(content='Name'),
                 cell(content='Last activity')
             ],
-            body=[[
-                cell(content='\U0001F34E'),
-                cell(content='apple'),
-                cell(content='00:00:00 PDT (1985-10-27)')
-            ], [
-                cell(content='\U0001f956'),
-                cell(content='baguette bread'),
-                cell(content='00:02:30 PDT (1985-10-26)')
-            ], [
-                cell(content='\u2B50'),
-                cell(content='star'),
-                cell(content='00:02:30 PDT (1985-10-26)')
-            ]])
+            body=[
+                [
+                    cell(content='\U0001F34E'),
+                    cell(content='apple'),
+                    cell(content='00:00:00 PDT (1985-10-27)')
+                ],
+                [
+                    cell(content='\U0001f956'),
+                    cell(content='baguette bread'),
+                    cell(content='00:02:30 PDT (1985-10-26)')
+                ],
+                [
+                    cell(content='\u2B50'),
+                    cell(content='star'),
+                    cell(content='00:02:30 PDT (1985-10-26)')
+                ],
+            ])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,
@@ -926,19 +944,23 @@ class SnacksTest(Test):
                 cell(content='Name'),
                 cell(content='Count')
             ],
-            body=[[
-                cell(content='\U0001F34E'),
-                cell(content='apple'),
-                cell(content='1')
-            ], [
-                cell(content='\u2B50'),
-                cell(content='star'),
-                cell(content='1')
-            ], [
-                cell(content='\U0001F3C6'),
-                cell(content='trophy'),
-                cell(content='1')
-            ]])
+            body=[
+                [
+                    cell(content='\U0001F34E'),
+                    cell(content='apple'),
+                    cell(content='1')
+                ],
+                [
+                    cell(content='\u2B50'),
+                    cell(content='star'),
+                    cell(content='1')
+                ],
+                [
+                    cell(content='\U0001F3C6'),
+                    cell(content='trophy'),
+                    cell(content='1')
+                ],
+            ])
         recent = table(
             clazz='border mt-3',
             hcols=_cols,
@@ -948,19 +970,23 @@ class SnacksTest(Test):
                 cell(content='Name'),
                 cell(content='Last activity')
             ],
-            body=[[
-                cell(content='\U0001F34E'),
-                cell(content='apple'),
-                cell(content='00:00:00 PDT (1985-10-27)')
-            ], [
-                cell(content='\u2B50'),
-                cell(content='star'),
-                cell(content='00:00:00 PDT (1985-10-27)')
-            ], [
-                cell(content='\U0001F3C6'),
-                cell(content='trophy'),
-                cell(content='00:00:00 PDT (1985-10-27)')
-            ]])
+            body=[
+                [
+                    cell(content='\U0001F34E'),
+                    cell(content='apple'),
+                    cell(content='00:00:00 PDT (1985-10-27)')
+                ],
+                [
+                    cell(content='\u2B50'),
+                    cell(content='star'),
+                    cell(content='00:00:00 PDT (1985-10-27)')
+                ],
+                [
+                    cell(content='\U0001F3C6'),
+                    cell(content='trophy'),
+                    cell(content='00:00:00 PDT (1985-10-27)')
+                ],
+            ])
         expected = {
             'breadcrumbs': breadcrumbs,
             'statistics': statistics,

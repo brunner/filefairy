@@ -268,118 +268,128 @@ _game = {
     'tabs': {
         'style':
         'tabs',
-        'tabs': [{
-            'name':
-            'log',
-            'title':
-            'Game Log',
-            'tables': [
-                table(
-                    clazz='border mt-3',
-                    hcols=[col(clazz='position-relative', colspan='2')],
-                    bcols=[
-                        col(clazz='position-relative'),
-                        col(clazz='text-center text-secondary w-55p')
-                    ],
-                    fcols=[col(colspan='2')],
-                    head=[
-                        cell(content=logo_absolute('31', 'Top 1st', 'left'))
-                    ],
-                    body=_log_body,
-                    foot=[
-                        cell(
-                            content=('0 run(s), 2 hit(s), 0 error(s), 2 left '
-                                     'on base; Arizona Diamondbacks 0 - '
-                                     'Los Angeles Dodgers 0'))
-                    ])
-            ]
-        }, {
-            'name':
-            'links',
-            'title':
-            'Links',
-            'tables': [
-                table(
-                    clazz='table-fixed border border-bottom-0 mt-3',
-                    head=[cell(content='Gameday Sources')]),
-                table(
-                    clazz='table-fixed border',
-                    body=[
-                        [
-                            cell(
-                                content=anchor(_statslab_link + _game_box_link,
-                                               '10/26/1985 StatsLab Game Box'))
+        'tabs': [
+            {
+                'name':
+                'log',
+                'title':
+                'Game Log',
+                'tables': [
+                    table(
+                        clazz='border mt-3',
+                        hcols=[col(clazz='position-relative', colspan='2')],
+                        bcols=[
+                            col(clazz='position-relative'),
+                            col(clazz='text-center text-secondary w-55p')
                         ],
-                        [
+                        fcols=[col(colspan='2')],
+                        head=[
                             cell(
-                                content=anchor(_statslab_link + _log_link,
-                                               '10/26/1985 StatsLab Log'))
+                                content=logo_absolute('31', 'Top 1st', 'left'))
                         ],
-                    ]),
-                table(
-                    clazz='table-fixed border border-bottom-0 mt-3',
-                    head=[cell(content='Arizona Diamondbacks Schedule')]),
-                table(
-                    clazz='table-fixed border',
-                    body=[
-                        [
+                        body=_log_body,
+                        foot=[
+                            cell(
+                                content=(
+                                    '0 run(s), 2 hit(s), 0 error(s), 2 left '
+                                    'on base; Arizona Diamondbacks 0 - '
+                                    'Los Angeles Dodgers 0'))
+                        ])
+                ]
+            },
+            {
+                'name':
+                'links',
+                'title':
+                'Links',
+                'tables': [
+                    table(
+                        clazz='table-fixed border border-bottom-0 mt-3',
+                        head=[cell(content='Gameday Sources')]),
+                    table(
+                        clazz='table-fixed border',
+                        body=[
+                            [
+                                cell(
+                                    content=anchor(
+                                        _statslab_link + _game_box_link,
+                                        '10/26/1985 StatsLab Game Box'))
+                            ],
+                            [
+                                cell(
+                                    content=anchor(_statslab_link + _log_link,
+                                                   '10/26/1985 StatsLab Log'))
+                            ],
+                        ]),
+                    table(
+                        clazz='table-fixed border border-bottom-0 mt-3',
+                        head=[cell(content='Arizona Diamondbacks Schedule')]),
+                    table(
+                        clazz='table-fixed border',
+                        body=[
+                            [
+                                cell(
+                                    content=secondary(
+                                        '10/26/1985 @ Los Angeles Dodgers'))
+                            ],
+                            [
+                                cell(
+                                    content=anchor(
+                                        '/gameday/2999/',
+                                        '10/27/1985 @ Los Angeles Dodgers'))
+                            ],
+                        ]),
+                    table(
+                        clazz='table-fixed border border-bottom-0 mt-3',
+                        head=[cell(content='Los Angeles Dodgers Schedule')]),
+                    table(
+                        clazz='table-fixed border',
+                        body=[[
                             cell(
                                 content=secondary(
-                                    '10/26/1985 @ Los Angeles Dodgers'))
+                                    '10/26/1985 v Arizona Diamondbacks'))
                         ],
-                        [
-                            cell(
-                                content=anchor(
-                                    '/gameday/2999/',
-                                    '10/27/1985 @ Los Angeles Dodgers'))
-                        ],
-                    ]),
-                table(
-                    clazz='table-fixed border border-bottom-0 mt-3',
-                    head=[cell(content='Los Angeles Dodgers Schedule')]),
-                table(
-                    clazz='table-fixed border',
-                    body=[[
-                        cell(
-                            content=secondary(
-                                '10/26/1985 v Arizona Diamondbacks'))
-                    ], [
-                        cell(
-                            content=anchor(
-                                '/gameday/2999/',
-                                '10/27/1985 v Arizona Diamondbacks'))
-                    ]]),
-            ]
-        }, {
-            'name': 'plays',
-            'title': 'Plays',
-            'tabs': {
-                'style':
-                'pills',
-                'tabs': [{
-                    'name':
-                    'plays-1',
-                    'title':
-                    '1',
-                    'tables': [
-                        table(
-                            clazz='border mt-3',
-                            hcols=[col(clazz='position-relative')],
-                            head=[
-                                cell(
-                                    content=logo_absolute(
-                                        '31', 'Top 1st', 'left'))
-                            ],
-                            body=_plays_body,
-                            foot=[
-                                cell(content='0 run(s), 2 hit(s), 0 error(s), '
-                                     '2 left on base; Arizona Diamondbacks 0 '
-                                     '- Los Angeles Dodgers 0')
-                            ])
-                    ]
-                }]
+                              [
+                                  cell(
+                                      content=anchor(
+                                          '/gameday/2999/',
+                                          '10/27/1985 v Arizona Diamondbacks'))
+                              ]]),
+                ]
+            },
+            {
+                'name': 'plays',
+                'title': 'Plays',
+                'tabs': {
+                    'style':
+                    'pills',
+                    'tabs': [{
+                        'name':
+                        'plays-1',
+                        'title':
+                        '1',
+                        'tables': [
+                            table(
+                                clazz='border mt-3',
+                                hcols=[col(clazz='position-relative')],
+                                head=[
+                                    cell(
+                                        content=logo_absolute(
+                                            '31', 'Top 1st', 'left'))
+                                ],
+                                body=_plays_body,
+                                foot=[
+                                    cell(
+                                        content=
+                                        '0 run(s), 2 hit(s), 0 error(s), '
+                                        '2 left on base; Arizona Diamondbacks 0 '
+                                        '- Los Angeles Dodgers 0')
+                                ])
+                        ]
+                    }]
+                }
             }
-        }]
+        ]
     }
 }
 _game_data = {
@@ -401,119 +411,132 @@ _game_data = {
         'P101',
         'footer':
         '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
-        'play': [{
-            'type': 'matchup',
-            'pitcher': {
-                'id': 'P101',
-                'pos': 'SP',
-                'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
+        'play': [
+            {
+                'type': 'matchup',
+                'pitcher': {
+                    'id': 'P101',
+                    'pos': 'SP',
+                    'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
+                },
+                'batter': {
+                    'id': 'P102',
+                    'pos': 'SS',
+                    'stats': '0-0'
+                }
             },
-            'batter': {
-                'id': 'P102',
-                'pos': 'SS',
-                'stats': '0-0'
-            }
-        }, {
-            'type': 'event',
-            'batter': 'P102',
-            'outs': 1,
-            'runs': 0,
-            'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-            'value': 'P102 flies out to left fielder  (zone 7LSF).',
-        }, {
-            'type': 'matchup',
-            'pitcher': {
-                'id': 'P101',
-                'pos': 'SP',
-                'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
+            {
+                'type': 'event',
+                'batter': 'P102',
+                'outs': 1,
+                'runs': 0,
+                'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
+                'value': 'P102 flies out to left fielder  (zone 7LSF).',
             },
-            'batter': {
-                'id': 'P103',
-                'pos': 'LF',
-                'stats': '0-0'
-            }
-        }, {
-            'type':
-            'event',
-            'batter':
-            'P103',
-            'outs':
-            0,
-            'runs':
-            0,
-            'sequence': ['1 0 0 In play, no out'],
-            'value':
-            'P103 singles on a ground ball to left fielder  (zone 56).'
-        }, {
-            'type': 'matchup',
-            'pitcher': {
-                'id': 'P101',
-                'pos': 'SP',
-                'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
+            {
+                'type': 'matchup',
+                'pitcher': {
+                    'id': 'P101',
+                    'pos': 'SP',
+                    'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
+                },
+                'batter': {
+                    'id': 'P103',
+                    'pos': 'LF',
+                    'stats': '0-0'
+                }
             },
-            'batter': {
-                'id': 'P104',
-                'pos': '1B',
-                'stats': '0-0'
-            }
-        }, {
-            'type':
-            'event',
-            'batter':
-            'P104',
-            'outs':
-            0,
-            'runs':
-            0,
-            'sequence': ['1 0 0 In play, no out'],
-            'value':
-            'P104 singles on a ground ball to shortstop  (infield hit) '
-            '(zone 6MS). P103 to second.'
-        }, {
-            'type': 'matchup',
-            'pitcher': {
-                'id': 'P101',
-                'pos': 'SP',
-                'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
+            {
+                'type':
+                'event',
+                'batter':
+                'P103',
+                'outs':
+                0,
+                'runs':
+                0,
+                'sequence': ['1 0 0 In play, no out'],
+                'value':
+                'P103 singles on a ground ball to left fielder  (zone 56).'
             },
-            'batter': {
-                'id': 'P105',
-                'pos': 'RF',
-                'stats': '0-0'
-            }
-        }, {
-            'type': 'event',
-            'batter': 'P105',
-            'outs': 1,
-            'runs': 0,
-            'sequence': ['1 0 0 In play, out(s)'],
-            'value': 'P105 flies out to right fielder  (zone 9).'
-        }, {
-            'type': 'matchup',
-            'pitcher': {
-                'id': 'P101',
-                'pos': 'SP',
-                'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
+            {
+                'type': 'matchup',
+                'pitcher': {
+                    'id': 'P101',
+                    'pos': 'SP',
+                    'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
+                },
+                'batter': {
+                    'id': 'P104',
+                    'pos': '1B',
+                    'stats': '0-0'
+                }
             },
-            'batter': {
-                'id': 'P106',
-                'pos': 'C',
-                'stats': '0-0'
+            {
+                'type':
+                'event',
+                'batter':
+                'P104',
+                'outs':
+                0,
+                'runs':
+                0,
+                'sequence': ['1 0 0 In play, no out'],
+                'value':
+                'P104 singles on a ground ball to shortstop  (infield hit) '
+                '(zone 6MS). P103 to second.'
+            },
+            {
+                'type': 'matchup',
+                'pitcher': {
+                    'id': 'P101',
+                    'pos': 'SP',
+                    'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
+                },
+                'batter': {
+                    'id': 'P105',
+                    'pos': 'RF',
+                    'stats': '0-0'
+                }
+            },
+            {
+                'type': 'event',
+                'batter': 'P105',
+                'outs': 1,
+                'runs': 0,
+                'sequence': ['1 0 0 In play, out(s)'],
+                'value': 'P105 flies out to right fielder  (zone 9).'
+            },
+            {
+                'type': 'matchup',
+                'pitcher': {
+                    'id': 'P101',
+                    'pos': 'SP',
+                    'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
+                },
+                'batter': {
+                    'id': 'P106',
+                    'pos': 'C',
+                    'stats': '0-0'
+                }
+            },
+            {
+                'type':
+                'event',
+                'batter':
+                'P106',
+                'outs':
+                1,
+                'runs':
+                0,
+                'sequence': [
+                    '1 0 1 Swinging Strike', '2 0 2 Foul',
+                    '3 0 3 Swinging Strike'
+                ],
+                'value':
+                'P106 strikes out swinging.'
             }
-        }, {
-            'type':
-            'event',
-            'batter':
-            'P106',
-            'outs':
-            1,
-            'runs':
-            0,
-            'sequence':
-            ['1 0 1 Swinging Strike', '2 0 2 Foul', '3 0 3 Swinging Strike'],
-            'value':
-            'P106 strikes out swinging.'
-        }]
+        ]
     }]]
 }
 

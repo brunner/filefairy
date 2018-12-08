@@ -170,8 +170,8 @@ class LeaguefileTest(unittest.TestCase):
         expected = ('345678901', DATE_10260604, False)
         self.assertEqual(actual, expected)
 
-        mock_check.assert_called_once_with(
-            ['ls', '-l', DOWNLOAD_DIR], timeout=10)
+        mock_check.assert_called_once_with(['ls', '-l', DOWNLOAD_DIR],
+                                           timeout=10)
 
     @mock.patch('services.leaguefile.leaguefile.check_output')
     def test_find_download__ongoing(self, mock_check):
@@ -184,8 +184,8 @@ class LeaguefileTest(unittest.TestCase):
         expected = ('100000', DATE_10260604, True)
         self.assertEqual(actual, expected)
 
-        mock_check.assert_called_once_with(
-            ['ls', '-l', DOWNLOAD_DIR], timeout=10)
+        mock_check.assert_called_once_with(['ls', '-l', DOWNLOAD_DIR],
+                                           timeout=10)
 
     @mock.patch('services.leaguefile.leaguefile.check_output')
     def test_find_upload__done(self, mock_check):
@@ -200,8 +200,8 @@ class LeaguefileTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
         ls = 'ls -l /var/www/html/StatsLab/league_file'
-        mock_check.assert_called_once_with(
-            ['ssh', 'brunnerj@' + SERVER, ls], timeout=10)
+        mock_check.assert_called_once_with(['ssh', 'brunnerj@' + SERVER, ls],
+                                           timeout=10)
 
     @mock.patch('services.leaguefile.leaguefile.check_output')
     def test_find_upload__ongoing(self, mock_check):
@@ -218,8 +218,8 @@ class LeaguefileTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
         ls = 'ls -l /var/www/html/StatsLab/league_file'
-        mock_check.assert_called_once_with(
-            ['ssh', 'brunnerj@' + SERVER, ls], timeout=10)
+        mock_check.assert_called_once_with(['ssh', 'brunnerj@' + SERVER, ls],
+                                           timeout=10)
 
 
 if __name__ == '__main__':

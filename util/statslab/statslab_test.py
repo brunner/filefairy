@@ -184,119 +184,130 @@ _plays = [[{
     'P101',
     'footer':
     '0 run(s), 2 hit(s), 0 error(s), 2 left on base; T31 0 - T45 0',
-    'play': [{
-        'type': 'matchup',
-        'pitcher': {
-            'id': 'P101',
-            'pos': 'SP',
-            'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
+    'play': [
+        {
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'pos': 'SP',
+                'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P102',
+                'pos': 'SS',
+                'stats': '0-0'
+            }
         },
-        'batter': {
-            'id': 'P102',
-            'pos': 'SS',
-            'stats': '0-0'
-        }
-    }, {
-        'type': 'event',
-        'batter': 'P102',
-        'outs': 1,
-        'runs': 0,
-        'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
-        'value': 'P102 flies out to left fielder P111 (zone 7LSF).',
-    }, {
-        'type': 'matchup',
-        'pitcher': {
-            'id': 'P101',
-            'pos': 'SP',
-            'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
+        {
+            'type': 'event',
+            'batter': 'P102',
+            'outs': 1,
+            'runs': 0,
+            'sequence': ['1 1 0 Ball', '2 1 0 In play, out(s)'],
+            'value': 'P102 flies out to left fielder P111 (zone 7LSF).',
         },
-        'batter': {
-            'id': 'P103',
-            'pos': '1B',
-            'stats': '0-0'
-        }
-    }, {
-        'type':
-        'event',
-        'batter':
-        'P103',
-        'outs':
-        0,
-        'runs':
-        0,
-        'sequence': ['1 0 0 In play, no out'],
-        'value':
-        'P103 singles on a ground ball to left fielder P111 (zone 56).'
-    }, {
-        'type': 'matchup',
-        'pitcher': {
-            'id': 'P101',
-            'pos': 'SP',
-            'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
+        {
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'pos': 'SP',
+                'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P103',
+                'pos': '1B',
+                'stats': '0-0'
+            }
         },
-        'batter': {
-            'id': 'P104',
-            'pos': 'CF',
-            'stats': '0-0'
-        }
-    }, {
-        'type':
-        'event',
-        'batter':
-        'P104',
-        'outs':
-        0,
-        'runs':
-        0,
-        'sequence': ['1 0 0 In play, no out'],
-        'value':
-        'P104 singles on a ground ball to shortstop P112 (infield hit) '
-        '(zone 6MS). P103 to second.'
-    }, {
-        'type': 'matchup',
-        'pitcher': {
-            'id': 'P101',
-            'pos': 'SP',
-            'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
+        {
+            'type':
+            'event',
+            'batter':
+            'P103',
+            'outs':
+            0,
+            'runs':
+            0,
+            'sequence': ['1 0 0 In play, no out'],
+            'value':
+            'P103 singles on a ground ball to left fielder P111 (zone 56).'
         },
-        'batter': {
-            'id': 'P105',
-            'pos': 'C',
-            'stats': '0-0'
-        }
-    }, {
-        'type': 'event',
-        'batter': 'P105',
-        'outs': 1,
-        'runs': 0,
-        'sequence': ['1 0 0 In play, out(s)'],
-        'value': 'P105 flies out to right fielder P110 (zone 9).'
-    }, {
-        'type': 'matchup',
-        'pitcher': {
-            'id': 'P101',
-            'pos': 'SP',
-            'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
+        {
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'pos': 'SP',
+                'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P104',
+                'pos': 'CF',
+                'stats': '0-0'
+            }
         },
-        'batter': {
-            'id': 'P106',
-            'pos': '2B',
-            'stats': '0-0'
+        {
+            'type':
+            'event',
+            'batter':
+            'P104',
+            'outs':
+            0,
+            'runs':
+            0,
+            'sequence': ['1 0 0 In play, no out'],
+            'value':
+            'P104 singles on a ground ball to shortstop P112 (infield hit) '
+            '(zone 6MS). P103 to second.'
+        },
+        {
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'pos': 'SP',
+                'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P105',
+                'pos': 'C',
+                'stats': '0-0'
+            }
+        },
+        {
+            'type': 'event',
+            'batter': 'P105',
+            'outs': 1,
+            'runs': 0,
+            'sequence': ['1 0 0 In play, out(s)'],
+            'value': 'P105 flies out to right fielder P110 (zone 9).'
+        },
+        {
+            'type': 'matchup',
+            'pitcher': {
+                'id': 'P101',
+                'pos': 'SP',
+                'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
+            },
+            'batter': {
+                'id': 'P106',
+                'pos': '2B',
+                'stats': '0-0'
+            }
+        },
+        {
+            'type':
+            'event',
+            'batter':
+            'P106',
+            'outs':
+            1,
+            'runs':
+            0,
+            'sequence':
+            ['1 0 1 Swinging Strike', '2 0 2 Foul', '3 0 3 Swinging Strike'],
+            'value':
+            'P106 strikes out swinging.'
         }
-    }, {
-        'type':
-        'event',
-        'batter':
-        'P106',
-        'outs':
-        1,
-        'runs':
-        0,
-        'sequence':
-        ['1 0 1 Swinging Strike', '2 0 2 Foul', '3 0 3 Swinging Strike'],
-        'value':
-        'P106 strikes out swinging.'
-    }]
+    ]
 }]]
 
 

@@ -316,7 +316,7 @@ def parse_game_data(expected_date, box_link, log_link):
     d = datetime.datetime.strptime(date, '%m/%d/%Y')
     date = datetime_datetime_pst(d.year, d.month, d.day)
     if expected_date is not None and expected_date != date:
-        return dict(ret, error='invalid_date') 
+        return dict(ret, error='invalid_date')
 
     lines = re.findall(_game_box_line, box_content)
     if len(lines) != 2:

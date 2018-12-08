@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import logging
 import os
 import re
 import sys
@@ -45,7 +44,7 @@ _highlights_text = '<{0}{1}38868.html|Connor Harrell> ties the BOS regular' + \
                    ' season game record for runs with 4 (Boston @ Tampa Bay)'
 
 _injuries_clarified = [
-    'SP <{0}{1}37102.html|Jairo Labourt> was injured while pitching (T54 @ T' +
+    'SP <{0}{1}37102.html|Jairo Labou> was injured while pitching (T54 @ T' +
     '34)',
     'SS <{0}{1}29923.html|Jeremy Houston> was injured while running the base' +
     's (T54 @ T34)',
@@ -55,7 +54,7 @@ _injuries_clarified = [
     'T44)'
 ]
 _injuries_encoded = [
-    'SP <{0}{1}37102.html|Jairo Labourt> was injured while pitching (T54 @ T' +
+    'SP <{0}{1}37102.html|Jairo Labou> was injured while pitching (T54 @ T' +
     '34)',
     'SS <{0}{1}29923.html|Jeremy Houston> was injured while running the base' +
     's (T54 @ T34)',
@@ -66,7 +65,7 @@ _injuries_encoded = [
 ]
 _injuries_pattern = '\w+ <[^|]+\|[^<]+> was injured [^)]+\)'
 _injuries_table = table(body=[[cell(content='Player was injured.')]])
-_injuries_text = 'SP <{0}{1}37102.html|Jairo Labourt> was injured while pi' + \
+_injuries_text = 'SP <{0}{1}37102.html|Jairo Labou> was injured while pi' + \
                  'tching (Seattle @ Boston)'
 
 _scores_pattern = '<[^|]+\|[^<]+>'
@@ -228,7 +227,8 @@ class StatsplusTest(Test):
 
     def test_notify__with_finish(self):
         statsplus = self.create_statsplus(_data())
-        response = statsplus._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
+        response = statsplus._notify_internal(
+            notify=Notify.LEAGUEFILE_DOWNLOAD)
         self.assertEqual(response, Response())
 
         write = _data(finished=True)
@@ -332,11 +332,13 @@ class StatsplusTest(Test):
             'user': 'U1234',
             'bot_id': 'B7KJ3362Y'
         }
-        statsplus = self.create_statsplus(_data(offseason=True, postseason=True))
+        statsplus = self.create_statsplus(
+            _data(offseason=True, postseason=True))
         response = statsplus._on_message_internal(obj=obj)
         self.assertEqual(
             response,
-            Response(notify=[Notify.BASE], shadow=statsplus._shadow_internal()))
+            Response(
+                notify=[Notify.BASE], shadow=statsplus._shadow_internal()))
 
         write = _data(offseason=True)
         mock_clear.assert_not_called()
@@ -392,7 +394,8 @@ class StatsplusTest(Test):
         response = statsplus._on_message_internal(obj=obj)
         self.assertEqual(
             response,
-            Response(notify=[Notify.BASE], shadow=statsplus._shadow_internal()))
+            Response(
+                notify=[Notify.BASE], shadow=statsplus._shadow_internal()))
 
         write = _data()
         mock_clear.assert_not_called()
@@ -664,8 +667,8 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data())
         delay = '10/10/2022 Rain delay of 19 minutes in the 2nd inning. '
         text = delay + _player_sub(_injuries_text)
-        statsplus._handle_key('injuries', _then_encoded, text, _injuries_pattern,
-                           True)
+        statsplus._handle_key('injuries', _then_encoded, text,
+                              _injuries_pattern, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -679,7 +682,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data())
         text = '10/10/2022 ' + _player_sub(_highlights_text)
         statsplus._handle_key('highlights', _then_encoded, text,
-                           _highlights_pattern, True)
+                              _highlights_pattern, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -692,8 +695,8 @@ class StatsplusTest(Test):
     def test_handle_key__injuries(self):
         statsplus = self.create_statsplus(_data())
         text = '10/10/2022 ' + _player_sub(_injuries_text)
-        statsplus._handle_key('injuries', _then_encoded, text, _injuries_pattern,
-                           True)
+        statsplus._handle_key('injuries', _then_encoded, text,
+                              _injuries_pattern, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -708,7 +711,7 @@ class StatsplusTest(Test):
         date = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
         text = date + _game_box_sub(_scores_regular_text)
         statsplus._handle_key('scores', _then_encoded, text, _scores_pattern,
-                           False)
+                              False)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -814,27 +817,29 @@ class StatsplusTest(Test):
                 head=[
                     cell(content='AL East'),
                     cell(content='W'),
-                    cell(content='L')
+                    cell(content='L'),
                 ],
                 body=[[
                     cell(content='33'),
                     cell(content='0'),
-                    cell(content='0')
-                ], [cell(content='34'),
                     cell(content='0'),
-                    cell(content='0')], [
-                        cell(content='48'),
-                        cell(content='0'),
-                        cell(content='0')
-                    ], [
-                        cell(content='57'),
-                        cell(content='0'),
-                        cell(content='0')
-                    ], [
-                        cell(content='59'),
-                        cell(content='0'),
-                        cell(content='0')
-                    ]])
+                ], [
+                    cell(content='34'),
+                    cell(content='0'),
+                    cell(content='0'),
+                ], [
+                    cell(content='48'),
+                    cell(content='0'),
+                    cell(content='0'),
+                ], [
+                    cell(content='57'),
+                    cell(content='0'),
+                    cell(content='0'),
+                ], [
+                    cell(content='59'),
+                    cell(content='0'),
+                    cell(content='0'),
+                ]])
         ]
         mock_forecast.return_value = _standings_new
         live_regular = table(
@@ -1045,17 +1050,20 @@ class StatsplusTest(Test):
 
         statsplus = self.create_statsplus(_data())
         actual = statsplus._live_postseason_body()
-        expected = [[
-            cell(content='logo'),
-            cell(content='1'),
-            cell(content='0'),
-            cell(content='logo')
-        ], [
-            cell(content='logo'),
-            cell(content='1'),
-            cell(content='0'),
-            cell(content='logo')
-        ]]
+        expected = [
+            [
+                cell(content='logo'),
+                cell(content='1'),
+                cell(content='0'),
+                cell(content='logo')
+            ],
+            [
+                cell(content='logo'),
+                cell(content='1'),
+                cell(content='0'),
+                cell(content='logo')
+            ],
+        ]
         self.assertEqual(actual, expected)
 
         homes = ['Los Angeles', 'San Diego', 'Seattle', 'Boston']
@@ -1089,11 +1097,11 @@ class StatsplusTest(Test):
     @mock.patch('tasks.statsplus.statsplus.divisions')
     def test_live_regular(self, mock_divisions, mock_body):
         al = [('AL East', ['33', '34', '48']),
-              ('AL Central', ['35', '38', '40']), ('AL West',
-                                                   ['42', '44', '50'])]
+              ('AL Central', ['35', '38', '40']),
+              ('AL West', ['42', '44', '50'])]
         nl = [('NL East', ['32', '41', '49']),
-              ('NL Central', ['36', '37', '46']), ('NL West',
-                                                   ['31', '39', '45'])]
+              ('NL Central', ['36', '37', '46']),
+              ('NL West', ['31', '39', '45'])]
         mock_divisions.return_value = al + nl
         body = [[cell(content='BAL 1-0'), cell(content='BOS 0-1')]]
         mock_body.return_value = body
@@ -1130,8 +1138,8 @@ class StatsplusTest(Test):
 
         statsplus = self.create_statsplus(_data())
         al = [('AL East', ['33', '34', '48']),
-              ('AL Central', ['35', '38', '40']), ('AL West',
-                                                   ['42', '44', '50'])]
+              ('AL Central', ['35', '38', '40']),
+              ('AL West', ['42', '44', '50'])]
         actual = statsplus._live_regular_body(al)
         expected = [[cell(content='logo')] * 3, [cell(content='logo')] * 3,
                     [cell(content='logo')] * 3]
@@ -1238,42 +1246,48 @@ class StatsplusTest(Test):
     @mock.patch('tasks.statsplus.statsplus.parse_game_data')
     def test_extract_all__with_valid_box_finished_false(
             self, mock_data, mock_open, mock_player, mock_render):
-        _game_data = [{
-            'away_runs': 4,
-            'away_team': 'T31',
-            'date': _then_encoded,
-            'home_runs': 2,
-            'home_team': 'T45',
-            'ok': True
-        }, {
-            'away_runs': 11,
-            'away_team': 'T40',
-            'date': _then_encoded,
-            'home_runs': 4,
-            'home_team': 'T35',
-            'ok': True
-        }, {
-            'away_runs': 2,
-            'away_team': 'T36',
-            'date': _then_encoded,
-            'home_runs': 6,
-            'home_team': 'T41',
-            'ok': True
-        }, {
-            'away_runs': 1,
-            'away_team': 'T49',
-            'date': _then_encoded,
-            'home_runs': 0,
-            'home_team': 'T55',
-            'ok': True
-        }, {
-            'away_runs': 5,
-            'away_team': 'T48',
-            'date': _then_encoded,
-            'home_runs': 3,
-            'home_team': 'T44',
-            'ok': True
-        }]
+        _game_data = [
+            {
+                'away_runs': 4,
+                'away_team': 'T31',
+                'date': _then_encoded,
+                'home_runs': 2,
+                'home_team': 'T45',
+                'ok': True
+            },
+            {
+                'away_runs': 11,
+                'away_team': 'T40',
+                'date': _then_encoded,
+                'home_runs': 4,
+                'home_team': 'T35',
+                'ok': True
+            },
+            {
+                'away_runs': 2,
+                'away_team': 'T36',
+                'date': _then_encoded,
+                'home_runs': 6,
+                'home_team': 'T41',
+                'ok': True
+            },
+            {
+                'away_runs': 1,
+                'away_team': 'T49',
+                'date': _then_encoded,
+                'home_runs': 0,
+                'home_team': 'T55',
+                'ok': True
+            },
+            {
+                'away_runs': 5,
+                'away_team': 'T48',
+                'date': _then_encoded,
+                'home_runs': 3,
+                'home_team': 'T44',
+                'ok': True
+            },
+        ]
         mock_data.side_effect = _game_data
         mock_player.return_value = {
             'name': 'Dakota Donovan',
@@ -1304,10 +1318,8 @@ class StatsplusTest(Test):
             '{0}{1}3001{2}', '{0}{1}3000{2}'
         ]
         mock_data.assert_has_calls([
-            mock.call(
-                _then,
-                id_.format(_html, _game_box, '.html'),
-                id_.format(_html, _game_log, '.html')) for id_ in ids
+            mock.call(_then, id_.format(_html, _game_box, '.html'),
+                      id_.format(_html, _game_log, '.html')) for id_ in ids
         ])
         link = '{0}{1}29663.html'.format(_html, _player)
         mock_player.assert_called_once_with(link)
@@ -1330,42 +1342,48 @@ class StatsplusTest(Test):
     @mock.patch('tasks.statsplus.statsplus.parse_game_data')
     def test_extract_all__with_valid_box_finished_true(
             self, mock_data, mock_open, mock_player, mock_render):
-        _game_data = [{
-            'away_runs': 4,
-            'away_team': 'T31',
-            'date': _then_encoded,
-            'home_runs': 2,
-            'home_team': 'T45',
-            'ok': True
-        }, {
-            'away_runs': 11,
-            'away_team': 'T40',
-            'date': _then_encoded,
-            'home_runs': 4,
-            'home_team': 'T35',
-            'ok': True
-        }, {
-            'away_runs': 2,
-            'away_team': 'T36',
-            'date': _then_encoded,
-            'home_runs': 6,
-            'home_team': 'T41',
-            'ok': True
-        }, {
-            'away_runs': 1,
-            'away_team': 'T49',
-            'date': _then_encoded,
-            'home_runs': 0,
-            'home_team': 'T55',
-            'ok': True
-        }, {
-            'away_runs': 5,
-            'away_team': 'T48',
-            'date': _then_encoded,
-            'home_runs': 3,
-            'home_team': 'T44',
-            'ok': True
-        }]
+        _game_data = [
+            {
+                'away_runs': 4,
+                'away_team': 'T31',
+                'date': _then_encoded,
+                'home_runs': 2,
+                'home_team': 'T45',
+                'ok': True
+            },
+            {
+                'away_runs': 11,
+                'away_team': 'T40',
+                'date': _then_encoded,
+                'home_runs': 4,
+                'home_team': 'T35',
+                'ok': True
+            },
+            {
+                'away_runs': 2,
+                'away_team': 'T36',
+                'date': _then_encoded,
+                'home_runs': 6,
+                'home_team': 'T41',
+                'ok': True
+            },
+            {
+                'away_runs': 1,
+                'away_team': 'T49',
+                'date': _then_encoded,
+                'home_runs': 0,
+                'home_team': 'T55',
+                'ok': True
+            },
+            {
+                'away_runs': 5,
+                'away_team': 'T48',
+                'date': _then_encoded,
+                'home_runs': 3,
+                'home_team': 'T44',
+                'ok': True
+            },
+        ]
         mock_data.side_effect = _game_data
         mock_player.return_value = {
             'name': 'Dakota Donovan',
@@ -1398,10 +1416,9 @@ class StatsplusTest(Test):
             '{0}{1}3001{2}', '{0}{1}3000{2}'
         ]
         mock_data.assert_has_calls([
-            mock.call(
-                _then,
-                id_.format(EXTRACT_DIR, _game_box, '.html'),
-                id_.format(EXTRACT_DIR, _game_log, '.txt')) for id_ in ids
+            mock.call(_then, id_.format(EXTRACT_DIR, _game_box, '.html'),
+                      id_.format(EXTRACT_DIR, _game_log, '.txt'))
+            for id_ in ids
         ])
         link = '{0}{1}29663.html'.format(_html, _player)
         mock_player.assert_called_once_with(link)
@@ -1416,7 +1433,7 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_once_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called() 
+        self.mock_log.assert_not_called()
 
     def test_table__highlights(self):
         read = _data(highlights={_then_encoded: _highlights_encoded})
@@ -1444,29 +1461,34 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(read)
 
         actual = statsplus._table('injuries', _then_encoded, _player)
-        body = [[
-            cell(
-                content=_player_sub(
-                    'SP <a href="{0}{1}37102.html">Jairo Labourt</a> was injur'
-                    'ed while pitching (Seattle Mariners @ Boston Red Sox)'))
-        ], [
-            cell(
-                content=_player_sub(
-                    'SS <a href="{0}{1}29923.html">Jeremy Houston</a> was inju'
-                    'red while running the bases (Seattle Mariners @ Boston Re'
-                    'd Sox)'))
-        ], [
-            cell(
-                content=_player_sub(
-                    'CF <a href="{0}{1}1473.html">Jeren Kendall</a> was injure'
-                    'd while running the bases (Arizona Diamondbacks @ Los Ang'
-                    'eles)'))
-        ], [
-            cell(
-                content=_player_sub(
-                    'SP <a href="{0}{1}29663.html">Dakota Donovan</a> was inju'
-                    'red while pitching (New York @ Los Angeles)'))
-        ]]
+        body = [
+            [
+                cell(
+                    content=_player_sub('SP <a href="{0}{1}37102.html">Jairo L'
+                                        'abou</a> was injured while pitching ('
+                                        'Seattle Mariners @ Boston Red Sox)'))
+            ],
+            [
+                cell(
+                    content=_player_sub('SS <a href="{0}{1}29923.html">Jeremy '
+                                        'Houston</a> was injured while running'
+                                        ' the bases (Seattle Mariners @ Boston'
+                                        ' Red Sox)'))
+            ],
+            [
+                cell(
+                    content=_player_sub('CF <a href="{0}{1}1473.html">Jeren Ke'
+                                        'ndall</a> was injured while running t'
+                                        'he bases (Arizona Diamondbacks @ Los '
+                                        'Angeles)'))
+            ],
+            [
+                cell(
+                    content=_player_sub('SP <a href="{0}{1}29663.html">Dakota '
+                                        'Donovan</a> was injured while pitchin'
+                                        'g (New York @ Los Angeles)'))
+            ],
+        ]
         expected = table(
             head=[cell(content='Sunday, October 9th, 2022')], body=body)
         self.assertEqual(actual, expected)
@@ -1481,81 +1503,86 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(read)
 
         actual = statsplus._table('scores', _then_encoded, _game_box)
-        body = [[
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2998.html">Arizona Diamondbacks 4, Los Ang'
-                    'eles 2</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}3003.html">Atlanta Braves 2, Baltimore Ori'
-                    'oles 1</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2996.html">Cincinnati Reds 7, Milwaukee Br'
-                    'ewers 2</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}3002.html">Detroit Tigers 11, Chicago 4</a'
-                    '>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2993.html">Houston Astros 7, Seattle Marin'
-                    'ers 2</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2991.html">Kansas City Royals 8, Cleveland'
-                    ' Indians 2</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}14721.html">Miami Marlins 6, Chicago 2</a>'
-                ))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}3001.html">New York 1, San Francisco Giant'
-                    's 0</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}3000.html">New York 5, Los Angeles 3</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2992.html">Philadelphia Phillies 3, Washin'
-                    'gton Nationals 1</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2999.html">San Diego Padres 8, Colorado Ro'
-                    'ckies 2</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2990.html">St. Louis Cardinals 5, Pittsbur'
-                    'gh Pirates 4</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2997.html">Tampa Bay Rays 12, Boston Red S'
-                    'ox 9</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2994.html">Texas Rangers 5, Oakland Athlet'
-                    'ics 3</a>'))
-        ], [
-            cell(
-                content=_game_box_sub(
-                    '<a href="{0}{1}2995.html">Toronto Blue Jays 8, Minnesota '
-                    'Twins 2</a>'))
-        ]]
+        body = [
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2998.html">Arizona D'
+                                          'iamondbacks 4, Los Angeles 2</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}3003.html">Atlanta B'
+                                          'raves 2, Baltimore Orioles 1</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2996.html">Cincinnat'
+                                          'i Reds 7, Milwaukee Brewers 2</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}3002.html">Detroit T'
+                                          'igers 11, Chicago 4</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2993.html">Houston A'
+                                          'stros 7, Seattle Mariners 2</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2991.html">Kansas Ci'
+                                          'ty Royals 8, Cleveland Indians 2</a'
+                                          '>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}14721.html">Miami Ma'
+                                          'rlins 6, Chicago 2</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}3001.html">New York '
+                                          '1, San Francisco Giants 0</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}3000.html">New York '
+                                          '5, Los Angeles 3</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2992.html">Philadelp'
+                                          'hia Phillies 3, Washington National'
+                                          's 1</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2999.html">San Diego'
+                                          ' Padres 8, Colorado Rockies 2</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2990.html">St. Louis'
+                                          ' Cardinals 5, Pittsburgh Pirates 4<'
+                                          '/a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2997.html">Tampa Bay'
+                                          ' Rays 12, Boston Red Sox 9</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2994.html">Texas Ran'
+                                          'gers 5, Oakland Athletics 3</a>'))
+            ],
+            [
+                cell(
+                    content=_game_box_sub('<a href="{0}{1}2995.html">Toronto B'
+                                          'lue Jays 8, Minnesota Twins 2</a>'))
+            ],
+        ]
         expected = table(
             head=[cell(content='Sunday, October 9th, 2022')], body=body)
         self.assertEqual(actual, expected)

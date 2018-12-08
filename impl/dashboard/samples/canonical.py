@@ -39,15 +39,18 @@ _logs = [
         hcols=[col(colspan='3')],
         bcols=[None, None, col(clazz='text-right w-75p')],
         head=[cell(content='Saturday, October 26th, 1985')],
-        body=[[
-            cell(content=anchor(_error_link, _error_title)),
-            cell(content=_error_msg),
-            cell(content='06:02')
-        ], [
-            cell(content=anchor(_info_link, _info_title)),
-            cell(content=_info_msg),
-            cell(content='02:30')
-        ]]),
+        body=[
+            [
+                cell(content=anchor(_error_link, _error_title)),
+                cell(content=_error_msg),
+                cell(content='06:02')
+            ],
+            [
+                cell(content=anchor(_info_link, _info_title)),
+                cell(content=_info_msg),
+                cell(content='02:30')
+            ],
+        ]),
 ]
 
 _exc = """Traceback (most recent call last):

@@ -38,30 +38,43 @@ _count = table(
     clazz='border mt-3',
     hcols=_cols,
     bcols=_cols,
-    head=[cell(content='Emoji'),
-          cell(content='Name'),
-          cell(content='Count')],
-    body=[[
-        cell(content=_strawberry),
-        cell(content='strawberry'),
-        cell(content='21')
-    ], [cell(content=_avocado),
-        cell(content='avocado'),
-        cell(content='13')],
-          [cell(content=_pie),
-           cell(content='pie'),
-           cell(content='12')],
-          [cell(content=_ramen),
-           cell(content='ramen'),
-           cell(content='9')], [
-               cell(content=_green_salad),
-               cell(content='green_salad'),
-               cell(content='8')
-           ], [
-               cell(content=_pineapple),
-               cell(content='pineapple'),
-               cell(content='8')
-           ]])
+    head=[
+        cell(content='Emoji'),
+        cell(content='Name'),
+        cell(content='Count'),
+    ],
+    body=[
+        [
+            cell(content=_strawberry),
+            cell(content='strawberry'),
+            cell(content='21'),
+        ],
+        [
+            cell(content=_avocado),
+            cell(content='avocado'),
+            cell(content='13'),
+        ],
+        [
+            cell(content=_pie),
+            cell(content='pie'),
+            cell(content='12'),
+        ],
+        [
+            cell(content=_ramen),
+            cell(content='ramen'),
+            cell(content='9'),
+        ],
+        [
+            cell(content=_green_salad),
+            cell(content='green_salad'),
+            cell(content='8'),
+        ],
+        [
+            cell(content=_pineapple),
+            cell(content='pineapple'),
+            cell(content='8'),
+        ],
+    ])
 
 _recent = table(
     clazz='border mt-3',
@@ -70,29 +83,40 @@ _recent = table(
     head=[
         cell(content='Emoji'),
         cell(content='Name'),
-        cell(content='Last activity')
+        cell(content='Last activity'),
     ],
-    body=[[
-        cell(content=_pineapple),
-        cell(content='pineapple'),
-        cell(content='5m ago')
-    ], [
-        cell(content=_avocado),
-        cell(content='avocado'),
-        cell(content='5m ago')
-    ], [cell(content=_ramen),
-        cell(content='ramen'),
-        cell(content='5m ago')], [
+    body=[
+        [
+            cell(content=_pineapple),
+            cell(content='pineapple'),
+            cell(content='5m ago'),
+        ],
+        [
+            cell(content=_avocado),
+            cell(content='avocado'),
+            cell(content='5m ago'),
+        ],
+        [
+            cell(content=_ramen),
+            cell(content='ramen'),
+            cell(content='5m ago'),
+        ],
+        [
             cell(content=_green_salad),
             cell(content='green_salad'),
-            cell(content='3d ago')
-        ], [
+            cell(content='3d ago'),
+        ],
+        [
             cell(content=_strawberry),
             cell(content='strawberry'),
-            cell(content='3d ago')
-        ], [cell(content=_pie),
+            cell(content='3d ago'),
+        ],
+        [
+            cell(content=_pie),
             cell(content='pie'),
-            cell(content='3d ago')]])
+            cell(content='3d ago'),
+        ],
+    ])
 
 subtitle = ''
 

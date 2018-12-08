@@ -30,10 +30,12 @@ _upload = card(
     table=table(
         clazz='table-sm',
         bcols=[col(clazz='w-55p'), col()],
-        body=[[cell(content='Time: '),
-               cell(content='56m')],
-              [cell(content='Size: '),
-               cell(content='59,969,530')]]),
+        body=[
+            [cell(content='Time: '),
+             cell(content='56m')],
+            [cell(content='Size: '),
+             cell(content='59,969,530')],
+        ]),
     ts='06:02:30 EDT (1985-10-26)',
     success='ongoing')
 
@@ -42,17 +44,20 @@ _completed = table(
     hcols=COLS,
     bcols=COLS,
     head=HEAD,
-    body=[[
-        cell(content='Mar 8'),
-        cell(content='10h 11m'),
-        cell(content='11m'),
-        cell(content='358,347,534')
-    ], [
-        cell(content='Mar 6'),
-        cell(content='9h 34m'),
-        cell(content='6m'),
-        cell(content='356,922,996')
-    ]])
+    body=[
+        [
+            cell(content='Mar 8'),
+            cell(content='10h 11m'),
+            cell(content='11m'),
+            cell(content='358,347,534')
+        ],
+        [
+            cell(content='Mar 6'),
+            cell(content='9h 34m'),
+            cell(content='6m'),
+            cell(content='356,922,996')
+        ],
+    ])
 
 subtitle = ''
 

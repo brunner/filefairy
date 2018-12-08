@@ -179,49 +179,56 @@ _table = table(
     clazz='table-sm',
     hcols=_tcols,
     bcols=_tcols,
-    body=[[
-        cell(content='AL East'),
-        cell(content='BAL'),
-        cell(content='BOS'),
-        cell(content='NYY'),
-        cell(content='TB'),
-        cell(content='TOR')
-    ], [
-        cell(content='AL Central'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'CWS')),
-        cell(content='CLE'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'DET')),
-        cell(content='KC'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'MIN'))
-    ], [
-        cell(content='AL West'),
-        cell(content='HOU'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'LAA')),
-        cell(content='OAK'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'SEA')),
-        cell(content=span(['text-success', 'border', 'px-1'], 'TEX'))
-    ], [
-        cell(content='NL East'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'ATL')),
-        cell(content='MIA'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'NYM')),
-        cell(content='PHI'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'WAS'))
-    ], [
-        cell(content='NL Cental'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'CHC')),
-        cell(content=span(['text-success', 'border', 'px-1'], 'CIN')),
-        cell(content=span(['text-success', 'border', 'px-1'], 'MIL')),
-        cell(content='PIT'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'STL'))
-    ], [
-        cell(content='NL West'),
-        cell(content='ARI'),
-        cell(content='COL'),
-        cell(content=span(['text-success', 'border', 'px-1'], 'LAD')),
-        cell(content=span(['text-success', 'border', 'px-1'], 'SD')),
-        cell(content='SF')
-    ]])
+    body=[
+        [
+            cell(content='AL East'),
+            cell(content='BAL'),
+            cell(content='BOS'),
+            cell(content='NYY'),
+            cell(content='TB'),
+            cell(content='TOR')
+        ],
+        [
+            cell(content='AL Central'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'CWS')),
+            cell(content='CLE'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'DET')),
+            cell(content='KC'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'MIN'))
+        ],
+        [
+            cell(content='AL West'),
+            cell(content='HOU'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'LAA')),
+            cell(content='OAK'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'SEA')),
+            cell(content=span(['text-success', 'border', 'px-1'], 'TEX'))
+        ],
+        [
+            cell(content='NL East'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'ATL')),
+            cell(content='MIA'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'NYM')),
+            cell(content='PHI'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'WAS'))
+        ],
+        [
+            cell(content='NL Cental'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'CHC')),
+            cell(content=span(['text-success', 'border', 'px-1'], 'CIN')),
+            cell(content=span(['text-success', 'border', 'px-1'], 'MIL')),
+            cell(content='PIT'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'STL'))
+        ],
+        [
+            cell(content='NL West'),
+            cell(content='ARI'),
+            cell(content='COL'),
+            cell(content=span(['text-success', 'border', 'px-1'], 'LAD')),
+            cell(content=span(['text-success', 'border', 'px-1'], 'SD')),
+            cell(content='SF')
+        ],
+    ])
 
 _breakdown = [
     span(['text-success', 'border', 'px-1'], '16 new'), '14 old',

@@ -580,15 +580,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('33', 'Baltimore', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('34', 'Boston', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('33', 'Baltimore', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('34', 'Boston', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         c = table(
             hcols=cols,
             bcols=cols,
@@ -597,15 +600,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('35', 'Chicago', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('40', 'Detroit', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('35', 'Chicago', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('40', 'Detroit', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         w = table(
             hcols=cols,
             bcols=cols,
@@ -614,15 +620,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('42', 'Houston', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('44', 'Los Angeles', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('42', 'Houston', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('44', 'Los Angeles', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         expected = {'breadcrumbs': breadcrumbs, 'standings': [e, c, w]}
         self.assertEqual(response, expected)
 
@@ -672,15 +681,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('33', 'Baltimore', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('34', 'Boston', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('33', 'Baltimore', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('34', 'Boston', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         c = table(
             hcols=cols,
             bcols=cols,
@@ -689,15 +701,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('35', 'Chicago', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('40', 'Detroit', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('35', 'Chicago', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('40', 'Detroit', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         w = table(
             hcols=cols,
             bcols=cols,
@@ -706,15 +721,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('42', 'Houston', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('44', 'Los Angeles', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('42', 'Houston', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('44', 'Los Angeles', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         expected = {'breadcrumbs': breadcrumbs, 'standings': [e, c, w]}
         self.assertEqual(response, expected)
 
@@ -765,15 +783,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('33', 'Baltimore', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('34', 'Boston', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('33', 'Baltimore', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('34', 'Boston', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         c = table(
             hcols=cols,
             bcols=cols,
@@ -782,15 +803,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('35', 'Chicago', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('40', 'Detroit', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('35', 'Chicago', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('40', 'Detroit', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         w = table(
             hcols=cols,
             bcols=cols,
@@ -799,15 +823,18 @@ class ExportsTest(Test):
                 cell(content='Last 10'),
                 cell(content='Streak')
             ],
-            body=[[
-                cell(content=logo_absolute('42', 'Houston', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ], [
-                cell(content=logo_absolute('44', 'Los Angeles', 'left')),
-                cell(content='1 - 0'),
-                cell(content='W1')
-            ]])
+            body=[
+                [
+                    cell(content=logo_absolute('42', 'Houston', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+                [
+                    cell(content=logo_absolute('44', 'Los Angeles', 'left')),
+                    cell(content='1 - 0'),
+                    cell(content='W1')
+                ],
+            ])
         expected = {'breadcrumbs': breadcrumbs, 'standings': [e, c, w]}
         self.assertEqual(response, expected)
 
