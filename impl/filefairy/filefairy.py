@@ -298,7 +298,6 @@ if __name__ == '__main__':
 
     handler = LoggingHandler(dashboard)
     _logger.addHandler(handler)
-    _logger.propagate = False
     _logger.setLevel(logging.DEBUG)
 
     filefairy = Filefairy(d=dashboard, e=e)

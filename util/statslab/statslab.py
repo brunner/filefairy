@@ -16,7 +16,7 @@ from util.team.team import decoding_to_encoding  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 from common.urllib_.urllib_ import urlopen  # noqa
 
-logger_ = logging.getLogger('fairylab')
+logger_ = logging.getLogger('filefairy')
 
 _game_box_title = (r'(?s)<title>MLB Box Scores, (.+?) at (.+?), '
                    r'(\d{2}\/\d{2}\/\d{4})</title>')

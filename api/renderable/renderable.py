@@ -62,7 +62,7 @@ FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
 GITHUB_LINK = 'https://github.com/brunner/filefairy/'
 
-_logger = logging.getLogger('fairylab')
+_logger = logging.getLogger('filefairy')
 
 
 class Renderable(Serializable):

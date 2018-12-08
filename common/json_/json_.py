@@ -5,7 +5,7 @@
 import json
 import logging
 
-_logger = logging.getLogger('fairylab')
+_logger = logging.getLogger('filefairy')
 
 
 class Encoder(json.JSONEncoder):

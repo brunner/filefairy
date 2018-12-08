@@ -14,7 +14,7 @@ sys.path.append(re.sub(r'/common/slack', '', _path))
 from common.secrets.secrets import filefairy  # noqa
 from common.urllib_.urllib_ import urlopen  # noqa
 
-_logger = logging.getLogger('fairylab')
+_logger = logging.getLogger('filefairy')
 _filefairy = filefairy()
 
 

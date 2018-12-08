@@ -47,7 +47,7 @@ from util.team.team import teamid_to_encoding  # noqa
 from util.team.team import teamid_to_hometown  # noqa
 from util.team.team import teamids  # noqa
 
-logger_ = logging.getLogger('fairylab')
+logger_ = logging.getLogger('filefairy')
 
 EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)

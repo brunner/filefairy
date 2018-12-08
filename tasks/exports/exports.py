@@ -29,7 +29,7 @@ from util.team.team import logo_absolute  # noqa
 from util.team.team import teamid_to_abbreviation  # noqa
 from util.team.team import teamid_to_hometown  # noqa
 
-logger_ = logging.getLogger('fairylab')
+logger_ = logging.getLogger('filefairy')
 
 _emails = [(k, 'New') for k in ('33', '43', '44', '50')]
 _lock_values = [Notify.STATSPLUS_SIM, Notify.LEAGUEFILE_START]

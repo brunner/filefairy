@@ -24,7 +24,7 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 
-logger_ = logging.getLogger('fairylab')
+logger_ = logging.getLogger('filefairy')
 
 _commit = 'https://github.com/brunner/filefairy/commit/'
 _l = ['d-inline-block', 'w-65p']

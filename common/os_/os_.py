@@ -7,7 +7,7 @@ import logging
 import os
 import re
 
-_logger = logging.getLogger('fairylab')
+_logger = logging.getLogger('filefairy')
 
 FILEFAIRY_DIR = re.sub(r'/common/os_', '',
                        os.path.dirname(os.path.abspath(__file__)))

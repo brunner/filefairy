@@ -6,7 +6,7 @@ import urllib.error as error
 import urllib.parse as parse
 import urllib.request as request
 
-logger_ = logging.getLogger('fairylab')
+logger_ = logging.getLogger('filefairy')
 
 
 def urlopen(url, params={}):

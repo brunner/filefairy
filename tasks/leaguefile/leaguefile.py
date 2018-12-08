@@ -9,7 +9,7 @@ import os
 import re
 import sys
 
-_logger = logging.getLogger('fairylab')
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 

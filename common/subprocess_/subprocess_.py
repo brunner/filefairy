@@ -5,7 +5,7 @@
 import logging
 import subprocess
 
-_logger = logging.getLogger('fairylab')
+_logger = logging.getLogger('filefairy')
 
 
 def check_output(cmd, log=True, timeout=None):

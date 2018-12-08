@@ -26,7 +26,7 @@ from util.team.team import encoding_to_teamid  # noqa
 from util.team.team import teamid_to_decoding  # noqa
 from util.team.team import teamid_to_nickname  # noqa
 
-logger_ = logging.getLogger('fairylab')
+logger_ = logging.getLogger('filefairy')
 
 
 class Recap(Registrable):
