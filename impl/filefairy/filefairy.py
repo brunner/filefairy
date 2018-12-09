@@ -104,7 +104,6 @@ class Filefairy(Messageable, Renderable):
         response = self._reload_internal(t, **kwargs)
 
         if response.notify:
-            _logger.log(logging.DEBUG, 'Reloaded ' + t + '.')
             self._try_all('_setup', **kwargs)
             self.data['date'] = encode_datetime(kwargs['date'])
 

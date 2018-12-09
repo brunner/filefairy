@@ -240,8 +240,8 @@ class FilefairyTest(Test):
 
         mock_reload.assert_called_once_with('foo', date=DATE_10260604)
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
-        self.mock_log.assert_called_once_with(logging.DEBUG, 'Reloaded foo.')
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
         self.assertEqual(filefairy.data['date'],
                          encode_datetime(DATE_10260604))
 
