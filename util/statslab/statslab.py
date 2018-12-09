@@ -238,7 +238,7 @@ def _sequence(counts, value):
     return '{} {} {} {}'.format(*counts, value)
 
 
-def _value(values, bases, pnum, bnum, pteam, bteam, players, during=False):
+def _value(sequence, values, bases, pnum, bnum, pteam, bteam, players, during=False):
     _, pplayer = _player('P', players[pteam], id_=pnum)
     pstats = pplayer['stats']
 
@@ -262,6 +262,8 @@ def _value(values, bases, pnum, bnum, pteam, bteam, players, during=False):
     if pstats['O'] > 2:
         pstats['IP'] += 1
     pstats['O'] = pstats['O'] % 3
+
+    pstats['P'] += len(sequence)
 
     if any([p in value for p in ['walk', 'sacrifice bunt', 'sacrifice fly']]):
         if 'walk' in value:
@@ -498,6 +500,7 @@ def parse_game_data(expected_date, box_link, log_link):
                                 _play_event(
                                     '' if d else curr_batting, sequence,
                                     _value(
+                                        sequence,
                                         values,
                                         bases,
                                         curr_pitching,
@@ -561,6 +564,7 @@ def parse_game_data(expected_date, box_link, log_link):
                                         _play_event(
                                             '', sequence,
                                             _value(
+                                                sequence, 
                                                 values,
                                                 bases,
                                                 curr_pitching,
@@ -586,6 +590,7 @@ def parse_game_data(expected_date, box_link, log_link):
                         _play_event(
                             '' if d else curr_batting, sequence,
                             _value(
+                                sequence,
                                 values,
                                 bases,
                                 curr_pitching,
@@ -678,7 +683,7 @@ def _new_batter(num, pos):
 
 
 def _new_pitcher(num):
-    stats = {k: 0 for k in ['IP', 'O', 'H', 'R', 'BB', 'K']}
+    stats = {k: 0 for k in ['IP', 'O', 'H', 'R', 'BB', 'K', 'P']}
     return {
         'id': num,
         'stats': stats,
@@ -698,7 +703,6 @@ def _fielder(num, fielders):
         if pos == fielder['pos'][0]:
             return title + ' ' + fielder['id']
 
-    from common.json_.json_ import dumps
     return title + '*'
 
 
@@ -730,7 +734,7 @@ def _stats(key, player):
     else:
         default = '{}.{} IP'.format(stats['IP'], stats['O'])
         extra = []
-        for name in ['H', 'R', 'BB', 'K']:
+        for name in ['H', 'R', 'BB', 'K', 'P']:
             extra.append('{} {}'.format(stats[name], name))
         default = default + ', ' + ', '.join(extra)
         return default

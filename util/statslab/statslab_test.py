@@ -190,7 +190,7 @@ _plays = [[{
             'pitcher': {
                 'id': 'P101',
                 'pos': 'SP',
-                'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K'
+                'stats': '0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P'
             },
             'batter': {
                 'id': 'P102',
@@ -211,7 +211,7 @@ _plays = [[{
             'pitcher': {
                 'id': 'P101',
                 'pos': 'SP',
-                'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K'
+                'stats': '0.1 IP, 0 H, 0 R, 0 BB, 0 K, 2 P'
             },
             'batter': {
                 'id': 'P103',
@@ -237,7 +237,7 @@ _plays = [[{
             'pitcher': {
                 'id': 'P101',
                 'pos': 'SP',
-                'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K'
+                'stats': '0.1 IP, 1 H, 0 R, 0 BB, 0 K, 3 P'
             },
             'batter': {
                 'id': 'P104',
@@ -264,7 +264,7 @@ _plays = [[{
             'pitcher': {
                 'id': 'P101',
                 'pos': 'SP',
-                'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K'
+                'stats': '0.1 IP, 2 H, 0 R, 0 BB, 0 K, 4 P'
             },
             'batter': {
                 'id': 'P105',
@@ -285,7 +285,7 @@ _plays = [[{
             'pitcher': {
                 'id': 'P101',
                 'pos': 'SP',
-                'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K'
+                'stats': '0.2 IP, 2 H, 0 R, 0 BB, 0 K, 5 P'
             },
             'batter': {
                 'id': 'P106',
