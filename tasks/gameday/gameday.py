@@ -195,15 +195,36 @@ class Gameday(Registrable):
     @staticmethod
     def _schedule_body(encoding, id_, schedule_data):
         body = []
-        for sdate, steam, ssymbol, sid in schedule_data[encoding]:
-            sdate = sdate.strftime('%m/%d/%Y')
-            steam = encoding_to_decoding(steam)
-            stext = '{} {} {}'.format(sdate, ssymbol, steam)
+        # for sdate, steam, ssymbol, sid in schedule_data[encoding]:
+        #     sdate = sdate.strftime('%m/%d/%Y')
+        #     steam = encoding_to_decoding(steam)
+        #     stext = '{} {} {}'.format(sdate, ssymbol, steam)
+        #     if id_ == sid:
+        #         body.append([cell(content=secondary(stext))])
+        #     else:
+        #         url = '/gameday/{}/'.format(sid)
+        #         body.append([cell(content=anchor(url, stext))])
+
+        i = 0
+        for j, (_1, _2, _3, sid) in enumerate(schedule_data[encoding]):
             if id_ == sid:
-                body.append([cell(content=secondary(stext))])
-            else:
-                url = '/gameday/{}/'.format(sid)
-                body.append([cell(content=anchor(url, stext))])
+                i = j
+
+        prv = 'Previous Game'
+        if i == 0:
+            body.append([cell(content=anchor('/gameday/', prv))])
+        else:
+            sid = schedule_data[encoding][i - 1][3]
+            body.append(
+                [cell(content=anchor('/gameday/{}/'.format(sid), prv))])
+
+        nxt = 'Next Game'
+        if i == len(schedule_data[encoding]) - 1:
+            body.append([cell(content=anchor('/gameday/', nxt))])
+        else:
+            sid = schedule_data[encoding][i + 1][3]
+            body.append(
+                [cell(content=anchor('/gameday/{}/'.format(sid), nxt))])
 
         return table(clazz='table-fixed border', body=body)
 
