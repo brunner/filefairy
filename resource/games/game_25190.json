@@ -1,0 +1,2304 @@
+{
+  "away_record": "",
+  "away_runs": 2,
+  "away_team": "T53",
+  "date": "2024-10-17T00:00:00-07:00",
+  "home_record": "",
+  "home_runs": 3,
+  "home_team": "T32",
+  "id": "25190",
+  "ok": true,
+  "players": [
+    "1401",
+    "22377",
+    "24196",
+    "25482",
+    "26879",
+    "27194",
+    "280",
+    "281",
+    "29818",
+    "30307",
+    "30490",
+    "30744",
+    "33114",
+    "33984",
+    "36469",
+    "36652",
+    "37037",
+    "37609",
+    "41310",
+    "48867",
+    "49545",
+    "49704",
+    "50254",
+    "50269",
+    "50308",
+    "51521",
+    "53368",
+    "53756",
+    "55104",
+    "55237"
+  ],
+  "plays": [
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T53 0 - T32 0",
+        "label": "Top 1st",
+        "pitching": "P22377",
+        "play": [
+          {
+            "batter": {
+              "id": "P25482",
+              "pos": "2B",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P25482",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P25482 singles on a bunt ground ball to pitcher P22377 (zone 1S)."
+          },
+          {
+            "batter": {
+              "id": "P50254",
+              "pos": "CF",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "0.0 IP, 1 H, 0 R, 0 BB, 0 K, 1 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50254",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50254 lines out to third baseman P30490 (zone 5)."
+          },
+          {
+            "batter": {
+              "id": "P53368",
+              "pos": "1B",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "0.1 IP, 1 H, 0 R, 0 BB, 0 K, 4 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball"
+            ],
+            "type": "event",
+            "value": "With P53368 batting, P25482 is caught stealing second base."
+          },
+          {
+            "batter": "P53368",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53368 flies out to center fielder P281 (zone 8LXD)."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 0 - T32 0",
+        "label": "Bot 1st",
+        "pitching": "P53756",
+        "play": [
+          {
+            "batter": {
+              "id": "P29818",
+              "pos": "SS",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P29818",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 3 2 Foul",
+              "7 3 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P29818 flies out to right fielder P24196 (zone 9)."
+          },
+          {
+            "batter": {
+              "id": "P30744",
+              "pos": "C",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "0.1 IP, 0 H, 0 R, 0 BB, 0 K, 7 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P30744",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 2 2 Swinging Strike",
+              "5 2 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P30744 called out on strikes."
+          },
+          {
+            "batter": {
+              "id": "P26879",
+              "pos": "RF",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "0.2 IP, 0 H, 0 R, 0 BB, 1 K, 12 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P26879",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 2 2 Foul",
+              "5 3 2 Ball",
+              "6 3 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P26879 strikes out swinging."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T53 1 - T32 0",
+        "label": "Top 2nd",
+        "pitching": "P22377",
+        "play": [
+          {
+            "batter": {
+              "id": "P50269",
+              "pos": "SS",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "1.0 IP, 1 H, 0 R, 0 BB, 0 K, 7 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50269",
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Called Strike",
+              "4 1 2 Foul",
+              "5 1 2 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P50269 homers on a fly ball to center field (zone 78XD, 395 ft)."
+          },
+          {
+            "batter": {
+              "id": "P1401",
+              "pos": "3B",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "1.0 IP, 2 H, 1 R, 0 BB, 0 K, 12 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P1401",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 Foul",
+              "4 1 2 Ball",
+              "5 1 2 Foul",
+              "6 2 2 Ball",
+              "7 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P1401 strikes out swinging."
+          },
+          {
+            "batter": {
+              "id": "P48867",
+              "pos": "LF",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "1.1 IP, 2 H, 1 R, 0 BB, 1 K, 19 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P48867",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 2 2 Foul",
+              "5 3 2 Ball",
+              "6 3 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P48867 singles on a line drive to right fielder P26879 (zone 9S)."
+          },
+          {
+            "batter": {
+              "id": "P24196",
+              "pos": "RF",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "1.1 IP, 3 H, 1 R, 0 BB, 1 K, 25 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P24196",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 2 Swinging Strike",
+              "5 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P24196 strikes out swinging."
+          },
+          {
+            "batter": {
+              "id": "P33114",
+              "pos": "C",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "1.2 IP, 3 H, 1 R, 0 BB, 2 K, 30 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P33114",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 2 Foul",
+              "4 0 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P33114 strikes out swinging."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 1 left on base; T53 1 - T32 0",
+        "label": "Bot 2nd",
+        "pitching": "P53756",
+        "play": [
+          {
+            "batter": {
+              "id": "P51521",
+              "pos": "LF",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "1.0 IP, 0 H, 0 R, 0 BB, 2 K, 18 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P51521",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P51521 grounds out, third baseman P1401 to first baseman P53368 (zone 56S)."
+          },
+          {
+            "batter": {
+              "id": "P27194",
+              "pos": "1B",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "1.1 IP, 0 H, 0 R, 0 BB, 2 K, 20 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P27194",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
+            ],
+            "type": "event",
+            "value": "P27194 walks."
+          },
+          {
+            "batter": {
+              "id": "P30490",
+              "pos": "3B",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "1.1 IP, 0 H, 0 R, 1 BB, 2 K, 25 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P30490",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 2 2 Ball",
+              "5 3 2 Ball",
+              "6 3 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30490 grounds out, second baseman P25482 to first baseman P53368 (zone 4MD). P27194 to second."
+          },
+          {
+            "batter": {
+              "id": "P37609",
+              "pos": "2B",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "1.2 IP, 0 H, 0 R, 1 BB, 2 K, 31 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P37609",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P37609 lines out to right fielder P24196 (zone 9D)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 1 - T32 0",
+        "label": "Top 3rd",
+        "pitching": "P22377",
+        "play": [
+          {
+            "batter": {
+              "id": "P53756",
+              "pos": "P",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "2.0 IP, 3 H, 1 R, 0 BB, 3 K, 34 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P53756",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53756 flies out to right fielder P26879 (zone 9)."
+          },
+          {
+            "batter": {
+              "id": "P25482",
+              "pos": "2B",
+              "stats": "1-1"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "2.1 IP, 3 H, 1 R, 0 BB, 3 K, 37 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P25482",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Called Strike",
+              "4 1 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25482 grounds out, shortstop P29818 to first baseman P27194 (zone 6)."
+          },
+          {
+            "batter": {
+              "id": "P50254",
+              "pos": "CF",
+              "stats": "0-1"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "2.2 IP, 3 H, 1 R, 0 BB, 3 K, 41 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50254",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Called Strike",
+              "4 2 2 Ball",
+              "5 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P50254 strikes out swinging."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T53 1 - T32 1",
+        "label": "Bot 3rd",
+        "pitching": "P53756",
+        "play": [
+          {
+            "batter": {
+              "id": "P22377",
+              "pos": "P",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "2.0 IP, 0 H, 0 R, 1 BB, 2 K, 33 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P22377",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P22377 grounds out, shortstop P50269 to first baseman P53368 (zone 6M)."
+          },
+          {
+            "batter": {
+              "id": "P281",
+              "pos": "CF",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "2.1 IP, 0 H, 0 R, 1 BB, 2 K, 34 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P281",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Called Strike",
+              "4 2 2 Ball",
+              "5 2 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P281 singles on a ground ball to left fielder P48867 (zone 5D)."
+          },
+          {
+            "batter": {
+              "id": "P29818",
+              "pos": "SS",
+              "stats": "0-1"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "2.1 IP, 1 H, 0 R, 1 BB, 2 K, 39 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P29818",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P29818 grounds out to first baseman P53368 (zone 34). P281 to second."
+          },
+          {
+            "batter": {
+              "id": "P30744",
+              "pos": "C",
+              "stats": "0-1, K"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "2.2 IP, 1 H, 0 R, 1 BB, 2 K, 41 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P30744",
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 1 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P30744 doubles on a fly ball to center fielder P50254 (zone 8RXD). P281 scores."
+          },
+          {
+            "batter": {
+              "id": "P26879",
+              "pos": "RF",
+              "stats": "0-1, K"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "2.2 IP, 2 H, 1 R, 1 BB, 2 K, 45 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P26879",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Swinging Strike",
+              "4 2 2 Swinging Strike",
+              "5 2 2 Foul",
+              "6 2 2 Foul",
+              "7 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P26879 lines out to center fielder P50254 (zone 8LM)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "1 run(s), 2 hit(s), 0 error(s), 0 left on base; T53 2 - T32 1",
+        "label": "Top 4th",
+        "pitching": "P22377",
+        "play": [
+          {
+            "batter": {
+              "id": "P53368",
+              "pos": "1B",
+              "stats": "0-2"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "3.0 IP, 3 H, 1 R, 0 BB, 4 K, 46 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P53368",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P53368 triples on a fly ball to center fielder P281 (zone 78XD)."
+          },
+          {
+            "batter": {
+              "id": "P50269",
+              "pos": "SS",
+              "stats": "1-1, HR, RBI"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "3.0 IP, 4 H, 1 R, 0 BB, 4 K, 49 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50269",
+            "outs": 1,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P50269 grounds out, shortstop P29818 to first baseman P27194 (zone 6). P53368 scores."
+          },
+          {
+            "batter": {
+              "id": "P1401",
+              "pos": "3B",
+              "stats": "0-1, K"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "3.1 IP, 4 H, 2 R, 0 BB, 4 K, 51 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P1401",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P1401 singles on a ground ball to left fielder P51521 (zone 56D)."
+          },
+          {
+            "batter": {
+              "id": "P48867",
+              "pos": "LF",
+              "stats": "1-1"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "3.1 IP, 5 H, 2 R, 0 BB, 4 K, 53 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P48867",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 3 1 Called Strike",
+              "5 3 2 Called Strike",
+              "6 3 2 Foul",
+              "7 3 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P48867 called out on strikes."
+          },
+          {
+            "batter": {
+              "id": "P24196",
+              "pos": "RF",
+              "stats": "0-1, K"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "3.2 IP, 5 H, 2 R, 0 BB, 5 K, 60 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike"
+            ],
+            "type": "event",
+            "value": "With P24196 batting, P1401 is caught stealing second base."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 2 - T32 1",
+        "label": "Bot 4th",
+        "pitching": "P53756",
+        "play": [
+          {
+            "batter": {
+              "id": "P51521",
+              "pos": "LF",
+              "stats": "0-1"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "3.0 IP, 2 H, 1 R, 1 BB, 2 K, 52 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P51521",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P51521 flies out to left fielder P48867 (zone 7)."
+          },
+          {
+            "batter": {
+              "id": "P27194",
+              "pos": "1B",
+              "stats": "0-0, BB"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "3.1 IP, 2 H, 1 R, 1 BB, 2 K, 53 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P27194",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 2 Foul",
+              "4 0 2 Foul",
+              "5 0 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P27194 called out on strikes."
+          },
+          {
+            "batter": {
+              "id": "P30490",
+              "pos": "3B",
+              "stats": "0-1"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "3.2 IP, 2 H, 1 R, 1 BB, 3 K, 58 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P30490",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30490 flies out to left fielder P48867 (zone 7S)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 2 - T32 1",
+        "label": "Top 5th",
+        "pitching": "P22377",
+        "play": [
+          {
+            "batter": {
+              "id": "P24196",
+              "pos": "RF",
+              "stats": "0-2, K"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "4.0 IP, 5 H, 2 R, 0 BB, 5 K, 62 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P24196",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P24196 grounds out, shortstop P29818 to first baseman P27194 (zone 6M)."
+          },
+          {
+            "batter": {
+              "id": "P33114",
+              "pos": "C",
+              "stats": "0-1, K"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "4.1 IP, 5 H, 2 R, 0 BB, 5 K, 66 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P33114",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P33114 doubles on a fly ball to center fielder P281 (zone 78XD)."
+          },
+          {
+            "batter": {
+              "id": "P53756",
+              "pos": "P",
+              "stats": "0-1"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "4.1 IP, 6 H, 2 R, 0 BB, 5 K, 68 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P53756",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53756 grounds out, third baseman P30490 to first baseman P27194 (zone 5S). P33114 to third."
+          },
+          {
+            "batter": {
+              "id": "P25482",
+              "pos": "2B",
+              "stats": "1-2"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "4.2 IP, 6 H, 2 R, 0 BB, 5 K, 69 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P25482",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25482 flies out to center fielder P281 (zone 8LM)."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "1 run(s), 2 hit(s), 0 error(s), 1 left on base; T53 2 - T32 2",
+        "label": "Bot 5th",
+        "pitching": "P53756",
+        "play": [
+          {
+            "batter": {
+              "id": "P37609",
+              "pos": "2B",
+              "stats": "0-1"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "4.0 IP, 2 H, 1 R, 1 BB, 3 K, 60 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P37609",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P37609 flies out to center fielder P50254 (zone 8RM)."
+          },
+          {
+            "batter": {
+              "id": "P22377",
+              "pos": "P",
+              "stats": "0-1"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "4.1 IP, 2 H, 1 R, 1 BB, 3 K, 62 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P22377",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 2 1 Ball",
+              "4 3 1 Ball",
+              "5 3 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P22377 grounds out, pitcher P53756 to first baseman P53368 (zone 13)."
+          },
+          {
+            "batter": {
+              "id": "P281",
+              "pos": "CF",
+              "stats": "1-1"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "4.2 IP, 2 H, 1 R, 1 BB, 3 K, 67 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P281",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 1 2 Ball",
+              "4 1 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P281 singles on a line drive to left fielder P48867 (zone 56D)."
+          },
+          {
+            "batter": {
+              "id": "P29818",
+              "pos": "SS",
+              "stats": "0-2"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "4.2 IP, 3 H, 1 R, 1 BB, 3 K, 71 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P29818",
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 3 1 Ball",
+              "5 3 2 Foul",
+              "6 3 2 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P29818 doubles on a line drive to center fielder P50254 (zone 89D). P281 scores."
+          },
+          {
+            "batter": {
+              "id": "P30744",
+              "pos": "C",
+              "stats": "1-2, 2B, RBI, K"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "4.2 IP, 4 H, 2 R, 1 BB, 3 K, 77 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P30744",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 2 Foul",
+              "3 0 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30744 grounds out, second baseman P25482 to first baseman P53368 (zone 4)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 2 - T32 2",
+        "label": "Top 6th",
+        "pitching": "P22377",
+        "play": [
+          {
+            "batter": {
+              "id": "P50254",
+              "pos": "CF",
+              "stats": "0-2, K"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "5.0 IP, 6 H, 2 R, 0 BB, 5 K, 71 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50254",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50254 flies out to left fielder P51521 (zone 78D)."
+          },
+          {
+            "batter": {
+              "id": "P53368",
+              "pos": "1B",
+              "stats": "1-3, 3B"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "5.1 IP, 6 H, 2 R, 0 BB, 5 K, 73 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P53368",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 2 Swinging Strike",
+              "4 1 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P53368 called out on strikes."
+          },
+          {
+            "batter": {
+              "id": "P50269",
+              "pos": "SS",
+              "stats": "1-2, HR, 2 RBI"
+            },
+            "pitcher": {
+              "id": "P22377",
+              "pos": "SP",
+              "stats": "5.2 IP, 6 H, 2 R, 0 BB, 6 K, 77 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50269",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 2 Swinging Strike",
+              "5 2 2 Foul",
+              "6 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50269 flies out to right fielder P26879 (zone 89S)."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 1 left on base; T53 2 - T32 2",
+        "label": "Bot 6th",
+        "pitching": "P53756",
+        "play": [
+          {
+            "batter": {
+              "id": "P26879",
+              "pos": "RF",
+              "stats": "0-2, K"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "5.0 IP, 4 H, 2 R, 1 BB, 3 K, 80 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P26879",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 1 In play, no out"
+            ],
+            "type": "event",
+            "value": "P26879 singles on a ground ball to center fielder P50254 (zone 6MD)."
+          },
+          {
+            "batter": {
+              "id": "P51521",
+              "pos": "LF",
+              "stats": "0-2"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "5.0 IP, 5 H, 2 R, 1 BB, 3 K, 84 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P51521",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P51521 flies out to right fielder P24196 (zone 9S)."
+          },
+          {
+            "batter": {
+              "id": "P27194",
+              "pos": "1B",
+              "stats": "0-1, BB, K"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "5.1 IP, 5 H, 2 R, 1 BB, 3 K, 85 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P27194",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P27194 grounds out, shortstop P50269 to first baseman P53368 (zone 6S). P26879 to second."
+          },
+          {
+            "batter": {
+              "id": "P30490",
+              "pos": "3B",
+              "stats": "0-2"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "5.2 IP, 5 H, 2 R, 1 BB, 3 K, 86 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P30490",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30490 pops out to second baseman P25482 (zone 4MS)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 2 left on base; T53 2 - T32 2",
+        "label": "Top 7th",
+        "pitching": "P36652",
+        "play": [
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Defensive Substitution",
+                "P50308 replaces pitcher P22377, batting 8th, playing catcher."
+              ],
+              [
+                "Pitching Substitution",
+                "P49704 replaces P22377, batting 2nd, replacing P30744."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P1401",
+              "pos": "3B",
+              "stats": "1-2, K"
+            },
+            "pitcher": {
+              "id": "P49704",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P1401",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P1401 pops out to shortstop P29818 (zone 6D)."
+          },
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Pitching Substitution",
+                "P37037 replaces P49704, batting 2nd."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P48867",
+              "pos": "LF",
+              "stats": "1-2, K"
+            },
+            "pitcher": {
+              "id": "P37037",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P48867",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 1 1 Ball",
+              "3 1 2 Swinging Strike",
+              "4 1 2 Foul",
+              "5 1 2 Foul",
+              "6 1 2 Foul",
+              "7 2 2 Ball",
+              "8 2 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P48867 called out on strikes."
+          },
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Pitching Substitution",
+                "P36652 replaces P37037, batting 2nd."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P24196",
+              "pos": "RF",
+              "stats": "0-3, K"
+            },
+            "pitcher": {
+              "id": "P36652",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P24196",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Called Strike",
+              "4 3 1 Ball",
+              "5 4 1 Ball"
+            ],
+            "type": "event",
+            "value": "P24196 walks."
+          },
+          {
+            "batter": {
+              "id": "P33114",
+              "pos": "C",
+              "stats": "1-2, 2B, K"
+            },
+            "pitcher": {
+              "id": "P36652",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 1 BB, 0 K, 5 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P33114",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 2 Called Strike",
+              "5 2 2 Foul",
+              "6 2 2 Foul",
+              "7 2 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P33114 singles on a line drive to center fielder P281 (zone 8LS). P24196 to second."
+          },
+          {
+            "batter": {
+              "id": "P53756",
+              "pos": "P",
+              "stats": "0-2"
+            },
+            "pitcher": {
+              "id": "P36652",
+              "pos": "RP",
+              "stats": "0.0 IP, 1 H, 0 R, 1 BB, 0 K, 12 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P53756",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 3 Called Strike"
+            ],
+            "type": "event",
+            "value": "P53756 called out on strikes."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "0 run(s), 1 hit(s), 1 error(s), 1 left on base; T53 2 - T32 2",
+        "label": "Bot 7th",
+        "pitching": "P53756",
+        "play": [
+          {
+            "batter": {
+              "id": "P37609",
+              "pos": "2B",
+              "stats": "0-2"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "6.0 IP, 5 H, 2 R, 1 BB, 3 K, 88 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P37609",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P37609 grounds out, shortstop P50269 to first baseman P53368 (zone 6)."
+          },
+          {
+            "batter": {
+              "id": "P50308",
+              "pos": "C",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "6.1 IP, 5 H, 2 R, 1 BB, 3 K, 90 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50308",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P50308 singles on a line drive to left fielder P48867 (zone 7LS)."
+          },
+          {
+            "batter": {
+              "id": "P281",
+              "pos": "CF",
+              "stats": "2-2"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "6.1 IP, 6 H, 2 R, 1 BB, 3 K, 91 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P281",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, no out"
+            ],
+            "type": "event",
+            "value": "P281 reaches on an error by shortstop P50269 (zone 6). P50308 to second."
+          },
+          {
+            "batter": {
+              "id": "P29818",
+              "pos": "SS",
+              "stats": "1-3, 2B, RBI"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "6.1 IP, 6 H, 2 R, 1 BB, 3 K, 93 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P29818",
+            "outs": 2,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P29818 grounds into a double play, second baseman P25482 to shortstop P50269 to first baseman P53368 (zone 4). P281 out at second."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 2 - T32 2",
+        "label": "Top 8th",
+        "pitching": "P36652",
+        "play": [
+          {
+            "batter": {
+              "id": "P25482",
+              "pos": "2B",
+              "stats": "1-3"
+            },
+            "pitcher": {
+              "id": "P36652",
+              "pos": "RP",
+              "stats": "0.1 IP, 1 H, 0 R, 1 BB, 1 K, 15 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P25482",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25482 lines out to left fielder P51521 (zone 7S)."
+          },
+          {
+            "batter": {
+              "id": "P50254",
+              "pos": "CF",
+              "stats": "0-3, K"
+            },
+            "pitcher": {
+              "id": "P36652",
+              "pos": "RP",
+              "stats": "0.2 IP, 1 H, 0 R, 1 BB, 1 K, 17 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50254",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 1 1 Ball",
+              "3 1 2 Foul",
+              "4 2 2 Ball",
+              "5 2 2 Foul",
+              "6 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P50254 strikes out swinging."
+          },
+          {
+            "batter": {
+              "id": "P53368",
+              "pos": "1B",
+              "stats": "1-4, 3B, K"
+            },
+            "pitcher": {
+              "id": "P36652",
+              "pos": "RP",
+              "stats": "1.0 IP, 1 H, 0 R, 1 BB, 2 K, 23 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P53368",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 0 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P53368 grounds out, first baseman P27194 to pitcher P36652 (zone 34S)."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 2 - T32 2",
+        "label": "Bot 8th",
+        "pitching": "P53756",
+        "play": [
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-hitter P41310 replaces P36652."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P41310",
+              "pos": "PH",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "7.0 IP, 6 H, 2 R, 1 BB, 3 K, 96 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P41310",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P41310 pops out to third baseman P1401 (zone 5L)."
+          },
+          {
+            "batter": {
+              "id": "P26879",
+              "pos": "RF",
+              "stats": "1-3, K"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "7.1 IP, 6 H, 2 R, 1 BB, 3 K, 98 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P26879",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P26879 grounds out, third baseman P1401 to first baseman P53368 (zone 5S)."
+          },
+          {
+            "batter": {
+              "id": "P51521",
+              "pos": "LF",
+              "stats": "0-3"
+            },
+            "pitcher": {
+              "id": "P53756",
+              "pos": "SP",
+              "stats": "7.2 IP, 6 H, 2 R, 1 BB, 3 K, 102 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P51521",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P51521 grounds out, pitcher P53756 to first baseman P53368 (zone P)."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 3 left on base; T53 2 - T32 2",
+        "label": "Top 9th",
+        "pitching": "P33984",
+        "play": [
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Pitching Substitution",
+                "P30307 replaces P36652, batting 2nd, replacing P41310."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P50269",
+              "pos": "SS",
+              "stats": "1-3, HR, 2 RBI"
+            },
+            "pitcher": {
+              "id": "P30307",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50269",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 4 0 Ball"
+            ],
+            "type": "event",
+            "value": "P50269 walks."
+          },
+          {
+            "batter": {
+              "id": "P1401",
+              "pos": "3B",
+              "stats": "1-3, K"
+            },
+            "pitcher": {
+              "id": "P30307",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 1 BB, 0 K, 4 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P1401",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 0 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P1401 lines out to pitcher P30307 (zone 13)."
+          },
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Injury Delay",
+                "P30307 was injured while pitching."
+              ],
+              [
+                "Injury Delay",
+                "P30307 was injured while pitching."
+              ],
+              [
+                "Pitching Substitution",
+                "P33984 replaces P30307, batting 2nd."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P48867",
+              "pos": "LF",
+              "stats": "1-3, 2 K"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P48867",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Foul",
+              "2 0 2 Foul",
+              "3 0 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P48867 strikes out swinging."
+          },
+          {
+            "batter": {
+              "id": "P24196",
+              "pos": "RF",
+              "stats": "0-3, BB, K"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "0.1 IP, 0 H, 0 R, 0 BB, 1 K, 3 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P24196",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Swinging Strike",
+              "3 1 2 Ball",
+              "4 1 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P24196 hit by pitch. P50269 to second."
+          },
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-hitter P55104 replaces P33114."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P55104",
+              "pos": "PH",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "0.1 IP, 0 H, 0 R, 0 BB, 1 K, 7 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P55104",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 3 0 Ball",
+              "4 3 1 Called Strike",
+              "5 4 1 Ball"
+            ],
+            "type": "event",
+            "value": "P55104 walks. P50269 to third. P24196 to second."
+          },
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-hitter P55237 replaces P53756."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P55237",
+              "pos": "PH",
+              "stats": "0-0"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "0.1 IP, 0 H, 0 R, 1 BB, 1 K, 12 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P55237",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Called Strike",
+              "3 0 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P55237 grounds out to first baseman P27194 (zone 34)."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "0 run(s), 0 hit(s), 0 error(s), 0 left on base; T53 2 - T32 2",
+        "label": "Bot 9th",
+        "pitching": "P36469",
+        "play": [
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Defensive Substitution",
+                "P280 replaces P55104, batting 8th, playing catcher."
+              ],
+              [
+                "Pitching Substitution",
+                "P36469 replaces P53756, batting 9th, replacing P55237."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P27194",
+              "pos": "1B",
+              "stats": "0-2, BB, K"
+            },
+            "pitcher": {
+              "id": "P36469",
+              "pos": "RP",
+              "stats": "0.0 IP, 0 H, 0 R, 0 BB, 0 K, 0 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P27194",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 1 2 Called Strike",
+              "4 2 2 Ball",
+              "5 2 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P27194 strikes out swinging."
+          },
+          {
+            "batter": {
+              "id": "P30490",
+              "pos": "3B",
+              "stats": "0-3"
+            },
+            "pitcher": {
+              "id": "P36469",
+              "pos": "RP",
+              "stats": "0.1 IP, 0 H, 0 R, 0 BB, 1 K, 5 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P30490",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Called Strike",
+              "3 1 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P30490 grounds out, shortstop P50269 to first baseman P53368 (zone 6)."
+          },
+          {
+            "batter": {
+              "id": "P37609",
+              "pos": "2B",
+              "stats": "0-3"
+            },
+            "pitcher": {
+              "id": "P36469",
+              "pos": "RP",
+              "stats": "0.2 IP, 0 H, 0 R, 0 BB, 1 K, 8 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P37609",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Swinging Strike",
+              "3 1 2 Called Strike",
+              "4 1 3 Swinging Strike"
+            ],
+            "type": "event",
+            "value": "P37609 strikes out swinging."
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "batting": "T53",
+        "footer": "0 run(s), 1 hit(s), 0 error(s), 0 left on base; T53 2 - T32 2",
+        "label": "Top 10th",
+        "pitching": "P33984",
+        "play": [
+          {
+            "batter": {
+              "id": "P25482",
+              "pos": "2B",
+              "stats": "1-4"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "0.2 IP, 0 H, 0 R, 1 BB, 1 K, 15 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P25482",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 1 1 Foul",
+              "3 2 1 Ball",
+              "4 2 2 Called Strike",
+              "5 2 2 Foul",
+              "6 2 2 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P25482 grounds out, shortstop P29818 to first baseman P27194 (zone 6S)."
+          },
+          {
+            "batter": {
+              "id": "P50254",
+              "pos": "CF",
+              "stats": "0-4, 2 K"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "1.0 IP, 0 H, 0 R, 1 BB, 1 K, 21 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50254",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Swinging Strike",
+              "2 1 1 Ball",
+              "3 2 1 Ball",
+              "4 2 1 In play, out(s)"
+            ],
+            "type": "event",
+            "value": "P50254 flies out to first baseman P27194 (zone 34D)."
+          },
+          {
+            "batter": {
+              "id": "P53368",
+              "pos": "1B",
+              "stats": "1-5, 3B, K"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "1.1 IP, 0 H, 0 R, 1 BB, 1 K, 25 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P53368",
+            "outs": 0,
+            "runs": 0,
+            "sequence": [
+              "1 1 0 Ball",
+              "2 2 0 Ball",
+              "3 2 1 Foul",
+              "4 2 2 Foul",
+              "5 3 2 Ball",
+              "6 3 2 In play, no out"
+            ],
+            "type": "event",
+            "value": "P53368 singles on a line drive to right fielder P26879 (zone 34)."
+          },
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Offensive Substitution",
+                "Pinch-runner P49545 replaces P53368."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P50269",
+              "pos": "SS",
+              "stats": "1-3, HR, 2 RBI, BB"
+            },
+            "pitcher": {
+              "id": "P33984",
+              "pos": "RP",
+              "stats": "1.1 IP, 1 H, 0 R, 1 BB, 1 K, 31 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "",
+            "outs": 1,
+            "runs": 0,
+            "sequence": [
+              "1 0 1 Called Strike"
+            ],
+            "type": "event",
+            "value": "With P50269 batting, P49545 is caught stealing second base."
+          }
+        ]
+      },
+      {
+        "batting": "T32",
+        "footer": "",
+        "label": "Bot 10th",
+        "pitching": "P36469",
+        "play": [
+          {
+            "type": "sub",
+            "values": [
+              [
+                "Defensive Switch",
+                "P49545 remains in the game as the third baseman."
+              ],
+              [
+                "Defensive Switch",
+                "Defensive switch from third base to first base for P1401."
+              ]
+            ]
+          },
+          {
+            "batter": {
+              "id": "P50308",
+              "pos": "C",
+              "stats": "1-1"
+            },
+            "pitcher": {
+              "id": "P36469",
+              "pos": "RP",
+              "stats": "1.0 IP, 0 H, 0 R, 0 BB, 2 K, 12 P"
+            },
+            "type": "matchup"
+          },
+          {
+            "batter": "P50308",
+            "outs": 0,
+            "runs": 1,
+            "sequence": [
+              "1 0 1 Called Strike",
+              "2 0 2 Foul",
+              "3 0 2 In play, run(s)"
+            ],
+            "type": "event",
+            "value": "P50308 homers on a fly ball to right field (zone 9LD, 340 ft)."
+          }
+        ]
+      }
+    ]
+  ]
+}
