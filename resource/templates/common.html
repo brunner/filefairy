@@ -203,7 +203,9 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <!-- ^(common.tabs) -->
 
 <!-- ^(common.tabs.tabs) -->
-<ul class="nav nav-{{ data.style }} flex-nowrap mt-3" role="tablist">
+<ul class="nav nav-{{ data.style }} flex-nowrap mt-3"
+    {%- if data.id %}id="{{ data.id }}"{% endif %}
+    role="tablist">
 
 {% for t in data.tabs %}
 <li class="nav-item">

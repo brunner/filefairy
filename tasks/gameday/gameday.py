@@ -451,6 +451,7 @@ class Gameday(Registrable):
             }],
             'jerseys': [],
             'tabs': {
+                'id': 'tabs',
                 'style': 'tabs',
                 'tabs': []
             }
@@ -577,36 +578,38 @@ class Gameday(Registrable):
                 'title': str(i + 1),
                 'tables': plays_tables
             })
+
+        game_box_link = 'box_scores/game_box_{}.html'.format(game_id_)
+        log_link = 'game_logs/log_{}.html'.format(game_id_)
+        sdate = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
+        links_body = [
+            [
+                cell(
+                    content=anchor(_statslab_link + game_box_link, sdate +
+                                   ' StatsLab Game Box'))
+            ],
+            [
+                cell(
+                    content=anchor(_statslab_link + log_link, sdate +
+                                   ' StatsLab Log'))
+            ],
+        ]
+
+        jump = [cell(content=anchor('#tabs', 'Jump to top'))]
+        log_tables.append(
+            table(head=[cell(content='Post Game')], body=(jump + links_body)))
         ret['tabs']['tabs'].append({
             'name': 'log',
             'title': 'Game Log',
             'tables': log_tables
         })
 
-        game_box_link = 'box_scores/game_box_{}.html'.format(game_id_)
-        log_link = 'game_logs/log_{}.html'.format(game_id_)
-        sdate = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
-
         links_tables = []
         links_tables.append(
             table(
                 clazz='table-fixed border border-bottom-0 mt-3',
                 head=[cell(content='Gameday Sources')]))
-        links_tables.append(
-            table(
-                clazz='table-fixed border',
-                body=[
-                    [
-                        cell(
-                            content=anchor(_statslab_link + game_box_link,
-                                           sdate + ' StatsLab Game Box'))
-                    ],
-                    [
-                        cell(
-                            content=anchor(_statslab_link + log_link, sdate +
-                                           ' StatsLab Log'))
-                    ],
-                ]))
+        links_tables.append(table(clazz='table-fixed border', body=links_body))
         links_tables.append(self._schedule_head(away_decoding))
         links_tables.append(
             self._schedule_body(away_team, game_id_, schedule_data))
