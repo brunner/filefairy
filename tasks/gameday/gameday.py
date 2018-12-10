@@ -595,7 +595,7 @@ class Gameday(Registrable):
             ],
         ]
 
-        jump = [cell(content=anchor('#tabs', 'Jump to top'))]
+        jump = [[cell(content=anchor('#tabs', 'Jump to top of page'))]]
         log_tables.append(
             table(head=[cell(content='Post Game')], body=(jump + links_body)))
         ret['tabs']['tabs'].append({
