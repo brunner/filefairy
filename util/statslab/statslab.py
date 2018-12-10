@@ -215,13 +215,14 @@ def _play_sub(subtype, id_, players, bases, injuries, subs):
             for j, bplayer in enumerate(players['B']):
                 if i == j:
                     continue
-                if len(bplayer['pos']) > 1 and pos == bplayer['pos'][0]:
+                if pos == bplayer['pos'][0]:
                     xsub = _sub_map[bplayer['pos'][0]][1]
                     bplayer['pos'] = bplayer['pos'][1:]
-                    i, pos = j, bplayer['pos'][0]
                     value = 'Defensive switch from {} to {} for {}.'.format(
                         xsub, _sub_map[pos][1], bplayer['id'])
                     values.append(('Defensive Switch', value))
+                    if len(bplayer['pos']) > 1:
+                        i, pos = j, bplayer['pos'][0]
                     break
             else:
                 pos = None
