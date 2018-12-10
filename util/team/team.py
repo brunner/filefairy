@@ -65,7 +65,9 @@ _h46, _n46 = 'Milwaukee', 'Brewers'
 _c46 = [('sky', 'home|away', [5, 6], 1.0)]
 
 _h47, _n47 = 'Minnesota', 'Twins'
-_c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0), ('blue', 'away', _all, .15)]
+# Revert after playoffs.
+# _c47 = [('cream', 'home', [0, 1, 2, 3, 4], 1.0), ('blue', 'away', _all, .15)]
+_c47 = [('cream', 'home', _all, 1.0)]
 
 _h50, _n50 = 'Oakland', 'Athletics'
 _c50 = [('yellow', 'home', [4], 1.0), ('green', 'away', _all, .15)]
