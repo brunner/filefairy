@@ -215,7 +215,7 @@ def _play_sub(subtype, id_, players, bases, injuries, subs):
             for j, bplayer in enumerate(players['B']):
                 if i == j:
                     continue
-                if pos == bplayer['pos'][0]:
+                if len(bplayer['pos']) > 1 and pos == bplayer['pos'][0]:
                     xsub = _sub_map[bplayer['pos'][0]][1]
                     bplayer['pos'] = bplayer['pos'][1:]
                     i, pos = j, bplayer['pos'][0]
@@ -238,7 +238,15 @@ def _sequence(counts, value):
     return '{} {} {} {}'.format(*counts, value)
 
 
-def _value(sequence, values, bases, pnum, bnum, pteam, bteam, players, during=False):
+def _value(sequence,
+           values,
+           bases,
+           pnum,
+           bnum,
+           pteam,
+           bteam,
+           players,
+           during=False):
     _, pplayer = _player('P', players[pteam], id_=pnum)
     pstats = pplayer['stats']
 
@@ -564,7 +572,7 @@ def parse_game_data(expected_date, box_link, log_link):
                                         _play_event(
                                             '', sequence,
                                             _value(
-                                                sequence, 
+                                                sequence,
                                                 values,
                                                 bases,
                                                 curr_pitching,
