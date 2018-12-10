@@ -275,7 +275,7 @@ class Gameday(Registrable):
 
             if not self.data['started']:
                 self.data['started'] = True
-                self._chat('testing', 'Live sim created.')
+                self._chat('fairylab', 'Live sim created.')
 
             self.write()
             return True
