@@ -244,7 +244,7 @@ class Gameday(Registrable):
         for id_ in games:
             box_link = extract + '/box_scores/game_box_{}.html'.format(id_)
             log_link = extract + '/game_logs/log_{}.txt'.format(id_)
-            game_data_ = parse_game_data(box_link, log_link)
+            game_data_ = parse_game_data(None, box_link, log_link)
             fname = FILEFAIRY_DIR + '/resource/games/game_{}.json'.format(id_)
             with open(fname, 'w') as f:
                 f.write(dumps(game_data_) + '\n')
