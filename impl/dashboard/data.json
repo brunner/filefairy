@@ -256,19 +256,131 @@
         "pathname": "/home/pi/filefairy/tasks/leaguefile/leaguefile.py"
       },
       {
-        "date": "2018-12-12T02:18:45.754870-08:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 251, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 95, in _notify\n    response = self._notify_internal(**kwargs)\n  File \"/home/pi/filefairy/tasks/gameday/gameday.py\", line 91, in _notify_internal\n    self._backfill()\n  File \"/home/pi/filefairy/tasks/gameday/gameday.py\", line 247, in _backfill\n    game_data_ = parse_game_data(box_link, log_link)\nTypeError: parse_game_data() missing 1 required positional argument: 'log_link'",
-        "levelname": "ERROR",
-        "lineno": 254,
-        "msg": "Disabled gameday.",
-        "pathname": "/home/pi/fairylab/static/impl/filefairy/filefairy.py"
-      },
-      {
         "date": "2018-12-12T02:18:47.826352-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 90,
         "msg": "News updated.",
+        "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
+      },
+      {
+        "date": "2018-12-12T04:49:17.873314-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:49:18.520376-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:49:18.568430-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:49:18.617750-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:49:18.667876-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:49:20.373698-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:49:20.422751-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:10.627048-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded exports.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:11.247967-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:11.297732-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:11.348578-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded leaguefile.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:11.399903-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:12.554609-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:12.605393-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2018-12-12T04:51:19.791662-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 90,
+        "msg": "Live sim created.",
         "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
       }
     ]
