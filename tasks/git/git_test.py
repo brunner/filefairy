@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import logging
 import os
 import re
 import sys
@@ -25,7 +24,6 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
-from common.test.test import main  # noqa
 
 ENV = env()
 
@@ -440,8 +438,5 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
 
 
-if __name__ in ['__main__', 'tasks.git.git_test']:
-    _main = __name__ == '__main__'
-    _pkg = 'tasks.git'
-    _pth = 'tasks/git'
-    main(GitTest, Git, _pkg, _pth, {}, _main, date=DATE_10260602, e=ENV)
+if __name__ == '__main__':
+    unittest.main()

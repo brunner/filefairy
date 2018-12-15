@@ -4,6 +4,7 @@
 import os
 import re
 import sys
+import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
@@ -25,7 +26,6 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
-from common.test.test import main  # noqa
 
 _collect = {'U1234': ['reply.', 'foo.', 'bar.', 'baz.']}
 _cols = [col(clazz='text-center w-75p'), col(), col(clazz='text-right')]
@@ -715,8 +715,5 @@ class SnacksTest(Test):
         self.assertTrue(snacks.loaded)
 
 
-if __name__ in ['__main__', 'tasks.snacks.snacks_test']:
-    _main = __name__ == '__main__'
-    _pkg = 'tasks.snacks'
-    _pth = 'tasks/snacks'
-    main(SnacksTest, Snacks, _pkg, _pth, {}, _main, date=_now, e=_env)
+if __name__ == '__main__':
+    unittest.main()
