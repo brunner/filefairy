@@ -39,6 +39,7 @@ import os
 import re
 import sys
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 
@@ -49,8 +50,6 @@ from data.response.response import Response  # noqa
 
 ARGS_PATTERN = r'^{}\.{}\((.*)\)$'
 TESTING_CHANNEL = 'G3SUFLMK4'
-
-_logger = logging.getLogger('filefairy')
 
 
 class Messageable(Nameable):

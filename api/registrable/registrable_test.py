@@ -19,10 +19,10 @@ from data.shadow.shadow import Shadow  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 
+ENV = env()
+
 DATE_10260602 = datetime.datetime(1985, 10, 26, 6, 2, 30)
 DATE_10270000 = datetime.datetime(1985, 10, 27)
-
-_env = env()
 
 
 class FakeRegistrable(Registrable):
@@ -82,7 +82,7 @@ class RegistrableTest(unittest.TestCase):
 
     def create_registrable(self):
         self.init_mocks()
-        registrable = FakeRegistrable(date=DATE_10260602, e=_env)
+        registrable = FakeRegistrable(date=DATE_10260602, e=ENV)
 
         self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')
         self.mock_handle.write.assert_not_called()

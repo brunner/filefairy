@@ -49,6 +49,7 @@ import os
 import re
 import sys
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/renderable', '', _path))
 
@@ -61,8 +62,6 @@ CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
 GITHUB_LINK = 'https://github.com/brunner/filefairy/'
-
-_logger = logging.getLogger('filefairy')
 
 
 class Renderable(Serializable):

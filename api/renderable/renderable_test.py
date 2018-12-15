@@ -18,10 +18,13 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 
+ENV = env()
+
 CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
 GITHUB_LINK = 'https://github.com/brunner/filefairy/'
+
 LDR = jinja2.DictLoader({
     'foo.html':
     '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
@@ -30,6 +33,7 @@ LDR = jinja2.DictLoader({
     'dyn.html':
     '{{ title }}: Hello {{ z }} -- {{ date }}'
 })
+
 THEN = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 THEN_DISPLAYED = '00:02:30 PDT (1985-10-26)'
 STREAM_CALLS = [
@@ -67,8 +71,6 @@ STREAM_CALLS = [
         'z': True
     })
 ]
-
-_env = env()
 
 
 def get_dump_calls(root_dir):
@@ -168,7 +170,7 @@ class RenderableTest(unittest.TestCase):
         return renderable
 
     def test_attachments(self):
-        renderable = self.create_renderable(_env)
+        renderable = self.create_renderable(ENV)
 
         actual = renderable._attachments()
         expected = [{
@@ -190,7 +192,7 @@ class RenderableTest(unittest.TestCase):
         mock_attachments.return_value = attachments
         mock_chat.return_value = {'ok': True, 'message': {'text': 'foo'}}
 
-        renderable = self.create_renderable(_env)
+        renderable = self.create_renderable(ENV)
 
         actual = renderable._chat('channel', 'foo')
         expected = {'ok': True, 'message': {'text': 'foo'}}
