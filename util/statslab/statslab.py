@@ -216,13 +216,15 @@ def _play_sub(subtype, id_, players, bases, injuries, subs):
                 if i == j:
                     continue
                 if pos == bplayer['pos'][0]:
+                    if len(bplayer['pos']) == 1:
+                        # TODO: Add logging.
+                        continue
                     xsub = _sub_map[bplayer['pos'][0]][1]
                     bplayer['pos'] = bplayer['pos'][1:]
+                    i, pos = j, bplayer['pos'][0]
                     value = 'Defensive switch from {} to {} for {}.'.format(
                         xsub, _sub_map[pos][1], bplayer['id'])
                     values.append(('Defensive Switch', value))
-                    if len(bplayer['pos']) > 1:
-                        i, pos = j, bplayer['pos'][0]
                     break
             else:
                 pos = None
