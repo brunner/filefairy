@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Tests for git.py."""
 
 import os
 import re
@@ -14,12 +15,6 @@ from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from tasks.git.git import Git  # noqa
-from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.elements.elements import anchor  # noqa
-from common.elements.elements import cell  # noqa
-from common.elements.elements import col  # noqa
-from common.elements.elements import span  # noqa
-from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
@@ -29,21 +24,23 @@ ENV = env()
 
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
+FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/git', '', _path) + '/fairylab/static'
 
-class GitTest(unittest.TestCase):
+ADD_MSG = 'Call completed: \'git add .\'.'
+COMMIT_MSG = 'Call completed: \'git commit -m "Automated push."\'.'
+PUSH_MSG = 'Call completed: \'git push\'.'
+
+
+class GitTest(Test):
     def setUp(self):
+        patch_check = mock.patch('tasks.git.git.check_output')
+        self.addCleanup(patch_check.stop)
+        self.mock_check = patch_check.start()
+
         patch_open = mock.patch(
             'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
-
-        patch_log = mock.patch('tasks.git.git._logger.log')
-        self.addCleanup(patch_log.stop)
-        self.mock_log = patch_log.start()
-
-        patch_check = mock.patch('tasks.git.git.check_output')
-        self.addCleanup(patch_check.stop)
-        self.mock_check = patch_check.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
@@ -51,391 +48,295 @@ class GitTest(unittest.TestCase):
         self.mock_open.side_effect = [mo.return_value]
 
     def reset_mocks(self):
+        self.mock_check.reset_mock()
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
-        self.mock_log.reset_mock()
-        self.mock_check.reset_mock()
 
     def create_git(self):
         self.init_mocks({})
         git = Git(date=DATE_10260602, e=ENV)
 
         self.mock_open.assert_called_once_with(Git._data(), 'r')
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        self.assertNotCalled(self.mock_check, self.mock_handle.write)
 
         self.reset_mocks()
         self.init_mocks({})
 
         return git
 
-    @mock.patch.object(Git, 'status')
-    @mock.patch.object(Git, 'automate')
-    def test_notify__with_day(self, mock_automate, mock_status):
+    @mock.patch('tasks.git.git.chdir')
+    @mock.patch.object(Git, 'acp')
+    def test_notify__filefairy_day(self, mock_acp, mock_chdir):
         git = self.create_git()
         response = git._notify_internal(notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
-        mock_automate.assert_called_once_with(
-            'filefairy', notify=Notify.FILEFAIRY_DAY)
-        mock_status.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        mock_acp.assert_called_once_with(notify=Notify.FILEFAIRY_DAY)
+        self.assertNotCalled(mock_chdir, self.mock_check, self.mock_open,
+                             self.mock_handle.write)
 
-    @mock.patch.object(Git, 'status')
-    @mock.patch.object(Git, 'automate')
-    def test_notify__with_deploy_false(self, mock_automate, mock_status):
-        debug = Debug(
-            msg='Call completed: \'git status\'.',
-            extra={'stdout': 'nothing to commit'})
-        mock_status.return_value = Response(
-            notify=[Notify.BASE], debug=[debug])
-
+    @mock.patch('tasks.git.git.chdir')
+    @mock.patch.object(Git, 'acp')
+    def test_notify__filefairy_deploy(self, mock_acp, mock_chdir):
         git = self.create_git()
         response = git._notify_internal(notify=Notify.FILEFAIRY_DEPLOY)
         self.assertEqual(response, Response())
 
-        mock_automate.assert_not_called()
-        mock_status.assert_called_once_with(
-            'fairylab', notify=Notify.FILEFAIRY_DEPLOY)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        mock_acp.assert_called_once_with(notify=Notify.FILEFAIRY_DEPLOY)
+        mock_chdir.assert_called_once_with(FAIRYLAB_DIR)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
 
-    @mock.patch.object(Git, 'status')
-    @mock.patch.object(Git, 'automate')
-    def test_run__with_deploy_true(self, mock_automate, mock_status):
-        debug = Debug(
-            msg='Call completed: \'git status\'.',
-            extra={'stdout': 'Changes not staged for commit'})
-        mock_status.return_value = Response(
-            notify=[Notify.BASE], debug=[debug])
-
-        git = self.create_git()
-        response = git._notify_internal(notify=Notify.FILEFAIRY_DEPLOY)
-        self.assertEqual(response, Response())
-
-        mock_automate.assert_called_once_with(
-            'fairylab', notify=Notify.FILEFAIRY_DEPLOY)
-        mock_status.assert_called_once_with(
-            'fairylab', notify=Notify.FILEFAIRY_DEPLOY)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
-
-    @mock.patch.object(Git, 'status')
-    @mock.patch.object(Git, 'automate')
-    def test_notify__with_other(self, mock_automate, mock_status):
+    @mock.patch('tasks.git.git.chdir')
+    @mock.patch.object(Git, 'acp')
+    def test_notify__other(self, mock_acp, mock_chdir):
         git = self.create_git()
         response = git._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        mock_automate.assert_not_called()
-        mock_status.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        self.assertNotCalled(mock_acp, mock_chdir, self.mock_check,
+                             self.mock_open, self.mock_handle.write)
 
     def test_on_message(self):
         git = self.create_git()
-        response = git._on_message_internal()
+        response = git._on_message_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    def test_reload(self):
+        git = self.create_git()
+        actual = git._reload_internal(date=DATE_10260602)
+        self.assertEqual(actual, {})
+
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
 
     def test_render(self):
         git = self.create_git()
-        response = git._render_internal(date=DATE_10260602)
-        self.assertEqual(response, [])
+        actual = git._render_internal(date=DATE_10260602)
+        self.assertEqual(actual, [])
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
 
     def test_run(self):
         git = self.create_git()
         response = git._run_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
 
     def test_setup(self):
         git = self.create_git()
         response = git._setup_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
 
     def test_shadow(self):
         git = self.create_git()
-        value = git._shadow_internal()
-        self.assertEqual(value, [])
+        actual = git._shadow_internal()
+        self.assertEqual(actual, [])
 
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
 
-    def test_call__with_ok_false(self):
-        stdout = 'ret'
-        ret = {'ok': False, 'stdout': stdout}
+    @mock.patch.object(Git, 'push')
+    @mock.patch.object(Git, 'commit')
+    @mock.patch.object(Git, 'add')
+    def test_acp__with_failed_add(self, mock_add, mock_commit, mock_push):
+        add = Debug(msg=ADD_MSG)
+        mock_add.return_value = Response(debug=[add])
+
+        git = self.create_git()
+        response = git.acp(date=DATE_10260602)
+        expected = Response(debug=[add])
+        self.assertEqual(response, expected)
+
+        mock_add.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(mock_commit, mock_push, self.mock_check,
+                             self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Git, 'push')
+    @mock.patch.object(Git, 'commit')
+    @mock.patch.object(Git, 'add')
+    def test_acp__with_failed_commit(self, mock_add, mock_commit, mock_push):
+        add = Debug(msg=ADD_MSG)
+        commit = Debug(msg=COMMIT_MSG)
+
+        mock_add.return_value = Response(notify=[Notify.BASE], debug=[add])
+        mock_commit.return_value = Response(debug=[commit])
+
+        git = self.create_git()
+        response = git.acp(date=DATE_10260602)
+        expected = Response(debug=[commit])
+        self.assertEqual(response, expected)
+
+        mock_add.assert_called_once_with(date=DATE_10260602)
+        mock_commit.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(mock_push, self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, 'push')
+    @mock.patch.object(Git, 'commit')
+    @mock.patch.object(Git, 'add')
+    def test_acp__with_failed_push(self, mock_add, mock_commit, mock_push):
+        add = Debug(msg=ADD_MSG)
+        commit = Debug(msg=COMMIT_MSG)
+        push = Debug(msg=PUSH_MSG)
+
+        mock_add.return_value = Response(notify=[Notify.BASE], debug=[add])
+        mock_commit.return_value = Response(
+            notify=[Notify.BASE], debug=[commit])
+        mock_push.return_value = Response(debug=[push])
+
+        git = self.create_git()
+        response = git.acp(date=DATE_10260602)
+        expected = Response(debug=[push])
+        self.assertEqual(response, expected)
+
+        mock_add.assert_called_once_with(date=DATE_10260602)
+        mock_commit.assert_called_once_with(date=DATE_10260602)
+        mock_push.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, 'push')
+    @mock.patch.object(Git, 'commit')
+    @mock.patch.object(Git, 'add')
+    def test_acp__with_success(self, mock_add, mock_commit, mock_push):
+        add = Debug(msg=ADD_MSG)
+        commit = Debug(msg=COMMIT_MSG)
+        push = Debug(msg=PUSH_MSG)
+
+        mock_add.return_value = Response(notify=[Notify.BASE], debug=[add])
+        mock_commit.return_value = Response(
+            notify=[Notify.BASE], debug=[commit])
+        mock_push.return_value = Response(notify=[Notify.BASE], debug=[push])
+
+        git = self.create_git()
+        response = git.acp(date=DATE_10260602)
+        expected = Response(notify=[Notify.BASE], debug=[add, commit, push])
+        self.assertEqual(response, expected)
+
+        mock_add.assert_called_once_with(date=DATE_10260602)
+        mock_commit.assert_called_once_with(date=DATE_10260602)
+        mock_push.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, '_call')
+    def test_add(self, mock_call):
+        response = Response(debug=[Debug(msg='msg')])
+        mock_call.return_value = response
+
+        git = self.create_git()
+        actual = git.add(date=DATE_10260602)
+        self.assertEqual(actual, response)
+
+        mock_call.assert_called_once_with(['git', 'add', '.'],
+                                          date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, '_call')
+    def test_commit(self, mock_call):
+        response = Response(debug=[Debug(msg='msg')])
+        mock_call.return_value = response
+
+        git = self.create_git()
+        actual = git.commit(date=DATE_10260602)
+        self.assertEqual(actual, response)
+
+        mock_call.assert_called_once_with(
+            ['git', 'commit', '-m', 'Automated push.'], date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, '_call')
+    def test_pull(self, mock_call):
+        response = Response(debug=[Debug(msg='msg')])
+        mock_call.return_value = response
+
+        git = self.create_git()
+        actual = git.pull(date=DATE_10260602)
+        self.assertEqual(actual, response)
+
+        mock_call.assert_called_once_with(['git', 'pull'], date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, '_call')
+    def test_push(self, mock_call):
+        response = Response(debug=[Debug(msg='msg')])
+        mock_call.return_value = response
+
+        git = self.create_git()
+        actual = git.push(date=DATE_10260602)
+        self.assertEqual(actual, response)
+
+        mock_call.assert_called_once_with(['git', 'push'], date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, '_call')
+    def test_reset(self, mock_call):
+        response = Response(debug=[Debug(msg='msg')])
+        mock_call.return_value = response
+
+        git = self.create_git()
+        actual = git.reset(date=DATE_10260602)
+        self.assertEqual(actual, response)
+
+        mock_call.assert_called_once_with(['git', 'reset', '--hard'],
+                                          date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Git, '_call')
+    def test_status(self, mock_call):
+        response = Response(debug=[Debug(msg='msg')])
+        mock_call.return_value = response
+
+        git = self.create_git()
+        actual = git.status(date=DATE_10260602)
+        self.assertEqual(actual, response)
+
+        mock_call.assert_called_once_with(['git', 'status'],
+                                          date=DATE_10260602)
+        self.assertNotCalled(self.mock_check, self.mock_open,
+                             self.mock_handle.write)
+
+    def test_call__false(self):
+        ret = {'ok': False, 'stdout': 'stdout', 'stderr': ''}
         self.mock_check.return_value = ret
 
-        response = Git._call(['cmd'], 'filefairy', **{})
-        msg = 'Call failed: \'cmd\'.'
-        expected = Response(debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
+        git = self.create_git()
+        actual = git._call(['cmd'])
+        expected = Response(
+            debug=[Debug(msg='Call failed: \'cmd\'.', extra=ret)])
+        self.assertEqual(actual, expected)
 
         self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_not_called()
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    def test_call__with_ok_true(self):
-        stdout = 'ret'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
+    def test_call__true(self):
+        ret = {'ok': True, 'stdout': 'stdout', 'stderr': ''}
         self.mock_check.return_value = ret
 
-        response = Git._call(['cmd'], 'filefairy', **{})
-        msg = 'Call completed: \'cmd\'.'
+        git = self.create_git()
+        actual = git._call(['cmd'])
         expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
+            notify=[Notify.BASE],
+            debug=[Debug(msg='Call completed: \'cmd\'.', extra=ret)])
+        self.assertEqual(actual, expected)
 
         self.mock_check.assert_called_once_with(['cmd'])
-        self.mock_log.assert_not_called()
-
-    def test_add(self):
-        stdout = 'ret'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        git = self.create_git()
-        response = git.add('filefairy', date=DATE_10260602, v=True)
-        msg = 'Call completed: \'git add .\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'add', '.'])
-        self.mock_log.assert_not_called()
-
-    @mock.patch.object(Git, 'push')
-    @mock.patch.object(Git, 'commit')
-    @mock.patch.object(Git, 'add')
-    def test_automate__with_failed_add(self, mock_add, mock_commit, mock_push):
-        adebug = Debug(msg='Call completed: \'git add .\'.')
-        mock_add.return_value = Response(debug=[adebug])
-
-        git = self.create_git()
-        response = git.automate('filefairy', date=DATE_10260602)
-        expected = Response(debug=[adebug])
-        self.assertEqual(response, expected)
-
-        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
-        mock_commit.assert_not_called()
-        mock_push.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
-
-    @mock.patch.object(Git, 'push')
-    @mock.patch.object(Git, 'commit')
-    @mock.patch.object(Git, 'add')
-    def test_automate__with_failed_commit(self, mock_add, mock_commit,
-                                          mock_push):
-        adebug = Debug(msg='Call completed: \'git add .\'.')
-        mock_add.return_value = Response(notify=[Notify.BASE], debug=[adebug])
-        cdebug = Debug(
-            msg='Call completed: \'git commit -m "Automated push."\'.')
-        mock_commit.return_value = Response(debug=[cdebug])
-
-        git = self.create_git()
-        response = git.automate('filefairy', date=DATE_10260602)
-        expected = Response(debug=[cdebug])
-        self.assertEqual(response, expected)
-
-        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
-        mock_commit.assert_called_once_with('filefairy', date=DATE_10260602)
-        mock_push.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
-
-    @mock.patch.object(Git, 'push')
-    @mock.patch.object(Git, 'commit')
-    @mock.patch.object(Git, 'add')
-    def test_automate__with_failed_push(self, mock_add, mock_commit,
-                                        mock_push):
-        adebug = Debug(msg='Call completed: \'git add .\'.')
-        mock_add.return_value = Response(notify=[Notify.BASE], debug=[adebug])
-        cdebug = Debug(
-            msg='Call completed: \'git commit -m "Automated push."\'.')
-        mock_commit.return_value = Response(
-            notify=[Notify.BASE], debug=[cdebug])
-        pdebug = Debug(msg='Call completed: \'git push\'.')
-        mock_push.return_value = Response(debug=[pdebug])
-
-        git = self.create_git()
-        response = git.automate('filefairy', date=DATE_10260602)
-        expected = Response(debug=[pdebug])
-        self.assertEqual(response, expected)
-
-        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
-        mock_commit.assert_called_once_with('filefairy', date=DATE_10260602)
-        mock_push.assert_called_once_with('filefairy', date=DATE_10260602)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
-
-    @mock.patch.object(Git, 'push')
-    @mock.patch.object(Git, 'commit')
-    @mock.patch.object(Git, 'add')
-    def test_automate__with_success(self, mock_add, mock_commit, mock_push):
-        adebug = Debug(msg='Call completed: \'git add .\'.')
-        mock_add.return_value = Response(notify=[Notify.BASE], debug=[adebug])
-        cdebug = Debug(
-            msg='Call completed: \'git commit -m "Automated push."\'.')
-        mock_commit.return_value = Response(
-            notify=[Notify.BASE], debug=[cdebug])
-        pdebug = Debug(msg='Call completed: \'git push\'.')
-        mock_push.return_value = Response(notify=[Notify.BASE], debug=[pdebug])
-
-        git = self.create_git()
-        response = git.automate('filefairy', date=DATE_10260602)
-        expected = Response(
-            notify=[Notify.BASE], debug=[adebug, cdebug, pdebug])
-        self.assertEqual(response, expected)
-
-        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
-        mock_commit.assert_called_once_with('filefairy', date=DATE_10260602)
-        mock_push.assert_called_once_with('filefairy', date=DATE_10260602)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_check.assert_not_called()
-
-    def test_commit__with_automated(self):
-        stdout = '[master 0abcd0a] Auto...\n1 files\n'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        git = self.create_git()
-        response = git.commit('filefairy')
-        msg = 'Call completed: \'git commit -m "Automated push."\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(
-            ['git', 'commit', '-m', 'Automated push.'])
-        self.mock_log.assert_not_called()
-
-    def test_commit__with_manual(self):
-        stdout = '[master 0abcd0a] Auto...\n1 files\n'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        git = self.create_git()
-        response = git.commit('filefairy', date=DATE_10260602, v=True)
-        msg = 'Call completed: \'git commit -m "Manual push."\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(
-            ['git', 'commit', '-m', 'Manual push.'])
-        self.mock_log.assert_not_called()
-
-    def test_pull(self):
-        stdout = 'remote: Counting...\nUnpacking...\n'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        git = self.create_git()
-        response = git.pull('filefairy', date=DATE_10260602, v=True)
-        msg = 'Call completed: \'git pull\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'pull'])
-        self.mock_log.assert_not_called()
-
-    def test_push(self):
-        stderr = 'To github.com...\n'
-        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
-        self.mock_check.return_value = ret
-
-        git = self.create_git()
-        response = git.push('filefairy', date=DATE_10260602, v=True)
-        msg = 'Call completed: \'git push\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'push'])
-        self.mock_log.assert_not_called()
-
-    def test_reset(self):
-        ret = {'ok': True, 'stdout': ''}
-        self.mock_check.return_value = ret
-
-        git = self.create_git()
-        response = git.reset('filefairy', date=DATE_10260602, v=True)
-        msg = 'Call completed: \'git reset --hard\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'reset', '--hard'])
-        self.mock_log.assert_not_called()
-
-    def test_status(self):
-        stdout = 'On branch master\nYour branch...\n'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        git = self.create_git()
-        response = git.status('filefairy', date=DATE_10260602, v=True)
-        msg = 'Call completed: \'git status\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'status'])
-        self.mock_log.assert_not_called()
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
 
 if __name__ == '__main__':

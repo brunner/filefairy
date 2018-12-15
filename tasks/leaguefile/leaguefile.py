@@ -71,6 +71,10 @@ class Leaguefile(Registrable, Reloadable):
             ['download_file', 'extract_file', 'find_download', 'find_upload']
         }
 
+    def _render_internal(self, **kwargs):
+        index_html = self._index_html(**kwargs)
+        return [('leaguefile/index.html', '', 'leaguefile.html', index_html)]
+
     def _run_internal(self, **kwargs):
         data = self.data
 
@@ -90,10 +94,6 @@ class Leaguefile(Registrable, Reloadable):
             self._render(**kwargs)
 
         return response
-
-    def _render_internal(self, **kwargs):
-        index_html = self._index_html(**kwargs)
-        return [('leaguefile/index.html', '', 'leaguefile.html', index_html)]
 
     def _setup_internal(self, **kwargs):
         self._reload(**kwargs)
