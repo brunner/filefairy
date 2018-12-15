@@ -25,7 +25,7 @@ from common.slack.slack import reactions_remove  # noqa
 from common.slack.slack import rtm_connect  # noqa
 from common.slack.slack import users_list  # noqa
 
-_filefairy = filefairy()
+FILEFAIRY = filefairy()
 
 
 class SlackTest(unittest.TestCase):
@@ -38,7 +38,7 @@ class SlackTest(unittest.TestCase):
     def test_call__ok(self, mock_urlopen):
         mock_urlopen.return_value = bytes('{"ok":true}', 'utf-8')
 
-        params = {'token': _filefairy}
+        params = {'token': FILEFAIRY}
         actual = _call('method', params)
         expected = {'ok': True}
         self.assertEqual(actual, expected)
@@ -51,7 +51,7 @@ class SlackTest(unittest.TestCase):
     def test_call__exception(self, mock_urlopen):
         mock_urlopen.side_effect = Exception()
 
-        params = {'token': _filefairy}
+        params = {'token': FILEFAIRY}
         actual = _call('method', params)
         expected = {'ok': False}
         self.assertEqual(actual, expected)
@@ -71,7 +71,7 @@ class SlackTest(unittest.TestCase):
 
         mock_call.assert_called_once_with(
             'channels.history', {
-                'token': _filefairy,
+                'token': FILEFAIRY,
                 'channel': 'channel',
                 'count': 1000,
                 'latest': 0,
@@ -88,7 +88,7 @@ class SlackTest(unittest.TestCase):
 
         mock_call.assert_called_once_with(
             'channels.list', {
-                'token': _filefairy,
+                'token': FILEFAIRY,
                 'exclude_members': True,
                 'exclude_archived': True,
             })
@@ -105,7 +105,7 @@ class SlackTest(unittest.TestCase):
 
         mock_call.assert_called_once_with(
             'chat.postMessage', {
-                'token': _filefairy,
+                'token': FILEFAIRY,
                 'channel': 'channel',
                 'text': 'foo',
                 'as_user': 'true',
@@ -124,7 +124,7 @@ class SlackTest(unittest.TestCase):
 
         mock_call.assert_called_once_with(
             'files.upload', {
-                'token': _filefairy,
+                'token': FILEFAIRY,
                 'content': 'content',
                 'filename': 'filename.txt',
                 'channels': 'channel',
@@ -140,7 +140,7 @@ class SlackTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
         mock_call.assert_called_once_with('pins.add', {
-            'token': _filefairy,
+            'token': FILEFAIRY,
             'channel': 'C1234',
             'timestamp': 'timestamp',
         })
@@ -156,7 +156,7 @@ class SlackTest(unittest.TestCase):
 
         mock_call.assert_called_once_with(
             'reactions.add', {
-                'token': _filefairy,
+                'token': FILEFAIRY,
                 'name': 'name',
                 'channel': 'C1234',
                 'timestamp': 'timestamp',
@@ -172,7 +172,7 @@ class SlackTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
         mock_call.assert_called_once_with('reactions.get', {
-            'token': _filefairy,
+            'token': FILEFAIRY,
             'channel': 'C1234',
             'timestamp': 'timestamp',
         })
@@ -187,7 +187,7 @@ class SlackTest(unittest.TestCase):
 
         mock_call.assert_called_once_with(
             'reactions.remove', {
-                'token': _filefairy,
+                'token': FILEFAIRY,
                 'name': 'name',
                 'channel': 'C1234',
                 'timestamp': 'timestamp',
@@ -202,7 +202,7 @@ class SlackTest(unittest.TestCase):
         expected = {'ok': True}
         self.assertEqual(actual, expected)
 
-        mock_call.assert_called_once_with('rtm.connect', {'token': _filefairy})
+        mock_call.assert_called_once_with('rtm.connect', {'token': FILEFAIRY})
         self.mock_log.assert_not_called()
 
     @mock.patch('common.slack.slack._call')
@@ -214,7 +214,7 @@ class SlackTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
         mock_call.assert_called_once_with('users.list', {
-            'token': _filefairy,
+            'token': FILEFAIRY,
         })
         self.mock_log.assert_not_called()
 

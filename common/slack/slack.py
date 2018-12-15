@@ -8,14 +8,14 @@ import os
 import re
 import sys
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/slack', '', _path))
 
 from common.secrets.secrets import filefairy  # noqa
 from common.urllib_.urllib_ import urlopen  # noqa
 
-_logger = logging.getLogger('filefairy')
-_filefairy = filefairy()
+FILEFAIRY = filefairy()
 
 
 def _call(method, params):
@@ -51,7 +51,7 @@ def channels_history(channel, latest):
         The endpoint response.
     """
     return _call('channels.history', {
-        'token': _filefairy,
+        'token': FILEFAIRY,
         'channel': channel,
         'count': 1000,
         'latest': latest,
@@ -65,7 +65,7 @@ def channels_list():
         The endpoint response.
     """
     return _call('channels.list', {
-        'token': _filefairy,
+        'token': FILEFAIRY,
         'exclude_members': True,
         'exclude_archived': True
     })
@@ -84,7 +84,7 @@ def chat_post_message(channel, text, attachments=[]):
     """
     return _call(
         'chat.postMessage', {
-            'token': _filefairy,
+            'token': FILEFAIRY,
             'channel': channel,
             'text': text,
             'as_user': 'true',
@@ -106,7 +106,7 @@ def files_upload(content, filename, channel):
     """
     return _call(
         'files.upload', {
-            'token': _filefairy,
+            'token': FILEFAIRY,
             'content': content,
             'filename': filename,
             'channels': channel,
@@ -124,7 +124,7 @@ def pins_add(channel, timestamp):
         The endpoint response.
     """
     return _call('pins.add', {
-        'token': _filefairy,
+        'token': FILEFAIRY,
         'channel': channel,
         'timestamp': timestamp,
     })
@@ -143,7 +143,7 @@ def reactions_add(name, channel, timestamp):
     """
     return _call(
         'reactions.add', {
-            'token': _filefairy,
+            'token': FILEFAIRY,
             'name': name,
             'channel': channel,
             'timestamp': timestamp,
@@ -161,7 +161,7 @@ def reactions_get(channel, timestamp):
         The endpoint response.
     """
     return _call('reactions.get', {
-        'token': _filefairy,
+        'token': FILEFAIRY,
         'channel': channel,
         'timestamp': timestamp,
     })
@@ -180,7 +180,7 @@ def reactions_remove(name, channel, timestamp):
     """
     return _call(
         'reactions.remove', {
-            'token': _filefairy,
+            'token': FILEFAIRY,
             'name': name,
             'channel': channel,
             'timestamp': timestamp,
@@ -193,7 +193,7 @@ def rtm_connect():
     Returns:
         The endpoint response.
     """
-    return _call('rtm.connect', {'token': _filefairy})
+    return _call('rtm.connect', {'token': FILEFAIRY})
 
 
 def users_list():
@@ -202,4 +202,4 @@ def users_list():
     Returns:
         The endpoint response.
     """
-    return _call('users.list', {'token': _filefairy})
+    return _call('users.list', {'token': FILEFAIRY})

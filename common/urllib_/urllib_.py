@@ -18,6 +18,6 @@ def urlopen(url, params={}):
         if e.code not in [403, 404]:
             logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
         return b''
-    except:
+    except Exception:
         logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
         return b''
