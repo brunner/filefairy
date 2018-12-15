@@ -266,7 +266,8 @@ class Filefairy(Messageable, Renderable):
                 'href': '',
                 'name': 'Fairylab'
             }],
-            'registered': [],
+            'external': [],
+            'internal': [],
         }
 
         for t in sorted(self.registered.keys()):
@@ -278,7 +279,11 @@ class Filefairy(Messageable, Renderable):
             danger = 'disabled' if not instance.ok else ''
 
             c = card(href=href, title=t, info=info, ts=ts, danger=danger)
-            ret['registered'].append(c)
+
+            if href:
+                ret['external'].append(c)
+            else:
+                ret['internal'].append(c)
 
         return ret
 

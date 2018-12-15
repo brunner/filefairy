@@ -10,10 +10,12 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/git', '', _path))
+
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from tasks.git.git import Git  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -25,13 +27,9 @@ from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import main  # noqa
 
-_commit = 'https://github.com/brunner/filefairy/commit/'
-_env = env()
-_l = ['d-inline-block', 'w-65p']
-_now = datetime_datetime_pst(1985, 10, 27, 0, 0, 0)
-_now_encoded = '1985-10-27T00:00:00-07:00'
-_r = ['d-inline-block', 'text-right', 'w-65p']
-_then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
+ENV = env()
+
+DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
 
 def _data(pull=None, push=None):
@@ -49,7 +47,7 @@ class GitTest(unittest.TestCase):
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
-        patch_log = mock.patch('tasks.git.git.logger_.log')
+        patch_log = mock.patch('tasks.git.git._logger.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
@@ -70,7 +68,7 @@ class GitTest(unittest.TestCase):
 
     def create_git(self, data):
         self.init_mocks(data)
-        git = Git(date=_now, e=_env)
+        git = Git(date=DATE_10260602, e=ENV)
 
         self.mock_open.assert_called_once_with(Git._data(), 'r')
         self.mock_handle.write.assert_not_called()
@@ -164,17 +162,11 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
-    @mock.patch.object(Git, '_home')
-    def test_render(self, mock_home):
-        home = {'breadcrumbs': [], 'pull': [], 'push': []}
-        mock_home.return_value = home
-
+    def test_render(self):
         git = self.create_git(_data())
-        response = git._render_internal(date=_now)
-        index = 'git/index.html'
-        self.assertEqual(response, [(index, '', 'git.html', home)])
+        response = git._render_internal(date=DATE_10260602)
+        self.assertEqual(response, [])
 
-        mock_home.assert_called_once_with(date=_now)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -182,7 +174,7 @@ class GitTest(unittest.TestCase):
 
     def test_run(self):
         git = self.create_git(_data())
-        response = git._run_internal(date=_then)
+        response = git._run_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
         self.mock_open.assert_not_called()
@@ -190,13 +182,11 @@ class GitTest(unittest.TestCase):
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
 
-    @mock.patch.object(Git, '_render')
-    def test_setup(self, mock_render):
+    def test_setup(self):
         git = self.create_git(_data())
-        response = git._setup_internal(date=_then)
+        response = git._setup_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -211,43 +201,6 @@ class GitTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
         self.mock_check.assert_not_called()
-
-    def test_firstlast__with_gitlog(self):
-        stdout = '"abcdefghijklm"\n"nopqrstuvwxyz"'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        text = 'To github.com:brunner/filefairy.git\n  abcdefgh.' + \
-               '.nopqrstu  master -> master'
-        first, last = Git._firstlast(text)
-        self.assertEqual(first, 'abcdefghijklm')
-        self.assertEqual(last, 'nopqrstuvwxyz')
-
-        self.mock_check.assert_called_once_with(
-            ['git', 'log', '-20', '--format="%H"'])
-        self.mock_log.assert_not_called()
-
-    def test_firstlast__with_match(self):
-        ret = {'ok': True, 'stdout': '', 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        text = 'To github.com:brunner/filefairy.git\n  abcdefgh.' + \
-               '.nopqrstu  master -> master'
-        first, last = Git._firstlast(text)
-        self.assertEqual(first, 'abcdefgh')
-        self.assertEqual(last, 'nopqrstu')
-
-        self.mock_check.assert_called_once_with(
-            ['git', 'log', '-20', '--format="%H"'])
-        self.mock_log.assert_not_called()
-
-    def test_firstlast__without_match(self):
-        first, last = Git._firstlast('')
-        self.assertEqual(first, '???????')
-        self.assertEqual(last, '???????')
-
-        self.mock_check.assert_not_called()
-        self.mock_log.assert_not_called()
 
     def test_call__with_ok_false(self):
         stdout = 'ret'
@@ -282,7 +235,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.return_value = ret
 
         git = self.create_git(_data())
-        response = git.add('filefairy', date=_now, v=True)
+        response = git.add('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git add .\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -301,11 +254,11 @@ class GitTest(unittest.TestCase):
         mock_add.return_value = Response(debug=[adebug])
 
         git = self.create_git(_data())
-        response = git.automate('filefairy', date=_now)
+        response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(debug=[adebug])
         self.assertEqual(response, expected)
 
-        mock_add.assert_called_once_with('filefairy', date=_now)
+        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
         mock_commit.assert_not_called()
         mock_push.assert_not_called()
         self.mock_open.assert_not_called()
@@ -325,12 +278,12 @@ class GitTest(unittest.TestCase):
         mock_commit.return_value = Response(debug=[cdebug])
 
         git = self.create_git(_data())
-        response = git.automate('filefairy', date=_now)
+        response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(debug=[cdebug])
         self.assertEqual(response, expected)
 
-        mock_add.assert_called_once_with('filefairy', date=_now)
-        mock_commit.assert_called_once_with('filefairy', date=_now)
+        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
+        mock_commit.assert_called_once_with('filefairy', date=DATE_10260602)
         mock_push.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -352,13 +305,13 @@ class GitTest(unittest.TestCase):
         mock_push.return_value = Response(debug=[pdebug])
 
         git = self.create_git(_data())
-        response = git.automate('filefairy', date=_now)
+        response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(debug=[pdebug])
         self.assertEqual(response, expected)
 
-        mock_add.assert_called_once_with('filefairy', date=_now)
-        mock_commit.assert_called_once_with('filefairy', date=_now)
-        mock_push.assert_called_once_with('filefairy', date=_now)
+        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
+        mock_commit.assert_called_once_with('filefairy', date=DATE_10260602)
+        mock_push.assert_called_once_with('filefairy', date=DATE_10260602)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -378,14 +331,14 @@ class GitTest(unittest.TestCase):
         mock_push.return_value = Response(notify=[Notify.BASE], debug=[pdebug])
 
         git = self.create_git(_data())
-        response = git.automate('filefairy', date=_now)
+        response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(
             notify=[Notify.BASE], debug=[adebug, cdebug, pdebug])
         self.assertEqual(response, expected)
 
-        mock_add.assert_called_once_with('filefairy', date=_now)
-        mock_commit.assert_called_once_with('filefairy', date=_now)
-        mock_push.assert_called_once_with('filefairy', date=_now)
+        mock_add.assert_called_once_with('filefairy', date=DATE_10260602)
+        mock_commit.assert_called_once_with('filefairy', date=DATE_10260602)
+        mock_push.assert_called_once_with('filefairy', date=DATE_10260602)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_log.assert_not_called()
@@ -415,7 +368,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.return_value = ret
 
         git = self.create_git(_data())
-        response = git.commit('filefairy', date=_now, v=True)
+        response = git.commit('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git commit -m "Manual push."\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -427,130 +380,46 @@ class GitTest(unittest.TestCase):
             ['git', 'commit', '-m', 'Manual push.'])
         self.mock_log.assert_not_called()
 
-    @mock.patch.object(Git, '_save')
-    def test_pull__with_fairylab(self, mock_save):
+    def test_pull(self):
         stdout = 'remote: Counting...\nUnpacking...\n'
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
         git = self.create_git(_data())
-        response = git.pull('fairylab', date=_now, v=True)
+        response = git.pull('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git pull\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
         self.assertEqual(response, expected)
 
-        mock_save.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_check.assert_called_once_with(['git', 'pull'])
         self.mock_log.assert_not_called()
 
-    @mock.patch.object(Git, '_save')
-    def test_pull__with_filefairy(self, mock_save):
-        stdout = 'remote: Counting...\nUnpacking...\n'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        self.mock_check.return_value = ret
-
-        git = self.create_git(_data())
-        response = git.pull('filefairy', date=_now, v=True)
-        msg = 'Call completed: \'git pull\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        mock_save.assert_called_once_with(
-            response, 'pull', Git._stdout, date=_now, v=True)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'pull'])
-        self.mock_log.assert_called_once_with(logging.INFO,
-                                              'Fetched latest changes.')
-
-    @mock.patch.object(Git, '_save')
-    def test_push__with_fairylab_automated(self, mock_save):
+    def test_push(self):
         stderr = 'To github.com...\n'
         ret = {'ok': True, 'stdout': '', 'stderr': stderr}
         self.mock_check.return_value = ret
 
         git = self.create_git(_data())
-        response = git.push('fairylab', date=_now)
+        response = git.push('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git push\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
         self.assertEqual(response, expected)
 
-        mock_save.assert_not_called()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_check.assert_called_once_with(['git', 'push'])
         self.mock_log.assert_not_called()
-
-    @mock.patch.object(Git, '_save')
-    def test_push__with_fairylab_manual(self, mock_save):
-        stderr = 'To github.com...\n'
-        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
-        self.mock_check.return_value = ret
-
-        git = self.create_git(_data())
-        response = git.push('fairylab', date=_now, v=True)
-        msg = 'Call completed: \'git push\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        mock_save.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'push'])
-        self.mock_log.assert_not_called()
-
-    @mock.patch.object(Git, '_save')
-    def test_push__with_filefairy_automated(self, mock_save):
-        stderr = 'To github.com...\n'
-        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
-        self.mock_check.return_value = ret
-
-        git = self.create_git(_data())
-        response = git.push('filefairy', date=_now)
-        msg = 'Call completed: \'git push\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        mock_save.assert_called_once_with(
-            response, 'push', Git._stderr, date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'push'])
-        self.mock_log.assert_called_once_with(logging.INFO, 'Automated push.')
-
-    @mock.patch.object(Git, '_save')
-    def test_push__with_filefairy_manual(self, mock_save):
-        stderr = 'To github.com...\n'
-        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
-        self.mock_check.return_value = ret
-
-        git = self.create_git(_data())
-        response = git.push('filefairy', date=_now, v=True)
-        msg = 'Call completed: \'git push\'.'
-        expected = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-        self.assertEqual(response, expected)
-
-        mock_save.assert_called_once_with(
-            response, 'push', Git._stderr, date=_now, v=True)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_check.assert_called_once_with(['git', 'push'])
-        self.mock_log.assert_called_once_with(logging.INFO, 'Manual push.')
 
     def test_reset(self):
         ret = {'ok': True, 'stdout': ''}
         self.mock_check.return_value = ret
 
         git = self.create_git(_data())
-        response = git.reset('filefairy', date=_now, v=True)
+        response = git.reset('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git reset --hard\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -567,7 +436,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.return_value = ret
 
         git = self.create_git(_data())
-        response = git.status('filefairy', date=_now, v=True)
+        response = git.status('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git status\'.'
         expected = Response(
             notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
@@ -578,136 +447,9 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_called_once_with(['git', 'status'])
         self.mock_log.assert_not_called()
 
-    def test_home__with_empty(self):
-        git = self.create_git(_data())
-        actual = git._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Git'
-        }]
-        expected = {'breadcrumbs': breadcrumbs}
-        self.assertEqual(actual, expected)
-
-    def test_home__with_pull(self):
-        first, last = 'abcdefghijklm', 'nopqrstuvwxyz'
-        git = self.create_git(
-            _data(pull=[{
-                'date': _now_encoded,
-                'first': first,
-                'last': last
-            }]))
-        actual = git._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Git'
-        }]
-        ffirst = span(_l, anchor(_commit + 'abcdefghijklm', 'abcdefg'))
-        flast = span(_r, anchor(_commit + 'nopqrstuvwxyz', 'nopqrst'))
-        pull = table(
-            clazz='border mt-3',
-            head=[cell(content='Range')],
-            hcols=[col(colspan='2')],
-            bcols=[col(), col(clazz='text-right')],
-            body=[[
-                cell(content=(ffirst + ' ... ' + flast)),
-                cell(content='Oct 27 00:00')
-            ]])
-        expected = {'breadcrumbs': breadcrumbs, 'pull': pull}
-        self.assertEqual(actual, expected)
-
-    def test_home__with_push(self):
-        first, last = 'abcdefghijklm', 'nopqrstuvwxyz'
-        git = self.create_git(
-            _data(push=[{
-                'date': _now_encoded,
-                'first': first,
-                'last': last
-            }]))
-        actual = git._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Git'
-        }]
-        ffirst = span(_l, anchor(_commit + 'abcdefghijklm', 'abcdefg'))
-        flast = span(_r, anchor(_commit + 'nopqrstuvwxyz', 'nopqrst'))
-        push = table(
-            clazz='border mt-3',
-            head=[cell(content='Range')],
-            hcols=[col(colspan='2')],
-            bcols=[col(), col(clazz='text-right')],
-            body=[[
-                cell(content=(ffirst + ' ... ' + flast)),
-                cell(content='Oct 27 00:00')
-            ]])
-        expected = {'breadcrumbs': breadcrumbs, 'push': push}
-        self.assertEqual(actual, expected)
-
-    @mock.patch.object(Git, '_render')
-    @mock.patch.object(Git, '_firstlast')
-    def test_save__with_pull(self, mock_firstlast, mock_render):
-        first, last = 'abcdefghijklm', 'nopqrstuvwxyz'
-        mock_firstlast.return_value = (first, last)
-
-        stdout = 'remote: Counting...\nUnpacking...\n'
-        ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
-        msg = 'Call completed: \'git pull\'.'
-        response = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-
-        git = self.create_git(_data())
-        git._save(response, 'pull', Git._stdout, date=_now, v=True)
-
-        write = _data(pull=[{
-            'date': _now_encoded,
-            'first': first,
-            'last': last
-        }])
-        mock_firstlast.assert_called_once_with(stdout)
-        mock_render.assert_called_once_with(date=_now, v=True)
-        self.mock_open.assert_called_once_with(Git._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_check.assert_not_called()
-        self.mock_log.assert_not_called()
-
-    @mock.patch.object(Git, '_render')
-    @mock.patch.object(Git, '_firstlast')
-    def test_save__with_push(self, mock_firstlast, mock_render):
-        first, last = 'abcdefghijklm', 'nopqrstuvwxyz'
-        mock_firstlast.return_value = (first, last)
-
-        stderr = 'To github.com...\n'
-        ret = {'ok': True, 'stdout': '', 'stderr': stderr}
-        msg = 'Call completed: \'git pull\'.'
-        response = Response(
-            notify=[Notify.BASE], debug=[Debug(msg=msg, extra=ret)])
-
-        git = self.create_git(_data())
-        git._save(response, 'push', Git._stderr, date=_now, v=True)
-
-        write = _data(push=[{
-            'date': _now_encoded,
-            'first': first,
-            'last': last
-        }])
-        mock_firstlast.assert_called_once_with(stderr)
-        mock_render.assert_called_once_with(date=_now, v=True)
-        self.mock_open.assert_called_once_with(Git._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-        self.mock_check.assert_not_called()
-        self.mock_log.assert_not_called()
-
 
 if __name__ in ['__main__', 'tasks.git.git_test']:
     _main = __name__ == '__main__'
     _pkg = 'tasks.git'
     _pth = 'tasks/git'
-    main(GitTest, Git, _pkg, _pth, {}, _main, date=_now, e=_env)
+    main(GitTest, Git, _pkg, _pth, {}, _main, date=DATE_10260602, e=ENV)

@@ -95,7 +95,11 @@ class Renderable(Serializable):
         test = kwargs.get('test')
         log = kwargs.get('log', True)
 
-        for html, subtitle, tmpl, context in self._render_internal(**kwargs):
+        value = self._render_internal(**kwargs)
+        if not value:
+            return
+
+        for html, subtitle, tmpl, context in value:
             try:
                 subtitle = ' » ' + subtitle if subtitle else ''
                 title = self._title() + subtitle

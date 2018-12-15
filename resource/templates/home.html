@@ -8,16 +8,16 @@
 
 {% block content %}
 
-{% if registered %}
-<!-- ^(home.registered) -->
-<div class="container anchor" id="registered">
+{% if external %}
+<!-- ^(home.external) -->
+<div class="container anchor" id="external">
 
-{{ common.heading('globe', 'Directory') }}
+{{ common.heading('globe', 'External Tasks') }}
 
 <!-- ^(home.row) -->
 <div class="row d-flex flex-wrap">
 
-{% for card in registered %}
+{% for card in external %}
 <!-- ^(home.column) -->
 <div class="col-md-6 col-lg-4 d-flex flex-column">
 
@@ -31,7 +31,33 @@
 <!-- $(home.row) -->
 
 </div>
-<!-- $(home.registered) -->
+<!-- $(home.external) -->
+{% endif %}
+
+{% if internal %}
+<!-- ^(home.internal) -->
+<div class="container anchor" id="internal">
+
+{{ common.heading('dashboard', 'Internal Tasks') }}
+
+<!-- ^(home.row) -->
+<div class="row d-flex flex-wrap">
+
+{% for card in internal %}
+<!-- ^(home.column) -->
+<div class="col-md-6 col-lg-4 d-flex flex-column">
+
+{{ common.card(card) }}
+
+</div>
+<!-- $(home.column) -->
+
+{% endfor %}
+</div>
+<!-- $(home.row) -->
+
+</div>
+<!-- $(home.internal) -->
 {% endif %}
 
 {% endblock %}

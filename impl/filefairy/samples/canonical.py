@@ -13,13 +13,7 @@ from common.elements.elements import card  # noqa
 
 _breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
 
-_registered = [
-    card(
-        href='/fairylab/bar/',
-        title='bar',
-        info='Description of bar.',
-        ts='06:02:30 EDT (1985-10-26)',
-    ),
+_external = [
     card(
         href='/fairylab/baz/',
         title='baz',
@@ -33,12 +27,6 @@ _registered = [
         ts='06:02:30 EDT (1985-10-26)',
     ),
     card(
-        href='/fairylab/quux/',
-        title='quux',
-        info='Description of quux.',
-        ts='06:02:30 EDT (1985-10-26)',
-        danger='disabled'),
-    card(
         href='/fairylab/quuz/',
         title='quuz',
         info='Description of quuz.',
@@ -51,6 +39,18 @@ _registered = [
         ts='06:02:30 EDT (1985-10-26)',
     )
 ]
+_internal = [
+    card(
+        title='bar',
+        info='Description of bar.',
+        ts='06:02:30 EDT (1985-10-26)',
+    ),
+    card(
+        title='quux',
+        info='Description of quux.',
+        ts='06:02:30 EDT (1985-10-26)',
+        danger='disabled'),
+]
 
 subtitle = ''
 
@@ -59,5 +59,6 @@ tmpl = 'home.html'
 context = {
     'title': 'home',
     'breadcrumbs': _breadcrumbs,
-    'registered': _registered,
+    'external': _external,
+    'internal': _internal,
 }

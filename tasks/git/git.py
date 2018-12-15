@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import copy
 import logging
 import os
 import re
 import sys
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/tasks/git', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/tasks/git', '', _path))
+
 from api.registrable.registrable import Registrable  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
@@ -24,13 +24,9 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 
-logger_ = logging.getLogger('filefairy')
-
-_commit = 'https://github.com/brunner/filefairy/commit/'
-_l = ['d-inline-block', 'w-65p']
-_r = ['d-inline-block', 'text-right', 'w-65p']
-
-_fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
+CONTAINING_DIR = re.sub(r'/filefairy/tasks/git', '', _path)
+FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
+FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
 
 
 class Git(Registrable):
@@ -43,7 +39,7 @@ class Git(Registrable):
 
     @staticmethod
     def _href():
-        return '/git/'
+        return ''
 
     @staticmethod
     def _info():
@@ -68,38 +64,16 @@ class Git(Registrable):
         return Response()
 
     def _render_internal(self, **kwargs):
-        html = 'git/index.html'
-        _home = self._home(**kwargs)
-        return [(html, '', 'git.html', _home)]
+        return []
 
     def _run_internal(self, **kwargs):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        self._render(**kwargs)
         return Response()
 
     def _shadow_internal(self, **kwargs):
         return []
-
-    @staticmethod
-    def _firstlast(text):
-        match = re.findall('(\w+)\.\.(\w+)', text)
-        if match:
-            first, last = match[0]
-        else:
-            return '???????', '???????'
-
-        response = Git._call(['git', 'log', '-20', '--format="%H"'])
-        stdout = Git._stdout(response)
-        for line in stdout.splitlines():
-            line = line.replace('"', '')
-            if line.startswith(first):
-                first = line
-            if line.startswith(last):
-                last = line
-
-        return first, last
 
     @staticmethod
     def _format(cmd):
@@ -117,7 +91,7 @@ class Git(Registrable):
     @staticmethod
     def _call(cmd, *args, **kwargs):
         if len(args) == 1 and args[0] == 'fairylab':
-            with chdir(_fairylab_root):
+            with chdir(FAIRYLAB_DIR):
                 output = check_output(cmd)
         else:
             output = check_output(cmd)
@@ -161,95 +135,17 @@ class Git(Registrable):
         return response
 
     def commit(self, *args, **kwargs):
-        s = 'Manual' if kwargs.get('v') else 'Automated'
-        return self._call(['git', 'commit', '-m', s + ' push.'], *args,
-                          **kwargs)
+        s = 'Manual push.' if kwargs.get('v') else 'Automated push.'
+        return self._call(['git', 'commit', '-m', s], *args, **kwargs)
 
     def pull(self, *args, **kwargs):
-        response = self._call(['git', 'pull'], *args, **kwargs)
-
-        if len(args) == 1 and args[0] == 'fairylab':
-            pass
-        elif response.notify:
-            logger_.log(logging.INFO, 'Fetched latest changes.')
-            self._save(response, 'pull', self._stdout, **kwargs)
-
-        return response
+        return self._call(['git', 'pull'], *args, **kwargs)
 
     def push(self, *args, **kwargs):
-        response = self._call(['git', 'push'], *args, **kwargs)
-
-        if len(args) == 1 and args[0] == 'fairylab':
-            pass
-        elif response.notify:
-            s = 'Manual' if kwargs.get('v') else 'Automated'
-            logger_.log(logging.INFO, s + ' push.')
-            self._save(response, 'push', self._stderr, **kwargs)
-
-        return response
+        return self._call(['git', 'push'], *args, **kwargs)
 
     def reset(self, *args, **kwargs):
         return self._call(['git', 'reset', '--hard'], *args, **kwargs)
 
     def status(self, *args, **kwargs):
         return self._call(['git', 'status'], *args, **kwargs)
-
-    def _body(self, key):
-        body = []
-        for value in self.data[key]:
-            first = anchor(_commit + value['first'], value['first'][:7])
-            last = anchor(_commit + value['last'], value['last'][:7])
-            range_ = span(_l, first) + ' ... ' + span(_r, last)
-            ddate = decode_datetime(value['date'])
-            date = ddate.strftime('%b %d')
-            time = ddate.strftime('%H:%M')
-            body.append(
-                [cell(content=range_),
-                 cell(content=date + ' ' + time)])
-        return body
-
-    def _home(self, **kwargs):
-        data = self.data
-        ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '',
-                'name': 'Git'
-            }]
-        }
-
-        if data['pull']:
-            ret['pull'] = table(
-                clazz='border mt-3',
-                head=[cell(content='Range')],
-                hcols=[col(colspan='2')],
-                bcols=[col(), col(clazz='text-right')],
-                body=self._body('pull'))
-
-        if data['push']:
-            ret['push'] = table(
-                clazz='border mt-3',
-                head=[cell(content='Range')],
-                hcols=[col(colspan='2')],
-                bcols=[col(), col(clazz='text-right')],
-                body=self._body('push'))
-
-        return ret
-
-    def _save(self, response, key, extractor, **kwargs):
-        data = self.data
-        original = copy.deepcopy(data)
-
-        date = encode_datetime(kwargs['date'])
-        text = extractor(response)
-        first, last = self._firstlast(text)
-        value = {'date': date, 'first': first, 'last': last}
-        data[key].insert(0, value)
-        if len(data[key]) > 10:
-            data[key] = data[key][:10]
-
-        if data != original:
-            self.write()
-            self._render(**kwargs)

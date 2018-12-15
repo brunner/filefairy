@@ -60,7 +60,7 @@ def set_keep_running(filefairy, keep_running, *args, **kwargs):
     filefairy.keep_running = keep_running
 
 
-class FakeRegistrable(Registrable):
+class FakeExternalRegistrable(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -88,6 +88,45 @@ class FakeRegistrable(Registrable):
 
     def _render_internal(self, **kwargs):
         return [('foo/index.html', '', 'foo.html', {})]
+
+    def _run_internal(self, **kwargs):
+        return Response(notify=[Notify.BASE])
+
+    def _setup_internal(self, **kwargs):
+        pass
+
+    def _shadow_internal(self, **kwargs):
+        return []
+
+
+class FakeInternalRegistrable(Registrable):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @staticmethod
+    def _data():
+        return re.sub(r'/impl/filefairy', '/tasks/snacks/data.json', _path)
+
+    @staticmethod
+    def _href():
+        return ''
+
+    @staticmethod
+    def _info():
+        return 'Description of bar.'
+
+    @staticmethod
+    def _title():
+        return 'bar'
+
+    def _on_message_internal(self, **kwargs):
+        return Response(notify=[Notify.BASE])
+
+    def _notify_internal(self, **kwargs):
+        pass
+
+    def _render_internal(self, **kwargs):
+        return []
 
     def _run_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
@@ -167,11 +206,26 @@ class FilefairyTest(Test):
 
         return filefairy
 
-    def create_registrable(self, date):
+    def create_external_registrable(self, date):
         self.init_mocks({})
-        registrable = FakeRegistrable(date=date, e=ENV)
+        registrable = FakeExternalRegistrable(date=date, e=ENV)
 
-        self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')
+        self.mock_open.assert_called_once_with(FakeExternalRegistrable._data(),
+                                               'r')
+        self.assertNotCalled(self.mock_log, self.mock_handle.write)
+        self.assertEqual(registrable.data, {})
+
+        self.reset_mocks()
+        self.init_mocks({})
+
+        return registrable
+
+    def create_internal_registrable(self, date):
+        self.init_mocks({})
+        registrable = FakeInternalRegistrable(date=date, e=ENV)
+
+        self.mock_open.assert_called_once_with(FakeInternalRegistrable._data(),
+                                               'r')
         self.assertNotCalled(self.mock_log, self.mock_handle.write)
         self.assertEqual(registrable.data, {})
 
@@ -333,7 +387,7 @@ class FilefairyTest(Test):
 
     @mock.patch('impl.filefairy.filefairy.getattr')
     def test_install__ok(self, mock_getattr):
-        mock_getattr.return_value = FakeRegistrable
+        mock_getattr.return_value = FakeExternalRegistrable
 
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
@@ -344,10 +398,11 @@ class FilefairyTest(Test):
         self.assertEqual(actual, expected)
 
         mock_getattr.assert_called_once_with(module, 'Task')
-        self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')
+        self.mock_open.assert_called_once_with(FakeExternalRegistrable._data(),
+                                               'r')
         self.assertNotCalled(self.mock_log, self.mock_handle.write)
         self.assertTrue(
-            isinstance(filefairy.registered['foo'], FakeRegistrable))
+            isinstance(filefairy.registered['foo'], FakeExternalRegistrable))
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_on_message')
@@ -430,7 +485,8 @@ class FilefairyTest(Test):
     def test_response__empty(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         response = Response()
         filefairy._response('foo', response, date=DATE_10260604)
@@ -447,7 +503,8 @@ class FilefairyTest(Test):
     def test_response__notify_base(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         response = Response(notify=[Notify.BASE])
         filefairy._response('foo', response, date=DATE_10260604)
@@ -464,7 +521,8 @@ class FilefairyTest(Test):
     def test_response__notify_other(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         response = Response(notify=[Notify.OTHER])
         filefairy._response('foo', response, date=DATE_10260604)
@@ -483,7 +541,8 @@ class FilefairyTest(Test):
     def test_response__shadow(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         shadow = Shadow(destination='bar', key='foo.baz')
         response = Response(shadow=[shadow])
@@ -503,7 +562,8 @@ class FilefairyTest(Test):
     def test_response__thread(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         thread_ = Thread(target='foo')
         response = Response(thread_=[thread_])
@@ -526,7 +586,8 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10250007)
         filefairy = self.create_filefairy(_data(DATE_10250007), dashboard)
         filefairy.day = 25
-        filefairy.registered['git'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['git'] = self.create_external_registrable(
+            DATE_10260602)
 
         filefairy._run()
 
@@ -550,7 +611,8 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
         filefairy.day = 26
-        filefairy.registered['git'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['git'] = self.create_external_registrable(
+            DATE_10260602)
 
         filefairy._run()
 
@@ -570,7 +632,8 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
         filefairy.day = 26
-        filefairy.registered['git'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['git'] = self.create_external_registrable(
+            DATE_10260602)
 
         mock_try_all.side_effect = functools.partial(set_date, filefairy)
 
@@ -644,14 +707,15 @@ class FilefairyTest(Test):
         self.assertNotCalled(mock_connect, mock_thread, self.mock_log,
                              self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(FakeRegistrable, '_run')
+    @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__exception(self, mock_response, mock_run):
         mock_run.side_effect = Exception()
 
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
@@ -663,7 +727,7 @@ class FilefairyTest(Test):
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
         self.assertEqual(filefairy.registered['foo'].ok, False)
 
-    @mock.patch.object(FakeRegistrable, '_run')
+    @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__response(self, mock_response, mock_run):
         response = Response(notify=[Notify.BASE])
@@ -671,7 +735,8 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
@@ -683,25 +748,26 @@ class FilefairyTest(Test):
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].ok, True)
 
-    @mock.patch.object(FakeRegistrable, '_run')
+    @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__uncallable(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         filefairy._try('foo', 'bar', date=DATE_10260604)
 
         self.assertNotCalled(mock_response, mock_run, self.mock_log,
                              self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(FakeRegistrable, '_run')
+    @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__unhappy(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
 
-        registrable = self.create_registrable(DATE_10260602)
+        registrable = self.create_external_registrable(DATE_10260602)
         registrable.ok = False
         filefairy.registered['foo'] = registrable
 
@@ -710,7 +776,7 @@ class FilefairyTest(Test):
         self.assertNotCalled(mock_response, mock_run, self.mock_log,
                              self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(FakeRegistrable, '_run')
+    @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__unregistered(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
@@ -725,7 +791,8 @@ class FilefairyTest(Test):
     def test_try_all(self, mock_try):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
 
         filefairy._try_all('_run', date=DATE_10260604)
 
@@ -740,12 +807,12 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
 
-        registrable = self.create_registrable(DATE_10260602)
+        registrable = self.create_external_registrable(DATE_10260602)
         registrable.ok = False
         filefairy.registered['foo'] = registrable
 
         breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
-        registered = [
+        external = [
             card(
                 href='/dashboard/',
                 title='dashboard',
@@ -759,7 +826,11 @@ class FilefairyTest(Test):
                 danger='disabled')
         ]
         actual = filefairy._index_html(date=DATE_10260602)
-        expected = {'breadcrumbs': breadcrumbs, 'registered': registered}
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'external': external,
+            'internal': []
+        }
         self.assertEqual(actual, expected)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
@@ -767,10 +838,13 @@ class FilefairyTest(Test):
     def test_index_html__ok(self):
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        filefairy.registered['foo'] = self.create_registrable(DATE_10260602)
+        filefairy.registered['foo'] = self.create_external_registrable(
+            DATE_10260602)
+        filefairy.registered['bar'] = self.create_internal_registrable(
+            DATE_10260602)
 
         breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
-        registered = [
+        external = [
             card(
                 href='/dashboard/',
                 title='dashboard',
@@ -782,8 +856,18 @@ class FilefairyTest(Test):
                 info='Description of foo.',
                 ts='06:02:30 PDT (1985-10-26)')
         ]
+        internal = [
+            card(
+                title='bar',
+                info='Description of bar.',
+                ts='06:02:30 PDT (1985-10-26)')
+        ]
         actual = filefairy._index_html(date=DATE_10260602)
-        expected = {'breadcrumbs': breadcrumbs, 'registered': registered}
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'external': external,
+            'internal': internal
+        }
         self.assertEqual(actual, expected)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
