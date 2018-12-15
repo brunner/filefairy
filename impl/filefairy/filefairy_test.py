@@ -32,10 +32,12 @@ from impl.dashboard.dashboard import Dashboard  # noqa
 from impl.filefairy.filefairy import Filefairy  # noqa
 
 BG = threading.Thread()
+ENV = env()
+
 DATE_10250007 = datetime_datetime_pst(1985, 10, 25, 0, 7)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
-ENV = env()
+
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
 

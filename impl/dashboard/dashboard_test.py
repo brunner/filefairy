@@ -25,13 +25,15 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from impl.dashboard.dashboard import Dashboard  # noqa
 
+ENV = env()
+
 DATE_10190000 = datetime_datetime_pst(1985, 10, 19)
 DATE_10250000 = datetime_datetime_pst(1985, 10, 25)
 DATE_10250007 = datetime_datetime_pst(1985, 10, 25, 0, 7)
 DATE_10260000 = datetime_datetime_pst(1985, 10, 26)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
-ENV = env()
+
 EXC = (Exception, Exception(), Exception().__traceback__)
 PATH = '/home/pi/filefairy/path/to/module.py'
 STDOUT = 'stdout'
