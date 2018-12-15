@@ -32,14 +32,6 @@ ENV = env()
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
 
-def _data(pull=None, push=None):
-    if pull is None:
-        pull = []
-    if push is None:
-        push = []
-    return {'pull': pull, 'push': push}
-
-
 class GitTest(unittest.TestCase):
     def setUp(self):
         patch_open = mock.patch(
@@ -66,8 +58,8 @@ class GitTest(unittest.TestCase):
         self.mock_log.reset_mock()
         self.mock_check.reset_mock()
 
-    def create_git(self, data):
-        self.init_mocks(data)
+    def create_git(self):
+        self.init_mocks({})
         git = Git(date=DATE_10260602, e=ENV)
 
         self.mock_open.assert_called_once_with(Git._data(), 'r')
@@ -76,14 +68,14 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
         self.reset_mocks()
-        self.init_mocks(data)
+        self.init_mocks({})
 
         return git
 
     @mock.patch.object(Git, 'status')
     @mock.patch.object(Git, 'automate')
     def test_notify__with_day(self, mock_automate, mock_status):
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._notify_internal(notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
@@ -104,7 +96,7 @@ class GitTest(unittest.TestCase):
         mock_status.return_value = Response(
             notify=[Notify.BASE], debug=[debug])
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._notify_internal(notify=Notify.FILEFAIRY_DEPLOY)
         self.assertEqual(response, Response())
 
@@ -125,7 +117,7 @@ class GitTest(unittest.TestCase):
         mock_status.return_value = Response(
             notify=[Notify.BASE], debug=[debug])
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._notify_internal(notify=Notify.FILEFAIRY_DEPLOY)
         self.assertEqual(response, Response())
 
@@ -141,7 +133,7 @@ class GitTest(unittest.TestCase):
     @mock.patch.object(Git, 'status')
     @mock.patch.object(Git, 'automate')
     def test_notify__with_other(self, mock_automate, mock_status):
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
@@ -153,7 +145,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_on_message(self):
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._on_message_internal()
         self.assertEqual(response, Response())
 
@@ -163,7 +155,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_render(self):
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._render_internal(date=DATE_10260602)
         self.assertEqual(response, [])
 
@@ -173,7 +165,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_run(self):
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._run_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
@@ -183,7 +175,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_setup(self):
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git._setup_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
@@ -193,7 +185,7 @@ class GitTest(unittest.TestCase):
         self.mock_check.assert_not_called()
 
     def test_shadow(self):
-        git = self.create_git(_data())
+        git = self.create_git()
         value = git._shadow_internal()
         self.assertEqual(value, [])
 
@@ -234,7 +226,7 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.add('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git add .\'.'
         expected = Response(
@@ -253,7 +245,7 @@ class GitTest(unittest.TestCase):
         adebug = Debug(msg='Call completed: \'git add .\'.')
         mock_add.return_value = Response(debug=[adebug])
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(debug=[adebug])
         self.assertEqual(response, expected)
@@ -277,7 +269,7 @@ class GitTest(unittest.TestCase):
             msg='Call completed: \'git commit -m "Automated push."\'.')
         mock_commit.return_value = Response(debug=[cdebug])
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(debug=[cdebug])
         self.assertEqual(response, expected)
@@ -304,7 +296,7 @@ class GitTest(unittest.TestCase):
         pdebug = Debug(msg='Call completed: \'git push\'.')
         mock_push.return_value = Response(debug=[pdebug])
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(debug=[pdebug])
         self.assertEqual(response, expected)
@@ -330,7 +322,7 @@ class GitTest(unittest.TestCase):
         pdebug = Debug(msg='Call completed: \'git push\'.')
         mock_push.return_value = Response(notify=[Notify.BASE], debug=[pdebug])
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.automate('filefairy', date=DATE_10260602)
         expected = Response(
             notify=[Notify.BASE], debug=[adebug, cdebug, pdebug])
@@ -349,7 +341,7 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.commit('filefairy')
         msg = 'Call completed: \'git commit -m "Automated push."\'.'
         expected = Response(
@@ -367,7 +359,7 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.commit('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git commit -m "Manual push."\'.'
         expected = Response(
@@ -385,7 +377,7 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.pull('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git pull\'.'
         expected = Response(
@@ -402,7 +394,7 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': '', 'stderr': stderr}
         self.mock_check.return_value = ret
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.push('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git push\'.'
         expected = Response(
@@ -418,7 +410,7 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': ''}
         self.mock_check.return_value = ret
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.reset('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git reset --hard\'.'
         expected = Response(
@@ -435,7 +427,7 @@ class GitTest(unittest.TestCase):
         ret = {'ok': True, 'stdout': stdout, 'stderr': ''}
         self.mock_check.return_value = ret
 
-        git = self.create_git(_data())
+        git = self.create_git()
         response = git.status('filefairy', date=DATE_10260602, v=True)
         msg = 'Call completed: \'git status\'.'
         expected = Response(

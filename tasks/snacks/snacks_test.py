@@ -43,16 +43,6 @@ _then = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 _then_encoded = '1985-10-26T00:02:30-07:00'
 
 
-def _data(count=None, date=_then_encoded, last=None, members=None):
-    if count is None:
-        count = {}
-    if last is None:
-        last = {}
-    if members is None:
-        members = {}
-    return {'count': count, 'date': date, 'last': last, 'members': members}
-
-
 class SnacksTest(Test):
     def setUp(self):
         patch_open = mock.patch(
@@ -90,8 +80,8 @@ class SnacksTest(Test):
         self.mock_collect.reset_mock()
         self.mock_reactions.reset_mock()
 
-    def create_snacks(self, data, cfds=None, names=None):
-        self.init_mocks(data)
+    def create_snacks(self, cfds=None, names=None):
+        self.init_mocks({})
         snacks = Snacks(date=_now, e=_env)
         snacks.loaded = True
 
@@ -103,7 +93,7 @@ class SnacksTest(Test):
         self.mock_reactions.assert_not_called()
 
         self.reset_mocks()
-        self.init_mocks(data)
+        self.init_mocks({})
 
         if cfds:
             snacks.cfds = cfds
@@ -112,9 +102,8 @@ class SnacksTest(Test):
 
         return snacks
 
-    @mock.patch.object(Snacks, '_render')
-    def test_notify__with_day(self, mock_render):
-        snacks = self.create_snacks(_data(members=_members_old))
+    def test_notify__with_day(self):
+        snacks = self.create_snacks()
         snacks._setup(date=_then)
 
         self.reset_mocks()
@@ -122,7 +111,6 @@ class SnacksTest(Test):
         response = snacks._notify_internal(notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response(thread_=[Thread(target='_load')]))
 
-        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -130,9 +118,8 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
-    def test_notify__with_other(self, mock_render):
-        snacks = self.create_snacks(_data(members=_members_old))
+    def test_notify__with_other(self):
+        snacks = self.create_snacks()
         snacks._setup(date=_then)
 
         self.reset_mocks()
@@ -140,7 +127,6 @@ class SnacksTest(Test):
         response = snacks._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -158,15 +144,14 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         calls = [mock.call(_chooselist + _wafflelist), mock.call(['a', 'b'])]
         mock_random.assert_has_calls(calls)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0',
                                                'A. Did you even need to ask?')
@@ -181,7 +166,7 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
@@ -203,14 +188,13 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with(
             'C9YE6NQG0', 'I don\'t know anything about topic.')
@@ -227,14 +211,13 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
         self.mock_collect.assert_not_called()
@@ -252,15 +235,13 @@ class SnacksTest(Test):
         }
         cfds = {'U5678': {}}
         names = ['user']
-        snacks = self.create_snacks(
-            _data(members=_members_old), cfds=cfds, names=names)
+        snacks = self.create_snacks(cfds=cfds, names=names)
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with(
             'C9YE6NQG0', '<@U5678> doesn\'t know anything.')
@@ -279,15 +260,13 @@ class SnacksTest(Test):
         }
         cfds = {'U5678': {}}
         names = ['user']
-        snacks = self.create_snacks(
-            _data(members=_members_old), cfds=cfds, names=names)
+        snacks = self.create_snacks(cfds=cfds, names=names)
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         mock_imitate.assert_called_once_with({}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
         self.mock_collect.assert_not_called()
@@ -305,15 +284,13 @@ class SnacksTest(Test):
         }
         cfds = {'U5678': {}}
         names = ['user']
-        snacks = self.create_snacks(
-            _data(members=_members_old), cfds=cfds, names=names)
+        snacks = self.create_snacks(cfds=cfds, names=names)
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with(
             'C9YE6NQG0', '<@U5678> doesn\'t know anything about topic.')
@@ -332,15 +309,13 @@ class SnacksTest(Test):
         }
         cfds = {'U5678': {}}
         names = ['user']
-        snacks = self.create_snacks(
-            _data(members=_members_old), cfds=cfds, names=names)
+        snacks = self.create_snacks(cfds=cfds, names=names)
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('<@U1234>', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
         self.mock_collect.assert_not_called()
@@ -358,15 +333,13 @@ class SnacksTest(Test):
         }
         cfds = {'U5678': {}}
         names = ['user']
-        snacks = self.create_snacks(
-            _data(members=_members_old), cfds=cfds, names=names)
+        snacks = self.create_snacks(cfds=cfds, names=names)
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         mock_discuss.assert_called_once_with('topic', {}, 4, 8, 30)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'response')
         self.mock_collect.assert_not_called()
@@ -379,22 +352,20 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0', 'topic')
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Snacks, '_snacks')
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('tasks.snacks.snacks.pins_add')
-    def test_on_message__with_snack_me_text_pin(self, mock_pins, mock_render,
+    def test_on_message__with_snack_me_text_pin(self, mock_pins,
                                                 mock_snacks):
         mock_snacks.return_value = ['a', 'star', 'b']
 
@@ -404,18 +375,14 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U3ULC7DBP',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        count = {'a': 1, 'star': 1, 'b': 1}
-        last = {'a': _now_encoded, 'star': _now_encoded, 'b': _now_encoded}
-        write = _data(count=count, last=last, members=_members_bot)
         mock_pins.assert_called_once_with('C9YE6NQG0', '1000.789')
-        mock_render.assert_called_once_with(date=_now, obj=obj)
         mock_snacks.assert_called_once_with()
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
@@ -427,9 +394,8 @@ class SnacksTest(Test):
         self.mock_reactions.assert_has_calls(calls)
 
     @mock.patch.object(Snacks, '_snacks')
-    @mock.patch.object(Snacks, '_render')
     @mock.patch('tasks.snacks.snacks.pins_add')
-    def test_on_message__with_snack_me_text_star(self, mock_pins, mock_render,
+    def test_on_message__with_snack_me_text_star(self, mock_pins,
                                                  mock_snacks):
         mock_snacks.return_value = ['a', 'star', 'b']
 
@@ -439,18 +405,14 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        count = {'a': 1, 'star': 1, 'b': 1}
-        last = {'a': _now_encoded, 'star': _now_encoded, 'b': _now_encoded}
-        write = _data(count=count, last=last, members=_members_new)
         mock_pins.assert_not_called()
-        mock_render.assert_called_once_with(date=_now, obj=obj)
         mock_snacks.assert_called_once_with()
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_not_called()
         self.mock_collect.assert_not_called()
@@ -473,16 +435,14 @@ class SnacksTest(Test):
         }
         cfds = {'U5678': {}}
         names = ['a', 'b']
-        snacks = self.create_snacks(
-            _data(members=_members_old), cfds=cfds, names=names)
+        snacks = self.create_snacks(cfds=cfds, names=names)
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
-        write = _data(members=_members_new)
         calls = [mock.call(_chooselist), mock.call(['a', 'b'])]
         mock_random.assert_has_calls(calls)
-        self.mock_open.assert_called_once_with(Snacks._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
         self.mock_chat.assert_called_once_with('C9YE6NQG0',
                                                'a. Did you even need to ask?')
@@ -496,7 +456,7 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
@@ -514,7 +474,7 @@ class SnacksTest(Test):
             'ts': '1000.789',
             'user': 'U1234',
         }
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._on_message_internal(date=_now, obj=obj)
         self.assertEqual(response, Response())
 
@@ -525,33 +485,10 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    def test_on_message__with_invalid_timestamp(self):
-        obj = {
-            'channel': 'C9YE6NQG0',
-            'text': '<@U3ULC7DBP> discuss topic',
-            'ts': '105.456',
-            'user': 'U1234',
-        }
-        snacks = self.create_snacks(_data(members=_members_old))
-        response = snacks._on_message_internal(date=_now, obj=obj)
-        self.assertEqual(response, Response())
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_collect.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    @mock.patch.object(Snacks, '_home')
-    def test_render(self, mock_home):
-        home = {'breadcrumbs': [], 'statistics': {}}
-        mock_home.return_value = home
-
-        snacks = self.create_snacks(_data())
+    def test_render(self):
+        snacks = self.create_snacks()
         response = snacks._render_internal(date=_now)
-        index = 'snacks/index.html'
-        self.assertEqual(response, [(index, '', 'snacks.html', home)])
+        self.assertEqual(response, [])
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -561,7 +498,7 @@ class SnacksTest(Test):
         self.mock_reactions.assert_not_called()
 
     def test_run(self):
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         response = snacks._run_internal(date=_then)
         self.assertEqual(response, Response())
 
@@ -572,14 +509,12 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Snacks, '_render')
-    def test_setup(self, mock_render):
-        snacks = self.create_snacks(_data(members=_members_old))
+    def test_setup(self):
+        snacks = self.create_snacks()
         response = snacks._setup_internal(date=_then)
         self.assertEqual(response,
                          Response(thread_=[Thread(target='_load_internal')]))
 
-        mock_render.assert_called_once_with(date=_then)
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_cfd.assert_not_called()
@@ -588,7 +523,7 @@ class SnacksTest(Test):
         self.mock_reactions.assert_not_called()
 
     def test_shadow(self):
-        snacks = self.create_snacks(_data(members=_members_old))
+        snacks = self.create_snacks()
         value = snacks._shadow_internal()
         self.assertEqual(value, [])
 
@@ -716,7 +651,7 @@ class SnacksTest(Test):
         mock_open.side_effect = [mo.return_value]
 
         names = {'U1234': 'foo', 'U5678': 'bar'}
-        snacks = self.create_snacks(_data(members=_members_old), names=names)
+        snacks = self.create_snacks(names=names)
         snacks._corpus()
 
         mock_channels.assert_called_once_with()
@@ -730,278 +665,13 @@ class SnacksTest(Test):
         self.mock_collect.assert_called_once_with('C1234')
         self.mock_reactions.assert_not_called()
 
-    def test_home__with_empty(self):
-        read = _data(members=_members_old)
-        snacks = self.create_snacks(read)
-        actual = snacks._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Snacks'
-        }]
-        servings = card(title='0', info='Total snacks served.', ts='never')
-        stars = card(title='0', info='Total stars awarded.', ts='never')
-        trophies = card(title='0', info='Total trophies lifted.', ts='never')
-        statistics = [servings, stars, trophies]
-        expected = {'breadcrumbs': breadcrumbs, 'statistics': statistics}
-        self.assertEqual(actual, expected)
-
-    def test_home__with_servings(self):
-        count = {'apple': 6, 'baguette_bread': 3}
-        last = {'apple': _now_encoded, 'baguette_bread': _then_encoded}
-        read = _data(count=count, last=last, members=_members_old)
-        snacks = self.create_snacks(read)
-        actual = snacks._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Snacks'
-        }]
-        servings = card(
-            title='3',
-            info='Total snacks served.',
-            ts='00:00:00 PDT (1985-10-27)')
-        stars = card(title='0', info='Total stars awarded.', ts='never')
-        trophies = card(title='0', info='Total trophies lifted.', ts='never')
-        statistics = [servings, stars, trophies]
-        count = table(
-            clazz='border mt-3',
-            hcols=_cols,
-            bcols=_cols,
-            head=[
-                cell(content='Emoji'),
-                cell(content='Name'),
-                cell(content='Count')
-            ],
-            body=[
-                [
-                    cell(content='\U0001F34E'),
-                    cell(content='apple'),
-                    cell(content='6')
-                ],
-                [
-                    cell(content='\U0001f956'),
-                    cell(content='baguette bread'),
-                    cell(content='3')
-                ],
-            ])
-        recent = table(
-            clazz='border mt-3',
-            hcols=_cols,
-            bcols=_cols,
-            head=[
-                cell(content='Emoji'),
-                cell(content='Name'),
-                cell(content='Last activity')
-            ],
-            body=[
-                [
-                    cell(content='\U0001F34E'),
-                    cell(content='apple'),
-                    cell(content='00:00:00 PDT (1985-10-27)')
-                ],
-                [
-                    cell(content='\U0001f956'),
-                    cell(content='baguette bread'),
-                    cell(content='00:02:30 PDT (1985-10-26)')
-                ],
-            ])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'statistics': statistics,
-            'count': count,
-            'recent': recent
-        }
-        self.assertEqual(actual, expected)
-
-    def test_home__with_stars(self):
-        count = {'apple': 6, 'baguette_bread': 2, 'star': 1}
-        last = {
-            'apple': _now_encoded,
-            'baguette_bread': _then_encoded,
-            'star': _then_encoded
-        }
-        read = _data(count=count, last=last, members=_members_old)
-        snacks = self.create_snacks(read)
-        actual = snacks._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Snacks'
-        }]
-        servings = card(
-            title='3',
-            info='Total snacks served.',
-            ts='00:00:00 PDT (1985-10-27)')
-        stars = card(
-            title='1',
-            info='Total stars awarded.',
-            ts='00:02:30 PDT (1985-10-26)')
-        trophies = card(title='0', info='Total trophies lifted.', ts='never')
-        statistics = [servings, stars, trophies]
-        count = table(
-            clazz='border mt-3',
-            hcols=_cols,
-            bcols=_cols,
-            head=[
-                cell(content='Emoji'),
-                cell(content='Name'),
-                cell(content='Count')
-            ],
-            body=[
-                [
-                    cell(content='\U0001F34E'),
-                    cell(content='apple'),
-                    cell(content='6')
-                ],
-                [
-                    cell(content='\U0001f956'),
-                    cell(content='baguette bread'),
-                    cell(content='2')
-                ],
-                [
-                    cell(content='\u2B50'),
-                    cell(content='star'),
-                    cell(content='1')
-                ],
-            ])
-        recent = table(
-            clazz='border mt-3',
-            hcols=_cols,
-            bcols=_cols,
-            head=[
-                cell(content='Emoji'),
-                cell(content='Name'),
-                cell(content='Last activity')
-            ],
-            body=[
-                [
-                    cell(content='\U0001F34E'),
-                    cell(content='apple'),
-                    cell(content='00:00:00 PDT (1985-10-27)')
-                ],
-                [
-                    cell(content='\U0001f956'),
-                    cell(content='baguette bread'),
-                    cell(content='00:02:30 PDT (1985-10-26)')
-                ],
-                [
-                    cell(content='\u2B50'),
-                    cell(content='star'),
-                    cell(content='00:02:30 PDT (1985-10-26)')
-                ],
-            ])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'statistics': statistics,
-            'count': count,
-            'recent': recent
-        }
-        self.assertEqual(actual, expected)
-
-    def test_home__with_trophies(self):
-        count = {'apple': 1, 'star': 1, 'trophy': 1}
-        last = {
-            'apple': _now_encoded,
-            'star': _now_encoded,
-            'trophy': _now_encoded
-        }
-        read = _data(count=count, last=last, members=_members_old)
-        snacks = self.create_snacks(read)
-        actual = snacks._home(date=_now)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Snacks'
-        }]
-        servings = card(
-            title='1',
-            info='Total snacks served.',
-            ts='00:00:00 PDT (1985-10-27)')
-        stars = card(
-            title='1',
-            info='Total stars awarded.',
-            ts='00:00:00 PDT (1985-10-27)')
-        trophies = card(
-            title='1',
-            info='Total trophies lifted.',
-            ts='00:00:00 PDT (1985-10-27)')
-        statistics = [servings, stars, trophies]
-        count = table(
-            clazz='border mt-3',
-            hcols=_cols,
-            bcols=_cols,
-            head=[
-                cell(content='Emoji'),
-                cell(content='Name'),
-                cell(content='Count')
-            ],
-            body=[
-                [
-                    cell(content='\U0001F34E'),
-                    cell(content='apple'),
-                    cell(content='1')
-                ],
-                [
-                    cell(content='\u2B50'),
-                    cell(content='star'),
-                    cell(content='1')
-                ],
-                [
-                    cell(content='\U0001F3C6'),
-                    cell(content='trophy'),
-                    cell(content='1')
-                ],
-            ])
-        recent = table(
-            clazz='border mt-3',
-            hcols=_cols,
-            bcols=_cols,
-            head=[
-                cell(content='Emoji'),
-                cell(content='Name'),
-                cell(content='Last activity')
-            ],
-            body=[
-                [
-                    cell(content='\U0001F34E'),
-                    cell(content='apple'),
-                    cell(content='00:00:00 PDT (1985-10-27)')
-                ],
-                [
-                    cell(content='\u2B50'),
-                    cell(content='star'),
-                    cell(content='00:00:00 PDT (1985-10-27)')
-                ],
-                [
-                    cell(content='\U0001F3C6'),
-                    cell(content='trophy'),
-                    cell(content='00:00:00 PDT (1985-10-27)')
-                ],
-            ])
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'statistics': statistics,
-            'count': count,
-            'recent': recent
-        }
-        self.assertEqual(actual, expected)
-
     @mock.patch.object(Snacks, '_load_internal')
     @mock.patch.object(Snacks, '_corpus')
     def test_load(self, mock_corpus, mock_load_internal):
         mock_load_internal.return_value = Response()
 
         names = {'U1234': 'foo', 'U5678': 'bar'}
-        snacks = self.create_snacks(_data(members=_members_old), names=names)
+        snacks = self.create_snacks(names=names)
         snacks.loaded = False
         response = snacks._load()
         self.assertEqual(response, Response())
@@ -1024,7 +694,7 @@ class SnacksTest(Test):
         mock_fnames.return_value = fnames
 
         names = ['foo', 'bar']
-        snacks = self.create_snacks(_data(members=_members_old), names=names)
+        snacks = self.create_snacks(names=names)
         snacks.loaded = False
         response = snacks._load_internal()
         self.assertEqual(response, Response())

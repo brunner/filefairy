@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import copy
-import datetime
 import os
 import random
 import re
@@ -11,6 +10,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 _root = re.sub(r'/tasks/snacks', '', _path)
 sys.path.append(_root)
+
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
@@ -34,7 +34,6 @@ from common.slack.slack import users_list  # noqa
 
 _channels = ['C9YE6NQG0', 'G3SUFLMK4']
 _n = 4
-_td20 = datetime.timedelta(minutes=20)
 
 _chooselist = [
     '{}. Did you even need to ask?', 'Definitely {}.',
@@ -172,7 +171,7 @@ class Snacks(Registrable):
 
     @staticmethod
     def _href():
-        return '/snacks/'
+        return ''
 
     @staticmethod
     def _info():
@@ -202,113 +201,83 @@ class Snacks(Registrable):
         if obj.get('channel') not in _channels or not user or not ts:
             return response
 
-        data = self.data
-        original = copy.deepcopy(data)
-
         channel = obj.get('channel', '')
         text = obj.get('text', '')
 
-        ok = True
-        if user not in data['members']:
-            data['members'][user] = ts
-        else:
-            ok = float(ts) - float(data['members'][user]) > 10
-
-        if ok:
-            match = re.findall('^<@U3ULC7DBP> choose (.+)$', text)
-            if match:
-                choices = match[0].split(' or ')
-                if len(choices) > 1:
-                    statement = random.choice(_chooselist + _wafflelist)
-                    choice = random.choice(choices)
-                    reply = re.sub('^([a-zA-Z])',
-                                   lambda x: x.groups()[0].upper(),
-                                   statement.format(choice), 1)
-                    chat_post_message(channel, reply)
-                    data['members'][user] = ts
-
-            match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
-            if match:
-                cfds = self.__dict__.get('cfds', {})
-                cfd = cfds.get('all', {})
-                reply = discuss(match[0], cfd, _n, 8, 30)
-                if not reply:
-                    reply = 'I don\'t know anything about ' + match[0] + '.'
+        match = re.findall('^<@U3ULC7DBP> choose (.+)$', text)
+        if match:
+            choices = match[0].split(' or ')
+            if len(choices) > 1:
+                statement = random.choice(_chooselist + _wafflelist)
+                choice = random.choice(choices)
+                reply = re.sub('^([a-zA-Z])',
+                               lambda x: x.groups()[0].upper(),
+                               statement.format(choice), 1)
                 chat_post_message(channel, reply)
-                data['members'][user] = ts
 
-            match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)>$', text)
-            if match:
-                cfds = self.__dict__.get('cfds', {})
-                reply = ''
-                if match[0] in cfds:
-                    cfd = cfds[match[0]]
-                    reply = imitate(cfd, _n, 8, 30)
-                if not reply:
-                    reply = '<@' + match[0] + '> doesn\'t know anything.'
-                chat_post_message(channel, reply)
-                data['members'][user] = ts
+        match = re.findall('^<@U3ULC7DBP> discuss (.+)$', text)
+        if match:
+            cfds = self.__dict__.get('cfds', {})
+            cfd = cfds.get('all', {})
+            reply = discuss(match[0], cfd, _n, 8, 30)
+            if not reply:
+                reply = 'I don\'t know anything about ' + match[0] + '.'
+            chat_post_message(channel, reply)
 
-            match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$', text)
-            if match:
-                target, topic = match[0]
-                cfds = self.__dict__.get('cfds', {})
-                reply = ''
-                if target in cfds:
-                    cfd = cfds[target]
-                    reply = discuss(topic, cfd, _n, 8, 30)
-                if not reply:
-                    reply = '<@' + target + '> doesn\'t know anything ' \
-                            'about ' + topic + '.'
-                chat_post_message(channel, reply)
-                data['members'][user] = ts
+        match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)>$', text)
+        if match:
+            cfds = self.__dict__.get('cfds', {})
+            reply = ''
+            if match[0] in cfds:
+                cfd = cfds[match[0]]
+                reply = imitate(cfd, _n, 8, 30)
+            if not reply:
+                reply = '<@' + match[0] + '> doesn\'t know anything.'
+            chat_post_message(channel, reply)
 
-            match = re.findall('^<@U3ULC7DBP> say (.+)$', text)
-            if match:
-                chat_post_message(channel, match[0])
-                data['members'][user] = ts
+        match = re.findall('^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$', text)
+        if match:
+            target, topic = match[0]
+            cfds = self.__dict__.get('cfds', {})
+            reply = ''
+            if target in cfds:
+                cfd = cfds[target]
+                reply = discuss(topic, cfd, _n, 8, 30)
+            if not reply:
+                reply = '<@' + target + '> doesn\'t know anything ' \
+                        'about ' + topic + '.'
+            chat_post_message(channel, reply)
 
-            if text == '<@U3ULC7DBP> snack me':
-                edate = encode_datetime(kwargs['date'])
-                for snack in self._snacks():
-                    reactions_add(snack, channel, ts)
-                    if snack == 'star' and user == 'U3ULC7DBP':
-                        pins_add(channel, ts)
-                    c = data['count'].get(snack, 0) + 1
-                    data['count'][snack] = c
-                    data['last'][snack] = edate
-                data['members'][user] = ts
-                response.notify = [Notify.BASE]
+        match = re.findall('^<@U3ULC7DBP> say (.+)$', text)
+        if match:
+            chat_post_message(channel, match[0])
 
-            match = re.findall('^<@U3ULC7DBP> who .+$', text)
-            if match:
-                statement = random.choice(_chooselist)
-                choice = random.choice(self.names)
-                reply = statement.format(choice)
-                chat_post_message(channel, reply)
-                data['members'][user] = ts
+        if text == '<@U3ULC7DBP> snack me':
+            for snack in self._snacks():
+                reactions_add(snack, channel, ts)
+                if snack == 'star' and user == 'U3ULC7DBP':
+                    pins_add(channel, ts)
+            response.notify = [Notify.BASE]
 
-        if data != original:
-            self.write()
+        match = re.findall('^<@U3ULC7DBP> who .+$', text)
+        if match:
+            statement = random.choice(_chooselist)
+            choice = random.choice(self.names)
+            reply = statement.format(choice)
+            chat_post_message(channel, reply)
 
-        ddate = decode_datetime(self.data['date'])
-        if response.notify and ddate < kwargs['date'] - _td20:
-            self.data['date'] = encode_datetime(kwargs['date'])
-            self._render(**kwargs)
+        if response.notify:
             return response
 
         return Response()
 
     def _render_internal(self, **kwargs):
-        html = 'snacks/index.html'
-        _home = self._home(**kwargs)
-        return [(html, '', 'snacks.html', _home)]
+        return []
 
     def _run_internal(self, **kwargs):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        self._render(**kwargs)
         return Response(thread_=[Thread(target='_load_internal')])
 
     def _shadow_internal(self, **kwargs):
@@ -356,32 +325,6 @@ class Snacks(Registrable):
             snacks[0], snacks[1], snacks[2] = snacks[1], 'star', snacks[0]
         return snacks
 
-    def _body_count(self):
-        body = []
-        count = self.data['count']
-        for snack in sorted(count, key=lambda x: (-count[x], x)):
-            body.append([
-                cell(content=_snackdict[snack]),
-                cell(content=snack.replace('_', ' ')),
-                cell(content=str(count[snack]))
-            ])
-            if len(body) == 15:
-                break
-        return body
-
-    def _body_recent(self, now):
-        body = []
-        last = self.data['last']
-        for snack in sorted(last, key=lambda x: (self._flip(last[x]), x)):
-            body.append([
-                cell(content=_snackdict[snack]),
-                cell(content=snack.replace('_', ' ')),
-                cell(content=self._ts(last[snack]))
-            ])
-            if len(body) == 15:
-                break
-        return body
-
     def _corpus(self):
         channels = channels_list()
         if not channels['ok']:
@@ -400,63 +343,6 @@ class Snacks(Registrable):
             fname = os.path.join(_root, 'resource/corpus', user + '.txt')
             with open(fname, 'w') as f:
                 f.write('\n'.join(collected[user]))
-
-    def _home(self, **kwargs):
-        data = self.data
-        ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '',
-                'name': 'Snacks'
-            }]
-        }
-
-        date = kwargs['date']
-
-        count, last = self._servings()
-        ts = self._ts(last)
-        servings = card(title=str(count), info='Total snacks served.', ts=ts)
-
-        count = data['count'].get('star', 0)
-        last = data['last'].get('star', '')
-        ts = self._ts(last)
-        stars = card(title=str(count), info='Total stars awarded.', ts=ts)
-
-        count = data['count'].get('trophy', 0)
-        last = data['last'].get('trophy', '')
-        ts = self._ts(last)
-        trophies = card(title=str(count), info='Total trophies lifted.', ts=ts)
-
-        ret['statistics'] = [servings, stars, trophies]
-
-        cols = [col(clazz='text-center w-75p'), col(), col(clazz='text-right')]
-        if data['count']:
-            ret['count'] = table(
-                clazz='border mt-3',
-                hcols=cols,
-                bcols=cols,
-                head=[
-                    cell(content='Emoji'),
-                    cell(content='Name'),
-                    cell(content='Count')
-                ],
-                body=self._body_count())
-
-        if data['last']:
-            ret['recent'] = table(
-                clazz='border mt-3',
-                hcols=cols,
-                bcols=cols,
-                head=[
-                    cell(content='Emoji'),
-                    cell(content='Name'),
-                    cell(content='Last activity')
-                ],
-                body=self._body_recent(date))
-
-        return ret
 
     def _load(self, *args, **kwargs):
         self._corpus()
@@ -477,19 +363,3 @@ class Snacks(Registrable):
         self.loaded = True
 
         return Response()
-
-    def _servings(self):
-        data = self.data
-        count = 0
-        for snack in data['count']:
-            count += data['count'][snack]
-        last = ''
-        for snack in data['last']:
-            if not last or last < data['last'][snack]:
-                last = data['last'][snack]
-        return count // 3, last
-
-    def _ts(self, then):
-        if then:
-            return timestamp(decode_datetime(then))
-        return 'never'
