@@ -199,7 +199,8 @@ class DashboardTest(Test):
         self.assertNotCalled(self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)
 
-    def test_cleanup(self):
+    @mock.patch.object(Dashboard, '_render')
+    def test_cleanup(self, mock_render):
         old = encode_datetime(DATE_10190000)
         new = encode_datetime(DATE_10260000)
         error = _record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
@@ -213,6 +214,7 @@ class DashboardTest(Test):
         self.assertEqual(dashboard.warnings, [])
 
         data = _data({new: [error]})
+        mock_render.assert_called_once_with(date=DATE_10260602, log=False)
         self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
         self.assertNotCalled(self.mock_chat, self.mock_upload)
