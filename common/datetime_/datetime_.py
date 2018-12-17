@@ -6,7 +6,7 @@ import datetime
 import pytz
 import re
 
-EST = pytz.timezone('America/New_York')
+CST = pytz.timezone('America/Winnipeg')
 PST = pytz.timezone('America/Los_Angeles')
 
 
@@ -24,16 +24,16 @@ def datetime_as_pst(d):
     return d.astimezone(PST)
 
 
-def datetime_datetime_est(*args):
-    """Localize a naive datetime object so it is Eastern time.
+def datetime_datetime_cst(*args):
+    """Localize a naive datetime object so it is Central time.
 
     Args:
         *args: The args accepted by datetime.datetime.
 
     Returns:
-        An Eastern time localized datetime object.
+        A Central time localized datetime object.
     """
-    return EST.localize(datetime.datetime(*args))
+    return CST.localize(datetime.datetime(*args))
 
 
 def datetime_datetime_pst(*args):

@@ -16,10 +16,7 @@ from common.secrets.secrets import server  # noqa
 from common.test.test import get_testdata  # noqa
 from services.leaguefile.leaguefile import download_file  # noqa
 from services.leaguefile.leaguefile import extract_file  # noqa
-from services.leaguefile.leaguefile import find_download  # noqa
-from services.leaguefile.leaguefile import find_upload  # noqa
 
-CWD_DIR = re.sub(r'/services/leaguefile', '', _path)
 DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 DATE_10260000 = datetime_datetime_pst(1985, 10, 26)
@@ -31,10 +28,8 @@ EXTRACT_DIR = re.sub(r'/services/leaguefile', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
-FILE_HOST = 'https://www.orangeandblueleaguebaseball.com/StatsLab/league_file/'
-FILE_NAME = 'orange_and_blue_league_baseball.tar.gz'
+FILE_HOST = 'https://statsplus.net/oblootp/files/'
 ISO = 'iso-8859-1'
-SERVER = server()
 TESTDATA_DIR = os.path.join(_path, 'testdata')
 TESTDATA = get_testdata(TESTDATA_DIR)
 
@@ -78,36 +73,39 @@ class LeaguefileTest(unittest.TestCase):
     @mock.patch('services.leaguefile.leaguefile.chdir')
     @mock.patch('services.leaguefile.leaguefile.check_output')
     def test_download_file__ok(self, mock_check, mock_chdir):
-        url = FILE_HOST + FILE_NAME
+        url = FILE_HOST + 'orange%20and%20blue%20league.zip'
         expected = {'ok': True}
         mock_check.return_value = expected
 
         actual = download_file(url)
         self.assertEqual(actual, expected)
 
+        filename = 'orange_and_blue_league.zip'
         mock_check.assert_has_calls([
             mock.call(['rm', '-rf', DOWNLOAD_DIR]),
             mock.call(['mkdir', DOWNLOAD_DIR]),
-            mock.call(['wget', url], timeout=4800),
-            mock.call(['tar', '-xzf', FILE_NAME]),
+            mock.call(['wget', url, '-O ' + filename], timeout=4800),
+            mock.call(['unzip', filename]),
         ])
         mock_chdir.assert_called_once_with(DOWNLOAD_DIR)
 
     @mock.patch('services.leaguefile.leaguefile.chdir')
     @mock.patch('services.leaguefile.leaguefile.check_output')
     def test_download_file__timeout(self, mock_check, mock_chdir):
-        url = FILE_HOST + FILE_NAME
+        url = FILE_HOST + 'orange%20and%20blue%20league.zip'
         e = 'Command \'wget {}\' timed out after {} seconds'.format(url, 4800)
         expected = {'ok': False, 'stdout': e, 'stderr': e}
         mock_check.return_value = expected
 
+        url = FILE_HOST + 'orange%20and%20blue%20league.zip'
         actual = download_file(url)
         self.assertEqual(actual, expected)
 
+        filename = 'orange_and_blue_league.zip'
         mock_check.assert_has_calls([
             mock.call(['rm', '-rf', DOWNLOAD_DIR]),
             mock.call(['mkdir', DOWNLOAD_DIR]),
-            mock.call(['wget', url], timeout=4800),
+            mock.call(['wget', url, '-O ' + filename], timeout=4800),
         ])
         mock_chdir.assert_called_once_with(DOWNLOAD_DIR)
 
@@ -157,69 +155,6 @@ class LeaguefileTest(unittest.TestCase):
         mock_listdir.assert_called_once_with(DOWNLOAD_BOX_SCORES)
         mock_open.assert_has_calls(suite.calls())
         suite.verify()
-
-    @mock.patch('services.leaguefile.leaguefile.check_output')
-    def test_find_download__done(self, mock_check):
-        stdout = ('total 60224\n'
-                  'drwxrwxr-x 4 user user      4096 Oct 26 00:00 news\n'
-                  '-rw-rw-r-- 1 user user 345678901 Oct 26 06:04 '
-                  'orange_and_blue_league_baseball.tar.gz')
-        mock_check.return_value = {'ok': True, 'stdout': stdout}
-
-        actual = find_download(DATE_10260000)
-        expected = ('345678901', DATE_10260604, False)
-        self.assertEqual(actual, expected)
-
-        mock_check.assert_called_once_with(['ls', '-l', DOWNLOAD_DIR],
-                                           timeout=10)
-
-    @mock.patch('services.leaguefile.leaguefile.check_output')
-    def test_find_download__ongoing(self, mock_check):
-        stdout = ('total 60224\n'
-                  '-rw-rw-r-- 1 user user 100000 Oct 26 06:04 '
-                  'orange_and_blue_league_baseball.tar.gz')
-        mock_check.return_value = {'ok': True, 'stdout': stdout}
-
-        actual = find_download(DATE_10260000)
-        expected = ('100000', DATE_10260604, True)
-        self.assertEqual(actual, expected)
-
-        mock_check.assert_called_once_with(['ls', '-l', DOWNLOAD_DIR],
-                                           timeout=10)
-
-    @mock.patch('services.leaguefile.leaguefile.check_output')
-    def test_find_upload__done(self, mock_check):
-        stdout = ('total 60224\n'
-                  'drwxrwxr-x 4 user user      4096 Oct 26 00:00 news\n'
-                  '-rw-rw-r-- 1 user user 345678901 Oct 26 09:04 {}'
-                  ).format(FILE_NAME)
-        mock_check.return_value = {'ok': True, 'stdout': stdout}
-
-        actual = find_upload(DATE_10260000)
-        expected = ('345678901', DATE_10260604, False)
-        self.assertEqual(actual, expected)
-
-        ls = 'ls -l /var/www/html/StatsLab/league_file'
-        mock_check.assert_called_once_with(['ssh', 'brunnerj@' + SERVER, ls],
-                                           timeout=10)
-
-    @mock.patch('services.leaguefile.leaguefile.check_output')
-    def test_find_upload__ongoing(self, mock_check):
-        stdout = (
-            'total 321012\n'
-            '-rwxrwxrwx 1 user user       421 Aug 19 13:48 index.html\n'
-            '-rwxrwxrwx 1 user user 345678901 Oct 24 12:00 {}\n'
-            '-rwxrwxrwx 1 user user 100000 Oct 26 09:04 {}.filepart').format(
-                FILE_NAME, FILE_NAME)
-        mock_check.return_value = {'ok': True, 'stdout': stdout}
-
-        actual = find_upload(DATE_10260000)
-        expected = ('100000', DATE_10260604, True)
-        self.assertEqual(actual, expected)
-
-        ls = 'ls -l /var/www/html/StatsLab/league_file'
-        mock_check.assert_called_once_with(['ssh', 'brunnerj@' + SERVER, ls],
-                                           timeout=10)
 
 
 if __name__ == '__main__':

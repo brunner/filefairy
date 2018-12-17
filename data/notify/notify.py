@@ -28,17 +28,14 @@ class Notify(Enum):
     LEAGUEFILE_DOWNLOAD = 5
 
     # The leaguefile task has determined that the file upload has finished.
-    LEAGUEFILE_FINISH = 6
-
-    # The leaguefile task has determined that the file upload has started.
-    LEAGUEFILE_START = 7
+    LEAGUEFILE_UPLOAD = 6
 
     # The leaguefile task has determined from the extracted file data that
     # January 1st has passed, in the simulation.
-    LEAGUEFILE_YEAR = 8
+    LEAGUEFILE_YEAR = 7
 
     # The statsplus task has determined that a simulation is ongoing.
-    STATSPLUS_SIM = 9
+    STATSPLUS_SIM = 8
 
     # An arbitrary value for use in tests.
-    OTHER = 10
+    OTHER = 9

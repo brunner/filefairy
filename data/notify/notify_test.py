@@ -20,11 +20,10 @@ class NotifyTest(unittest.TestCase):
         self.assertEqual(Notify.FILEFAIRY_DAY, Notify(3))
         self.assertEqual(Notify.FILEFAIRY_DEPLOY, Notify(4))
         self.assertEqual(Notify.LEAGUEFILE_DOWNLOAD, Notify(5))
-        self.assertEqual(Notify.LEAGUEFILE_FINISH, Notify(6))
-        self.assertEqual(Notify.LEAGUEFILE_START, Notify(7))
-        self.assertEqual(Notify.LEAGUEFILE_YEAR, Notify(8))
-        self.assertEqual(Notify.STATSPLUS_SIM, Notify(9))
-        self.assertEqual(Notify.OTHER, Notify(10))
+        self.assertEqual(Notify.LEAGUEFILE_UPLOAD, Notify(6))
+        self.assertEqual(Notify.LEAGUEFILE_YEAR, Notify(7))
+        self.assertEqual(Notify.STATSPLUS_SIM, Notify(8))
+        self.assertEqual(Notify.OTHER, Notify(9))
 
 
 if __name__ == '__main__':

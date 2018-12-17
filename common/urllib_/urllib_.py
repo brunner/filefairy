@@ -6,7 +6,7 @@ import urllib.error as error
 import urllib.parse as parse
 import urllib.request as request
 
-logger_ = logging.getLogger('filefairy')
+_logger = logging.getLogger('filefairy')
 
 
 def urlopen(url, params={}):
@@ -16,8 +16,8 @@ def urlopen(url, params={}):
             return f.read()
     except error.HTTPError as e:
         if e.code not in [403, 404]:
-            logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
+            _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
         return b''
     except Exception:
-        logger_.log(logging.WARNING, 'Handled warning.', exc_info=True)
-        return b''
+        _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
+    return b''

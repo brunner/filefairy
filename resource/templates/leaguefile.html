@@ -8,54 +8,6 @@
 
 {% block content %}
 
-{% if upload %}
-<!-- ^(leaguefile.upload) -->
-<div class="container anchor" id="upload">
-
-{{ common.heading('cloud-upload', 'Upload') }}
-
-<!-- ^(leaguefile.row) -->
-<div class="row">
-
-<!-- ^(leaguefile.column) -->
-<div class="col-12">
-
-{{ common.card(upload) }}
-
-</div>
-<!-- $(leaguefile.column) -->
-
-</div>
-<!-- ^(leaguefile.row) -->
-
-</div>
-<!-- $(leaguefile.upload) -->
-{% endif %}
-
-{% if download %}
-<!-- ^(leaguefile.download) -->
-<div class="container anchor" id="download">
-
-{{ common.heading('cloud-download', 'Download') }}
-
-<!-- ^(leaguefile.row) -->
-<div class="row">
-
-<!-- ^(leaguefile.column) -->
-<div class="col-12">
-
-{{ common.card(download) }}
-
-</div>
-<!-- ^(leaguefile.column) -->
-
-</div>
-<!-- ^(leaguefile.row) -->
-
-</div>
-<!-- $(leaguefile.upload) -->
-{% endif %}
-
 {% if completed %}
 <!-- ^(leaguefile.completed) -->
 <div class="container anchor" id="completed">
