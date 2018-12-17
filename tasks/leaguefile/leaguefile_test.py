@@ -56,13 +56,6 @@ def _data(completed=None, end=None, start=None):
     }
 
 
-def _completed(date=None, size=None):
-    return {
-        'date': encode_datetime(date) if date else '',
-        'size': size if size else '',
-    }
-
-
 class LeaguefileTest(Test):
     def setUp(self):
         patch_chat = mock.patch.object(Leaguefile, '_chat')
@@ -130,12 +123,12 @@ class LeaguefileTest(Test):
                              self.mock_handle.write)
 
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_get_completed')
-    def test_run__completed(self, mock_completed, mock_render):
-        new = _completed(date=DATE_10260604, size='384,530,143')
-        mock_completed.return_value = new
+    @mock.patch.object(Leaguefile, '_get_date')
+    def test_run__completed(self, mock_get_date, mock_render):
+        new = encode_datetime(DATE_10260604)
+        mock_get_date.return_value = new
 
-        old = _completed(date=DATE_10260602, size='345,678,901')
+        old = encode_datetime(DATE_10260602)
         read = _data(completed=[old])
         leaguefile = self.create_leaguefile(read)
         actual = leaguefile._run_internal(date=DATE_10260604)
@@ -146,7 +139,7 @@ class LeaguefileTest(Test):
         self.assertEqual(actual, expected)
 
         write = _data(completed=[new, old])
-        mock_completed.assert_called_once_with()
+        mock_get_date.assert_called_once_with()
         mock_render.assert_called_once_with(date=DATE_10260604)
         self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
         self.mock_open.assert_called_once_with(Leaguefile._data(), 'w')
@@ -154,10 +147,10 @@ class LeaguefileTest(Test):
         self.assertNotCalled(self.mock_log)
 
     @mock.patch.object(Leaguefile, '_render')
-    @mock.patch.object(Leaguefile, '_get_completed')
-    def test_run__unchanged(self, mock_completed, mock_render):
-        old = _completed(date=DATE_10260604, size='384,530,143')
-        mock_completed.return_value = old
+    @mock.patch.object(Leaguefile, '_get_date')
+    def test_run__unchanged(self, mock_get_date, mock_render):
+        old = encode_datetime(DATE_10260604)
+        mock_get_date.return_value = old
 
         read = _data(completed=[old])
         leaguefile = self.create_leaguefile(read)
@@ -165,7 +158,7 @@ class LeaguefileTest(Test):
         expected = Response()
         self.assertEqual(actual, expected)
 
-        mock_completed.assert_called_once_with()
+        mock_get_date.assert_called_once_with()
         self.assertNotCalled(mock_render, self.mock_chat, self.mock_log,
                              self.mock_open, self.mock_handle.write)
 
@@ -331,21 +324,20 @@ class LeaguefileTest(Test):
         self.assertNotCalled(self.mock_chat, self.mock_log)
 
     @mock.patch('tasks.leaguefile.leaguefile.get')
-    def test_get_completed(self, mock_get):
-        text = 'League File: Oct. 26, 1985, 8:04 a.m. CST\n(Size: 345,678,901)'
+    def test_get_date(self, mock_get):
+        text = 'League File: Oct. 26, 1985, 8:04 a.m. CST'
         mock_get.return_value = text
 
         leaguefile = self.create_leaguefile(_data())
-        actual = leaguefile._get_completed()
-        expected = _completed(date=DATE_10260604, size='345,678,901')
+        actual = leaguefile._get_date()
+        expected = encode_datetime(DATE_10260604)
         self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
     def test_index_html(self):
-        completed = _completed(date=DATE_10260604, size='345,678,901')
-        read = _data(completed=[completed])
+        read = _data(completed=[encode_datetime(DATE_10260604)])
         leaguefile = self.create_leaguefile(read)
 
         breadcrumbs = [{
@@ -356,12 +348,10 @@ class LeaguefileTest(Test):
             'name': 'Leaguefile'
         }]
         actual = leaguefile._index_html(date=DATE_10260604)
-        cols = [col(), col(clazz='text-right')]
-        head = [cell(content='Date'), cell(content='Size')]
-        row = [cell(content='Oct 26'), cell(content='345,678,901')]
+        row = [cell(content='06:04:00 PDT (1985-10-26)')]
         expected = {
             'breadcrumbs': breadcrumbs,
-            'completed': table(hcols=cols, bcols=cols, head=head, body=[row])
+            'completed': table(head=[cell(content='Date')], body=[row])
         }
         self.assertEqual(actual, expected)
         self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,

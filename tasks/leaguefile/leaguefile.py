@@ -74,10 +74,10 @@ class Leaguefile(Registrable, Reloadable):
         return [('leaguefile/index.html', '', 'leaguefile.html', index_html)]
 
     def _run_internal(self, **kwargs):
-        completed = self._get_completed()
+        date = self._get_date()
         response = Response()
 
-        if completed is not None and completed != self.data['completed'][0]:
+        if date is not None and date != self.data['completed'][0]:
             self._chat('fairylab', 'File is up.')
 
             response.append(notify=Notify.BASE)
@@ -85,7 +85,10 @@ class Leaguefile(Registrable, Reloadable):
             response.append(
                 thread_=Thread(target='_download_start', kwargs=kwargs))
 
-            self.data['completed'].insert(0, completed)
+            self.data['completed'].insert(0, date)
+            if len(self.data['completed']) > 10:
+                self.data['completed'] = self.data['completed'][:10]
+
             self.write()
             self._render(**kwargs)
 
@@ -158,21 +161,15 @@ class Leaguefile(Registrable, Reloadable):
             }]
         }
 
-        cols = [col(), col(clazz='text-right')]
-        head = [cell(content='Date'), cell(content='Size')]
         body = []
-        for completed in self.data['completed']:
-            date = decode_datetime(completed['date']).strftime('%b %d')
-            body.append([
-                cell(content=date),
-                cell(content=completed['size'])
-            ])
-        ret['completed'] = table(hcols=cols, bcols=cols, head=head, body=body)
+        for date in self.data['completed']:
+            body.append([cell(content=timestamp(decode_datetime(date)))])
+        ret['completed'] = table(head=[cell(content='Date')], body=body)
 
         return ret
 
     @staticmethod
-    def _get_completed():
+    def _get_date():
         text = get(EXPORTS_URL)
 
         match = find(r'(?s)League File: (.+?) CST', text)
@@ -181,7 +178,4 @@ class Leaguefile(Registrable, Reloadable):
             d = datetime.datetime.strptime(date_string, '%b %d %Y %I:%M %p')
             c = datetime_datetime_cst(d.year, d.month, d.day, d.hour, d.minute)
 
-            date = encode_datetime(datetime_as_pst(c))
-            size = find(r'(?s)\(Size: ([^)]+)\)', text)
-
-            return {'date': date, 'size': size}
+            return encode_datetime(datetime_as_pst(c))
