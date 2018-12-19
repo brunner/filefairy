@@ -21,7 +21,6 @@ method _call can then be invoked with the name of the service method and any
 arguments, and it will dispatch the call to the corresponding service.
 """
 
-import abc
 import importlib
 import os
 import re
@@ -32,8 +31,6 @@ sys.path.append(re.sub(r'/api/reloadable', '', _path))
 
 
 class Reloadable():
-    __metaclass__ = abc.ABCMeta
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.attrs = {}
@@ -41,9 +38,8 @@ class Reloadable():
     def _call(self, method, fargs, *args, **kwargs):
         return self.attrs[method](*fargs, *args, **kwargs)
 
-    @abc.abstractmethod
     def _reload_internal(self, **kwargs):
-        pass
+        return {}
 
     def _reload(self, **kwargs):
         services = self._reload_internal(**kwargs)

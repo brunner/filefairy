@@ -111,13 +111,11 @@ class DownloadTest(Test):
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
-    @mock.patch.object(Download, '_reload')
-    def test_setup(self, mock_reload):
+    def test_setup(self):
         download = self.create_download(_data())
         response = download._setup_internal(date=DATE_10260604)
         self.assertEqual(response, Response())
 
-        mock_reload.assert_called_once_with(date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
 

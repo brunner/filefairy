@@ -10,7 +10,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/git', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
-from api.reloadable.reloadable import Reloadable  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
@@ -20,7 +19,7 @@ from common.subprocess_.subprocess_ import check_output  # noqa
 FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/git', '', _path) + '/fairylab/static'
 
 
-class Git(Registrable, Reloadable):
+class Git(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -51,9 +50,6 @@ class Git(Registrable, Reloadable):
 
     def _on_message_internal(self, **kwargs):
         return Response()
-
-    def _reload_internal(self, **kwargs):
-        return {}
 
     def _render_internal(self, **kwargs):
         return []

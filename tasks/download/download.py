@@ -12,7 +12,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
-from api.reloadable.reloadable import Reloadable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
@@ -27,7 +26,7 @@ FILE_NAME = 'orange%20and%20blue%20league.zip'
 FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 
 
-class Download(Registrable, Reloadable):
+class Download(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -66,7 +65,6 @@ class Download(Registrable, Reloadable):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        self._reload(**kwargs)
         return Response()
 
     def _shadow_internal(self, **kwargs):

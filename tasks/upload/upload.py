@@ -11,7 +11,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/upload', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
-from api.reloadable.reloadable import Reloadable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
@@ -23,7 +22,7 @@ from data.response.response import Response  # noqa
 EXPORTS_URL = 'https://statsplus.net/oblootp/exports/'
 
 
-class Upload(Registrable, Reloadable):
+class Upload(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -48,9 +47,6 @@ class Upload(Registrable, Reloadable):
 
     def _on_message_internal(self, **kwargs):
         return Response()
-
-    def _reload_internal(self, **kwargs):
-        return {}
 
     def _render_internal(self, **kwargs):
         return []
