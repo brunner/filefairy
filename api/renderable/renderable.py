@@ -87,7 +87,7 @@ class Renderable(Serializable):
 
     def _chat(self, channel, text):
         _logger.log(logging.INFO, text)
-        attachments = self._attachments()
+        attachments = self._attachments() if self._href() else []
         return chat_post_message(channel, text, attachments=attachments)
 
     def _render(self, **kwargs):

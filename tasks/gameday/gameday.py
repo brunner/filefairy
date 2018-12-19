@@ -86,7 +86,7 @@ class Gameday(Registrable):
         if kwargs['notify'] == Notify.STATSPLUS_SIM:
             self._clear()
             self.write()
-        if kwargs['notify'] == Notify.LEAGUEFILE_DOWNLOAD:
+        if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
             if not self.data['started']:
                 self._backfill()
             self.data['started'] = False

@@ -349,7 +349,7 @@ class RecapTest(Test):
 
         recap = self.create_recap(_data())
         recap.tables = _table_old
-        response = recap._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
+        response = recap._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(
             response,
             Response(notify=[Notify.BASE], shadow=recap._shadow_internal()))
@@ -357,7 +357,7 @@ class RecapTest(Test):
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
         mock_money.assert_called_once_with()
-        mock_render.assert_called_once_with(notify=Notify.LEAGUEFILE_DOWNLOAD)
+        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
         mock_standings.assert_called_once_with()
         mock_tables.assert_called_once_with()
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
@@ -381,7 +381,7 @@ class RecapTest(Test):
 
         recap = self.create_recap(_data())
         recap.tables = _table_old
-        response = recap._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
+        response = recap._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(
             response,
             Response(notify=[Notify.BASE], shadow=recap._shadow_internal()))
@@ -389,7 +389,7 @@ class RecapTest(Test):
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
         mock_money.assert_called_once_with()
-        mock_render.assert_called_once_with(notify=Notify.LEAGUEFILE_DOWNLOAD)
+        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
         mock_standings.assert_called_once_with()
         mock_tables.assert_called_once_with()
         self.mock_open.assert_called_once_with(Recap._data(), 'w')
@@ -413,7 +413,7 @@ class RecapTest(Test):
 
         recap = self.create_recap(_data())
         recap.tables = _table_old
-        response = recap._notify_internal(notify=Notify.LEAGUEFILE_DOWNLOAD)
+        response = recap._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(
             response,
             Response(notify=[Notify.BASE], shadow=recap._shadow_internal()))
@@ -421,7 +421,7 @@ class RecapTest(Test):
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
         mock_money.assert_called_once_with()
-        mock_render.assert_called_once_with(notify=Notify.LEAGUEFILE_DOWNLOAD)
+        mock_render.assert_called_once_with(notify=Notify.DOWNLOAD_FINISH)
         mock_standings.assert_called_once_with()
         mock_tables.assert_called_once_with()
         self.mock_open.assert_called_once_with(Recap._data(), 'w')

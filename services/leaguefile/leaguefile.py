@@ -13,7 +13,6 @@ sys.path.append(re.sub(r'/services/leaguefile', '', _path))
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.re_.re_ import find  # noqa
-from common.secrets.secrets import server  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 
 DOWNLOAD_DIR = re.sub(r'/services/leaguefile', '/resource/download', _path)

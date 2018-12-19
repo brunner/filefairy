@@ -12,7 +12,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/leaguefile', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from common.secrets.secrets import server  # noqa
 from common.test.test import get_testdata  # noqa
 from services.leaguefile.leaguefile import download_file  # noqa
 from services.leaguefile.leaguefile import extract_file  # noqa

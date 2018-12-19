@@ -13,29 +13,29 @@ class Notify(Enum):
     # other tasks.
     BASE = 1
 
+    # The download task has determined that the file has been downloaded and
+    # extracted, and is ready for consumption by the other tasks.
+    DOWNLOAD_FINISH = 2
+
+    # The download task has determined from the extracted file data that
+    # January 1st has passed in the simulation.
+    DOWNLOAD_YEAR = 3
+
     # The exports task has determined that the emailed exports were loaded.
-    EXPORTS_EMAILS = 2
+    EXPORTS_EMAILS = 4
 
     # The app has determined that midnight PST has passed, in real life.
-    FILEFAIRY_DAY = 3
+    FILEFAIRY_DAY = 5
 
     # The app has determined that some rendering has changed, and relays the
     # information to the git task to deploy the rendering changes to Fairylab.
-    FILEFAIRY_DEPLOY = 4
-
-    # The leaguefile task has determined that the file has been downloaded and
-    # extracted, and is ready for consumption by the other tasks.
-    LEAGUEFILE_DOWNLOAD = 5
-
-    # The leaguefile task has determined that the file upload has finished.
-    LEAGUEFILE_UPLOAD = 6
-
-    # The leaguefile task has determined from the extracted file data that
-    # January 1st has passed, in the simulation.
-    LEAGUEFILE_YEAR = 7
+    FILEFAIRY_DEPLOY = 6
 
     # The statsplus task has determined that a simulation is ongoing.
-    STATSPLUS_SIM = 8
+    STATSPLUS_SIM = 7
+
+    # The upload task has determined that the file upload has finished.
+    UPLOAD_FINISH = 8
 
     # An arbitrary value for use in tests.
     OTHER = 9

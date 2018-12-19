@@ -52,7 +52,7 @@ class Recap(Registrable):
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         response = Response()
-        if notify == Notify.LEAGUEFILE_DOWNLOAD:
+        if notify == Notify.DOWNLOAD_FINISH:
             data = self.data
             data['then'] = copy.deepcopy(data['now'])
 

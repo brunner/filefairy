@@ -213,7 +213,7 @@ class StatsplusTest(Test):
     def create_statsplus(self, data):
         self.init_mocks(data)
         statsplus = Statsplus(date=_now, e=_env)
-        statsplus.shadow['leaguefile.end'] = _now_encoded
+        statsplus.shadow['download.end'] = _now_encoded
 
         self.mock_open.assert_called_once_with(Statsplus._data(), 'r')
         self.mock_handle.write.assert_not_called()
@@ -228,7 +228,7 @@ class StatsplusTest(Test):
     def test_notify__with_finish(self):
         statsplus = self.create_statsplus(_data())
         response = statsplus._notify_internal(
-            notify=Notify.LEAGUEFILE_DOWNLOAD)
+            notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(response, Response())
 
         write = _data(finished=True)
@@ -239,7 +239,7 @@ class StatsplusTest(Test):
 
     def test_notify__with_year(self):
         statsplus = self.create_statsplus(_data())
-        response = statsplus._notify_internal(notify=Notify.LEAGUEFILE_YEAR)
+        response = statsplus._notify_internal(notify=Notify.DOWNLOAD_YEAR)
         self.assertEqual(response, Response())
 
         write = _data(offseason=True)
