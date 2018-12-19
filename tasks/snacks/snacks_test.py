@@ -485,47 +485,11 @@ class SnacksTest(Test):
         self.mock_collect.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    def test_render(self):
-        snacks = self.create_snacks()
-        response = snacks._render_internal(date=_now)
-        self.assertEqual(response, [])
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_collect.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    def test_run(self):
-        snacks = self.create_snacks()
-        response = snacks._run_internal(date=_then)
-        self.assertEqual(response, Response())
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_collect.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
     def test_setup(self):
         snacks = self.create_snacks()
         response = snacks._setup_internal(date=_then)
         self.assertEqual(response,
                          Response(thread_=[Thread(target='_load_internal')]))
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_cfd.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_collect.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    def test_shadow(self):
-        snacks = self.create_snacks()
-        value = snacks._shadow_internal()
-        self.assertEqual(value, [])
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

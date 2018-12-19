@@ -52,20 +52,8 @@ class Download(Registrable):
 
         return Response()
 
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
     def _reload_internal(self, **kwargs):
         return {'leaguefile': ['download_file', 'extract_file']}
-
-    def _render_internal(self, **kwargs):
-        return []
-
-    def _run_internal(self, **kwargs):
-        return Response()
-
-    def _setup_internal(self, **kwargs):
-        return Response()
 
     def _shadow_internal(self, **kwargs):
         return [

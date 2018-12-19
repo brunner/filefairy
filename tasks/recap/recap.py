@@ -74,12 +74,6 @@ class Recap(Registrable):
             response.shadow = self._shadow_internal(**kwargs)
         return response
 
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
-    def _run_internal(self, **kwargs):
-        return Response()
-
     def _render_internal(self, **kwargs):
         html = 'recap/index.html'
         _home = self._home(**kwargs)
@@ -87,7 +81,6 @@ class Recap(Registrable):
 
     def _setup_internal(self, **kwargs):
         self.tables = self._tables()
-        self._render(**kwargs)
         return Response()
 
     def _shadow_internal(self, **kwargs):

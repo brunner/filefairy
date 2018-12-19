@@ -81,9 +81,8 @@ class Renderable(Serializable):
     def _title():
         pass
 
-    @abstractstatic
-    def _render_internal():
-        pass
+    def _render_internal(self, **kwargs):
+        return []
 
     def _chat(self, channel, text):
         _logger.log(logging.INFO, text)

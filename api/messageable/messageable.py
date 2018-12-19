@@ -33,7 +33,6 @@ Tasks are required to return Response data from _on_message_internal.
 Functions named with a leading underscore cannot be invoked by messageable.
 """
 
-import abc
 import logging
 import os
 import re
@@ -53,17 +52,14 @@ TESTING_CHANNEL = 'G3SUFLMK4'
 
 
 class Messageable(Nameable):
-    __metaclass__ = abc.ABCMeta
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def _name(self):
         return self.__class__.__name__
 
-    @abc.abstractmethod
     def _on_message_internal(self, **kwargs):
-        pass
+        return Response()
 
     def _on_message(self, **kwargs):
         obj = kwargs.get('obj', {})

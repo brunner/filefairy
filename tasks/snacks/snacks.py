@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import copy
 import os
 import random
 import re
@@ -271,17 +270,8 @@ class Snacks(Registrable):
 
         return Response()
 
-    def _render_internal(self, **kwargs):
-        return []
-
-    def _run_internal(self, **kwargs):
-        return Response()
-
     def _setup_internal(self, **kwargs):
         return Response(thread_=[Thread(target='_load_internal')])
-
-    def _shadow_internal(self, **kwargs):
-        return []
 
     @staticmethod
     def _flip(s):

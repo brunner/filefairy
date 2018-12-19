@@ -454,28 +454,6 @@ class RecapTest(Test):
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    def test_on_message(self):
-        recap = self.create_recap(_data())
-        response = recap._on_message_internal()
-        self.assertEqual(response, Response())
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    def test_run(self):
-        recap = self.create_recap(_data())
-        response = recap._run_internal()
-        self.assertEqual(response, Response())
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
     @mock.patch.object(Recap, '_home')
     def test_render(self, mock_home):
         home = {
@@ -499,13 +477,11 @@ class RecapTest(Test):
         self.mock_reactions.assert_not_called()
 
     @mock.patch.object(Recap, '_tables')
-    @mock.patch.object(Recap, '_render')
-    def test_setup(self, mock_render, mock_tables):
+    def test_setup(self, mock_tables):
         recap = self.create_recap(_data())
         response = recap._setup_internal(date=_now)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=_now)
         mock_tables.assert_called_once_with()
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

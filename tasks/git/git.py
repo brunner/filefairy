@@ -40,28 +40,13 @@ class Git(Registrable):
         return 'git'
 
     def _notify_internal(self, **kwargs):
-        notify = kwargs['notify']
-        if notify == Notify.FILEFAIRY_DAY:
+        if kwargs['notify'] == Notify.FILEFAIRY_DAY:
             self.acp(**kwargs)
-        elif notify == Notify.FILEFAIRY_DEPLOY:
+        elif kwargs['notify'] == Notify.FILEFAIRY_DEPLOY:
             with chdir(FAIRYLAB_DIR):
                 self.acp(**kwargs)
+
         return Response()
-
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
-    def _render_internal(self, **kwargs):
-        return []
-
-    def _run_internal(self, **kwargs):
-        return Response()
-
-    def _setup_internal(self, **kwargs):
-        return Response()
-
-    def _shadow_internal(self, **kwargs):
-        return []
 
     def acp(self, *args, **kwargs):
         response = Response(notify=[Notify.BASE])

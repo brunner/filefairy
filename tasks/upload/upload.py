@@ -42,15 +42,6 @@ class Upload(Registrable):
     def _title():
         return 'upload'
 
-    def _notify_internal(self, **kwargs):
-        return Response()
-
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
-    def _render_internal(self, **kwargs):
-        return []
-
     def _run_internal(self, **kwargs):
         date = self._get_date()
         if date is not None and date != self.data['date']:
@@ -62,12 +53,6 @@ class Upload(Registrable):
             return Response(notify=[Notify.UPLOAD_FINISH])
 
         return Response()
-
-    def _setup_internal(self, **kwargs):
-        return Response()
-
-    def _shadow_internal(self, **kwargs):
-        return []
 
     @staticmethod
     def _get_date():

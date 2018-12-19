@@ -607,15 +607,6 @@ class GamedayTest(unittest.TestCase):
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()
 
-    def test_on_message(self):
-        gameday = self.create_gameday(_data())
-        response = gameday._on_message_internal()
-        self.assertEqual(response, Response())
-
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-
     # @mock.patch.object(Gameday, '_schedule_data')
     # @mock.patch('tasks.gameday.gameday.recreate')
     # @mock.patch('tasks.gameday.gameday.get_rawid')
@@ -674,26 +665,6 @@ class GamedayTest(unittest.TestCase):
 
         mock_check.assert_called_once_with()
         mock_render.assert_called_once_with(date=_then)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-
-    @mock.patch.object(Gameday, '_render')
-    def test_setup(self, mock_render):
-        gameday = self.create_gameday(_data())
-        response = gameday._setup_internal(date=_then)
-        self.assertEqual(response, Response())
-
-        mock_render.assert_called_once_with(date=_then)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-
-    def test_shadow(self):
-        gameday = self.create_gameday(_data())
-        value = gameday._shadow_internal()
-        self.assertEqual(value, [])
-
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()

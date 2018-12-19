@@ -616,18 +616,6 @@ class StatsplusTest(Test):
         self.mock_chat.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch.object(Statsplus, '_render')
-    def test_setup(self, mock_render):
-        statsplus = self.create_statsplus(_data())
-        response = statsplus._setup_internal(date=_now)
-        self.assertEqual(response, Response())
-
-        mock_render.assert_called_once_with(date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-
     def test_shadow(self):
         statsplus = self.create_statsplus(_data())
         value = statsplus._shadow_internal()

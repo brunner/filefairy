@@ -91,22 +91,9 @@ class Dashboard(Registrable):
             self._cleanup(**kwargs)
         return Response()
 
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
     def _render_internal(self, **kwargs):
         _index_html = self._index_html(**kwargs)
         return [('dashboard/index.html', '', 'dashboard.html', _index_html)]
-
-    def _run_internal(self, **kwargs):
-        return Response()
-
-    def _setup_internal(self, **kwargs):
-        self._render(**dict(kwargs, log=False))
-        return Response()
-
-    def _shadow_internal(self, **kwargs):
-        return []
 
     def _cleanup(self, **kwargs):
         data = self.data

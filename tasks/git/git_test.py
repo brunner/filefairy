@@ -97,54 +97,6 @@ class GitTest(Test):
         self.assertNotCalled(mock_acp, mock_chdir, self.mock_check,
                              self.mock_open, self.mock_handle.write)
 
-    def test_on_message(self):
-        git = self.create_git()
-        response = git._on_message_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
-
-    def test_reload(self):
-        git = self.create_git()
-        actual = git._reload_internal(date=DATE_10260602)
-        self.assertEqual(actual, {})
-
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
-
-    def test_render(self):
-        git = self.create_git()
-        actual = git._render_internal(date=DATE_10260602)
-        self.assertEqual(actual, [])
-
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
-
-    def test_run(self):
-        git = self.create_git()
-        response = git._run_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
-
-    def test_setup(self):
-        git = self.create_git()
-        response = git._setup_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
-
-    def test_shadow(self):
-        git = self.create_git()
-        actual = git._shadow_internal()
-        self.assertEqual(actual, [])
-
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
-
     @mock.patch.object(Git, 'push')
     @mock.patch.object(Git, 'commit')
     @mock.patch.object(Git, 'add')

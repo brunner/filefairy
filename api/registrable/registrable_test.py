@@ -127,7 +127,9 @@ class RegistrableTest(unittest.TestCase):
         response = registrable._run()
         self.assertEqual(response, Response())
 
-    def test_setup(self):
+    @mock.patch.object(FakeRegistrable, '_render')
+    @mock.patch.object(FakeRegistrable, '_reload')
+    def test_setup(self, mock_reload, mock_render):
         registrable = self.create_registrable()
 
         response = registrable._setup()
@@ -135,6 +137,9 @@ class RegistrableTest(unittest.TestCase):
             response,
             Response(
                 shadow=[Shadow(destination='bar', key='foo.a', info='b')]))
+
+        mock_reload.assert_called_once_with()
+        mock_render.assert_called_once_with()
 
     @mock.patch.object(FakeRegistrable, '_setup')
     def test_shadow(self, mock_setup):

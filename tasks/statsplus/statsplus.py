@@ -193,10 +193,6 @@ class Statsplus(Registrable):
         _home = self._home(**kwargs)
         return [(html, '', 'statsplus.html', _home)]
 
-    def _setup_internal(self, **kwargs):
-        self._render(**kwargs)
-        return Response()
-
     def _shadow_internal(self, **kwargs):
         return [
             Shadow(

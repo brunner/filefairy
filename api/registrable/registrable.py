@@ -19,7 +19,6 @@ _notify_internal, _run_internal, and _setup_internal, and Shadow data from
 _shadow_internal.
 """
 
-import abc
 import datetime
 import os
 import re
@@ -36,8 +35,6 @@ from data.response.response import Response  # noqa
 
 
 class Registrable(Messageable, Reloadable, Renderable):
-    __metaclass__ = abc.ABCMeta
-
     def __init__(self, **kwargs):
         date = kwargs.pop('date')
         super().__init__(**kwargs)
@@ -76,21 +73,17 @@ class Registrable(Messageable, Reloadable, Renderable):
     date = property(get_date, set_date)
     ok = property(get_ok, set_ok)
 
-    @abc.abstractmethod
     def _notify_internal(self, **kwargs):
-        pass
+        return Response()
 
-    @abc.abstractmethod
     def _run_internal(self, **kwargs):
-        pass
+        return Response()
 
-    @abc.abstractmethod
     def _setup_internal(self, **kwargs):
-        pass
+        return Response()
 
-    @abc.abstractmethod
     def _shadow_internal(self, **kwargs):
-        pass
+        return []
 
     def _notify(self, **kwargs):
         response = self._notify_internal(**kwargs)
@@ -105,6 +98,7 @@ class Registrable(Messageable, Reloadable, Renderable):
         self._reload(**kwargs)
         response = self._setup_internal(**kwargs)
         response.shadow = self._shadow_internal(**kwargs)
+        self._render(**kwargs)
         return response
 
     def _shadow(self, **kwargs):

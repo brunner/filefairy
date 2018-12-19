@@ -152,14 +152,6 @@ class DashboardTest(Test):
         self.assertNotCalled(mock_cleanup, self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)
 
-    def test_on_message(self):
-        dashboard = self.create_dashboard(_data())
-        response = dashboard._on_message_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
-
     @mock.patch.object(Dashboard, '_index_html')
     def test_render(self, mock_index):
         index_html = {'breadcrumbs': []}
@@ -169,32 +161,6 @@ class DashboardTest(Test):
         actual = dashboard._render_internal(date=DATE_10260602)
         expected = [('dashboard/index.html', '', 'dashboard.html', index_html)]
         self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
-
-    def test_run(self):
-        dashboard = self.create_dashboard(_data())
-        response = dashboard._run_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
-
-    @mock.patch.object(Dashboard, '_render')
-    def test_setup(self, mock_render):
-        dashboard = self.create_dashboard(_data())
-        response = dashboard._setup_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
-
-    def test_shadow(self):
-        dashboard = self.create_dashboard(_data())
-        value = dashboard._shadow_internal(date=DATE_10260602)
-        self.assertEqual(value, [])
 
         self.assertNotCalled(self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)

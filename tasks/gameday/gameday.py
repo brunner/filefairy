@@ -93,9 +93,6 @@ class Gameday(Registrable):
             self.write()
         return Response()
 
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
     def _render_internal(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
@@ -138,13 +135,6 @@ class Gameday(Registrable):
             self._render(**kwargs)
             response.append(notify=Notify.BASE)
         return response
-
-    def _setup_internal(self, **kwargs):
-        self._render(**kwargs)
-        return Response()
-
-    def _shadow_internal(self, **kwargs):
-        return []
 
     def _game_repl(self, game_data, m):
         a = m.group(0)
