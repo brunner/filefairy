@@ -69,13 +69,12 @@ class SlackTest(unittest.TestCase):
         expected = {'ok': True}
         self.assertEqual(actual, expected)
 
-        mock_call.assert_called_once_with(
-            'channels.history', {
-                'token': FILEFAIRY,
-                'channel': 'channel',
-                'count': 1000,
-                'latest': 0,
-            })
+        mock_call.assert_called_once_with('channels.history', {
+            'token': FILEFAIRY,
+            'channel': 'channel',
+            'count': 1000,
+            'latest': 0,
+        })
         self.mock_log.assert_not_called()
 
     @mock.patch('common.slack.slack._call')

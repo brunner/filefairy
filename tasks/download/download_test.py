@@ -81,7 +81,7 @@ class DownloadTest(Test):
         return download
 
     @mock.patch.object(Download, 'start')
-    def test_notify__upload(self, mock_start):
+    def test_notify__upload_finish(self, mock_start):
         response = Response(thread_=[Thread(target='_download_start')])
         mock_start.return_value = response
 
