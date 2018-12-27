@@ -32,46 +32,26 @@ EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 RESOURCE_DIR = re.sub(r'/tasks/statsplus', '/resource', _path)
 
-SCORES_MSG = ('*<game_box_2998.html|Arizona 4, Los Angeles 2>*\n'
-              '*<game_box_3003.html|Atlanta 2, Baltimore 1>*\n'
-              '*<game_box_2996.html|Cincinnati 7, Milwaukee 2>*\n'
-              '*<game_box_3002.html|Detroit 11, Chicago 4>*\n'
-              '*<game_box_2993.html|Houston 7, Seattle 2>*\n'
-              '*<game_box_2991.html|Kansas City 8, Cleveland 2>*\n'
-              '*<game_box_3004.html|Miami 6, Chicago 2>*\n'
-              '*<game_box_3001.html|New York 1, San Francisco 0>*\n'
-              '*<game_box_3000.html|New York 5, Los Angeles 3>*\n'
-              '*<game_box_2992.html|Philadelphia 3, Washington 1>*\n'
-              '*<game_box_2999.html|San Diego 8, Colorado 2>*\n'
-              '*<game_box_2990.html|St. Louis 5, Pittsburgh 4>*\n'
-              '*<game_box_2997.html|Tampa Bay 12, Boston 9>*\n'
-              '*<game_box_2994.html|Texas 5, Oakland 3>*\n'
-              '*<game_box_2995.html|Toronto 8, Minnesota 2>*')
+SCORES_ONE = ('*<game_box_2998.html|Arizona 4, Los Angeles 2>*\n'
+              '*<game_box_3003.html|Atlanta 2, Baltimore 1>*\n')
+SCORES_TWO = ('*<game_box_2998.html|Arizona 4, Los Angeles 2>*\n'
+              '*<game_box_3003.html|Arizona 2, Los Angeles 1>*\n')
 
-TABLE_MSG = ('Cincinnati Reds 111\nSan Diego Padres 104\n'
-             'Boston Red Sox 99\nSeattle Mariners 98\n'
-             'Los Angeles Dodgers 97\nNew York Mets 95\n'
-             'St. Louis Cardinals 89\nColorado Rockies 88\n'
-             'Minnesota Twins 88\nNew York Yankees 88\n'
-             'Detroit Tigers 86\nHouston Astros 85\n'
-             'Miami Marlins 84\nChicago White Sox 82\n'
-             'Atlanta Braves 77\nMilwaukee Brewers 77\n'
-             'Cleveland Indians 76\nArizona Diamondbacks 76\n'
-             'Kansas City Royals 76\nPhiladelphia Phillies 75\n'
-             'Oakland Athletics 75\nWashington Nationals 73\n'
-             'Toronto Blue Jays 73\nChicago Cubs 71\n'
-             'Baltimore Orioles 70\nLos Angeles Angels 70\n'
-             'Texas Rangers 67\nTampa Bay Rays 65\n'
-             'San Francisco Giants 62\nPittsburgh Pirates 53```')
+TABLE_ONE = ('Los Angeles Dodgers 97\nAtlanta Braves 77\n'
+             'Arizona Diamondbacks 76\nBaltimore Orioles 70```')
+TABLE_TWO = ('Los Angeles Dodgers 97\nArizona Diamondbacks 76```')
 
 
-def _data(scores=None, started=False, table=None):
+def _data(games=None, scores=None, started=False, table=None):
+    if games is None:
+        games = {}
     if scores is None:
         scores = {}
     if table is None:
         table = {}
 
     return {
+        'games': games,
         'scores': scores,
         'started': started,
         'table': table,
@@ -130,7 +110,7 @@ class StatsplusTest(Test):
                                      mock_valid):
         mock_valid.return_value = True
 
-        text = '08/30/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_MSG
+        text = '08/30/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -153,7 +133,7 @@ class StatsplusTest(Test):
         mock_scores.return_value = response
         mock_valid.return_value = True
 
-        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_MSG
+        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data())
@@ -179,7 +159,7 @@ class StatsplusTest(Test):
         mock_scores.return_value = response
         mock_valid.return_value = True
 
-        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_MSG
+        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -202,7 +182,7 @@ class StatsplusTest(Test):
                                     mock_valid):
         mock_valid.return_value = True
 
-        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/30/2024\n' + TABLE_MSG
+        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/30/2024\n' + TABLE_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -225,7 +205,7 @@ class StatsplusTest(Test):
         mock_table.return_value = response
         mock_valid.return_value = True
 
-        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_MSG
+        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data())
@@ -235,7 +215,8 @@ class StatsplusTest(Test):
         self.assertEqual(actual, response)
 
         mock_start.assert_called_once_with()
-        mock_table.assert_called_once_with(text)
+        mock_table.assert_called_once_with(
+            encode_datetime(DATE_08310000), text)
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_scores, self.mock_open,
                              self.mock_handle.write)
@@ -250,7 +231,7 @@ class StatsplusTest(Test):
         mock_table.return_value = response
         mock_valid.return_value = True
 
-        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_MSG
+        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -259,7 +240,8 @@ class StatsplusTest(Test):
         actual = statsplus._on_message_internal(obj=obj)
         self.assertEqual(actual, response)
 
-        mock_table.assert_called_once_with(text)
+        mock_table.assert_called_once_with(
+            encode_datetime(DATE_08310000), text)
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_scores, mock_start, self.mock_open,
                              self.mock_handle.write)
@@ -267,7 +249,10 @@ class StatsplusTest(Test):
     def test_reload(self):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._reload_internal(date=DATE_10260602)
-        expected = {'statslab': ['parse_score']}
+        expected = {
+            'record': ['decode_record', 'encode_record'],
+            'statslab': ['parse_score']
+        }
         self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -344,8 +329,8 @@ class StatsplusTest(Test):
     @mock.patch('tasks.statsplus.statsplus.check_output')
     def test_start(self, mock_check):
         date = encode_datetime(DATE_08310000)
-        table = {'T32': '1-0', 'T45': '0-1'}
-        read = _data(scores={date: ['2998']}, table=table)
+        table = {'T31': '1-0', 'T32': '1-0', 'T33': '0-1', 'T45': '0-1'}
+        read = _data(scores={date: ['2998', '3003']}, table=table)
         statsplus = self.create_statsplus(read)
         statsplus._start()
 
@@ -357,9 +342,9 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_save_scores(self):
+    def test_save_scores__one(self):
         date = encode_datetime(DATE_08310000)
-        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_MSG
+        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_ONE
 
         statsplus = self.create_statsplus(_data())
         actual = statsplus._save_scores(date, text)
@@ -367,58 +352,103 @@ class StatsplusTest(Test):
             thread_=[Thread(target='_parse_scores', args=(date, ))])
         self.assertEqual(actual, expected)
 
-        nums = [
-            '2998', '3003', '2996', '3002', '2993', '2991', '3004', '3001',
-            '3000', '2992', '2999', '2990', '2997', '2994', '2995'
-        ]
-        write = _data(scores={date: nums})
+        write = _data(scores={date: ['2998', '3003']})
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_save_table(self):
-        table = {
-            'T31': '75-86', 'T32': '76-85', 'T33': '70-91', 'T34': '99-62',
-            'T35': '82-79', 'T36': '71-90', 'T37': '110-51', 'T38': '76-85',
-            'T39': '88-73', 'T40': '85-76', 'T41': '83-78', 'T42': '84-77',
-            'T43': '75-86', 'T44': '70-91', 'T45': '97-64', 'T46': '77-84',
-            'T47': '88-73', 'T48': '87-74', 'T49': '94-67', 'T50': '75-86',
-            'T51': '74-87', 'T52': '53-108', 'T53': '103-58', 'T54': '98-63',
-            'T55': '62-99', 'T56': '88-73', 'T57': '64-97', 'T58': '66-95',
-            'T59': '72-89', 'T60': '73-88'
-        }  # yapf: disable
-        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_MSG
+    def test_save_scores__two(self):
+        date = encode_datetime(DATE_08310000)
+        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_TWO
 
         statsplus = self.create_statsplus(_data())
-        statsplus.shadow['standings.table'] = table
-        actual = statsplus._save_table(text)
+        actual = statsplus._save_scores(date, text)
+        expected = Response(
+            thread_=[Thread(target='_parse_scores', args=(date, ))])
+        self.assertEqual(actual, expected)
+
+        games = {date: {'T31': 2, 'TLA': 2}}
+        write = _data(games=games, scores={date: ['2998', '3003']})
+        self.mock_open.assert_called_with(Statsplus._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(Statsplus, '_call')
+    def test_save_table__one(self, mock_call):
+        date = encode_datetime(DATE_08310000)
+        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_ONE
+
+        table = {'T31': '3-3', 'T32': '2-4', 'T33': '2-4', 'T45': '5-1'}
+
+        standings = {
+            'T31': '72-83',
+            'T32': '74-81',
+            'T33': '68-87',
+            'T45': '92-63'
+        }
+
+        mock_call.side_effect = [
+            (5, 1), (92, 63), '5-2', (2, 4), (74, 81), '3-4',
+            (3, 3), (72, 83), '4-3', (2, 4), (68, 87), '2-5'
+        ]  # yapf: disable
+
+        statsplus = self.create_statsplus(_data(table=table))
+        statsplus.shadow['standings.table'] = standings
+        actual = statsplus._save_table(date, text)
         expected = Response(shadow=statsplus._shadow_internal())
         self.assertEqual(actual, expected)
 
-        table = {
-            'T31': '1-0', 'T32': '1-0', 'T33': '0-1', 'T34': '0-1',
-            'T35': '0-1', 'T36': '0-1', 'T37': '1-0', 'T38': '0-1',
-            'T39': '0-1', 'T40': '1-0', 'T41': '1-0', 'T42': '1-0',
-            'T43': '1-0', 'T44': '0-1', 'T45': '0-1', 'T46': '0-1',
-            'T47': '0-1', 'T48': '1-0', 'T49': '1-0', 'T50': '0-1',
-            'T51': '1-0', 'T52': '0-1', 'T53': '1-0', 'T54': '0-1',
-            'T55': '0-1', 'T56': '1-0', 'T57': '1-0', 'T58': '1-0',
-            'T59': '1-0', 'T60': '0-1'
-        }  # yapf: disable
+        table = {'T31': '4-3', 'T32': '3-4', 'T33': '2-5', 'T45': '5-2'}
+
         write = _data(table=table)
+        mock_call.assert_has_calls([
+            mock.call('decode_record', ('5-1', )),
+            mock.call('decode_record', ('92-63', )),
+            mock.call('encode_record', (5, 2)),
+            mock.call('decode_record', ('2-4', )),
+            mock.call('decode_record', ('74-81', )),
+            mock.call('encode_record', (3, 4)),
+            mock.call('decode_record', ('3-3', )),
+            mock.call('decode_record', ('72-83', )),
+            mock.call('encode_record', (4, 3)),
+            mock.call('decode_record', ('2-4', )),
+            mock.call('decode_record', ('68-87', )),
+            mock.call('encode_record', (2, 5))
+        ])
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_decode_wl(self):
-        statsplus = self.create_statsplus(_data())
-        actual = statsplus._decode_wl('75-86')
-        expected = (75, 86)
+    @mock.patch.object(Statsplus, '_call')
+    def test_save_table__two(self, mock_call):
+        date = encode_datetime(DATE_08310000)
+        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_TWO
+
+        games = {date: {'T31': 2, 'TLA': 2}}
+        table = {'T31': '2-3', 'T45': '5-0'}
+
+        standings = {'T31': '72-83', 'T45': '92-63'}
+
+        mock_call.side_effect = [
+            (5, 0), (92, 63), '5-1', (2, 3), (72, 83), '4-3'
+        ]  # yapf: disable
+
+        statsplus = self.create_statsplus(_data(games=games, table=table))
+        statsplus.shadow['standings.table'] = standings
+        actual = statsplus._save_table(date, text)
+        expected = Response(shadow=statsplus._shadow_internal())
         self.assertEqual(actual, expected)
 
-    def test_encode_wl(self):
-        statsplus = self.create_statsplus(_data())
-        actual = statsplus._encode_wl(75, 86)
-        expected = '75-86'
-        self.assertEqual(actual, expected)
+        table = {'T31': '4-3', 'T45': '5-1'}
+
+        write = _data(table=table)
+        mock_call.assert_has_calls([
+            mock.call('decode_record', ('5-0', )),
+            mock.call('decode_record', ('92-63', )),
+            mock.call('encode_record', (5, 1)),
+            mock.call('decode_record', ('2-3', )),
+            mock.call('decode_record', ('72-83', )),
+            mock.call('encode_record', (4, 3))
+        ])
+        self.mock_open.assert_called_with(Statsplus._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_valid__false(self):
         obj = {'bot_id': 'B123', 'channel': 'C123', 'text': 'foo'}

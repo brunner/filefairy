@@ -22,6 +22,7 @@ from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from data.thread_.thread_ import Thread  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
+from util.team.team import encodings  # noqa
 from util.team.team import precoding_to_encoding_sub  # noqa
 
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
@@ -78,12 +79,15 @@ class Statsplus(Registrable):
         if find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self._save_scores(date, text)
         elif find(r'MAJOR LEAGUE BASEBALL Live Table', text):
-            return self._save_table(text)
+            return self._save_table(date, text)
 
         return Response()
 
     def _reload_internal(self, **kwargs):
-        return {'statslab': ['parse_score']}
+        return {
+            'record': ['decode_record', 'encode_record'],
+            'statslab': ['parse_score']
+        }
 
     def _shadow_internal(self, **kwargs):
         return [
@@ -120,6 +124,7 @@ class Statsplus(Registrable):
     def _start(self):
         self.data['started'] = True
 
+        self.data['games'] = {}
         self.data['scores'] = {}
         self.data['table'] = {}
 
@@ -139,12 +144,20 @@ class Statsplus(Registrable):
 
             self.data['scores'][date].append(num)
 
+        for encoding in encodings():
+            games = text.count(encoding)
+            if games > 1:
+                if date not in self.data['games']:
+                    self.data['games'][date] = {}
+
+                self.data['games'][date][encoding] = games
+
         self.write()
 
         thread_ = Thread(target='_parse_scores', args=(date, ))
         return Response(thread_=[thread_])
 
-    def _save_table(self, text):
+    def _save_table(self, date, text):
         text = decoding_to_encoding_sub(text)
         for line in text.splitlines():
             encoding, wins = find(r'(\w+)\s(\d+)', line)
@@ -152,29 +165,23 @@ class Statsplus(Registrable):
                 continue
 
             curr = self.data['table'].get(encoding, '0-0')
-            cw, cl = self._decode_wl(curr)
+            cw, cl = self._call('decode_record', (curr, ))
 
             prev = self.shadow.get('standings.table', {}).get(encoding, '0-0')
-            pw, pl = self._decode_wl(prev)
+            pw, pl = self._call('decode_record', (prev, ))
 
-            if int(wins) - cw - pw:
-                curr = self._encode_wl(cw + 1, cl)
-            else:
-                curr = self._encode_wl(cw, cl + 1)
+            nw = int(wins) - cw - pw
+            nl = self.data['games'].get(date, {}).get(encoding, 1) - nw
+            next_ = self._call('encode_record', (cw + nw, cl + nl))
 
-            self.data['table'][encoding] = curr
+            self.data['table'][encoding] = next_
+
+        if date in self.data['games']:
+            self.data['games'].pop(date)
 
         self.write()
 
         return Response(shadow=self._shadow_internal())
-
-    @staticmethod
-    def _decode_wl(string):
-        return tuple(int(x) for x in string.split('-'))
-
-    @staticmethod
-    def _encode_wl(w, l):
-        return '{}-{}'.format(w, l)
 
     @staticmethod
     def _valid(obj):
