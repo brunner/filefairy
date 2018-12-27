@@ -21,9 +21,10 @@ class NotifyTest(unittest.TestCase):
         self.assertEqual(Notify.EXPORTS_EMAILS, Notify(4))
         self.assertEqual(Notify.FILEFAIRY_DAY, Notify(5))
         self.assertEqual(Notify.FILEFAIRY_DEPLOY, Notify(6))
-        self.assertEqual(Notify.STATSPLUS_SIM, Notify(7))
-        self.assertEqual(Notify.UPLOAD_FINISH, Notify(8))
-        self.assertEqual(Notify.OTHER, Notify(9))
+        self.assertEqual(Notify.STATSPLUS_FINISH, Notify(7))
+        self.assertEqual(Notify.STATSPLUS_SIM, Notify(8))
+        self.assertEqual(Notify.UPLOAD_FINISH, Notify(9))
+        self.assertEqual(Notify.OTHER, Notify(10))
 
 
 if __name__ == '__main__':

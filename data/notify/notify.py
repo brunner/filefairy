@@ -31,11 +31,15 @@ class Notify(Enum):
     # information to the git task to deploy the rendering changes to Fairylab.
     FILEFAIRY_DEPLOY = 6
 
+    # The statsplus task has determined that all scores from the latest sim
+    # have been parsed.
+    STATSPLUS_FINISH = 7
+
     # The statsplus task has determined that a simulation is ongoing.
-    STATSPLUS_SIM = 7
+    STATSPLUS_SIM = 8
 
     # The upload task has determined that the file upload has finished.
-    UPLOAD_FINISH = 8
+    UPLOAD_FINISH = 9
 
     # An arbitrary value for use in tests.
-    OTHER = 9
+    OTHER = 10

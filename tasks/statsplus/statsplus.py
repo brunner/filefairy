@@ -25,7 +25,11 @@ from util.team.team import decoding_to_encoding_sub  # noqa
 from util.team.team import encodings  # noqa
 from util.team.team import precoding_to_encoding_sub  # noqa
 
+EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
+EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
+
+STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 
 
 class Statsplus(Registrable):
@@ -65,8 +69,7 @@ class Statsplus(Registrable):
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
-            self.data['started'] = False
-            self.write()
+            return Response(thread_=[Thread(target='_parse_extracted_scores')])
 
         return Response()
 
@@ -98,28 +101,49 @@ class Statsplus(Registrable):
 
         return Response()
 
-    def _parse_scores(self, date, *args, **kwargs):
+    def _parse_extracted_scores(self, *args, **kwargs):
+        self.data['started'] = False
+
+        for name in os.listdir(EXTRACT_BOX_SCORES):
+            num = find(r'\D+(\d+)\.html', name)
+            self._parse_score(num, None)
+
+        self.data['scores'] = {}
+        self.write()
+
+        return Response(notify=[Notify.STATSPLUS_FINISH])
+
+    def _parse_saved_scores(self, date, *args, **kwargs):
         if date not in self.data['scores']:
             return Response()
 
         unvisited = []
-        use_link = self.data['started']
-
         for num in self.data['scores'][date]:
-            if self._call('parse_score', (date, num, use_link)) is None:
+            if self._parse_score(num, date) is None:
                 unvisited.append(num)
 
         if unvisited:
             self.data['scores'][date] = unvisited
             self.write()
 
-            thread_ = Thread(target='_parse_scores', args=(date, ))
+            thread_ = Thread(target='_parse_saved_scores', args=(date, ))
             return Response(thread_=[thread_])
 
         self.data['scores'].pop(date)
         self.write()
 
         return Response()
+
+    def _parse_score(self, num, date):
+        out = os.path.join(GAMES_DIR, num + '.json')
+
+        if os.path.isfile(out):
+            return True
+
+        prefix = STATSPLUS_LINK if self.data['started'] else EXTRACT_DIR
+        in_ = prefix + '/box_scores/game_box_{}.html'.format(num)
+
+        return self._call('parse_score', (in_, out, date))
 
     def _start(self):
         self.data['started'] = True
@@ -154,7 +178,7 @@ class Statsplus(Registrable):
 
         self.write()
 
-        thread_ = Thread(target='_parse_scores', args=(date, ))
+        thread_ = Thread(target='_parse_saved_scores', args=(date, ))
         return Response(thread_=[thread_])
 
     def _save_table(self, date, text):

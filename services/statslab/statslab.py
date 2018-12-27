@@ -17,41 +17,33 @@ from common.re_.re_ import find  # noqa
 from common.requests_.requests_ import get  # noqa
 from util.team.team import decoding_to_encoding_sub  # noqa
 
-EXTRACT_DIR = re.sub(r'/services/statslab', '/resource/extract', _path)
-STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 
-GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
-
-
-def _open(link):
-    if link.startswith('http'):
-        return get(link)
-    if os.path.isfile(link):
-        with open(link, 'r', encoding='iso-8859-1') as f:
+def _open(in_):
+    if in_.startswith('http'):
+        return get(in_)
+    if os.path.isfile(in_):
+        with open(in_, 'r', encoding='iso-8859-1') as f:
             return f.read()
     return ''
 
 
-def parse_score(date, num, use_link):
+def parse_score(in_, out, date):
     """Parse a StatsLab box score into a task-readable format.
 
     If the box score is parsed successfully, the resulting data is written to a
-    JSON file in the ~/filefairy/resource/games/ directory and True is the
-    returned value. Alternatively, if the box score is missing or does not
-    match the given date, no JSON data is written and None is returned.
+    specified file and True is the returned value. Alternatively, if the box
+    score is missing or does not match the given date, no JSON data is written
+    and None is returned.
 
     Args:
+        in_: The StatsLab box score link or file path.
+        out: The file path to write the parsed data to.
         date: The encoded date that the box score is expected to match.
-        num: The box score identifier.
-        use_link: Use StatsLab if true, otherwise use the extracted file data.
 
     Returns:
-        True if successful, otherwise None.
+        True if the parse was successful, otherwise None.
     """
-    prefix = STATSPLUS_LINK if use_link else EXTRACT_DIR
-    game_box_link = prefix + '/box_scores/game_box_{}.html'.format(num)
-
-    text = decoding_to_encoding_sub(_open(game_box_link))
+    text = decoding_to_encoding_sub(_open(in_))
     text = re.sub(r'<a href="../\w+/player_(\d+)\.[^<]+</a>', r'P\1', text)
     text = re.sub(r'</?b>', '', text)
 
@@ -60,8 +52,10 @@ def parse_score(date, num, use_link):
         return None
 
     d = datetime.datetime.strptime(match, '%m/%d/%Y')
-    if date != encode_datetime(datetime_datetime_pst(d.year, d.month, d.day)):
-        print(d, date)
+    parsed = encode_datetime(datetime_datetime_pst(d.year, d.month, d.day))
+    if date is None:
+        date = parsed
+    elif date != parsed:
         return None
 
     data = {'away_team': away, 'date': date, 'home_team': home}
@@ -87,7 +81,7 @@ def parse_score(date, num, use_link):
 
     data['ballpark'] = find(r'(?s)Ballpark:(.+?)<br>', text)
 
-    with open(os.path.join(GAMES_DIR, num + '.json'), 'w') as f:
+    with open(out, 'w') as f:
         f.write(dumps(data) + '\n')
 
     return True

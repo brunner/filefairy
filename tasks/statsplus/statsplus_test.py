@@ -29,8 +29,11 @@ DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
 EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
+EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
-RESOURCE_DIR = re.sub(r'/tasks/statsplus', '/resource', _path)
+
+STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
+STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
 SCORES_ONE = ('*<game_box_2998.html|Arizona 4, Los Angeles 2>*\n'
               '*<game_box_3003.html|Atlanta 2, Baltimore 1>*\n')
@@ -107,19 +110,21 @@ class StatsplusTest(Test):
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    def test_notify__download_finish(self):
+    @mock.patch.object(Statsplus, '_call')
+    def test_notify__download_finish(self, mock_call):
         statsplus = self.create_statsplus(_data(started=True))
         response = statsplus._notify_internal(notify=Notify.DOWNLOAD_FINISH)
-        self.assertEqual(response, Response())
+        expected = Response(thread_=[Thread(target='_parse_extracted_scores')])
+        self.assertEqual(response, expected)
 
-        write = _data()
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    def test_notify__other(self):
+    @mock.patch.object(Statsplus, '_call')
+    def test_notify__other(self, mock_call):
         statsplus = self.create_statsplus(_data(started=True))
         response = statsplus._notify_internal(notify=Notify.OTHER)
-        self.assertEqual(response, Response())
+        expected = Response()
+        self.assertEqual(response, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
@@ -267,64 +272,130 @@ class StatsplusTest(Test):
         self.assertNotCalled(mock_scores, mock_start, self.mock_open,
                              self.mock_handle.write)
 
-    @mock.patch.object(Statsplus, '_call')
-    def test_parse_scores__none(self, mock_call):
-        mock_call.side_effect = [True, None]
+    @mock.patch.object(Statsplus, '_parse_score')
+    @mock.patch('tasks.statsplus.statsplus.os.listdir')
+    def test_parse_extracted_scores(self, mock_listdir, mock_parse):
+        mock_listdir.return_value = [
+            'game_box_2998.html',
+            'game_box_3003.html',
+        ]
 
-        date = encode_datetime(DATE_08310000)
-        read = _data(scores={date: ['2998', '3003']})
-        statsplus = self.create_statsplus(read)
-        actual = statsplus._parse_scores(date)
-        expected = Response(
-            thread_=[Thread(target='_parse_scores', args=(date, ))])
-        self.assertEqual(actual, expected)
-
-        write = _data(scores={date: ['3003']})
-        mock_call.assert_has_calls([
-            mock.call('parse_score', (date, '2998', False)),
-            mock.call('parse_score', (date, '3003', False)),
-        ])
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-
-    @mock.patch.object(Statsplus, '_call')
-    def test_parse_scores__started(self, mock_call):
-        mock_call.side_effect = [True, None]
-
-        date = encode_datetime(DATE_08310000)
-        read = _data(scores={date: ['2998', '3003']}, started=True)
-        statsplus = self.create_statsplus(read)
-        actual = statsplus._parse_scores(date)
-        expected = Response(
-            thread_=[Thread(target='_parse_scores', args=(date, ))])
-        self.assertEqual(actual, expected)
-
-        write = _data(scores={date: ['3003']}, started=True)
-        mock_call.assert_has_calls([
-            mock.call('parse_score', (date, '2998', True)),
-            mock.call('parse_score', (date, '3003', True)),
-        ])
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-
-    @mock.patch.object(Statsplus, '_call')
-    def test_parse_scores__true(self, mock_call):
-        mock_call.side_effect = [True, True]
-
-        date = encode_datetime(DATE_08310000)
-        read = _data(scores={date: ['2998', '3003']})
-        statsplus = self.create_statsplus(read)
-        actual = statsplus._parse_scores(date)
-        expected = Response()
+        statsplus = self.create_statsplus(_data(started=True))
+        actual = statsplus._parse_extracted_scores()
+        expected = Response(notify=[Notify.STATSPLUS_FINISH])
         self.assertEqual(actual, expected)
 
         write = _data()
-        mock_call.assert_has_calls([
-            mock.call('parse_score', (date, '2998', False)),
-            mock.call('parse_score', (date, '3003', False)),
+        mock_listdir.assert_called_once_with(EXTRACT_BOX_SCORES)
+        mock_parse.assert_has_calls([
+            mock.call('2998', None),
+            mock.call('3003', None),
         ])
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(Statsplus, '_parse_score')
+    def test_parse_saved_scores__none(self, mock_parse):
+        mock_parse.side_effect = [True, None]
+
+        date = encode_datetime(DATE_08310000)
+        read = _data(scores={date: ['2998', '3003']})
+        statsplus = self.create_statsplus(read)
+        actual = statsplus._parse_saved_scores(date)
+        expected = Response(
+            thread_=[Thread(target='_parse_saved_scores', args=(date, ))])
+        self.assertEqual(actual, expected)
+
+        write = _data(scores={date: ['3003']})
+        mock_parse.assert_has_calls([
+            mock.call('2998', date),
+            mock.call('3003', date),
+        ])
+        self.mock_open.assert_called_with(Statsplus._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(Statsplus, '_parse_score')
+    def test_parse_saved_scores__true(self, mock_parse):
+        mock_parse.return_value = True
+
+        date = encode_datetime(DATE_08310000)
+        read = _data(scores={date: ['2998', '3003']})
+        statsplus = self.create_statsplus(read)
+        actual = statsplus._parse_saved_scores(date)
+        self.assertEqual(actual, Response())
+
+        write = _data()
+        mock_parse.assert_has_calls([
+            mock.call('2998', date),
+            mock.call('3003', date),
+        ])
+        self.mock_open.assert_called_with(Statsplus._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
+    @mock.patch.object(Statsplus, '_call')
+    def test_parse_score__isfile(self, mock_call, mock_isfile):
+        mock_isfile.return_value = True
+
+        date = encode_datetime(DATE_08310000)
+        statsplus = self.create_statsplus(_data())
+        actual = statsplus._parse_score('2998', date)
+        self.assertEqual(actual, True)
+
+        mock_isfile.assert_called_once_with(
+            os.path.join(GAMES_DIR, '2998.json'))
+        self.assertNotCalled(mock_call, self.mock_open, self.mock_handle.write)
+
+    @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
+    @mock.patch.object(Statsplus, '_call')
+    def test_parse_score__none(self, mock_call, mock_isfile):
+        mock_call.return_value = None
+        mock_isfile.return_value = False
+
+        date = encode_datetime(DATE_08310000)
+        statsplus = self.create_statsplus(_data())
+        actual = statsplus._parse_score('2998', date)
+        self.assertEqual(actual, None)
+
+        in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
+        out = os.path.join(GAMES_DIR, '2998.json')
+        mock_call.assert_called_once_with('parse_score', (in_, out, date))
+        mock_isfile.assert_called_once_with(out)
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
+    @mock.patch.object(Statsplus, '_call')
+    def test_parse_score__started(self, mock_call, mock_isfile):
+        mock_call.return_value = True
+        mock_isfile.return_value = False
+
+        date = encode_datetime(DATE_08310000)
+        statsplus = self.create_statsplus(_data(started=True))
+        actual = statsplus._parse_score('2998', date)
+        self.assertEqual(actual, True)
+
+        in_ = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2998.html')
+        out = os.path.join(GAMES_DIR, '2998.json')
+        mock_call.assert_called_once_with('parse_score', (in_, out, date))
+        mock_isfile.assert_called_once_with(out)
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
+    @mock.patch.object(Statsplus, '_call')
+    def test_parse_score__true(self, mock_call, mock_isfile):
+        mock_call.return_value = True
+        mock_isfile.return_value = False
+
+        date = encode_datetime(DATE_08310000)
+        statsplus = self.create_statsplus(_data())
+        actual = statsplus._parse_score('2998', date)
+        self.assertEqual(actual, True)
+
+        in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
+        out = os.path.join(GAMES_DIR, '2998.json')
+        mock_call.assert_called_once_with('parse_score', (in_, out, date))
+        mock_isfile.assert_called_once_with(out)
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.check_output')
     def test_start(self, mock_check):
@@ -349,7 +420,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._save_scores(date, text)
         expected = Response(
-            thread_=[Thread(target='_parse_scores', args=(date, ))])
+            thread_=[Thread(target='_parse_saved_scores', args=(date, ))])
         self.assertEqual(actual, expected)
 
         write = _data(scores={date: ['2998', '3003']})
@@ -363,7 +434,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._save_scores(date, text)
         expected = Response(
-            thread_=[Thread(target='_parse_scores', args=(date, ))])
+            thread_=[Thread(target='_parse_saved_scores', args=(date, ))])
         self.assertEqual(actual, expected)
 
         games = {date: {'T31': 2, 'TLA': 2}}
