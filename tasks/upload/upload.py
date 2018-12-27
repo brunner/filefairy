@@ -58,7 +58,7 @@ class Upload(Registrable):
     def _get_date():
         text = get(EXPORTS_URL)
 
-        if find(r'League File: CST', text):
+        if find(r'(?i)League File: CST', text):
             return None
 
         match = find(r'(?s)League File: (.+?) CST', text)
