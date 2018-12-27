@@ -21,6 +21,41 @@ from common.json_.json_ import dumps  # noqa
 ISO = 'iso-8859-1'
 
 
+class Mock(object):
+    def __init__(self, read=None, write=None):
+        self.mo = mock.mock_open(read_data=read)
+        self.mock_handle = self.mo()
+        self.write = write
+
+
+class RMock(Mock):
+    def __init__(self, path, filename, testdata):
+        self.call = mock.call(os.path.join(path, filename), 'r', encoding=ISO)
+        super().__init__(read=testdata[filename])
+
+
+class WMock(Mock):
+    def __init__(self, path, filename, testdata):
+        self.call = mock.call(os.path.join(path, filename), 'w')
+        super().__init__(write=testdata[filename])
+
+
+class Suite(object):
+    def __init__(self, *mocks):
+        self.mocks = mocks
+
+    def calls(self):
+        return [m.call for m in self.mocks]
+
+    def values(self):
+        return [m.mo.return_value for m in self.mocks]
+
+    def verify(self):
+        for m in self.mocks:
+            if m.write is not None:
+                m.mock_handle.write.assert_called_once_with(m.write)
+
+
 class Test(unittest.TestCase):
     @abc.abstractmethod
     def init_mocks(self):

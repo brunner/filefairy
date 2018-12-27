@@ -86,7 +86,7 @@ class Recap(Registrable):
     def _shadow_internal(self, **kwargs):
         return [
             Shadow(
-                destination='statsplus',
+                destination='scoreboard',
                 key='recap.standings',
                 info=self.data['standings'])
         ]
@@ -149,8 +149,8 @@ class Recap(Registrable):
         for key in ['injuries', 'news', 'transactions']:
             ret[key] = self.tables[key]
 
-        offseason = self.shadow.get('statsplus.offseason', True)
-        postseason = self.shadow.get('statsplus.postseason', True)
+        offseason = self.shadow.get('scoreboard.offseason', True)
+        postseason = self.shadow.get('scoreboard.postseason', True)
         if not (offseason or postseason):
             ret['standings'] = standings_table(self.data['standings'])
 

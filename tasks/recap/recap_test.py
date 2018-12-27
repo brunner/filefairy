@@ -494,7 +494,7 @@ class RecapTest(Test):
         value = recap._shadow_internal()
         self.assertEqual(value, [
             Shadow(
-                destination='statsplus',
+                destination='scoreboard',
                 key='recap.standings',
                 info=_standings)
         ])
@@ -620,8 +620,8 @@ class RecapTest(Test):
         mock_standings.return_value = standings_table
 
         recap = self.create_recap(_data())
-        recap.shadow['statsplus.offseason'] = False
-        recap.shadow['statsplus.postseason'] = False
+        recap.shadow['scoreboard.offseason'] = False
+        recap.shadow['scoreboard.postseason'] = False
         recap.tables = _table_new
 
         value = recap._home(date=_now)

@@ -12,6 +12,9 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/leaguefile', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.test.test import RMock  # noqa
+from common.test.test import Suite  # noqa
+from common.test.test import WMock  # noqa
 from common.test.test import get_testdata  # noqa
 from services.leaguefile.leaguefile import download_file  # noqa
 from services.leaguefile.leaguefile import extract_file  # noqa
@@ -20,52 +23,20 @@ DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 DATE_10260000 = datetime_datetime_pst(1985, 10, 26)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
+
 DOWNLOAD_DIR = re.sub(r'/services/leaguefile', '/resource/download', _path)
 DOWNLOAD_BOX_SCORES = os.path.join(DOWNLOAD_DIR, 'news/html/box_scores')
 DOWNLOAD_LEAGUES = os.path.join(DOWNLOAD_DIR, 'news/txt/leagues')
+
 EXTRACT_DIR = re.sub(r'/services/leaguefile', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
+
 FILE_HOST = 'https://statsplus.net/oblootp/files/'
 ISO = 'iso-8859-1'
-TESTDATA_DIR = os.path.join(_path, 'testdata')
-TESTDATA = get_testdata(TESTDATA_DIR)
 
-
-class Mock(object):
-    def __init__(self, read=None, write=None):
-        self.mo = mock.mock_open(read_data=read)
-        self.mock_handle = self.mo()
-        self.write = write
-
-
-class ReadMock(Mock):
-    def __init__(self, path, filename):
-        self.call = mock.call(os.path.join(path, filename), 'r', encoding=ISO)
-        super().__init__(read=TESTDATA[filename])
-
-
-class WriteMock(Mock):
-    def __init__(self, path, filename):
-        self.call = mock.call(os.path.join(path, filename), 'w')
-        super().__init__(write=TESTDATA[filename])
-
-
-class Suite(object):
-    def __init__(self, *mocks):
-        self.mocks = mocks
-
-    def calls(self):
-        return [m.call for m in self.mocks]
-
-    def values(self):
-        return [m.mo.return_value for m in self.mocks]
-
-    def verify(self):
-        for m in self.mocks:
-            if m.write is not None:
-                m.mock_handle.write.assert_called_once_with(m.write)
+TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
 
 
 class LeaguefileTest(unittest.TestCase):
@@ -119,24 +90,24 @@ class LeaguefileTest(unittest.TestCase):
             'game_box_2449.html', 'game_box_2469.html', 'game_box_2476.html'
         ]
         suite = Suite(
-            ReadMock(DOWNLOAD_BOX_SCORES, 'game_box_2449.html'),
-            ReadMock(DOWNLOAD_LEAGUES, 'log_2449.txt'),
-            WriteMock(EXTRACT_BOX_SCORES, 'game_box_2449.html'),
-            WriteMock(EXTRACT_GAME_LOGS, 'log_2449.txt'),
-            ReadMock(DOWNLOAD_BOX_SCORES, 'game_box_2469.html'),
-            ReadMock(DOWNLOAD_LEAGUES, 'log_2469.txt'),
-            WriteMock(EXTRACT_BOX_SCORES, 'game_box_2469.html'),
-            WriteMock(EXTRACT_GAME_LOGS, 'log_2469.txt'),
-            ReadMock(DOWNLOAD_BOX_SCORES, 'game_box_2476.html'),
-            ReadMock(DOWNLOAD_LEAGUES, 'log_2476.txt'),
-            WriteMock(EXTRACT_BOX_SCORES, 'game_box_2476.html'),
-            WriteMock(EXTRACT_GAME_LOGS, 'log_2476.txt'),
-            ReadMock(DOWNLOAD_LEAGUES, 'league_100_injuries.txt'),
-            WriteMock(EXTRACT_LEAGUES, 'injuries.txt'),
-            ReadMock(DOWNLOAD_LEAGUES, 'league_100_news.txt'),
-            WriteMock(EXTRACT_LEAGUES, 'news.txt'),
-            ReadMock(DOWNLOAD_LEAGUES, 'league_100_transactions.txt'),
-            WriteMock(EXTRACT_LEAGUES, 'transactions.txt'),
+            RMock(DOWNLOAD_BOX_SCORES, 'game_box_2449.html', TESTDATA),
+            RMock(DOWNLOAD_LEAGUES, 'log_2449.txt', TESTDATA),
+            WMock(EXTRACT_BOX_SCORES, 'game_box_2449.html', TESTDATA),
+            WMock(EXTRACT_GAME_LOGS, 'log_2449.txt', TESTDATA),
+            RMock(DOWNLOAD_BOX_SCORES, 'game_box_2469.html', TESTDATA),
+            RMock(DOWNLOAD_LEAGUES, 'log_2469.txt', TESTDATA),
+            WMock(EXTRACT_BOX_SCORES, 'game_box_2469.html', TESTDATA),
+            WMock(EXTRACT_GAME_LOGS, 'log_2469.txt', TESTDATA),
+            RMock(DOWNLOAD_BOX_SCORES, 'game_box_2476.html', TESTDATA),
+            RMock(DOWNLOAD_LEAGUES, 'log_2476.txt', TESTDATA),
+            WMock(EXTRACT_BOX_SCORES, 'game_box_2476.html', TESTDATA),
+            WMock(EXTRACT_GAME_LOGS, 'log_2476.txt', TESTDATA),
+            RMock(DOWNLOAD_LEAGUES, 'league_100_injuries.txt', TESTDATA),
+            WMock(EXTRACT_LEAGUES, 'injuries.txt', TESTDATA),
+            RMock(DOWNLOAD_LEAGUES, 'league_100_news.txt', TESTDATA),
+            WMock(EXTRACT_LEAGUES, 'news.txt', TESTDATA),
+            RMock(DOWNLOAD_LEAGUES, 'league_100_transactions.txt', TESTDATA),
+            WMock(EXTRACT_LEAGUES, 'transactions.txt', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
