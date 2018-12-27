@@ -38,7 +38,7 @@ class FakeReloadable(Reloadable):
     def __init__(self, **kwargs):
         super(FakeReloadable, self).__init__(**kwargs)
 
-    def _reload_internal(self, **kwargs):
+    def _reload_data(self, **kwargs):
         return {'a': ['foo', 'bar'], 'b': ['baz']}
 
 

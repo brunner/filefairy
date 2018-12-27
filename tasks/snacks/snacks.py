@@ -50,6 +50,9 @@ class Snacks(Registrable):
     def _title():
         return 'snacks'
 
+    def _reload_data(self, **kwargs):
+        return {'bread': ['snack_me'], 'circus': ['choose', 'discuss', 'who']}
+
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.FILEFAIRY_DAY:
             return Response(thread_=[Thread(target='_refresh')])
@@ -109,9 +112,6 @@ class Snacks(Registrable):
             chat_post_message(channel, reply)
 
         return Response()
-
-    def _reload_internal(self, **kwargs):
-        return {'bread': ['snack_me'], 'circus': ['choose', 'discuss', 'who']}
 
     def _setup_internal(self, **kwargs):
         return Response(thread_=[Thread(target='_refresh')])

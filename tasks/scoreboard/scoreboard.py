@@ -94,6 +94,23 @@ class Scoreboard(Registrable):
     def _title():
         return 'scoreboard'
 
+    def _render_data(self, **kwargs):
+        html = 'scoreboard/index.html'
+        _home = self._home(**kwargs)
+        return [(html, '', 'scoreboard.html', _home)]
+
+    def _shadow_data(self, **kwargs):
+        return [
+            Shadow(
+                destination='recap',
+                key='scoreboard.offseason',
+                info=self.data['offseason']),
+            Shadow(
+                destination='recap',
+                key='scoreboard.postseason',
+                info=self.data['postseason'])
+        ]
+
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == Notify.DOWNLOAD_FINISH:
@@ -170,7 +187,7 @@ class Scoreboard(Registrable):
                 self._render(**kwargs)
 
         if shadow:
-            response.shadow = self._shadow_internal(**kwargs)
+            response.shadow = self._shadow_data(**kwargs)
 
         if data != original:
             self.write()
@@ -187,23 +204,6 @@ class Scoreboard(Registrable):
                 thread_=Thread(target='_extract_all', args=(unchecked, )))
 
         return response
-
-    def _render_internal(self, **kwargs):
-        html = 'scoreboard/index.html'
-        _home = self._home(**kwargs)
-        return [(html, '', 'scoreboard.html', _home)]
-
-    def _shadow_internal(self, **kwargs):
-        return [
-            Shadow(
-                destination='recap',
-                key='scoreboard.offseason',
-                info=self.data['offseason']),
-            Shadow(
-                destination='recap',
-                key='scoreboard.postseason',
-                info=self.data['postseason'])
-        ]
 
     def _clear(self):
         self.data['highlights'] = {}

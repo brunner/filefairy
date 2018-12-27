@@ -86,6 +86,27 @@ class StatsplusTest(Test):
 
         return statsplus
 
+    def test_reload_data(self):
+        statsplus = self.create_statsplus(_data())
+        actual = statsplus._reload_data(date=DATE_10260602)
+        expected = {
+            'record': ['decode_record', 'encode_record'],
+            'statslab': ['parse_score']
+        }
+        self.assertEqual(actual, expected)
+
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    def test_shadow_data(self):
+        table = {'T32': '1-0', 'T45': '0-1'}
+        statsplus = self.create_statsplus(_data(table=table))
+        actual = statsplus._shadow_data(date=DATE_10260602)
+        shadow = Shadow(
+            destination='standings', key='statsplus.table', info=table)
+        self.assertEqual(actual, [shadow])
+
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
     def test_notify__download_finish(self):
         statsplus = self.create_statsplus(_data(started=True))
         response = statsplus._notify_internal(notify=Notify.DOWNLOAD_FINISH)
@@ -246,27 +267,6 @@ class StatsplusTest(Test):
         self.assertNotCalled(mock_scores, mock_start, self.mock_open,
                              self.mock_handle.write)
 
-    def test_reload(self):
-        statsplus = self.create_statsplus(_data())
-        actual = statsplus._reload_internal(date=DATE_10260602)
-        expected = {
-            'record': ['decode_record', 'encode_record'],
-            'statslab': ['parse_score']
-        }
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
-    def test_shadow(self):
-        table = {'T32': '1-0', 'T45': '0-1'}
-        statsplus = self.create_statsplus(_data(table=table))
-        actual = statsplus._shadow_internal(date=DATE_10260602)
-        shadow = Shadow(
-            destination='standings', key='statsplus.table', info=table)
-        self.assertEqual(actual, [shadow])
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
     @mock.patch.object(Statsplus, '_call')
     def test_parse_scores__none(self, mock_call):
         mock_call.side_effect = [True, None]
@@ -393,7 +393,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data(table=table))
         statsplus.shadow['standings.table'] = standings
         actual = statsplus._save_table(date, text)
-        expected = Response(shadow=statsplus._shadow_internal())
+        expected = Response(shadow=statsplus._shadow_data())
         self.assertEqual(actual, expected)
 
         table = {'T31': '4-3', 'T32': '3-4', 'T33': '2-5', 'T45': '5-2'}
@@ -433,7 +433,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data(games=games, table=table))
         statsplus.shadow['standings.table'] = standings
         actual = statsplus._save_table(date, text)
-        expected = Response(shadow=statsplus._shadow_internal())
+        expected = Response(shadow=statsplus._shadow_data())
         self.assertEqual(actual, expected)
 
         table = {'T31': '4-3', 'T45': '5-1'}

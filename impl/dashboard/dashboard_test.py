@@ -130,6 +130,19 @@ class DashboardTest(Test):
         self.assertNotCalled(self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)
 
+    @mock.patch.object(Dashboard, '_index_html')
+    def test_render_data(self, mock_index):
+        index_html = {'breadcrumbs': []}
+        mock_index.return_value = index_html
+
+        dashboard = self.create_dashboard(_data())
+        actual = dashboard._render_data(date=DATE_10260602)
+        expected = [('dashboard/index.html', '', 'dashboard.html', index_html)]
+        self.assertEqual(actual, expected)
+
+        self.assertNotCalled(self.mock_chat, self.mock_open,
+                             self.mock_handle.write, self.mock_upload)
+
     @mock.patch.object(Dashboard, '_cleanup')
     def test_notify__fairylab_day(self, mock_cleanup):
         dashboard = self.create_dashboard(_data())
@@ -150,19 +163,6 @@ class DashboardTest(Test):
         self.assertEqual(response, Response())
 
         self.assertNotCalled(mock_cleanup, self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
-
-    @mock.patch.object(Dashboard, '_index_html')
-    def test_render(self, mock_index):
-        index_html = {'breadcrumbs': []}
-        mock_index.return_value = index_html
-
-        dashboard = self.create_dashboard(_data())
-        actual = dashboard._render_internal(date=DATE_10260602)
-        expected = [('dashboard/index.html', '', 'dashboard.html', index_html)]
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_render')

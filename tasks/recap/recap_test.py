@@ -335,6 +335,44 @@ class RecapTest(Test):
 
         return recap
 
+    @mock.patch.object(Recap, '_home')
+    def test_render_data(self, mock_home):
+        home = {
+            'breadcrumbs': [],
+            'injuries': [],
+            'news': [],
+            'transactions': []
+        }
+        mock_home.return_value = home
+
+        recap = self.create_recap(_data())
+        data = recap._render_data(date=_now)
+        index = 'recap/index.html'
+        self.assertEqual(data, [(index, '', 'recap.html', home)])
+
+        mock_home.assert_called_once_with(date=_now)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
+    def test_shadow_data(self):
+        recap = self.create_recap(_data())
+        value = recap._shadow_data()
+        self.assertEqual(value, [
+            Shadow(
+                destination='scoreboard',
+                key='recap.standings',
+                info=_standings)
+        ])
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+        self.mock_reactions.assert_not_called()
+
     @mock.patch.object(Recap, '_tables')
     @mock.patch.object(Recap, '_standings')
     @mock.patch.object(Recap, '_render')
@@ -352,7 +390,7 @@ class RecapTest(Test):
         response = recap._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(
             response,
-            Response(notify=[Notify.BASE], shadow=recap._shadow_internal()))
+            Response(notify=[Notify.BASE], shadow=recap._shadow_data()))
 
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
@@ -384,7 +422,7 @@ class RecapTest(Test):
         response = recap._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(
             response,
-            Response(notify=[Notify.BASE], shadow=recap._shadow_internal()))
+            Response(notify=[Notify.BASE], shadow=recap._shadow_data()))
 
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
@@ -416,7 +454,7 @@ class RecapTest(Test):
         response = recap._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(
             response,
-            Response(notify=[Notify.BASE], shadow=recap._shadow_internal()))
+            Response(notify=[Notify.BASE], shadow=recap._shadow_data()))
 
         write = _data(then=_encoded_new)
         mock_death.assert_called_once_with()
@@ -454,28 +492,6 @@ class RecapTest(Test):
         self.mock_log.assert_not_called()
         self.mock_reactions.assert_not_called()
 
-    @mock.patch.object(Recap, '_home')
-    def test_render(self, mock_home):
-        home = {
-            'breadcrumbs': [],
-            'injuries': [],
-            'news': [],
-            'transactions': []
-        }
-        mock_home.return_value = home
-
-        recap = self.create_recap(_data())
-        value = recap._render_internal(date=_now)
-        index = 'recap/index.html'
-        self.assertEqual(value, [(index, '', 'recap.html', home)])
-
-        mock_home.assert_called_once_with(date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
     @mock.patch.object(Recap, '_tables')
     def test_setup(self, mock_tables):
         recap = self.create_recap(_data())
@@ -483,22 +499,6 @@ class RecapTest(Test):
         self.assertEqual(response, Response())
 
         mock_tables.assert_called_once_with()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-        self.mock_reactions.assert_not_called()
-
-    def test_shadow(self):
-        recap = self.create_recap(_data())
-        value = recap._shadow_internal()
-        self.assertEqual(value, [
-            Shadow(
-                destination='scoreboard',
-                key='recap.standings',
-                info=_standings)
-        ])
-
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()

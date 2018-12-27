@@ -48,6 +48,21 @@ class Statsplus(Registrable):
     def _title():
         return 'statsplus'
 
+    def _reload_data(self, **kwargs):
+        return {
+            'record': ['decode_record', 'encode_record'],
+            'statslab': ['parse_score']
+        }
+
+    def _shadow_data(self, **kwargs):
+        return [
+            Shadow(
+                destination='standings',
+                key='statsplus.table',
+                info=self.data['table'],
+            ),
+        ]
+
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
             self.data['started'] = False
@@ -82,21 +97,6 @@ class Statsplus(Registrable):
             return self._save_table(date, text)
 
         return Response()
-
-    def _reload_internal(self, **kwargs):
-        return {
-            'record': ['decode_record', 'encode_record'],
-            'statslab': ['parse_score']
-        }
-
-    def _shadow_internal(self, **kwargs):
-        return [
-            Shadow(
-                destination='standings',
-                key='statsplus.table',
-                info=self.data['table'],
-            ),
-        ]
 
     def _parse_scores(self, date, *args, **kwargs):
         if date not in self.data['scores']:
@@ -181,7 +181,7 @@ class Statsplus(Registrable):
 
         self.write()
 
-        return Response(shadow=self._shadow_internal())
+        return Response(shadow=self._shadow_data())
 
     @staticmethod
     def _valid(obj):

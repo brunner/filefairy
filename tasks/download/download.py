@@ -46,22 +46,22 @@ class Download(Registrable):
     def _title():
         return 'download'
 
-    def _notify_internal(self, **kwargs):
-        if kwargs['notify'] == Notify.UPLOAD_FINISH:
-            return self.start(**kwargs)
-
-        return Response()
-
-    def _reload_internal(self, **kwargs):
+    def _reload_data(self, **kwargs):
         return {'leaguefile': ['download_file', 'extract_file']}
 
-    def _shadow_internal(self, **kwargs):
+    def _shadow_data(self, **kwargs):
         return [
             Shadow(
                 destination='statsplus',
                 key='download.end',
                 info=self.data['end'])
         ]
+
+    def _notify_internal(self, **kwargs):
+        if kwargs['notify'] == Notify.UPLOAD_FINISH:
+            return self.start(**kwargs)
+
+        return Response()
 
     def start(self, *args, **kwargs):
         return Response(
@@ -100,7 +100,7 @@ class Download(Registrable):
         self.data['start'] = encode_datetime(start)
         if start.year != end.year:
             response.append(notify=Notify.DOWNLOAD_YEAR)
-            response.shadow = self._shadow_internal(**kwargs)
+            response.shadow = self._shadow_data(**kwargs)
 
         self.write()
         return response

@@ -82,18 +82,7 @@ class Gameday(Registrable):
     def _title():
         return 'gameday'
 
-    def _notify_internal(self, **kwargs):
-        if kwargs['notify'] == Notify.STATSPLUS_SIM:
-            self._clear()
-            self.write()
-        if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
-            if not self.data['started']:
-                self._backfill()
-            self.data['started'] = False
-            self.write()
-        return Response()
-
-    def _render_internal(self, **kwargs):
+    def _render_data(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
@@ -128,6 +117,17 @@ class Gameday(Registrable):
             self.write()
 
         return ret
+
+    def _notify_internal(self, **kwargs):
+        if kwargs['notify'] == Notify.STATSPLUS_SIM:
+            self._clear()
+            self.write()
+        if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
+            if not self.data['started']:
+                self._backfill()
+            self.data['started'] = False
+            self.write()
+        return Response()
 
     def _run_internal(self, **kwargs):
         response = Response()

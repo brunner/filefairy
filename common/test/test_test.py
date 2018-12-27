@@ -35,7 +35,7 @@ class FakeRenderable(Renderable):
     def _tmpl():
         return 'foo.html'
 
-    def _render_internal(self, **kwargs):
+    def _render_data(self, **kwargs):
         return {'title': 'foo'}
 
 

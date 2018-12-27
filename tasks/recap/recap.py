@@ -49,6 +49,19 @@ class Recap(Registrable):
     def _title():
         return 'recap'
 
+    def _render_data(self, **kwargs):
+        html = 'recap/index.html'
+        _home = self._home(**kwargs)
+        return [(html, '', 'recap.html', _home)]
+
+    def _shadow_data(self, **kwargs):
+        return [
+            Shadow(
+                destination='scoreboard',
+                key='recap.standings',
+                info=self.data['standings'])
+        ]
+
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         response = Response()
@@ -71,25 +84,12 @@ class Recap(Registrable):
                     reactions_add('skull', channel, ts)
 
             response.notify = [Notify.BASE]
-            response.shadow = self._shadow_internal(**kwargs)
+            response.shadow = self._shadow_data(**kwargs)
         return response
-
-    def _render_internal(self, **kwargs):
-        html = 'recap/index.html'
-        _home = self._home(**kwargs)
-        return [(html, '', 'recap.html', _home)]
 
     def _setup_internal(self, **kwargs):
         self.tables = self._tables()
         return Response()
-
-    def _shadow_internal(self, **kwargs):
-        return [
-            Shadow(
-                destination='scoreboard',
-                key='recap.standings',
-                info=self.data['standings'])
-        ]
 
     @staticmethod
     def _encode(date, line):

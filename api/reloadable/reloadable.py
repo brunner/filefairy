@@ -12,7 +12,7 @@ Example:
         def __init__(self, **kwargs):
             super(Task, self).__init__(**kwargs)
 
-        def _reload_internal(self, **kwargs):
+        def _reload_data(self, **kwargs):
             return {'a': ['foo', 'bar'], 'b': ['baz']}
 
 If the _reload method is invoked, the task will import both ``a`` and ``b``,
@@ -38,14 +38,14 @@ class Reloadable():
     def _call(self, method, fargs, *args, **kwargs):
         return self.attrs[method](*fargs, *args, **kwargs)
 
-    def _reload_internal(self, **kwargs):
+    def _reload_data(self, **kwargs):
         return {}
 
     def _reload(self, **kwargs):
-        services = self._reload_internal(**kwargs)
-        for service in sorted(services):
+        data = self._reload_data(**kwargs)
+        for service in sorted(data):
             package = 'services.{}.{}'.format(service, service)
             module = importlib.import_module(package)
 
-            for method in services[service]:
+            for method in data[service]:
                 self.attrs[method] = getattr(module, method)

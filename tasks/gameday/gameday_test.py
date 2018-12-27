@@ -612,7 +612,7 @@ class GamedayTest(unittest.TestCase):
     # @mock.patch('tasks.gameday.gameday.get_rawid')
     # @mock.patch('tasks.gameday.gameday.open')
     # @mock.patch('tasks.gameday.gameday.choose_colors')
-    # def test_render(self, mock_choose, mock_open, mock_rawid, mock_recreate,
+    # def test_render_data(self, mock_choose, mock_open, mock_rawid, mock_recreate,
     #                 mock_schedule):
     #     mock_choose.side_effect = [('white', 'home'), ('grey', 'away')]
     #     mo = mock.mock_open(read_data=dumps(_game_data))
@@ -624,7 +624,7 @@ class GamedayTest(unittest.TestCase):
     #     }
 
     #     gameday = self.create_gameday(_data(games=['2998'], players=_players))
-    #     response = gameday._render_internal(date=_now)
+    #     response = gameday._render_data(date=_now)
     #     gameday_index = 'gameday/index.html'
     #     game_index = 'gameday/2998/index.html'
     #     subtitle = 'Diamondbacks at Dodgers, 10/26/1985'

@@ -80,23 +80,23 @@ class FakeExternalRegistrable(Registrable):
     def _title():
         return 'foo'
 
+    def _render_data(self, **kwargs):
+        return [('foo/index.html', '', 'foo.html', {})]
+
+    def _shadow_data(self, **kwargs):
+        return []
+
     def _on_message_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
     def _notify_internal(self, **kwargs):
         pass
 
-    def _render_internal(self, **kwargs):
-        return [('foo/index.html', '', 'foo.html', {})]
-
     def _run_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
     def _setup_internal(self, **kwargs):
         pass
-
-    def _shadow_internal(self, **kwargs):
-        return []
 
 
 class FakeInternalRegistrable(Registrable):
@@ -119,23 +119,23 @@ class FakeInternalRegistrable(Registrable):
     def _title():
         return 'bar'
 
+    def _render_data(self, **kwargs):
+        return []
+
+    def _shadow_data(self, **kwargs):
+        return []
+
     def _on_message_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
     def _notify_internal(self, **kwargs):
         pass
 
-    def _render_internal(self, **kwargs):
-        return []
-
     def _run_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
     def _setup_internal(self, **kwargs):
         pass
-
-    def _shadow_internal(self, **kwargs):
-        return []
 
 
 class FakeWebSocketApp(object):
@@ -248,25 +248,25 @@ class FilefairyTest(Test):
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
-    def test_on_message(self):
-        dashboard = self.create_dashboard(DATE_10260602)
-        filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        response = filefairy._on_message_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-
     @mock.patch.object(Filefairy, '_index_html')
-    def test_render(self, mock_index):
+    def test_render_data(self, mock_index):
         index_html = {'breadcrumbs': []}
         mock_index.return_value = index_html
 
         dashboard = self.create_dashboard(DATE_10260602)
         filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
-        actual = filefairy._render_internal(date=DATE_10260602)
+        actual = filefairy._render_data(date=DATE_10260602)
         expected = [('index.html', '', 'home.html', index_html)]
         self.assertEqual(actual, expected)
+
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    def test_on_message(self):
+        dashboard = self.create_dashboard(DATE_10260602)
+        filefairy = self.create_filefairy(_data(DATE_10260602), dashboard)
+        response = filefairy._on_message_internal(date=DATE_10260602)
+        self.assertEqual(response, Response())
 
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)

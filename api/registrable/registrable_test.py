@@ -51,9 +51,6 @@ class FakeRegistrable(Registrable):
     def _notify_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
-    def _render_internal(self, **kwargs):
-        return [('html/fairylab/foo/index.html', '', 'foo.html', {})]
-
     def _run_internal(self, **kwargs):
         return Response()
 
@@ -61,6 +58,12 @@ class FakeRegistrable(Registrable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
+        return Response()
+
+    def _render_data(self, **kwargs):
+        return [('html/fairylab/foo/index.html', '', 'foo.html', {})]
+
+    def _shadow_data(self, **kwargs):
         return [Shadow(destination='bar', key='foo.a', info='b')]
 
 
@@ -141,16 +144,13 @@ class RegistrableTest(unittest.TestCase):
         mock_reload.assert_called_once_with()
         mock_render.assert_called_once_with()
 
-    @mock.patch.object(FakeRegistrable, '_setup')
-    def test_shadow(self, mock_setup):
+    def test_shadow(self):
         registrable = self.create_registrable()
 
         shadow = Shadow(destination='bar', key='foo.a', info='b')
         response = registrable._shadow(shadow=shadow)
         self.assertEqual(response, Response())
         self.assertEqual(registrable.shadow, {'foo.a': 'b'})
-
-        mock_setup.assert_called_once_with(shadow=shadow)
 
 
 if __name__ == '__main__':

@@ -113,7 +113,7 @@ class FakeRenderable(Renderable):
     def _title():
         return 'foo'
 
-    def _render_internal(self, **kwargs):
+    def _render_data(self, **kwargs):
         _foo = self._foo(**kwargs)
         _sub = self._sub(**kwargs)
         ret = [('foo/index.html', '', 'foo.html', _foo),

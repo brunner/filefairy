@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
 
 
 def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
-    @mock.patch.object(_cls, '_render_internal')
+    @mock.patch.object(_cls, '_render_data')
     def test_golden(self, mock_render):
         self.init_mocks(_read)
 

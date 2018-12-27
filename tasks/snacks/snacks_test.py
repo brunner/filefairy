@@ -62,6 +62,17 @@ class SnacksTest(Test):
 
         return snacks
 
+    def test_reload_data(self):
+        snacks = self.create_snacks()
+        actual = snacks._reload_data(date=DATE_10260602)
+        expected = {
+            'bread': ['snack_me'],
+            'circus': ['choose', 'discuss', 'who']
+        }
+        self.assertEqual(actual, expected)
+
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
     def test_notify__filefairy_day(self):
         snacks = self.create_snacks()
         actual = snacks._notify_internal(notify=Notify.FILEFAIRY_DAY)
@@ -315,17 +326,6 @@ class SnacksTest(Test):
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
                              self.mock_handle.write)
-
-    def test_reload(self):
-        snacks = self.create_snacks()
-        actual = snacks._reload_internal(date=DATE_10260602)
-        expected = {
-            'bread': ['snack_me'],
-            'circus': ['choose', 'discuss', 'who']
-        }
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_setup(self):
         snacks = self.create_snacks()

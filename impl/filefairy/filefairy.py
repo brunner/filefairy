@@ -85,12 +85,12 @@ class Filefairy(Messageable, Renderable):
     def _info():
         return 'Fairylab home.'
 
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
-    def _render_internal(self, **kwargs):
+    def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
         return [('index.html', '', 'home.html', _index_html)]
+
+    def _on_message_internal(self, **kwargs):
+        return Response()
 
     def reboot(self, *args, **kwargs):
         _logger.log(logging.DEBUG, 'Rebooting filefairy.')

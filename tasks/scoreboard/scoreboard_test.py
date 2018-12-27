@@ -225,6 +225,36 @@ class ScoreboardTest(Test):
 
         return scoreboard
 
+    @mock.patch.object(Scoreboard, '_home')
+    def test_render_data(self, mock_home):
+        home = {'breadcrumbs': [], 'live': []}
+        mock_home.return_value = home
+
+        scoreboard = self.create_scoreboard(_data())
+        value = scoreboard._render_data(date=_now)
+        index = 'scoreboard/index.html'
+        self.assertEqual(value, [(index, '', 'scoreboard.html', home)])
+
+        mock_home.assert_called_once_with(date=_now)
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+
+    def test_shadow_data(self):
+        scoreboard = self.create_scoreboard(_data())
+        value = scoreboard._shadow_data()
+        self.assertEqual(value, [
+            Shadow(destination='recap', key='scoreboard.offseason', info=False),
+            Shadow(
+                destination='recap', key='scoreboard.postseason', info=False)
+        ])
+
+        self.mock_open.assert_not_called()
+        self.mock_handle.write.assert_not_called()
+        self.mock_chat.assert_not_called()
+        self.mock_log.assert_not_called()
+
     def test_notify__with_finish(self):
         scoreboard = self.create_scoreboard(_data())
         response = scoreboard._notify_internal(
@@ -338,7 +368,7 @@ class ScoreboardTest(Test):
         self.assertEqual(
             response,
             Response(
-                notify=[Notify.BASE], shadow=scoreboard._shadow_internal()))
+                notify=[Notify.BASE], shadow=scoreboard._shadow_data()))
 
         write = _data(offseason=True)
         mock_clear.assert_not_called()
@@ -395,7 +425,7 @@ class ScoreboardTest(Test):
         self.assertEqual(
             response,
             Response(
-                notify=[Notify.BASE], shadow=scoreboard._shadow_internal()))
+                notify=[Notify.BASE], shadow=scoreboard._shadow_data()))
 
         write = _data()
         mock_clear.assert_not_called()
@@ -595,36 +625,6 @@ class ScoreboardTest(Test):
         self.assertEqual(response, Response(thread_=[thread_]))
 
         mock_render.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-
-    @mock.patch.object(Scoreboard, '_home')
-    def test_render(self, mock_home):
-        home = {'breadcrumbs': [], 'live': []}
-        mock_home.return_value = home
-
-        scoreboard = self.create_scoreboard(_data())
-        value = scoreboard._render_internal(date=_now)
-        index = 'scoreboard/index.html'
-        self.assertEqual(value, [(index, '', 'scoreboard.html', home)])
-
-        mock_home.assert_called_once_with(date=_now)
-        self.mock_open.assert_not_called()
-        self.mock_handle.write.assert_not_called()
-        self.mock_chat.assert_not_called()
-        self.mock_log.assert_not_called()
-
-    def test_shadow(self):
-        scoreboard = self.create_scoreboard(_data())
-        value = scoreboard._shadow_internal()
-        self.assertEqual(value, [
-            Shadow(destination='recap', key='scoreboard.offseason', info=False),
-            Shadow(
-                destination='recap', key='scoreboard.postseason', info=False)
-        ])
-
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
         self.mock_chat.assert_not_called()

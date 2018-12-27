@@ -73,6 +73,9 @@ class Registrable(Messageable, Reloadable, Renderable):
     date = property(get_date, set_date)
     ok = property(get_ok, set_ok)
 
+    def _shadow_data(self, **kwargs):
+        return []
+
     def _notify_internal(self, **kwargs):
         return Response()
 
@@ -83,7 +86,7 @@ class Registrable(Messageable, Reloadable, Renderable):
         return Response()
 
     def _shadow_internal(self, **kwargs):
-        return []
+        return Response()
 
     def _notify(self, **kwargs):
         response = self._notify_internal(**kwargs)
@@ -97,12 +100,11 @@ class Registrable(Messageable, Reloadable, Renderable):
     def _setup(self, **kwargs):
         self._reload(**kwargs)
         response = self._setup_internal(**kwargs)
-        response.shadow = self._shadow_internal(**kwargs)
+        response.shadow = self._shadow_data()
         self._render(**kwargs)
         return response
 
     def _shadow(self, **kwargs):
         shadow = kwargs['shadow']
         self.shadow[shadow.key] = shadow.info
-        self._setup(**kwargs)
-        return Response()
+        return self._shadow_internal(**kwargs)

@@ -85,15 +85,15 @@ class Dashboard(Registrable):
     def _title():
         return 'dashboard'
 
+    def _render_data(self, **kwargs):
+        _index_html = self._index_html(**kwargs)
+        return [('dashboard/index.html', '', 'dashboard.html', _index_html)]
+
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == Notify.FILEFAIRY_DAY:
             self._cleanup(**kwargs)
         return Response()
-
-    def _render_internal(self, **kwargs):
-        _index_html = self._index_html(**kwargs)
-        return [('dashboard/index.html', '', 'dashboard.html', _index_html)]
 
     def _cleanup(self, **kwargs):
         data = self.data

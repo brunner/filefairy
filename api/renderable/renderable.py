@@ -27,11 +27,11 @@ Example:
         def _title():
             return 'foo'
 
-        def _render_internal(self, **kwargs):
+        def _render_data(self, **kwargs):
             return [('foo/index.html', '', 'tmpl.html', {'a': 1, 'b': True}]
 
 When the _render function is called, the template input data produced by
-_render_internal is passed to the corresponding template (in the above example,
+_render_data is passed to the corresponding template (in the above example,
 this is ``tmpl.html``) and dumped to the given location (``foo/index.html``).
 
 For golden tests, the rendered templates are dumped to a specified location
@@ -81,7 +81,7 @@ class Renderable(Serializable):
     def _title():
         pass
 
-    def _render_internal(self, **kwargs):
+    def _render_data(self, **kwargs):
         return []
 
     def _chat(self, channel, text):
@@ -94,11 +94,11 @@ class Renderable(Serializable):
         test = kwargs.get('test')
         log = kwargs.get('log', True)
 
-        value = self._render_internal(**kwargs)
-        if not value:
+        data = self._render_data(**kwargs)
+        if not data:
             return
 
-        for html, subtitle, tmpl, context in value:
+        for html, subtitle, tmpl, context in data:
             try:
                 subtitle = ' » ' + subtitle if subtitle else ''
                 title = self._title() + subtitle

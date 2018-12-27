@@ -80,6 +80,25 @@ class DownloadTest(Test):
 
         return download
 
+    def test_reload_data(self):
+        download = self.create_download(_data())
+        actual = download._reload_data(date=DATE_10260602)
+        expected = {'leaguefile': ['download_file', 'extract_file']}
+        self.assertEqual(actual, expected)
+
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
+    def test_shadow_data(self):
+        download = self.create_download(_data(end=DATE_10260602))
+        actual = download._shadow_data(date=DATE_10260604)
+        date = encode_datetime(DATE_10260602)
+        shadow = Shadow(destination='statsplus', key='download.end', info=date)
+        self.assertEqual(actual, [shadow])
+
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
     @mock.patch.object(Download, 'start')
     def test_notify__upload_finish(self, mock_start):
         response = Response(thread_=[Thread(target='_download_start')])
@@ -102,29 +121,10 @@ class DownloadTest(Test):
         self.assertNotCalled(mock_start, self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
-    def test_reload(self):
-        download = self.create_download(_data())
-        actual = download._reload_internal(date=DATE_10260602)
-        expected = {'leaguefile': ['download_file', 'extract_file']}
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-
     def test_setup(self):
         download = self.create_download(_data())
         response = download._setup_internal(date=DATE_10260604)
         self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-
-    def test_shadow(self):
-        download = self.create_download(_data(end=DATE_10260602))
-        actual = download._shadow_internal(date=DATE_10260604)
-        date = encode_datetime(DATE_10260602)
-        shadow = Shadow(destination='statsplus', key='download.end', info=date)
-        self.assertEqual(actual, [shadow])
 
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
@@ -210,7 +210,7 @@ class DownloadTest(Test):
                                               'Download started.')
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Download, '_shadow_internal')
+    @mock.patch.object(Download, '_shadow_data')
     @mock.patch.object(Download, '_call')
     def test_extract_file__start(self, mock_call, mock_shadow):
         mock_call.return_value = DATE_08310000
@@ -227,7 +227,7 @@ class DownloadTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertNotCalled(mock_shadow, self.mock_log)
 
-    @mock.patch.object(Download, '_shadow_internal')
+    @mock.patch.object(Download, '_shadow_data')
     @mock.patch.object(Download, '_call')
     def test_extract_file__year(self, mock_call, mock_shadow):
         shadow = Shadow(destination='statsplus', key='download.end', info='')
