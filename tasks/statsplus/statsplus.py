@@ -91,11 +91,10 @@ class Statsplus(Registrable):
         if not end or date < decode_datetime(end):
             return Response()
 
-        if not self.data['started']:
-            self._start()
-
         date = encode_datetime(date)
-        if find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
+        if not self.data['started']:
+            return self._start()
+        elif find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self._save_scores(date, text)
         elif find(r'MAJOR LEAGUE BASEBALL Live Table', text):
             return self._save_table(date, text)
@@ -124,11 +123,15 @@ class Statsplus(Registrable):
                 unvisited.append(num)
 
         if unvisited:
+            thread_ = Thread(target='_parse_saved_scores', args=(date, ))
+
+            if unvisited == self.data['scores'][date]:
+                return Response(thread_=[thread_])
+
             self.data['scores'][date] = unvisited
             self.write()
 
-            thread_ = Thread(target='_parse_saved_scores', args=(date, ))
-            return Response(thread_=[thread_])
+            return Response(notify=[Notify.STATSPLUS_PARSE], thread_=[thread_])
 
         self.data['scores'].pop(date)
         self.write()
@@ -157,6 +160,7 @@ class Statsplus(Registrable):
         check_output(['mkdir', GAMES_DIR])
 
         self.write()
+        return Response(notify=[Notify.STATSPLUS_START])
 
     def _save_scores(self, date, text):
         self.data['scores'][date] = []
@@ -178,7 +182,6 @@ class Statsplus(Registrable):
                 self.data['games'][date][encoding] = games
 
         self.write()
-
         thread_ = Thread(target='_parse_saved_scores', args=(date, ))
         return Response(thread_=[thread_])
 
@@ -205,7 +208,6 @@ class Statsplus(Registrable):
             self.data['games'].pop(date)
 
         self.write()
-
         return Response(shadow=self._shadow_data())
 
     @staticmethod

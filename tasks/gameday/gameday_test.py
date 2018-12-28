@@ -590,7 +590,7 @@ class GamedayTest(unittest.TestCase):
 
     def test_notify__with_start(self):
         gameday = self.create_gameday(_data(games=['2998']))
-        response = gameday._notify_internal(notify=Notify.STATSPLUS_SIM)
+        response = gameday._notify_internal(notify=Notify.STATSPLUS_START)
         self.assertEqual(response, Response())
 
         write = _data()

@@ -119,7 +119,7 @@ class Gameday(Registrable):
         return ret
 
     def _notify_internal(self, **kwargs):
-        if kwargs['notify'] == Notify.STATSPLUS_SIM:
+        if kwargs['notify'] == Notify.STATSPLUS_START:
             self._clear()
             self.write()
         if kwargs['notify'] == Notify.DOWNLOAD_FINISH:

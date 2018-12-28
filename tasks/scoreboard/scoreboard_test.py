@@ -305,7 +305,7 @@ class ScoreboardTest(Test):
         }
         scoreboard = self.create_scoreboard(_data(finished=True))
         response = scoreboard._on_message_internal(obj=obj)
-        self.assertEqual(response, Response(notify=[Notify.STATSPLUS_SIM]))
+        self.assertEqual(response, Response(notify=[Notify.STATSPLUS_START]))
 
         write = _data()
         mock_clear.assert_called_once_with()

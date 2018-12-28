@@ -175,7 +175,7 @@ class Scoreboard(Registrable):
             if self.data['started']:
                 self.data['started'] = False
                 self._chat('fairylab', 'Sim in progress.')
-                response.notify = [Notify.STATSPLUS_SIM]
+                response.notify = [Notify.STATSPLUS_START]
 
         pattern = 'MAJOR LEAGUE BASEBALL Live Table'
         if re.findall(pattern, text):
