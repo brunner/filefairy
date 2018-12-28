@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Service (reloadable) methods for describing and displaying team records."""
+"""Common (non-reloadable) util methods for serializing team records."""
 
 import os
 import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/services/record', '', _path))
+sys.path.append(re.sub(r'/common/record', '', _path))
 
 
 def decode_record(string):

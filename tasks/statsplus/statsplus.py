@@ -16,6 +16,8 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.re_.re_ import find  # noqae
+from common.record.record import decode_record  # noqa
+from common.record.record import encode_record  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
@@ -54,8 +56,7 @@ class Statsplus(Registrable):
 
     def _reload_data(self, **kwargs):
         return {
-            'record': ['decode_record', 'encode_record'],
-            'statslab': ['parse_score'],
+            'statslab': ['parse_score']
         }
 
     def _shadow_data(self, **kwargs):
@@ -189,14 +190,14 @@ class Statsplus(Registrable):
                 continue
 
             curr = self.data['table'].get(encoding, '0-0')
-            cw, cl = self._call('decode_record', (curr, ))
+            cw, cl = decode_record(curr)
 
             prev = self.shadow.get('standings.table', {}).get(encoding, '0-0')
-            pw, pl = self._call('decode_record', (prev, ))
+            pw, pl = decode_record(prev)
 
             nw = int(wins) - cw - pw
             nl = self.data['games'].get(date, {}).get(encoding, 1) - nw
-            next_ = self._call('encode_record', (cw + nw, cl + nl))
+            next_ = encode_record(cw + nw, cl + nl)
 
             self.data['table'][encoding] = next_
 

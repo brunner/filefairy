@@ -11,6 +11,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.record.record import decode_record  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
@@ -36,9 +37,6 @@ class Standings(Registrable):
     @staticmethod
     def _title():
         return 'standings'
-
-    def _reload_data(self, **kwargs):
-        return {'record': ['decode_record']}
 
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
@@ -71,10 +69,10 @@ class Standings(Registrable):
                 encoding = data[team + '_team']
 
                 curr_record = self.data['table'][encoding]
-                cw, cl = self._call('decode_record', (curr_record, ))
+                cw, cl = decode_record(curr_record)
 
                 next_record = data[team + '_record']
-                nw, nl = self._call('decode_record', (next_record, ))
+                nw, nl = decode_record(next_record)
 
                 if nw + nl > cw + cl:
                     self.data['table'][encoding] = next_record

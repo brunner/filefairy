@@ -92,10 +92,7 @@ class StatsplusTest(Test):
     def test_reload_data(self):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._reload_data(date=DATE_10260602)
-        expected = {
-            'record': ['decode_record', 'encode_record'],
-            'statslab': ['parse_score']
-        }
+        expected = {'statslab': ['parse_score']}
         self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -110,8 +107,7 @@ class StatsplusTest(Test):
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Statsplus, '_call')
-    def test_notify__download_finish(self, mock_call):
+    def test_notify__download_finish(self):
         statsplus = self.create_statsplus(_data(started=True))
         response = statsplus._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         expected = Response(thread_=[Thread(target='_parse_extracted_scores')])
@@ -119,8 +115,7 @@ class StatsplusTest(Test):
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Statsplus, '_call')
-    def test_notify__other(self, mock_call):
+    def test_notify__other(self):
         statsplus = self.create_statsplus(_data(started=True))
         response = statsplus._notify_internal(notify=Notify.OTHER)
         expected = Response()
@@ -442,24 +437,17 @@ class StatsplusTest(Test):
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(Statsplus, '_call')
-    def test_save_table__one(self, mock_call):
+    def test_save_table__one(self):
         date = encode_datetime(DATE_08310000)
         text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_ONE
 
         table = {'T31': '3-3', 'T32': '2-4', 'T33': '2-4', 'T45': '5-1'}
-
         standings = {
             'T31': '72-83',
             'T32': '74-81',
             'T33': '68-87',
             'T45': '92-63'
         }
-
-        mock_call.side_effect = [
-            (5, 1), (92, 63), '5-2', (2, 4), (74, 81), '3-4',
-            (3, 3), (72, 83), '4-3', (2, 4), (68, 87), '2-5'
-        ]  # yapf: disable
 
         statsplus = self.create_statsplus(_data(table=table))
         statsplus.shadow['standings.table'] = standings
@@ -468,38 +456,17 @@ class StatsplusTest(Test):
         self.assertEqual(actual, expected)
 
         table = {'T31': '4-3', 'T32': '3-4', 'T33': '2-5', 'T45': '5-2'}
-
         write = _data(table=table)
-        mock_call.assert_has_calls([
-            mock.call('decode_record', ('5-1', )),
-            mock.call('decode_record', ('92-63', )),
-            mock.call('encode_record', (5, 2)),
-            mock.call('decode_record', ('2-4', )),
-            mock.call('decode_record', ('74-81', )),
-            mock.call('encode_record', (3, 4)),
-            mock.call('decode_record', ('3-3', )),
-            mock.call('decode_record', ('72-83', )),
-            mock.call('encode_record', (4, 3)),
-            mock.call('decode_record', ('2-4', )),
-            mock.call('decode_record', ('68-87', )),
-            mock.call('encode_record', (2, 5))
-        ])
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(Statsplus, '_call')
-    def test_save_table__two(self, mock_call):
+    def test_save_table__two(self):
         date = encode_datetime(DATE_08310000)
         text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_TWO
 
         games = {date: {'T31': 2, 'TLA': 2}}
         table = {'T31': '2-3', 'T45': '5-0'}
-
         standings = {'T31': '72-83', 'T45': '92-63'}
-
-        mock_call.side_effect = [
-            (5, 0), (92, 63), '5-1', (2, 3), (72, 83), '4-3'
-        ]  # yapf: disable
 
         statsplus = self.create_statsplus(_data(games=games, table=table))
         statsplus.shadow['standings.table'] = standings
@@ -508,16 +475,7 @@ class StatsplusTest(Test):
         self.assertEqual(actual, expected)
 
         table = {'T31': '4-3', 'T45': '5-1'}
-
         write = _data(table=table)
-        mock_call.assert_has_calls([
-            mock.call('decode_record', ('5-0', )),
-            mock.call('decode_record', ('92-63', )),
-            mock.call('encode_record', (5, 1)),
-            mock.call('decode_record', ('2-3', )),
-            mock.call('decode_record', ('72-83', )),
-            mock.call('encode_record', (4, 3))
-        ])
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 

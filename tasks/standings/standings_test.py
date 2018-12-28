@@ -66,14 +66,6 @@ class StandingsTest(Test):
 
         return standings
 
-    def test_reload_data(self):
-        standings = self.create_standings(_data())
-        actual = standings._reload_data(date=DATE_10260602)
-        expected = {'record': ['decode_record']}
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
     @mock.patch.object(Standings, '_index_html')
     def test_render_data(self, mock_index):
         index_html = {'breadcrumbs': []}
@@ -134,14 +126,8 @@ class StandingsTest(Test):
     @mock.patch.object(Standings, '_render')
     @mock.patch('tasks.standings.standings.open', create=True)
     @mock.patch('tasks.standings.standings.os.listdir')
-    @mock.patch.object(Standings, '_call')
-    def test_update_table(self, mock_call, mock_listdir, mock_open,
+    def test_update_table(self, mock_listdir, mock_open,
                           mock_render):
-        mock_call.side_effect = [
-            (66, 58), (66, 59), (71, 53), (72, 53),
-            (66, 59), (66, 60), (72, 53), (73, 53),
-            (66, 60), (66, 61), (73, 53), (74, 53)
-        ]  # yapf: disable
         mock_listdir.return_value = ['2449.json', '2469.json', '2476.json']
         suite = Suite(
             RMock(GAMES_DIR, '2449.json', TESTDATA),
@@ -156,20 +142,6 @@ class StandingsTest(Test):
 
         table = {'T40': '66-61', 'T47': '74-53'}
         write = _data(table=table)
-        mock_call.assert_has_calls([
-            mock.call('decode_record', ('66-58', )),
-            mock.call('decode_record', ('66-59', )),
-            mock.call('decode_record', ('71-53', )),
-            mock.call('decode_record', ('72-53', )),
-            mock.call('decode_record', ('66-59', )),
-            mock.call('decode_record', ('66-60', )),
-            mock.call('decode_record', ('72-53', )),
-            mock.call('decode_record', ('73-53', )),
-            mock.call('decode_record', ('66-60', )),
-            mock.call('decode_record', ('66-61', )),
-            mock.call('decode_record', ('73-53', )),
-            mock.call('decode_record', ('74-53', ))
-        ])
         mock_render.assert_called_once_with(date=DATE_10260602)
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')

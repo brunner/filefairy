@@ -8,10 +8,10 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/services/record', '', _path))
+sys.path.append(re.sub(r'/common/record', '', _path))
 
-from services.record.record import decode_record  # noqa
-from services.record.record import encode_record  # noqa
+from common.record.record import decode_record  # noqa
+from common.record.record import encode_record  # noqa
 
 
 class RecordTest(unittest.TestCase):
