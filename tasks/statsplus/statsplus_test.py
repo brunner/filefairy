@@ -127,14 +127,14 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_save_table')
     @mock.patch.object(Statsplus, '_start')
     @mock.patch.object(Statsplus, '_save_scores')
-    def test_on_message__scores_date(self, mock_scores, mock_start, mock_table,
-                                     mock_valid):
+    def test_on_message__date(self, mock_scores, mock_start, mock_table,
+                              mock_valid):
         mock_valid.return_value = True
 
-        text = '08/30/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_ONE
+        text = '08/30/2024 Final Scores'
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
-        statsplus = self.create_statsplus(_data(started=True))
+        statsplus = self.create_statsplus(_data())
         statsplus.shadow['download.end'] = encode_datetime(DATE_08310000)
 
         actual = statsplus._on_message_internal(obj=obj)
@@ -148,8 +148,8 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_save_table')
     @mock.patch.object(Statsplus, '_start')
     @mock.patch.object(Statsplus, '_save_scores')
-    def test_on_message__scores_valid(self, mock_scores, mock_start,
-                                      mock_table, mock_valid):
+    def test_on_message__save_scores(self, mock_scores, mock_start, mock_table,
+                                     mock_valid):
         response = Response(notify=[Notify.BASE])
         mock_scores.return_value = response
         mock_valid.return_value = True
@@ -173,53 +173,8 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_save_table')
     @mock.patch.object(Statsplus, '_start')
     @mock.patch.object(Statsplus, '_save_scores')
-    def test_on_message__start(self, mock_scores, mock_start, mock_table,
-                               mock_valid):
-        response = Response(notify=[Notify.BASE])
-        mock_start.return_value = response
-        mock_valid.return_value = True
-
-        text = '08/31/2024 Final Scores'
-        obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
-
-        statsplus = self.create_statsplus(_data())
-        statsplus.shadow['download.end'] = encode_datetime(DATE_08300000)
-
-        actual = statsplus._on_message_internal(obj=obj)
-        self.assertEqual(actual, response)
-
-        mock_start.assert_called_once_with()
-        mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_scores, mock_table, self.mock_open,
-                             self.mock_handle.write)
-
-    @mock.patch.object(Statsplus, '_valid')
-    @mock.patch.object(Statsplus, '_save_table')
-    @mock.patch.object(Statsplus, '_start')
-    @mock.patch.object(Statsplus, '_save_scores')
-    def test_on_message__table_date(self, mock_scores, mock_start, mock_table,
+    def test_on_message__save_table(self, mock_scores, mock_start, mock_table,
                                     mock_valid):
-        mock_valid.return_value = True
-
-        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/30/2024\n' + TABLE_ONE
-        obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
-
-        statsplus = self.create_statsplus(_data(started=True))
-        statsplus.shadow['download.end'] = encode_datetime(DATE_08310000)
-
-        actual = statsplus._on_message_internal(obj=obj)
-        self.assertEqual(actual, Response())
-
-        mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_scores, mock_start, mock_table,
-                             self.mock_open, self.mock_handle.write)
-
-    @mock.patch.object(Statsplus, '_valid')
-    @mock.patch.object(Statsplus, '_save_table')
-    @mock.patch.object(Statsplus, '_start')
-    @mock.patch.object(Statsplus, '_save_scores')
-    def test_on_message__table_valid(self, mock_scores, mock_start, mock_table,
-                                     mock_valid):
         response = Response(notify=[Notify.BASE])
         mock_table.return_value = response
         mock_valid.return_value = True
@@ -237,6 +192,28 @@ class StatsplusTest(Test):
             encode_datetime(DATE_08310000), text)
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_scores, mock_start, self.mock_open,
+                             self.mock_handle.write)
+
+    @mock.patch.object(Statsplus, '_valid')
+    @mock.patch.object(Statsplus, '_save_table')
+    @mock.patch.object(Statsplus, '_start')
+    @mock.patch.object(Statsplus, '_save_scores')
+    def test_on_message__start(self, mock_scores, mock_start, mock_table,
+                               mock_valid):
+        mock_valid.return_value = True
+
+        text = '08/31/2024 Final Scores'
+        obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
+
+        statsplus = self.create_statsplus(_data())
+        statsplus.shadow['download.end'] = encode_datetime(DATE_08300000)
+
+        actual = statsplus._on_message_internal(obj=obj)
+        self.assertEqual(actual, Response())
+
+        mock_start.assert_called_once_with()
+        mock_valid.assert_called_once_with(obj)
+        self.assertNotCalled(mock_scores, mock_table, self.mock_open,
                              self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_parse_score')

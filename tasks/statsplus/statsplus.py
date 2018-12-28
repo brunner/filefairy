@@ -91,10 +91,11 @@ class Statsplus(Registrable):
         if not end or date < decode_datetime(end):
             return Response()
 
-        date = encode_datetime(date)
         if not self.data['started']:
-            return self._start()
-        elif find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
+            self._start()
+
+        date = encode_datetime(date)
+        if find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self._save_scores(date, text)
         elif find(r'MAJOR LEAGUE BASEBALL Live Table', text):
             return self._save_table(date, text)
@@ -149,19 +150,6 @@ class Statsplus(Registrable):
 
         return self._call('parse_score', (in_, out, date))
 
-    def _start(self):
-        self.data['started'] = True
-
-        self.data['games'] = {}
-        self.data['scores'] = {}
-        self.data['table'] = {}
-
-        check_output(['rm', '-rf', GAMES_DIR])
-        check_output(['mkdir', GAMES_DIR])
-
-        self.write()
-        return Response(notify=[Notify.STATSPLUS_START])
-
     def _save_scores(self, date, text):
         self.data['scores'][date] = []
 
@@ -209,6 +197,18 @@ class Statsplus(Registrable):
 
         self.write()
         return Response(shadow=self._shadow_data())
+
+    def _start(self):
+        self.data['started'] = True
+
+        self.data['games'] = {}
+        self.data['scores'] = {}
+        self.data['table'] = {}
+
+        check_output(['rm', '-rf', GAMES_DIR])
+        check_output(['mkdir', GAMES_DIR])
+
+        self.write()
 
     @staticmethod
     def _valid(obj):
