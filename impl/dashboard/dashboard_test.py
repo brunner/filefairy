@@ -140,6 +140,7 @@ class DashboardTest(Test):
         expected = [('dashboard/index.html', '', 'dashboard.html', index_html)]
         self.assertEqual(actual, expected)
 
+        mock_index.assert_called_once_with(date=DATE_10260602)
         self.assertNotCalled(self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)
 

@@ -55,7 +55,7 @@ class Statsplus(Registrable):
     def _reload_data(self, **kwargs):
         return {
             'record': ['decode_record', 'encode_record'],
-            'statslab': ['parse_score']
+            'statslab': ['parse_score'],
         }
 
     def _shadow_data(self, **kwargs):
