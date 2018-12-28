@@ -91,11 +91,10 @@ class Statsplus(Registrable):
         if not end or date < decode_datetime(end):
             return Response()
 
-        if not self.data['started']:
-            self._start()
-
         date = encode_datetime(date)
-        if find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
+        if not self.data['started']:
+            return self._start()
+        elif find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self._save_scores(date, text)
         elif find(r'MAJOR LEAGUE BASEBALL Live Table', text):
             return self._save_table(date, text)
@@ -209,6 +208,7 @@ class Statsplus(Registrable):
         check_output(['mkdir', GAMES_DIR])
 
         self.write()
+        return Response(notify=[Notify.STATSPLUS_START])
 
     @staticmethod
     def _valid(obj):

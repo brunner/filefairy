@@ -66,6 +66,10 @@ def parse_score(in_, out, date):
         data[team + '_record'] = find(r'^\((\d+-\d+)\)', line)
 
         cols = [n for n in re.findall(r'>(\d+|X)<', line)]
+        if not cols:
+            cols = ['0', '0', '0']
+        for suffix in ['_errors', '_hits', '_runs']:
+            data[team + suffix] = cols.pop(-1)
         data[team + '_line'] = ' '.join(cols)
 
     for pitcher in ['winning', 'losing']:

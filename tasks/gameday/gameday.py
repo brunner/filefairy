@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import copy
-import json
 import os
 import re
 import sys
@@ -20,6 +19,7 @@ from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from common.json_.json_ import dumps  # noqa
+from common.json_.json_ import loads  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from util.jersey.jersey import get_rawid  # noqa
@@ -100,18 +100,17 @@ class Gameday(Registrable):
         ret.append((html, '', 'gameday.html', gameday))
 
         for id_ in games:
-            with open(FILEFAIRY_DIR + _game_path.format(id_), 'r') as f:
-                game_data = json.loads(f.read())
-                if game_data['ok']:
-                    away_team = encoding_to_nickname(game_data['away_team'])
-                    home_team = encoding_to_nickname(game_data['home_team'])
-                    date = decode_datetime(
-                        game_data['date']).strftime('%m/%d/%Y')
-                    subtitle = '{} at {}, {}'.format(away_team, home_team,
-                                                     date)
-                    game = self._game(id_, subtitle, game_data, schedule_data)
-                    html = 'gameday/{}/index.html'.format(id_)
-                    ret.append((html, subtitle, 'game.html', game))
+            game_data = loads(FILEFAIRY_DIR + _game_path.format(id_))
+            if game_data['ok']:
+                away_team = encoding_to_nickname(game_data['away_team'])
+                home_team = encoding_to_nickname(game_data['home_team'])
+                date = decode_datetime(
+                    game_data['date']).strftime('%m/%d/%Y')
+                subtitle = '{} at {}, {}'.format(away_team, home_team,
+                                                 date)
+                game = self._game(id_, subtitle, game_data, schedule_data)
+                html = 'gameday/{}/index.html'.format(id_)
+                ret.append((html, subtitle, 'game.html', game))
 
         if data != original:
             self.write()
@@ -155,21 +154,20 @@ class Gameday(Registrable):
     def _schedule_data(games):
         sdata = {}
         for id_ in games:
-            with open(FILEFAIRY_DIR + _game_path.format(id_), 'r') as f:
-                game_data = json.loads(f.read())
-                if game_data['ok']:
-                    date = decode_datetime(game_data['date'])
+            game_data = loads(FILEFAIRY_DIR + _game_path.format(id_))
+            if game_data['ok']:
+                date = decode_datetime(game_data['date'])
 
-                    away_team = game_data['away_team']
-                    if away_team not in sdata:
-                        sdata[away_team] = []
+                away_team = game_data['away_team']
+                if away_team not in sdata:
+                    sdata[away_team] = []
 
-                    home_team = game_data['home_team']
-                    if home_team not in sdata:
-                        sdata[home_team] = []
+                home_team = game_data['home_team']
+                if home_team not in sdata:
+                    sdata[home_team] = []
 
-                    sdata[away_team].append((date, home_team, '@', id_))
-                    sdata[home_team].append((date, away_team, 'v', id_))
+                sdata[away_team].append((date, home_team, '@', id_))
+                sdata[home_team].append((date, away_team, 'v', id_))
 
         for encoding in sdata:
             sdata[encoding] = sorted(sdata[encoding])

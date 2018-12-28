@@ -150,7 +150,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_save_scores')
     def test_on_message__save_scores(self, mock_scores, mock_start, mock_table,
                                      mock_valid):
-        response = Response(notify=[Notify.BASE])
+        response = Response(notify=[Notify.OTHER])
         mock_scores.return_value = response
         mock_valid.return_value = True
 
@@ -175,7 +175,7 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_save_scores')
     def test_on_message__save_table(self, mock_scores, mock_start, mock_table,
                                     mock_valid):
-        response = Response(notify=[Notify.BASE])
+        response = Response(notify=[Notify.OTHER])
         mock_table.return_value = response
         mock_valid.return_value = True
 
@@ -200,6 +200,8 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, '_save_scores')
     def test_on_message__start(self, mock_scores, mock_start, mock_table,
                                mock_valid):
+        response = Response(notify=[Notify.OTHER])
+        mock_start.return_value = response
         mock_valid.return_value = True
 
         text = '08/31/2024 Final Scores'
@@ -209,7 +211,7 @@ class StatsplusTest(Test):
         statsplus.shadow['download.end'] = encode_datetime(DATE_08300000)
 
         actual = statsplus._on_message_internal(obj=obj)
-        self.assertEqual(actual, Response())
+        self.assertEqual(actual, response)
 
         mock_start.assert_called_once_with()
         mock_valid.assert_called_once_with(obj)

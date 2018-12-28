@@ -31,11 +31,22 @@ GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
 
 
-def _data(table=None):
+def _data(finished=False, games=None, table=None):
+    if games is None:
+        games = {}
     if table is None:
         table = {}
 
-    return {'table': table}
+    return {'games': games, 'finished': finished, 'table': table}
+
+
+def _game(away_runs, away_team, home_runs, home_team):
+    return {
+        'away_runs': away_runs,
+        'away_team': away_team,
+        'home_runs': home_runs,
+        'home_team': home_team,
+    }
 
 
 class StandingsTest(Test):
@@ -79,43 +90,77 @@ class StandingsTest(Test):
         mock_index.assert_called_once_with(date=DATE_10260602)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Standings, '_update_table')
-    @mock.patch.object(Standings, '_clear_table')
-    def test_notify__download_year(self, mock_clear, mock_update):
+    @mock.patch.object(Standings, '_start')
+    @mock.patch.object(Standings, '_parse')
+    @mock.patch.object(Standings, '_finish')
+    @mock.patch.object(Standings, '_clear')
+    def test_notify__download_year(self, mock_clear, mock_finish, mock_parse,
+                                   mock_start):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.DOWNLOAD_YEAR)
         self.assertEqual(response, Response())
 
         mock_clear.assert_called_once_with(notify=Notify.DOWNLOAD_YEAR)
-        self.assertNotCalled(mock_update, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_finish, mock_parse, mock_start,
+                             self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Standings, '_update_table')
-    @mock.patch.object(Standings, '_clear_table')
-    def test_notify__statsplus_finish(self, mock_clear, mock_update):
+    @mock.patch.object(Standings, '_start')
+    @mock.patch.object(Standings, '_parse')
+    @mock.patch.object(Standings, '_finish')
+    @mock.patch.object(Standings, '_clear')
+    def test_notify__statsplus_finish(self, mock_clear, mock_finish,
+                                      mock_parse, mock_start):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.STATSPLUS_FINISH)
         self.assertEqual(response, Response())
 
-        mock_update.assert_called_once_with(notify=Notify.STATSPLUS_FINISH)
-        self.assertNotCalled(mock_clear, self.mock_open,
-                             self.mock_handle.write)
+        mock_finish.assert_called_once_with(notify=Notify.STATSPLUS_FINISH)
+        self.assertNotCalled(mock_clear, mock_parse, mock_start,
+                             self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Standings, '_update_table')
-    @mock.patch.object(Standings, '_clear_table')
-    def test_notify__other(self, mock_clear, mock_update):
+    @mock.patch.object(Standings, '_start')
+    @mock.patch.object(Standings, '_parse')
+    @mock.patch.object(Standings, '_finish')
+    @mock.patch.object(Standings, '_clear')
+    def test_notify__statsplus_parse(self, mock_clear, mock_finish, mock_parse,
+                                     mock_start):
+        standings = self.create_standings(_data())
+        response = standings._notify_internal(notify=Notify.STATSPLUS_PARSE)
+        self.assertEqual(response, Response())
+
+        mock_parse.assert_called_once_with(notify=Notify.STATSPLUS_PARSE)
+        self.assertNotCalled(mock_clear, mock_finish, mock_start,
+                             self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Standings, '_start')
+    @mock.patch.object(Standings, '_parse')
+    @mock.patch.object(Standings, '_finish')
+    @mock.patch.object(Standings, '_clear')
+    def test_notify__statsplus_start(self, mock_clear, mock_finish, mock_parse,
+                                     mock_start):
+        standings = self.create_standings(_data())
+        response = standings._notify_internal(notify=Notify.STATSPLUS_START)
+        self.assertEqual(response, Response())
+
+        mock_start.assert_called_once_with(notify=Notify.STATSPLUS_START)
+        self.assertNotCalled(mock_clear, mock_finish, mock_parse,
+                             self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Standings, '_finish')
+    @mock.patch.object(Standings, '_clear')
+    def test_notify__other(self, mock_clear, mock_finish):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_clear, mock_update, self.mock_open,
+        self.assertNotCalled(mock_clear, mock_finish, self.mock_open,
                              self.mock_handle.write)
 
     @mock.patch.object(Standings, '_render')
-    def test_clear_table(self, mock_render):
+    def test_clear(self, mock_render):
         table = {'T40': '87-75', 'T47': '91-71'}
         standings = self.create_standings(_data(table=table))
-        standings._clear_table(date=DATE_10260602)
+        standings._clear(date=DATE_10260602)
 
         table = {'T40': '0-0', 'T47': '0-0'}
         write = _data(table=table)
@@ -124,10 +169,9 @@ class StandingsTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(Standings, '_render')
-    @mock.patch('tasks.standings.standings.open', create=True)
+    @mock.patch('common.json_.json_.open', create=True)
     @mock.patch('tasks.standings.standings.os.listdir')
-    def test_update_table(self, mock_listdir, mock_open,
-                          mock_render):
+    def test_finish(self, mock_listdir, mock_open, mock_render):
         mock_listdir.return_value = ['2449.json', '2469.json', '2476.json']
         suite = Suite(
             RMock(GAMES_DIR, '2449.json', TESTDATA),
@@ -138,11 +182,48 @@ class StandingsTest(Test):
 
         table = {'T40': '66-58', 'T47': '71-53'}
         standings = self.create_standings(_data(table=table))
-        standings._update_table(date=DATE_10260602)
+        standings._finish(date=DATE_10260602)
 
         table = {'T40': '66-61', 'T47': '74-53'}
-        write = _data(table=table)
+        write = _data(finished=True, table=table)
         mock_render.assert_called_once_with(date=DATE_10260602)
+        self.mock_open.assert_called_with(Standings._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(Standings, '_render')
+    @mock.patch('common.json_.json_.open', create=True)
+    @mock.patch('tasks.standings.standings.os.listdir')
+    def test_parse(self, mock_listdir, mock_open, mock_render):
+        mock_listdir.return_value = ['2449.json', '2469.json', '2476.json']
+        suite = Suite(
+            RMock(GAMES_DIR, '2469.json', TESTDATA),
+            RMock(GAMES_DIR, '2476.json', TESTDATA),
+        )
+        mock_open.side_effect = suite.values()
+
+        games = {'2449': _game('5', 'T40', '6', 'T47')}
+        table = {'T40': '66-58', 'T47': '71-53'}
+        standings = self.create_standings(_data(games=games, table=table))
+        standings._parse(date=DATE_10260602)
+
+        games = {
+            '2449': _game('5', 'T40', '6', 'T47'),
+            '2469': _game('0', 'T40', '7', 'T47'),
+            '2476': _game('2', 'T40', '5', 'T47'),
+        }
+        write = _data(games=games, table=table)
+        mock_render.assert_called_once_with(date=DATE_10260602)
+        self.mock_open.assert_called_with(Standings._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    def test_start(self):
+        games = {'2449': _game('5', 'T40', '6', 'T47')}
+        statsplus = {'T40': '0-3', 'T47': '3-0'}
+        standings = self.create_standings(_data(finished=True, games=games))
+        standings.shadow['statsplus.table'] = statsplus
+        standings._start(date=DATE_10260602)
+
+        write = _data()
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
