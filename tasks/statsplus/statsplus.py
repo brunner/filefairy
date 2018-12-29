@@ -19,13 +19,13 @@ from common.re_.re_ import find  # noqae
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
+from common.teams.teams import decoding_to_encoding_sub  # noqa
+from common.teams.teams import encoding_keys  # noqa
+from common.teams.teams import precoding_to_encoding_sub  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from data.thread_.thread_ import Thread  # noqa
-from util.team.team import decoding_to_encoding_sub  # noqa
-from util.team.team import encodings  # noqa
-from util.team.team import precoding_to_encoding_sub  # noqa
 
 EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
@@ -160,7 +160,7 @@ class Statsplus(Registrable):
 
             self.data['scores'][date].append(num)
 
-        for encoding in encodings():
+        for encoding in encoding_keys():
             games = text.count(encoding)
             if games > 1:
                 if date not in self.data['games']:

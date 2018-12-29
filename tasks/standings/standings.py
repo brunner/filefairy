@@ -16,8 +16,21 @@ from common.record.record import decode_record  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
-KEYS = ['away_runs', 'away_team', 'home_runs', 'home_team']
+GAME_KEYS = ['away_runs', 'away_team', 'home_runs', 'home_team']
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
+
+LEAGUES = {
+    'American League': [
+        ('AL East', ('T33', 'T34', 'T48', 'T57', 'T59')),
+        ('AL Central', ('T35', 'T38', 'T40', 'T43', 'T47')),
+        ('AL West', ('T42', 'T44', 'T50', 'T54', 'T58')),
+    ],
+    'National League': [
+        ('NL East', ('T32', 'T41', 'T49', 'T51', 'T60')),
+        ('NL Central', ('T36', 'T37', 'T46', 'T52', 'T56')),
+        ('NL West', ('T31', 'T39', 'T45', 'T53', 'T55')),
+    ],
+}
 
 
 class Standings(Registrable):
@@ -40,6 +53,9 @@ class Standings(Registrable):
     def _title():
         return 'standings'
 
+    def _reload_data(self, **kwargs):
+        return {'division': ['condensed']}
+
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
         return [('standings/index.html', '', 'standings.html', _index_html)]
@@ -58,6 +74,7 @@ class Standings(Registrable):
 
     def _shadow_internal(self, **kwargs):
         self._render(**kwargs)
+        return Response()
 
     def _clear(self, **kwargs):
         for encoding in self.data['table']:
@@ -93,7 +110,7 @@ class Standings(Registrable):
                 continue
 
             data = loads(os.path.join(GAMES_DIR, name))
-            self.data['games'][num] = filts(data, KEYS)
+            self.data['games'][num] = filts(data, GAME_KEYS)
 
         self.write()
         self._render(**kwargs)
@@ -113,7 +130,18 @@ class Standings(Registrable):
             }, {
                 'href': '',
                 'name': 'Standings'
-            }]
+            }],
+            'recent': [],
+            'table': [],
         }
+
+        statsplus = self.shadow.get('statsplus.table', {})
+        for title in sorted(LEAGUES):
+            tables = []
+            for subtitle, teams in LEAGUES[title]:
+                table_ = {team: statsplus.get(team, '0-0') for team in teams}
+                tables.append(table_)
+
+            ret['recent'].append(self._call('condensed', (title, tables)))
 
         return ret

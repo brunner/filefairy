@@ -5,7 +5,6 @@
 import os
 import re
 import sys
-import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
@@ -15,12 +14,15 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from tasks.standings.standings import Standings  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.elements.elements import cell  # noqa
+from common.elements.elements import table  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import RMock  # noqa
 from common.test.test import Suite  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import get_testdata  # noqa
+from common.test.test import main  # noqa
 
 ENV = env()
 
@@ -29,6 +31,15 @@ DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 
 TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
+
+CONDENSED_AL = table(
+    clazz='table-fixed border mt-3',
+    head=[cell(content='American League')],
+    body=[[cell(content='0-0')]])
+CONDENSED_NL = table(
+    clazz='table-fixed border mt-3',
+    head=[cell(content='National League')],
+    body=[[cell(content='0-0')]])
 
 
 def _data(finished=False, games=None, table=None):
@@ -47,6 +58,10 @@ def _game(away_runs, away_team, home_runs, home_team):
         'home_runs': home_runs,
         'home_team': home_team,
     }
+
+
+def _table(keys, table_):
+    return {k: table_.get(k, '0-0') for k in keys}
 
 
 class StandingsTest(Test):
@@ -157,6 +172,15 @@ class StandingsTest(Test):
                              self.mock_handle.write)
 
     @mock.patch.object(Standings, '_render')
+    def test_shadow(self, mock_render):
+        standings = self.create_standings(_data())
+        response = standings._shadow_internal(date=DATE_10260602)
+        self.assertEqual(response, Response())
+
+        mock_render.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Standings, '_render')
     def test_clear(self, mock_render):
         table = {'T40': '87-75', 'T47': '91-71'}
         standings = self.create_standings(_data(table=table))
@@ -227,8 +251,14 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_index_html(self):
+    @mock.patch.object(Standings, '_call')
+    def test_index_html(self, mock_call):
+        mock_call.side_effect = [CONDENSED_AL, CONDENSED_NL]
+
+        statsplus = {'T40': '0-3', 'T47': '3-0'}
         standings = self.create_standings(_data())
+        standings.shadow['statsplus.table'] = statsplus
+        standings._reload()
 
         breadcrumbs = [{
             'href': '/',
@@ -238,10 +268,34 @@ class StandingsTest(Test):
             'name': 'Standings'
         }]
         actual = standings._index_html(date=DATE_10260602)
-        expected = {'breadcrumbs': breadcrumbs}
+        expected = {
+            'breadcrumbs': breadcrumbs,
+            'recent': [CONDENSED_AL, CONDENSED_NL],
+            'table': [],
+        }
         self.assertEqual(actual, expected)
+
+        mock_call.assert_has_calls([
+            mock.call('condensed', ('American League', [
+                _table(['T33', 'T34', 'T48', 'T57', 'T59'], statsplus),
+                _table(['T35', 'T38', 'T40', 'T43', 'T47'], statsplus),
+                _table(['T42', 'T44', 'T50', 'T54', 'T58'], statsplus),
+            ])),
+            mock.call('condensed', ('National League', [
+                _table(['T32', 'T41', 'T49', 'T51', 'T60'], statsplus),
+                _table(['T36', 'T37', 'T46', 'T52', 'T56'], statsplus),
+                _table(['T31', 'T39', 'T45', 'T53', 'T55'], statsplus),
+            ])),
+        ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ in ['__main__', 'tasks.standings.standings_test']:
+    main(
+        StandingsTest,
+        Standings,
+        'tasks.standings',
+        'tasks/standings', {},
+        __name__ == '__main__',
+        date=DATE_10260602,
+        e=ENV)
