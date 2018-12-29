@@ -10,11 +10,11 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/git', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.os_.os_ import chdir  # noqa
+from common.subprocess_.subprocess_ import check_output  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from common.os_.os_ import chdir  # noqa
-from common.subprocess_.subprocess_ import check_output  # noqa
 
 FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/git', '', _path) + '/fairylab/static'
 
