@@ -56,15 +56,10 @@ class Upload(Registrable):
 
     @staticmethod
     def _get_date():
-        text = get(EXPORTS_URL)
-
-        if find(r'(?i)League File: CST', text):
-            return None
-
-        match = find(r'(?s)League File: (.+?) CST', text)
+        text = re.sub('[.,]', '', get(EXPORTS_URL))
+        match = find(r'(?s)League File: (\w+ \d+ \d+ \d+:\d+ \w+) CST', text)
         if match:
-            date_string = re.sub('[.,]', '', match.title())
-            d = datetime.datetime.strptime(date_string, '%b %d %Y %I:%M %p')
+            d = datetime.datetime.strptime(match.title(), '%b %d %Y %I:%M %p')
             c = datetime_datetime_cst(d.year, d.month, d.day, d.hour, d.minute)
 
             return encode_datetime(datetime_as_pst(c))
