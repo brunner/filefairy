@@ -86,7 +86,7 @@ class StandingsTest(Test):
     def test_reload_data(self):
         standings = self.create_standings(_data())
         actual = standings._reload_data(date=DATE_10260602)
-        expected = {'division': ['condensed_league']}
+        expected = {'division': ['condensed_league', 'expanded_league']}
         self.assertEqual(actual, expected)
 
     @mock.patch.object(Standings, '_index_html')

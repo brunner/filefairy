@@ -54,7 +54,7 @@ class Standings(Registrable):
         return 'standings'
 
     def _reload_data(self, **kwargs):
-        return {'division': ['condensed_league']}
+        return {'division': ['condensed_league', 'expanded_league']}
 
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
