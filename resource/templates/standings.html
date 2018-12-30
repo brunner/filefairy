@@ -32,4 +32,28 @@
 </div>
 <!-- $(statsplus.recent) -->
 
+<!-- ^(statsplus.expanded) -->
+<div class="container anchor" id="expanded">
+
+{{ common.heading('book', 'Expanded') }}
+
+<!-- ^(statsplus.row) -->
+<div class="row">
+
+{% for table in expanded %}
+<!-- ^(statsplus.column) -->
+<div class="col-md-6">
+
+{{ common.table(table) }}
+
+</div>
+<!-- $(statsplus.column) -->
+
+{% endfor %}
+</div>
+<!-- $(statsplus.row) -->
+
+</div>
+<!-- $(statsplus.expanded) -->
+
 {% endblock %}

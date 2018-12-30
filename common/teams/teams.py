@@ -13,6 +13,7 @@ def _team(encoding, hometown, nickname):
     return {
         'decoding': (hometown + ' ' + nickname) if not special1 else '',
         'encoding': encoding,
+        'hometown': hometown if not special1 else '',
         'nickname': nickname,
         'precoding': hometown if not special2 else '',
         'teamid': encoding.strip('T') if not special1 else '',
@@ -72,11 +73,17 @@ def _sub(ks, f, s):
 
 
 DECODING_MAP = _map('decoding', ['encoding'])
-ENCODING_MAP = _map('encoding', ['decoding', 'nickname', 'teamid'])
+
+ENCODING_MAP = _map('encoding', [
+    'decoding',
+    'hometown',
+    'nickname',
+    'teamid',
+])
+
 PRECODING_MAP = _map('precoding', ['encoding'])
 
 ICON_LINK = 'https://fairylab.surge.sh/images/teams/{0}/{0}-icon.png'
-
 IMG_TAG = '<img src="{0}" width="20" height="20" border="0" class="{1}">'
 SPAN_TAG = '<span class="align-middle {1}">{0}</span>'
 
@@ -101,12 +108,28 @@ def encoding_to_decoding_sub(text):
     return _sub(ENCODING_KEYS, encoding_to_decoding, text)
 
 
+def encoding_to_hometown(encoding):
+    return ENCODING_MAP.get(encoding, {}).get('hometown', '')
+
+
 def encoding_to_nickname(encoding):
     return ENCODING_MAP.get(encoding, {}).get('nickname', '')
 
 
 def encoding_to_teamid(encoding):
     return ENCODING_MAP.get(encoding, {}).get('teamid', '')
+
+
+def icon_absolute(encoding, text, side):
+    name = encoding_to_nickname(encoding).replace(' ', '').lower()
+    src = ICON_LINK.format(name)
+
+    ic = 'position-absolute {}-8p top-14p'.format(side)
+    sc = 'd-block text-truncate p{}-24p'.format(side[0])
+
+    img = IMG_TAG.format(src, ic)
+    span = SPAN_TAG.format(text, sc)
+    return img + span
 
 
 def icon_inline(encoding, text):

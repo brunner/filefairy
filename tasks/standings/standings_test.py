@@ -32,23 +32,14 @@ GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 
 TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
 
-CONDENSED_AL = table(
-    clazz='table-fixed border mt-3',
-    head=[cell(content='American League')],
-    body=[[cell(content='0-0')]])
-CONDENSED_NL = table(
-    clazz='table-fixed border mt-3',
-    head=[cell(content='National League')],
-    body=[[cell(content='0-0')]])
 
-
-def _data(finished=False, games=None, table=None):
+def _data(finished=False, games=None, table_=None):
     if games is None:
         games = {}
-    if table is None:
-        table = {}
+    if table_ is None:
+        table_ = {}
 
-    return {'games': games, 'finished': finished, 'table': table}
+    return {'games': games, 'finished': finished, 'table': table_}
 
 
 def _game(away_runs, away_team, home_runs, home_team):
@@ -91,6 +82,12 @@ class StandingsTest(Test):
         self.init_mocks(data)
 
         return standings
+
+    def test_reload_data(self):
+        standings = self.create_standings(_data())
+        actual = standings._reload_data(date=DATE_10260602)
+        expected = {'division': ['condensed_league']}
+        self.assertEqual(actual, expected)
 
     @mock.patch.object(Standings, '_index_html')
     def test_render_data(self, mock_index):
@@ -182,12 +179,12 @@ class StandingsTest(Test):
 
     @mock.patch.object(Standings, '_render')
     def test_clear(self, mock_render):
-        table = {'T40': '87-75', 'T47': '91-71'}
-        standings = self.create_standings(_data(table=table))
+        table_ = {'T40': '87-75', 'T47': '91-71'}
+        standings = self.create_standings(_data(table_=table_))
         standings._clear(date=DATE_10260602)
 
-        table = {'T40': '0-0', 'T47': '0-0'}
-        write = _data(table=table)
+        table_ = {'T40': '0-0', 'T47': '0-0'}
+        write = _data(table_=table_)
         mock_render.assert_called_once_with(date=DATE_10260602)
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -204,12 +201,12 @@ class StandingsTest(Test):
         )
         mock_open.side_effect = suite.values()
 
-        table = {'T40': '66-58', 'T47': '71-53'}
-        standings = self.create_standings(_data(table=table))
+        table_ = {'T40': '66-58', 'T47': '71-53'}
+        standings = self.create_standings(_data(table_=table_))
         standings._finish(date=DATE_10260602)
 
-        table = {'T40': '66-61', 'T47': '74-53'}
-        write = _data(finished=True, table=table)
+        table_ = {'T40': '66-61', 'T47': '74-53'}
+        write = _data(finished=True, table_=table_)
         mock_render.assert_called_once_with(date=DATE_10260602)
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -226,8 +223,8 @@ class StandingsTest(Test):
         mock_open.side_effect = suite.values()
 
         games = {'2449': _game('5', 'T40', '6', 'T47')}
-        table = {'T40': '66-58', 'T47': '71-53'}
-        standings = self.create_standings(_data(games=games, table=table))
+        table_ = {'T40': '66-58', 'T47': '71-53'}
+        standings = self.create_standings(_data(games=games, table_=table_))
         standings._parse(date=DATE_10260602)
 
         games = {
@@ -235,7 +232,7 @@ class StandingsTest(Test):
             '2469': _game('0', 'T40', '7', 'T47'),
             '2476': _game('2', 'T40', '5', 'T47'),
         }
-        write = _data(games=games, table=table)
+        write = _data(games=games, table_=table_)
         mock_render.assert_called_once_with(date=DATE_10260602)
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
@@ -251,9 +248,65 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
+    maxDiff = None
     @mock.patch.object(Standings, '_call')
     def test_index_html(self, mock_call):
-        mock_call.side_effect = [CONDENSED_AL, CONDENSED_NL]
+        condensed_al = table(
+            clazz='table-fixed border mt-3',
+            head=[cell(content='American League')],
+            body=[[cell(content='0-0')]],
+        )
+        condensed_nl = table(
+            clazz='table-fixed border mt-3',
+            head=[cell(content='National League')],
+            body=[[cell(content='0-0')]],
+        )
+        expanded_al_east = table(
+            head=[cell(content='AL East')],
+            body=[[cell(content='Baltimore')]],
+        )
+        expanded_al_central = table(
+            head=[cell(content='AL Central')],
+            body=[[cell(content='Cleveland')]])
+        expanded_al_west = table(
+            head=[cell(content='AL West')],
+            body=[[cell(content='Houston')]],
+        )
+        expanded_al_wc = table(
+            head=[cell(content='AL Wild Card')],
+            body=[[cell(content='Boston')]],
+        )
+        expanded_nl_east = table(
+            head=[cell(content='NL East')],
+            body=[[cell(content='Atlanta')]],
+        )
+        expanded_nl_central = table(
+            head=[cell(content='NL Central')],
+            body=[[cell(content='Chicago')]])
+        expanded_nl_west = table(
+            head=[cell(content='NL West')],
+            body=[[cell(content='Arizona')]],
+        )
+        expanded_nl_wc = table(
+            head=[cell(content='NL Wild Card')],
+            body=[[cell(content='Miami')]],
+        )
+        mock_call.side_effect = [
+            condensed_al,
+            [
+                expanded_al_east,
+                expanded_al_central,
+                expanded_al_west,
+                expanded_al_wc,
+            ],
+            condensed_nl,
+            [
+                expanded_nl_east,
+                expanded_nl_central,
+                expanded_nl_west,
+                expanded_nl_wc,
+            ],
+        ]
 
         statsplus = {'T40': '0-3', 'T47': '3-0'}
         standings = self.create_standings(_data())
@@ -269,22 +322,52 @@ class StandingsTest(Test):
         }]
         actual = standings._index_html(date=DATE_10260602)
         expected = {
-            'breadcrumbs': breadcrumbs,
-            'recent': [CONDENSED_AL, CONDENSED_NL],
-            'table': [],
+            'breadcrumbs':
+            breadcrumbs,
+            'recent': [
+                condensed_al,
+                condensed_nl,
+            ],
+            'expanded': [
+                expanded_al_east,
+                expanded_nl_east,
+                expanded_al_central,
+                expanded_nl_central,
+                expanded_al_west,
+                expanded_nl_west,
+                expanded_al_wc,
+                expanded_nl_wc,
+            ],
         }
         self.assertEqual(actual, expected)
 
+        al_east = _table(['T33', 'T34', 'T48', 'T57', 'T59'], statsplus)
+        al_central = _table(['T35', 'T38', 'T40', 'T43', 'T47'], statsplus)
+        al_west = _table(['T42', 'T44', 'T50', 'T54', 'T58'], statsplus)
+        nl_east = _table(['T32', 'T41', 'T49', 'T51', 'T60'], statsplus)
+        nl_central = _table(['T36', 'T37', 'T46', 'T52', 'T56'], statsplus)
+        nl_west = _table(['T31', 'T39', 'T45', 'T53', 'T55'], statsplus)
+
         mock_call.assert_has_calls([
-            mock.call('condensed', ('American League', [
-                _table(['T33', 'T34', 'T48', 'T57', 'T59'], statsplus),
-                _table(['T35', 'T38', 'T40', 'T43', 'T47'], statsplus),
-                _table(['T42', 'T44', 'T50', 'T54', 'T58'], statsplus),
+            mock.call('condensed_league', ('American League', [
+                ('East', al_east),
+                ('Central', al_central),
+                ('West', al_west),
             ])),
-            mock.call('condensed', ('National League', [
-                _table(['T32', 'T41', 'T49', 'T51', 'T60'], statsplus),
-                _table(['T36', 'T37', 'T46', 'T52', 'T56'], statsplus),
-                _table(['T31', 'T39', 'T45', 'T53', 'T55'], statsplus),
+            mock.call('expanded_league', ('American League', [
+                ('East', al_east),
+                ('Central', al_central),
+                ('West', al_west),
+            ])),
+            mock.call('condensed_league', ('National League', [
+                ('East', nl_east),
+                ('Central', nl_central),
+                ('West', nl_west),
+            ])),
+            mock.call('expanded_league', ('National League', [
+                ('East', nl_east),
+                ('Central', nl_central),
+                ('West', nl_west),
             ])),
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)

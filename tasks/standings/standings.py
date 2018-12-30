@@ -21,14 +21,14 @@ GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 
 LEAGUES = {
     'American League': [
-        ('AL East', ('T33', 'T34', 'T48', 'T57', 'T59')),
-        ('AL Central', ('T35', 'T38', 'T40', 'T43', 'T47')),
-        ('AL West', ('T42', 'T44', 'T50', 'T54', 'T58')),
+        ('East', ('T33', 'T34', 'T48', 'T57', 'T59')),
+        ('Central', ('T35', 'T38', 'T40', 'T43', 'T47')),
+        ('West', ('T42', 'T44', 'T50', 'T54', 'T58')),
     ],
     'National League': [
-        ('NL East', ('T32', 'T41', 'T49', 'T51', 'T60')),
-        ('NL Central', ('T36', 'T37', 'T46', 'T52', 'T56')),
-        ('NL West', ('T31', 'T39', 'T45', 'T53', 'T55')),
+        ('East', ('T32', 'T41', 'T49', 'T51', 'T60')),
+        ('Central', ('T36', 'T37', 'T46', 'T52', 'T56')),
+        ('West', ('T31', 'T39', 'T45', 'T53', 'T55')),
     ],
 }
 
@@ -54,7 +54,7 @@ class Standings(Registrable):
         return 'standings'
 
     def _reload_data(self, **kwargs):
-        return {'division': ['condensed']}
+        return {'division': ['condensed_league']}
 
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
@@ -132,16 +132,20 @@ class Standings(Registrable):
                 'name': 'Standings'
             }],
             'recent': [],
-            'table': [],
         }
 
         statsplus = self.shadow.get('statsplus.table', {})
-        for title in sorted(LEAGUES):
+        expanded = []
+        for league in sorted(LEAGUES):
             tables = []
-            for subtitle, teams in LEAGUES[title]:
+            for subleague, teams in LEAGUES[league]:
                 table_ = {team: statsplus.get(team, '0-0') for team in teams}
-                tables.append(table_)
+                tables.append((subleague, table_))
 
-            ret['recent'].append(self._call('condensed', (title, tables)))
+            ret['recent'].append(
+                self._call('condensed_league', (league, tables)))
+            expanded.append(self._call('expanded_league', (league, tables)))
+
+        ret['expanded'] = [t for pair in zip(*expanded) for t in pair]
 
         return ret
