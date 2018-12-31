@@ -248,7 +248,6 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    maxDiff = None
     @mock.patch.object(Standings, '_call')
     def test_index_html(self, mock_call):
         condensed_al = table(
@@ -309,7 +308,9 @@ class StandingsTest(Test):
         ]
 
         statsplus = {'T40': '0-3', 'T47': '3-0'}
-        standings = self.create_standings(_data())
+        table_ = _table(['T' + str(k) for k in range(31, 61)], {})
+
+        standings = self.create_standings(_data(table_=table_))
         standings.shadow['statsplus.table'] = statsplus
         standings._reload()
 
@@ -341,33 +342,33 @@ class StandingsTest(Test):
         }
         self.assertEqual(actual, expected)
 
-        al_east = _table(['T33', 'T34', 'T48', 'T57', 'T59'], statsplus)
-        al_central = _table(['T35', 'T38', 'T40', 'T43', 'T47'], statsplus)
-        al_west = _table(['T42', 'T44', 'T50', 'T54', 'T58'], statsplus)
-        nl_east = _table(['T32', 'T41', 'T49', 'T51', 'T60'], statsplus)
-        nl_central = _table(['T36', 'T37', 'T46', 'T52', 'T56'], statsplus)
-        nl_west = _table(['T31', 'T39', 'T45', 'T53', 'T55'], statsplus)
+        al_east = ['T33', 'T34', 'T48', 'T57', 'T59']
+        al_central = ['T35', 'T38', 'T40', 'T43', 'T47']
+        al_west = ['T42', 'T44', 'T50', 'T54', 'T58']
+        nl_east = ['T32', 'T41', 'T49', 'T51', 'T60']
+        nl_central = ['T36', 'T37', 'T46', 'T52', 'T56']
+        nl_west = ['T31', 'T39', 'T45', 'T53', 'T55']
 
         mock_call.assert_has_calls([
             mock.call('condensed_league', ('American League', [
-                ('East', al_east),
-                ('Central', al_central),
-                ('West', al_west),
+                ('East', _table(al_east, statsplus)),
+                ('Central', _table(al_central, statsplus)),
+                ('West', _table(al_west, statsplus)),
             ])),
             mock.call('expanded_league', ('American League', [
-                ('East', al_east),
-                ('Central', al_central),
-                ('West', al_west),
+                ('East', _table(al_east, table_)),
+                ('Central', _table(al_central, table_)),
+                ('West', _table(al_west, table_)),
             ])),
             mock.call('condensed_league', ('National League', [
-                ('East', nl_east),
-                ('Central', nl_central),
-                ('West', nl_west),
+                ('East', _table(nl_east, statsplus)),
+                ('Central', _table(nl_central, statsplus)),
+                ('West', _table(nl_west, statsplus)),
             ])),
             mock.call('expanded_league', ('National League', [
-                ('East', nl_east),
-                ('Central', nl_central),
-                ('West', nl_west),
+                ('East', _table(nl_east, table_)),
+                ('Central', _table(nl_central, table_)),
+                ('West', _table(nl_west, table_)),
             ])),
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
