@@ -1,3 +1,118 @@
 {
-  "logs": {}
+  "logs": {
+    "2019-01-02T00:00:00-08:00": [
+      {
+        "date": "2019-01-02T22:45:18.415763-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded download.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:19.006443-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded gameday.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:19.028815-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded git.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:19.056525-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded recap.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:19.098380-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded scoreboard.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:20.277600-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded snacks.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:20.318133-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded standings.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:20.355110-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded statsplus.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:21.957966-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 171,
+        "msg": "Reloaded upload.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:24.618719-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 251, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 98, in _run\n    return self._run_internal(**kwargs)\n  File \"/home/pi/filefairy/tasks/gameday/gameday.py\", line 133, in _run_internal\n    if self._check_games():\n  File \"/home/pi/filefairy/tasks/gameday/gameday.py\", line 257, in _check_games\n    id_ = re.findall('game_(\\d+).json', game)[0]\nIndexError: list index out of range",
+        "levelname": "ERROR",
+        "lineno": 254,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-02T22:45:29.764134-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 88,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
+      },
+      {
+        "date": "2019-01-02T22:46:54.550883-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 86,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-01-02T22:51:45.210946-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 73,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-01-02T22:51:45.392226-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 251, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 87, in _download_start\n    return self._download_file(**kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 74, in _download_file\n    response = self._extract_file(**kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 96, in _extract_file\n    end = self._call('extract_file', (start, ))\n  File \"/home/pi/filefairy/api/reloadable/reloadable.py\", line 39, in _call\n    return self.attrs[method](*fargs, *args, **kwargs)\n  File \"/home/pi/filefairy/services/leaguefile/leaguefile.py\", line 68, in extract_file\n    for box in os.listdir(DOWNLOAD_BOX_SCORES):\nFileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/resource/download/news/html/box_scores'",
+        "levelname": "ERROR",
+        "lineno": 254,
+        "msg": "Disabled download.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      }
+    ]
+  }
 }

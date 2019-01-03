@@ -38,12 +38,11 @@ def download_file(url):
 
     with chdir(DOWNLOAD_DIR):
         filename = url.rsplit('/', 1)[1].replace('%20', '_')
-        output = check_output(['wget', url, '-O ' + filename], timeout=4800)
+        output = check_output(['wget', url, '-O', filename], timeout=4800)
         if output.get('ok'):
             check_output(['unzip', filename])
 
     return output
-
 
 def extract_file(start):
     """Extract the relevant parts of the league file.
