@@ -177,6 +177,40 @@
         "msg": "Disabled gameday.",
         "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
       }
+    ],
+    "2019-01-03T00:00:00-08:00": [
+      {
+        "date": "2019-01-03T17:56:29.820171-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 88,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
+      },
+      {
+        "date": "2019-01-03T17:56:56.849881-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 86,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-01-03T18:00:58.115236-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 73,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-01-03T18:00:58.283408-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 251, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 87, in _download_start\n    return self._download_file(**kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 74, in _download_file\n    response = self._extract_file(**kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 96, in _extract_file\n    end = self._call('extract_file', (start, ))\n  File \"/home/pi/filefairy/api/reloadable/reloadable.py\", line 39, in _call\n    return self.attrs[method](*fargs, *args, **kwargs)\n  File \"/home/pi/filefairy/services/leaguefile/leaguefile.py\", line 67, in extract_file\n    for box in os.listdir(DOWNLOAD_BOX_SCORES):\nFileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/resource/download/news/html/box_scores'",
+        "levelname": "ERROR",
+        "lineno": 254,
+        "msg": "Disabled download.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      }
     ]
   }
 }
