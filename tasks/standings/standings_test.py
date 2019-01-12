@@ -34,7 +34,7 @@ DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 
-TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
+TESTDATA = get_testdata()
 
 
 def _data(finished=False, games=None, table_=None):

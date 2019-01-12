@@ -36,7 +36,7 @@ EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 FILE_HOST = 'https://statsplus.net/oblootp/files/'
 ISO = 'iso-8859-1'
 
-TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
+TESTDATA = get_testdata()
 
 
 class LeaguefileTest(unittest.TestCase):

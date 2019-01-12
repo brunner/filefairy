@@ -14,7 +14,7 @@ sys.path.append(re.sub(r'/services/scoreboard', '', _path))
 from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score  # noqa
 
-TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
+TESTDATA = get_testdata()
 
 
 class ScoreboardTest(unittest.TestCase):

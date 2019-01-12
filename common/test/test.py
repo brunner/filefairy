@@ -20,6 +20,8 @@ from common.json_.json_ import dumps  # noqa
 
 ISO = 'iso-8859-1'
 
+TESTDATA_DIR = os.path.join(_path, 'testdata')
+
 
 class Mock(object):
     def __init__(self, read=None, write=None):
@@ -86,14 +88,15 @@ def _gen_golden(case, _cls, _pkg, _pth, _read, **kwargs):
     return test_golden
 
 
-def get_testdata(path):
+def get_testdata():
     testdata = {}
-    for name in os.listdir(path):
+    for name in os.listdir(TESTDATA_DIR):
         if name == '__init__.py':
             continue
-        filename = os.path.join(path, name)
+        filename = os.path.join(TESTDATA_DIR, name)
         if os.path.isfile(filename):
-            testdata[name] = open(filename, 'r', encoding=ISO).read()
+            with open(filename, 'r', encoding=ISO) as f:
+                testdata[name] = f.read()
 
     return testdata
 

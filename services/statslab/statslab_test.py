@@ -31,7 +31,7 @@ GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
-TESTDATA = get_testdata(os.path.join(_path, 'testdata'))
+TESTDATA = get_testdata()
 
 
 def _extract_box_score(num):

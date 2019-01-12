@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Sample data for standings.py golden test."""
 
+import json
 import os
 import re
 import sys
@@ -18,7 +19,7 @@ from common.elements.elements import table  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
 from common.json_.json_ import filts  # noqa
-from common.json_.json_ import loads  # noqa
+from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score  # noqa
 from tasks.standings.standings import GAME_KEYS  # noqa
 
@@ -29,7 +30,7 @@ EXPANDED_COLS = [
     col(clazz='text-right w-75p')
 ]
 
-TESTDATA_DIR = re.sub(r'/samples', '/testdata', _path)
+TESTDATA = get_testdata()
 
 
 def _expanded_head(subleague):
@@ -416,13 +417,13 @@ _expanded = [
     ),
 ]
 
-_game_2449 = filts(loads(os.path.join(TESTDATA_DIR, '2449.json')), GAME_KEYS)
+_game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
 _line_2449 = line_score(_game_2449)
 
-_game_2469 = filts(loads(os.path.join(TESTDATA_DIR, '2469.json')), GAME_KEYS)
+_game_2469 = filts(json.loads(TESTDATA['2469.json']), GAME_KEYS)
 _line_2469 = line_score(_game_2469)
 
-_game_2476 = filts(loads(os.path.join(TESTDATA_DIR, '2476.json')), GAME_KEYS)
+_game_2476 = filts(json.loads(TESTDATA['2476.json']), GAME_KEYS)
 _line_2476 = line_score(_game_2476)
 
 _dialogs = [
