@@ -83,7 +83,7 @@ class StandingsTest(Test):
         actual = standings._reload_data(date=DATE_10260602)
         expected = {
             'division': ['condensed_league', 'expanded_league'],
-            'scoreboard': ['line_score'],
+            'scoreboard': ['line_score_body'],
         }
         self.assertEqual(actual, expected)
 
@@ -288,18 +288,24 @@ class StandingsTest(Test):
             head=[cell(content='NL Wild Card')],
             body=[[cell(content='Miami')]],
         )
-        line_2449 = table(
+        body_2449 = table(
             head=[cell(content='Final (2449)')],
             body=[[cell(content='Detroit')]],
         )
-        line_2469 = table(
+        foot_2449 = table(foot=[cell(content='W: P123')], )
+        body_2469 = table(
             head=[cell(content='Final (2469)')],
             body=[[cell(content='Detroit')]],
         )
-        line_2476 = table(
+        foot_2469 = table(foot=[cell(content='W: P456')], )
+        body_2476 = table(
             head=[cell(content='Final (2476)')],
             body=[[cell(content='Detroit')]],
         )
+        foot_2476 = table(foot=[cell(content='W: P789')], )
+        head_2449 = table(head=[cell(content='Wednesday')], )
+        head_2469 = table(head=[cell(content='Thursday')], )
+        head_2476 = table(head=[cell(content='Friday')], )
         mock_call.side_effect = [
             condensed_al,
             [
@@ -315,9 +321,18 @@ class StandingsTest(Test):
                 expanded_nl_west,
                 expanded_nl_wc,
             ],
-            line_2449,
-            line_2469,
-            line_2476,
+            body_2449,
+            foot_2449,
+            body_2469,
+            foot_2469,
+            body_2476,
+            foot_2476,
+            head_2449,
+            head_2469,
+            head_2476,
+            head_2449,
+            head_2469,
+            head_2476,
         ]
 
         statsplus = {'T40': '0-3', 'T47': '3-0'}
@@ -338,7 +353,10 @@ class StandingsTest(Test):
             'href': '',
             'name': 'Standings'
         }]
-        lines = [line_2449, line_2469, line_2476]
+        tables = [
+            head_2449, body_2449, foot_2449, head_2469, body_2469, foot_2469,
+            head_2476, body_2476, foot_2476,
+        ]  # yapf: disable
         actual = standings._index_html(date=DATE_10260602)
         expected = {
             'breadcrumbs':
@@ -358,8 +376,8 @@ class StandingsTest(Test):
                 expanded_nl_wc,
             ],
             'dialogs': [
-                dialog('40', 'Detroit Tigers', lines),
-                dialog('47', 'Minnesota Twins', lines),
+                dialog('40', 'Detroit Tigers', tables),
+                dialog('47', 'Minnesota Twins', tables),
             ]
         }
         self.assertEqual(actual, expected)
@@ -392,9 +410,15 @@ class StandingsTest(Test):
                 ('Central', _table(nl_central, table_)),
                 ('West', _table(nl_west, table_)),
             ])),
-            mock.call('line_score', (game_2449, )),
-            mock.call('line_score', (game_2469, )),
-            mock.call('line_score', (game_2476, )),
+            mock.call('line_score_body', (game_2449, )),
+            mock.call('line_score_foot', (game_2449, )),
+            mock.call('line_score_body', (game_2469, )),
+            mock.call('line_score_foot', (game_2469, )),
+            mock.call('line_score_body', (game_2476, )),
+            mock.call('line_score_foot', (game_2476, )),
+            mock.call('line_score_head', (game_2449['date'], )),
+            mock.call('line_score_head', (game_2469['date'], )),
+            mock.call('line_score_head', (game_2476['date'], )),
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

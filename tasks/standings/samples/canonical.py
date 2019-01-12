@@ -20,7 +20,9 @@ from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
 from common.json_.json_ import filts  # noqa
 from common.test.test import get_testdata  # noqa
-from services.scoreboard.scoreboard import line_score  # noqa
+from services.scoreboard.scoreboard import line_score_body  # noqa
+from services.scoreboard.scoreboard import line_score_foot  # noqa
+from services.scoreboard.scoreboard import line_score_head  # noqa
 from tasks.standings.standings import GAME_KEYS  # noqa
 
 EXPANDED_COLS = [
@@ -418,17 +420,27 @@ _expanded = [
 ]
 
 _game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
-_line_2449 = line_score(_game_2449)
+_head_2449 = line_score_head(_game_2449['date'])
+_body_2449 = line_score_body(_game_2449)
+_foot_2449 = line_score_foot(_game_2449)
 
 _game_2469 = filts(json.loads(TESTDATA['2469.json']), GAME_KEYS)
-_line_2469 = line_score(_game_2469)
+_head_2469 = line_score_head(_game_2469['date'])
+_body_2469 = line_score_body(_game_2469)
+_foot_2469 = line_score_foot(_game_2469)
 
 _game_2476 = filts(json.loads(TESTDATA['2476.json']), GAME_KEYS)
-_line_2476 = line_score(_game_2476)
+_head_2476 = line_score_head(_game_2476['date'])
+_body_2476 = line_score_body(_game_2476)
+_foot_2476 = line_score_foot(_game_2476)
 
+_tables = [
+    _head_2449, _body_2449, _foot_2449, _head_2469, _body_2469, _foot_2469,
+    _head_2476, _body_2476, _foot_2476,
+]  # yapf: disable
 _dialogs = [
-    dialog('40', 'Detroit Tigers', [_line_2449, _line_2469, _line_2476]),
-    dialog('47', 'Minnesota Twins', [_line_2449, _line_2469, _line_2476]),
+    dialog('40', 'Detroit Tigers', _tables),
+    dialog('47', 'Minnesota Twins', _tables),
 ]
 
 subtitle = ''

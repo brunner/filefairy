@@ -9,6 +9,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/scoreboard', '', _path))
 
+from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
@@ -17,7 +19,7 @@ from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import icon_absolute  # noqa
 
 
-def line_score(data):
+def line_score_body(data):
     away_team = data['away_team']
     home_team = data['home_team']
 
@@ -33,12 +35,12 @@ def line_score(data):
 
     away_line = data['away_line'].split()
     home_line = data['home_line'].split()
-
     num = len(home_line)
     final = 'Final' + ('' if num == 9 else ' ({})'.format(num))
 
     hcols = [col(clazz='font-weight-bold text-danger')]
-    hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * (num - 1)
+    hcols += [col(clazz='td-sm-none w-24p pr-1 pl-2 text-center')]
+    hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * (num - 2)
     hcols += [col(clazz='td-sm-none w-28p pl-1 pr-2 text-center')]
     hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 3
 
@@ -57,8 +59,9 @@ def line_score(data):
         home_col = col(clazz='font-weight-bold')
 
     bc = 'td-sm-none text-center text-secondary'
-    bcols = [col(clazz='position-relative pr-4p')]
-    bcols += [col(clazz=(bc + ' w-24p px-1'))] * (num - 1)
+    bcols = [col(clazz='position-relative')]
+    bcols += [col(clazz=(bc + ' w-24p pr-1 pl-2'))]
+    bcols += [col(clazz=(bc + ' w-24p px-1'))] * (num - 2)
     bcols += [col(clazz=(bc + ' w-28p pl-1 pr-2'))]
     bcols += [col(clazz='w-24p px-1 text-center')] * 3
 
@@ -74,20 +77,40 @@ def line_score(data):
 
     body = [away_row, home_row]
 
+    return table(
+        clazz='border small',
+        hcols=hcols,
+        bcols=bcols,
+        head=head,
+        body=body,
+    )
+
+
+def line_score_foot(data):
     summary = [span(['text-secondary'], 'W: ') + data['winning_pitcher']]
     summary += [span(['text-secondary'], 'L: ') + data['losing_pitcher']]
     if data['saving_pitcher']:
         summary += [span(['text-secondary'], 'S: ') + data['saving_pitcher']]
 
-    fcols = [col(colspan=(num + 4))]
+    fcols = [col(clazz='border-0')]
     foot = [cell(content=(', '.join(summary)))]
 
     return table(
-        clazz='table border mt-3 small',
-        hcols=hcols,
-        bcols=bcols,
+        clazz='border border-top-0 small',
         fcols=fcols,
-        head=head,
-        body=body,
         foot=foot,
+    )
+
+
+def line_score_head(date):
+    date = decode_datetime(date)
+    title = date.strftime('%A, %B %-d{S}, %Y').replace('{S}', suffix(date.day))
+
+    bcols = [col(clazz='font-weight-bold border-0')]
+    body = [[cell(content=title)]]
+
+    return table(
+        clazz='small mt-2',
+        bcols=bcols,
+        body=body,
     )

@@ -66,7 +66,7 @@ class Standings(Registrable):
     def _reload_data(self, **kwargs):
         return {
             'division': ['condensed_league', 'expanded_league'],
-            'scoreboard': ['line_score'],
+            'scoreboard': ['line_score_body'],
         }
 
     def _render_data(self, **kwargs):
@@ -166,16 +166,30 @@ class Standings(Registrable):
         dialogs = {encoding: [] for encoding in encoding_keys()}
         for num in self.data['games']:
             data = self.data['games'][num]
-            line = self._call('line_score', (data, ))
+            body = self._call('line_score_body', (data, ))
+            foot = self._call('line_score_foot', (data, ))
 
-            dialogs[data['away_team']].append((data['date'], line))
-            dialogs[data['home_team']].append((data['date'], line))
+            dialogs[data['away_team']].append((data['date'], body, foot))
+            dialogs[data['home_team']].append((data['date'], body, foot))
 
         for encoding in dialogs:
             if dialogs[encoding]:
                 teamid = encoding_to_teamid(encoding)
                 decoding = encoding_to_decoding(encoding)
-                tables = [line for _, line in sorted(dialogs[encoding])]
+                tables = []
+
+                curr = None
+                for date, body, foot in sorted(dialogs[encoding]):
+                    head = self._call('line_score_head', (date, ))
+
+                    if curr == head:
+                        body['clazz'] += ' mt-3'
+                    else:
+                        tables += [head]
+
+                    tables += [body, foot]
+                    curr = head
+
                 ret['dialogs'].append(dialog(teamid, decoding, tables))
 
         return ret

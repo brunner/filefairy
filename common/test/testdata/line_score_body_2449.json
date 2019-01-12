@@ -1,7 +1,11 @@
 {
   "bcols": [
     {
-      "clazz": "position-relative pr-4p",
+      "clazz": "position-relative",
+      "colspan": ""
+    },
+    {
+      "clazz": "td-sm-none text-center text-secondary w-24p pr-1 pl-2",
       "colspan": ""
     },
     {
@@ -60,7 +64,19 @@
           "clazz": "",
           "colspan": ""
         },
-        "content": "<img src=\"https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png\" width=\"16\" height=\"16\" border=\"0\" class=\"position-absolute left-8p top-14p\"><span class=\"d-block text-truncate pl-24p\">Detroit (66-61)</span>"
+        "content": "<img src=\"https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png\" width=\"16\" height=\"16\" border=\"0\" class=\"position-absolute left-8p top-14p\"><span class=\"d-block text-truncate pl-24p\">Detroit (66-59)</span>"
+      },
+      {
+        "col": null,
+        "content": "3"
+      },
+      {
+        "col": null,
+        "content": "1"
+      },
+      {
+        "col": null,
+        "content": "0"
       },
       {
         "col": null,
@@ -81,14 +97,6 @@
       {
         "col": null,
         "content": "0"
-      },
-      {
-        "col": null,
-        "content": "0"
-      },
-      {
-        "col": null,
-        "content": "1"
       },
       {
         "col": null,
@@ -103,7 +111,7 @@
           "clazz": "",
           "colspan": ""
         },
-        "content": "2"
+        "content": "5"
       },
       {
         "col": {
@@ -126,7 +134,7 @@
           "clazz": "font-weight-bold",
           "colspan": ""
         },
-        "content": "<img src=\"https://fairylab.surge.sh/images/teams/twins/twins-icon.png\" width=\"16\" height=\"16\" border=\"0\" class=\"position-absolute left-8p top-14p\"><span class=\"d-block text-truncate pl-24p\">Minnesota (74-53)</span>"
+        "content": "<img src=\"https://fairylab.surge.sh/images/teams/twins/twins-icon.png\" width=\"16\" height=\"16\" border=\"0\" class=\"position-absolute left-8p top-14p\"><span class=\"d-block text-truncate pl-24p\">Minnesota (72-53)</span>"
       },
       {
         "col": null,
@@ -134,7 +142,19 @@
       },
       {
         "col": null,
-        "content": "3"
+        "content": "2"
+      },
+      {
+        "col": null,
+        "content": "2"
+      },
+      {
+        "col": null,
+        "content": "0"
+      },
+      {
+        "col": null,
+        "content": "0"
       },
       {
         "col": null,
@@ -157,52 +177,38 @@
         "content": "1"
       },
       {
-        "col": null,
+        "col": {
+          "clazz": "font-weight-bold",
+          "colspan": ""
+        },
+        "content": "6"
+      },
+      {
+        "col": {
+          "clazz": "font-weight-bold",
+          "colspan": ""
+        },
+        "content": "12"
+      },
+      {
+        "col": {
+          "clazz": "font-weight-bold",
+          "colspan": ""
+        },
         "content": "0"
-      },
-      {
-        "col": null,
-        "content": "X"
-      },
-      {
-        "col": {
-          "clazz": "font-weight-bold",
-          "colspan": ""
-        },
-        "content": "5"
-      },
-      {
-        "col": {
-          "clazz": "font-weight-bold",
-          "colspan": ""
-        },
-        "content": "9"
-      },
-      {
-        "col": {
-          "clazz": "font-weight-bold",
-          "colspan": ""
-        },
-        "content": "1"
       }
     ]
   ],
-  "clazz": "table border mt-3 small",
-  "fcols": [
-    {
-      "clazz": "",
-      "colspan": 13
-    }
-  ],
-  "foot": [
-    {
-      "col": null,
-      "content": "<span class=\"text-secondary\">W: </span>P25132 (10-8) 3.46, <span class=\"text-secondary\">L: </span>P37027 (5-8) 3.08, <span class=\"text-secondary\">S: </span>P19570 (7)"
-    }
-  ],
+  "clazz": "border small",
+  "fcols": null,
+  "foot": null,
   "hcols": [
     {
       "clazz": "font-weight-bold text-danger",
+      "colspan": ""
+    },
+    {
+      "clazz": "td-sm-none w-24p pr-1 pl-2 text-center",
       "colspan": ""
     },
     {
@@ -257,7 +263,7 @@
   "head": [
     {
       "col": null,
-      "content": "Final"
+      "content": "Final (10)"
     },
     {
       "col": null,
@@ -294,6 +300,10 @@
     {
       "col": null,
       "content": "9"
+    },
+    {
+      "col": null,
+      "content": "10"
     },
     {
       "col": null,
