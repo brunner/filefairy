@@ -22,12 +22,14 @@ def line_score(data):
     home_team = data['home_team']
 
     away_hometown = encoding_to_hometown(away_team)
-    away_record = ' (' + data['away_record'] + ')'
-    away_title = icon_absolute(away_team, away_hometown + away_record, '16')
+    if data['away_record']:
+        away_hometown += ' (' + data['away_record'] + ')'
+    away_title = icon_absolute(away_team, away_hometown, '16')
 
     home_hometown = encoding_to_hometown(home_team)
-    home_record = ' (' + data['home_record'] + ')'
-    home_title = icon_absolute(home_team, home_hometown + home_record, '16')
+    if data['home_record']:
+        home_hometown += ' (' + data['home_record'] + ')'
+    home_title = icon_absolute(home_team, home_hometown, '16')
 
     away_line = data['away_line'].split()
     home_line = data['home_line'].split()
