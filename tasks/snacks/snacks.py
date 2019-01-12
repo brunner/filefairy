@@ -108,7 +108,7 @@ class Snacks(Registrable):
                 reactions_add(snack, channel, obj['ts'])
 
         if find(r'(?s)^<@U3ULC7DBP> who .+$', text):
-            reply = self._call('who', (self.users,))
+            reply = self._call('who', (self.users, ))
             chat_post_message(channel, reply)
 
         return Response()

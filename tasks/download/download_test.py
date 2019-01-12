@@ -218,8 +218,7 @@ class DownloadTest(Test):
         read = _data(end=DATE_08280000)
         download = self.create_download(read)
         response = download._extract_file(date=DATE_10260604)
-        self.assertEqual(response,
-                         Response(notify=[Notify.DOWNLOAD_FINISH]))
+        self.assertEqual(response, Response(notify=[Notify.DOWNLOAD_FINISH]))
 
         write = _data(end=DATE_08310000, start=DATE_08280000)
         mock_call.assert_called_once_with('extract_file', (DATE_08280000, ))

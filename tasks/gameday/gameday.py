@@ -104,10 +104,8 @@ class Gameday(Registrable):
             if game_data['ok']:
                 away_team = encoding_to_nickname(game_data['away_team'])
                 home_team = encoding_to_nickname(game_data['home_team'])
-                date = decode_datetime(
-                    game_data['date']).strftime('%m/%d/%Y')
-                subtitle = '{} at {}, {}'.format(away_team, home_team,
-                                                 date)
+                date = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
+                subtitle = '{} at {}, {}'.format(away_team, home_team, date)
                 game = self._game(id_, subtitle, game_data, schedule_data)
                 html = 'gameday/{}/index.html'.format(id_)
                 ret.append((html, subtitle, 'game.html', game))

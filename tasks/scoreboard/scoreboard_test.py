@@ -245,7 +245,8 @@ class ScoreboardTest(Test):
         scoreboard = self.create_scoreboard(_data())
         value = scoreboard._shadow_data()
         self.assertEqual(value, [
-            Shadow(destination='recap', key='scoreboard.offseason', info=False),
+            Shadow(
+                destination='recap', key='scoreboard.offseason', info=False),
             Shadow(
                 destination='recap', key='scoreboard.postseason', info=False)
         ])
@@ -257,8 +258,7 @@ class ScoreboardTest(Test):
 
     def test_notify__with_finish(self):
         scoreboard = self.create_scoreboard(_data())
-        response = scoreboard._notify_internal(
-            notify=Notify.DOWNLOAD_FINISH)
+        response = scoreboard._notify_internal(notify=Notify.DOWNLOAD_FINISH)
         self.assertEqual(response, Response())
 
         write = _data(finished=True)
@@ -367,8 +367,7 @@ class ScoreboardTest(Test):
         response = scoreboard._on_message_internal(obj=obj)
         self.assertEqual(
             response,
-            Response(
-                notify=[Notify.BASE], shadow=scoreboard._shadow_data()))
+            Response(notify=[Notify.BASE], shadow=scoreboard._shadow_data()))
 
         write = _data(offseason=True)
         mock_clear.assert_not_called()
@@ -424,8 +423,7 @@ class ScoreboardTest(Test):
         response = scoreboard._on_message_internal(obj=obj)
         self.assertEqual(
             response,
-            Response(
-                notify=[Notify.BASE], shadow=scoreboard._shadow_data()))
+            Response(notify=[Notify.BASE], shadow=scoreboard._shadow_data()))
 
         write = _data()
         mock_clear.assert_not_called()
@@ -656,7 +654,7 @@ class ScoreboardTest(Test):
         delay = '10/10/2022 Rain delay of 19 minutes in the 2nd inning. '
         text = delay + _player_sub(_injuries_text)
         scoreboard._handle_key('injuries', _then_encoded, text,
-                              _injuries_pattern, True)
+                               _injuries_pattern, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -670,7 +668,7 @@ class ScoreboardTest(Test):
         scoreboard = self.create_scoreboard(_data())
         text = '10/10/2022 ' + _player_sub(_highlights_text)
         scoreboard._handle_key('highlights', _then_encoded, text,
-                              _highlights_pattern, True)
+                               _highlights_pattern, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -684,7 +682,7 @@ class ScoreboardTest(Test):
         scoreboard = self.create_scoreboard(_data())
         text = '10/10/2022 ' + _player_sub(_injuries_text)
         scoreboard._handle_key('injuries', _then_encoded, text,
-                              _injuries_pattern, True)
+                               _injuries_pattern, True)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()
@@ -699,7 +697,7 @@ class ScoreboardTest(Test):
         date = '10/10/2022 MAJOR LEAGUE BASEBALL Final Scores\n'
         text = date + _game_box_sub(_scores_regular_text)
         scoreboard._handle_key('scores', _then_encoded, text, _scores_pattern,
-                              False)
+                               False)
 
         self.mock_open.assert_not_called()
         self.mock_handle.write.assert_not_called()

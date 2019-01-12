@@ -55,9 +55,7 @@ class Statsplus(Registrable):
         return 'statsplus'
 
     def _reload_data(self, **kwargs):
-        return {
-            'statslab': ['parse_score']
-        }
+        return {'statslab': ['parse_score']}
 
     def _shadow_data(self, **kwargs):
         return [
