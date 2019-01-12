@@ -20,6 +20,16 @@ from common.teams.teams import icon_absolute  # noqa
 
 
 def line_score_body(data):
+    """Creates a line score table body for a given game data object.
+
+    The table body contains the teams, records, and runs for the game.
+
+    Args:
+        data: The parsed game data.
+
+    Returns:
+        A line score table body.
+    """
     away_team = data['away_team']
     home_team = data['home_team']
 
@@ -87,6 +97,16 @@ def line_score_body(data):
 
 
 def line_score_foot(data):
+    """Creates a line score table footer for a given game data object.
+
+    The table footer contains game details, such as winning and losing pitcher.
+
+    Args:
+        data: The parsed game data.
+
+    Returns:
+        A line score table footer.
+    """
     summary = [span(['text-secondary'], 'W: ') + data['winning_pitcher']]
     summary += [span(['text-secondary'], 'L: ') + data['losing_pitcher']]
     if data['saving_pitcher']:
@@ -103,6 +123,16 @@ def line_score_foot(data):
 
 
 def line_score_head(date):
+    """Creates a line score table header for a given date.
+
+    The table header contains the formatted date.
+
+    Args:
+        date: The encoded game date.
+
+    Returns:
+        A line score table header.
+    """
     date = decode_datetime(date)
     title = date.strftime('%A, %B %-d{S}, %Y').replace('{S}', suffix(date.day))
 
