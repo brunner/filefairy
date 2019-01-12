@@ -10,6 +10,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/statslab', '', _path))
 
+from common.datetime_.datetime_ import datetime_as_est  # noqa
+from common.datetime_.datetime_ import datetime_as_pst  # noqa
+from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
@@ -52,11 +55,16 @@ def parse_score(in_, out, date):
         return None
 
     d = datetime.datetime.strptime(match, '%m/%d/%Y')
-    parsed = encode_datetime(datetime_datetime_pst(d.year, d.month, d.day))
-    if date is None:
-        date = parsed
-    elif date != parsed:
+    d = datetime_datetime_pst(d.year, d.month, d.day)
+    if date is not None and date != encode_datetime(d):
         return None
+
+    match = find(r'(?s)Start Time:(.+?)<br>', text).strip(' EST')
+    s = datetime.datetime.strptime(match.upper(), '%I:%M %p')
+
+    d = datetime_as_est(d)
+    date = datetime_datetime_est(d.year, d.month, d.day, s.hour, s.minute)
+    date = encode_datetime(datetime_as_pst(date))
 
     data = {'away_team': away, 'date': date, 'home_team': home}
 

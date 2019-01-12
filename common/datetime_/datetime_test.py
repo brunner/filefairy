@@ -13,7 +13,9 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/datetime_', '', _path))
 
+from common.datetime_.datetime_ import datetime_as_est  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
+from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import datetime_now  # noqa
@@ -23,15 +25,33 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.datetime_.datetime_ import timedelta  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 
+EST = pytz.timezone('America/New_York')
 CST = pytz.timezone('America/Winnipeg')
 PST = pytz.timezone('America/Los_Angeles')
 
 
 class DatetimeTest(unittest.TestCase):
+    def test_datetime_as_est(self):
+        d = datetime_datetime_pst(2018, 3, 13)
+        actual = datetime_as_est(d)
+        expected = d.astimezone(EST)
+        self.assertEqual(actual, expected)
+
     def test_datetime_as_pst(self):
         d = datetime_datetime_cst(2018, 3, 13)
         actual = datetime_as_pst(d)
         expected = d.astimezone(PST)
+        self.assertEqual(actual, expected)
+
+    def test_datetime_datetime_est_minimal(self):
+        actual = datetime_datetime_est(2018, 3, 13)
+        expected = EST.localize(datetime.datetime(2018, 3, 13))
+        self.assertEqual(actual, expected)
+
+    def test_datetime_datetime_est_full(self):
+        actual = datetime_datetime_est(2018, 3, 13, 22, 43, 13, 337756)
+        expected = EST.localize(
+            datetime.datetime(2018, 3, 13, 22, 43, 13, 337756))
         self.assertEqual(actual, expected)
 
     def test_datetime_datetime_cst_minimal(self):

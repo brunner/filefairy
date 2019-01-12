@@ -22,9 +22,9 @@ from data.response.response import Response  # noqa
 
 GAME_KEYS = [
     'away_errors', 'away_hits', 'away_line', 'away_record', 'away_runs',
-    'away_team', 'home_errors', 'home_hits', 'home_line', 'home_record',
-    'home_runs', 'home_team', 'losing_pitcher', 'saving_pitcher',
-    'winning_pitcher',
+    'away_team', 'date', 'home_errors', 'home_hits', 'home_line',
+    'home_record', 'home_runs', 'home_team', 'losing_pitcher',
+    'saving_pitcher', 'winning_pitcher',
 ]  # yapf: disable
 
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
@@ -168,14 +168,14 @@ class Standings(Registrable):
             data = self.data['games'][num]
             line = self._call('line_score', (data, ))
 
-            dialogs[data['away_team']].append(line)
-            dialogs[data['home_team']].append(line)
+            dialogs[data['away_team']].append((data['date'], line))
+            dialogs[data['home_team']].append((data['date'], line))
 
         for encoding in dialogs:
             if dialogs[encoding]:
                 teamid = encoding_to_teamid(encoding)
                 decoding = encoding_to_decoding(encoding)
-                ret['dialogs'].append(
-                    dialog(teamid, decoding, dialogs[encoding]))
+                tables = [line for _, line in sorted(dialogs[encoding])]
+                ret['dialogs'].append(dialog(teamid, decoding, tables))
 
         return ret
