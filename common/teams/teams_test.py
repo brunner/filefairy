@@ -18,7 +18,8 @@ from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
-from common.teams.teams import icon_inline  # noqa
+from common.teams.teams import icon_absolute  # noqa
+from common.teams.teams import icon_badge  # noqa
 from common.teams.teams import precoding_to_encoding  # noqa
 from common.teams.teams import precoding_to_encoding_sub  # noqa
 
@@ -151,23 +152,38 @@ class TeamTest(unittest.TestCase):
         actual = encoding_keys()
         self.assertEqual(actual, ENCODING_KEYS)
 
-    def test_icon_inline__one(self):
-        actual = icon_inline('T36', '0-0')
-        src = 'https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png'
-        img = ('<img src="{}" width="20" height="20" border="0" class="d-inli'
-               'ne-block">').format(src)
-        span = '<span class="align-middle d-inline-block px-2">0-0</span>'
+    def test_icon_absolute(self):
+        actual = icon_absolute('T35', 'Chicago', '20')
+        src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
+               'png')
+        img = ('<img src="{}" width="20" height="20" border="0" class="positio'
+               'n-absolute left-8p top-14p">').format(src)
+        span = ('<span class="d-block text-truncate pl-24p">Chicago</span>')
         expected = img + span
         self.assertEqual(actual, expected)
 
-    def test_icon_inline__two(self):
-        actual = icon_inline('T35', '0-0')
+    def test_icon_badge__link_false(self):
+        actual = icon_badge('T35', '0-0', '20')
+        badge = ('<span class="badge badge-icon badge-light">{}</span>')
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
-        img = ('<img src="{}" width="20" height="20" border="0" class="d-inli'
-               'ne-block">').format(src)
-        span = '<span class="align-middle d-inline-block px-2">0-0</span>'
-        expected = img + span
+        img = ('<img src="{}" width="20" height="20" border="0" class="d-inlin'
+               'e-block grayscale">').format(src)
+        span = ('<span class="d-inline-block align-middle px-2 pt-1 text-secon'
+                'dary">0-0</span>')
+        expected = badge.format(img + span)
+        self.assertEqual(actual, expected)
+
+    def test_icon_badge__link_true(self):
+        actual = icon_badge('T35', '1-0', '20')
+        badge = ('<span class="badge badge-icon badge-light" data-toggle="moda'
+                 'l" data-target="#35">{}</span>')
+        src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
+               'png')
+        img = ('<img src="{}" width="20" height="20" border="0" class="d-inlin'
+               'e-block">').format(src)
+        span = '<span class="d-inline-block align-middle px-2 pt-1">1-0</span>'
+        expected = badge.format(img + span)
         self.assertEqual(actual, expected)
 
     def test_precoding_to_encoding(self):

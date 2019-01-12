@@ -35,7 +35,7 @@ DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
 DATE_10260605 = datetime_datetime_pst(1985, 10, 26, 6, 5)
 
 DOMAIN_NAME = 'statsplus.net'
-FILE_NAME = 'orange%20and%20blue%20league.zip'
+FILE_NAME = 'orange%20and%20blue%20league%20baseball.zip'
 FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 
 

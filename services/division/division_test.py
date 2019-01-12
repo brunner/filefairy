@@ -15,7 +15,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from common.teams.teams import icon_inline  # noqa
+from common.teams.teams import icon_badge  # noqa
 from services.division.division import condensed_league  # noqa
 from services.division.division import expanded_impl  # noqa
 from services.division.division import expanded_league  # noqa
@@ -37,7 +37,7 @@ def _condensed_row(*args):
     i = iter(args)
     row = []
     for encoding in i:
-        row.append(cell(content=icon_inline(encoding, next(i))))
+        row.append(cell(content=icon_badge(encoding, next(i), '16')))
     return row
 
 
@@ -51,7 +51,7 @@ def _expanded_head(subleague):
 
 
 def _expanded_row(*args):
-    contents = [icon_absolute(args[0], args[1], 'left')] + list(args[2:])
+    contents = [icon_absolute(args[0], args[1], '20')] + list(args[2:])
     return [cell(content=content) for content in contents]
 
 
@@ -65,7 +65,11 @@ class DivisionTest(unittest.TestCase):
         expected = table(
             clazz='table-fixed border mt-3',
             hcols=[col(clazz='text-center', colspan=3)],
-            bcols=[col(clazz='td-sm position-relative text-center w-20')] * 3,
+            bcols=[
+                col(clazz='td-sm position-relative text-center w-20 pl-2'),
+                col(clazz='td-sm position-relative text-center w-20'),
+                col(clazz='td-sm position-relative text-center w-20 pr-2'),
+            ],
             head=[cell(content='American League')],
             body=[
                 _condensed_row('T34', '2-0', 'T33', '1-1', 'T48', '0-2'),

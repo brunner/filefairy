@@ -5,6 +5,12 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileColor" content="#dfe3e7">
+<meta name="theme-color" content="#dfe3e7">
 <link rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -49,6 +55,17 @@ a.disabled{
   margin-top: 0px;
   transition: padding-top .35s ease, margin-top .35s ease;
 }
+.badge-icon {
+  border: 1px solid #dee2e6;
+  font-weight: 400!important;
+  padding: .25rem .5rem;
+  white-space: normal;
+  width: 100%;
+}
+.badge-icon[data-toggle="modal"]:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
 .breadcrumb {
   background-color: inherit;
   line-height: 60px;
@@ -61,8 +78,18 @@ a.disabled{
 .flex-grow {
   flex-grow: 1;
 }
+.grayscale {
+  -webkit-filter: grayscale(1) opacity(0.5);
+  filter: grayscale(1) opacity(0.5);
+}
 .left-8p {
   left: 8px;
+}
+.modal-header {
+  height: 56px;
+}
+.modal-body {
+  padding-top: 0;
 }
 .mr-8p {
   margin-right: 8px;
@@ -126,6 +153,12 @@ a.disabled{
 .w-40 {
   width: 40%;
 }
+.w-24p {
+  width: 24px;
+}
+.w-28p {
+  width: 28px;
+}
 .w-55p {
   width: 55px;
 }
@@ -137,6 +170,18 @@ a.disabled{
 }
 .w-105p {
   width: 105px;
+}
+.td-sm-none {
+  display: none;
+}
+@media (min-width: 576px) {
+  body.modal-open .navbar,
+  body.modal-open .timestamp {
+    padding-left: 8px;
+  }
+  .td-sm-none {
+    display: table-cell;
+  }
 }
 </style>
 </head>
@@ -152,7 +197,7 @@ a.disabled{
 </ol>
 </nav>
 
-<div class="my-1">
+<div class="timestamp my-1">
 <small class="text-muted">Last reloaded: 06:02:30 PDT (1985-10-26)</small>
 </div>
 

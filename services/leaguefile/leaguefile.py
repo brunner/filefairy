@@ -44,6 +44,7 @@ def download_file(url):
 
     return output
 
+
 def extract_file(start):
     """Extract the relevant parts of the league file.
 

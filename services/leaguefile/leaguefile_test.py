@@ -54,7 +54,7 @@ class LeaguefileTest(unittest.TestCase):
         mock_check.assert_has_calls([
             mock.call(['rm', '-rf', DOWNLOAD_DIR]),
             mock.call(['mkdir', DOWNLOAD_DIR]),
-            mock.call(['wget', url, '-O ' + filename], timeout=4800),
+            mock.call(['wget', url, '-O', filename], timeout=4800),
             mock.call(['unzip', filename]),
         ])
         mock_chdir.assert_called_once_with(DOWNLOAD_DIR)
@@ -67,15 +67,15 @@ class LeaguefileTest(unittest.TestCase):
         expected = {'ok': False, 'stdout': e, 'stderr': e}
         mock_check.return_value = expected
 
-        url = FILE_HOST + 'orange%20and%20blue%20league.zip'
+        url = FILE_HOST + 'orange%20and%20blue%20league%20baseball.zip'
         actual = download_file(url)
         self.assertEqual(actual, expected)
 
-        filename = 'orange_and_blue_league.zip'
+        filename = 'orange_and_blue_league_baseball.zip'
         mock_check.assert_has_calls([
             mock.call(['rm', '-rf', DOWNLOAD_DIR]),
             mock.call(['mkdir', DOWNLOAD_DIR]),
-            mock.call(['wget', url, '-O ' + filename], timeout=4800),
+            mock.call(['wget', url, '-O', filename], timeout=4800),
         ])
         mock_chdir.assert_called_once_with(DOWNLOAD_DIR)
 

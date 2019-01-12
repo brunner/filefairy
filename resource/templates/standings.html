@@ -8,52 +8,69 @@
 
 {% block content %}
 
-<!-- ^(statsplus.recent) -->
+<!-- ^(standings.recent) -->
 <div class="container anchor" id="recent">
 
 {{ common.heading('monitor', 'Recent') }}
 
-<!-- ^(statsplus.row) -->
+<!-- ^(standings.row) -->
 <div class="row">
 
 {% for table in recent %}
-<!-- ^(statsplus.column) -->
+<!-- ^(standings.column) -->
 <div class="col-md-6">
 
 {{ common.table(table) }}
 
 </div>
-<!-- $(statsplus.column) -->
+<!-- $(standings.column) -->
 
 {% endfor %}
 </div>
-<!-- $(statsplus.row) -->
+<!-- $(standings.row) -->
 
 </div>
-<!-- $(statsplus.recent) -->
+<!-- $(standings.recent) -->
 
-<!-- ^(statsplus.expanded) -->
+<!-- ^(standings.expanded) -->
 <div class="container anchor" id="expanded">
 
 {{ common.heading('book', 'Expanded') }}
 
-<!-- ^(statsplus.row) -->
+<!-- ^(standings.row) -->
 <div class="row">
 
-{% for table in expanded %}
-<!-- ^(statsplus.column) -->
+{% set n = expanded|length() // 2 %}
+<!-- ^(standings.column) -->
 <div class="col-md-6">
 
+{% for table in expanded[:n] %}
 {{ common.table(table) }}
-
-</div>
-<!-- $(statsplus.column) -->
 
 {% endfor %}
 </div>
-<!-- $(statsplus.row) -->
+<!-- $(standings.column) -->
+
+<!-- ^(standings.column) -->
+<div class="col-md-6">
+
+{% for table in expanded[n:] %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(standings.column) -->
+</div>
+<!-- $(standings.row) -->
 
 </div>
-<!-- $(statsplus.expanded) -->
+<!-- $(standings.expanded) -->
+
+<!-- ^(standings.dialogs) -->
+{% for dialog in dialogs %}
+{{ common.dialog(dialog) }}
+
+{% endfor %}
+<!-- $(standings.dialogs) -->
 
 {% endblock %}

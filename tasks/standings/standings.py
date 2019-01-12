@@ -10,13 +10,23 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.elements.elements import dialog  # noqa
 from common.json_.json_ import filts  # noqa
 from common.json_.json_ import loads  # noqa
 from common.record.record import decode_record  # noqa
+from common.teams.teams import encoding_keys  # noqa
+from common.teams.teams import encoding_to_decoding  # noqa
+from common.teams.teams import encoding_to_teamid  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
-GAME_KEYS = ['away_runs', 'away_team', 'home_runs', 'home_team']
+GAME_KEYS = [
+    'away_errors', 'away_hits', 'away_line', 'away_record', 'away_runs',
+    'away_team', 'home_errors', 'home_hits', 'home_line', 'home_record',
+    'home_runs', 'home_team', 'losing_pitcher', 'saving_pitcher',
+    'winning_pitcher',
+]  # yapf: disable
+
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 
 LEAGUES = {
@@ -54,7 +64,10 @@ class Standings(Registrable):
         return 'standings'
 
     def _reload_data(self, **kwargs):
-        return {'division': ['condensed_league', 'expanded_league']}
+        return {
+            'division': ['condensed_league', 'expanded_league'],
+            'scoreboard': ['line_score'],
+        }
 
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
@@ -132,6 +145,7 @@ class Standings(Registrable):
                 'name': 'Standings'
             }],
             'recent': [],
+            'dialogs': [],
         }
 
         statsplus = self.shadow.get('statsplus.table', {})
@@ -150,5 +164,20 @@ class Standings(Registrable):
             expanded.append(self._call('expanded_league', (league, etables)))
 
         ret['expanded'] = [t for pair in zip(*expanded) for t in pair]
+
+        dialogs = {encoding: [] for encoding in encoding_keys()}
+        for num in self.data['games']:
+            data = self.data['games'][num]
+            line = self._call('line_score', (data, ))
+
+            dialogs[data['away_team']].append(line)
+            dialogs[data['home_team']].append(line)
+
+        for encoding in dialogs:
+            if dialogs[encoding]:
+                teamid = encoding_to_teamid(encoding)
+                decoding = encoding_to_decoding(encoding)
+                ret['dialogs'].append(
+                    dialog(teamid, decoding, dialogs[encoding]))
 
         return ret

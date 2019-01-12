@@ -74,7 +74,7 @@ class Recap(Registrable):
             self.write()
 
             self._render(**kwargs)
-            obj = self._chat('fairylab', 'News updated.')
+            obj = self._chat('testing', 'News updated.')
             channel = obj.get('channel')
             ts = obj.get('ts')
             if channel and ts:

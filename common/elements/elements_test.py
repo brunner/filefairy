@@ -14,6 +14,7 @@ from common.elements.elements import anchor  # noqa
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import dialog  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 
@@ -86,6 +87,16 @@ class ComponentTest(unittest.TestCase):
     def test_col__filled(self):
         actual = col(clazz='foo', colspan='2')
         expected = {'clazz': 'foo', 'colspan': '2'}
+        self.assertEqual(actual, expected)
+
+    def test_dialog__default(self):
+        actual = dialog()
+        expected = {'id': '', 'header': '', 'tables': []}
+        self.assertEqual(actual, expected)
+
+    def test_dialog__filled(self):
+        actual = dialog(id_=ID_, header='foo', tables=[TABLE])
+        expected = {'id': ID_, 'header': 'foo', 'tables': [TABLE]}
         self.assertEqual(actual, expected)
 
     def test_span(self):

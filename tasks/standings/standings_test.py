@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Tests for standings.py."""
 
+import json
 import os
 import re
 import sys
@@ -15,14 +16,17 @@ from data.response.response import Response  # noqa
 from tasks.standings.standings import Standings  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.elements.elements import cell  # noqa
+from common.elements.elements import dialog  # noqa
 from common.elements.elements import table  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
+from common.json_.json_ import filts  # noqa
 from common.test.test import RMock  # noqa
 from common.test.test import Suite  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import get_testdata  # noqa
 from common.test.test import main  # noqa
+from tasks.standings.standings import GAME_KEYS  # noqa
 
 ENV = env()
 
@@ -40,15 +44,6 @@ def _data(finished=False, games=None, table_=None):
         table_ = {}
 
     return {'games': games, 'finished': finished, 'table': table_}
-
-
-def _game(away_runs, away_team, home_runs, home_team):
-    return {
-        'away_runs': away_runs,
-        'away_team': away_team,
-        'home_runs': home_runs,
-        'home_team': home_team,
-    }
 
 
 def _table(keys, table_):
@@ -86,7 +81,10 @@ class StandingsTest(Test):
     def test_reload_data(self):
         standings = self.create_standings(_data())
         actual = standings._reload_data(date=DATE_10260602)
-        expected = {'division': ['condensed_league', 'expanded_league']}
+        expected = {
+            'division': ['condensed_league', 'expanded_league'],
+            'scoreboard': ['line_score'],
+        }
         self.assertEqual(actual, expected)
 
     @mock.patch.object(Standings, '_index_html')
@@ -222,23 +220,23 @@ class StandingsTest(Test):
         )
         mock_open.side_effect = suite.values()
 
-        games = {'2449': _game('5', 'T40', '6', 'T47')}
+        game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
+        games = {'2449': game_2449}
         table_ = {'T40': '66-58', 'T47': '71-53'}
         standings = self.create_standings(_data(games=games, table_=table_))
         standings._parse(date=DATE_10260602)
 
-        games = {
-            '2449': _game('5', 'T40', '6', 'T47'),
-            '2469': _game('0', 'T40', '7', 'T47'),
-            '2476': _game('2', 'T40', '5', 'T47'),
-        }
+        game_2469 = filts(json.loads(TESTDATA['2469.json']), GAME_KEYS)
+        game_2476 = filts(json.loads(TESTDATA['2476.json']), GAME_KEYS)
+        games = {'2449': game_2449, '2469': game_2469, '2476': game_2476}
         write = _data(games=games, table_=table_)
         mock_render.assert_called_once_with(date=DATE_10260602)
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_start(self):
-        games = {'2449': _game('5', 'T40', '6', 'T47')}
+        game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
+        games = {'2449': game_2449}
         statsplus = {'T40': '0-3', 'T47': '3-0'}
         standings = self.create_standings(_data(finished=True, games=games))
         standings.shadow['statsplus.table'] = statsplus
@@ -290,6 +288,18 @@ class StandingsTest(Test):
             head=[cell(content='NL Wild Card')],
             body=[[cell(content='Miami')]],
         )
+        line_2449 = table(
+            head=[cell(content='Final (2449)')],
+            body=[[cell(content='Detroit')]],
+        )
+        line_2469 = table(
+            head=[cell(content='Final (2469)')],
+            body=[[cell(content='Detroit')]],
+        )
+        line_2476 = table(
+            head=[cell(content='Final (2476)')],
+            body=[[cell(content='Detroit')]],
+        )
         mock_call.side_effect = [
             condensed_al,
             [
@@ -305,12 +315,19 @@ class StandingsTest(Test):
                 expanded_nl_west,
                 expanded_nl_wc,
             ],
+            line_2449,
+            line_2469,
+            line_2476,
         ]
 
         statsplus = {'T40': '0-3', 'T47': '3-0'}
         table_ = _table(['T' + str(k) for k in range(31, 61)], {})
 
-        standings = self.create_standings(_data(table_=table_))
+        game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
+        game_2469 = filts(json.loads(TESTDATA['2469.json']), GAME_KEYS)
+        game_2476 = filts(json.loads(TESTDATA['2476.json']), GAME_KEYS)
+        games = {'2449': game_2449, '2469': game_2469, '2476': game_2476}
+        standings = self.create_standings(_data(games=games, table_=table_))
         standings.shadow['statsplus.table'] = statsplus
         standings._reload()
 
@@ -321,6 +338,7 @@ class StandingsTest(Test):
             'href': '',
             'name': 'Standings'
         }]
+        lines = [line_2449, line_2469, line_2476]
         actual = standings._index_html(date=DATE_10260602)
         expected = {
             'breadcrumbs':
@@ -339,6 +357,10 @@ class StandingsTest(Test):
                 expanded_al_wc,
                 expanded_nl_wc,
             ],
+            'dialogs': [
+                dialog('40', 'Detroit Tigers', lines),
+                dialog('47', 'Minnesota Twins', lines),
+            ]
         }
         self.assertEqual(actual, expected)
 
@@ -370,6 +392,9 @@ class StandingsTest(Test):
                 ('Central', _table(nl_central, table_)),
                 ('West', _table(nl_west, table_)),
             ])),
+            mock.call('line_score', (game_2449, )),
+            mock.call('line_score', (game_2469, )),
+            mock.call('line_score', (game_2476, )),
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

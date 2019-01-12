@@ -15,7 +15,7 @@ from common.elements.elements import table  # noqa
 from common.record.record import decode_record  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
-from common.teams.teams import icon_inline  # noqa
+from common.teams.teams import icon_badge  # noqa
 from common.teams.teams import icon_absolute  # noqa
 
 EXPANDED_COLS = [
@@ -100,15 +100,19 @@ def condensed_league(league, tables):
         colspan = max(colspan, len(table_))
 
         for team in _sort(table_):
-            row.append(cell(content=icon_inline(team, table_[team])))
+            row.append(cell(content=icon_badge(team, table_[team], '16')))
 
         body.append(row)
 
-    bcol = col(clazz='td-sm position-relative text-center w-20')
+    bc = 'td-sm position-relative text-center w-20'
+    bcols = [col(clazz=(bc + ' pl-2'))]
+    bcols += [col(clazz=bc)] * (colspan - 2)
+    bcols += [col(clazz=(bc + ' pr-2'))]
+
     return table(
         clazz='table-fixed border mt-3',
         hcols=[col(clazz='text-center', colspan=colspan)],
-        bcols=[bcol] * colspan,
+        bcols=bcols,
         head=[cell(content=league)],
         body=body)
 
@@ -183,7 +187,7 @@ def expanded_league(league, tables):
             rw, rl = decode_record(record)
 
             row = []
-            contents = [icon_absolute(team, hometown, 'left'), rw, rl, gb]
+            contents = [icon_absolute(team, hometown, '20'), rw, rl, gb]
             for content in contents:
                 row.append(cell(content=str(content)))
 

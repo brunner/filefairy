@@ -129,6 +129,37 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <!-- $(common.form_js) -->
 {%- endmacro -%}
 
+{% macro dialog(data) -%}
+<!-- ^(common.dialog) -->
+<div class="modal fade" id="{{ data.id }}" tabindex="-1" role="dialog"
+     aria-labelledby="{{ data.id }}-label" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+
+<!-- ^(common.dialog.header) -->
+<div class="modal-header">
+<h5 class="modal-title" id="{{ data.id }}-label">{{ data.header }}</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<!-- $(common.dialog.header) -->
+
+<!-- ^(common.dialog.body) -->
+<div class="modal-body">
+{% for t in data.tables %}
+{{ table(t) }}
+
+{% endfor %}
+</div>
+<!-- $(common.dialog.body) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.dialog) -->
+{%- endmacro -%}
+
 {% macro table(data) -%}
 <!-- ^(common.table) -->
 <table class="table{% if data.clazz %} {{ data.clazz }}{% endif %}"

@@ -22,7 +22,7 @@ from data.response.response import Response  # noqa
 
 DOWNLOAD_DIR = re.sub(r'/tasks/leaguefile', '/resource/download', _path)
 DOMAIN_NAME = 'statsplus.net'
-FILE_NAME = 'orange%20and%20blue%20league.zip'
+FILE_NAME = 'orange%20and%20blue%20league%20baseball.zip'
 FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 
 

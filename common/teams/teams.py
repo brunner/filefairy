@@ -84,8 +84,10 @@ ENCODING_MAP = _map('encoding', [
 PRECODING_MAP = _map('precoding', ['encoding'])
 
 ICON_LINK = 'https://fairylab.surge.sh/images/teams/{0}/{0}-icon.png'
-IMG_TAG = '<img src="{0}" width="20" height="20" border="0" class="{1}">'
-SPAN_TAG = '<span class="align-middle {1}">{0}</span>'
+MODAL_LINK = ' data-toggle="modal" data-target="#{0}"'
+BADGE_TAG = '<span class="badge badge-icon badge-light"{0}>{1}</span>'
+IMG_TAG = '<img src="{0}" width="{1}" height="{1}" border="0" class="{2}">'
+SPAN_TAG = '<span class="{1}">{0}</span>'
 
 
 def decoding_to_encoding(decoding):
@@ -120,25 +122,32 @@ def encoding_to_teamid(encoding):
     return ENCODING_MAP.get(encoding, {}).get('teamid', '')
 
 
-def icon_absolute(encoding, text, side):
+def icon_absolute(encoding, text, size):
     name = encoding_to_nickname(encoding).replace(' ', '').lower()
-    src = ICON_LINK.format(name)
+    ic = 'position-absolute left-8p top-14p'
+    sc = 'd-block text-truncate pl-24p'
 
-    ic = 'position-absolute {}-8p top-14p'.format(side)
-    sc = 'd-block text-truncate p{}-24p'.format(side[0])
-
-    img = IMG_TAG.format(src, ic)
+    img = IMG_TAG.format(ICON_LINK.format(name), size, ic)
     span = SPAN_TAG.format(text, sc)
     return img + span
 
 
-def icon_inline(encoding, text):
+def icon_badge(encoding, text, size):
     name = encoding_to_nickname(encoding).replace(' ', '').lower()
-    src = ICON_LINK.format(name)
+    teamid = encoding_to_teamid(encoding)
+    ic = 'd-inline-block'
+    sc = 'd-inline-block align-middle px-2 pt-1'
 
-    img = IMG_TAG.format(src, 'd-inline-block')
-    span = SPAN_TAG.format(text, 'd-inline-block px-2')
-    return img + span
+    if text == '0-0':
+        ba = ''
+        ic += ' grayscale'
+        sc += ' text-secondary'
+    else:
+        ba = MODAL_LINK.format(teamid)
+
+    img = IMG_TAG.format(ICON_LINK.format(name), size, ic)
+    span = SPAN_TAG.format(text, sc)
+    return BADGE_TAG.format(ba, img + span)
 
 
 def precoding_to_encoding(precoding):

@@ -77,6 +77,26 @@ def col(clazz='', colspan=''):
     return {'clazz': clazz, 'colspan': colspan}
 
 
+def dialog(id_='', header='', tables=None):
+    """Builds a dialog object.
+
+    Args:
+        id_: The CSS id to set on the root dialog element.
+        header: The header text.
+        tables: The optional list of table elements.
+
+    Returns:
+        The dialog object.
+    """
+    if tables is None:
+        tables = []
+    return {
+        'id': id_,
+        'header': header,
+        'tables': tables,
+    }
+
+
 def span(classes, text):
     """Builds a span element.
 
