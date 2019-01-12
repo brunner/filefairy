@@ -349,12 +349,12 @@ class StandingsTest(Test):
             ],
             'expanded': [
                 expanded_al_east,
-                expanded_nl_east,
                 expanded_al_central,
-                expanded_nl_central,
                 expanded_al_west,
-                expanded_nl_west,
                 expanded_al_wc,
+                expanded_nl_east,
+                expanded_nl_central,
+                expanded_nl_west,
                 expanded_nl_wc,
             ],
             'dialogs': [

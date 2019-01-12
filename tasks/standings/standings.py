@@ -145,11 +145,11 @@ class Standings(Registrable):
                 'name': 'Standings'
             }],
             'recent': [],
+            'expanded': [],
             'dialogs': [],
         }
 
         statsplus = self.shadow.get('statsplus.table', {})
-        expanded = []
         for league in sorted(LEAGUES):
             rtables, etables = [], []
             for subleague, teams in LEAGUES[league]:
@@ -161,9 +161,7 @@ class Standings(Registrable):
 
             ret['recent'].append(
                 self._call('condensed_league', (league, rtables)))
-            expanded.append(self._call('expanded_league', (league, etables)))
-
-        ret['expanded'] = [t for pair in zip(*expanded) for t in pair]
+            ret['expanded'] += self._call('expanded_league', (league, etables))
 
         dialogs = {encoding: [] for encoding in encoding_keys()}
         for num in self.data['games']:
