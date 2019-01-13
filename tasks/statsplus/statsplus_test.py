@@ -98,11 +98,42 @@ class StatsplusTest(Test):
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_shadow_data(self):
+        date = encode_datetime(DATE_08310000)
+        scores = {date: {'2998': 'T31 4, TLA 2'}}
         table = {'T32': '1-0', 'T45': '0-1'}
-        statsplus = self.create_statsplus(_data(table=table))
+        statsplus = self.create_statsplus(_data(scores=scores, table=table))
         actual = statsplus._shadow_data(date=DATE_10260602)
+        shadow = statsplus._shadow_scores() + statsplus._shadow_table()
+        self.assertEqual(actual, shadow)
+
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    def test_shadow_scores(self):
+        date = encode_datetime(DATE_08310000)
+        scores = {date: {'2998': 'T31 4, TLA 2'}}
+        table = {'T32': '1-0', 'T45': '0-1'}
+        statsplus = self.create_statsplus(_data(scores=scores, table=table))
+        actual = statsplus._shadow_scores()
         shadow = Shadow(
-            destination='standings', key='statsplus.table', info=table)
+            destination='standings',
+            key='statsplus.scores',
+            info=scores,
+        )
+        self.assertEqual(actual, [shadow])
+
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    def test_shadow_table(self):
+        date = encode_datetime(DATE_08310000)
+        scores = {date: {'2998': 'T31 4, TLA 2'}}
+        table = {'T32': '1-0', 'T45': '0-1'}
+        statsplus = self.create_statsplus(_data(scores=scores, table=table))
+        actual = statsplus._shadow_table()
+        shadow = Shadow(
+            destination='standings',
+            key='statsplus.table',
+            info=table,
+        )
         self.assertEqual(actual, [shadow])
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -226,9 +257,13 @@ class StatsplusTest(Test):
             'game_box_3003.html',
         ]
 
-        statsplus = self.create_statsplus(_data(started=True))
+        date = encode_datetime(DATE_08310000)
+        scores = {date: {'3003': 'T32 2, T33 1'}}
+        statsplus = self.create_statsplus(_data(scores=scores, started=True))
         actual = statsplus._parse_extracted_scores()
-        expected = Response(notify=[Notify.STATSPLUS_FINISH])
+        expected = Response(
+            shadow=statsplus._shadow_scores(),
+            notify=[Notify.STATSPLUS_FINISH])
         self.assertEqual(actual, expected)
 
         write = _data()
@@ -245,8 +280,8 @@ class StatsplusTest(Test):
         mock_parse.return_value = None
 
         date = encode_datetime(DATE_08310000)
-        read = _data(scores={date: ['2998', '3003']})
-        statsplus = self.create_statsplus(read)
+        scores = {date: {'2998': 'T31 4, TLA 2', '3003': 'T32 2, T33 1'}}
+        statsplus = self.create_statsplus(_data(scores=scores))
         actual = statsplus._parse_saved_scores(date)
         expected = Response(
             thread_=[Thread(target='_parse_saved_scores', args=(date, ))])
@@ -263,14 +298,17 @@ class StatsplusTest(Test):
         mock_parse.side_effect = [True, None]
 
         date = encode_datetime(DATE_08310000)
-        read = _data(scores={date: ['2998', '3003']})
-        statsplus = self.create_statsplus(read)
+        scores = {date: {'2998': 'T31 4, TLA 2', '3003': 'T32 2, T33 1'}}
+        statsplus = self.create_statsplus(_data(scores=scores))
         actual = statsplus._parse_saved_scores(date)
         thread_ = Thread(target='_parse_saved_scores', args=(date, ))
-        expected = Response(notify=[Notify.STATSPLUS_PARSE], thread_=[thread_])
+        expected = Response(
+            notify=[Notify.STATSPLUS_PARSE],
+            shadow=statsplus._shadow_scores(),
+            thread_=[thread_])
         self.assertEqual(actual, expected)
 
-        write = _data(scores={date: ['3003']})
+        write = _data(scores={date: {'3003': 'T32 2, T33 1'}})
         mock_parse.assert_has_calls([
             mock.call('2998', date),
             mock.call('3003', date),
@@ -283,10 +321,12 @@ class StatsplusTest(Test):
         mock_parse.return_value = True
 
         date = encode_datetime(DATE_08310000)
-        read = _data(scores={date: ['2998', '3003']})
-        statsplus = self.create_statsplus(read)
+        scores = {date: {'2998': 'T31 4, TLA 2', '3003': 'T32 2, T33 1'}}
+        statsplus = self.create_statsplus(_data(scores=scores))
         actual = statsplus._parse_saved_scores(date)
-        self.assertEqual(actual, Response())
+        expected = Response(
+            notify=[Notify.STATSPLUS_PARSE], shadow=statsplus._shadow_scores())
+        self.assertEqual(actual, expected)
 
         write = _data()
         mock_parse.assert_has_calls([
@@ -361,22 +401,6 @@ class StatsplusTest(Test):
         mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch('tasks.statsplus.statsplus.check_output')
-    def test_start(self, mock_check):
-        date = encode_datetime(DATE_08310000)
-        table = {'T31': '1-0', 'T32': '1-0', 'T33': '0-1', 'T45': '0-1'}
-        read = _data(scores={date: ['2998', '3003']}, table=table)
-        statsplus = self.create_statsplus(read)
-        statsplus._start()
-
-        write = _data(started=True)
-        mock_check.assert_has_calls([
-            mock.call(['rm', '-rf', GAMES_DIR]),
-            mock.call(['mkdir', GAMES_DIR]),
-        ])
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
-
     def test_save_scores__one(self):
         date = encode_datetime(DATE_08310000)
         text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_ONE
@@ -384,10 +408,12 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._save_scores(date, text)
         expected = Response(
+            shadow=statsplus._shadow_scores(),
             thread_=[Thread(target='_parse_saved_scores', args=(date, ))])
         self.assertEqual(actual, expected)
 
-        write = _data(scores={date: ['2998', '3003']})
+        scores = {date: {'2998': 'T31 4, TLA 2', '3003': 'T32 2, T33 1'}}
+        write = _data(scores=scores)
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -398,11 +424,13 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._save_scores(date, text)
         expected = Response(
+            shadow=statsplus._shadow_scores(),
             thread_=[Thread(target='_parse_saved_scores', args=(date, ))])
         self.assertEqual(actual, expected)
 
         games = {date: {'T31': 2, 'TLA': 2}}
-        write = _data(games=games, scores={date: ['2998', '3003']})
+        scores = {date: {'2998': 'T31 4, TLA 2', '3003': 'T31 2, TLA 1'}}
+        write = _data(games=games, scores=scores)
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -421,7 +449,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data(table=table))
         statsplus.shadow['standings.table'] = standings
         actual = statsplus._save_table(date, text)
-        expected = Response(shadow=statsplus._shadow_data())
+        expected = Response(shadow=statsplus._shadow_table())
         self.assertEqual(actual, expected)
 
         table = {'T31': '4-3', 'T32': '3-4', 'T33': '2-5', 'T45': '5-2'}
@@ -440,11 +468,25 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data(games=games, table=table))
         statsplus.shadow['standings.table'] = standings
         actual = statsplus._save_table(date, text)
-        expected = Response(shadow=statsplus._shadow_data())
+        expected = Response(shadow=statsplus._shadow_table())
         self.assertEqual(actual, expected)
 
         table = {'T31': '4-3', 'T45': '5-1'}
         write = _data(table=table)
+        self.mock_open.assert_called_with(Statsplus._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch('tasks.statsplus.statsplus.check_output')
+    def test_start(self, mock_check):
+        table = {'T31': '1-0', 'T32': '1-0', 'T33': '0-1', 'T45': '0-1'}
+        statsplus = self.create_statsplus(_data(table=table))
+        statsplus._start()
+
+        write = _data(started=True)
+        mock_check.assert_has_calls([
+            mock.call(['rm', '-rf', GAMES_DIR]),
+            mock.call(['mkdir', GAMES_DIR]),
+        ])
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 

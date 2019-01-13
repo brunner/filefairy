@@ -18,6 +18,7 @@ from common.elements.elements import table  # noqa
 from common.encyclopedia.encyclopedia import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
+from common.teams.teams import encoding_to_hometown_sub  # noqa
 from common.teams.teams import icon_absolute  # noqa
 
 
@@ -174,5 +175,31 @@ def line_score_head(date):
     return table(
         clazz='small mt-2',
         bcols=bcols,
+        body=body,
+    )
+
+
+def unofficial_score_body(scores):
+    """Creates a line score table body for a list of unofficial scores.
+
+    The table body contains the teams and runs for the games.
+
+    Args:
+        data: The list of unofficial scores.
+
+    Returns:
+        A line score table body.
+    """
+    hcols = [col(clazz='font-weight-bold text-secondary')]
+    head = [[cell(content='Unofficial')]]
+
+    body = []
+    for score in scores:
+        body.append([cell(content=encoding_to_hometown_sub(score))])
+
+    return table(
+        clazz='border small',
+        hcols=hcols,
+        head=head,
         body=body,
     )

@@ -17,6 +17,7 @@ from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
+from common.teams.teams import encoding_to_hometown_sub  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
 from common.teams.teams import icon_absolute  # noqa
@@ -131,11 +132,25 @@ class TeamTest(unittest.TestCase):
             'Milwaukee', 'Minnesota', 'New York', 'New York', 'Oakland',
             'Philadelphia', 'Pittsburgh', 'San Diego', 'Seattle',
             'San Francisco', 'St. Louis', 'Tampa Bay', 'Texas', 'Toronto',
-            'Washington', '', '', ''
+            'Washington', 'Chicago', 'Los Angeles', 'New York'
         ]
         for encoding, hometown in zip(ENCODING_KEYS, hometowns):
             actual = encoding_to_hometown(encoding)
             self.assertEqual(actual, hometown)
+
+    def test_encoding_to_hometown_sub(self):
+        hometowns = [
+            'Arizona', 'Atlanta', 'Baltimore', 'Boston', 'Chicago', 'Chicago',
+            'Cincinnati', 'Cleveland', 'Colorado', 'Detroit', 'Miami',
+            'Houston', 'Kansas City', 'Los Angeles', 'Los Angeles',
+            'Milwaukee', 'Minnesota', 'New York', 'New York', 'Oakland',
+            'Philadelphia', 'Pittsburgh', 'San Diego', 'Seattle',
+            'San Francisco', 'St. Louis', 'Tampa Bay', 'Texas', 'Toronto',
+            'Washington', 'Chicago', 'Los Angeles', 'New York'
+        ]
+        actual = encoding_to_hometown_sub(', '.join(ENCODING_KEYS))
+        expected = ', '.join(hometowns)
+        self.assertEqual(actual, expected)
 
     def test_encoding_to_nickname(self):
         nicknames = [

@@ -15,6 +15,7 @@ from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa
 from services.scoreboard.scoreboard import line_score_head  # noqa
+from services.scoreboard.scoreboard import unofficial_score_body  # noqa
 
 TESTDATA = get_testdata()
 
@@ -40,6 +41,11 @@ class ScoreboardTest(unittest.TestCase):
             actual = line_score_head(data['date'])
             expected = json.loads(TESTDATA['line_score_head_' + num + '.json'])
             self.assertEqual(actual, expected)
+
+    def test_unofficial_score_body(self):
+        actual = unofficial_score_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
+        expected = json.loads(TESTDATA['unofficial_score_body_la.json'])
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':

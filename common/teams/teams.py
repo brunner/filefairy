@@ -14,7 +14,7 @@ def _team(encoding, abbreviation, hometown, nickname):
         'abbreviation': abbreviation if not special1 else '',
         'decoding': (hometown + ' ' + nickname) if not special1 else '',
         'encoding': encoding,
-        'hometown': hometown if not special1 else '',
+        'hometown': hometown,
         'nickname': nickname,
         'precoding': hometown if not special2 else '',
         'teamid': encoding.strip('T') if not special1 else '',
@@ -118,6 +118,10 @@ def encoding_to_decoding_sub(text):
 
 def encoding_to_hometown(encoding):
     return ENCODING_MAP.get(encoding, {}).get('hometown', '')
+
+
+def encoding_to_hometown_sub(text):
+    return _sub(ENCODING_KEYS, encoding_to_hometown, text)
 
 
 def encoding_to_nickname(encoding):

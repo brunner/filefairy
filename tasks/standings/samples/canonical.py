@@ -23,6 +23,7 @@ from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa
 from services.scoreboard.scoreboard import line_score_head  # noqa
+from services.scoreboard.scoreboard import unofficial_score_body  # noqa
 from tasks.standings.standings import GAME_KEYS  # noqa
 
 EXPANDED_COLS = [
@@ -67,9 +68,9 @@ _recent = [
         head=[[cell(content='American League')]],
         body=[
             [
+                cell(content=icon_badge('T48', '1-0', '16')),
                 cell(content=icon_badge('T33', '0-0', '16')),
                 cell(content=icon_badge('T34', '0-0', '16')),
-                cell(content=icon_badge('T48', '0-0', '16')),
                 cell(content=icon_badge('T57', '0-0', '16')),
                 cell(content=icon_badge('T59', '0-0', '16')),
             ],
@@ -81,8 +82,8 @@ _recent = [
                 cell(content=icon_badge('T40', '0-3', '16')),
             ],
             [
+                cell(content=icon_badge('T44', '0-1', '16')),
                 cell(content=icon_badge('T42', '0-0', '16')),
-                cell(content=icon_badge('T44', '0-0', '16')),
                 cell(content=icon_badge('T50', '0-0', '16')),
                 cell(content=icon_badge('T54', '0-0', '16')),
                 cell(content=icon_badge('T59', '0-0', '16')),
@@ -110,11 +111,11 @@ _recent = [
                 cell(content=icon_badge('T56', '0-0', '16')),
             ],
             [
-                cell(content=icon_badge('T31', '0-0', '16')),
+                cell(content=icon_badge('T31', '1-0', '16')),
                 cell(content=icon_badge('T39', '0-0', '16')),
-                cell(content=icon_badge('T45', '0-0', '16')),
                 cell(content=icon_badge('T53', '0-0', '16')),
-                cell(content=icon_badge('T55', '0-0', '16')),
+                cell(content=icon_badge('T45', '0-1', '16')),
+                cell(content=icon_badge('T55', '0-1', '16')),
             ],
         ],
     ),
@@ -127,34 +128,34 @@ _expanded = [
         head=[_expanded_head('AL East')],
         body=[
             [
+                cell(content=icon_absolute('T48', 'New York', '20')),
+                cell(content='1'),
+                cell(content='0'),
+                cell(content='-'),
+            ],
+            [
                 cell(content=icon_absolute('T33', 'Baltimore', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
+                cell(content='0.5'),
             ],
             [
                 cell(content=icon_absolute('T34', 'Boston', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T48', 'New York', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
+                cell(content='0.5'),
             ],
             [
                 cell(content=icon_absolute('T57', 'Tampa Bay', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
+                cell(content='0.5'),
             ],
             [
                 cell(content=icon_absolute('T59', 'Toronto', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
+                cell(content='0.5'),
             ],
         ],
     ),
@@ -164,34 +165,34 @@ _expanded = [
         head=[_expanded_head('AL Central')],
         body=[
             [
+                cell(content=icon_absolute('T47', 'Minnesota', '20')),
+                cell(content='3'),
+                cell(content='0'),
+                cell(content='-'),
+            ],
+            [
                 cell(content=icon_absolute('T35', 'Chicago', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
+                cell(content='1.5'),
             ],
             [
                 cell(content=icon_absolute('T38', 'Cleveland', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T40', 'Detroit', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
+                cell(content='1.5'),
             ],
             [
                 cell(content=icon_absolute('T43', 'Kansas City', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
+                cell(content='1.5'),
             ],
             [
-                cell(content=icon_absolute('T47', 'Minnesota', '20')),
+                cell(content=icon_absolute('T40', 'Detroit', '20')),
                 cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
+                cell(content='3'),
+                cell(content='3.0'),
             ],
         ],
     ),
@@ -202,12 +203,6 @@ _expanded = [
         body=[
             [
                 cell(content=icon_absolute('T42', 'Houston', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T44', 'Los Angeles', '20')),
                 cell(content='0'),
                 cell(content='0'),
                 cell(content='-'),
@@ -229,6 +224,12 @@ _expanded = [
                 cell(content='0'),
                 cell(content='0'),
                 cell(content='-'),
+            ],
+            [
+                cell(content=icon_absolute('T44', 'Los Angeles', '20')),
+                cell(content='0'),
+                cell(content='1'),
+                cell(content='0.5'),
             ],
         ],
     ),
@@ -262,7 +263,7 @@ _expanded = [
                 cell(content='-'),
             ],
             [
-                cell(content=icon_absolute('T40', 'Detroit', '20')),
+                cell(content=icon_absolute('T42', 'Houston', '20')),
                 cell(content='0'),
                 cell(content='0'),
                 cell(content='-'),
@@ -350,7 +351,7 @@ _expanded = [
         body=[
             [
                 cell(content=icon_absolute('T31', 'Arizona', '20')),
-                cell(content='0'),
+                cell(content='1'),
                 cell(content='0'),
                 cell(content='-'),
             ],
@@ -358,25 +359,25 @@ _expanded = [
                 cell(content=icon_absolute('T39', 'Colorado', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T45', 'Los Angeles', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
+                cell(content='0.5'),
             ],
             [
                 cell(content=icon_absolute('T53', 'San Diego', '20')),
                 cell(content='0'),
                 cell(content='0'),
-                cell(content='-'),
+                cell(content='0.5'),
+            ],
+            [
+                cell(content=icon_absolute('T45', 'Los Angeles', '20')),
+                cell(content='0'),
+                cell(content='1'),
+                cell(content='1.0'),
             ],
             [
                 cell(content=icon_absolute('T55', 'San Francisco', '20')),
                 cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
+                cell(content='1'),
+                cell(content='1.0'),
             ],
         ],
     ),
@@ -385,12 +386,6 @@ _expanded = [
         bcols=EXPANDED_COLS,
         head=[_expanded_head('NL Wild Card')],
         body=[
-            [
-                cell(content=icon_absolute('T31', 'Arizona', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
             [
                 cell(content=icon_absolute('T32', 'Atlanta', '20')),
                 cell(content='0'),
@@ -411,6 +406,12 @@ _expanded = [
             ],
             [
                 cell(content=icon_absolute('T39', 'Colorado', '20')),
+                cell(content='0'),
+                cell(content='0'),
+                cell(content='-'),
+            ],
+            [
+                cell(content=icon_absolute('T41', 'Miami', '20')),
                 cell(content='0'),
                 cell(content='0'),
                 cell(content='-'),
@@ -438,9 +439,21 @@ _tables = [
     _head_2449, _body_2449, _foot_2449, _head_2469, _body_2469, _foot_2469,
     _head_2476, _body_2476, _foot_2476,
 ]  # yapf: disable
+
+_body_31 = unofficial_score_body(['T31 4, TLA 2'])
+_body_55 = unofficial_score_body(['TNY 1, T55 0'])
+_body_la = unofficial_score_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
+_body_ny = unofficial_score_body(['TNY 5, TLA 3', 'TNY 1, T55 0'])
+
 _dialogs = [
+    dialog('31', 'Arizona Diamondbacks', [_head_2449, _body_31]),
     dialog('40', 'Detroit Tigers', _tables),
+    dialog('44', 'Los Angeles Angels', [_head_2449, _body_la]),
+    dialog('45', 'Los Angeles Dodgers', [_head_2449, _body_la]),
     dialog('47', 'Minnesota Twins', _tables),
+    dialog('48', 'New York Yankees', [_head_2449, _body_ny]),
+    dialog('49', 'New York Mets', [_head_2449, _body_ny]),
+    dialog('55', 'San Francisco Giants', [_head_2449, _body_55]),
 ]
 
 subtitle = ''

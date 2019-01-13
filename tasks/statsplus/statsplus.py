@@ -58,13 +58,16 @@ class Statsplus(Registrable):
         return {'statslab': ['parse_score']}
 
     def _shadow_data(self, **kwargs):
-        return [
-            Shadow(
-                destination='standings',
-                key='statsplus.table',
-                info=self.data['table'],
-            ),
-        ]
+        return self._shadow_scores() + self._shadow_table()
+
+    def _shadow_key(self, d, k):
+        return [Shadow(destination=d, key='statsplus.' + k, info=self.data[k])]
+
+    def _shadow_scores(self):
+        return self._shadow_key('standings', 'scores')
+
+    def _shadow_table(self):
+        return self._shadow_key('standings', 'table')
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
@@ -109,16 +112,17 @@ class Statsplus(Registrable):
         self.data['scores'] = {}
         self.write()
 
-        return Response(notify=[Notify.STATSPLUS_FINISH])
+        return Response(
+            shadow=self._shadow_scores(), notify=[Notify.STATSPLUS_FINISH])
 
     def _parse_saved_scores(self, date, *args, **kwargs):
         if date not in self.data['scores']:
             return Response()
 
-        unvisited = []
-        for num in self.data['scores'][date]:
+        unvisited = {}
+        for num, s in self.data['scores'][date].items():
             if self._parse_score(num, date) is None:
-                unvisited.append(num)
+                unvisited[num] = s
 
         if unvisited:
             thread_ = Thread(target='_parse_saved_scores', args=(date, ))
@@ -129,12 +133,16 @@ class Statsplus(Registrable):
             self.data['scores'][date] = unvisited
             self.write()
 
-            return Response(notify=[Notify.STATSPLUS_PARSE], thread_=[thread_])
+            return Response(
+                notify=[Notify.STATSPLUS_PARSE],
+                shadow=self._shadow_scores(),
+                thread_=[thread_])
 
-        self.data['scores'].pop(date)
+        self.data['scores'].pop(date, None)
         self.write()
 
-        return Response()
+        return Response(
+            notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_scores())
 
     def _parse_score(self, num, date):
         out = os.path.join(GAMES_DIR, num + '.json')
@@ -148,7 +156,7 @@ class Statsplus(Registrable):
         return self._call('parse_score', (in_, out, date))
 
     def _save_scores(self, date, text):
-        self.data['scores'][date] = []
+        self.data['scores'][date] = {}
 
         text = precoding_to_encoding_sub(text)
         for line in text.splitlines():
@@ -156,7 +164,7 @@ class Statsplus(Registrable):
             if not num:
                 continue
 
-            self.data['scores'][date].append(num)
+            self.data['scores'][date][num] = s
 
         for encoding in encoding_keys():
             games = text.count(encoding)
@@ -168,7 +176,7 @@ class Statsplus(Registrable):
 
         self.write()
         thread_ = Thread(target='_parse_saved_scores', args=(date, ))
-        return Response(thread_=[thread_])
+        return Response(shadow=self._shadow_scores(), thread_=[thread_])
 
     def _save_table(self, date, text):
         text = decoding_to_encoding_sub(text)
@@ -193,7 +201,7 @@ class Statsplus(Registrable):
             self.data['games'].pop(date)
 
         self.write()
-        return Response(shadow=self._shadow_data())
+        return Response(shadow=self._shadow_table())
 
     def _start(self):
         self.data['started'] = True

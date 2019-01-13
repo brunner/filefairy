@@ -13,6 +13,7 @@ from api.registrable.registrable import Registrable  # noqa
 from common.elements.elements import dialog  # noqa
 from common.json_.json_ import filts  # noqa
 from common.json_.json_ import loads  # noqa
+from common.re_.re_ import find  # noqa
 from common.record.record import decode_record  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
@@ -73,6 +74,7 @@ class Standings(Registrable):
                 'line_score_body',
                 'line_score_foot',
                 'line_score_head',
+                'unofficial_score_body',
             ],
         }
 
@@ -138,6 +140,7 @@ class Standings(Registrable):
     def _start(self, **kwargs):
         self.data['finished'] = False
         self.data['games'] = {}
+        self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
 
         self.write()
@@ -156,14 +159,14 @@ class Standings(Registrable):
             'dialogs': [],
         }
 
-        statsplus = self.shadow.get('statsplus.table', {})
+        statsplus_table = self.shadow.get('statsplus.table', {})
         for league in sorted(LEAGUES):
             rtables, etables = [], []
             for subleague, teams in LEAGUES[league]:
-                r = {team: statsplus.get(team, '0-0') for team in teams}
+                r = {t: statsplus_table.get(t, '0-0') for t in teams}
                 rtables.append((subleague, r))
 
-                e = {team: self.data['table'][team] for team in teams}
+                e = {t: self.data['table'][t] for t in teams}
                 etables.append((subleague, e))
 
             ret['recent'].append(
@@ -171,6 +174,28 @@ class Standings(Registrable):
             ret['expanded'] += self._call('expanded_league', (league, etables))
 
         dialogs = {encoding: [] for encoding in encoding_keys()}
+        statsplus_scores = self.shadow.get('statsplus.scores', {})
+        for date in statsplus_scores:
+            scores = {}
+            for s in sorted(statsplus_scores[date].values()):
+                for t in find(r'(\w+) \d+, (\w+) \d+', s):
+                    if t not in scores:
+                        scores[t] = []
+                    scores[t].append(s)
+            for t in sorted(scores):
+                body = self._call('unofficial_score_body', (scores[t], ))
+                if t == 'TCH':
+                    dialogs['T35'].append((date, body, None))
+                    dialogs['T36'].append((date, body, None))
+                elif t == 'TLA':
+                    dialogs['T44'].append((date, body, None))
+                    dialogs['T45'].append((date, body, None))
+                elif t == 'TNY':
+                    dialogs['T48'].append((date, body, None))
+                    dialogs['T49'].append((date, body, None))
+                else:
+                    dialogs[t].append((date, body, None))
+
         for num in self.data['games']:
             data = self.data['games'][num]
             body = self._call('line_score_body', (data, ))
@@ -194,7 +219,8 @@ class Standings(Registrable):
                     else:
                         tables += [head]
 
-                    tables += [body, foot]
+                    t = [body] if foot is None else [body, foot]
+                    tables += t
                     curr = head
 
                 ret['dialogs'].append(dialog(teamid, decoding, tables))
