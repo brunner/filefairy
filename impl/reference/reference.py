@@ -50,36 +50,37 @@ class Reference(Registrable):
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == Notify.FILEFAIRY_DAY:
-            self._refresh()
+            encodings = list(sorted(self.data['players'].keys()))
+            self._parse(encodings)
         return Response()
 
-    def _get(self, num, index, default):
-        encoding = 'P' + num
-        if encoding not in self.data['players']:
+    def _get(self, n, index, default):
+        e = 'P' + n
+        if e not in self.data['players']:
             return default
-        return self.data['players'][encoding].split(' ', 4)[index]
+        return self.data['players'][e].split(' ', 4)[index]
 
-    def _parse(self, encoding):
-        num = encoding.strip('P')
-        link = os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(num))
-        data = self._call('parse_player', (link, ))
+    def _parse(self, encodings):
+        write = False
 
-        if self.data['players'].get(encoding) != data:
-            if data is None:
-                del self.data['players'][encoding]
-            else:
-                self.data['players'][encoding] = data
+        for e in encodings:
+            n = e.strip('P')
+            link = os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(n))
+            data = self._call('parse_player', (link, ))
+
+            if self.data['players'].get(e) != data:
+                if data is None:
+                    del self.data['players'][e]
+                else:
+                    self.data['players'][e] = data
+                write = True
+
+        if write:
             self.write()
 
-    def _put(self, players):
-        for num in players:
-            encoding = 'P' + num
-            if encoding not in self.data['players']:
-                self._parse(encoding)
-
-    def _refresh(self):
-        for encoding in list(self.data['players'].keys()):
-            self._parse(encoding)
+    def _put(self, encodings):
+        encodings = [e for e in encodings if e not in self.data['players']]
+        self._parse(encodings)
 
     def _sub(self, repl, text):
         pattern = '|'.join([e + r'(?!\d)' for e in self.data['players']])

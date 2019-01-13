@@ -80,22 +80,22 @@ class ReferenceTest(Test):
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Reference, '_refresh')
-    def test_notify__fairylab_day(self, mock_refresh):
-        reference = self.create_reference(_data())
+    @mock.patch.object(Reference, '_parse')
+    def test_notify__fairylab_day(self, mock_parse):
+        reference = self.create_reference(_data(players=PLAYERS))
         response = reference._notify_internal(notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
-        mock_refresh.assert_called_once_with()
+        mock_parse.assert_called_once_with(['P123', 'P456'])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Reference, '_refresh')
-    def test_notify__other(self, mock_refresh):
+    @mock.patch.object(Reference, '_parse')
+    def test_notify__other(self, mock_parse):
         reference = self.create_reference(_data())
         response = reference._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_refresh, self.mock_open,
+        self.assertNotCalled(mock_parse, self.mock_open,
                              self.mock_handle.write)
 
     def test_get_bats(self):
@@ -150,7 +150,7 @@ class ReferenceTest(Test):
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
         reference = self.create_reference(_data(players=players))
-        reference._parse('P123')
+        reference._parse(['P123'])
 
         link = _statsplus_player_page('123')
         players = {'P123': 'T32 1 L R Jim Alfa'}
@@ -165,7 +165,7 @@ class ReferenceTest(Test):
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
         reference = self.create_reference(_data(players=players))
-        reference._parse('P123')
+        reference._parse(['P123'])
 
         link = _statsplus_player_page('123')
         write = _data()
@@ -179,7 +179,7 @@ class ReferenceTest(Test):
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
         reference = self.create_reference(_data(players=players))
-        reference._parse('P123')
+        reference._parse(['P123'])
 
         link = _statsplus_player_page('123')
         mock_call.assert_called_once_with('parse_player', (link, ))
@@ -188,17 +188,9 @@ class ReferenceTest(Test):
     @mock.patch.object(Reference, '_parse')
     def test_put(self, mock_parse):
         reference = self.create_reference(_data(players=PLAYERS))
-        reference._put(['123', '789'])
+        reference._put(['P123', 'P789'])
 
-        mock_parse.assert_called_once_with('P789')
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
-    @mock.patch.object(Reference, '_parse')
-    def test_refresh(self, mock_parse):
-        reference = self.create_reference(_data(players=PLAYERS))
-        reference._refresh()
-
-        mock_parse.assert_has_calls([mock.call('P123'), mock.call('P456')])
+        mock_parse.assert_called_once_with(['P789'])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_sub(self):
