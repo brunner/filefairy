@@ -100,7 +100,7 @@ class ReferenceTest(Test):
 
     def test_get_bats(self):
         reference = self.create_reference(_data(players=PLAYERS))
-        inputs = [('123', 'L'), ('456', 'R'), ('789', 'R')]
+        inputs = [('P123', 'L'), ('P456', 'R'), ('P789', 'R')]
         for num, expected in inputs:
             actual = reference._get(num, 2, 'R')
             self.assertEqual(actual, expected)
@@ -109,8 +109,8 @@ class ReferenceTest(Test):
 
     def test_get_name(self):
         reference = self.create_reference(_data(players=PLAYERS))
-        inputs = [('123', 'Jim Alfa'), ('456', 'Jim Beta'),
-                  ('789', 'Jim Unknown')]
+        inputs = [('P123', 'Jim Alfa'), ('P456', 'Jim Beta'),
+                  ('P789', 'Jim Unknown')]
         for num, expected in inputs:
             actual = reference._get(num, 4, 'Jim Unknown')
             self.assertEqual(actual, expected)
@@ -119,7 +119,7 @@ class ReferenceTest(Test):
 
     def test_get_number(self):
         reference = self.create_reference(_data(players=PLAYERS))
-        inputs = [('123', '1'), ('456', '42'), ('789', '0')]
+        inputs = [('P123', '1'), ('P456', '42'), ('P789', '0')]
         for num, expected in inputs:
             actual = reference._get(num, 1, '0')
             self.assertEqual(actual, expected)
@@ -128,7 +128,7 @@ class ReferenceTest(Test):
 
     def test_get_team(self):
         reference = self.create_reference(_data(players=PLAYERS))
-        inputs = [('123', 'T31'), ('456', 'T32'), ('789', 'T??')]
+        inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T??')]
         for num, expected in inputs:
             actual = reference._get(num, 0, 'T??')
             self.assertEqual(actual, expected)
@@ -137,7 +137,7 @@ class ReferenceTest(Test):
 
     def test_get_throws(self):
         reference = self.create_reference(_data(players=PLAYERS))
-        inputs = [('123', 'R'), ('456', 'L'), ('789', 'R')]
+        inputs = [('P123', 'R'), ('P456', 'L'), ('P789', 'R')]
         for num, expected in inputs:
             actual = reference._get(num, 3, 'R')
             self.assertEqual(actual, expected)
@@ -197,7 +197,7 @@ class ReferenceTest(Test):
         reference = self.create_reference(_data(players=PLAYERS))
 
         def _repl(m):
-            return reference._get(m.group(0).strip('P'), 4, 'Jim Unknown')
+            return reference._get(m.group(0), 4, 'Jim Unknown')
 
         actual = reference._sub(_repl, 'P123 (1-0, 0.00 ERA)')
         expected = 'Jim Alfa (1-0, 0.00 ERA)'

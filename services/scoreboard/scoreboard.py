@@ -113,6 +113,8 @@ def line_score_foot(data):
     fcols = [col(clazz='border-0')]
     lines = []
 
+    lines.append(span(['text-underline'], data['recap']))
+
     pitching = []
     if data['winning_pitcher']:
         s = '{} ({}, {} ERA)'.format(*(data['winning_pitcher'].split()))

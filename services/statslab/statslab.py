@@ -113,6 +113,8 @@ def parse_score(in_, out, date):
             data[team + suffix] = cols.pop(-1)
         data[team + '_line'] = ' '.join(cols)
 
+    data['recap'] = find(r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--', text)
+
     blines = re.findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', text)
     plines = re.findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', text)
     if len(blines) != 2 or len(plines) != 2:
