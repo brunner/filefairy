@@ -23,7 +23,6 @@ ENV = env()
 CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
-GITHUB_LINK = 'https://github.com/brunner/filefairy/'
 
 LDR = jinja2.DictLoader({
     'foo.html':
@@ -39,7 +38,6 @@ THEN_DISPLAYED = '00:02:30 PDT (1985-10-26)'
 STREAM_CALLS = [
     mock.call({
         'date': THEN_DISPLAYED,
-        'documentation': GITHUB_LINK,
         'title': 'foo',
         'a': 1,
         'b': True,
@@ -47,26 +45,22 @@ STREAM_CALLS = [
     }),
     mock.call({
         'date': THEN_DISPLAYED,
-        'documentation': GITHUB_LINK,
         'title': 'foo » sub',
         'm': 2,
         'n': 'bar'
     }),
     mock.call({
         'date': THEN_DISPLAYED,
-        'documentation': GITHUB_LINK,
         'title': 'foo » dyn0',
         'z': True
     }),
     mock.call({
         'date': THEN_DISPLAYED,
-        'documentation': GITHUB_LINK,
         'title': 'foo » dyn1',
         'z': False
     }),
     mock.call({
         'date': THEN_DISPLAYED,
-        'documentation': GITHUB_LINK,
         'title': 'foo » dyn2',
         'z': True
     })

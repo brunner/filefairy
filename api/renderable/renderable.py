@@ -61,7 +61,6 @@ from common.slack.slack import chat_post_message  # noqa
 CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
-GITHUB_LINK = 'https://github.com/brunner/filefairy/'
 
 
 class Renderable(Serializable):
@@ -107,7 +106,6 @@ class Renderable(Serializable):
                 ts = tmpl.stream(
                     dict(
                         context,
-                        documentation=GITHUB_LINK,
                         title=title,
                         date=date))
 

@@ -20,7 +20,6 @@ TESTDATA = get_testdata()
 
 
 class ScoreboardTest(unittest.TestCase):
-    maxDiff = None
     def test_line_score_body(self):
         for num in ['2449', '2469', '2476']:
             data = json.loads(TESTDATA[num + '.json'])
