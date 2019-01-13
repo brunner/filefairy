@@ -321,7 +321,7 @@ class FilefairyTest(Test):
         actual = filefairy.reload(*('foo', ), date=DATE_10260604)
         self.assertEqual(actual, response)
 
-        mock_reload.assert_called_once_with('foo', date=DATE_10260604)
+        mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
@@ -341,7 +341,7 @@ class FilefairyTest(Test):
         actual = filefairy.reload(*('foo', ), date=DATE_10260604)
         self.assertEqual(actual, response)
 
-        mock_reload.assert_called_once_with('foo', date=DATE_10260604)
+        mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
         self.assertNotCalled(mock_try_all, self.mock_log, self.mock_open,
                              self.mock_handle.write)
         self.assertEqual(filefairy.data['date'],
@@ -474,7 +474,7 @@ class FilefairyTest(Test):
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(
             _data(DATE_10260602), dashboard, reference)
-        actual = filefairy._reload_internal('task', date=DATE_10260604)
+        actual = filefairy._reload_internal('task', True, date=DATE_10260604)
         expected = Response()
         self.assertEqual(actual, expected)
 
@@ -495,7 +495,7 @@ class FilefairyTest(Test):
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(
             _data(DATE_10260602), dashboard, reference)
-        actual = filefairy._reload_internal('task', date=DATE_10260604)
+        actual = filefairy._reload_internal('task', True, date=DATE_10260604)
         expected = Response()
         self.assertEqual(actual, expected)
 
@@ -507,7 +507,7 @@ class FilefairyTest(Test):
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
-    def test_reload_internal__ok_true(self, mock_import, mock_install):
+    def test_reload_internal__ok_log_true(self, mock_import, mock_install):
         module = _module('task')
         mock_import.return_value = module
         mock_install.return_value = True
@@ -516,7 +516,7 @@ class FilefairyTest(Test):
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(
             _data(DATE_10260602), dashboard, reference)
-        actual = filefairy._reload_internal('task', date=DATE_10260604)
+        actual = filefairy._reload_internal('task', True, date=DATE_10260604)
         msg = 'Reloaded task.'
         expected = Response(notify=[Notify.BASE], debug=[Debug(msg=msg)])
         self.assertEqual(actual, expected)
@@ -526,6 +526,27 @@ class FilefairyTest(Test):
             'task', module, 'Task', date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO, msg)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Filefairy, '_install')
+    @mock.patch('impl.filefairy.filefairy.importlib.import_module')
+    def test_reload_internal__ok_log_false(self, mock_import, mock_install):
+        module = _module('task')
+        mock_import.return_value = module
+        mock_install.return_value = True
+
+        dashboard = self.create_dashboard(DATE_10260602)
+        reference = self.create_reference(DATE_10260602)
+        filefairy = self.create_filefairy(
+            _data(DATE_10260602), dashboard, reference)
+        actual = filefairy._reload_internal('task', False, date=DATE_10260604)
+        expected = Response(notify=[Notify.BASE])
+        self.assertEqual(actual, expected)
+
+        mock_import.assert_called_once_with('tasks.task.task')
+        mock_install.assert_called_once_with(
+            'task', module, 'Task', date=DATE_10260604)
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_try')

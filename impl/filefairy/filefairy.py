@@ -104,7 +104,7 @@ class Filefairy(Messageable, Renderable):
             return Response()
 
         t = args[0]
-        response = self._reload_internal(t, **kwargs)
+        response = self._reload_internal(t, True, **kwargs)
 
         if response.notify:
             self._try_all('_setup', **kwargs)
@@ -156,7 +156,7 @@ class Filefairy(Messageable, Renderable):
         self._on_message(obj=obj, date=date)
         self._try_all('_on_message', obj=obj, date=date)
 
-    def _reload_internal(self, t, **kwargs):
+    def _reload_internal(self, t, log, **kwargs):
         response = Response()
 
         clazz = t.capitalize()
@@ -168,12 +168,12 @@ class Filefairy(Messageable, Renderable):
         msg = '{} {}.'.format('{}', t)
         try:
             module = importlib.import_module(package)
-            ok = self._install(t, module, clazz, **kwargs)
-            if ok:
-                m = msg.format('Reloaded')
-                _logger.log(logging.INFO, m)
-                debug = Debug(msg=m)
-                response.append(notify=Notify.BASE, debug=debug)
+            if self._install(t, module, clazz, **kwargs):
+                response.append(notify=Notify.BASE)
+                if log:
+                    m = msg.format('Reloaded')
+                    _logger.log(logging.INFO, m)
+                    response.append(debug=Debug(msg=m))
         except Exception:
             _logger.log(logging.ERROR, msg.format('Disabled'), exc_info=True)
 
