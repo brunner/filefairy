@@ -15,6 +15,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
+from common.encyclopedia.encyclopedia import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import icon_absolute  # noqa
 
@@ -111,9 +112,10 @@ def line_score_foot(data):
     summary += [span(['text-secondary'], 'L: ') + data['losing_pitcher']]
     if data['saving_pitcher']:
         summary += [span(['text-secondary'], 'S: ') + data['saving_pitcher']]
+    summary = player_to_name_sub(', '.join(summary))
 
     fcols = [col(clazz='border-0')]
-    foot = [cell(content=(', '.join(summary)))]
+    foot = [cell(content=summary)]
 
     return table(
         clazz='border border-top-0 small',

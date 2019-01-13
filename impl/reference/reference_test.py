@@ -102,7 +102,7 @@ class ReferenceTest(Test):
         reference = self.create_reference(_data(players=PLAYERS))
         inputs = [('123', 'L'), ('456', 'R'), ('789', 'R')]
         for num, expected in inputs:
-            actual = reference._get_bats(num)
+            actual = reference._get(num, 2, 'R')
             self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -112,7 +112,7 @@ class ReferenceTest(Test):
         inputs = [('123', 'Jim Alfa'), ('456', 'Jim Beta'),
                   ('789', 'Jim Unknown')]
         for num, expected in inputs:
-            actual = reference._get_name(num)
+            actual = reference._get(num, 4, 'Jim Unknown')
             self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -121,7 +121,7 @@ class ReferenceTest(Test):
         reference = self.create_reference(_data(players=PLAYERS))
         inputs = [('123', '1'), ('456', '42'), ('789', '0')]
         for num, expected in inputs:
-            actual = reference._get_number(num)
+            actual = reference._get(num, 1, '0')
             self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -130,7 +130,7 @@ class ReferenceTest(Test):
         reference = self.create_reference(_data(players=PLAYERS))
         inputs = [('123', 'T31'), ('456', 'T32'), ('789', 'T??')]
         for num, expected in inputs:
-            actual = reference._get_team(num)
+            actual = reference._get(num, 0, 'T??')
             self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -139,7 +139,7 @@ class ReferenceTest(Test):
         reference = self.create_reference(_data(players=PLAYERS))
         inputs = [('123', 'R'), ('456', 'L'), ('789', 'R')]
         for num, expected in inputs:
-            actual = reference._get_throws(num)
+            actual = reference._get(num, 3, 'R')
             self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -201,7 +201,11 @@ class ReferenceTest(Test):
 
     def test_sub(self):
         reference = self.create_reference(_data(players=PLAYERS))
-        actual = reference._sub('P123 (1-0, 0.00 ERA)')
+
+        def _repl(m):
+            return reference._get(m.group(0).strip('P'), 4, 'Jim Unknown')
+
+        actual = reference._sub(_repl, 'P123 (1-0, 0.00 ERA)')
         expected = 'Jim Alfa (1-0, 0.00 ERA)'
         self.assertEqual(actual, expected)
 

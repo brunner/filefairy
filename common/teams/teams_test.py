@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Tests for standings.py."""
+"""Tests for teams.py."""
 
 import os
 import re
@@ -8,8 +8,8 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-_root = re.sub(r'/common/teams', '', _path)
-sys.path.append(_root)
+sys.path.append(re.sub(r'/common/teams', '', _path))
+
 from common.teams.teams import decoding_to_encoding  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa

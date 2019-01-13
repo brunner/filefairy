@@ -24,6 +24,7 @@ from common.datetime_.datetime_ import datetime_now  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import card  # noqa
+from common.encyclopedia.encyclopedia import set_reference  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.slack.slack import rtm_connect  # noqa
 from data.debug.debug import Debug  # noqa
@@ -306,6 +307,8 @@ if __name__ == '__main__':
     handler = LoggingHandler(dashboard)
     _logger.addHandler(handler)
     _logger.setLevel(logging.DEBUG)
+
+    set_reference(reference)
 
     filefairy = Filefairy(d=dashboard, e=e, r=reference)
     filefairy._setup(date=date)

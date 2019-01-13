@@ -59,21 +59,6 @@ class Reference(Registrable):
             return default
         return self.data['players'][encoding].split(' ', 4)[index]
 
-    def _get_bats(self, num):
-        return self._get(num, 2, 'R')
-
-    def _get_name(self, num):
-        return self._get(num, 4, 'Jim Unknown')
-
-    def _get_number(self, num):
-        return self._get(num, 1, '0')
-
-    def _get_team(self, num):
-        return self._get(num, 0, 'T??')
-
-    def _get_throws(self, num):
-        return self._get(num, 3, 'R')
-
     def _parse(self, encoding):
         num = encoding.strip('P')
         link = os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(num))
@@ -93,9 +78,6 @@ class Reference(Registrable):
         for encoding in self.data['players']:
             self._parse(encoding)
 
-    def _repl(self, m):
-        return self._get_name(m.group(0).strip('P'))
-
-    def _sub(self, text):
+    def _sub(self, repl, text):
         pattern = '|'.join([e + r'(?!\d)' for e in self.data['players']])
-        return re.sub(pattern, self._repl, text)
+        return re.sub(pattern, repl, text)
