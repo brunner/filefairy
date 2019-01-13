@@ -168,8 +168,10 @@ class ReferenceTest(Test):
         reference._parse('P123')
 
         link = _statsplus_player_page('123')
+        write = _data()
         mock_call.assert_called_once_with('parse_player', (link, ))
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.mock_open.assert_called_once_with(Reference._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(Reference, '_call')
     def test_parse__same(self, mock_call):

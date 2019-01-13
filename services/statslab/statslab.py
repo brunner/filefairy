@@ -43,15 +43,17 @@ def parse_player(link):
     text = decoding_to_encoding_sub(_open(link))
 
     number, name = find(r'Player Report for #(\d+)  ([^<]+)</title>', text)
+    if not number:
+        return None
     name = re.sub(r' \'[^\']+\' ', r' ', name)
-
     subtext = find(r'(?s)class="repsubtitle">(.+?)</div>', text)
-    team = find(r'href=\"..\/teams\/team_\d{2}.html">([^<]+)</a>', subtext)
+    if not subtext:
+        return None
+
+    team = find(r'href=\"..\/teams\/team_\d{2}.html">(\w+)</a>', subtext)
     if not team:
         team = 'T??'
-
     bats, throws = find(r'Bats: (\w)[^T]+Throws: (\w)', text)
-
     data = [team, number, bats, throws, name]
 
     if not all(data):

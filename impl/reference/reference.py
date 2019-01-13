@@ -64,8 +64,11 @@ class Reference(Registrable):
         link = os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(num))
         data = self._call('parse_player', (link, ))
 
-        if data is not None and self.data['players'].get(encoding) != data:
-            self.data['players'][encoding] = data
+        if self.data['players'].get(encoding) != data:
+            if data is None:
+                del self.data['players'][encoding]
+            else:
+                self.data['players'][encoding] = data
             self.write()
 
     def _put(self, players):
@@ -75,7 +78,7 @@ class Reference(Registrable):
                 self._parse(encoding)
 
     def _refresh(self):
-        for encoding in self.data['players']:
+        for encoding in list(self.data['players'].keys()):
             self._parse(encoding)
 
     def _sub(self, repl, text):
