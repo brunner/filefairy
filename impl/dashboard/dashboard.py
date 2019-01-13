@@ -104,7 +104,7 @@ class Dashboard(Registrable):
 
         for date in list(data['logs'].keys()):
             if decode_datetime(date) <= rounded:
-                del data['logs'][date]
+                data['logs'].pop(date, None)
 
         self.warnings = []
 

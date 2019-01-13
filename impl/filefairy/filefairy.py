@@ -163,7 +163,7 @@ class Filefairy(Messageable, Renderable):
         package = 'tasks.{}.{}'.format(t, t)
 
         if package in sys.modules:
-            del sys.modules[package]
+            sys.modules.pop(package, None)
 
         msg = '{} {}.'.format('{}', t)
         try:

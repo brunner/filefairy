@@ -69,7 +69,7 @@ class Reference(Registrable):
 
             if self.data['players'].get(e) != data:
                 if data is None:
-                    del self.data['players'][e]
+                    self.data['players'].pop(e, None)
                 else:
                     self.data['players'][e] = data
                 write = True

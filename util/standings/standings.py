@@ -73,7 +73,7 @@ def _process_league(teams, league, abbr):
             gb = games_behind(t0r, ur)
             teams[u]['dgb'] = gb
             if gb == 0.0 and 'd0' in teams[t0]:
-                del teams[t0]['d0']
+                teams[t0].pop('d0', None)
         for t, tr in ordered:
             lg.append((t, tr))
             if 'd0' not in teams[t]:
