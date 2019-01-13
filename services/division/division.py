@@ -38,7 +38,7 @@ def _record(tuple_or_str):
 
 
 def _sort(table_):
-    def _sort(team1):
+    def sort(team1):
         record1 = _record(table_[team1])
         tw, tl = decode_record(record1)
 
@@ -51,7 +51,7 @@ def _sort(table_):
 
         return (diff, pcnt, tw, invs, name)
 
-    return sorted(table_, key=_sort, reverse=True)
+    return sorted(table_, key=sort, reverse=True)
 
 
 def _expanded(table_, groups, i):
