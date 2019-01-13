@@ -104,8 +104,6 @@ class StandingsTest(unittest.TestCase):
         expected = [('32', '4-0'), ('31', '3-0'), ('33', '0-3'), ('34', '0-4')]
         self.assertEqual(actual, expected)
 
-    maxDiff = None
-
     @mock.patch('util.standings.standings.logo_absolute')
     def test_standings_table__with_empty(self, mock_logo):
         mock_logo.side_effect = _fake_logo

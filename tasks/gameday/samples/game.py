@@ -37,7 +37,8 @@ _log = [
         body=[[cell(content='Batting: SHB 102'),
                cell(content='0-0: Ball')],
               [cell(), cell(content='103 to second')]],
-        foot=[[cell(content='0 run(s), 0 hit(s), 0 error(s), 0 left on base')]])
+        foot=[[cell(content='0 run(s), 0 hit(s), 0 error(s), 0 left on base')]
+              ])
 ]
 
 _schedule = [
