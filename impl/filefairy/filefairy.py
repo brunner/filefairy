@@ -215,7 +215,7 @@ class Filefairy(Messageable, Renderable):
         self.day = date.day
 
         for t in self._get_dirs(TASKS_DIR):
-            self._reload_internal(t, **kwargs)
+            self._reload_internal(t, False, **kwargs)
         self._try_all('_setup', **kwargs)
 
     def _start(self):

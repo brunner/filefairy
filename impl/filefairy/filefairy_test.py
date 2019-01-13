@@ -745,7 +745,7 @@ class FilefairyTest(Test):
         filefairy._setup(date=DATE_10260604)
 
         mock_get_dirs.assert_called_once_with(TASKS_DIR)
-        mock_reload.assert_called_once_with('task', date=DATE_10260604)
+        mock_reload.assert_called_once_with('task', False, date=DATE_10260604)
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
