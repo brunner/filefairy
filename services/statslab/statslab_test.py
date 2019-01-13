@@ -17,6 +17,7 @@ from common.test.test import RMock  # noqa
 from common.test.test import Suite  # noqa
 from common.test.test import WMock  # noqa
 from common.test.test import get_testdata  # noqa
+from services.statslab.statslab import parse_player  # noqa
 from services.statslab.statslab import parse_score  # noqa
 
 DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
@@ -30,6 +31,7 @@ GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
+STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 
 TESTDATA = get_testdata()
 
@@ -42,7 +44,40 @@ def _statsplus_box_score(num):
     return os.path.join(STATSPLUS_BOX_SCORES, 'game_box_{}.html'.format(num))
 
 
+def _statsplus_player_page(num):
+    return os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(num))
+
+
 class StatslabTest(unittest.TestCase):
+    @mock.patch('services.statslab.statslab.open', create=True)
+    @mock.patch('services.statslab.statslab.get')
+    @mock.patch('services.statslab.statslab.os.path.isfile')
+    def test_parse_player(self, mock_isfile, mock_get, mock_open):
+        mock_isfile.return_value = False
+        mock_get.side_effect = [
+            TESTDATA['player_24322.html'],
+            TESTDATA['player_35903.html'],
+            TESTDATA['player_54297.html'],
+        ]
+
+        inputs = [
+            ('24322', 'T47 16 R R Jarid Joseph'),
+            ('35903', 'T47 35 R R Jose Fernandez'),
+            ('54297', 'T?? 56 R R Lineu Murraas'),
+        ]
+
+        for num, expected in inputs:
+            link = _statsplus_player_page(num)
+            actual = parse_player(link)
+            self.assertEqual(actual, expected)
+
+        mock_get.assert_has_calls([
+            mock.call(_statsplus_player_page('24322')),
+            mock.call(_statsplus_player_page('35903')),
+            mock.call(_statsplus_player_page('54297')),
+        ])
+        mock_open.assert_not_called()
+
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')

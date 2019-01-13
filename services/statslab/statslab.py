@@ -18,7 +18,7 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.re_.re_ import find  # noqa
 from common.requests_.requests_ import get  # noqa
-from util.team.team import decoding_to_encoding_sub  # noqa
+from common.teams.teams import decoding_to_encoding_sub  # noqa
 
 
 def _open(in_):
@@ -28,6 +28,35 @@ def _open(in_):
         with open(in_, 'r', encoding='iso-8859-1') as f:
             return f.read()
     return ''
+
+
+def parse_player(link):
+    """Parse a StatsLab player page into a reference-readable format.
+
+    Args:
+        link: The StatsLab player page link.
+
+    Returns:
+        A data string if the parse was successful, otherwise None.
+    """
+    text = decoding_to_encoding_sub(_open(link))
+
+    number, name = find(r'Player Report for #(\d+)  ([^<]+)</title>', text)
+    name = re.sub(r' \'[^\']+\' ', r' ', name)
+
+    subtext = find(r'(?s)class="repsubtitle">(.+?)</div>', text)
+    team = find(r'href=\"..\/teams\/team_\d{2}.html">([^<]+)</a>', subtext)
+    if not team:
+        team = 'T??'
+
+    bats, throws = find(r'Bats: (\w)[^T]+Throws: (\w)', text)
+
+    data = [team, number, bats, throws, name]
+
+    if not all(data):
+        return None
+
+    return ' '.join(data)
 
 
 def parse_score(in_, out, date):

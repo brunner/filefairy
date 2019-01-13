@@ -20,6 +20,7 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
+from common.re_.re_ import find  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from util.jersey.jersey import get_rawid  # noqa
@@ -220,8 +221,9 @@ class Gameday(Registrable):
         extract = FILEFAIRY_DIR + '/resource/extract'
         games = []
         for game in os.listdir(extract + '/box_scores/'):
-            id_ = re.findall('game_box_(\d+).html', game)[0]
-            games.append(id_)
+            id_ = find(r'game_box_(\d+).html', game)
+            if id_:
+                games.append(id_)
 
         d = FILEFAIRY_DIR + '/resource/games/'
         check_output(['rm', '-rf', d])
@@ -252,8 +254,9 @@ class Gameday(Registrable):
     def _check_games(self):
         games = []
         for game in os.listdir(FILEFAIRY_DIR + '/resource/games/'):
-            id_ = re.findall('game_(\d+).json', game)[0]
-            games.append(id_)
+            id_ = find(r'game_(\d+).json', game)
+            if id_:
+                games.append(id_)
 
         games = sorted(games)
         if games != self.data['games']:

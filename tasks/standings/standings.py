@@ -65,8 +65,15 @@ class Standings(Registrable):
 
     def _reload_data(self, **kwargs):
         return {
-            'division': ['condensed_league', 'expanded_league'],
-            'scoreboard': ['line_score_body'],
+            'division': [
+                'condensed_league',
+                'expanded_league',
+            ],
+            'scoreboard': [
+                'line_score_body',
+                'line_score_foot',
+                'line_score_head',
+            ],
         }
 
     def _render_data(self, **kwargs):

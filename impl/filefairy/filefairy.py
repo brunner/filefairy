@@ -31,6 +31,7 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from impl.dashboard.dashboard import Dashboard  # noqa
 from impl.dashboard.dashboard import LoggingHandler  # noqa
+from impl.reference.reference import Reference  # noqa
 
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
@@ -53,13 +54,14 @@ class Filefairy(Messageable, Renderable):
             ws: Reference to the app's WebSocket object.
         """
         d = kwargs.pop('d')
+        r = kwargs.pop('r')
         super(Filefairy, self).__init__(**kwargs)
 
         self.bg = None
         self.day = None
         self.keep_running = True
         self.original = copy.deepcopy(self.data)
-        self.registered = {'dashboard': d}
+        self.registered = {'dashboard': d, 'reference': r}
         self.sleep = 60
         self.threads = []
         self.ws = None
@@ -299,11 +301,12 @@ if __name__ == '__main__':
     date = datetime_now()
     e = env()
     dashboard = Dashboard(date=date, e=e)
+    reference = Reference(date=date, e=e)
 
     handler = LoggingHandler(dashboard)
     _logger.addHandler(handler)
     _logger.setLevel(logging.DEBUG)
 
-    filefairy = Filefairy(d=dashboard, e=e)
+    filefairy = Filefairy(d=dashboard, e=e, r=reference)
     filefairy._setup(date=date)
     filefairy._start()
