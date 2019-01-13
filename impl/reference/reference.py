@@ -54,8 +54,7 @@ class Reference(Registrable):
             self._parse(encodings)
         return Response()
 
-    def _get(self, n, index, default):
-        e = 'P' + n
+    def _get(self, e, index, default):
         if e not in self.data['players']:
             return default
         return self.data['players'][e].split(' ', 4)[index]

@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/encyclopedia', '', _path))
@@ -18,6 +19,7 @@ from common.encyclopedia.encyclopedia import player_to_name_sub  # noqa
 from common.encyclopedia.encyclopedia import player_to_number  # noqa
 from common.encyclopedia.encyclopedia import player_to_team  # noqa
 from common.encyclopedia.encyclopedia import player_to_throws  # noqa
+from common.encyclopedia.encyclopedia import put_players  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from impl.reference.reference import Reference  # noqa
 
@@ -36,14 +38,14 @@ class EncyclopediaTest(unittest.TestCase):
         set_reference(reference)
 
     def test_player_to_bats(self):
-        inputs = [('123', 'L'), ('456', 'R'), ('789', 'R')]
+        inputs = [('P123', 'L'), ('P456', 'R'), ('P789', 'R')]
         for num, expected in inputs:
             actual = player_to_bats(num)
             self.assertEqual(actual, expected)
 
     def test_player_to_name(self):
-        inputs = [('123', 'Jim Alfa'), ('456', 'Jim Beta'),
-                  ('789', 'Jim Unknown')]
+        inputs = [('P123', 'Jim Alfa'), ('P456', 'Jim Beta'),
+                  ('P789', 'Jim Unknown')]
         for num, expected in inputs:
             actual = player_to_name(num)
             self.assertEqual(actual, expected)
@@ -54,22 +56,27 @@ class EncyclopediaTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_player_to_number(self):
-        inputs = [('123', '1'), ('456', '42'), ('789', '0')]
+        inputs = [('P123', '1'), ('P456', '42'), ('P789', '0')]
         for num, expected in inputs:
             actual = player_to_number(num)
             self.assertEqual(actual, expected)
 
     def test_player_to_team(self):
-        inputs = [('123', 'T31'), ('456', 'T32'), ('789', 'T??')]
+        inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T??')]
         for num, expected in inputs:
             actual = player_to_team(num)
             self.assertEqual(actual, expected)
 
     def test_player_to_throws(self):
-        inputs = [('123', 'R'), ('456', 'L'), ('789', 'R')]
+        inputs = [('P123', 'R'), ('P456', 'L'), ('P789', 'R')]
         for num, expected in inputs:
             actual = player_to_throws(num)
             self.assertEqual(actual, expected)
+
+    @mock.patch.object(Reference, '_put')
+    def test_put_players(self, mock_put):
+        put_players(['P123', 'P456', 'P789'])
+        mock_put.assert_called_once_with(['P123', 'P456', 'P789'])
 
 
 if __name__ == '__main__':

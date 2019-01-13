@@ -15,6 +15,7 @@ from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.encyclopedia.encyclopedia import put_players  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.re_.re_ import find  # noqa
 from common.requests_.requests_ import get  # noqa
@@ -111,6 +112,16 @@ def parse_score(in_, out, date):
         for suffix in ['_errors', '_hits', '_runs']:
             data[team + suffix] = cols.pop(-1)
         data[team + '_line'] = ' '.join(cols)
+
+    blines = re.findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', text)
+    plines = re.findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', text)
+    if len(blines) != 2 or len(plines) != 2:
+        return None
+
+    encodings = set()
+    for line in (plines + blines):
+        encodings.update(re.findall(r'>(P\d+) ', text))
+    put_players(list(sorted(encodings)))
 
     batting = re.findall(r'(?s)BATTING<br>(.+?)</table>', text)
     if len(batting) != 2:

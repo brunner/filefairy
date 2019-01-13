@@ -29,6 +29,28 @@ EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 
 GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
 
+PLAYERS = [
+    [
+        'P13', 'P19570', 'P19997', 'P20584', 'P2212', 'P23845', 'P24243',
+        'P24322', 'P27200', 'P28636', 'P28677', 'P28762', 'P29790', 'P34032',
+        'P34701', 'P35889', 'P35903', 'P37114', 'P48258', 'P49108', 'P49648',
+        'P50264', 'P50664', 'P52898', 'P53142', 'P53807', 'P55093', 'P55546',
+        'P57'
+    ],
+    [
+        'P18965', 'P19997', 'P2212', 'P23845', 'P24322', 'P26432', 'P27200',
+        'P28636', 'P29037', 'P29790', 'P34032', 'P34701', 'P35889', 'P37114',
+        'P37294', 'P37544', 'P38898', 'P49648', 'P50264', 'P53142', 'P53807',
+        'P55093', 'P55546', 'P57'
+    ],
+    [
+        'P1512', 'P19570', 'P19997', 'P23845', 'P24322', 'P25132', 'P27200',
+        'P28636', 'P28762', 'P29790', 'P34032', 'P34701', 'P37027', 'P37114',
+        'P37294', 'P48258', 'P49648', 'P50264', 'P50664', 'P53142', 'P53807',
+        'P55546', 'P57'
+    ],
+]
+
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
@@ -78,10 +100,12 @@ class StatslabTest(unittest.TestCase):
         ])
         mock_open.assert_not_called()
 
+    @mock.patch('services.statslab.statslab.put_players')
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_score__file(self, mock_isfile, mock_get, mock_open):
+    def test_parse_score__file(self, mock_isfile, mock_get, mock_open,
+                               mock_put):
         mock_isfile.return_value = True
         suite = Suite(
             RMock(EXTRACT_BOX_SCORES, 'game_box_2449.html', TESTDATA),
@@ -101,12 +125,15 @@ class StatslabTest(unittest.TestCase):
 
         mock_get.assert_not_called()
         mock_open.assert_has_calls(suite.calls())
+        mock_put.assert_has_calls([mock.call(p) for p in PLAYERS])
         suite.verify()
 
+    @mock.patch('services.statslab.statslab.put_players')
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_score__link(self, mock_isfile, mock_get, mock_open):
+    def test_parse_score__link(self, mock_isfile, mock_get, mock_open,
+                               mock_put):
         mock_isfile.return_value = False
         mock_get.side_effect = [
             TESTDATA['game_box_2449.html'],
@@ -138,6 +165,7 @@ class StatslabTest(unittest.TestCase):
             mock.call(_statsplus_box_score('2476')),
         ])
         mock_open.assert_has_calls(suite.calls())
+        mock_put.assert_has_calls([mock.call(p) for p in PLAYERS])
         suite.verify()
 
 

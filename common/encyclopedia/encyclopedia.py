@@ -13,13 +13,8 @@ def _get(num, index, default):
     return _reference._get(num, index, default)
 
 
-def _put(players):
-    if _reference is not None:
-        _reference._put(players)
-
-
 def _repl(f, m):
-    return f(m.group(0).strip('P'))
+    return f(m.group(0))
 
 
 def _sub(repl, text):
@@ -38,32 +33,32 @@ def set_reference(reference):
     _reference = reference
 
 
-def player_to_bats(num):
+def player_to_bats(e):
     """Gets the player's batting handedness (``L``, ``R``, or ``S``).
 
     Args:
-        num: The player's id number.
+        e: The player's encoding.
 
     Returns:
         The player's batting handedness.
     """
-    return _get(num, 2, 'R')
+    return _get(e, 2, 'R')
 
 
-def player_to_name(num):
+def player_to_name(e):
     """Gets the player's full name.
 
     Args:
-        num: The player's id number.
+        e: The player's encoding.
 
     Returns:
         The player's full name.
     """
-    return _get(num, 4, 'Jim Unknown')
+    return _get(e, 4, 'Jim Unknown')
 
 
 def player_to_name_sub(text):
-    """Substitutes all player id numbers with the corresponding full name.
+    """Substitutes all player encodings with the corresponding full name.
 
     Args:
         text: The text to replace.
@@ -74,37 +69,42 @@ def player_to_name_sub(text):
     return _sub(partial(_repl, player_to_name), text)
 
 
-def player_to_number(num):
+def player_to_number(e):
     """Gets the player's jersey number.
 
     Args:
-        num: The player's id number.
+        e: The player's encoding.
 
     Returns:
         The player's jersey number.
     """
-    return _get(num, 1, '0')
+    return _get(e, 1, '0')
 
 
-def player_to_team(num):
+def player_to_team(e):
     """Gets the player's team.
 
     Args:
-        num: The player's id number.
+        e: The player's encoding.
 
     Returns:
         The player's team.
     """
-    return _get(num, 0, 'T??')
+    return _get(e, 0, 'T??')
 
 
-def player_to_throws(num):
+def player_to_throws(e):
     """Gets the player's throwing handedness (``L`` or ``R``).
 
     Args:
-        num: The player's id number.
+        e: The player's encoding.
 
     Returns:
         The player's throwing handedness.
     """
-    return _get(num, 3, 'R')
+    return _get(e, 3, 'R')
+
+
+def put_players(players):
+    if _reference is not None:
+        _reference._put(players)
