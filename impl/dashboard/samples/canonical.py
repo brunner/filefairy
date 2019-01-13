@@ -38,7 +38,7 @@ _logs = [
         clazz='border mt-3',
         hcols=[col(colspan='3')],
         bcols=[None, None, col(clazz='text-right w-75p')],
-        head=[cell(content='Saturday, October 26th, 1985')],
+        head=[[cell(content='Saturday, October 26th, 1985')]],
         body=[
             [
                 cell(content=anchor(_error_link, _error_title)),

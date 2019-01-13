@@ -177,7 +177,7 @@ class Gameday(Registrable):
     def _schedule_head(decoding):
         return table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[cell(content=decoding + ' Schedule')])
+            head=[[cell(content=decoding + ' Schedule')]])
 
     @staticmethod
     def _schedule_body(encoding, id_, schedule_data):
@@ -289,7 +289,7 @@ class Gameday(Registrable):
             ret['schedule'].append(
                 table(
                     clazz='table-fixed border border-bottom-0 mt-3',
-                    head=[cell(content=division)]))
+                    head=[[cell(content=division)]]))
             body = []
             for teamid in ts:
                 encoding = teamid_to_encoding(teamid)
@@ -492,7 +492,7 @@ class Gameday(Registrable):
                 hcontent = logo_absolute(teamid, half['label'], 'left')
                 log_table = table(
                     hcols=[col(clazz='position-relative', colspan='2')],
-                    head=[cell(content=hcontent)],
+                    head=[[cell(content=hcontent)]],
                     bcols=[
                         col(clazz='position-relative'),
                         col(clazz='text-center text-secondary w-55p')
@@ -500,7 +500,7 @@ class Gameday(Registrable):
                     body=[])
                 plays_table = table(
                     hcols=[col(clazz='position-relative')],
-                    head=[cell(content=hcontent)],
+                    head=[[cell(content=hcontent)]],
                     body=[])
                 outs = 0
                 for play in half['play']:
@@ -586,7 +586,8 @@ class Gameday(Registrable):
 
         jump = [[cell(content=anchor('#tabs', 'Jump to top of page'))]]
         log_tables.append(
-            table(head=[cell(content='Post Game')], body=(jump + links_body)))
+            table(
+                head=[[cell(content='Post Game')]], body=(jump + links_body)))
         ret['tabs']['tabs'].append({
             'name': 'log',
             'title': 'Game Log',
@@ -597,7 +598,7 @@ class Gameday(Registrable):
         links_tables.append(
             table(
                 clazz='table-fixed border border-bottom-0 mt-3',
-                head=[cell(content='Gameday Sources')]))
+                head=[[cell(content='Gameday Sources')]]))
         links_tables.append(table(clazz='table-fixed border', body=links_body))
         links_tables.append(self._schedule_head(away_decoding))
         links_tables.append(

@@ -330,7 +330,7 @@ _live = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
         hcols=[col(clazz='text-center')],
-        head=[cell(content='American League')]),
+        head=[[cell(content='American League')]]),
     table(
         clazz='table-fixed border',
         bcols=_lcols,
@@ -339,14 +339,14 @@ _live = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
         hcols=[col(clazz='text-center')],
-        head=[cell(content='National League')]),
+        head=[[cell(content='National League')]]),
     table(clazz='table-fixed border', bcols=_lcols, body=_nl)
 ]
 
 _scores = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Sunday, October 9th, 2022')],
+        head=[[cell(content='Sunday, October 9th, 2022')]],
         body=[
             [
                 cell(
@@ -456,7 +456,7 @@ _scores = [
         ]),
     table(
         clazz='border mt-3',
-        head=[cell(content='Saturday, October 8th, 2022')],
+        head=[[cell(content='Saturday, October 8th, 2022')]],
         body=[
             [
                 cell(
@@ -568,7 +568,7 @@ _scores = [
 _injuries = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Sunday, October 9th, 2022')],
+        head=[[cell(content='Sunday, October 9th, 2022')]],
         body=[
             [
                 cell(
@@ -597,7 +597,7 @@ _injuries = [
         ]),
     table(
         clazz='border mt-3',
-        head=[cell(content='Saturday, October 8th, 2022')],
+        head=[[cell(content='Saturday, October 8th, 2022')]],
         body=[
             [
                 cell(
@@ -629,7 +629,7 @@ _injuries = [
 _highlights = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Saturday, October 8th, 2022')],
+        head=[[cell(content='Saturday, October 8th, 2022')]],
         body=[
             [
                 cell(
@@ -654,97 +654,97 @@ _forecast = [
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='AL East'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_s34, _s48, _s59, _s33, _s57]),
     table(
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='AL Central'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_s47, _s40, _s35, _s38, _s43]),
     table(
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='AL West'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_s54, _s42, _s50, _s44, _s58]),
     table(
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='AL Wild Card'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_w48, _w40, _w42, _w35]),
     table(
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='NL East'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_s49, _s41, _s32, _s51, _s60]),
     table(
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='NL Central'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_s37, _s56, _s46, _s36, _s52]),
     table(
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='NL West'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_s53, _s45, _s39, _s31, _s55]),
     table(
         clazz='table-fixed border mt-3',
         hcols=_fcols,
         bcols=_fcols,
-        head=[
+        head=[[
             cell(content='NL Wild Card'),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=[_w45, _w56, _w39, _w41])
 ]
 

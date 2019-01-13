@@ -46,7 +46,7 @@ context = {
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
             hcols=[col(clazz='text-center')],
-            head=[cell(content='Postseason')]),
+            head=[[cell(content='Postseason')]]),
         table(
             clazz='table-fixed border',
             bcols=[
@@ -60,7 +60,7 @@ context = {
     'scores': [
         table(
             clazz='border mt-3',
-            head=[cell(content='Wednesday, October 26th, 2022')],
+            head=[[cell(content='Wednesday, October 26th, 2022')]],
             body=[
                 [
                     cell(
@@ -72,7 +72,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Tuesday, October 25th, 2022')],
+            head=[[cell(content='Tuesday, October 25th, 2022')]],
             body=[
                 [
                     cell(
@@ -84,7 +84,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Monday, October 24th, 2022')],
+            head=[[cell(content='Monday, October 24th, 2022')]],
             body=[
                 [
                     cell(
@@ -103,7 +103,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Sunday, October 23rd, 2022')],
+            head=[[cell(content='Sunday, October 23rd, 2022')]],
             body=[
                 [
                     cell(
@@ -122,7 +122,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Saturday, October 22nd, 2022')],
+            head=[[cell(content='Saturday, October 22nd, 2022')]],
             body=[
                 [
                     cell(
@@ -134,7 +134,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Friday, October 21st, 2022')],
+            head=[[cell(content='Friday, October 21st, 2022')]],
             body=[
                 [
                     cell(
@@ -146,7 +146,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Thursday, October 20th, 2022')],
+            head=[[cell(content='Thursday, October 20th, 2022')]],
             body=[
                 [
                     cell(
@@ -165,7 +165,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Wednesday, October 19th, 2022')],
+            head=[[cell(content='Wednesday, October 19th, 2022')]],
             body=[
                 [
                     cell(
@@ -179,7 +179,7 @@ context = {
     'injuries': [
         table(
             clazz='border mt-3',
-            head=[cell(content='Monday, October 24th, 2022')],
+            head=[[cell(content='Monday, October 24th, 2022')]],
             body=[
                 [
                     cell(
@@ -192,7 +192,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Thursday, October 20th, 2022')],
+            head=[[cell(content='Thursday, October 20th, 2022')]],
             body=[
                 [
                     cell(
@@ -205,7 +205,7 @@ context = {
             ]),
         table(
             clazz='border mt-3',
-            head=[cell(content='Wednesday, October 19th, 2022')],
+            head=[[cell(content='Wednesday, October 19th, 2022')]],
             body=[
                 [
                     cell(
@@ -220,7 +220,7 @@ context = {
     'highlights': [
         table(
             clazz='border mt-3',
-            head=[cell(content='Saturday, October 8th, 2022')],
+            head=[[cell(content='Saturday, October 8th, 2022')]],
             body=[
                 [
                     cell(

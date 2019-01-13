@@ -315,7 +315,7 @@ class Scoreboard(Registrable):
         lpb = self._live_postseason_body()
 
         lh = table(
-            clazz=_lhclazz, hcols=_lhcols, head=[cell(content='Postseason')])
+            clazz=_lhclazz, hcols=_lhcols, head=[[cell(content='Postseason')]])
         lb = table(clazz=_lbclazz, bcols=_lbpcols, body=lpb)
         return [lh, lb]
 
@@ -358,12 +358,12 @@ class Scoreboard(Registrable):
         lhal = table(
             clazz=_lhclazz,
             hcols=_lhcols,
-            head=[cell(content='American League')])
+            head=[[cell(content='American League')]])
         lbal = table(clazz=_lbclazz, bcols=_lbrcols, body=lrba)
         lhnl = table(
             clazz=_lhclazz,
             hcols=_lhcols,
-            head=[cell(content='National League')])
+            head=[[cell(content='National League')]])
         lbnl = table(clazz=_lbclazz, bcols=_lbrcols, body=lrbn)
 
         return [lhal, lbal, lhnl, lbnl]
@@ -555,7 +555,7 @@ class Scoreboard(Registrable):
     def _table_head(self, date):
         ddate = decode_datetime(date)
         fdate = ddate.strftime('%A, %B %-d{S}, %Y')
-        return [cell(content=fdate.replace('{S}', suffix(ddate.day)))]
+        return [[cell(content=fdate.replace('{S}', suffix(ddate.day)))]]
 
     def _team_tuple(self, teamid):
         return (teamid, self._record(teamid))

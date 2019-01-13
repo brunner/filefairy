@@ -168,8 +168,9 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
+{% for row in data.head %}
 <tr>
-{% for cell in data.head %}
+{% for cell in row %}
 {% set hcol = data.hcols[loop.index0] if data.hcols else None %}
 {% set hclazz = hcol['clazz'] if hcol else '' %}
 {% set cclazz = cell.col.clazz if cell.col else '' %}
@@ -180,6 +181,7 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <td scope="col"{% if cl %} class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
 {% endfor %}
 </tr>
+{% endfor %}
 </thead>
 <!-- $(common.table.head) -->
 {% endif %}
@@ -210,8 +212,9 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
+{% for row in data.foot %}
 <tr>
-{% for cell in data.foot %}
+{% for cell in row %}
 {% set fcol = data.fcols[loop.index0] if data.fcols else None %}
 {% set fclazz = fcol['clazz'] if fcol else '' %}
 {% set cclazz = cell.col.clazz if cell.col else '' %}
@@ -222,6 +225,7 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <td scope="col"{% if cl %} class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
 {% endfor %}
 </tr>
+{% endfor %}
 </tfoot>
 <!-- $(common.table.foot) -->
 {% endif %}

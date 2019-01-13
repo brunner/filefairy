@@ -125,18 +125,18 @@ class ComponentTest(unittest.TestCase):
             hcols=COLS,
             bcols=COLS,
             fcols=COLS,
-            head=ROW,
+            head=[ROW],
             body=[ROW],
-            foot=ROW)
+            foot=[ROW])
         expected = {
             'clazz': CLAZZ,
             'id': ID_,
             'hcols': COLS,
             'bcols': COLS,
             'fcols': COLS,
-            'head': ROW,
+            'head': [ROW],
             'body': [ROW],
-            'foot': ROW
+            'foot': [ROW]
         }
         self.assertEqual(actual, expected)
 

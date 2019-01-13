@@ -30,20 +30,20 @@ _log = [
         bcols=[col(clazz='w-50'), col(clazz='w-50')],
         hcols=[col(colspan='2')],
         fcols=[col(colspan='2')],
-        head=[
+        head=[[
             cell(content='Arizona Diamondbacks batting - Pitching for Los '
                  'Angeles Dodgers : LHP 101')
-        ],
+        ]],
         body=[[cell(content='Batting: SHB 102'),
                cell(content='0-0: Ball')],
               [cell(), cell(content='103 to second')]],
-        foot=[cell(content='0 run(s), 0 hit(s), 0 error(s), 0 left on base')])
+        foot=[[cell(content='0 run(s), 0 hit(s), 0 error(s), 0 left on base')]])
 ]
 
 _schedule = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='Arizona Diamondbacks')]),
+        head=[[cell(content='Arizona Diamondbacks')]]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t31',
@@ -66,7 +66,7 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='Los Angeles Dodgers')]),
+        head=[[cell(content='Los Angeles Dodgers')]]),
     table(
         clazz='table-fixed border collapse',
         id_='schedule-t45',

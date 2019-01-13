@@ -70,7 +70,7 @@ class DivisionTest(unittest.TestCase):
                 col(clazz='td-sm position-relative text-center w-20'),
                 col(clazz='td-sm position-relative text-center w-20 pr-2'),
             ],
-            head=[cell(content='American League')],
+            head=[[cell(content='American League')]],
             body=[
                 _condensed_row('T34', '2-0', 'T33', '1-1', 'T48', '0-2'),
                 _condensed_row('T38', '2-0', 'T35', '1-1', 'T40', '0-2'),
@@ -282,7 +282,7 @@ class DivisionTest(unittest.TestCase):
             table(
                 hcols=EXPANDED_COLS,
                 bcols=EXPANDED_COLS,
-                head=_expanded_head('AL East'),
+                head=[_expanded_head('AL East')],
                 body=[
                     _expanded_row('T34', 'Boston', '2', '0', '-'),
                     _expanded_row('T33', 'Baltimore', '1', '1', '1.0'),
@@ -292,7 +292,7 @@ class DivisionTest(unittest.TestCase):
             table(
                 hcols=EXPANDED_COLS,
                 bcols=EXPANDED_COLS,
-                head=_expanded_head('AL Central'),
+                head=[_expanded_head('AL Central')],
                 body=[
                     _expanded_row('T38', 'Cleveland', '2', '0', '-'),
                     _expanded_row('T35', 'Chicago', '1', '1', '1.0'),
@@ -302,7 +302,7 @@ class DivisionTest(unittest.TestCase):
             table(
                 hcols=EXPANDED_COLS,
                 bcols=EXPANDED_COLS,
-                head=_expanded_head('AL Wild Card'),
+                head=[_expanded_head('AL Wild Card')],
                 body=[
                     _expanded_row('T33', 'Baltimore', '1', '1', '-'),
                     _expanded_row('T35', 'Chicago', '1', '1', '-'),

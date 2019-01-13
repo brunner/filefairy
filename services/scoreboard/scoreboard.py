@@ -55,9 +55,9 @@ def line_score_body(data):
     hcols += [col(clazz='td-sm-none w-28p pl-1 pr-2 text-center')]
     hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 3
 
-    head = [cell(content=final)]
-    head += [cell(content=str(i + 1)) for i in range(num)]
-    head += [cell(content=content) for content in ['R', 'H', 'E']]
+    head_row = [cell(content=final)]
+    head_row += [cell(content=str(i + 1)) for i in range(num)]
+    head_row += [cell(content=content) for content in ['R', 'H', 'E']]
 
     away_runs = data['away_runs']
     home_runs = data['home_runs']
@@ -86,6 +86,7 @@ def line_score_body(data):
     home_row += [cell(content=inning) for inning in home_line]
     home_row += [cell(col=home_col, content=content) for content in home_rhe]
 
+    head = [head_row]
     body = [away_row, home_row]
 
     return table(
@@ -108,22 +109,22 @@ def line_score_foot(data):
     Returns:
         A line score table footer.
     """
-    summary = []
+    pitching = []
 
     if data['winning_pitcher']:
         s = '{} ({}, {} ERA)'.format(*(data['winning_pitcher'].split()))
-        summary.append(span(['text-secondary'], 'W: ') + s)
+        pitching.append(span(['font-weight-bold text-secondary'], 'W: ') + s)
 
     if data['losing_pitcher']:
         s = '{} ({}, {} ERA)'.format(*(data['losing_pitcher'].split()))
-        summary.append(span(['text-secondary'], 'L: ') + s)
+        pitching.append(span(['font-weight-bold text-secondary'], 'L: ') + s)
 
     if data['saving_pitcher']:
         s = '{} ({})'.format(*(data['saving_pitcher'].split()))
-        summary.append(span(['text-secondary'], 'S: ') + s)
+        pitching.append(span(['font-weight-bold text-secondary'], 'S: ') + s)
 
     fcols = [col(clazz='border-0')]
-    foot = [cell(content=player_to_name_sub(', '.join(summary)))]
+    foot = [[cell(content=player_to_name_sub(', '.join(pitching)))]]
 
     return table(
         clazz='border border-top-0 small',

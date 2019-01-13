@@ -126,7 +126,7 @@ _gameday = {
     'schedule': [
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[cell(content='American League East')]),
+            head=[[cell(content='American League East')]]),
         table(
             clazz='table-fixed border',
             bcols=[col(clazz='position-relative text-truncate')],
@@ -139,7 +139,7 @@ _gameday = {
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[cell(content='American League Central')]),
+            head=[[cell(content='American League Central')]]),
         table(
             clazz='table-fixed border',
             bcols=[col(clazz='position-relative text-truncate')],
@@ -152,7 +152,7 @@ _gameday = {
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[cell(content='American League West')]),
+            head=[[cell(content='American League West')]]),
         table(
             clazz='table-fixed border',
             bcols=[col(clazz='position-relative text-truncate')],
@@ -165,7 +165,7 @@ _gameday = {
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[cell(content='National League East')]),
+            head=[[cell(content='National League East')]]),
         table(
             clazz='table-fixed border',
             bcols=[col(clazz='position-relative text-truncate')],
@@ -178,7 +178,7 @@ _gameday = {
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[cell(content='National League Central')]),
+            head=[[cell(content='National League Central')]]),
         table(
             clazz='table-fixed border',
             bcols=[col(clazz='position-relative text-truncate')],
@@ -191,7 +191,7 @@ _gameday = {
             ]),
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
-            head=[cell(content='National League West')]),
+            head=[[cell(content='National League West')]]),
         table(
             clazz='table-fixed border',
             bcols=[col(clazz='position-relative text-truncate')],
@@ -268,128 +268,135 @@ _game = {
     'tabs': {
         'style':
         'tabs',
-        'tabs': [
-            {
-                'name':
-                'log',
-                'title':
-                'Game Log',
-                'tables': [
-                    table(
-                        clazz='border mt-3',
-                        hcols=[col(clazz='position-relative', colspan='2')],
-                        bcols=[
-                            col(clazz='position-relative'),
-                            col(clazz='text-center text-secondary w-55p')
-                        ],
-                        fcols=[col(colspan='2')],
-                        head=[
-                            cell(
-                                content=logo_absolute('31', 'Top 1st', 'left'))
-                        ],
-                        body=_log_body,
-                        foot=[
-                            cell(
-                                content=(
-                                    '0 run(s), 2 hit(s), 0 error(s), 2 left '
-                                    'on base; Arizona Diamondbacks 0 - '
-                                    'Los Angeles Dodgers 0'))
-                        ])
-                ]
-            },
-            {
-                'name':
-                'links',
-                'title':
-                'Links',
-                'tables': [
-                    table(
-                        clazz='table-fixed border border-bottom-0 mt-3',
-                        head=[cell(content='Gameday Sources')]),
-                    table(
-                        clazz='table-fixed border',
-                        body=[
-                            [
-                                cell(
-                                    content=anchor(
-                                        _statslab_link + _game_box_link,
-                                        '10/26/1985 StatsLab Game Box'))
-                            ],
-                            [
-                                cell(
-                                    content=anchor(_statslab_link + _log_link,
-                                                   '10/26/1985 StatsLab Log'))
-                            ],
-                        ]),
-                    table(
-                        clazz='table-fixed border border-bottom-0 mt-3',
-                        head=[cell(content='Arizona Diamondbacks Schedule')]),
-                    table(
-                        clazz='table-fixed border',
-                        body=[
-                            [
-                                cell(
-                                    content=secondary(
-                                        '10/26/1985 @ Los Angeles Dodgers'))
-                            ],
-                            [
-                                cell(
-                                    content=anchor(
-                                        '/gameday/2999/',
-                                        '10/27/1985 @ Los Angeles Dodgers'))
-                            ],
-                        ]),
-                    table(
-                        clazz='table-fixed border border-bottom-0 mt-3',
-                        head=[cell(content='Los Angeles Dodgers Schedule')]),
-                    table(
-                        clazz='table-fixed border',
-                        body=[[
-                            cell(
-                                content=secondary(
-                                    '10/26/1985 v Arizona Diamondbacks'))
-                        ],
-                              [
-                                  cell(
-                                      content=anchor(
-                                          '/gameday/2999/',
-                                          '10/27/1985 v Arizona Diamondbacks'))
-                              ]]),
-                ]
-            },
-            {
-                'name': 'plays',
-                'title': 'Plays',
-                'tabs': {
-                    'style':
-                    'pills',
-                    'tabs': [{
-                        'name':
-                        'plays-1',
-                        'title':
-                        '1',
-                        'tables': [
-                            table(
-                                clazz='border mt-3',
-                                hcols=[col(clazz='position-relative')],
-                                head=[
-                                    cell(
-                                        content=logo_absolute(
-                                            '31', 'Top 1st', 'left'))
-                                ],
-                                body=_plays_body,
-                                foot=[
-                                    cell(
-                                        content=
-                                        '0 run(s), 2 hit(s), 0 error(s), '
-                                        '2 left on base; Arizona Diamondbacks 0 '
-                                        '- Los Angeles Dodgers 0')
-                                ])
-                        ]
-                    }]
-                }
-            }
-        ]
+        'tabs': [{
+            'name':
+            'log',
+            'title':
+            'Game Log',
+            'tables': [
+                table(
+                    clazz='border mt-3',
+                    hcols=[col(clazz='position-relative', colspan='2')],
+                    bcols=[
+                        col(clazz='position-relative'),
+                        col(clazz='text-center text-secondary w-55p')
+                    ],
+                    fcols=[col(colspan='2')],
+                    head=[[
+                        cell(content=logo_absolute('31', 'Top 1st', 'left'))
+                    ]],
+                    body=_log_body,
+                    foot=[[
+                        cell(
+                            content=('0 run(s), 2 hit(s), 0 error(s), 2 left '
+                                     'on base; Arizona Diamondbacks 0 - '
+                                     'Los Angeles Dodgers 0'))
+                    ]])
+            ]
+        },
+                 {
+                     'name':
+                     'links',
+                     'title':
+                     'Links',
+                     'tables': [
+                         table(
+                             clazz='table-fixed border border-bottom-0 mt-3',
+                             head=[[cell(content='Gameday Sources')]]),
+                         table(
+                             clazz='table-fixed border',
+                             body=[
+                                 [
+                                     cell(
+                                         content=anchor(
+                                             _statslab_link + _game_box_link,
+                                             '10/26/1985 StatsLab Game Box'))
+                                 ],
+                                 [
+                                     cell(
+                                         content=anchor(
+                                             _statslab_link + _log_link,
+                                             '10/26/1985 StatsLab Log'))
+                                 ],
+                             ]),
+                         table(
+                             clazz='table-fixed border border-bottom-0 mt-3',
+                             head=[[
+                                 cell(content='Arizona Diamondbacks Schedule')
+                             ]]),
+                         table(
+                             clazz='table-fixed border',
+                             body=[
+                                 [
+                                     cell(
+                                         content=secondary(
+                                             '10/26/1985 @ Los Angeles Dodgers'
+                                         ))
+                                 ],
+                                 [
+                                     cell(
+                                         content=anchor(
+                                             '/gameday/2999/',
+                                             '10/27/1985 @ Los Angeles Dodgers'
+                                         ))
+                                 ],
+                             ]),
+                         table(
+                             clazz='table-fixed border border-bottom-0 mt-3',
+                             head=[[
+                                 cell(content='Los Angeles Dodgers Schedule')
+                             ]]),
+                         table(
+                             clazz='table-fixed border',
+                             body=[
+                                 [
+                                     cell(
+                                         content=secondary(
+                                             '10/26/1985 v Arizona Diamondbacks'
+                                         ))
+                                 ],
+                                 [
+                                     cell(
+                                         content=anchor(
+                                             '/gameday/2999/',
+                                             '10/27/1985 v Arizona Diamondbacks'
+                                         ))
+                                 ]
+                             ]),
+                     ]
+                 },
+                 {
+                     'name': 'plays',
+                     'title': 'Plays',
+                     'tabs': {
+                         'style':
+                         'pills',
+                         'tabs': [{
+                             'name':
+                             'plays-1',
+                             'title':
+                             '1',
+                             'tables': [
+                                 table(
+                                     clazz='border mt-3',
+                                     hcols=[col(clazz='position-relative')],
+                                     head=[[
+                                         cell(
+                                             content=logo_absolute(
+                                                 '31', 'Top 1st', 'left'))
+                                     ]],
+                                     body=_plays_body,
+                                     foot=[[
+                                         cell(
+                                             content=
+                                             '0 run(s), 2 hit(s), 0 error(s), '
+                                             '2 left on base; Arizona Diamondbacks 0 '
+                                             '- Los Angeles Dodgers 0')
+                                     ]])
+                             ]
+                         }]
+                     }
+                 }]
     }
 }
 _game_data = {

@@ -365,7 +365,7 @@ class DashboardTest(Test):
                 clazz='border mt-3',
                 hcols=[col(colspan='3')],
                 bcols=[None, None, col(clazz='text-right w-75p')],
-                head=[cell(content='Saturday, October 26th, 1985')],
+                head=[[cell(content='Saturday, October 26th, 1985')]],
                 body=[[
                     cell(
                         content=anchor(link + 'path/to/module.py#L123',
@@ -377,7 +377,7 @@ class DashboardTest(Test):
                 clazz='border mt-3',
                 hcols=[col(colspan='3')],
                 bcols=[None, None, col(clazz='text-right w-75p')],
-                head=[cell(content='Friday, October 25th, 1985')],
+                head=[[cell(content='Friday, October 25th, 1985')]],
                 body=[[
                     cell(
                         content=anchor(link + 'path/to/module.py#L456',

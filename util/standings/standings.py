@@ -165,13 +165,13 @@ def standings_table(records):
                 table(
                     hcols=_cols,
                     bcols=_cols,
-                    head=[
+                    head=[[
                         cell(content=group),
                         cell(content='W'),
                         cell(content='L'),
                         cell(content='GB'),
                         cell(content='M#')
-                    ],
+                    ]],
                     body=body))
 
     return tables

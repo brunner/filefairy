@@ -257,62 +257,62 @@ class StandingsTest(Test):
     def test_index_html(self, mock_call):
         condensed_al = table(
             clazz='table-fixed border mt-3',
-            head=[cell(content='American League')],
+            head=[[cell(content='American League')]],
             body=[[cell(content='0-0')]],
         )
         condensed_nl = table(
             clazz='table-fixed border mt-3',
-            head=[cell(content='National League')],
+            head=[[cell(content='National League')]],
             body=[[cell(content='0-0')]],
         )
         expanded_al_east = table(
-            head=[cell(content='AL East')],
+            head=[[cell(content='AL East')]],
             body=[[cell(content='Baltimore')]],
         )
         expanded_al_central = table(
-            head=[cell(content='AL Central')],
+            head=[[cell(content='AL Central')]],
             body=[[cell(content='Cleveland')]])
         expanded_al_west = table(
-            head=[cell(content='AL West')],
+            head=[[cell(content='AL West')]],
             body=[[cell(content='Houston')]],
         )
         expanded_al_wc = table(
-            head=[cell(content='AL Wild Card')],
+            head=[[cell(content='AL Wild Card')]],
             body=[[cell(content='Boston')]],
         )
         expanded_nl_east = table(
-            head=[cell(content='NL East')],
+            head=[[cell(content='NL East')]],
             body=[[cell(content='Atlanta')]],
         )
         expanded_nl_central = table(
-            head=[cell(content='NL Central')],
+            head=[[cell(content='NL Central')]],
             body=[[cell(content='Chicago')]])
         expanded_nl_west = table(
-            head=[cell(content='NL West')],
+            head=[[cell(content='NL West')]],
             body=[[cell(content='Arizona')]],
         )
         expanded_nl_wc = table(
-            head=[cell(content='NL Wild Card')],
+            head=[[cell(content='NL Wild Card')]],
             body=[[cell(content='Miami')]],
         )
         body_2449 = table(
-            head=[cell(content='Final (2449)')],
+            head=[[cell(content='Final (2449)')]],
             body=[[cell(content='Detroit')]],
         )
-        foot_2449 = table(foot=[cell(content='W: P123')], )
+        foot_2449 = table(foot=[[cell(content='W: P123')]], )
         body_2469 = table(
-            head=[cell(content='Final (2469)')],
+            head=[[cell(content='Final (2469)')]],
             body=[[cell(content='Detroit')]],
         )
-        foot_2469 = table(foot=[cell(content='W: P456')], )
+        foot_2469 = table(foot=[[cell(content='W: P456')]], )
         body_2476 = table(
-            head=[cell(content='Final (2476)')],
+            head=[[cell(content='Final (2476)')]],
             body=[[cell(content='Detroit')]],
         )
-        foot_2476 = table(foot=[cell(content='W: P789')], )
-        head_2449 = table(head=[cell(content='Wednesday')], )
-        head_2469 = table(head=[cell(content='Thursday')], )
-        head_2476 = table(head=[cell(content='Friday')], )
+        foot_2476 = table(foot=[[cell(content='W: P789')]], )
+        head_2449 = table(head=[[cell(content='Wednesday')]], )
+        head_2469 = table(head=[[cell(content='Thursday')]], )
+        head_2476 = table(head=[[cell(content='Friday')]], )
         mock_call.side_effect = [
             condensed_al,
             [

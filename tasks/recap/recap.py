@@ -225,7 +225,7 @@ class Recap(Registrable):
                     pdate = datetime.datetime.strptime(cdate, '%Y%m%d')
                     fdate = pdate.strftime('%A, %B %-d{S}, %Y').replace(
                         '{S}', suffix(pdate.day))
-                    ret.insert(0, table(head=[cell(content=fdate)]))
+                    ret.insert(0, table(head=[[cell(content=fdate)]]))
                 if ret[0]['body'] is None:
                     ret[0]['body'] = []
                 if then and then == self._encode(date, line):

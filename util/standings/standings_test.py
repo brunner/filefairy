@@ -45,13 +45,13 @@ def _table(title, body):
     return table(
         hcols=cols,
         bcols=cols,
-        head=[
+        head=[[
             cell(content=title),
             cell(content='W'),
             cell(content='L'),
             cell(content='GB'),
             cell(content='M#')
-        ],
+        ]],
         body=body)
 
 

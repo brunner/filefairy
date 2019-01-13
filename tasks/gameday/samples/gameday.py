@@ -55,7 +55,7 @@ _breadcrumbs = [{
 _schedule = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='American League East')]),
+        head=[[cell(content='American League East')]]),
     table(
         clazz='table-fixed border',
         bcols=[col(clazz='position-relative text-truncate')],
@@ -68,7 +68,7 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='American League Central')]),
+        head=[[cell(content='American League Central')]]),
     table(
         clazz='table-fixed border',
         bcols=[col(clazz='position-relative text-truncate')],
@@ -81,7 +81,7 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='American League West')]),
+        head=[[cell(content='American League West')]]),
     table(
         clazz='table-fixed border',
         bcols=[col(clazz='position-relative text-truncate')],
@@ -94,7 +94,7 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='National League East')]),
+        head=[[cell(content='National League East')]]),
     table(
         clazz='table-fixed border',
         bcols=[col(clazz='position-relative text-truncate')],
@@ -107,7 +107,7 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='National League Central')]),
+        head=[[cell(content='National League Central')]]),
     table(
         clazz='table-fixed border',
         bcols=[col(clazz='position-relative text-truncate')],
@@ -120,7 +120,7 @@ _schedule = [
         ]),
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
-        head=[cell(content='National League West')]),
+        head=[[cell(content='National League West')]]),
     table(
         clazz='table-fixed border',
         bcols=[col(clazz='position-relative text-truncate')],

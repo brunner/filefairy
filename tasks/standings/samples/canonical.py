@@ -64,7 +64,7 @@ _recent = [
         clazz='table-fixed border mt-3',
         hcols=[col(clazz='text-center', colspan=5)],
         bcols=_bcols,
-        head=[cell(content='American League')],
+        head=[[cell(content='American League')]],
         body=[
             [
                 cell(content=icon_badge('T33', '0-0', '16')),
@@ -93,7 +93,7 @@ _recent = [
         clazz='table-fixed border mt-3',
         hcols=[col(clazz='text-center', colspan=5)],
         bcols=_bcols,
-        head=[cell(content='National League')],
+        head=[[cell(content='National League')]],
         body=[
             [
                 cell(content=icon_badge('T32', '0-0', '16')),
@@ -124,7 +124,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('AL East'),
+        head=[_expanded_head('AL East')],
         body=[
             [
                 cell(content=icon_absolute('T33', 'Baltimore', '20')),
@@ -161,7 +161,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('AL Central'),
+        head=[_expanded_head('AL Central')],
         body=[
             [
                 cell(content=icon_absolute('T35', 'Chicago', '20')),
@@ -198,7 +198,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('AL West'),
+        head=[_expanded_head('AL West')],
         body=[
             [
                 cell(content=icon_absolute('T42', 'Houston', '20')),
@@ -235,7 +235,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('AL Wild Card'),
+        head=[_expanded_head('AL Wild Card')],
         body=[
             [
                 cell(content=icon_absolute('T33', 'Baltimore', '20')),
@@ -272,7 +272,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('NL East'),
+        head=[_expanded_head('NL East')],
         body=[
             [
                 cell(content=icon_absolute('T32', 'Atlanta', '20')),
@@ -309,7 +309,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('NL Central'),
+        head=[_expanded_head('NL Central')],
         body=[
             [
                 cell(content=icon_absolute('T36', 'Chicago', '20')),
@@ -346,7 +346,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('NL West'),
+        head=[_expanded_head('NL West')],
         body=[
             [
                 cell(content=icon_absolute('T31', 'Arizona', '20')),
@@ -383,7 +383,7 @@ _expanded = [
     table(
         hcols=EXPANDED_COLS,
         bcols=EXPANDED_COLS,
-        head=_expanded_head('NL Wild Card'),
+        head=[_expanded_head('NL Wild Card')],
         body=[
             [
                 cell(content=icon_absolute('T31', 'Arizona', '20')),

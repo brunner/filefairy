@@ -126,9 +126,9 @@ def table(clazz='border mt-3',
         hcols: The optional list of CSS classes to apply to each head column.
         bcols: The optional list of CSS classes to apply to each body column.
         fcols: The optional list of CSS classes to apply to each footer column.
-        head: The optional list of head cells.
+        head: The optional list of head rows. Each row is a list of cells.
         body: The optional list of body rows. Each row is a list of cells.
-        foot: The optional list of footer cells.
+        foot: The optional list of footer rows. Each row is a list of cells.
 
     Returns:
         The table element.

@@ -57,7 +57,7 @@ _encoded_old = {
 _injuries_table_all_new = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Wednesday, August 17th, 2022')],
+        head=[[cell(content='Wednesday, August 17th, 2022')]],
         body=[
             [
                 cell(
@@ -80,7 +80,7 @@ _injuries_table_all_new = [
         ]),
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -94,7 +94,7 @@ _injuries_table_all_new = [
 _injuries_table_team_new = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Wednesday, August 17th, 2022')],
+        head=[[cell(content='Wednesday, August 17th, 2022')]],
         body=[
             [
                 cell(
@@ -110,7 +110,7 @@ _injuries_table_team_new = [
 _injuries_table_old = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -126,7 +126,7 @@ _injuries_table_old = [
 _news_table_all_new = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Thursday, August 18th, 2022')],
+        head=[[cell(content='Thursday, August 18th, 2022')]],
         body=[
             [
                 cell(
@@ -146,7 +146,7 @@ _news_table_all_new = [
         ]),
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -161,7 +161,7 @@ _news_table_all_new = [
 _news_table_team_new = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -176,7 +176,7 @@ _news_table_team_new = [
 _news_table_old = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -191,7 +191,7 @@ _news_table_old = [
 _transactions_table_all_new = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -227,7 +227,7 @@ _transactions_table_all_new = [
 _transactions_table_team_new = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -255,7 +255,7 @@ _transactions_table_team_new = [
 _transactions_table_old = [
     table(
         clazz='border mt-3',
-        head=[cell(content='Monday, August 15th, 2022')],
+        head=[[cell(content='Monday, August 15th, 2022')]],
         body=[
             [
                 cell(
@@ -608,13 +608,13 @@ class RecapTest(Test):
             table(
                 hcols=cols,
                 bcols=cols,
-                head=[
+                head=[[
                     cell(content='AL East'),
                     cell(content='W'),
                     cell(content='L'),
                     cell(content='GB'),
                     cell(content='M#')
-                ],
+                ]],
                 body=body)
         ]
         mock_standings.return_value = standings_table

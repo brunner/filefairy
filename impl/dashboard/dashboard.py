@@ -216,7 +216,7 @@ class Dashboard(Registrable):
             t = table(
                 hcols=[col(colspan='3')],
                 bcols=[None, None, col(clazz='text-right w-75p')],
-                head=[cell(content=head_content)],
+                head=[[cell(content=head_content)]],
                 body=body)
             ret['logs'].insert(0, t)
 

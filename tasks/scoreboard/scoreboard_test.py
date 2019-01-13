@@ -93,7 +93,7 @@ _scores_regular_encoded = [
     '<{0}{1}2995.html|T59 8, T47 2>'
 ]
 _scores_table = table(
-    head=cell(content='2022-10-10'),
+    head=[[cell(content='2022-10-10')]],
     body=[[cell(content='Baltimore 1, Boston 0')]])
 _scores_regular_text = '*<{0}{1}2998.html|Arizona 4, Los Angeles 2>*\n' + \
                        '*<{0}{1}3003.html|Atlanta 2, Baltimore 1>*\n' + \
@@ -800,11 +800,11 @@ class ScoreboardTest(Test):
             table(
                 hcols=cols,
                 bcols=cols,
-                head=[
+                head=[[
                     cell(content='AL East'),
                     cell(content='W'),
                     cell(content='L'),
-                ],
+                ]],
                 body=[[
                     cell(content='33'),
                     cell(content='0'),
@@ -1008,7 +1008,7 @@ class ScoreboardTest(Test):
         ps_header = table(
             clazz='table-fixed border border-bottom-0 mt-3',
             hcols=[col(clazz='text-center')],
-            head=[cell(content='Postseason')])
+            head=[[cell(content='Postseason')]])
         live_postseason = table(
             clazz='table-fixed border',
             bcols=[
@@ -1097,11 +1097,11 @@ class ScoreboardTest(Test):
         al_header = table(
             clazz='table-fixed border border-bottom-0 mt-3',
             hcols=[col(clazz='text-center')],
-            head=[cell(content='American League')])
+            head=[[cell(content='American League')]])
         nl_header = table(
             clazz='table-fixed border border-bottom-0 mt-3',
             hcols=[col(clazz='text-center')],
-            head=[cell(content='National League')])
+            head=[[cell(content='National League')]])
         live_regular = table(
             clazz='table-fixed border',
             bcols=[col(clazz='td-sm position-relative text-center w-20')] * 5,
@@ -1434,7 +1434,7 @@ class ScoreboardTest(Test):
                     'Sox @ Tampa Bay Rays)'))
         ]]
         expected = table(
-            head=[cell(content='Sunday, October 9th, 2022')], body=body)
+            head=[[cell(content='Sunday, October 9th, 2022')]], body=body)
         self.assertEqual(actual, expected)
 
         self.mock_open.assert_not_called()
@@ -1476,7 +1476,7 @@ class ScoreboardTest(Test):
             ],
         ]
         expected = table(
-            head=[cell(content='Sunday, October 9th, 2022')], body=body)
+            head=[[cell(content='Sunday, October 9th, 2022')]], body=body)
         self.assertEqual(actual, expected)
 
         self.mock_open.assert_not_called()
@@ -1570,7 +1570,7 @@ class ScoreboardTest(Test):
             ],
         ]
         expected = table(
-            head=[cell(content='Sunday, October 9th, 2022')], body=body)
+            head=[[cell(content='Sunday, October 9th, 2022')]], body=body)
         self.assertEqual(actual, expected)
 
         self.mock_open.assert_not_called()

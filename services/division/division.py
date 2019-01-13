@@ -113,7 +113,7 @@ def condensed_league(league, tables):
         clazz='table-fixed border mt-3',
         hcols=[col(clazz='text-center', colspan=colspan)],
         bcols=bcols,
-        head=[cell(content=league)],
+        head=[[cell(content=league)]],
         body=body)
 
 
@@ -194,7 +194,7 @@ def expanded_league(league, tables):
             body.append(row)
 
         contents = [subleague, 'W', 'L', 'GB']
-        head = [cell(content=content) for content in contents]
+        head = [[cell(content=content) for content in contents]]
 
         ret.append(
             table(
