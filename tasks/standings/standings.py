@@ -20,6 +20,7 @@ from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
+from data.shadow.shadow import Shadow  # noqa
 
 GAME_KEYS = [
     'away_errors', 'away_hits', 'away_homeruns', 'away_line', 'away_record',
@@ -81,6 +82,14 @@ class Standings(Registrable):
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
         return [('standings/index.html', '', 'standings.html', _index_html)]
+
+    def _shadow_data(self, **kwargs):
+        return [
+            Shadow(
+                destination='statsplus',
+                key='standings.table',
+                info=self.data['table'])
+        ]
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.DOWNLOAD_YEAR:

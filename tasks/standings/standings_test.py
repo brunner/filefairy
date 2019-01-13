@@ -26,6 +26,7 @@ from common.test.test import get_testdata  # noqa
 from common.test.test import main  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
+from data.shadow.shadow import Shadow  # noqa
 from tasks.standings.standings import Standings  # noqa
 from tasks.standings.standings import GAME_KEYS  # noqa
 
@@ -108,6 +109,18 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_index.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    def test_shadow_data(self):
+        table_ = {'T40': '87-75', 'T47': '91-71'}
+        standings = self.create_standings(_data(table_=table_))
+        actual = standings._shadow_data(date=DATE_10260602)
+        expected = [
+            Shadow(
+                destination='statsplus', key='standings.table', info=table_)
+        ]
+        self.assertEqual(actual, expected)
+
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Standings, '_start')
