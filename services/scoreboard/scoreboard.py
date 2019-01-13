@@ -16,6 +16,7 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.encyclopedia.encyclopedia import player_to_name_sub  # noqa
+from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import icon_absolute  # noqa
 
@@ -109,8 +110,10 @@ def line_score_foot(data):
     Returns:
         A line score table footer.
     """
-    pitching = []
+    fcols = [col(clazz='border-0')]
+    lines = []
 
+    pitching = []
     if data['winning_pitcher']:
         s = '{} ({}, {} ERA)'.format(*(data['winning_pitcher'].split()))
         pitching.append(span(['font-weight-bold text-secondary'], 'W: ') + s)
@@ -123,13 +126,29 @@ def line_score_foot(data):
         s = '{} ({})'.format(*(data['saving_pitcher'].split()))
         pitching.append(span(['font-weight-bold text-secondary'], 'S: ') + s)
 
-    fcols = [col(clazz='border-0')]
-    foot = [[cell(content=player_to_name_sub(', '.join(pitching)))]]
+    lines.append(player_to_name_sub(', '.join(pitching)))
+
+    batting = []
+    for team in ['away', 'home']:
+        if data[team + '_homeruns']:
+            away_abbr = encoding_to_abbreviation(data[team + '_team'])
+            away_homeruns = []
+            for h in data[team + '_homeruns'].split(', '):
+                p, n, total = h.split()
+                if int(n) > 1:
+                    p += ' ' + n
+                away_homeruns.append('{} ({})'.format(p, total))
+            s = ', '.join(away_homeruns)
+            batting.append(span(['text-secondary'], away_abbr + ': ') + s)
+
+    hr = span(['font-weight-bold text-secondary'], 'HR: ')
+    hrs = ', '.join(batting) if batting else 'None'
+    lines.append(player_to_name_sub(hr + hrs))
 
     return table(
         clazz='border border-top-0 small',
         fcols=fcols,
-        foot=foot,
+        foot=[[cell(content='<br>'.join(lines))]],
     )
 
 

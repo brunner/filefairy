@@ -19,6 +19,7 @@ from common.json_.json_ import dumps  # noqa
 from common.re_.re_ import find  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
+from common.teams.teams import encoding_to_hometown  # noqa
 
 
 def _open(in_):
@@ -108,6 +109,21 @@ def parse_score(in_, out, date):
         for suffix in ['_errors', '_hits', '_runs']:
             data[team + suffix] = cols.pop(-1)
         data[team + '_line'] = ' '.join(cols)
+
+    batting = re.findall(r'(?s)BATTING<br>(.+?)</table>', text)
+    if len(batting) != 2:
+        return None
+
+    for team, btext in zip(['away', 'home'], batting):
+        homeruns = []
+        container = find(r'(?s)Home Runs:(.+?)<br>', btext)
+        if container:
+            for s in container.split(') \n'):
+                p, n, total = find(r'^(\w+)\n\s*(\d+)?\s*\((\d+),', s)
+                if not n:
+                    n = '1'
+                homeruns.append(' '.join([p, n, total]))
+        data[team + '_homeruns'] = ', '.join(homeruns)
 
     for pitcher in ['winning', 'losing']:
         i = pitcher[0].upper()

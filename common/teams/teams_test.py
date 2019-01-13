@@ -13,6 +13,7 @@ sys.path.append(re.sub(r'/common/teams', '', _path))
 from common.teams.teams import decoding_to_encoding  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
+from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
@@ -74,6 +75,17 @@ class TeamTest(unittest.TestCase):
         actual = decoding_to_encoding_sub(', '.join(DECODING_KEYS))
         expected = ', '.join(encodings)
         self.assertEqual(actual, expected)
+
+    def test_encoding_to_abbreviation(self):
+        abbreviations = [
+            'ARI', 'ATL', 'BAL', 'BOS', 'CWS', 'CHC', 'CIN', 'CLE', 'COL',
+            'DET', 'MIA', 'HOU', 'KC', 'LAA', 'LAD', 'MIL', 'MIN', 'NYY',
+            'NYM', 'OAK', 'PHI', 'PIT', 'SD', 'SEA', 'SF', 'STL', 'TB', 'TEX',
+            'TOR', 'WAS', '', '', ''
+        ]
+        for encoding, abbreviation in zip(ENCODING_KEYS, abbreviations):
+            actual = encoding_to_abbreviation(encoding)
+            self.assertEqual(actual, abbreviation)
 
     def test_encoding_to_decoding(self):
         decodings = [

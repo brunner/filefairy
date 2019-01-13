@@ -6,11 +6,12 @@ import re
 from functools import partial
 
 
-def _team(encoding, hometown, nickname):
+def _team(encoding, abbreviation, hometown, nickname):
     special1 = encoding in ['TCH', 'TLA', 'TNY']
     special2 = encoding in ['T35', 'T36', 'T44', 'T45', 'T48', 'T49']
 
     return {
+        'abbreviation': abbreviation if not special1 else '',
         'decoding': (hometown + ' ' + nickname) if not special1 else '',
         'encoding': encoding,
         'hometown': hometown if not special1 else '',
@@ -21,39 +22,39 @@ def _team(encoding, hometown, nickname):
 
 
 TEAMS = [
-    _team('T31', 'Arizona', 'Diamondbacks'),
-    _team('T32', 'Atlanta', 'Braves'),
-    _team('T33', 'Baltimore', 'Orioles'),
-    _team('T34', 'Boston', 'Red Sox'),
-    _team('T35', 'Chicago', 'White Sox'),
-    _team('T36', 'Chicago', 'Cubs'),
-    _team('T37', 'Cincinnati', 'Reds'),
-    _team('T38', 'Cleveland', 'Indians'),
-    _team('T39', 'Colorado', 'Rockies'),
-    _team('T40', 'Detroit', 'Tigers'),
-    _team('T41', 'Miami', 'Marlins'),
-    _team('T42', 'Houston', 'Astros'),
-    _team('T43', 'Kansas City', 'Royals'),
-    _team('T44', 'Los Angeles', 'Angels'),
-    _team('T45', 'Los Angeles', 'Dodgers'),
-    _team('T46', 'Milwaukee', 'Brewers'),
-    _team('T47', 'Minnesota', 'Twins'),
-    _team('T48', 'New York', 'Yankees'),
-    _team('T49', 'New York', 'Mets'),
-    _team('T50', 'Oakland', 'Athletics'),
-    _team('T51', 'Philadelphia', 'Phillies'),
-    _team('T52', 'Pittsburgh', 'Pirates'),
-    _team('T53', 'San Diego', 'Padres'),
-    _team('T54', 'Seattle', 'Mariners'),
-    _team('T55', 'San Francisco', 'Giants'),
-    _team('T56', 'St. Louis', 'Cardinals'),
-    _team('T57', 'Tampa Bay', 'Rays'),
-    _team('T58', 'Texas', 'Rangers'),
-    _team('T59', 'Toronto', 'Blue Jays'),
-    _team('T60', 'Washington', 'Nationals'),
-    _team('TCH', 'Chicago', ''),
-    _team('TNY', 'New York', ''),
-    _team('TLA', 'Los Angeles', ''),
+    _team('T31', 'ARI', 'Arizona', 'Diamondbacks'),
+    _team('T32', 'ATL', 'Atlanta', 'Braves'),
+    _team('T33', 'BAL', 'Baltimore', 'Orioles'),
+    _team('T34', 'BOS', 'Boston', 'Red Sox'),
+    _team('T35', 'CWS', 'Chicago', 'White Sox'),
+    _team('T36', 'CHC', 'Chicago', 'Cubs'),
+    _team('T37', 'CIN', 'Cincinnati', 'Reds'),
+    _team('T38', 'CLE', 'Cleveland', 'Indians'),
+    _team('T39', 'COL', 'Colorado', 'Rockies'),
+    _team('T40', 'DET', 'Detroit', 'Tigers'),
+    _team('T41', 'MIA', 'Miami', 'Marlins'),
+    _team('T42', 'HOU', 'Houston', 'Astros'),
+    _team('T43', 'KC', 'Kansas City', 'Royals'),
+    _team('T44', 'LAA', 'Los Angeles', 'Angels'),
+    _team('T45', 'LAD', 'Los Angeles', 'Dodgers'),
+    _team('T46', 'MIL', 'Milwaukee', 'Brewers'),
+    _team('T47', 'MIN', 'Minnesota', 'Twins'),
+    _team('T48', 'NYY', 'New York', 'Yankees'),
+    _team('T49', 'NYM', 'New York', 'Mets'),
+    _team('T50', 'OAK', 'Oakland', 'Athletics'),
+    _team('T51', 'PHI', 'Philadelphia', 'Phillies'),
+    _team('T52', 'PIT', 'Pittsburgh', 'Pirates'),
+    _team('T53', 'SD', 'San Diego', 'Padres'),
+    _team('T54', 'SEA', 'Seattle', 'Mariners'),
+    _team('T55', 'SF', 'San Francisco', 'Giants'),
+    _team('T56', 'STL', 'St. Louis', 'Cardinals'),
+    _team('T57', 'TB', 'Tampa Bay', 'Rays'),
+    _team('T58', 'TEX', 'Texas', 'Rangers'),
+    _team('T59', 'TOR', 'Toronto', 'Blue Jays'),
+    _team('T60', 'WAS', 'Washington', 'Nationals'),
+    _team('TCH', '', 'Chicago', ''),
+    _team('TNY', '', 'New York', ''),
+    _team('TLA', '', 'Los Angeles', ''),
 ]
 
 
@@ -75,6 +76,7 @@ def _sub(ks, f, s):
 DECODING_MAP = _map('decoding', ['encoding'])
 
 ENCODING_MAP = _map('encoding', [
+    'abbreviation',
     'decoding',
     'hometown',
     'nickname',
@@ -100,6 +102,10 @@ def decoding_to_encoding_sub(text):
 
 def encoding_keys():
     return ENCODING_KEYS
+
+
+def encoding_to_abbreviation(encoding):
+    return ENCODING_MAP.get(encoding, {}).get('abbreviation', '')
 
 
 def encoding_to_decoding(encoding):

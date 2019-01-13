@@ -21,10 +21,10 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
 GAME_KEYS = [
-    'away_errors', 'away_hits', 'away_line', 'away_record', 'away_runs',
-    'away_team', 'date', 'home_errors', 'home_hits', 'home_line',
-    'home_record', 'home_runs', 'home_team', 'losing_pitcher',
-    'saving_pitcher', 'winning_pitcher',
+    'away_errors', 'away_hits', 'away_homeruns', 'away_line', 'away_record',
+    'away_runs', 'away_team', 'date', 'home_errors', 'home_hits',
+    'home_homeruns', 'home_line', 'home_record', 'home_runs', 'home_team',
+    'losing_pitcher', 'saving_pitcher', 'winning_pitcher',
 ]  # yapf: disable
 
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
