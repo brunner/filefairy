@@ -113,11 +113,11 @@ def parse_score(in_, out, date):
         i = pitcher[0].upper()
         p, line = find(r'(?s)<td class="dl">(\w+) ' + i + r' (.+?)</tr>', text)
 
-        record = find(r'^(\(\d+-\d+\))', line)
+        record = find(r'^\((\d+-\d+)\)', line)
         era = find(r'>([^<]+)</td>$', line)
         data[pitcher + '_pitcher'] = ' '.join([p, record, era])
 
-    p, saves = find(r'(?s)<td class="dl">(\w+) SV (\(\d+\))', text)
+    p, saves = find(r'(?s)<td class="dl">(\w+) SV \((\d+)\)', text)
     data['saving_pitcher'] = ' '.join([p, saves]) if saves else ''
 
     data['ballpark'] = find(r'(?s)Ballpark:(.+?)<br>', text)

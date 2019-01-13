@@ -108,14 +108,22 @@ def line_score_foot(data):
     Returns:
         A line score table footer.
     """
-    summary = [span(['text-secondary'], 'W: ') + data['winning_pitcher']]
-    summary += [span(['text-secondary'], 'L: ') + data['losing_pitcher']]
+    summary = []
+
+    if data['winning_pitcher']:
+        s = '{} ({}, {} ERA)'.format(*(data['winning_pitcher'].split()))
+        summary.append(span(['text-secondary'], 'W: ') + s)
+
+    if data['losing_pitcher']:
+        s = '{} ({}, {} ERA)'.format(*(data['losing_pitcher'].split()))
+        summary.append(span(['text-secondary'], 'L: ') + s)
+
     if data['saving_pitcher']:
-        summary += [span(['text-secondary'], 'S: ') + data['saving_pitcher']]
-    summary = player_to_name_sub(', '.join(summary))
+        s = '{} ({})'.format(*(data['saving_pitcher'].split()))
+        summary.append(span(['text-secondary'], 'S: ') + s)
 
     fcols = [col(clazz='border-0')]
-    foot = [cell(content=summary)]
+    foot = [cell(content=player_to_name_sub(', '.join(summary)))]
 
     return table(
         clazz='border border-top-0 small',
