@@ -31,7 +31,7 @@ EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
-STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
+STATSPLUS_LINK = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html'
 
 
 class Statsplus(Registrable):
@@ -115,22 +115,22 @@ class Statsplus(Registrable):
         return Response(
             shadow=self._shadow_scores(), notify=[Notify.STATSPLUS_FINISH])
 
-    def _parse_saved_scores(self, date, *args, **kwargs):
-        if date not in self.data['scores']:
+    def _parse_saved_scores(self, date_, *args, **kwargs):
+        if date_ not in self.data['scores']:
             return Response()
 
         unvisited = {}
-        for num, s in self.data['scores'][date].items():
-            if self._parse_score(num, date) is None:
+        for num, s in self.data['scores'][date_].items():
+            if self._parse_score(num, date_) is None:
                 unvisited[num] = s
 
         if unvisited:
-            thread_ = Thread(target='_parse_saved_scores', args=(date, ))
+            thread_ = Thread(target='_parse_saved_scores', args=(date_, ))
 
-            if unvisited == self.data['scores'][date]:
+            if unvisited == self.data['scores'][date_]:
                 return Response(thread_=[thread_])
 
-            self.data['scores'][date] = unvisited
+            self.data['scores'][date_] = unvisited
             self.write()
 
             return Response(
@@ -138,7 +138,7 @@ class Statsplus(Registrable):
                 shadow=self._shadow_scores(),
                 thread_=[thread_])
 
-        self.data['scores'].pop(date, None)
+        self.data['scores'].pop(date_, None)
         self.write()
 
         return Response(
