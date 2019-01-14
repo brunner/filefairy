@@ -15,6 +15,7 @@ from common.json_.json_ import filts  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import find  # noqa
 from common.record.record import decode_record  # noqa
+from common.record.record import encode_record  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
@@ -172,10 +173,16 @@ class Standings(Registrable):
         for league in sorted(LEAGUES):
             rtables, etables = [], []
             for subleague, teams in LEAGUES[league]:
-                r = {t: statsplus_table.get(t, '0-0') for t in teams}
-                rtables.append((subleague, r))
+                r = {}
+                e = {}
 
-                e = {t: self.data['table'][t] for t in teams}
+                for t in teams:
+                    r[t] = statsplus_table.get(t, '0-0')
+                    rw, rl = decode_record(r[t])
+                    tw, tl = decode_record(self.data['table'][t])
+                    e[t] = encode_record(rw + tw, rl + tl)
+
+                rtables.append((subleague, r))
                 etables.append((subleague, e))
 
             ret['recent'].append(

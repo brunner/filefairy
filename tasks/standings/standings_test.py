@@ -347,7 +347,16 @@ class StandingsTest(Test):
                 '3001': 'TNY 1, T55 0',
             },
         }
-        statsplus_table = {'T40': '0-3', 'T47': '3-0'}
+        statsplus_table = {
+            'T31': '1-0',
+            'T40': '0-3',
+            'T44': '0-1',
+            'T45': '0-1',
+            'T47': '3-0',
+            'T48': '1-0',
+            'T49': '1-0',
+            'T55': '0-1'
+        }
         standings.shadow['statsplus.scores'] = statsplus_scores
         standings.shadow['statsplus.table'] = statsplus_table
         standings._reload()
@@ -399,9 +408,9 @@ class StandingsTest(Test):
                 ('West', _table(al_west, statsplus_table)),
             ])),
             mock.call('expanded_league', ('American League', [
-                ('East', _table(al_east, table_)),
-                ('Central', _table(al_central, table_)),
-                ('West', _table(al_west, table_)),
+                ('East', _table(al_east, statsplus_table)),
+                ('Central', _table(al_central, statsplus_table)),
+                ('West', _table(al_west, statsplus_table)),
             ])),
             mock.call('condensed_league', ('National League', [
                 ('East', _table(nl_east, statsplus_table)),
@@ -409,9 +418,9 @@ class StandingsTest(Test):
                 ('West', _table(nl_west, statsplus_table)),
             ])),
             mock.call('expanded_league', ('National League', [
-                ('East', _table(nl_east, table_)),
-                ('Central', _table(nl_central, table_)),
-                ('West', _table(nl_west, table_)),
+                ('East', _table(nl_east, statsplus_table)),
+                ('Central', _table(nl_central, statsplus_table)),
+                ('West', _table(nl_west, statsplus_table)),
             ])),
             mock.call('unofficial_score_body', (['T31 4, TLA 2'], )),
             mock.call('unofficial_score_body', (['TNY 1, T55 0'], )),
