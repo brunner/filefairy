@@ -133,8 +133,9 @@ def parse_score(in_, out, date):
         homeruns = []
         container = find(r'(?s)Home Runs:(.+?)<br>', btext)
         if container:
-            for s in container.split(') \n'):
-                p, n, total = find(r'^(\w+)\n\s*(\d+)?\s*\((\d+),', s)
+            container = re.sub(r'\s+', ' ', container)
+            for s in container.split(') '):
+                p, n, total = find(r'^(\w+)(?:\s(\d+))?\s\((\d+),', s)
                 if not n:
                     n = '1'
                 homeruns.append(' '.join([p, n, total]))
