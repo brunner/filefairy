@@ -70,7 +70,7 @@ class Standings(Registrable):
                 'line_score_body',
                 'line_score_foot',
                 'line_score_head',
-                'unofficial_score_body',
+                'pending_score_body',
             ],
         }
 
@@ -171,7 +171,7 @@ class Standings(Registrable):
                         scores[t] = []
                     scores[t].append(s)
             for t in sorted(scores):
-                body = self._call('unofficial_score_body', (scores[t], ))
+                body = self._call('pending_score_body', (scores[t], ))
                 if t == 'TCH':
                     dialogs['T35'].append((date, body, None))
                     dialogs['T36'].append((date, body, None))

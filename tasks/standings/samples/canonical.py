@@ -23,7 +23,7 @@ from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa
 from services.scoreboard.scoreboard import line_score_head  # noqa
-from services.scoreboard.scoreboard import unofficial_score_body  # noqa
+from services.scoreboard.scoreboard import pending_score_body  # noqa
 
 EXPANDED_COLS = [
     col(clazz='position-relative text-truncate'),
@@ -439,10 +439,10 @@ _tables = [
     _head_2476, _body_2476, _foot_2476,
 ]  # yapf: disable
 
-_body_31 = unofficial_score_body(['T31 4, TLA 2'])
-_body_55 = unofficial_score_body(['TNY 1, T55 0'])
-_body_la = unofficial_score_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
-_body_ny = unofficial_score_body(['TNY 5, TLA 3', 'TNY 1, T55 0'])
+_body_31 = pending_score_body(['T31 4, TLA 2'])
+_body_55 = pending_score_body(['TNY 1, T55 0'])
+_body_la = pending_score_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
+_body_ny = pending_score_body(['TNY 5, TLA 3', 'TNY 1, T55 0'])
 
 _dialogs = [
     dialog('31', 'Arizona Diamondbacks', [_head_2449, _body_31]),

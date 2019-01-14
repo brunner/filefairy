@@ -49,16 +49,19 @@ def line_score_body(data):
     away_line = data['away_line'].split()
     home_line = data['home_line'].split()
     num = len(home_line)
+    max_num = max(num, 9)
     final = 'Final' + ('' if num == 9 else ' ({})'.format(num))
 
-    hcols = [col(clazz='font-weight-bold text-danger')]
-    hcols += [col(clazz='td-sm-none w-24p pr-1 pl-2 text-center')]
-    hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * 7
+    hcols = [col(clazz='font-weight-bold text-danger pr-3')]
+    hcols += [col(clazz='td-lg-none w-24p px-1 text-center')] * 5
+    hcols += [col(clazz='td-md-none w-24p px-1 text-center')] * 4
+    hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * 8
     hcols += [col(clazz='td-sm-none w-28p pl-1 pr-2 text-center')]
     hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 3
 
     head_row = [cell(content=final)]
-    head_row += [cell(content=str(i + 1)) for i in range(num - 9, num)]
+    head_row += [cell() for _ in range(18 - max_num)]
+    head_row += [cell(content=str(i + 1)) for i in range(max_num)]
     head_row += [cell(content=content) for content in ['R', 'H', 'E']]
 
     away_runs = data['away_runs']
@@ -71,11 +74,12 @@ def line_score_body(data):
         away_col = col()
         home_col = col(clazz='font-weight-bold')
 
-    bc = 'td-sm-none text-center text-secondary'
-    bcols = [col(clazz='position-relative')]
-    bcols += [col(clazz=(bc + ' w-24p pr-1 pl-2'))]
-    bcols += [col(clazz=(bc + ' w-24p px-1'))] * 7
-    bcols += [col(clazz=(bc + ' w-28p pl-1 pr-2'))]
+    bc = 'text-center text-secondary'
+    bcols = [col(clazz='position-relative pr-3')]
+    bcols += [col(clazz=(bc + ' td-lg-none w-24p px-1'))] * 5
+    bcols += [col(clazz=(bc + ' td-md-none w-24p px-1'))] * 4
+    bcols += [col(clazz=(bc + ' td-sm-none w-24p px-1'))] * 8
+    bcols += [col(clazz=(bc + ' td-sm-none w-28p pl-1 pr-2'))]
     bcols += [col(clazz='w-24p px-1 text-center')] * 3
 
     away_rhe = [data['away_runs'], data['away_hits'], data['away_errors']]
@@ -84,12 +88,14 @@ def line_score_body(data):
     away_row = [cell(col=away_col, content=away_title)]
     home_row = [cell(col=home_col, content=home_title)]
 
-    away_row += [cell(content=inning) for inning in away_line[num - 9:]]
-    home_row += [cell(content=inning) for inning in home_line[num - 9:]]
+    away_row += [cell() for _ in range(18 - max_num)]
+    home_row += [cell() for _ in range(18 - max_num)]
 
-    if num < 9:
-        away_row += [cell() for _ in range(9 - num)]
-        home_row += [cell() for _ in range(9 - num)]
+    away_row += [cell(content=inning) for inning in away_line]
+    home_row += [cell(content=inning) for inning in home_line]
+
+    away_row += [cell() for _ in range(9 - num)]
+    home_row += [cell() for _ in range(9 - num)]
 
     away_row += [cell(col=away_col, content=content) for content in away_rhe]
     home_row += [cell(col=home_col, content=content) for content in home_rhe]
@@ -185,19 +191,19 @@ def line_score_head(date):
     )
 
 
-def unofficial_score_body(scores):
-    """Creates a line score table body for a list of unofficial scores.
+def pending_score_body(scores):
+    """Creates a line score table body for a list of pending scores.
 
     The table body contains the teams and runs for the games.
 
     Args:
-        data: The list of unofficial scores.
+        data: The list of pending scores.
 
     Returns:
         A line score table body.
     """
     hcols = [col(clazz='font-weight-bold text-secondary')]
-    head = [[cell(content='Unofficial')]]
+    head = [[cell(content='Pending')]]
 
     body = []
     for score in scores:

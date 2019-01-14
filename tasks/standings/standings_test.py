@@ -92,7 +92,7 @@ class StandingsTest(Test):
                 'line_score_body',
                 'line_score_foot',
                 'line_score_head',
-                'unofficial_score_body',
+                'pending_score_body',
             ],
         }
         self.assertEqual(actual, expected)
@@ -416,11 +416,11 @@ class StandingsTest(Test):
         con_nlw = _table(nl_west, con_table)
 
         mock_call.assert_has_calls([
-            mock.call('unofficial_score_body', (['T31 4, TLA 2'], )),
-            mock.call('unofficial_score_body', (['TNY 1, T55 0'], )),
-            mock.call('unofficial_score_body',
+            mock.call('pending_score_body', (['T31 4, TLA 2'], )),
+            mock.call('pending_score_body', (['TNY 1, T55 0'], )),
+            mock.call('pending_score_body',
                       (['T31 4, TLA 2', 'TNY 5, TLA 3'], )),
-            mock.call('unofficial_score_body',
+            mock.call('pending_score_body',
                       (['TNY 1, T55 0', 'TNY 5, TLA 3'], )),
             mock.call('line_score_body', (game_2449, )),
             mock.call('line_score_foot', (game_2449, )),

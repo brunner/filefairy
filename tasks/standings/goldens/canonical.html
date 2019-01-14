@@ -171,7 +171,9 @@ a.disabled{
 .w-105p {
   width: 105px;
 }
-.td-sm-none {
+.td-sm-none,
+.td-md-none,
+.td-lg-none {
   display: none;
 }
 @media (min-width: 576px) {
@@ -180,6 +182,22 @@ a.disabled{
     padding-left: 8px;
   }
   .td-sm-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 650px; 
+  }
+  .td-md-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 992px) {
+  .modal-dialog {
+    max-width: 800px; 
+  }
+  .td-lg-none {
     display: table-cell;
   }
 }
@@ -812,7 +830,7 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-secondary">Unofficial</td>
+<td scope="col" class="font-weight-bold text-secondary">Pending</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -873,8 +891,17 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-danger">Final (10)</td>
-<td scope="col" class="td-sm-none w-24p pr-1 pl-2 text-center">2</td>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final (10)</td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24p px-1 text-center">2</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">3</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">4</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">5</td>
@@ -893,31 +920,49 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-59)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">0</td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-59)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">0</td>
 <td class="w-24p px-1 text-center">5</td>
 <td class="w-24p px-1 text-center">9</td>
 <td class="w-24p px-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (72-53)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">1</td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (72-53)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">1</td>
 <td class="font-weight-bold w-24p px-1 text-center">6</td>
 <td class="font-weight-bold w-24p px-1 text-center">12</td>
 <td class="font-weight-bold w-24p px-1 text-center">0</td>
@@ -962,8 +1007,17 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-danger">Final</td>
-<td scope="col" class="td-sm-none w-24p pr-1 pl-2 text-center">1</td>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24p px-1 text-center">1</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">2</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">3</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">4</td>
@@ -982,31 +1036,49 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-60)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">0</td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-60)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">0</td>
 <td class="w-24p px-1 text-center">0</td>
 <td class="w-24p px-1 text-center">5</td>
 <td class="w-24p px-1 text-center">1</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (73-53)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">X</td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (73-53)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">X</td>
 <td class="font-weight-bold w-24p px-1 text-center">7</td>
 <td class="font-weight-bold w-24p px-1 text-center">9</td>
 <td class="font-weight-bold w-24p px-1 text-center">0</td>
@@ -1051,8 +1123,17 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-danger">Final</td>
-<td scope="col" class="td-sm-none w-24p pr-1 pl-2 text-center">1</td>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24p px-1 text-center">1</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">2</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">3</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">4</td>
@@ -1071,31 +1152,49 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-61)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">0</td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-61)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">0</td>
 <td class="w-24p px-1 text-center">2</td>
 <td class="w-24p px-1 text-center">9</td>
 <td class="w-24p px-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (74-53)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">3</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">X</td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (74-53)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">X</td>
 <td class="font-weight-bold w-24p px-1 text-center">5</td>
 <td class="font-weight-bold w-24p px-1 text-center">9</td>
 <td class="font-weight-bold w-24p px-1 text-center">1</td>
@@ -1165,7 +1264,7 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-secondary">Unofficial</td>
+<td scope="col" class="font-weight-bold text-secondary">Pending</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -1229,7 +1328,7 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-secondary">Unofficial</td>
+<td scope="col" class="font-weight-bold text-secondary">Pending</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -1293,8 +1392,17 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-danger">Final (10)</td>
-<td scope="col" class="td-sm-none w-24p pr-1 pl-2 text-center">2</td>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final (10)</td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24p px-1 text-center">2</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">3</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">4</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">5</td>
@@ -1313,31 +1421,49 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-59)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">0</td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-59)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">0</td>
 <td class="w-24p px-1 text-center">5</td>
 <td class="w-24p px-1 text-center">9</td>
 <td class="w-24p px-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (72-53)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">1</td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (72-53)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">1</td>
 <td class="font-weight-bold w-24p px-1 text-center">6</td>
 <td class="font-weight-bold w-24p px-1 text-center">12</td>
 <td class="font-weight-bold w-24p px-1 text-center">0</td>
@@ -1382,8 +1508,17 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-danger">Final</td>
-<td scope="col" class="td-sm-none w-24p pr-1 pl-2 text-center">1</td>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24p px-1 text-center">1</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">2</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">3</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">4</td>
@@ -1402,31 +1537,49 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-60)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">0</td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-60)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">0</td>
 <td class="w-24p px-1 text-center">0</td>
 <td class="w-24p px-1 text-center">5</td>
 <td class="w-24p px-1 text-center">1</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (73-53)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">2</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">X</td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (73-53)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">X</td>
 <td class="font-weight-bold w-24p px-1 text-center">7</td>
 <td class="font-weight-bold w-24p px-1 text-center">9</td>
 <td class="font-weight-bold w-24p px-1 text-center">0</td>
@@ -1471,8 +1624,17 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-danger">Final</td>
-<td scope="col" class="td-sm-none w-24p pr-1 pl-2 text-center">1</td>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24p px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24p px-1 text-center">1</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">2</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">3</td>
 <td scope="col" class="td-sm-none w-24p px-1 text-center">4</td>
@@ -1491,31 +1653,49 @@ a.disabled{
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-61)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">0</td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit (66-61)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">0</td>
 <td class="w-24p px-1 text-center">2</td>
 <td class="w-24p px-1 text-center">9</td>
 <td class="w-24p px-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (74-53)</span></td>
-<td class="td-sm-none text-center text-secondary w-24p pr-1 pl-2">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">3</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">1</td>
-<td class="td-sm-none text-center text-secondary w-24p px-1">0</td>
-<td class="td-sm-none text-center text-secondary w-28p pl-1 pr-2">X</td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota (74-53)</span></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-md-none w-24p px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24p px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28p pl-1 pr-2">X</td>
 <td class="font-weight-bold w-24p px-1 text-center">5</td>
 <td class="font-weight-bold w-24p px-1 text-center">9</td>
 <td class="font-weight-bold w-24p px-1 text-center">1</td>
@@ -1585,7 +1765,7 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-secondary">Unofficial</td>
+<td scope="col" class="font-weight-bold text-secondary">Pending</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -1649,7 +1829,7 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-secondary">Unofficial</td>
+<td scope="col" class="font-weight-bold text-secondary">Pending</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -1713,7 +1893,7 @@ a.disabled{
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" class="font-weight-bold text-secondary">Unofficial</td>
+<td scope="col" class="font-weight-bold text-secondary">Pending</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
