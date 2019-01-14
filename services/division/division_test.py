@@ -37,7 +37,7 @@ def _condensed_row(*args):
     i = iter(args)
     row = []
     for encoding in i:
-        row.append(cell(content=icon_badge(encoding, next(i), '16')))
+        row.append(cell(content=icon_badge(encoding, next(i), True, '16')))
     return row
 
 
@@ -57,9 +57,9 @@ def _expanded_row(*args):
 
 class DivisionTest(unittest.TestCase):
     def test_condensed_league(self):
-        east = {'T33': '1-1', 'T34': '2-0', 'T48': '0-2'}
-        central = {'T35': '1-1', 'T38': '2-0', 'T40': '0-2'}
-        tables = [('East', east), ('Central', central)]
+        e = {'T33': ('1-1', True), 'T34': ('2-0', True), 'T48': ('0-2', True)}
+        c = {'T35': ('1-1', True), 'T38': ('2-0', True), 'T40': ('0-2', True)}
+        tables = [('East', e), ('Central', c)]
 
         actual = condensed_league('American League', tables)
         expected = table(

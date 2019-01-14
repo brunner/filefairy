@@ -164,30 +164,10 @@ class Standings(Registrable):
                 'href': '',
                 'name': 'Standings'
             }],
-            'recent': [],
-            'expanded': [],
             'dialogs': [],
+            'expanded': [],
+            'recent': [],
         }
-
-        statsplus_table = self.shadow.get('statsplus.table', {})
-        for league in sorted(LEAGUES):
-            rtables, etables = [], []
-            for subleague, teams in LEAGUES[league]:
-                r = {}
-                e = {}
-
-                for t in teams:
-                    r[t] = statsplus_table.get(t, '0-0')
-                    rw, rl = decode_record(r[t])
-                    tw, tl = decode_record(self.data['table'][t])
-                    e[t] = encode_record(rw + tw, rl + tl)
-
-                rtables.append((subleague, r))
-                etables.append((subleague, e))
-
-            ret['recent'].append(
-                self._call('condensed_league', (league, rtables)))
-            ret['expanded'] += self._call('expanded_league', (league, etables))
 
         dialogs = {encoding: [] for encoding in encoding_keys()}
         statsplus_scores = self.shadow.get('statsplus.scores', {})
@@ -240,5 +220,26 @@ class Standings(Registrable):
                     curr = head
 
                 ret['dialogs'].append(dialog(teamid, decoding, tables))
+
+        statsplus_table = self.shadow.get('statsplus.table', {})
+        for league in sorted(LEAGUES):
+            rtables, etables = [], []
+            for subleague, teams in LEAGUES[league]:
+                r = {}
+                e = {}
+
+                for t in teams:
+                    record = statsplus_table.get(t, '0-0')
+                    rw, rl = decode_record(record)
+                    tw, tl = decode_record(self.data['table'][t])
+                    e[t] = encode_record(rw + tw, rl + tl)
+                    r[t] = (record, bool(dialogs[t]))
+
+                etables.append((subleague, e))
+                rtables.append((subleague, r))
+
+            ret['expanded'] += self._call('expanded_league', (league, etables))
+            ret['recent'].append(
+                self._call('condensed_league', (league, rtables)))
 
         return ret

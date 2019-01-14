@@ -278,16 +278,6 @@ class StandingsTest(Test):
 
     @mock.patch.object(Standings, '_call')
     def test_index_html(self, mock_call):
-        con_al = table(head=[[cell(content='American League')]])
-        con_nl = table(head=[[cell(content='National League')]])
-        exp_ale = table(head=[[cell(content='AL East')]])
-        exp_alc = table(head=[[cell(content='AL Central')]])
-        exp_alw = table(head=[[cell(content='AL West')]])
-        exp_alwc = table(head=[[cell(content='AL Wild Card')]])
-        exp_nle = table(head=[[cell(content='NL East')]])
-        exp_nlc = table(head=[[cell(content='NL Central')]])
-        exp_nlw = table(head=[[cell(content='NL West')]])
-        exp_nlwc = table(head=[[cell(content='NL Wild Card')]])
         body_31 = table(head=[[cell(content='Unofficial (T31)')]])
         body_55 = table(head=[[cell(content='Unofficial (T55)')]])
         body_la = table(head=[[cell(content='Unofficial (TLA)')]])
@@ -303,11 +293,17 @@ class StandingsTest(Test):
         head_2469 = table(head=[[cell(content='Thursday')]])
         head_2476 = table(head=[[cell(content='Friday')]])
         head_2998 = table(head=[[cell(content='Saturday')]])
+        exp_ale = table(head=[[cell(content='AL East')]])
+        exp_alc = table(head=[[cell(content='AL Central')]])
+        exp_alw = table(head=[[cell(content='AL West')]])
+        exp_alwc = table(head=[[cell(content='AL Wild Card')]])
+        con_al = table(head=[[cell(content='American League')]])
+        exp_nle = table(head=[[cell(content='NL East')]])
+        exp_nlc = table(head=[[cell(content='NL Central')]])
+        exp_nlw = table(head=[[cell(content='NL West')]])
+        exp_nlwc = table(head=[[cell(content='NL Wild Card')]])
+        con_nl = table(head=[[cell(content='National League')]])
         mock_call.side_effect = [
-            con_al,
-            [exp_ale, exp_alc, exp_alw, exp_alwc],
-            con_nl,
-            [exp_nle, exp_nlc, exp_nlw, exp_nlwc],
             body_31,
             body_55,
             body_la,
@@ -330,6 +326,10 @@ class StandingsTest(Test):
             head_2998,
             head_2998,
             head_2998,
+            [exp_ale, exp_alc, exp_alw, exp_alwc],
+            con_al,
+            [exp_nle, exp_nlc, exp_nlw, exp_nlwc],
+            con_nl,
         ]
 
         table_ = _table(['T' + str(k) for k in range(31, 61)], {})
@@ -401,27 +401,26 @@ class StandingsTest(Test):
         nl_central = ['T36', 'T37', 'T46', 'T52', 'T56']
         nl_west = ['T31', 'T39', 'T45', 'T53', 'T55']
 
+        statsplus_ale = _table(al_east, statsplus_table)
+        statsplus_alc = _table(al_central, statsplus_table)
+        statsplus_alw = _table(al_west, statsplus_table)
+        statsplus_nle = _table(nl_east, statsplus_table)
+        statsplus_nlc = _table(nl_central, statsplus_table)
+        statsplus_nlw = _table(nl_west, statsplus_table)
+
+        encodings = [('T' + str(k)) for k in range(31, 61)]
+        con_table = {
+            e: (statsplus_table.get(e, '0-0'), e in statsplus_table)
+            for e in encodings
+        }
+        con_ale = _table(al_east, con_table)
+        con_alc = _table(al_central, con_table)
+        con_alw = _table(al_west, con_table)
+        con_nle = _table(nl_east, con_table)
+        con_nlc = _table(nl_central, con_table)
+        con_nlw = _table(nl_west, con_table)
+
         mock_call.assert_has_calls([
-            mock.call('condensed_league', ('American League', [
-                ('East', _table(al_east, statsplus_table)),
-                ('Central', _table(al_central, statsplus_table)),
-                ('West', _table(al_west, statsplus_table)),
-            ])),
-            mock.call('expanded_league', ('American League', [
-                ('East', _table(al_east, statsplus_table)),
-                ('Central', _table(al_central, statsplus_table)),
-                ('West', _table(al_west, statsplus_table)),
-            ])),
-            mock.call('condensed_league', ('National League', [
-                ('East', _table(nl_east, statsplus_table)),
-                ('Central', _table(nl_central, statsplus_table)),
-                ('West', _table(nl_west, statsplus_table)),
-            ])),
-            mock.call('expanded_league', ('National League', [
-                ('East', _table(nl_east, statsplus_table)),
-                ('Central', _table(nl_central, statsplus_table)),
-                ('West', _table(nl_west, statsplus_table)),
-            ])),
             mock.call('unofficial_score_body', (['T31 4, TLA 2'], )),
             mock.call('unofficial_score_body', (['TNY 1, T55 0'], )),
             mock.call('unofficial_score_body',
@@ -446,6 +445,26 @@ class StandingsTest(Test):
             mock.call('line_score_head', (date, )),
             mock.call('line_score_head', (date, )),
             mock.call('line_score_head', (date, )),
+            mock.call('expanded_league', ('American League', [
+                ('East', statsplus_ale),
+                ('Central', statsplus_alc),
+                ('West', statsplus_alw),
+            ])),
+            mock.call('condensed_league', ('American League', [
+                ('East', con_ale),
+                ('Central', con_alc),
+                ('West', con_alw),
+            ])),
+            mock.call('expanded_league', ('National League', [
+                ('East', statsplus_nle),
+                ('Central', statsplus_nlc),
+                ('West', statsplus_nlw),
+            ])),
+            mock.call('condensed_league', ('National League', [
+                ('East', con_nle),
+                ('Central', con_nlc),
+                ('West', con_nlw),
+            ])),
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

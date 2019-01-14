@@ -83,7 +83,8 @@ def condensed_league(league, tables):
 
     The expected format for a subleague table is a tuple of two elements, the
     first being the subleague name and the second being a dictionary mapping
-    from team encoding to team record.
+    from team encoding to a tuple of team record and a boolean denoting whether
+    or not the team badge should be active.
 
     Args:
         league: The league name.
@@ -99,8 +100,10 @@ def condensed_league(league, tables):
         row = []
         colspan = max(colspan, len(table_))
 
-        for team in _sort(table_):
-            row.append(cell(content=icon_badge(team, table_[team], '16')))
+        records = {k: table_[k][0] for k in table_}
+        for team in _sort(records):
+            record, active = table_[team]
+            row.append(cell(content=icon_badge(team, record, active, '16')))
 
         body.append(row)
 

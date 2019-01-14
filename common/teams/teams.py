@@ -142,18 +142,20 @@ def icon_absolute(encoding, text, size):
     return img + span
 
 
-def icon_badge(encoding, text, size):
+def icon_badge(encoding, text, active, size):
     name = encoding_to_nickname(encoding).replace(' ', '').lower()
     teamid = encoding_to_teamid(encoding)
     ic = 'd-inline-block'
     sc = 'd-inline-block align-middle px-2 pt-1'
 
-    if text == '0-0':
+    if active:
+        ba = MODAL_LINK.format(teamid)
+        if text == '0-0':
+            text = '?-?'
+    else:
         ba = ''
         ic += ' grayscale'
         sc += ' text-secondary'
-    else:
-        ba = MODAL_LINK.format(teamid)
 
     img = IMG_TAG.format(ICON_LINK.format(name), size, ic)
     span = SPAN_TAG.format(text, sc)
