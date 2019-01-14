@@ -53,12 +53,12 @@ def line_score_body(data):
 
     hcols = [col(clazz='font-weight-bold text-danger')]
     hcols += [col(clazz='td-sm-none w-24p pr-1 pl-2 text-center')]
-    hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * (num - 2)
+    hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * 7
     hcols += [col(clazz='td-sm-none w-28p pl-1 pr-2 text-center')]
     hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 3
 
     head_row = [cell(content=final)]
-    head_row += [cell(content=str(i + 1)) for i in range(num)]
+    head_row += [cell(content=str(i + 1)) for i in range(num - 9, num)]
     head_row += [cell(content=content) for content in ['R', 'H', 'E']]
 
     away_runs = data['away_runs']
@@ -74,18 +74,24 @@ def line_score_body(data):
     bc = 'td-sm-none text-center text-secondary'
     bcols = [col(clazz='position-relative')]
     bcols += [col(clazz=(bc + ' w-24p pr-1 pl-2'))]
-    bcols += [col(clazz=(bc + ' w-24p px-1'))] * (num - 2)
+    bcols += [col(clazz=(bc + ' w-24p px-1'))] * 7
     bcols += [col(clazz=(bc + ' w-28p pl-1 pr-2'))]
     bcols += [col(clazz='w-24p px-1 text-center')] * 3
 
     away_rhe = [data['away_runs'], data['away_hits'], data['away_errors']]
-    away_row = [cell(col=away_col, content=away_title)]
-    away_row += [cell(content=inning) for inning in away_line]
-    away_row += [cell(col=away_col, content=content) for content in away_rhe]
-
     home_rhe = [data['home_runs'], data['home_hits'], data['home_errors']]
+
+    away_row = [cell(col=away_col, content=away_title)]
     home_row = [cell(col=home_col, content=home_title)]
-    home_row += [cell(content=inning) for inning in home_line]
+
+    away_row += [cell(content=inning) for inning in away_line[num - 9:]]
+    home_row += [cell(content=inning) for inning in home_line[num - 9:]]
+
+    if num < 9:
+        away_row += [cell() for _ in range(9 - num)]
+        home_row += [cell() for _ in range(9 - num)]
+
+    away_row += [cell(col=away_col, content=content) for content in away_rhe]
     home_row += [cell(col=home_col, content=content) for content in home_rhe]
 
     head = [head_row]
