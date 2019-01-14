@@ -1,3 +1,22 @@
 {
-  "logs": {}
+  "logs": {
+    "2019-01-13T00:00:00-08:00": [
+      {
+        "date": "2019-01-13T17:08:25.403015-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 254, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 98, in _run\n    return self._run_internal(**kwargs)\n  File \"/home/pi/filefairy/tasks/gameday/gameday.py\", line 132, in _run_internal\n    if self._check_games():\n  File \"/home/pi/filefairy/tasks/gameday/gameday.py\", line 256, in _check_games\n    for game in os.listdir(FILEFAIRY_DIR + '/resource/games/'):\nFileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/resource/games/'",
+        "levelname": "ERROR",
+        "lineno": 257,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-13T17:08:29.746945-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 87,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
+      }
+    ]
+  }
 }
