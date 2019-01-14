@@ -28,7 +28,6 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
 from tasks.standings.standings import Standings  # noqa
-from tasks.standings.standings import GAME_KEYS  # noqa
 
 ENV = env()
 
@@ -42,11 +41,11 @@ TESTDATA = get_testdata()
 
 def _data(finished=False, games=None, table_=None):
     if games is None:
-        games = {}
+        games = []
     if table_ is None:
         table_ = {}
 
-    return {'games': games, 'finished': finished, 'table': table_}
+    return {'finished': finished, 'games': games, 'table': table_}
 
 
 def _table(keys, table_):
@@ -243,24 +242,17 @@ class StandingsTest(Test):
         )
         mock_open.side_effect = suite.values()
 
-        game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
-        games = {'2449': game_2449}
         table_ = {'T40': '66-58', 'T47': '71-53'}
-        standings = self.create_standings(_data(games=games, table_=table_))
+        standings = self.create_standings(_data(games=['2449'], table_=table_))
         standings._parse(date=DATE_10260602)
 
-        game_2469 = filts(json.loads(TESTDATA['2469.json']), GAME_KEYS)
-        game_2476 = filts(json.loads(TESTDATA['2476.json']), GAME_KEYS)
-        games = {'2449': game_2449, '2469': game_2469, '2476': game_2476}
-        write = _data(games=games, table_=table_)
+        write = _data(games=['2449', '2469', '2476'], table_=table_)
         mock_render.assert_called_once_with(date=DATE_10260602)
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_start(self):
-        game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
-        games = {'2449': game_2449}
-        standings = self.create_standings(_data(finished=True, games=games))
+        standings = self.create_standings(_data(finished=True, games=['2449']))
 
         date = encode_datetime(DATE_08310000)
         statsplus_scores = {date: {'2998': 'T31 4, TLA 2'}}
@@ -276,8 +268,9 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
+    @mock.patch('tasks.standings.standings.loads')
     @mock.patch.object(Standings, '_call')
-    def test_index_html(self, mock_call):
+    def test_index_html(self, mock_call, mock_loads):
         body_31 = table(head=[[cell(content='Unofficial (T31)')]])
         body_55 = table(head=[[cell(content='Unofficial (T55)')]])
         body_la = table(head=[[cell(content='Unofficial (TLA)')]])
@@ -332,11 +325,13 @@ class StandingsTest(Test):
             con_nl,
         ]
 
+        game_2449 = json.loads(TESTDATA['2449.json'])
+        game_2469 = json.loads(TESTDATA['2469.json'])
+        game_2476 = json.loads(TESTDATA['2476.json'])
+        mock_loads.side_effect = [game_2449, game_2469, game_2476]
+
         table_ = _table(['T' + str(k) for k in range(31, 61)], {})
-        game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
-        game_2469 = filts(json.loads(TESTDATA['2469.json']), GAME_KEYS)
-        game_2476 = filts(json.loads(TESTDATA['2476.json']), GAME_KEYS)
-        games = {'2449': game_2449, '2469': game_2469, '2476': game_2476}
+        games = ['2449', '2469', '2476']
         standings = self.create_standings(_data(games=games, table_=table_))
 
         date = encode_datetime(DATE_08310000)
@@ -465,6 +460,11 @@ class StandingsTest(Test):
                 ('Central', con_nlc),
                 ('West', con_nlw),
             ])),
+        ])
+        mock_loads.assert_has_calls([
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json')),
+            mock.call(os.path.join(GAMES_DIR, '2476.json')),
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

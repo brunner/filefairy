@@ -23,13 +23,6 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
 
-GAME_KEYS = [
-    'away_errors', 'away_hits', 'away_homeruns', 'away_line', 'away_record',
-    'away_runs', 'away_team', 'date', 'home_errors', 'home_hits',
-    'home_homeruns', 'home_line', 'home_record', 'home_runs', 'home_team',
-    'losing_pitcher', 'recap', 'saving_pitcher', 'winning_pitcher',
-]  # yapf: disable
-
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 
 LEAGUES = {
@@ -138,18 +131,16 @@ class Standings(Registrable):
     def _parse(self, **kwargs):
         for name in os.listdir(GAMES_DIR):
             num = name.strip('.json')
-            if num in self.data['games']:
-                continue
-
-            data = loads(os.path.join(GAMES_DIR, name))
-            self.data['games'][num] = filts(data, GAME_KEYS)
+            if num not in self.data['games']:
+                self.data['games'].append(num)
 
         self.write()
         self._render(**kwargs)
 
     def _start(self, **kwargs):
         self.data['finished'] = False
-        self.data['games'] = {}
+        self.data['games'] = []
+
         self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
 
@@ -193,7 +184,7 @@ class Standings(Registrable):
                     dialogs[t].append((date, body, None))
 
         for num in self.data['games']:
-            data = self.data['games'][num]
+            data = loads(os.path.join(GAMES_DIR, num + '.json'))
             body = self._call('line_score_body', (data, ))
             foot = self._call('line_score_foot', (data, ))
 

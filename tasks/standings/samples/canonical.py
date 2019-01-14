@@ -24,7 +24,6 @@ from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa
 from services.scoreboard.scoreboard import line_score_head  # noqa
 from services.scoreboard.scoreboard import unofficial_score_body  # noqa
-from tasks.standings.standings import GAME_KEYS  # noqa
 
 EXPANDED_COLS = [
     col(clazz='position-relative text-truncate'),
@@ -68,25 +67,25 @@ _recent = [
         head=[[cell(content='American League')]],
         body=[
             [
-                cell(content=icon_badge('T48', '1-0', '16')),
-                cell(content=icon_badge('T33', '0-0', '16')),
-                cell(content=icon_badge('T34', '0-0', '16')),
-                cell(content=icon_badge('T57', '0-0', '16')),
-                cell(content=icon_badge('T59', '0-0', '16')),
+                cell(content=icon_badge('T48', '1-0', True, '16')),
+                cell(content=icon_badge('T33', '0-0', False, '16')),
+                cell(content=icon_badge('T34', '0-0', False, '16')),
+                cell(content=icon_badge('T57', '0-0', False, '16')),
+                cell(content=icon_badge('T59', '0-0', False, '16')),
             ],
             [
-                cell(content=icon_badge('T47', '3-0', '16')),
-                cell(content=icon_badge('T35', '0-0', '16')),
-                cell(content=icon_badge('T38', '0-0', '16')),
-                cell(content=icon_badge('T43', '0-0', '16')),
-                cell(content=icon_badge('T40', '0-3', '16')),
+                cell(content=icon_badge('T47', '3-0', True, '16')),
+                cell(content=icon_badge('T35', '0-0', False, '16')),
+                cell(content=icon_badge('T38', '0-0', False, '16')),
+                cell(content=icon_badge('T43', '0-0', False, '16')),
+                cell(content=icon_badge('T40', '0-3', True, '16')),
             ],
             [
-                cell(content=icon_badge('T44', '0-1', '16')),
-                cell(content=icon_badge('T42', '0-0', '16')),
-                cell(content=icon_badge('T50', '0-0', '16')),
-                cell(content=icon_badge('T54', '0-0', '16')),
-                cell(content=icon_badge('T59', '0-0', '16')),
+                cell(content=icon_badge('T44', '0-1', True, '16')),
+                cell(content=icon_badge('T42', '0-0', False, '16')),
+                cell(content=icon_badge('T50', '0-0', False, '16')),
+                cell(content=icon_badge('T54', '0-0', False, '16')),
+                cell(content=icon_badge('T59', '0-0', False, '16')),
             ],
         ],
     ),
@@ -97,25 +96,25 @@ _recent = [
         head=[[cell(content='National League')]],
         body=[
             [
-                cell(content=icon_badge('T32', '0-0', '16')),
-                cell(content=icon_badge('T41', '0-0', '16')),
-                cell(content=icon_badge('T49', '0-0', '16')),
-                cell(content=icon_badge('T51', '0-0', '16')),
-                cell(content=icon_badge('T60', '0-0', '16')),
+                cell(content=icon_badge('T32', '0-0', False, '16')),
+                cell(content=icon_badge('T41', '0-0', False, '16')),
+                cell(content=icon_badge('T49', '0-0', False, '16')),
+                cell(content=icon_badge('T51', '0-0', False, '16')),
+                cell(content=icon_badge('T60', '0-0', False, '16')),
             ],
             [
-                cell(content=icon_badge('T36', '0-0', '16')),
-                cell(content=icon_badge('T37', '0-0', '16')),
-                cell(content=icon_badge('T46', '0-0', '16')),
-                cell(content=icon_badge('T52', '0-0', '16')),
-                cell(content=icon_badge('T56', '0-0', '16')),
+                cell(content=icon_badge('T36', '0-0', False, '16')),
+                cell(content=icon_badge('T37', '0-0', False, '16')),
+                cell(content=icon_badge('T46', '0-0', False, '16')),
+                cell(content=icon_badge('T52', '0-0', False, '16')),
+                cell(content=icon_badge('T56', '0-0', False, '16')),
             ],
             [
-                cell(content=icon_badge('T31', '1-0', '16')),
-                cell(content=icon_badge('T39', '0-0', '16')),
-                cell(content=icon_badge('T53', '0-0', '16')),
-                cell(content=icon_badge('T45', '0-1', '16')),
-                cell(content=icon_badge('T55', '0-1', '16')),
+                cell(content=icon_badge('T31', '1-0', True, '16')),
+                cell(content=icon_badge('T39', '0-0', False, '16')),
+                cell(content=icon_badge('T53', '0-0', False, '16')),
+                cell(content=icon_badge('T45', '0-1', True, '16')),
+                cell(content=icon_badge('T55', '0-1', True, '16')),
             ],
         ],
     ),
@@ -420,17 +419,17 @@ _expanded = [
     ),
 ]
 
-_game_2449 = filts(json.loads(TESTDATA['2449.json']), GAME_KEYS)
+_game_2449 = json.loads(TESTDATA['2449.json'])
 _head_2449 = line_score_head(_game_2449['date'])
 _body_2449 = line_score_body(_game_2449)
 _foot_2449 = line_score_foot(_game_2449)
 
-_game_2469 = filts(json.loads(TESTDATA['2469.json']), GAME_KEYS)
+_game_2469 = json.loads(TESTDATA['2469.json'])
 _head_2469 = line_score_head(_game_2469['date'])
 _body_2469 = line_score_body(_game_2469)
 _foot_2469 = line_score_foot(_game_2469)
 
-_game_2476 = filts(json.loads(TESTDATA['2476.json']), GAME_KEYS)
+_game_2476 = json.loads(TESTDATA['2476.json'])
 _head_2476 = line_score_head(_game_2476['date'])
 _body_2476 = line_score_body(_game_2476)
 _foot_2476 = line_score_foot(_game_2476)
