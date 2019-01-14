@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Tracks league standings for the regular season, including sim results."""
 
+import bisect
 import os
 import re
 import sys
@@ -132,7 +133,7 @@ class Standings(Registrable):
         for name in os.listdir(GAMES_DIR):
             num = name.strip('.json')
             if num not in self.data['games']:
-                self.data['games'].append(num)
+                bisect.insort_left(self.data['games'], num)
 
         self.write()
         self._render(**kwargs)
