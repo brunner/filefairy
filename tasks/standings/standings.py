@@ -92,7 +92,7 @@ class Standings(Registrable):
         if kwargs['notify'] == Notify.STATSPLUS_FINISH:
             self._finish(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_PARSE:
-            self._parse(**kwargs)
+            self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_START:
             self._start(**kwargs)
 
@@ -129,18 +129,8 @@ class Standings(Registrable):
         self.write()
         self._render(**kwargs)
 
-    def _parse(self, **kwargs):
-        for name in os.listdir(GAMES_DIR):
-            num = name.strip('.json')
-            if num not in self.data['games']:
-                bisect.insort_left(self.data['games'], num)
-
-        self.write()
-        self._render(**kwargs)
-
     def _start(self, **kwargs):
         self.data['finished'] = False
-        self.data['games'] = []
 
         self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
@@ -184,8 +174,8 @@ class Standings(Registrable):
                 else:
                     dialogs[t].append((date, body, None))
 
-        for num in self.data['games']:
-            data = loads(os.path.join(GAMES_DIR, num + '.json'))
+        for name in os.listdir(GAMES_DIR):
+            data = loads(os.path.join(GAMES_DIR, name))
             body = self._call('line_score_body', (data, ))
             foot = self._call('line_score_foot', (data, ))
 
