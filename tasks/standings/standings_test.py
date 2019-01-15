@@ -269,6 +269,59 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
+    @mock.patch('tasks.standings.standings.loads')
+    @mock.patch('tasks.standings.standings.os.listdir')
+    @mock.patch.object(Standings, '_call')
+    def test_line_scores(self, mock_call, mock_listdir, mock_loads):
+        game_2449 = json.loads(TESTDATA['2449.json'])
+        game_2469 = json.loads(TESTDATA['2469.json'])
+        mock_call.side_effect = [BODY_2449, FOOT_2449, BODY_2469, FOOT_2469]
+        mock_listdir.return_value = ['2449.json', '2469.json']
+        mock_loads.side_effect = [game_2449, game_2469]
+
+        data_2449 = (game_2449['date'], BODY_2449, FOOT_2449)
+        data_2469 = (game_2469['date'], BODY_2469, FOOT_2469)
+        standings = self.create_standings(_data())
+        actual = standings._line_scores()
+        expected = {
+            'T40': [data_2449, data_2469],
+            'T47': [data_2449, data_2469]
+        }
+        self.assertEqual(actual, expected)
+
+        mock_call.assert_has_calls([
+            mock.call('line_score_body', (game_2449, )),
+            mock.call('line_score_foot', (game_2449, )),
+            mock.call('line_score_body', (game_2469, )),
+            mock.call('line_score_foot', (game_2469, ))
+        ])
+        mock_listdir.assert_called_once_with(GAMES_DIR)
+        mock_loads.assert_has_calls([
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json'))
+        ])
+
+    @mock.patch.object(Standings, '_call')
+    def test_pending_scores(self, mock_call):
+        body = table(clazz='', head=[[cell(content='Pending')]])
+        mock_call.side_effect = [body, body]
+
+        standings = self.create_standings(_data())
+
+        date = encode_datetime(DATE_08310000)
+        statsplus_scores = {date: {'2998': 'T31 4, TLA 2'}}
+        standings.shadow['statsplus.scores'] = statsplus_scores
+
+        data_2998 = (date, body, None)
+        actual = standings._pending_scores()
+        expected = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
+        self.assertEqual(actual, expected)
+
+        mock_call.assert_has_calls([
+            mock.call('pending_score_body', (['T31 4, TLA 2'], )),
+            mock.call('pending_score_body', (['T31 4, TLA 2'], ))
+        ])
+
     def test_start(self):
         standings = self.create_standings(_data(finished=True))
 
