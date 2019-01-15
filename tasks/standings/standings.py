@@ -112,7 +112,7 @@ class Standings(Registrable):
     def _dialog_tables(self, data):
         curr = None
         tables = []
-        for date, body, foot in sorted(data):
+        for date, body, foot in sorted(data, key=lambda x: x[0]):
             head = self._call('line_score_head', (date, ))
             if curr == head:
                 body['clazz'] += ' mt-3'

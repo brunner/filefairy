@@ -30,12 +30,21 @@ from tasks.standings.standings import Standings  # noqa
 
 ENV = env()
 
+DATE_08300000 = datetime_datetime_pst(2024, 8, 30)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 
 TESTDATA = get_testdata()
+
+HEAD_2449 = table(body=[[cell(content='Wednesday')]])
+BODY_2449 = table(head=[[cell(content='Final (10)')]])
+FOOT_2449 = table(foot=[[cell(content='Twins Top Tigers in Extras')]])
+
+HEAD_2469 = table(body=[[cell(content='Thursday')]])
+BODY_2469 = table(head=[[cell(content='Final')]])
+FOOT_2469 = table(foot=[[cell(content='Twins Shut Out Tigers')]])
 
 
 def _data(finished=False, table_=None):
@@ -208,6 +217,35 @@ class StandingsTest(Test):
         mock_render.assert_called_once_with(date=DATE_10260602)
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(Standings, '_call')
+    def test_dialog_tables(self, mock_call):
+        mock_call.side_effect = [HEAD_2449, HEAD_2469, HEAD_2469]
+
+        date_0830 = encode_datetime(DATE_08300000)
+        date_0831 = encode_datetime(DATE_08310000)
+        body = table(clazz='', head=[[cell(content='Pending')]])
+        data = [
+            (date_0830, BODY_2449, FOOT_2449),
+            (date_0831, BODY_2469, FOOT_2469),
+            (date_0831, body, None),
+        ]
+
+        margin = table(clazz=' mt-3', head=[[cell(content='Pending')]])
+        standings = self.create_standings(_data())
+        actual = standings._dialog_tables(data)
+        expected = [
+            HEAD_2449, BODY_2449, FOOT_2449,
+            HEAD_2469, BODY_2469, FOOT_2469,
+            margin
+        ]  # yapf: disable
+        self.assertEqual(actual, expected)
+
+        mock_call.assert_has_calls([
+            mock.call('line_score_head', (date_0830, )),
+            mock.call('line_score_head', (date_0831, )),
+            mock.call('line_score_head', (date_0831, ))
+        ])
 
     @mock.patch.object(Standings, '_render')
     @mock.patch('common.json_.json_.open', create=True)
