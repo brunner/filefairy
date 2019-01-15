@@ -11,7 +11,6 @@ sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
 from common.elements.elements import dialog  # noqa
-from common.json_.json_ import filts  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import find  # noqa
 from common.record.record import add_records  # noqa

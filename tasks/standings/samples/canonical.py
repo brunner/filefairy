@@ -18,7 +18,6 @@ from common.elements.elements import dialog  # noqa
 from common.elements.elements import table  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
-from common.json_.json_ import filts  # noqa
 from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa

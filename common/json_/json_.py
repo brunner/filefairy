@@ -33,19 +33,6 @@ def dumps(data):
     return json.dumps(data, indent=2, sort_keys=True, cls=Encoder)
 
 
-def filts(data, keys):
-    """Filter a dictionary to contain only the given keys.
-
-    Args:
-        data: Dictionary to filter.
-        keys: List of dictionary keys.
-
-    Returns:
-        A filtered dictionary.
-    """
-    return {k: v for k, v in data.items() if k in keys}
-
-
 def loads(path):
     """Convenience wrapper around json.loads.
 

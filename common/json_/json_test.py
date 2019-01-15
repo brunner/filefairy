@@ -12,7 +12,6 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/json_', '', _path))
 from common.json_.json_ import dumps  # noqa
-from common.json_.json_ import filts  # noqa
 from common.json_.json_ import loads  # noqa
 
 
@@ -41,11 +40,6 @@ class JsonTest(unittest.TestCase):
 
         self.mock_log.assert_called_once_with(
             logging.WARNING, 'Handled warning.', exc_info=True)
-
-    def test_filts(self):
-        actual = filts({'c': 1, 'b': False, 'a': 'foo'}, ['a', 'b'])
-        expected = {'b': False, 'a': 'foo'}
-        self.assertEqual(actual, expected)
 
     @mock.patch('common.json_.json_.open', create=True)
     def test_loads__with_valid_input(self, mock_open):

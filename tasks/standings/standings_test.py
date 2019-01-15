@@ -18,7 +18,6 @@ from common.elements.elements import dialog  # noqa
 from common.elements.elements import table  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
-from common.json_.json_ import filts  # noqa
 from common.test.test import RMock  # noqa
 from common.test.test import Suite  # noqa
 from common.test.test import Test  # noqa
