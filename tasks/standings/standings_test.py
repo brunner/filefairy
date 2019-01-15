@@ -253,17 +253,16 @@ class StandingsTest(Test):
     @mock.patch('tasks.standings.standings.os.listdir')
     @mock.patch.object(Standings, '_call')
     def test_index_html(self, mock_call, mock_listdir, mock_loads):
-        body_31 = table(head=[[cell(content='Unofficial (T31)')]])
-        body_55 = table(head=[[cell(content='Unofficial (T55)')]])
-        body_la = table(head=[[cell(content='Unofficial (TLA)')]])
-        body_ny = table(head=[[cell(content='Unofficial (TNY)')]])
-        body_2449 = table(head=[[cell(content='Final (2449)')]])
         body_2449 = table(head=[[cell(content='Final (2449)')]])
         foot_2449 = table(foot=[[cell(content='W: P123')]])
         body_2469 = table(head=[[cell(content='Final (2469)')]])
         foot_2469 = table(foot=[[cell(content='W: P456')]])
         body_2476 = table(head=[[cell(content='Final (2476)')]])
         foot_2476 = table(foot=[[cell(content='W: P789')]])
+        body_31 = table(head=[[cell(content='Unofficial (T31)')]])
+        body_55 = table(head=[[cell(content='Unofficial (T55)')]])
+        body_la = table(head=[[cell(content='Unofficial (TLA)')]])
+        body_ny = table(head=[[cell(content='Unofficial (TNY)')]])
         head_2449 = table(head=[[cell(content='Wednesday')]])
         head_2469 = table(head=[[cell(content='Thursday')]])
         head_2476 = table(head=[[cell(content='Friday')]])
@@ -279,16 +278,16 @@ class StandingsTest(Test):
         exp_nlwc = table(head=[[cell(content='NL Wild Card')]])
         con_nl = table(head=[[cell(content='National League')]])
         mock_call.side_effect = [
-            body_31,
-            body_55,
-            body_la,
-            body_ny,
             body_2449,
             foot_2449,
             body_2469,
             foot_2469,
             body_2476,
             foot_2476,
+            body_31,
+            body_55,
+            body_la,
+            body_ny,
             head_2998,
             head_2449,
             head_2469,
@@ -399,18 +398,18 @@ class StandingsTest(Test):
         con_nlw = _table(nl_west, con_table)
 
         mock_call.assert_has_calls([
-            mock.call('pending_score_body', (['T31 4, TLA 2'], )),
-            mock.call('pending_score_body', (['TNY 1, T55 0'], )),
-            mock.call('pending_score_body',
-                      (['T31 4, TLA 2', 'TNY 5, TLA 3'], )),
-            mock.call('pending_score_body',
-                      (['TNY 1, T55 0', 'TNY 5, TLA 3'], )),
             mock.call('line_score_body', (game_2449, )),
             mock.call('line_score_foot', (game_2449, )),
             mock.call('line_score_body', (game_2469, )),
             mock.call('line_score_foot', (game_2469, )),
             mock.call('line_score_body', (game_2476, )),
             mock.call('line_score_foot', (game_2476, )),
+            mock.call('pending_score_body', (['T31 4, TLA 2'], )),
+            mock.call('pending_score_body', (['TNY 1, T55 0'], )),
+            mock.call('pending_score_body',
+                      (['T31 4, TLA 2', 'TNY 5, TLA 3'], )),
+            mock.call('pending_score_body',
+                      (['TNY 1, T55 0', 'TNY 5, TLA 3'], )),
             mock.call('line_score_head', (date, )),
             mock.call('line_score_head', (game_2449['date'], )),
             mock.call('line_score_head', (game_2469['date'], )),

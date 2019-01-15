@@ -10,10 +10,20 @@ def _team(encoding, abbreviation, hometown, nickname):
     special1 = encoding in ['TCH', 'TLA', 'TNY']
     special2 = encoding in ['T35', 'T36', 'T44', 'T45', 'T48', 'T49']
 
+    if encoding == 'TCH':
+        encodings = ['T35', 'T36']
+    elif encoding == 'TLA':
+        encodings = ['T44', 'T45']
+    elif encoding == 'TNY':
+        encodings = ['T48', 'T49']
+    else:
+        encodings = [encoding]
+
     return {
         'abbreviation': abbreviation if not special1 else '',
         'decoding': (hometown + ' ' + nickname) if not special1 else '',
         'encoding': encoding,
+        'encodings': encodings,
         'hometown': hometown,
         'nickname': nickname,
         'precoding': hometown if not special2 else '',
@@ -78,6 +88,7 @@ DECODING_MAP = _map('decoding', ['encoding'])
 ENCODING_MAP = _map('encoding', [
     'abbreviation',
     'decoding',
+    'encodings',
     'hometown',
     'nickname',
     'teamid',
@@ -114,6 +125,10 @@ def encoding_to_decoding(encoding):
 
 def encoding_to_decoding_sub(text):
     return _sub(ENCODING_KEYS, encoding_to_decoding, text)
+
+
+def encoding_to_encodings(encoding):
+    return ENCODING_MAP.get(encoding, {}).get('encodings', '')
 
 
 def encoding_to_hometown(encoding):

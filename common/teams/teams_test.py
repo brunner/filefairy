@@ -16,6 +16,7 @@ from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_decoding_sub  # noqa
+from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
@@ -123,6 +124,17 @@ class TeamTest(unittest.TestCase):
         actual = encoding_to_decoding_sub(', '.join(ENCODING_KEYS))
         expected = ', '.join(decodings)
         self.assertEqual(actual, expected)
+
+    def test_encoding_to_encodings(self):
+        encodings = [['T31'], ['T32'], ['T33'], ['T34'], ['T35'], ['T36'],
+                     ['T37'], ['T38'], ['T39'], ['T40'], ['T41'], ['T42'],
+                     ['T43'], ['T44'], ['T45'], ['T46'], ['T47'], ['T48'],
+                     ['T49'], ['T50'], ['T51'], ['T52'], ['T53'], ['T54'],
+                     ['T55'], ['T56'], ['T57'], ['T58'], ['T59'], ['T60'],
+                     ['T35', 'T36'], ['T44', 'T45'], ['T48', 'T49']]
+        for encoding, encodings in zip(ENCODING_KEYS, encodings):
+            actual = encoding_to_encodings(encoding)
+            self.assertEqual(actual, encodings)
 
     def test_encoding_to_hometown(self):
         hometowns = [

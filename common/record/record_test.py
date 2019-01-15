@@ -10,11 +10,17 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/record', '', _path))
 
+from common.record.record import add_records  # noqa
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
 
 
 class RecordTest(unittest.TestCase):
+    def test_add_records(self):
+        actual = add_records('71-84', '4-2')
+        expected = '75-86'
+        self.assertEqual(actual, expected)
+
     def test_decode_record(self):
         actual = decode_record('75-86')
         expected = (75, 86)

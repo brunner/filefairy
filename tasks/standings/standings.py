@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Tracks league standings for the regular season, including sim results."""
 
-import bisect
 import os
 import re
 import sys
@@ -15,10 +14,12 @@ from common.elements.elements import dialog  # noqa
 from common.json_.json_ import filts  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import find  # noqa
+from common.record.record import add_records  # noqa
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
+from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
@@ -109,6 +110,23 @@ class Standings(Registrable):
         self.write()
         self._render(**kwargs)
 
+    def _dialog_tables(self, data):
+        curr = None
+        tables = []
+        for date, body, foot in sorted(data):
+            head = self._call('line_score_head', (date, ))
+            if curr == head:
+                body['clazz'] += ' mt-3'
+            else:
+                tables += [head]
+            curr = head
+
+            tables.append(body)
+            if foot is not None:
+                tables.append(foot)
+
+        return tables
+
     def _finish(self, **kwargs):
         self.data['finished'] = True
 
@@ -129,12 +147,45 @@ class Standings(Registrable):
         self.write()
         self._render(**kwargs)
 
+    def _line_scores(self):
+        d = {}
+        for name in os.listdir(GAMES_DIR):
+            data = loads(os.path.join(GAMES_DIR, name))
+            body = self._call('line_score_body', (data, ))
+            foot = self._call('line_score_foot', (data, ))
+
+            for team in ['away', 'home']:
+                e = data[team + '_team']
+                if e not in d:
+                    d[e] = []
+                d[e].append((data['date'], body, foot))
+
+        return d
+
+    def _pending_scores(self):
+        d = {}
+        statsplus_scores = self.shadow.get('statsplus.scores', {})
+        for date in statsplus_scores:
+            scores = {}
+            for s in sorted(statsplus_scores[date].values()):
+                for t in find(r'(\w+) \d+, (\w+) \d+', s):
+                    if t not in scores:
+                        scores[t] = []
+                    scores[t].append(s)
+
+            for t in sorted(scores):
+                body = self._call('pending_score_body', (scores[t], ))
+                for e in encoding_to_encodings(t):
+                    if e not in d:
+                        d[e] = []
+                    d[e].append((date, body, None))
+
+        return d
+
     def _start(self, **kwargs):
         self.data['finished'] = False
-
         self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
-
         self.write()
 
     def _index_html(self, **kwargs):
@@ -151,72 +202,27 @@ class Standings(Registrable):
             'recent': [],
         }
 
-        dialogs = {encoding: [] for encoding in encoding_keys()}
-        statsplus_scores = self.shadow.get('statsplus.scores', {})
-        for date in statsplus_scores:
-            scores = {}
-            for s in sorted(statsplus_scores[date].values()):
-                for t in find(r'(\w+) \d+, (\w+) \d+', s):
-                    if t not in scores:
-                        scores[t] = []
-                    scores[t].append(s)
-            for t in sorted(scores):
-                body = self._call('pending_score_body', (scores[t], ))
-                if t == 'TCH':
-                    dialogs['T35'].append((date, body, None))
-                    dialogs['T36'].append((date, body, None))
-                elif t == 'TLA':
-                    dialogs['T44'].append((date, body, None))
-                    dialogs['T45'].append((date, body, None))
-                elif t == 'TNY':
-                    dialogs['T48'].append((date, body, None))
-                    dialogs['T49'].append((date, body, None))
-                else:
-                    dialogs[t].append((date, body, None))
+        line_scores = self._line_scores()
+        pending_scores = self._pending_scores()
+        d = self._merge(line_scores, pending_scores, lambda x, y: x + y, [])
 
-        for name in os.listdir(GAMES_DIR):
-            data = loads(os.path.join(GAMES_DIR, name))
-            body = self._call('line_score_body', (data, ))
-            foot = self._call('line_score_foot', (data, ))
-
-            dialogs[data['away_team']].append((data['date'], body, foot))
-            dialogs[data['home_team']].append((data['date'], body, foot))
-
-        for encoding in dialogs:
-            if dialogs[encoding]:
+        for encoding in sorted(d):
+            if d[encoding]:
                 teamid = encoding_to_teamid(encoding)
                 decoding = encoding_to_decoding(encoding)
-                tables = []
-
-                curr = None
-                for date, body, foot in sorted(dialogs[encoding]):
-                    head = self._call('line_score_head', (date, ))
-
-                    if curr == head:
-                        body['clazz'] += ' mt-3'
-                    else:
-                        tables += [head]
-
-                    t = [body] if foot is None else [body, foot]
-                    tables += t
-                    curr = head
-
+                tables = self._dialog_tables(d[encoding])
                 ret['dialogs'].append(dialog(teamid, decoding, tables))
 
         statsplus_table = self.shadow.get('statsplus.table', {})
         for league in sorted(LEAGUES):
-            rtables, etables = [], []
+            etables, rtables = [], []
             for subleague, teams in LEAGUES[league]:
-                r = {}
-                e = {}
+                e = {t: self.data['table'][t] for t in teams}
+                r = {t: statsplus_table.get(t, '0-0') for t in teams}
+                if not self.data['finished']:
+                    e = self._merge(e, r, add_records, '0-0')
 
-                for t in teams:
-                    record = statsplus_table.get(t, '0-0')
-                    rw, rl = decode_record(record)
-                    tw, tl = decode_record(self.data['table'][t])
-                    e[t] = encode_record(rw + tw, rl + tl)
-                    r[t] = (record, bool(dialogs[t]))
-
+                r = {k: (v, k in d) for k, v in e.items()}
                 etables.append((subleague, e))
                 rtables.append((subleague, r))
 
@@ -225,3 +231,8 @@ class Standings(Registrable):
                 self._call('condensed_league', (league, rtables)))
 
         return ret
+
+    @staticmethod
+    def _merge(d1, d2, f, empty):
+        keys = set(d1).union(d2)
+        return {k: f(d1.get(k, empty), d2.get(k, empty)) for k in keys}
