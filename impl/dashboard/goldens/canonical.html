@@ -171,7 +171,9 @@ a.disabled{
 .w-105p {
   width: 105px;
 }
-.td-sm-none {
+.td-sm-none,
+.td-md-none,
+.td-lg-none {
   display: none;
 }
 @media (min-width: 576px) {
@@ -180,6 +182,22 @@ a.disabled{
     padding-left: 8px;
   }
   .td-sm-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 650px; 
+  }
+  .td-md-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 992px) {
+  .modal-dialog {
+    max-width: 800px; 
+  }
+  .td-lg-none {
     display: table-cell;
   }
 }

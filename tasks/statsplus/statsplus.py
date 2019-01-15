@@ -31,7 +31,7 @@ EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
-STATSPLUS_LINK = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html'
+STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 
 
 class Statsplus(Registrable):
