@@ -15,6 +15,7 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
+from common.json_.json_ import loads  # noqa
 from common.re_.re_ import find  # noqae
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
@@ -102,18 +103,39 @@ class Statsplus(Registrable):
 
         return Response()
 
+    def _rm(self):
+        check_output(['rm', '-rf', GAMES_DIR])
+        check_output(['mkdir', GAMES_DIR])
+
     def _parse_extracted_scores(self, *args, **kwargs):
-        self.data['started'] = False
+        self.data['games'] = {}
+        self.data['scores'] = {}
+        self.data['table'] = {}
+
+        if self.data['started']:
+            self.data['started'] = False
+        else:
+            self._rm()
 
         for name in os.listdir(EXTRACT_BOX_SCORES):
             num = find(r'\D+(\d+)\.html', name)
             self._parse_score(num, None)
 
-        self.data['scores'] = {}
-        self.write()
+        for name in os.listdir(GAMES_DIR):
+            data = loads(os.path.join(GAMES_DIR, name))
+            for team, other in [('away', 'home'), ('home', 'away')]:
+                encoding = data[team + '_team']
+                cw, cl = self._record(encoding, self.data['table'])
 
+                if int(data[team + '_runs']) > int(data[other + '_runs']):
+                    next_ = encode_record(cw + 1, cl)
+                else:
+                    next_ = encode_record(cw, cl + 1)
+                self.data['table'][encoding] = next_
+
+        self.write()
         return Response(
-            shadow=self._shadow_scores(), notify=[Notify.STATSPLUS_FINISH])
+            shadow=self._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
 
     def _parse_saved_scores(self, date_, *args, **kwargs):
         if date_ not in self.data['scores']:
@@ -140,7 +162,6 @@ class Statsplus(Registrable):
 
         self.data['scores'].pop(date_, None)
         self.write()
-
         return Response(
             notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_scores())
 
@@ -179,22 +200,19 @@ class Statsplus(Registrable):
         return Response(shadow=self._shadow_scores(), thread_=[thread_])
 
     def _save_table(self, date, text):
+        standings_table = self.shadow.get('standings.table', {})
         text = decoding_to_encoding_sub(text)
         for line in text.splitlines():
             encoding, wins = find(r'(\w+)\s(\d+)', line)
             if not encoding:
                 continue
 
-            curr = self.data['table'].get(encoding, '0-0')
-            cw, cl = decode_record(curr)
-
-            prev = self.shadow.get('standings.table', {}).get(encoding, '0-0')
-            pw, pl = decode_record(prev)
+            cw, cl = self._record(encoding, self.data['table'])
+            pw, pl = self._record(encoding, standings_table)
 
             nw = int(wins) - cw - pw
             nl = self.data['games'].get(date, {}).get(encoding, 1) - nw
             next_ = encode_record(cw + nw, cl + nl)
-
             self.data['table'][encoding] = next_
 
         if date in self.data['games']:
@@ -204,17 +222,19 @@ class Statsplus(Registrable):
         return Response(shadow=self._shadow_table())
 
     def _start(self):
-        self.data['started'] = True
-
         self.data['games'] = {}
         self.data['scores'] = {}
+        self.data['started'] = True
         self.data['table'] = {}
 
-        check_output(['rm', '-rf', GAMES_DIR])
-        check_output(['mkdir', GAMES_DIR])
+        self._rm()
 
         self.write()
         return Response(notify=[Notify.STATSPLUS_START])
+
+    @staticmethod
+    def _record(encoding, table_):
+        return decode_record(table_.get(encoding, '0-0'))
 
     @staticmethod
     def _valid(obj):

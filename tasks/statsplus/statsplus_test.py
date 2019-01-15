@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Tests for statsplus.py."""
 
+import json
 import os
 import re
 import sys
@@ -21,6 +22,7 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
+from common.test.test import get_testdata  # noqa
 
 ENV = env()
 
@@ -34,6 +36,8 @@ GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
+
+TESTDATA = get_testdata()
 
 SCORES_ONE = ('*<game_box_2998.html|Arizona 4, Los Angeles 2>*\n'
               '*<game_box_3003.html|Atlanta 2, Baltimore 1>*\n')
@@ -249,31 +253,77 @@ class StatsplusTest(Test):
         self.assertNotCalled(mock_scores, mock_table, self.mock_open,
                              self.mock_handle.write)
 
+    @mock.patch.object(Statsplus, '_rm')
     @mock.patch.object(Statsplus, '_parse_score')
+    @mock.patch('tasks.statsplus.statsplus.loads')
     @mock.patch('tasks.statsplus.statsplus.os.listdir')
-    def test_parse_extracted_scores(self, mock_listdir, mock_parse):
-        mock_listdir.return_value = [
-            'game_box_2998.html',
-            'game_box_3003.html',
+    def test_parse_extracted_scores__started_false(
+            self, mock_listdir, mock_loads, mock_parse, mock_rm):
+        mock_listdir.side_effect = [
+            ['game_box_2449.html', 'game_box_2469.html'],
+            ['2449.json', '2469.json'],
+        ]
+        mock_loads.side_effect = [
+            json.loads(TESTDATA['2449.json']),
+            json.loads(TESTDATA['2469.json'])
         ]
 
-        date = encode_datetime(DATE_08310000)
-        scores = {date: {'3003': 'T32 2, T33 1'}}
-        statsplus = self.create_statsplus(_data(scores=scores, started=True))
+        statsplus = self.create_statsplus(_data())
         actual = statsplus._parse_extracted_scores()
         expected = Response(
-            shadow=statsplus._shadow_scores(),
-            notify=[Notify.STATSPLUS_FINISH])
+            shadow=statsplus._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
         self.assertEqual(actual, expected)
 
-        write = _data()
-        mock_listdir.assert_called_once_with(EXTRACT_BOX_SCORES)
+        write = _data(table={'T40': '0-2', 'T47': '2-0'})
+        mock_listdir.assert_has_calls([
+            mock.call(EXTRACT_BOX_SCORES), mock.call(GAMES_DIR)])
+        mock_loads.assert_has_calls([
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json'))
+        ])
         mock_parse.assert_has_calls([
-            mock.call('2998', None),
-            mock.call('3003', None),
+            mock.call('2449', None),
+            mock.call('2469', None),
+        ])
+        mock_rm.assert_called_once_with()
+        self.mock_open.assert_called_with(Statsplus._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
+    @mock.patch.object(Statsplus, '_rm')
+    @mock.patch.object(Statsplus, '_parse_score')
+    @mock.patch('tasks.statsplus.statsplus.loads')
+    @mock.patch('tasks.statsplus.statsplus.os.listdir')
+    def test_parse_extracted_scores__started_true(
+            self, mock_listdir, mock_loads, mock_parse, mock_rm):
+        mock_listdir.side_effect = [
+            ['game_box_2449.html', 'game_box_2469.html'],
+            ['2449.json', '2469.json'],
+        ]
+        mock_loads.side_effect = [
+            json.loads(TESTDATA['2449.json']),
+            json.loads(TESTDATA['2469.json'])
+        ]
+
+        statsplus = self.create_statsplus(_data(started=True))
+        actual = statsplus._parse_extracted_scores()
+        expected = Response(
+            shadow=statsplus._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
+        self.assertEqual(actual, expected)
+
+        write = _data(table={'T40': '0-2', 'T47': '2-0'})
+        mock_listdir.assert_has_calls([
+            mock.call(EXTRACT_BOX_SCORES), mock.call(GAMES_DIR)])
+        mock_loads.assert_has_calls([
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json'))
+        ])
+        mock_parse.assert_has_calls([
+            mock.call('2449', None),
+            mock.call('2469', None),
         ])
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.assertNotCalled(mock_rm)
 
     @mock.patch.object(Statsplus, '_parse_score')
     def test_parse_saved_scores__none(self, mock_parse):
@@ -477,16 +527,28 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('tasks.statsplus.statsplus.check_output')
-    def test_start(self, mock_check):
-        table = {'T31': '1-0', 'T32': '1-0', 'T33': '0-1', 'T45': '0-1'}
-        statsplus = self.create_statsplus(_data(table=table))
-        statsplus._start()
+    def test_rm(self, mock_check):
+        statsplus = self.create_statsplus(_data())
+        statsplus._rm()
 
-        write = _data(started=True)
         mock_check.assert_has_calls([
             mock.call(['rm', '-rf', GAMES_DIR]),
             mock.call(['mkdir', GAMES_DIR]),
         ])
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    @mock.patch.object(Statsplus, '_rm')
+    def test_start(self, mock_rm):
+        date = encode_datetime(DATE_08310000)
+        games = {date: {'T31': 2, 'TLA': 2}}
+        scores = {date: {'2998': 'T31 4, TLA 2'}}
+        table = {'T32': '1-0', 'T45': '0-1'}
+        statsplus = self.create_statsplus(
+            _data(games=games, scores=scores, table=table))
+        statsplus._start()
+
+        write = _data(started=True)
+        mock_rm.assert_called_once_with()
         self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
