@@ -206,11 +206,10 @@ class Standings(Registrable):
         d = self._merge(line_scores, pending_scores, lambda x, y: x + y, [])
 
         for encoding in sorted(d):
-            if d[encoding]:
-                teamid = encoding_to_teamid(encoding)
-                decoding = encoding_to_decoding(encoding)
-                tables = self._dialog_tables(d[encoding])
-                ret['dialogs'].append(dialog(teamid, decoding, tables))
+            teamid = encoding_to_teamid(encoding)
+            decoding = encoding_to_decoding(encoding)
+            tables = self._dialog_tables(d[encoding])
+            ret['dialogs'].append(dialog(teamid, decoding, tables))
 
         statsplus_table = self.shadow.get('statsplus.table', {})
         for league in sorted(LEAGUES):
@@ -221,7 +220,7 @@ class Standings(Registrable):
                 if not self.data['finished']:
                     e = self._merge(e, r, add_records, '0-0')
 
-                r = {k: (v, k in d) for k, v in e.items()}
+                r = {k: (v, k in d) for k, v in r.items()}
                 etables.append((subleague, e))
                 rtables.append((subleague, r))
 
