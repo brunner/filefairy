@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<!-- ^(recap.filter) -->
+<!-- ^(news.filter) -->
 <div class="container anchor" id="filter">
 
 {{ common.heading('magnifying-glass', 'Filter') }}
@@ -16,18 +16,18 @@
 {{ common.form() }}
 
 </div>
-<!-- $(recap.filter) -->
+<!-- $(news.filter) -->
 
 {% if injuries %}
-<!-- ^(recap.injuries) -->
+<!-- ^(news.injuries) -->
 <div class="container anchor" id="injuries"s>
 
 {{ common.heading('pulse', 'Injuries') }}
 
-<!-- ^(recap.row) -->
+<!-- ^(news.row) -->
 <div class="row">
 
-<!-- ^(recap.column) -->
+<!-- ^(news.column) -->
 <div class="col-12">
 
 {% for table in injuries %}
@@ -35,25 +35,25 @@
 
 {% endfor %}
 </div>
-<!-- $(recap.column) -->
+<!-- $(news.column) -->
 
 </div>
-<!-- $(recap.row) -->
+<!-- $(news.row) -->
 
 </div>
-<!-- $(recap.injuries) -->
+<!-- $(news.injuries) -->
 {% endif %}
 
 {% if news %}
-<!-- ^(recap.news) -->
+<!-- ^(news.news) -->
 <div class="container anchor" id="news">
 
 {{ common.heading('rss', 'News') }}
 
-<!-- ^(recap.row) -->
+<!-- ^(news.row) -->
 <div class="row">
 
-<!-- ^(recap.column) -->
+<!-- ^(news.column) -->
 <div class="col-12">
 
 {% for table in news %}
@@ -61,25 +61,25 @@
 
 {% endfor %}
 </div>
-<!-- $(recap.column) -->
+<!-- $(news.column) -->
 
 </div>
-<!-- $(recap.row) -->
+<!-- $(news.row) -->
 
 </div>
-<!-- $(recap.news) -->
+<!-- $(news.news) -->
 {% endif %}
 
 {% if transactions %}
-<!-- ^(recap.transactions) -->
+<!-- ^(news.transactions) -->
 <div class="container anchor" id="transactions">
 
 {{ common.heading('loop-circular', 'Transactions') }}
 
-<!-- ^(recap.row) -->
+<!-- ^(news.row) -->
 <div class="row">
 
-<!-- ^(recap.column) -->
+<!-- ^(news.column) -->
 <div class="col-12">
 
 {% for table in transactions %}
@@ -87,13 +87,13 @@
 
 {% endfor %}
 </div>
-<!-- $(recap.column) -->
+<!-- $(news.column) -->
 
 </div>
-<!-- $(recap.row) -->
+<!-- $(news.row) -->
 
 </div>
-<!-- $(recap.transactions) -->
+<!-- $(news.transactions) -->
 {% endif %}
 
 {% endblock %}

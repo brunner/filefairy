@@ -6,7 +6,7 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/tasks/recap', '', _path))
+sys.path.append(re.sub(r'/tasks/news', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
@@ -17,11 +17,11 @@ from common.json_.json_ import loads  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
-EXTRACT_DIR = re.sub(r'/tasks/recap', '/resource/extract', _path)
+EXTRACT_DIR = re.sub(r'/tasks/news', '/resource/extract', _path)
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 
 
-class Recap(Registrable):
+class News(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -31,7 +31,7 @@ class Recap(Registrable):
 
     @staticmethod
     def _href():
-        return '/recap/'
+        return '/news/'
 
     @staticmethod
     def _info():
@@ -39,11 +39,11 @@ class Recap(Registrable):
 
     @staticmethod
     def _title():
-        return 'recap'
+        return 'news'
 
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
-        return [('recap/index.html', '', 'recap.html', _index_html)]
+        return [('news/index.html', '', 'news.html', _index_html)]
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.STATSPLUS_FINISH:
@@ -57,7 +57,7 @@ class Recap(Registrable):
                 'name': 'Fairylab'
             }, {
                 'href': '',
-                'name': 'Recap'
+                'name': 'News'
             }]
         }
 

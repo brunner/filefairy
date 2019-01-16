@@ -6,7 +6,7 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/tasks/recap/samples', '', _path))
+sys.path.append(re.sub(r'/tasks/news/samples', '', _path))
 
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -17,7 +17,7 @@ _breadcrumbs = [{
     'name': 'Fairylab'
 }, {
     'href': '',
-    'name': 'Recap'
+    'name': 'News'
 }]
 
 _injuries = [
@@ -153,10 +153,10 @@ _transactions = [
 
 subtitle = ''
 
-tmpl = 'recap.html'
+tmpl = 'news.html'
 
 context = {
-    'title': 'recap',
+    'title': 'news',
     'breadcrumbs': _breadcrumbs,
     'injuries': _injuries,
     'news': _news,

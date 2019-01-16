@@ -8,7 +8,7 @@ import sys
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.extend((_path, re.sub(r'/tasks/recap', '', _path)))
+sys.path.extend((_path, re.sub(r'/tasks/news', '', _path)))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.elements.elements import cell  # noqa
@@ -20,19 +20,19 @@ from common.test.test import get_testdata  # noqa
 from common.test.test import main  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from tasks.recap.recap import Recap  # noqa
+from tasks.news.news import News  # noqa
 
 ENV = env()
 
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
-EXTRACT_DIR = re.sub(r'/tasks/recap', '/resource/extract', _path)
+EXTRACT_DIR = re.sub(r'/tasks/news', '/resource/extract', _path)
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 
 TESTDATA = get_testdata()
 
 
-class RecapTest(Test):
+class NewsTest(Test):
     def setUp(self):
         patch_open = mock.patch(
             'api.serializable.serializable.open', create=True)
@@ -48,63 +48,63 @@ class RecapTest(Test):
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
 
-    def create_recap(self):
+    def create_news(self):
         self.init_mocks({})
-        recap = Recap(date=DATE_10260602, e=ENV)
+        news = News(date=DATE_10260602, e=ENV)
 
-        self.mock_open.assert_called_once_with(Recap._data(), 'r')
+        self.mock_open.assert_called_once_with(News._data(), 'r')
         self.mock_handle.write.assert_not_called()
-        self.assertEqual(recap.data, {})
+        self.assertEqual(news.data, {})
 
         self.reset_mocks()
         self.init_mocks({})
 
-        return recap
+        return news
 
-    @mock.patch.object(Recap, '_index_html')
+    @mock.patch.object(News, '_index_html')
     def test_render_data(self, mock_index):
         index_html = {'breadcrumbs': []}
         mock_index.return_value = index_html
 
-        recap = self.create_recap()
-        actual = recap._render_data(date=DATE_10260602)
-        expected = [('recap/index.html', '', 'recap.html', index_html)]
+        news = self.create_news()
+        actual = news._render_data(date=DATE_10260602)
+        expected = [('news/index.html', '', 'news.html', index_html)]
         self.assertEqual(actual, expected)
 
         mock_index.assert_called_once_with(date=DATE_10260602)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Recap, '_render')
+    @mock.patch.object(News, '_render')
     def test_notify__statsplus_finish(self, mock_render):
-        recap = self.create_recap()
-        response = recap._notify_internal(notify=Notify.STATSPLUS_FINISH)
+        news = self.create_news()
+        response = news._notify_internal(notify=Notify.STATSPLUS_FINISH)
         self.assertEqual(response, Response())
 
         mock_render.assert_called_once_with(notify=Notify.STATSPLUS_FINISH)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Recap, '_render')
+    @mock.patch.object(News, '_render')
     def test_notify__other(self, mock_render):
-        recap = self.create_recap()
-        response = recap._notify_internal(notify=Notify.OTHER)
+        news = self.create_news()
+        response = news._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
         self.assertNotCalled(mock_render, self.mock_open,
                              self.mock_handle.write)
 
-    @mock.patch.object(Recap, '_tables')
+    @mock.patch.object(News, '_tables')
     def test_index_html(self, mock_tables):
         table_ = table(head=[[cell(content='Wednesday')]])
         mock_tables.return_value = table_
 
-        recap = self.create_recap()
-        actual = recap._index_html(date=DATE_10260602)
+        news = self.create_news()
+        actual = news._index_html(date=DATE_10260602)
         breadcrumbs = [{
             'href': '/',
             'name': 'Fairylab'
         }, {
             'href': '',
-            'name': 'Recap'
+            'name': 'News'
         }]
         expected = {
             'breadcrumbs': breadcrumbs,
@@ -121,7 +121,7 @@ class RecapTest(Test):
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch('tasks.recap.recap.loads')
+    @mock.patch('tasks.news.news.loads')
     def test_tables(self, mock_loads):
         mock_loads.side_effect = [
             json.loads(TESTDATA['injuries.json']),
@@ -129,9 +129,9 @@ class RecapTest(Test):
             json.loads(TESTDATA['transactions.json']),
         ]
 
-        recap = self.create_recap()
+        news = self.create_news()
         for name in ['injuries', 'news', 'transactions']:
-            actual = recap._tables(name)
+            actual = news._tables(name)
             expected = json.loads(TESTDATA[name + '_tables.json'])
             self.assertEqual(actual, expected)
 
@@ -143,12 +143,12 @@ class RecapTest(Test):
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
 
-if __name__ in ['__main__', 'tasks.recap.recap_test']:
+if __name__ in ['__main__', 'tasks.news.news_test']:
     main(
-        RecapTest,
-        Recap,
-        'tasks.recap',
-        'tasks/recap',
+        NewsTest,
+        News,
+        'tasks.news',
+        'tasks/news',
         {},
         __name__ == '__main__',
         date=DATE_10260602,
