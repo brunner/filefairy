@@ -186,6 +186,7 @@ class Filefairy(Messageable, Renderable):
             self.registered[t].date = date
         for notify in response.notify:
             if notify != Notify.BASE:
+                print(t, notify)
                 self._try_all('_notify', **dict(kwargs, notify=notify))
         for shadow in response.shadow:
             self._try(shadow.destination, '_shadow',
