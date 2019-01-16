@@ -103,11 +103,11 @@ class LeaguefileTest(unittest.TestCase):
             WMock(EXTRACT_BOX_SCORES, 'game_box_2476.html', TESTDATA),
             WMock(EXTRACT_GAME_LOGS, 'log_2476.txt', TESTDATA),
             RMock(DOWNLOAD_LEAGUES, 'league_100_injuries.txt', TESTDATA),
-            WMock(EXTRACT_LEAGUES, 'injuries.txt', TESTDATA),
+            WMock(EXTRACT_LEAGUES, 'injuries.json', TESTDATA),
             RMock(DOWNLOAD_LEAGUES, 'league_100_news.txt', TESTDATA),
-            WMock(EXTRACT_LEAGUES, 'news.txt', TESTDATA),
+            WMock(EXTRACT_LEAGUES, 'news.json', TESTDATA),
             RMock(DOWNLOAD_LEAGUES, 'league_100_transactions.txt', TESTDATA),
-            WMock(EXTRACT_LEAGUES, 'transactions.txt', TESTDATA),
+            WMock(EXTRACT_LEAGUES, 'transactions.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 

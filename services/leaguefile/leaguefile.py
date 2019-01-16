@@ -11,6 +11,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/leaguefile', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.json_.json_ import dumps  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.re_.re_ import find  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
@@ -22,6 +24,18 @@ EXTRACT_DIR = re.sub(r'/services/leaguefile', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
+
+
+def _repl(m):
+    if 'teams' in m.group(3):
+        return m.group(4)
+
+    s = 'https://statsplus.net/oblootp/reports/news/html'
+    return m.group(1) + s + ''.join(m.group(3, 4, 5))
+
+
+def _sub(text):
+    return re.sub(r'(?s)(<a href=")(..)([^"]+">)(.+?)(</a>)', _repl, text)
 
 
 def download_file(url):
@@ -99,17 +113,17 @@ def extract_file(start):
         if date >= end:
             end = date + datetime.timedelta(days=1)
 
-    for key in ['injuries.txt', 'news.txt', 'transactions.txt']:
-        fname = os.path.join(DOWNLOAD_LEAGUES, 'league_100_{}'.format(key))
-        if not os.path.isfile(fname):
-            continue
-
-        with open(fname, 'r', encoding='iso-8859-1') as f:
+    for name in ['injuries', 'news', 'transactions']:
+        path = os.path.join(DOWNLOAD_LEAGUES, 'league_100_{}.txt'.format(name))
+        with open(path, 'r', encoding='iso-8859-1') as f:
             read = f.read()
 
-        write = []
-        for m in re.findall('(\d{8}\t[^\n]+)\n', read.strip() + '\n'):
-            d = datetime.datetime.strptime(m[:8], '%Y%m%d')
+        data = {}
+        for m in re.findall(r'(\d{8})\t([^\n]+)\n', read.strip() + '\n'):
+            if not m:
+                continue
+
+            d = datetime.datetime.strptime(m[0], '%Y%m%d')
             date = datetime_datetime_pst(d.year, d.month, d.day)
 
             if date < start:
@@ -117,9 +131,13 @@ def extract_file(start):
             elif date > end:
                 end = date
 
-            write.append(m)
+            key = encode_datetime(date)
+            if key not in data:
+                data[key] = []
 
-        with open(os.path.join(EXTRACT_LEAGUES, key), 'w') as f:
-            f.write('\n'.join(write) + '\n')
+            data[key].append(_sub(m[1]))
+
+        with open(os.path.join(EXTRACT_LEAGUES, name + '.json'), 'w') as f:
+            f.write(dumps(data) + '\n')
 
     return end

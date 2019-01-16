@@ -96,43 +96,6 @@
 <!-- $(recap.transactions) -->
 {% endif %}
 
-{% if standings %}
-<!-- ^(recap.standings) -->
-<div class="container anchor" id="standings">
-
-{{ common.heading('book', 'Standings') }}
-
-<!-- ^(recap.row) -->
-<div class="row">
-{% set n = standings|length() // 2 %}
-
-<!-- ^(recap.column) -->
-<div class="col-md-6">
-
-{% for table in standings[:n] %}
-{{ common.table(table) }}
-
-{% endfor %}
-</div>
-<!-- $(recap.column) -->
-
-<!-- ^(recap.column) -->
-<div class="col-md-6">
-
-{% for table in standings[n:] %}
-{{ common.table(table) }}
-
-{% endfor %}
-</div>
-<!-- $(recap.column) -->
-
-</div>
-<!-- $(recap.row) -->
-
-</div>
-<!-- $(recap.transactions) -->
-{% endif %}
-
 {% endblock %}
 
 {% block script %}
