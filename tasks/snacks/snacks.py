@@ -21,8 +21,6 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.thread_.thread_ import Thread  # noqa
 
-CORPUS_DIR = re.sub(r'/tasks/snacks', '/resource/corpus', _path)
-
 NUM = 4
 MIN = 8
 MAX = 30

@@ -20,8 +20,6 @@ from common.slack.slack import channels_history  # noqa
 from common.slack.slack import channels_list  # noqa
 from common.slack.slack import users_list  # noqa
 
-CORPUS_DIR = re.sub(r'/common/nltk_', '/resource/corpus', _path)
-
 CHANNEL_PATTERN = r'^<\#\w+\|\w+>$'
 EMOJI_PATTERN = r'^:[^:]+:$'
 USER_PATTERN = r'^<@\w+>$'
