@@ -54,7 +54,7 @@ class Standings(Registrable):
 
     @staticmethod
     def _info():
-        return 'Displays regular season standings and weekly tables.'
+        return 'Tracks regular season and weekly tables.'
 
     @staticmethod
     def _title():
