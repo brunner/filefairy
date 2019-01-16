@@ -103,11 +103,7 @@ class Renderable(Serializable):
                 title = self._title() + subtitle
 
                 tmpl = self.environment.get_template(tmpl)
-                ts = tmpl.stream(
-                    dict(
-                        context,
-                        title=title,
-                        date=date))
+                ts = tmpl.stream(dict(context, title=title, date=date))
 
                 root = FILEFAIRY_DIR if test else FAIRYLAB_DIR
                 path = os.path.join(root, html)

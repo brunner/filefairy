@@ -276,7 +276,9 @@ class StatsplusTest(Test):
 
         write = _data(table={'T40': '0-2', 'T47': '2-0'})
         mock_listdir.assert_has_calls([
-            mock.call(EXTRACT_BOX_SCORES), mock.call(GAMES_DIR)])
+            mock.call(EXTRACT_BOX_SCORES),
+            mock.call(GAMES_DIR),
+        ])
         mock_loads.assert_has_calls([
             mock.call(os.path.join(GAMES_DIR, '2449.json')),
             mock.call(os.path.join(GAMES_DIR, '2469.json'))
@@ -312,7 +314,9 @@ class StatsplusTest(Test):
 
         write = _data(table={'T40': '0-2', 'T47': '2-0'})
         mock_listdir.assert_has_calls([
-            mock.call(EXTRACT_BOX_SCORES), mock.call(GAMES_DIR)])
+            mock.call(EXTRACT_BOX_SCORES),
+            mock.call(GAMES_DIR),
+        ])
         mock_loads.assert_has_calls([
             mock.call(os.path.join(GAMES_DIR, '2449.json')),
             mock.call(os.path.join(GAMES_DIR, '2469.json'))
