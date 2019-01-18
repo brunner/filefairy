@@ -115,29 +115,32 @@ def extract_file(start):
 
     for name in ['injuries', 'news', 'transactions']:
         path = os.path.join(DOWNLOAD_LEAGUES, 'league_100_{}.txt'.format(name))
-        with open(path, 'r', encoding='iso-8859-1') as f:
-            read = f.read()
 
         data = {}
-        for m in re.findall(r'(\d{8})\t([^\n]+)\n', read.strip() + '\n'):
-            if not m:
-                continue
+        if os.path.isfile(path):
+            with open(path, 'r', encoding='iso-8859-1') as f:
+                read = f.read()
 
-            d = datetime.datetime.strptime(m[0], '%Y%m%d')
-            date = datetime_datetime_pst(d.year, d.month, d.day)
+            for m in re.findall(r'(\d{8})\t([^\n]+)\n', read.strip() + '\n'):
+                if not m:
+                    continue
 
-            if date < start:
-                continue
-            elif date > end:
-                end = date
+                d = datetime.datetime.strptime(m[0], '%Y%m%d')
+                date = datetime_datetime_pst(d.year, d.month, d.day)
 
-            key = encode_datetime(date)
-            if key not in data:
-                data[key] = []
+                if date < start:
+                    continue
+                elif date > end:
+                    end = date
 
-            data[key].append(_sub(m[1]))
+                key = encode_datetime(date)
+                if key not in data:
+                    data[key] = []
+
+                data[key].append(_sub(m[1]))
 
         with open(os.path.join(EXTRACT_LEAGUES, name + '.json'), 'w') as f:
             f.write(dumps(data) + '\n')
 
     return end
+
