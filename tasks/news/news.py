@@ -70,7 +70,7 @@ class News(Registrable):
         data = loads(os.path.join(EXTRACT_LEAGUES, name + '.json'))
 
         tables = []
-        for date in data:
+        for date in sorted(data, reverse=True):
             d = decode_datetime(date)
             suf = suffix(d.day)
             head = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suf)
