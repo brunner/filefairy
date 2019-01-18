@@ -45,7 +45,9 @@ class Reloadable():
         data = self._reload_data(**kwargs)
         for service in sorted(data):
             package = 'services.{}.{}'.format(service, service)
-            module = importlib.import_module(package)
+            if package in sys.modules:
+                sys.modules.pop(package, None)
 
+            module = importlib.import_module(package)
             for method in data[service]:
                 self.attrs[method] = getattr(module, method)
