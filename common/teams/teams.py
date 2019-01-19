@@ -260,7 +260,7 @@ JERSEY_RULES = [
     'background: url(\'{gist}/{{repo}}/raw/{{tag}}/{{asset}}.svg\'), {grad}',
 ]
 JERSEY_RULES = [r.format(**JERSEY_KWARGS) for r in JERSEY_RULES]
-JERSEY_STYLE = ruleset('.jersey', [
+JERSEY_STYLE = ruleset('.jersey-base', [
     'background-size: 78px 80px',
     'border: 1px solid #eeeff0',
     'height: 82px',
@@ -381,7 +381,7 @@ def jersey_absolute(encoding, color, side):
     else:
         name = 'alt-' + color
 
-    dc = 'jersey position-absolute ' + '-'.join([lower, name, side])
+    dc = 'jersey-base position-absolute ' + '-'.join([lower, name, side])
     return DIV_TAG.format(dc)
 
 

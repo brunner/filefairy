@@ -299,8 +299,8 @@ class TeamTest(unittest.TestCase):
 
     def test_jersey_absolute(self):
         actual = jersey_absolute('T35', WHITE, 'front')
-        expected = ('<div class="jersey position-absolute whitesox-home-front"'
-                    '></div>')
+        expected = ('<div class="jersey-base position-absolute whitesox-home-f'
+                    'ront"></div>')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -410,7 +410,7 @@ class TeamTest(unittest.TestCase):
                 'background: url(\'{}/{}/{}.svg\'), {}'.format(
                     gist, raw37, front37, grad)
             ]),
-            ruleset('.jersey', [
+            ruleset('.jersey-base', [
                 'background-size: 78px 80px',
                 'border: 1px solid #eeeff0',
                 'height: 82px',
