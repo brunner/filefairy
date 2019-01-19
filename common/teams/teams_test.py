@@ -11,6 +11,7 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/teams', '', _path))
 
+from common.elements.elements import ruleset  # noqa
 from common.teams.teams import decoding_to_encoding  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
@@ -366,36 +367,57 @@ class TeamTest(unittest.TestCase):
         expected = RED
         self.assertEqual(actual, expected)
 
-    def test_jersey_style__alt(self):
+    maxDiff = None
+
+    def test_jersey_style(self):
+        fairylab = 'https://fairylab.surge.sh/images/teams'
+        gist = 'https://gistcdn.githack.com/brunner'
+        grad = 'linear-gradient(transparent, transparent)'
+        back35 = 'whitesox-alt-blue-back'
+        front35 = 'whitesox-alt-blue-front'
+        lower35 = 'whitesox'
+        raw35 = ('359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863'
+                 'fd61d436bbdbe05da')
+        back37 = 'reds-home-back'
+        front37 = 'reds-home-front'
+        lower37 = 'reds'
+        raw37 = ('af532f33900c377ea6a7d5c373a9785f/raw/8eb50b108f9f65dfcc71b30'
+                 'ddb3b9ab032a972c1')
+
         actual = jersey_style(('T35', BLUE), ('T37', WHITE))
-        expected = ('.whitesox-alt-blue-front {\n  background: url(\'https://f'
-                    'airylab.surge.sh/images/teams/https://fairylab.surge.sh/i'
-                    'mages/teams/whitesox-alt-blue-front.png\');\n  background'
-                    ': url(\'https://gistcdn.githack.com/brunner/359d34636fabc'
-                    '914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bb'
-                    'dbe05da/whitesox-alt-blue-front.svg\'), linear-gradient(t'
-                    'ransparent, transparent);\n}\n.whitesox-alt-blue-back {\n'
-                    '  background: url(\'https://fairylab.surge.sh/images/team'
-                    's/https://fairylab.surge.sh/images/teams/whitesox-alt-blu'
-                    'e-back.png\');\n  background: url(\'https://gistcdn.githa'
-                    'ck.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa2'
-                    '11b3cec808c7d58863fd61d436bbdbe05da/whitesox-alt-blue-bac'
-                    'k.svg\'), linear-gradient(transparent, transparent);\n}\n'
-                    '.reds-home-front {\n  background: url(\'https://fairylab.'
-                    'surge.sh/images/teams/https://fairylab.surge.sh/images/te'
-                    'ams/reds-home-front.png\');\n  background: url(\'https://'
-                    'gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a97'
-                    '85f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-hom'
-                    'e-front.svg\'), linear-gradient(transparent, transparent)'
-                    ';\n}\n.reds-home-back {\n  background: url(\'https://fair'
-                    'ylab.surge.sh/images/teams/https://fairylab.surge.sh/imag'
-                    'es/teams/reds-home-back.png\');\n  background: url(\'http'
-                    's://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c37'
-                    '3a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds'
-                    '-home-back.svg\'), linear-gradient(transparent, transpare'
-                    'nt);\n}\n.jersey {\n  background-size: 78px 80px;\n  bord'
-                    'er: 1px solid #eeeff0;\n  height: 82px;\n  margin: -5px -'
-                    '1px -5px -5px;\n  width: 80px;\n}')
+        expected = [
+            ruleset('.' + back35, [
+                'background: url(\'{}/{}/{}.png\')'.format(
+                    fairylab, lower35, back35),
+                'background: url(\'{}/{}/{}.svg\'), {}'.format(
+                    gist, raw35, back35, grad)
+            ]),
+            ruleset('.' + front35, [
+                'background: url(\'{}/{}/{}.png\')'.format(
+                    fairylab, lower35, front35),
+                'background: url(\'{}/{}/{}.svg\'), {}'.format(
+                    gist, raw35, front35, grad)
+            ]),
+            ruleset('.' + back37, [
+                'background: url(\'{}/{}/{}.png\')'.format(
+                    fairylab, lower37, back37),
+                'background: url(\'{}/{}/{}.svg\'), {}'.format(
+                    gist, raw37, back37, grad)
+            ]),
+            ruleset('.' + front37, [
+                'background: url(\'{}/{}/{}.png\')'.format(
+                    fairylab, lower37, front37),
+                'background: url(\'{}/{}/{}.svg\'), {}'.format(
+                    gist, raw37, front37, grad)
+            ]),
+            ruleset('.jersey', [
+                'background-size: 78px 80px',
+                'border: 1px solid #eeeff0',
+                'height: 82px',
+                'margin: -5px -1px -5px -5px',
+                'width: 80px',
+            ])
+        ]
         self.assertEqual(actual, expected)
 
     def test_precoding_to_encoding(self):

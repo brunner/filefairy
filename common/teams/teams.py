@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 """Common (non-reloadable) util methods for team information."""
 
+import os
 import random
 import re
+import sys
 from functools import partial
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/common/teams', '', _path))
+
+from common.elements.elements import ruleset  # noqa
 
 
 def _team(encoding, abbreviation, hometown, nickname, repo, tag, *alternates):
@@ -243,20 +250,23 @@ DIV_TAG = '<div class="{}"></div>'
 IMG_TAG = '<img src="{0}" width="{1}" height="{1}" border="0" class="{2}">'
 SPAN_TAG = '<span class="{1}">{0}</span>'
 
-FAIRYLAB = 'https://fairylab.surge.sh/images/teams'
-GISTCDN = 'https://gistcdn.githack.com/brunner'
-GRADIENT = 'linear-gradient(transparent, transparent)'
-JERSEY_STYLE = """.jersey {
-  background-size: 78px 80px;
-  border: 1px solid #eeeff0;
-  height: 82px;
-  margin: -5px -1px -5px -5px;
-  width: 80px;
-}"""
-SIDE_STYLE = """.{3}-{4}-{5} {{{{
-  background: url('{0}/{0}/{3}-{4}-{5}.png');
-  background: url('{1}/{6}/raw/{7}/{3}-{4}-{5}.svg'), {2};
-}}}}""".format(FAIRYLAB, GISTCDN, GRADIENT, '{0}', '{1}', '{4}', '{2}', '{3}')
+JERSEY_KWARGS = {
+    'fairylab': 'https://fairylab.surge.sh/images/teams',
+    'gist': 'https://gistcdn.githack.com/brunner',
+    'grad': 'linear-gradient(transparent, transparent)',
+}
+JERSEY_RULES = [
+    'background: url(\'{fairylab}/{{lower}}/{{asset}}.png\')',
+    'background: url(\'{gist}/{{repo}}/raw/{{tag}}/{{asset}}.svg\'), {grad}',
+]
+JERSEY_RULES = [r.format(**JERSEY_KWARGS) for r in JERSEY_RULES]
+JERSEY_STYLE = ruleset('.jersey', [
+    'background-size: 78px 80px',
+    'border: 1px solid #eeeff0',
+    'height: 82px',
+    'margin: -5px -1px -5px -5px',
+    'width: 80px',
+])
 
 
 def _color_name(color):
@@ -402,11 +412,14 @@ def jersey_style(*jerseys):
         repo = _encoding_to_repo(encoding)
         tag = _encoding_to_tag(encoding)
 
-        for side in ['front', 'back']:
-            styles.append(SIDE_STYLE.format(lower, name, repo, tag, side))
+        for side in ['back', 'front']:
+            asset = '-'.join([lower, name, side])
+            kwargs = {'asset': asset, 'lower': lower, 'repo': repo, 'tag': tag}
+            rules = [r.format(**kwargs) for r in JERSEY_RULES]
+            styles.append(ruleset(selector=('.' + asset), rules=rules))
 
     styles.append(JERSEY_STYLE)
-    return '\n'.join(styles)
+    return styles
 
 
 def precoding_to_encoding(precoding):

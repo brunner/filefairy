@@ -1,3 +1,4 @@
+{% import "style.html" as style %}
 <!doctype html>
 <html lang="en">
 
@@ -20,7 +21,10 @@
 <title>Fairylab | {{ title }}</title>
 
 <style>
-{% block style %}{% endblock %}
+{{ style.base() }}
+{% for ruleset in styles %}
+{{ common.ruleset(ruleset) }}
+{% endfor %}
 </style>
 </head>
 

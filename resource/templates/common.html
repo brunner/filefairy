@@ -160,6 +160,14 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <!-- $(common.dialog) -->
 {%- endmacro -%}
 
+{% macro ruleset(data) -%}
+{{ data.selector }} {
+{% for r in data.rules %}
+  {{ r }};
+{% endfor %}
+}
+{%- endmacro -%}
+
 {% macro table(data) -%}
 <!-- ^(common.table) -->
 <table class="table{% if data.clazz %} {{ data.clazz }}{% endif %}"
