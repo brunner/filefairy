@@ -21,15 +21,12 @@ from common.subprocess_.subprocess_ import check_output  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import find  # noqa
-from common.teams.teams import color_name  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
-from common.teams.teams import encoding_to_lower  # noqa
-from common.teams.teams import encoding_to_repo  # noqa
-from common.teams.teams import encoding_to_tag  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import jersey_color  # noqa
+from common.teams.teams import jersey_style  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
@@ -448,7 +445,7 @@ class Gameday(Registrable):
                 'href': '',
                 'name': subtitle
             }],
-            'jerseys': [],
+            'styles': [],
             'tabs': {
                 'id': 'tabs',
                 'style': 'tabs',
@@ -474,11 +471,7 @@ class Gameday(Registrable):
             self.colors[game_id_] = colors
 
         for encoding in colors:
-            lower = encoding_to_lower(encoding)
-            name = color_name(colors[encoding])
-            repo = encoding_to_repo(encoding)
-            tag = encoding_to_tag(encoding)
-            ret['jerseys'].append((lower, name, repo, tag))
+            ret['styles'].append(jersey_color(encoding, colors[encoding]))
 
         runs = {away_team: 0, home_team: 0}
 

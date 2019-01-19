@@ -11,16 +11,13 @@ from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
-from common.teams.teams import color_name  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_colors  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
-from common.teams.teams import encoding_to_lower  # noqa
-from common.teams.teams import encoding_to_repo  # noqa
-from common.teams.teams import encoding_to_tag  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import jersey_absolute  # noqa
 from common.teams.teams import jersey_color  # noqa
+from common.teams.teams import jersey_style  # noqa
 
 CONTENT = '<div class="position-relative h-72p">{}</div>'
 
@@ -32,21 +29,14 @@ _breadcrumbs = [{
     'name': 'Jersey'
 }]
 
-_jerseys = []
+_styles = []
 _tables = []
 for encoding in encoding_keys():
     if encoding in ['TCH', 'TLA', 'TNY']:
         continue
 
-    lower = encoding_to_lower(encoding)
-    repo = encoding_to_repo(encoding)
-    tag = encoding_to_tag(encoding)
-
     body = []
     for color in ['white', 'grey'] + encoding_to_colors(encoding):
-        name = color_name(color)
-        _jerseys.append((lower, name, repo, tag))
-
         front = jersey_absolute(encoding, color, 'front')
         back = jersey_absolute(encoding, color, 'back')
         row = [
@@ -54,6 +44,7 @@ for encoding in encoding_keys():
             cell(content=CONTENT.format(back))
         ]
         body.append(row)
+        _styles.append(jersey_style(encoding, color))
 
     decoding = encoding_to_decoding(encoding)
     head = [[cell(content=icon_absolute(encoding, decoding, '20'))]]
@@ -70,6 +61,6 @@ tmpl = 'empty.html'
 context = {
     'title': 'jersey',
     'breadcrumbs': _breadcrumbs,
-    'jerseys': _jerseys,
+    'styles': _styles,
     'tables': _tables
 }

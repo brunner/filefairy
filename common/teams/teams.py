@@ -243,13 +243,33 @@ DIV_TAG = '<div class="{}"></div>'
 IMG_TAG = '<img src="{0}" width="{1}" height="{1}" border="0" class="{2}">'
 SPAN_TAG = '<span class="{1}">{0}</span>'
 
+FAIRYLAB = 'https://fairylab.surge.sh/images/teams'
+GISTCDN = 'https://gistcdn.githack.com/brunner'
+GRADIENT = 'linear-gradient(transparent, transparent)'
+JERSEY_STYLE = """.{3}-{4}-{5} {{{{
+  background: url('{0}/{0}/{3}-{4}-{5}.png');
+  background: url('{1}/{6}/raw/{7}/{3}-{4}-{5}.svg'), {2};
+}}}}""".format(FAIRYLAB, GISTCDN, GRADIENT, '{0}', '{1}', '{4}', '{2}', '{3}')
 
-def color_name(color):
+
+def _color_name(color):
     if color == GREY:
         return 'away'
     elif color == WHITE:
         return 'home'
     return 'alt-' + color
+
+
+def _encoding_to_lower(encoding):
+    return ENCODING_MAP.get(encoding, {}).get('lower', '')
+
+
+def _encoding_to_repo(encoding):
+    return ENCODING_MAP.get(encoding, {}).get('repo', '')
+
+
+def _encoding_to_tag(encoding):
+    return ENCODING_MAP.get(encoding, {}).get('tag', '')
 
 
 def decoding_to_encoding(decoding):
@@ -296,20 +316,8 @@ def encoding_to_hometown_sub(text):
     return _sub(ENCODING_KEYS, encoding_to_hometown, text)
 
 
-def encoding_to_lower(encoding):
-    return ENCODING_MAP.get(encoding, {}).get('lower', '')
-
-
 def encoding_to_nickname(encoding):
     return ENCODING_MAP.get(encoding, {}).get('nickname', '')
-
-
-def encoding_to_repo(encoding):
-    return ENCODING_MAP.get(encoding, {}).get('repo', '')
-
-
-def encoding_to_tag(encoding):
-    return ENCODING_MAP.get(encoding, {}).get('tag', '')
 
 
 def encoding_to_teamid(encoding):
@@ -317,7 +325,7 @@ def encoding_to_teamid(encoding):
 
 
 def icon_absolute(encoding, text, size):
-    lower = encoding_to_lower(encoding)
+    lower = _encoding_to_lower(encoding)
     ic = 'position-absolute left-8p top-14p'
     sc = 'd-block text-truncate pl-24p'
 
@@ -327,7 +335,7 @@ def icon_absolute(encoding, text, size):
 
 
 def icon_badge(encoding, text, active, size):
-    lower = encoding_to_lower(encoding)
+    lower = _encoding_to_lower(encoding)
     teamid = encoding_to_teamid(encoding)
     ic = 'd-inline-block'
     sc = 'd-inline-block align-middle px-2 pt-1'
@@ -347,7 +355,7 @@ def icon_badge(encoding, text, active, size):
 
 
 def jersey_absolute(encoding, color, side):
-    lower = encoding_to_lower(encoding)
+    lower = _encoding_to_lower(encoding)
 
     if color == GREY:
         name = 'away'
@@ -377,6 +385,17 @@ def jersey_color(encoding, day, team, clash):
     if team == 'home':
         return WHITE
     return GREY
+
+
+def jersey_style(encoding, color):
+    lower = _encoding_to_lower(encoding)
+    name = _color_name(color)
+    repo = _encoding_to_repo(encoding)
+    tag = _encoding_to_tag(encoding)
+
+    sides = ['front', 'back']
+    s = [JERSEY_STYLE.format(lower, name, repo, tag, side) for side in sides]
+    return '\n'.join(s)
 
 
 def precoding_to_encoding(precoding):

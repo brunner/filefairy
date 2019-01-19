@@ -264,14 +264,3 @@ a.disabled{
   color: #155724;
 }
 {%- endmacro -%}
-
-{% macro jersey(lower_, name, repo, tag) -%}
-.{{ lower_ }}-{{ name }}-back {
-  background: url('https://fairylab.surge.sh/images/teams/{{ lower_ }}/{{ lower_ }}-{{ name }}-back.png');
-  background: url('https://gistcdn.githack.com/brunner/{{ repo }}/raw/{{ tag }}/{{ lower_ }}-{{ name }}-back.svg'), linear-gradient(transparent, transparent);
-}
-.{{ lower_ }}-{{ name }}-front {
-  background: url('https://fairylab.surge.sh/images/teams/{{ lower_ }}/{{ lower_ }}-{{ name }}-front.png');
-  background: url('https://gistcdn.githack.com/brunner/{{ repo }}/raw/{{ tag }}/{{ lower_ }}-{{ name }}-front.svg'), linear-gradient(transparent, transparent);
-}
-{%- endmacro -%}

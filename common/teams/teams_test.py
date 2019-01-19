@@ -11,7 +11,6 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/teams', '', _path))
 
-from common.teams.teams import color_name  # noqa
 from common.teams.teams import decoding_to_encoding  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
@@ -22,15 +21,13 @@ from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
-from common.teams.teams import encoding_to_lower  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
-from common.teams.teams import encoding_to_repo  # noqa
-from common.teams.teams import encoding_to_tag  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
 from common.teams.teams import jersey_absolute  # noqa
 from common.teams.teams import jersey_color  # noqa
+from common.teams.teams import jersey_style  # noqa
 from common.teams.teams import precoding_to_encoding  # noqa
 from common.teams.teams import precoding_to_encoding_sub  # noqa
 
@@ -78,21 +75,6 @@ PRECODING_KEYS = [
 
 
 class TeamTest(unittest.TestCase):
-    def test_color_name__alt(self):
-        actual = color_name(CREAM)
-        expected = 'alt-cream'
-        self.assertEqual(actual, expected)
-
-    def test_color_name__away(self):
-        actual = color_name(GREY)
-        expected = 'away'
-        self.assertEqual(actual, expected)
-
-    def test_color_name__home(self):
-        actual = color_name(WHITE)
-        expected = 'home'
-        self.assertEqual(actual, expected)
-
     def test_decoding_to_encoding(self):
         encodings = [
             'T31', 'T32', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39',
@@ -241,19 +223,6 @@ class TeamTest(unittest.TestCase):
         expected = ', '.join(hometowns)
         self.assertEqual(actual, expected)
 
-    def test_encoding_to_lower(self):
-        lowers = [
-            'diamondbacks', 'braves', 'orioles', 'redsox', 'whitesox', 'cubs',
-            'reds', 'indians', 'rockies', 'tigers', 'marlins', 'astros',
-            'royals', 'angels', 'dodgers', 'brewers', 'twins', 'yankees',
-            'mets', 'athletics', 'phillies', 'pirates', 'padres', 'mariners',
-            'giants', 'cardinals', 'rays', 'rangers', 'bluejays', 'nationals',
-            '', '', ''
-        ]
-        for encoding, lower in zip(ENCODING_KEYS, lowers):
-            actual = encoding_to_lower(encoding)
-            self.assertEqual(actual, lower)
-
     def test_encoding_to_nickname(self):
         nicknames = [
             'Diamondbacks', 'Braves', 'Orioles', 'Red Sox', 'White Sox',
@@ -266,86 +235,6 @@ class TeamTest(unittest.TestCase):
         for encoding, nickname in zip(ENCODING_KEYS, nicknames):
             actual = encoding_to_nickname(encoding)
             self.assertEqual(actual, nickname)
-
-    def test_encoding_to_repo(self):
-        repos = [
-            '925f81153b44d0b35734ca0c43b9f89a',
-            '70fe783889494c2c0de8cd9b2dbd05b2',
-            '6df0d030fbb62f9cd169624afe5351e3',
-            '4a6a4036834b558756dac7ac9c0309d0',
-            '359d34636fabc914a83a8c746fc6eba9',
-            'ed81fde94a24fdce340a19e52fda33bd',
-            'af532f33900c377ea6a7d5c373a9785f',
-            '40b0331a059d0ad8869df7e101863401',
-            '79886209567ba70e64192b9810bde6a3',
-            '89a0edfe4287648effd8021807ef9625',
-            '793744dc81800fea7f219dd22b28afa1',
-            '2d3444f09ba1f0c9a06b6e9bdd27eda7',
-            'f87f4b6bf4821f16ef57eae0823e9fc7',
-            '9780ce2762db67b17831a0c908aaf725',
-            'd334f966fa470e01991d550266b94283',
-            '5aa56738ca8fc3f8367d6f777614de38',
-            '5b5568f5e186885d5e5175a25959f5d0',
-            '5b8b9a01333351a92f6f91726dce239b',
-            'aa9197d99dd2abcb7a50f13e5ae75ab0',
-            '5641c5488e3de552ebd8f04c7d089fd9',
-            '21cdbe29a981ae9e9eeeccbd93b7e76e',
-            'b52b416175cd704f7dd007d890dd629e',
-            'a2ae8f3ef490bad2f2f5510428d4bdc2',
-            '146290fc1036d7628d016218e9a05a92',
-            'd82f716325270e162d646bbaa7160c8b',
-            '2f8467f7cef50d56217cd0bd4da65ca0',
-            '72da90820a526e10bad1484efd2aaea3',
-            '468cead9ea12e6bb3ba6f62236b8d1a7',
-            '75833b35b51c8b6cd5c300e0d4117739',
-            '7364eac50fccbb97ce1ea034da8e3c6a',
-            '',
-            '',
-            '',
-        ]
-        for encoding, repo in zip(ENCODING_KEYS, repos):
-            actual = encoding_to_repo(encoding)
-            self.assertEqual(actual, repo)
-
-    def test_encoding_to_tag(self):
-        tags = [
-            'e46d3919da84e127c46ddb9a98083fdfe45c550e',
-            'af5e8226f04e295506a61636aaf6d405c6d24a54',
-            'f9576bb0aa8427c19832bb972962b86c3a6cb1f2',
-            'b370f4842d7d271d9935f30d231abe0368409944',
-            '1afa211b3cec808c7d58863fd61d436bbdbe05da',
-            'cf6811a0707e24be1ef2038f91cc295525274cf6',
-            '8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1',
-            '39c4825ca85027191a3003528ce36ab6c85bf537',
-            'ed1def95cd767f6c4e0601b6dd440d58f365e894',
-            '2a80951e810dccdb569fc2f249e3fb8c00675000',
-            'b2fe8e13546351a7272f1b90d066b398620adcac',
-            'b19253b93017682124fe778e0a8624c12bcc6332',
-            '1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c',
-            '1018f1ba85a160d74d5a924749a6cd28cae44a40',
-            '4572edb247c3b7281f01cf01e0ee97f34a14e145',
-            '854c03ddbbd38842ee7e62f825b0dcd97cb9d391',
-            '278276af922a94ee6396cace99f17c3a308da730',
-            '0cfd7978330ee9e4c4c4fa37439b9abb903be46a',
-            'b209622a6f5849a60035cd3f583914bb557fb514',
-            'f62eb1e611dcb85832aa9cfc2ea1165a99325beb',
-            '44bdf456e169c959be199c0030228077a7104c1e',
-            'a3771c5794f7677c45b99bc467af7fa87ab26d6d',
-            'b9c65c44cca5eab7453ae85ac728e27ae7416b67',
-            '6a6f13694db39de9d335e25661138a4f14ccf4ab',
-            'f5c7a0e63b18cfaef3aff919f1c74d60719f5747',
-            'b854738755e6572c1aec7ca65a16b1030a4c3b53',
-            '9596cda701c2d5af036d726e2547db65dfcda134',
-            '80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13',
-            'ac65ce092e906593e512d3452a38c2e5668f8447',
-            '47d7dae296e3b5d262e9dca3effad546969670f1',
-            '',
-            '',
-            '',
-        ]
-        for encoding, tag in zip(ENCODING_KEYS, tags):
-            actual = encoding_to_tag(encoding)
-            self.assertEqual(actual, tag)
 
     def test_encoding_to_teamid(self):
         teamids = [
@@ -475,6 +364,57 @@ class TeamTest(unittest.TestCase):
 
         actual = jersey_color('T37', SUNDAY, 'home', None)
         expected = RED
+        self.assertEqual(actual, expected)
+
+    def test_jersey_style__alt(self):
+        actual = jersey_style('T35', BLUE)
+        expected = ('.whitesox-alt-blue-front {\n  background: url(\'https://f'
+                    'airylab.surge.sh/images/teams/https://fairylab.surge.sh/i'
+                    'mages/teams/whitesox-alt-blue-front.png\');\n  background'
+                    ': url(\'https://gistcdn.githack.com/brunner/359d34636fabc'
+                    '914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bb'
+                    'dbe05da/whitesox-alt-blue-front.svg\'), linear-gradient(t'
+                    'ransparent, transparent);\n}\n.whitesox-alt-blue-back {\n'
+                    '  background: url(\'https://fairylab.surge.sh/images/team'
+                    's/https://fairylab.surge.sh/images/teams/whitesox-alt-blu'
+                    'e-back.png\');\n  background: url(\'https://gistcdn.githa'
+                    'ck.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa2'
+                    '11b3cec808c7d58863fd61d436bbdbe05da/whitesox-alt-blue-bac'
+                    'k.svg\'), linear-gradient(transparent, transparent);\n}')
+        self.assertEqual(actual, expected)
+
+    def test_jersey_style__away(self):
+        actual = jersey_style('T35', GREY)
+        expected = ('.whitesox-away-front {\n  background: url(\'https://fairy'
+                    'lab.surge.sh/images/teams/https://fairylab.surge.sh/image'
+                    's/teams/whitesox-away-front.png\');\n  background: url(\''
+                    'https://gistcdn.githack.com/brunner/359d34636fabc914a83a8'
+                    'c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/'
+                    'whitesox-away-front.svg\'), linear-gradient(transparent, '
+                    'transparent);\n}\n.whitesox-away-back {\n  background: ur'
+                    'l(\'https://fairylab.surge.sh/images/teams/https://fairyl'
+                    'ab.surge.sh/images/teams/whitesox-away-back.png\');\n  ba'
+                    'ckground: url(\'https://gistcdn.githack.com/brunner/359d3'
+                    '4636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd'
+                    '61d436bbdbe05da/whitesox-away-back.svg\'), linear-gradien'
+                    't(transparent, transparent);\n}')
+        self.assertEqual(actual, expected)
+
+    def test_jersey_style__home(self):
+        actual = jersey_style('T35', WHITE)
+        expected = ('.whitesox-home-front {\n  background: url(\'https://fairy'
+                    'lab.surge.sh/images/teams/https://fairylab.surge.sh/image'
+                    's/teams/whitesox-home-front.png\');\n  background: url(\''
+                    'https://gistcdn.githack.com/brunner/359d34636fabc914a83a8'
+                    'c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/'
+                    'whitesox-home-front.svg\'), linear-gradient(transparent, '
+                    'transparent);\n}\n.whitesox-home-back {\n  background: ur'
+                    'l(\'https://fairylab.surge.sh/images/teams/https://fairyl'
+                    'ab.surge.sh/images/teams/whitesox-home-back.png\');\n  ba'
+                    'ckground: url(\'https://gistcdn.githack.com/brunner/359d3'
+                    '4636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd'
+                    '61d436bbdbe05da/whitesox-home-back.svg\'), linear-gradien'
+                    't(transparent, transparent);\n}')
         self.assertEqual(actual, expected)
 
     def test_precoding_to_encoding(self):

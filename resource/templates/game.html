@@ -4,8 +4,8 @@
 
 {% block style %}
 {{ style.base() }}
-{% for lower_, name, repo, tag in jerseys %}
-{{ style.jersey(lower_, name, repo, tag) }}
+{% for s in styles %}
+{{ s }}
 {% endfor %}
 {{ style.game() }}
 {% endblock %}
