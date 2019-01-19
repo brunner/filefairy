@@ -12,8 +12,8 @@ sys.path.append(re.sub(r'/util/statslab', '', _path))
 from common.re_.re_ import find  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from util.team.team import decoding_to_encoding  # noqa
-from util.team.team import decoding_to_encoding_sub  # noqa
+from common.teams.teams import decoding_to_encoding  # noqa
+from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.urllib_.urllib_ import urlopen  # noqa
 
 logger_ = logging.getLogger('filefairy')

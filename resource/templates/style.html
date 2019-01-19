@@ -58,6 +58,9 @@ a.disabled{
   -webkit-filter: grayscale(1) opacity(0.5);
   filter: grayscale(1) opacity(0.5);
 }
+.h-72p {
+  height: 72px;
+}
 .left-8p {
   left: 8px;
 }
@@ -262,13 +265,13 @@ a.disabled{
 }
 {%- endmacro -%}
 
-{% macro jersey(team, name, rawid) -%}
-.{{ team }}-{{ name }}-back {
-  background: url('https://fairylab.surge.sh/images/teams/{{ team }}/{{ team }}-{{ name }}-back.png');
-  background: url('https://gistcdn.githack.com/brunner/{{ rawid }}/{{ team }}-{{ name }}-back.svg'), linear-gradient(transparent, transparent);
+{% macro jersey(lower_, name, repo, tag) -%}
+.{{ lower_ }}-{{ name }}-back {
+  background: url('https://fairylab.surge.sh/images/teams/{{ lower_ }}/{{ lower_ }}-{{ name }}-back.png');
+  background: url('https://gistcdn.githack.com/brunner/{{ repo }}/raw/{{ tag }}/{{ lower_ }}-{{ name }}-back.svg'), linear-gradient(transparent, transparent);
 }
-.{{ team }}-{{ name }}-front {
-  background: url('https://fairylab.surge.sh/images/teams/{{ team }}/{{ team }}-{{ name }}-front.png');
-  background: url('https://gistcdn.githack.com/brunner/{{ rawid }}/{{ team }}-{{ name }}-front.svg'), linear-gradient(transparent, transparent);
+.{{ lower_ }}-{{ name }}-front {
+  background: url('https://fairylab.surge.sh/images/teams/{{ lower_ }}/{{ lower_ }}-{{ name }}-front.png');
+  background: url('https://gistcdn.githack.com/brunner/{{ repo }}/raw/{{ tag }}/{{ lower_ }}-{{ name }}-front.svg'), linear-gradient(transparent, transparent);
 }
 {%- endmacro -%}

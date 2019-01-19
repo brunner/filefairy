@@ -10,9 +10,9 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/util/statslab', '', _path))
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.teams.teams import decoding_to_encoding  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
-from util.team.team import decoding_to_encoding  # noqa
 
 _now = datetime_datetime_pst(2022, 10, 9, 0, 0, 0)
 _now_displayed = '10/09/2022'

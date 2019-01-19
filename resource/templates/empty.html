@@ -21,8 +21,10 @@
 <!-- ^(game.column) -->
 <div class="col-12">
 
-{{ common.tabs(tabs) }}
+{% for table in tables %}
+{{ common.table(table) }}
 
+{% endfor %}
 </div>
 <!-- ^(game.column) -->
 

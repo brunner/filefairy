@@ -19,12 +19,12 @@ from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
+from common.teams.teams import icon_absolute  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import main  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from tasks.gameday.gameday import Gameday  # noqa
-from util.team.team import logo_absolute  # noqa
 
 _channel = 'C1234'
 _env = env()
@@ -43,38 +43,38 @@ def secondary(text):
 
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
-_s31 = logo_absolute('31', anchor('/gameday/2998/', 'Arizona Diamondbacks'),
-                     'left')
-_s32 = logo_absolute('32', secondary('Atlanta Braves'), 'left')
-_s33 = logo_absolute('33', secondary('Baltimore Orioles'), 'left')
-_s34 = logo_absolute('34', secondary('Boston Red Sox'), 'left')
-_s35 = logo_absolute('35', secondary('Chicago White Sox'), 'left')
-_s36 = logo_absolute('36', secondary('Chicago Cubs'), 'left')
-_s37 = logo_absolute('37', secondary('Cincinnati Reds'), 'left')
-_s38 = logo_absolute('38', secondary('Cleveland Indians'), 'left')
-_s39 = logo_absolute('39', secondary('Colorado Rockies'), 'left')
-_s40 = logo_absolute('40', secondary('Detroit Tigers'), 'left')
-_s41 = logo_absolute('41', secondary('Miami Marlins'), 'left')
-_s42 = logo_absolute('42', secondary('Houston Astros'), 'left')
-_s43 = logo_absolute('43', secondary('Kansas City Royals'), 'left')
-_s44 = logo_absolute('44', secondary('Los Angeles Angels'), 'left')
-_s45 = logo_absolute('45', anchor('/gameday/2998/', 'Los Angeles Dodgers'),
-                     'left')
-_s46 = logo_absolute('46', secondary('Milwaukee Brewers'), 'left')
-_s47 = logo_absolute('47', secondary('Minnesota Twins'), 'left')
-_s48 = logo_absolute('48', secondary('New York Yankees'), 'left')
-_s49 = logo_absolute('49', secondary('New York Mets'), 'left')
-_s50 = logo_absolute('50', secondary('Oakland Athletics'), 'left')
-_s51 = logo_absolute('51', secondary('Philadelphia Phillies'), 'left')
-_s52 = logo_absolute('52', secondary('Pittsburgh Pirates'), 'left')
-_s53 = logo_absolute('53', secondary('San Diego Padres'), 'left')
-_s54 = logo_absolute('54', secondary('Seattle Mariners'), 'left')
-_s55 = logo_absolute('55', secondary('San Francisco Giants'), 'left')
-_s56 = logo_absolute('56', secondary('St. Louis Cardinals'), 'left')
-_s57 = logo_absolute('57', secondary('Tampa Bay Rays'), 'left')
-_s58 = logo_absolute('58', secondary('Texas Rangers'), 'left')
-_s59 = logo_absolute('59', secondary('Toronto Blue Jays'), 'left')
-_s60 = logo_absolute('60', secondary('Washington Nationals'), 'left')
+_s31 = icon_absolute('T31', anchor('/gameday/2998/', 'Arizona Diamondbacks'),
+                     '20')
+_s32 = icon_absolute('T32', secondary('Atlanta Braves'), '20')
+_s33 = icon_absolute('T33', secondary('Baltimore Orioles'), '20')
+_s34 = icon_absolute('T34', secondary('Boston Red Sox'), '20')
+_s35 = icon_absolute('T35', secondary('Chicago White Sox'), '20')
+_s36 = icon_absolute('T36', secondary('Chicago Cubs'), '20')
+_s37 = icon_absolute('T37', secondary('Cincinnati Reds'), '20')
+_s38 = icon_absolute('T38', secondary('Cleveland Indians'), '20')
+_s39 = icon_absolute('T39', secondary('Colorado Rockies'), '20')
+_s40 = icon_absolute('T40', secondary('Detroit Tigers'), '20')
+_s41 = icon_absolute('T41', secondary('Miami Marlins'), '20')
+_s42 = icon_absolute('T42', secondary('Houston Astros'), '20')
+_s43 = icon_absolute('T43', secondary('Kansas City Royals'), '20')
+_s44 = icon_absolute('T44', secondary('Los Angeles Angels'), '20')
+_s45 = icon_absolute('T45', anchor('/gameday/2998/', 'Los Angeles Dodgers'),
+                     '20')
+_s46 = icon_absolute('T46', secondary('Milwaukee Brewers'), '20')
+_s47 = icon_absolute('T47', secondary('Minnesota Twins'), '20')
+_s48 = icon_absolute('T48', secondary('New York Yankees'), '20')
+_s49 = icon_absolute('T49', secondary('New York Mets'), '20')
+_s50 = icon_absolute('T50', secondary('Oakland Athletics'), '20')
+_s51 = icon_absolute('T51', secondary('Philadelphia Phillies'), '20')
+_s52 = icon_absolute('T52', secondary('Pittsburgh Pirates'), '20')
+_s53 = icon_absolute('T53', secondary('San Diego Padres'), '20')
+_s54 = icon_absolute('T54', secondary('Seattle Mariners'), '20')
+_s55 = icon_absolute('T55', secondary('San Francisco Giants'), '20')
+_s56 = icon_absolute('T56', secondary('St. Louis Cardinals'), '20')
+_s57 = icon_absolute('T57', secondary('Tampa Bay Rays'), '20')
+_s58 = icon_absolute('T58', secondary('Texas Rangers'), '20')
+_s59 = icon_absolute('T59', secondary('Toronto Blue Jays'), '20')
+_s60 = icon_absolute('T60', secondary('Washington Nationals'), '20')
 
 _players = {
     'P101': {
@@ -283,7 +283,7 @@ _game = {
                     ],
                     fcols=[col(colspan='2')],
                     head=[[
-                        cell(content=logo_absolute('31', 'Top 1st', 'left'))
+                        cell(content=icon_absolute('T31', 'Top 1st', '20'))
                     ]],
                     body=_log_body,
                     foot=[[
@@ -382,8 +382,8 @@ _game = {
                                      hcols=[col(clazz='position-relative')],
                                      head=[[
                                          cell(
-                                             content=logo_absolute(
-                                                 '31', 'Top 1st', 'left'))
+                                             content=icon_absolute(
+                                                 'T31', 'Top 1st', '20'))
                                      ]],
                                      body=_plays_body,
                                      foot=[[

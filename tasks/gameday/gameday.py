@@ -21,25 +21,36 @@ from common.subprocess_.subprocess_ import check_output  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import find  # noqa
+from common.teams.teams import color_name  # noqa
+from common.teams.teams import encoding_to_abbreviation  # noqa
+from common.teams.teams import encoding_to_decoding  # noqa
+from common.teams.teams import encoding_to_nickname  # noqa
+from common.teams.teams import encoding_to_lower  # noqa
+from common.teams.teams import encoding_to_repo  # noqa
+from common.teams.teams import encoding_to_tag  # noqa
+from common.teams.teams import icon_absolute  # noqa
+from common.teams.teams import jersey_color  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
-from util.jersey.jersey import get_rawid  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
-from util.team.team import choose_colors  # noqa
-from util.team.team import divisions  # noqa
-from util.team.team import encoding_to_abbreviation  # noqa
-from util.team.team import encoding_to_colors  # noqa
-from util.team.team import encoding_to_decoding  # noqa
-from util.team.team import encoding_to_nickname  # noqa
-from util.team.team import encoding_to_teamid  # noqa
-from util.team.team import logo_absolute  # noqa
-from util.team.team import teamid_to_encoding  # noqa
 
 FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/gameday', '/fairylab/static', _path)
 FILEFAIRY_DIR = re.sub(r'/tasks/gameday', '', _path)
 
-_divisions = divisions()
+LEAGUES = {
+    'American League': [
+        ('East', ('T33', 'T34', 'T48', 'T57', 'T59')),
+        ('Central', ('T35', 'T38', 'T40', 'T43', 'T47')),
+        ('West', ('T42', 'T44', 'T50', 'T54', 'T58')),
+    ],
+    'National League': [
+        ('East', ('T32', 'T41', 'T49', 'T51', 'T60')),
+        ('Central', ('T36', 'T37', 'T46', 'T52', 'T56')),
+        ('West', ('T31', 'T39', 'T45', 'T53', 'T55')),
+    ],
+}
+
 _game_path = '/resource/games/game_{}.json'
 _html = 'https://orangeandblueleaguebaseball.com/StatsLab/reports/news/html/'
 _html_player = 'players/player_{}.html'
@@ -283,29 +294,28 @@ class Gameday(Registrable):
             'schedule': []
         }
 
-        for division, ts in _divisions:
-            division = division.replace('AL', 'American League')
-            division = division.replace('NL', 'National League')
-            ret['schedule'].append(
-                table(
-                    clazz='table-fixed border border-bottom-0 mt-3',
-                    head=[[cell(content=division)]]))
-            body = []
-            for teamid in ts:
-                encoding = teamid_to_encoding(teamid)
-                decoding = encoding_to_decoding(encoding)
-                if encoding in schedule_data:
-                    sid = schedule_data[encoding][0][3]
-                    stext = anchor('/gameday/{}/'.format(sid), decoding)
-                else:
-                    stext = secondary(decoding)
-                tcontent = logo_absolute(teamid, stext, 'left')
-                body.append([cell(content=tcontent)])
-            ret['schedule'].append(
-                table(
-                    clazz='table-fixed border',
-                    bcols=[col(clazz='position-relative text-truncate')],
-                    body=body))
+        for league in sorted(LEAGUES):
+            abbr = ''.join(s[0] for s in league.split(' '))
+            for subleague, teams in LEAGUES[league]:
+                ret['schedule'].append(
+                    table(
+                        clazz='table-fixed border border-bottom-0 mt-3',
+                        head=[[cell(content=(abbr + ' ' + subleague))]]))
+                body = []
+                for encoding in teams:
+                    decoding = encoding_to_decoding(encoding)
+                    if encoding in schedule_data:
+                        sid = schedule_data[encoding][0][3]
+                        text = anchor('/gameday/{}/'.format(sid), decoding)
+                    else:
+                        text = secondary(decoding)
+                    content = icon_absolute(encoding, text, '20')
+                    body.append([cell(content=content)])
+                ret['schedule'].append(
+                    table(
+                        clazz='table-fixed border',
+                        bcols=[col(clazz='position-relative text-truncate')],
+                        body=body))
 
         return ret
 
@@ -457,20 +467,18 @@ class Gameday(Registrable):
         if game_id_ in self.colors:
             colors = self.colors[game_id_]
         else:
-            away_colors = encoding_to_colors(away_team)
-            home_colors = encoding_to_colors(home_team)
-            w = decode_datetime(game_data['date']).weekday()
-
-            clash, hc = choose_colors(home_team, home_colors, w, 'home', '')
-            _, ac = choose_colors(away_team, away_colors, w, 'away', clash)
-            colors = {away_team: ac, home_team: hc}
+            day = decode_datetime(game_data['date']).weekday()
+            home_color = jersey_color(home_team, day, 'home', None)
+            away_color = jersey_color(away_team, day, 'away', home_color)
+            colors = {away_team: away_color, home_team: home_color}
             self.colors[game_id_] = colors
 
-        for t in colors:
-            c = colors[t]
-            if isinstance(c, str):
-                nickname = encoding_to_nickname(t).lower().replace(' ', '')
-                ret['jerseys'].append((nickname, c, get_rawid(nickname)))
+        for encoding in colors:
+            lower = encoding_to_lower(encoding)
+            name = color_name(colors[encoding])
+            repo = encoding_to_repo(encoding)
+            tag = encoding_to_tag(encoding)
+            ret['jerseys'].append((lower, name, repo, tag))
 
         runs = {away_team: 0, home_team: 0}
 
@@ -488,8 +496,7 @@ class Gameday(Registrable):
             for half in inning:
                 batting = half['batting']
                 pitching = away_team if away_team != batting else home_team
-                teamid = encoding_to_teamid(half['batting'])
-                hcontent = logo_absolute(teamid, half['label'], 'left')
+                hcontent = icon_absolute(half['batting'], half['label'], '20')
                 log_table = table(
                     hcols=[col(clazz='position-relative', colspan='2')],
                     head=[[cell(content=hcontent)]],
