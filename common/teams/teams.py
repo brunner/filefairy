@@ -246,7 +246,14 @@ SPAN_TAG = '<span class="{1}">{0}</span>'
 FAIRYLAB = 'https://fairylab.surge.sh/images/teams'
 GISTCDN = 'https://gistcdn.githack.com/brunner'
 GRADIENT = 'linear-gradient(transparent, transparent)'
-JERSEY_STYLE = """.{3}-{4}-{5} {{{{
+JERSEY_STYLE = """.jersey {
+  background-size: 78px 80px;
+  border: 1px solid #eeeff0;
+  height: 82px;
+  margin: -5px -1px -5px -5px;
+  width: 80px;
+}"""
+SIDE_STYLE = """.{3}-{4}-{5} {{{{
   background: url('{0}/{0}/{3}-{4}-{5}.png');
   background: url('{1}/{6}/raw/{7}/{3}-{4}-{5}.svg'), {2};
 }}}}""".format(FAIRYLAB, GISTCDN, GRADIENT, '{0}', '{1}', '{4}', '{2}', '{3}')
@@ -364,7 +371,7 @@ def jersey_absolute(encoding, color, side):
     else:
         name = 'alt-' + color
 
-    dc = 'profile-image position-absolute ' + '-'.join([lower, name, side])
+    dc = 'jersey position-absolute ' + '-'.join([lower, name, side])
     return DIV_TAG.format(dc)
 
 
@@ -387,15 +394,19 @@ def jersey_color(encoding, day, team, clash):
     return GREY
 
 
-def jersey_style(encoding, color):
-    lower = _encoding_to_lower(encoding)
-    name = _color_name(color)
-    repo = _encoding_to_repo(encoding)
-    tag = _encoding_to_tag(encoding)
+def jersey_style(*jerseys):
+    styles = []
+    for encoding, color in jerseys:
+        lower = _encoding_to_lower(encoding)
+        name = _color_name(color)
+        repo = _encoding_to_repo(encoding)
+        tag = _encoding_to_tag(encoding)
 
-    sides = ['front', 'back']
-    s = [JERSEY_STYLE.format(lower, name, repo, tag, side) for side in sides]
-    return '\n'.join(s)
+        for side in ['front', 'back']:
+            styles.append(SIDE_STYLE.format(lower, name, repo, tag, side))
+
+    styles.append(JERSEY_STYLE)
+    return '\n'.join(styles)
 
 
 def precoding_to_encoding(precoding):

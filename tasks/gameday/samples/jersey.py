@@ -29,7 +29,7 @@ _breadcrumbs = [{
     'name': 'Jersey'
 }]
 
-_styles = []
+_jerseys = []
 _tables = []
 for encoding in encoding_keys():
     if encoding in ['TCH', 'TLA', 'TNY']:
@@ -44,7 +44,7 @@ for encoding in encoding_keys():
             cell(content=CONTENT.format(back))
         ]
         body.append(row)
-        _styles.append(jersey_style(encoding, color))
+        _jerseys.append((encoding, color))
 
     decoding = encoding_to_decoding(encoding)
     head = [[cell(content=icon_absolute(encoding, decoding, '20'))]]
@@ -53,6 +53,8 @@ for encoding in encoding_keys():
         head=head,
         body=body)
     _tables.append(table_)
+
+_styles = jersey_style(*_jerseys)
 
 subtitle = ''
 

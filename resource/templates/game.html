@@ -4,10 +4,7 @@
 
 {% block style %}
 {{ style.base() }}
-{% for s in styles %}
-{{ s }}
-{% endfor %}
-{{ style.game() }}
+{{ styles }}
 {% endblock %}
 
 {% block content %}

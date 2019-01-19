@@ -470,8 +470,8 @@ class Gameday(Registrable):
             colors = {away_team: away_color, home_team: home_color}
             self.colors[game_id_] = colors
 
-        for encoding in colors:
-            ret['styles'].append(jersey_color(encoding, colors[encoding]))
+        jerseys = [(encoding, colors[encoding]) for encoding in colors]
+        ret['styles'] = jersey_style(*jerseys)
 
         runs = {away_team: 0, home_team: 0}
 

@@ -298,8 +298,8 @@ class TeamTest(unittest.TestCase):
 
     def test_jersey_absolute(self):
         actual = jersey_absolute('T35', WHITE, 'front')
-        expected = ('<div class="profile-image position-absolute whitesox-home'
-                    '-front"></div>')
+        expected = ('<div class="jersey position-absolute whitesox-home-front"'
+                    '></div>')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -367,7 +367,7 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_jersey_style__alt(self):
-        actual = jersey_style('T35', BLUE)
+        actual = jersey_style(('T35', BLUE), ('T37', WHITE))
         expected = ('.whitesox-alt-blue-front {\n  background: url(\'https://f'
                     'airylab.surge.sh/images/teams/https://fairylab.surge.sh/i'
                     'mages/teams/whitesox-alt-blue-front.png\');\n  background'
@@ -380,41 +380,22 @@ class TeamTest(unittest.TestCase):
                     'e-back.png\');\n  background: url(\'https://gistcdn.githa'
                     'ck.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa2'
                     '11b3cec808c7d58863fd61d436bbdbe05da/whitesox-alt-blue-bac'
-                    'k.svg\'), linear-gradient(transparent, transparent);\n}')
-        self.assertEqual(actual, expected)
-
-    def test_jersey_style__away(self):
-        actual = jersey_style('T35', GREY)
-        expected = ('.whitesox-away-front {\n  background: url(\'https://fairy'
-                    'lab.surge.sh/images/teams/https://fairylab.surge.sh/image'
-                    's/teams/whitesox-away-front.png\');\n  background: url(\''
-                    'https://gistcdn.githack.com/brunner/359d34636fabc914a83a8'
-                    'c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/'
-                    'whitesox-away-front.svg\'), linear-gradient(transparent, '
-                    'transparent);\n}\n.whitesox-away-back {\n  background: ur'
-                    'l(\'https://fairylab.surge.sh/images/teams/https://fairyl'
-                    'ab.surge.sh/images/teams/whitesox-away-back.png\');\n  ba'
-                    'ckground: url(\'https://gistcdn.githack.com/brunner/359d3'
-                    '4636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd'
-                    '61d436bbdbe05da/whitesox-away-back.svg\'), linear-gradien'
-                    't(transparent, transparent);\n}')
-        self.assertEqual(actual, expected)
-
-    def test_jersey_style__home(self):
-        actual = jersey_style('T35', WHITE)
-        expected = ('.whitesox-home-front {\n  background: url(\'https://fairy'
-                    'lab.surge.sh/images/teams/https://fairylab.surge.sh/image'
-                    's/teams/whitesox-home-front.png\');\n  background: url(\''
-                    'https://gistcdn.githack.com/brunner/359d34636fabc914a83a8'
-                    'c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/'
-                    'whitesox-home-front.svg\'), linear-gradient(transparent, '
-                    'transparent);\n}\n.whitesox-home-back {\n  background: ur'
-                    'l(\'https://fairylab.surge.sh/images/teams/https://fairyl'
-                    'ab.surge.sh/images/teams/whitesox-home-back.png\');\n  ba'
-                    'ckground: url(\'https://gistcdn.githack.com/brunner/359d3'
-                    '4636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd'
-                    '61d436bbdbe05da/whitesox-home-back.svg\'), linear-gradien'
-                    't(transparent, transparent);\n}')
+                    'k.svg\'), linear-gradient(transparent, transparent);\n}\n'
+                    '.reds-home-front {\n  background: url(\'https://fairylab.'
+                    'surge.sh/images/teams/https://fairylab.surge.sh/images/te'
+                    'ams/reds-home-front.png\');\n  background: url(\'https://'
+                    'gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a97'
+                    '85f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-hom'
+                    'e-front.svg\'), linear-gradient(transparent, transparent)'
+                    ';\n}\n.reds-home-back {\n  background: url(\'https://fair'
+                    'ylab.surge.sh/images/teams/https://fairylab.surge.sh/imag'
+                    'es/teams/reds-home-back.png\');\n  background: url(\'http'
+                    's://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c37'
+                    '3a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds'
+                    '-home-back.svg\'), linear-gradient(transparent, transpare'
+                    'nt);\n}\n.jersey {\n  background-size: 78px 80px;\n  bord'
+                    'er: 1px solid #eeeff0;\n  height: 82px;\n  margin: -5px -'
+                    '1px -5px -5px;\n  width: 80px;\n}')
         self.assertEqual(actual, expected)
 
     def test_precoding_to_encoding(self):
