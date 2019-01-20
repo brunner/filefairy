@@ -97,6 +97,24 @@ def dialog(id_='', header='', tables=None):
     }
 
 
+def ruleset(selector='', rules=None):
+    """Builds a CSS ruleset element.
+
+    Args:
+        selector: The CSS selector.
+        rules. The list of rules.
+
+    Returns:
+        The ruleset element.
+    """
+    if rules is None:
+        rules = []
+    return {
+        'selector': selector,
+        'rules': rules,
+    }
+
+
 def span(classes, text):
     """Builds a span element.
 

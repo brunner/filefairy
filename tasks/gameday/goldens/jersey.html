@@ -1,0 +1,3187 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileColor" content="#dfe3e7">
+<meta name="theme-color" content="#dfe3e7">
+<link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
+<title>Fairylab | gameday</title>
+
+<style>
+html {
+  position: relative;
+  min-height: 100%;
+}
+header {
+  background-color: #f5f5f5;
+  width: 100%;
+}
+footer {
+  background-color: #f5f5f5;
+  bottom: 0;
+  height: 60px;
+  line-height: 60px;
+  position: absolute;
+  width: 100%;
+}
+a.disabled{
+  pointer-events: none;
+  cursor: default;
+}
+.alert, .dropdown-toggle, .form-control {
+  padding: .75rem;
+}
+.alert .oi {
+  line-height: 24px;
+  padding-right: .75rem;
+}
+.anchor {
+  padding-top: 0px;
+  margin-top: 0px;
+  transition: padding-top .35s ease, margin-top .35s ease;
+}
+.badge-icon {
+  border: 1px solid #dee2e6;
+  font-weight: 400!important;
+  padding: .25rem .5rem;
+  white-space: normal;
+  width: 100%;
+}
+.badge-icon[data-toggle="modal"]:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+.breadcrumb {
+  background-color: inherit;
+  line-height: 60px;
+  max-width: 468px;
+  overflow-x: auto;
+}
+.dropdown-toggle {
+  color: #6c767c;
+}
+.flex-grow {
+  flex-grow: 1;
+}
+.grayscale {
+  -webkit-filter: grayscale(1) opacity(0.5);
+  filter: grayscale(1) opacity(0.5);
+}
+.h-72p {
+  height: 72px;
+}
+.left-8p {
+  left: 8px;
+}
+.modal-header {
+  height: 56px;
+}
+.modal-body {
+  padding-top: 0;
+}
+.mr-8p {
+  margin-right: 8px;
+}
+.nav-pills {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.navbar {
+  padding: 0;
+}
+.nav-pills .nav-item {
+  margin: 0 .25rem;
+  min-width: 32px;
+  text-align: center;
+}
+.nav-pills .nav-link {
+  padding: .25rem 0;
+}
+.nav-pills .nav-link:not(.active) {
+  border: 1px solid #dee2e6;
+}
+.pl-24p {
+  padding-left: 24px;
+}
+.pr-24p {
+  padding-right: 24px;
+}
+.right-8p {
+  right: 8px;
+}
+.table, .table-sm {
+  margin-bottom: 0;
+  word-break: break-word;
+}
+.table .thead-light td {
+  background-color: #f5f5f5;
+}
+.table-fixed {
+  table-layout: fixed;
+}
+.table-sm td {
+  border-top: 0;
+  padding: 0 .3rem 0 0;
+}
+.table .td-sm {
+  padding: .75rem .25rem;
+}
+.table.collapse.show {
+  display: table;
+}
+.text-underline {
+  text-decoration: underline;
+}
+.top-14p {
+  top: 14px;
+}
+.w-10 {
+  width: 10%;
+}
+.w-20 {
+  width: 20%;
+}
+.w-40 {
+  width: 40%;
+}
+.w-24p {
+  width: 24px;
+}
+.w-28p {
+  width: 28px;
+}
+.w-55p {
+  width: 55px;
+}
+.w-65p {
+  width: 65px;
+}
+.w-75p {
+  width: 75px;
+}
+.w-105p {
+  width: 105px;
+}
+.td-sm-none,
+.td-md-none,
+.td-lg-none {
+  display: none;
+}
+@media (min-width: 576px) {
+  body.modal-open .navbar,
+  body.modal-open .timestamp {
+    padding-left: 8px;
+  }
+  .td-sm-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 650px; 
+  }
+  .td-md-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 992px) {
+  .modal-dialog {
+    max-width: 800px; 
+  }
+  .td-lg-none {
+    display: table-cell;
+  }
+}
+.diamondbacks-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/925f81153b44d0b35734ca0c43b9f89a/raw/e46d3919da84e127c46ddb9a98083fdfe45c550e/diamondbacks-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.diamondbacks-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/925f81153b44d0b35734ca0c43b9f89a/raw/e46d3919da84e127c46ddb9a98083fdfe45c550e/diamondbacks-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.diamondbacks-home-solid {
+  background-color: #cb0c29;
+}
+.diamondbacks-home-border {
+  background-color: #000000;
+}
+.diamondbacks-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/925f81153b44d0b35734ca0c43b9f89a/raw/e46d3919da84e127c46ddb9a98083fdfe45c550e/diamondbacks-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.diamondbacks-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/925f81153b44d0b35734ca0c43b9f89a/raw/e46d3919da84e127c46ddb9a98083fdfe45c550e/diamondbacks-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.diamondbacks-away-solid {
+  background-color: #cb0c29;
+}
+.diamondbacks-away-border {
+  background-color: #e79d94;
+}
+.diamondbacks-alt-red-back {
+  background: url('https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-alt-red-back.png');
+  background: url('https://gistcdn.githack.com/brunner/925f81153b44d0b35734ca0c43b9f89a/raw/e46d3919da84e127c46ddb9a98083fdfe45c550e/diamondbacks-alt-red-back.svg'), linear-gradient(transparent, transparent);
+}
+.diamondbacks-alt-red-front {
+  background: url('https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-alt-red-front.png');
+  background: url('https://gistcdn.githack.com/brunner/925f81153b44d0b35734ca0c43b9f89a/raw/e46d3919da84e127c46ddb9a98083fdfe45c550e/diamondbacks-alt-red-front.svg'), linear-gradient(transparent, transparent);
+}
+.diamondbacks-alt-red-solid {
+  background-color: #000000;
+}
+.diamondbacks-alt-red-border {
+  background-color: #e79d94;
+}
+.braves-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.braves-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.braves-home-solid {
+  background-color: #ab1234;
+}
+.braves-home-border {
+  background-color: #0b2c5a;
+}
+.braves-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.braves-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.braves-away-solid {
+  background-color: #ab1234;
+}
+.braves-away-border {
+  background-color: #0b2c5a;
+}
+.braves-alt-cream-back {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-alt-cream-back.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-alt-cream-back.svg'), linear-gradient(transparent, transparent);
+}
+.braves-alt-cream-front {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-alt-cream-front.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-alt-cream-front.svg'), linear-gradient(transparent, transparent);
+}
+.braves-alt-cream-solid {
+  background-color: #ab1234;
+}
+.braves-alt-cream-border {
+  background-color: #0b2c5a;
+}
+.braves-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.braves-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/braves/braves-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/70fe783889494c2c0de8cd9b2dbd05b2/raw/af5e8226f04e295506a61636aaf6d405c6d24a54/braves-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.braves-alt-blue-solid {
+  background-color: #0b2c5a;
+}
+.braves-alt-blue-border {
+  background-color: #ffffff;
+}
+.orioles-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-home-solid {
+  background-color: #f94900;
+}
+.orioles-home-border {
+  background-color: #000000;
+}
+.orioles-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-away-solid {
+  background-color: #f94900;
+}
+.orioles-away-border {
+  background-color: #000000;
+}
+.orioles-alt-black-back {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-alt-black-back.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-alt-black-back.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-alt-black-front {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-alt-black-front.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-alt-black-front.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-alt-black-solid {
+  background-color: #f94900;
+}
+.orioles-alt-black-border {
+  background-color: #983206;
+}
+.orioles-alt-orange-back {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-alt-orange-back.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-alt-orange-back.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-alt-orange-front {
+  background: url('https://fairylab.surge.sh/images/teams/orioles/orioles-alt-orange-front.png');
+  background: url('https://gistcdn.githack.com/brunner/6df0d030fbb62f9cd169624afe5351e3/raw/f9576bb0aa8427c19832bb972962b86c3a6cb1f2/orioles-alt-orange-front.svg'), linear-gradient(transparent, transparent);
+}
+.orioles-alt-orange-solid {
+  background-color: #000000;
+}
+.orioles-alt-orange-border {
+  background-color: #ffffff;
+}
+.redsox-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-home-solid {
+  background-color: #d5122f;
+}
+.redsox-home-border {
+  background-color: #09285a;
+}
+.redsox-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-away-solid {
+  background-color: #d5122f;
+}
+.redsox-away-border {
+  background-color: #09285a;
+}
+.redsox-alt-red-back {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-alt-red-back.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-alt-red-back.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-alt-red-front {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-alt-red-front.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-alt-red-front.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-alt-red-solid {
+  background-color: #09285a;
+}
+.redsox-alt-red-border {
+  background-color: #ffffff;
+}
+.redsox-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/redsox/redsox-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/4a6a4036834b558756dac7ac9c0309d0/raw/b370f4842d7d271d9935f30d231abe0368409944/redsox-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.redsox-alt-blue-solid {
+  background-color: #d5122f;
+}
+.redsox-alt-blue-border {
+  background-color: #ffffff;
+}
+.whitesox-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-home-solid {
+  background-color: #000000;
+}
+.whitesox-home-border {
+  background-color: #d0cfd1;
+}
+.whitesox-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-away-solid {
+  background-color: #000000;
+}
+.whitesox-away-border {
+  background-color: #ffffff;
+}
+.whitesox-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-alt-blue-solid {
+  background-color: #09285a;
+}
+.whitesox-alt-blue-border {
+  background-color: #9d9f9f;
+}
+.whitesox-alt-black-back {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-alt-black-back.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-alt-black-back.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-alt-black-front {
+  background: url('https://fairylab.surge.sh/images/teams/whitesox/whitesox-alt-black-front.png');
+  background: url('https://gistcdn.githack.com/brunner/359d34636fabc914a83a8c746fc6eba9/raw/1afa211b3cec808c7d58863fd61d436bbdbe05da/whitesox-alt-black-front.svg'), linear-gradient(transparent, transparent);
+}
+.whitesox-alt-black-solid {
+  background-color: #ffffff;
+}
+.whitesox-alt-black-border {
+  background-color: #d0cfd1;
+}
+.cubs-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/cubs/cubs-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/ed81fde94a24fdce340a19e52fda33bd/raw/cf6811a0707e24be1ef2038f91cc295525274cf6/cubs-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.cubs-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/cubs/cubs-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/ed81fde94a24fdce340a19e52fda33bd/raw/cf6811a0707e24be1ef2038f91cc295525274cf6/cubs-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.cubs-home-solid {
+  background-color: #122441;
+}
+.cubs-home-border {
+  background-color: #9da3aa;
+}
+.cubs-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/cubs/cubs-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/ed81fde94a24fdce340a19e52fda33bd/raw/cf6811a0707e24be1ef2038f91cc295525274cf6/cubs-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.cubs-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/cubs/cubs-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/ed81fde94a24fdce340a19e52fda33bd/raw/cf6811a0707e24be1ef2038f91cc295525274cf6/cubs-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.cubs-away-solid {
+  background-color: #122441;
+}
+.cubs-away-border {
+  background-color: #63625f;
+}
+.cubs-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/cubs/cubs-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/ed81fde94a24fdce340a19e52fda33bd/raw/cf6811a0707e24be1ef2038f91cc295525274cf6/cubs-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.cubs-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/cubs/cubs-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/ed81fde94a24fdce340a19e52fda33bd/raw/cf6811a0707e24be1ef2038f91cc295525274cf6/cubs-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.cubs-alt-blue-solid {
+  background-color: #ffffff;
+}
+.cubs-alt-blue-border {
+  background-color: #000000;
+}
+.reds-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/reds/reds-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.reds-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/reds/reds-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.reds-home-solid {
+  background-color: #ea164c;
+}
+.reds-home-border {
+  background-color: #000000;
+}
+.reds-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/reds/reds-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.reds-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/reds/reds-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.reds-away-solid {
+  background-color: #ea164c;
+}
+.reds-away-border {
+  background-color: #000000;
+}
+.reds-alt-red-back {
+  background: url('https://fairylab.surge.sh/images/teams/reds/reds-alt-red-back.png');
+  background: url('https://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-alt-red-back.svg'), linear-gradient(transparent, transparent);
+}
+.reds-alt-red-front {
+  background: url('https://fairylab.surge.sh/images/teams/reds/reds-alt-red-front.png');
+  background: url('https://gistcdn.githack.com/brunner/af532f33900c377ea6a7d5c373a9785f/raw/8eb50b108f9f65dfcc71b30ddb3b9ab032a972c1/reds-alt-red-front.svg'), linear-gradient(transparent, transparent);
+}
+.reds-alt-red-solid {
+  background-color: #ffffff;
+}
+.reds-alt-red-border {
+  background-color: #000000;
+}
+.indians-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/indians/indians-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/40b0331a059d0ad8869df7e101863401/raw/39c4825ca85027191a3003528ce36ab6c85bf537/indians-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.indians-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/indians/indians-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/40b0331a059d0ad8869df7e101863401/raw/39c4825ca85027191a3003528ce36ab6c85bf537/indians-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.indians-home-solid {
+  background-color: #e9144b;
+}
+.indians-home-border {
+  background-color: #09295c;
+}
+.indians-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/indians/indians-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/40b0331a059d0ad8869df7e101863401/raw/39c4825ca85027191a3003528ce36ab6c85bf537/indians-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.indians-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/indians/indians-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/40b0331a059d0ad8869df7e101863401/raw/39c4825ca85027191a3003528ce36ab6c85bf537/indians-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.indians-away-solid {
+  background-color: #09295c;
+}
+.indians-away-border {
+  background-color: #e9144b;
+}
+.indians-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/indians/indians-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/40b0331a059d0ad8869df7e101863401/raw/39c4825ca85027191a3003528ce36ab6c85bf537/indians-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.indians-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/indians/indians-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/40b0331a059d0ad8869df7e101863401/raw/39c4825ca85027191a3003528ce36ab6c85bf537/indians-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.indians-alt-blue-solid {
+  background-color: #e9144b;
+}
+.indians-alt-blue-border {
+  background-color: #ffffff;
+}
+.rockies-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-home-solid {
+  background-color: #000000;
+}
+.rockies-home-border {
+  background-color: #a5a4a8;
+}
+.rockies-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-away-solid {
+  background-color: #000000;
+}
+.rockies-away-border {
+  background-color: #ffffff;
+}
+.rockies-alt-purple-back {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-alt-purple-back.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-alt-purple-back.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-alt-purple-front {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-alt-purple-front.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-alt-purple-front.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-alt-purple-solid {
+  background-color: #000000;
+}
+.rockies-alt-purple-border {
+  background-color: #ffffff;
+}
+.rockies-alt-black-back {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-alt-black-back.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-alt-black-back.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-alt-black-front {
+  background: url('https://fairylab.surge.sh/images/teams/rockies/rockies-alt-black-front.png');
+  background: url('https://gistcdn.githack.com/brunner/79886209567ba70e64192b9810bde6a3/raw/ed1def95cd767f6c4e0601b6dd440d58f365e894/rockies-alt-black-front.svg'), linear-gradient(transparent, transparent);
+}
+.rockies-alt-black-solid {
+  background-color: #a5a4a8;
+}
+.rockies-alt-black-border {
+  background-color: #3b3583;
+}
+.tigers-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-home-solid {
+  background-color: #0b2245;
+}
+.tigers-home-border {
+  background-color: #e54927;
+}
+.tigers-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-away-solid {
+  background-color: #0b2245;
+}
+.tigers-away-border {
+  background-color: #e54927;
+}
+.tigers-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-alt-blue-solid {
+  background-color: #ffffff;
+}
+.tigers-alt-blue-border {
+  background-color: #e54927;
+}
+.tigers-alt-orange-back {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-alt-orange-back.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-alt-orange-back.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-alt-orange-front {
+  background: url('https://fairylab.surge.sh/images/teams/tigers/tigers-alt-orange-front.png');
+  background: url('https://gistcdn.githack.com/brunner/89a0edfe4287648effd8021807ef9625/raw/2a80951e810dccdb569fc2f249e3fb8c00675000/tigers-alt-orange-front.svg'), linear-gradient(transparent, transparent);
+}
+.tigers-alt-orange-solid {
+  background-color: #0b2245;
+}
+.tigers-alt-orange-border {
+  background-color: #ffffff;
+}
+.marlins-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/marlins/marlins-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/793744dc81800fea7f219dd22b28afa1/raw/b2fe8e13546351a7272f1b90d066b398620adcac/marlins-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.marlins-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/marlins/marlins-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/793744dc81800fea7f219dd22b28afa1/raw/b2fe8e13546351a7272f1b90d066b398620adcac/marlins-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.marlins-home-solid {
+  background-color: #000000;
+}
+.marlins-home-border {
+  background-color: #27aab8;
+}
+.marlins-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/marlins/marlins-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/793744dc81800fea7f219dd22b28afa1/raw/b2fe8e13546351a7272f1b90d066b398620adcac/marlins-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.marlins-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/marlins/marlins-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/793744dc81800fea7f219dd22b28afa1/raw/b2fe8e13546351a7272f1b90d066b398620adcac/marlins-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.marlins-away-solid {
+  background-color: #000000;
+}
+.marlins-away-border {
+  background-color: #27aab8;
+}
+.astros-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/astros/astros-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/2d3444f09ba1f0c9a06b6e9bdd27eda7/raw/b19253b93017682124fe778e0a8624c12bcc6332/astros-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.astros-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/astros/astros-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/2d3444f09ba1f0c9a06b6e9bdd27eda7/raw/b19253b93017682124fe778e0a8624c12bcc6332/astros-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.astros-home-solid {
+  background-color: #141929;
+}
+.astros-home-border {
+  background-color: #aa563e;
+}
+.astros-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/astros/astros-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/2d3444f09ba1f0c9a06b6e9bdd27eda7/raw/b19253b93017682124fe778e0a8624c12bcc6332/astros-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.astros-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/astros/astros-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/2d3444f09ba1f0c9a06b6e9bdd27eda7/raw/b19253b93017682124fe778e0a8624c12bcc6332/astros-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.astros-away-solid {
+  background-color: #141929;
+}
+.astros-away-border {
+  background-color: #aa563e;
+}
+.astros-alt-orange-back {
+  background: url('https://fairylab.surge.sh/images/teams/astros/astros-alt-orange-back.png');
+  background: url('https://gistcdn.githack.com/brunner/2d3444f09ba1f0c9a06b6e9bdd27eda7/raw/b19253b93017682124fe778e0a8624c12bcc6332/astros-alt-orange-back.svg'), linear-gradient(transparent, transparent);
+}
+.astros-alt-orange-front {
+  background: url('https://fairylab.surge.sh/images/teams/astros/astros-alt-orange-front.png');
+  background: url('https://gistcdn.githack.com/brunner/2d3444f09ba1f0c9a06b6e9bdd27eda7/raw/b19253b93017682124fe778e0a8624c12bcc6332/astros-alt-orange-front.svg'), linear-gradient(transparent, transparent);
+}
+.astros-alt-orange-solid {
+  background-color: #141929;
+}
+.astros-alt-orange-border {
+  background-color: #ffffff;
+}
+.royals-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.royals-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.royals-home-solid {
+  background-color: #0d326f;
+}
+.royals-home-border {
+  background-color: #6a86a4;
+}
+.royals-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.royals-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.royals-away-solid {
+  background-color: #0d326f;
+}
+.royals-away-border {
+  background-color: #6a86a4;
+}
+.royals-alt-sky-back {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-alt-sky-back.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-alt-sky-back.svg'), linear-gradient(transparent, transparent);
+}
+.royals-alt-sky-front {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-alt-sky-front.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-alt-sky-front.svg'), linear-gradient(transparent, transparent);
+}
+.royals-alt-sky-solid {
+  background-color: #ffffff;
+}
+.royals-alt-sky-border {
+  background-color: #0d326f;
+}
+.royals-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.royals-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/royals/royals-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/f87f4b6bf4821f16ef57eae0823e9fc7/raw/1f8528c7ec317d89f3e7ba6de2b3c3dd7340f64c/royals-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.royals-alt-blue-solid {
+  background-color: #ffffff;
+}
+.royals-alt-blue-border {
+  background-color: #6a86a4;
+}
+.angels-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/angels/angels-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/9780ce2762db67b17831a0c908aaf725/raw/1018f1ba85a160d74d5a924749a6cd28cae44a40/angels-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.angels-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/angels/angels-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/9780ce2762db67b17831a0c908aaf725/raw/1018f1ba85a160d74d5a924749a6cd28cae44a40/angels-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.angels-home-solid {
+  background-color: #b11132;
+}
+.angels-home-border {
+  background-color: #0c2445;
+}
+.angels-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/angels/angels-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/9780ce2762db67b17831a0c908aaf725/raw/1018f1ba85a160d74d5a924749a6cd28cae44a40/angels-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.angels-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/angels/angels-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/9780ce2762db67b17831a0c908aaf725/raw/1018f1ba85a160d74d5a924749a6cd28cae44a40/angels-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.angels-away-solid {
+  background-color: #b11132;
+}
+.angels-away-border {
+  background-color: #0c2445;
+}
+.angels-alt-red-back {
+  background: url('https://fairylab.surge.sh/images/teams/angels/angels-alt-red-back.png');
+  background: url('https://gistcdn.githack.com/brunner/9780ce2762db67b17831a0c908aaf725/raw/1018f1ba85a160d74d5a924749a6cd28cae44a40/angels-alt-red-back.svg'), linear-gradient(transparent, transparent);
+}
+.angels-alt-red-front {
+  background: url('https://fairylab.surge.sh/images/teams/angels/angels-alt-red-front.png');
+  background: url('https://gistcdn.githack.com/brunner/9780ce2762db67b17831a0c908aaf725/raw/1018f1ba85a160d74d5a924749a6cd28cae44a40/angels-alt-red-front.svg'), linear-gradient(transparent, transparent);
+}
+.angels-alt-red-solid {
+  background-color: #b11132;
+}
+.angels-alt-red-border {
+  background-color: #0c2445;
+}
+.dodgers-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/dodgers/dodgers-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/d334f966fa470e01991d550266b94283/raw/4572edb247c3b7281f01cf01e0ee97f34a14e145/dodgers-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.dodgers-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/dodgers/dodgers-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/d334f966fa470e01991d550266b94283/raw/4572edb247c3b7281f01cf01e0ee97f34a14e145/dodgers-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.dodgers-home-solid {
+  background-color: #233972;
+}
+.dodgers-home-border {
+  background-color: #55678b;
+}
+.dodgers-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/dodgers/dodgers-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/d334f966fa470e01991d550266b94283/raw/4572edb247c3b7281f01cf01e0ee97f34a14e145/dodgers-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.dodgers-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/dodgers/dodgers-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/d334f966fa470e01991d550266b94283/raw/4572edb247c3b7281f01cf01e0ee97f34a14e145/dodgers-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.dodgers-away-solid {
+  background-color: #233972;
+}
+.dodgers-away-border {
+  background-color: #55678b;
+}
+.brewers-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/brewers/brewers-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5aa56738ca8fc3f8367d6f777614de38/raw/854c03ddbbd38842ee7e62f825b0dcd97cb9d391/brewers-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.brewers-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/brewers/brewers-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5aa56738ca8fc3f8367d6f777614de38/raw/854c03ddbbd38842ee7e62f825b0dcd97cb9d391/brewers-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.brewers-home-solid {
+  background-color: #1a4ba7;
+}
+.brewers-home-border {
+  background-color: #fbc72d;
+}
+.brewers-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/brewers/brewers-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5aa56738ca8fc3f8367d6f777614de38/raw/854c03ddbbd38842ee7e62f825b0dcd97cb9d391/brewers-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.brewers-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/brewers/brewers-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5aa56738ca8fc3f8367d6f777614de38/raw/854c03ddbbd38842ee7e62f825b0dcd97cb9d391/brewers-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.brewers-away-solid {
+  background-color: #1a4ba7;
+}
+.brewers-away-border {
+  background-color: #fbc72d;
+}
+.brewers-alt-sky-back {
+  background: url('https://fairylab.surge.sh/images/teams/brewers/brewers-alt-sky-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5aa56738ca8fc3f8367d6f777614de38/raw/854c03ddbbd38842ee7e62f825b0dcd97cb9d391/brewers-alt-sky-back.svg'), linear-gradient(transparent, transparent);
+}
+.brewers-alt-sky-front {
+  background: url('https://fairylab.surge.sh/images/teams/brewers/brewers-alt-sky-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5aa56738ca8fc3f8367d6f777614de38/raw/854c03ddbbd38842ee7e62f825b0dcd97cb9d391/brewers-alt-sky-front.svg'), linear-gradient(transparent, transparent);
+}
+.brewers-alt-sky-solid {
+  background-color: #1a4ba7;
+}
+.brewers-alt-sky-border {
+  background-color: #fbc72d;
+}
+.twins-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.twins-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.twins-home-solid {
+  background-color: #d11242;
+}
+.twins-home-border {
+  background-color: #052046;
+}
+.twins-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.twins-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.twins-away-solid {
+  background-color: #052046;
+}
+.twins-away-border {
+  background-color: #d11242;
+}
+.twins-alt-cream-back {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-alt-cream-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-alt-cream-back.svg'), linear-gradient(transparent, transparent);
+}
+.twins-alt-cream-front {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-alt-cream-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-alt-cream-front.svg'), linear-gradient(transparent, transparent);
+}
+.twins-alt-cream-solid {
+  background-color: #052046;
+}
+.twins-alt-cream-border {
+  background-color: #d11242;
+}
+.twins-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.twins-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/twins/twins-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5b5568f5e186885d5e5175a25959f5d0/raw/278276af922a94ee6396cace99f17c3a308da730/twins-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.twins-alt-blue-solid {
+  background-color: #d11242;
+}
+.twins-alt-blue-border {
+  background-color: #d0718f;
+}
+.yankees-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/yankees/yankees-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5b8b9a01333351a92f6f91726dce239b/raw/0cfd7978330ee9e4c4c4fa37439b9abb903be46a/yankees-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.yankees-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/yankees/yankees-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5b8b9a01333351a92f6f91726dce239b/raw/0cfd7978330ee9e4c4c4fa37439b9abb903be46a/yankees-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.yankees-home-solid {
+  background-color: #051e42;
+}
+.yankees-home-border {
+  background-color: #ffffff;
+}
+.yankees-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/yankees/yankees-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5b8b9a01333351a92f6f91726dce239b/raw/0cfd7978330ee9e4c4c4fa37439b9abb903be46a/yankees-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.yankees-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/yankees/yankees-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5b8b9a01333351a92f6f91726dce239b/raw/0cfd7978330ee9e4c4c4fa37439b9abb903be46a/yankees-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.yankees-away-solid {
+  background-color: #051e42;
+}
+.yankees-away-border {
+  background-color: #ffffff;
+}
+.mets-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.mets-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.mets-home-solid {
+  background-color: #144a8b;
+}
+.mets-home-border {
+  background-color: #d57437;
+}
+.mets-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.mets-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.mets-away-solid {
+  background-color: #253b76;
+}
+.mets-away-border {
+  background-color: #c45d3b;
+}
+.mets-alt-black-back {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-alt-black-back.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-alt-black-back.svg'), linear-gradient(transparent, transparent);
+}
+.mets-alt-black-front {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-alt-black-front.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-alt-black-front.svg'), linear-gradient(transparent, transparent);
+}
+.mets-alt-black-solid {
+  background-color: #144a8b;
+}
+.mets-alt-black-border {
+  background-color: #d57437;
+}
+.mets-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.mets-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/mets/mets-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/aa9197d99dd2abcb7a50f13e5ae75ab0/raw/b209622a6f5849a60035cd3f583914bb557fb514/mets-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.mets-alt-blue-solid {
+  background-color: #a4a1a1;
+}
+.mets-alt-blue-border {
+  background-color: #c45d3b;
+}
+.athletics-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-home-solid {
+  background-color: #064436;
+}
+.athletics-home-border {
+  background-color: #f0b019;
+}
+.athletics-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-away-solid {
+  background-color: #064436;
+}
+.athletics-away-border {
+  background-color: #f0b019;
+}
+.athletics-alt-yellow-back {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-alt-yellow-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-alt-yellow-back.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-alt-yellow-front {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-alt-yellow-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-alt-yellow-front.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-alt-yellow-solid {
+  background-color: #064436;
+}
+.athletics-alt-yellow-border {
+  background-color: #ffffff;
+}
+.athletics-alt-green-back {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-alt-green-back.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-alt-green-back.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-alt-green-front {
+  background: url('https://fairylab.surge.sh/images/teams/athletics/athletics-alt-green-front.png');
+  background: url('https://gistcdn.githack.com/brunner/5641c5488e3de552ebd8f04c7d089fd9/raw/f62eb1e611dcb85832aa9cfc2ea1165a99325beb/athletics-alt-green-front.svg'), linear-gradient(transparent, transparent);
+}
+.athletics-alt-green-solid {
+  background-color: #ffffff;
+}
+.athletics-alt-green-border {
+  background-color: #f0b019;
+}
+.phillies-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-home-solid {
+  background-color: #d11043;
+}
+.phillies-home-border {
+  background-color: #e37792;
+}
+.phillies-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-away-solid {
+  background-color: #d11043;
+}
+.phillies-away-border {
+  background-color: #e37792;
+}
+.phillies-alt-sky-back {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-alt-sky-back.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-alt-sky-back.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-alt-sky-front {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-alt-sky-front.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-alt-sky-front.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-alt-sky-solid {
+  background-color: #6d223a;
+}
+.phillies-alt-sky-border {
+  background-color: #ffffff;
+}
+.phillies-alt-cream-back {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-alt-cream-back.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-alt-cream-back.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-alt-cream-front {
+  background: url('https://fairylab.surge.sh/images/teams/phillies/phillies-alt-cream-front.png');
+  background: url('https://gistcdn.githack.com/brunner/21cdbe29a981ae9e9eeeccbd93b7e76e/raw/44bdf456e169c959be199c0030228077a7104c1e/phillies-alt-cream-front.svg'), linear-gradient(transparent, transparent);
+}
+.phillies-alt-cream-solid {
+  background-color: #d11043;
+}
+.phillies-alt-cream-border {
+  background-color: #165397;
+}
+.pirates-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-home-solid {
+  background-color: #000000;
+}
+.pirates-home-border {
+  background-color: #fcc72d;
+}
+.pirates-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-away-solid {
+  background-color: #000000;
+}
+.pirates-away-border {
+  background-color: #fcc72d;
+}
+.pirates-alt-yellow-back {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-alt-yellow-back.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-alt-yellow-back.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-alt-yellow-front {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-alt-yellow-front.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-alt-yellow-front.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-alt-yellow-solid {
+  background-color: #000000;
+}
+.pirates-alt-yellow-border {
+  background-color: #ffffff;
+}
+.pirates-alt-black-back {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-alt-black-back.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-alt-black-back.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-alt-black-front {
+  background: url('https://fairylab.surge.sh/images/teams/pirates/pirates-alt-black-front.png');
+  background: url('https://gistcdn.githack.com/brunner/b52b416175cd704f7dd007d890dd629e/raw/a3771c5794f7677c45b99bc467af7fa87ab26d6d/pirates-alt-black-front.svg'), linear-gradient(transparent, transparent);
+}
+.pirates-alt-black-solid {
+  background-color: #fcc72d;
+}
+.pirates-alt-black-border {
+  background-color: #ffffff;
+}
+.padres-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.padres-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.padres-home-solid {
+  background-color: #512c1b;
+}
+.padres-home-border {
+  background-color: #f0aa1c;
+}
+.padres-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.padres-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.padres-away-solid {
+  background-color: #512c1b;
+}
+.padres-away-border {
+  background-color: #f0aa1c;
+}
+.padres-alt-cream-back {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-alt-cream-back.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-alt-cream-back.svg'), linear-gradient(transparent, transparent);
+}
+.padres-alt-cream-front {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-alt-cream-front.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-alt-cream-front.svg'), linear-gradient(transparent, transparent);
+}
+.padres-alt-cream-solid {
+  background-color: #512c1b;
+}
+.padres-alt-cream-border {
+  background-color: #f0aa1c;
+}
+.padres-alt-yellow-back {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-alt-yellow-back.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-alt-yellow-back.svg'), linear-gradient(transparent, transparent);
+}
+.padres-alt-yellow-front {
+  background: url('https://fairylab.surge.sh/images/teams/padres/padres-alt-yellow-front.png');
+  background: url('https://gistcdn.githack.com/brunner/a2ae8f3ef490bad2f2f5510428d4bdc2/raw/b9c65c44cca5eab7453ae85ac728e27ae7416b67/padres-alt-yellow-front.svg'), linear-gradient(transparent, transparent);
+}
+.padres-alt-yellow-solid {
+  background-color: #512c1b;
+}
+.padres-alt-yellow-border {
+  background-color: #704f33;
+}
+.mariners-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-home-solid {
+  background-color: #09285a;
+}
+.mariners-home-border {
+  background-color: #0b505a;
+}
+.mariners-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-away-solid {
+  background-color: #09285a;
+}
+.mariners-away-border {
+  background-color: #0b505a;
+}
+.mariners-alt-green-back {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-alt-green-back.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-alt-green-back.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-alt-green-front {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-alt-green-front.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-alt-green-front.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-alt-green-solid {
+  background-color: #c9d0d1;
+}
+.mariners-alt-green-border {
+  background-color: #09285a;
+}
+.mariners-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/mariners/mariners-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/146290fc1036d7628d016218e9a05a92/raw/6a6f13694db39de9d335e25661138a4f14ccf4ab/mariners-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.mariners-alt-blue-solid {
+  background-color: #c9d0d1;
+}
+.mariners-alt-blue-border {
+  background-color: #0b505a;
+}
+.giants-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/giants/giants-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/d82f716325270e162d646bbaa7160c8b/raw/f5c7a0e63b18cfaef3aff919f1c74d60719f5747/giants-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.giants-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/giants/giants-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/d82f716325270e162d646bbaa7160c8b/raw/f5c7a0e63b18cfaef3aff919f1c74d60719f5747/giants-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.giants-home-solid {
+  background-color: #000000;
+}
+.giants-home-border {
+  background-color: #c85633;
+}
+.giants-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/giants/giants-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/d82f716325270e162d646bbaa7160c8b/raw/f5c7a0e63b18cfaef3aff919f1c74d60719f5747/giants-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.giants-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/giants/giants-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/d82f716325270e162d646bbaa7160c8b/raw/f5c7a0e63b18cfaef3aff919f1c74d60719f5747/giants-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.giants-away-solid {
+  background-color: #000000;
+}
+.giants-away-border {
+  background-color: #c85633;
+}
+.giants-alt-orange-back {
+  background: url('https://fairylab.surge.sh/images/teams/giants/giants-alt-orange-back.png');
+  background: url('https://gistcdn.githack.com/brunner/d82f716325270e162d646bbaa7160c8b/raw/f5c7a0e63b18cfaef3aff919f1c74d60719f5747/giants-alt-orange-back.svg'), linear-gradient(transparent, transparent);
+}
+.giants-alt-orange-front {
+  background: url('https://fairylab.surge.sh/images/teams/giants/giants-alt-orange-front.png');
+  background: url('https://gistcdn.githack.com/brunner/d82f716325270e162d646bbaa7160c8b/raw/f5c7a0e63b18cfaef3aff919f1c74d60719f5747/giants-alt-orange-front.svg'), linear-gradient(transparent, transparent);
+}
+.giants-alt-orange-solid {
+  background-color: #000000;
+}
+.giants-alt-orange-border {
+  background-color: #ffffff;
+}
+.cardinals-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/cardinals/cardinals-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/2f8467f7cef50d56217cd0bd4da65ca0/raw/b854738755e6572c1aec7ca65a16b1030a4c3b53/cardinals-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.cardinals-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/cardinals/cardinals-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/2f8467f7cef50d56217cd0bd4da65ca0/raw/b854738755e6572c1aec7ca65a16b1030a4c3b53/cardinals-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.cardinals-home-solid {
+  background-color: #d11043;
+}
+.cardinals-home-border {
+  background-color: #0c2340;
+}
+.cardinals-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/cardinals/cardinals-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/2f8467f7cef50d56217cd0bd4da65ca0/raw/b854738755e6572c1aec7ca65a16b1030a4c3b53/cardinals-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.cardinals-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/cardinals/cardinals-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/2f8467f7cef50d56217cd0bd4da65ca0/raw/b854738755e6572c1aec7ca65a16b1030a4c3b53/cardinals-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.cardinals-away-solid {
+  background-color: #d11043;
+}
+.cardinals-away-border {
+  background-color: #0c2340;
+}
+.cardinals-alt-cream-back {
+  background: url('https://fairylab.surge.sh/images/teams/cardinals/cardinals-alt-cream-back.png');
+  background: url('https://gistcdn.githack.com/brunner/2f8467f7cef50d56217cd0bd4da65ca0/raw/b854738755e6572c1aec7ca65a16b1030a4c3b53/cardinals-alt-cream-back.svg'), linear-gradient(transparent, transparent);
+}
+.cardinals-alt-cream-front {
+  background: url('https://fairylab.surge.sh/images/teams/cardinals/cardinals-alt-cream-front.png');
+  background: url('https://gistcdn.githack.com/brunner/2f8467f7cef50d56217cd0bd4da65ca0/raw/b854738755e6572c1aec7ca65a16b1030a4c3b53/cardinals-alt-cream-front.svg'), linear-gradient(transparent, transparent);
+}
+.cardinals-alt-cream-solid {
+  background-color: #d11043;
+}
+.cardinals-alt-cream-border {
+  background-color: #0c2340;
+}
+.rays-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.rays-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.rays-home-solid {
+  background-color: #08131e;
+}
+.rays-home-border {
+  background-color: #0a2b5f;
+}
+.rays-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.rays-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.rays-away-solid {
+  background-color: #08131e;
+}
+.rays-away-border {
+  background-color: #0a2b5f;
+}
+.rays-alt-sky-back {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-alt-sky-back.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-alt-sky-back.svg'), linear-gradient(transparent, transparent);
+}
+.rays-alt-sky-front {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-alt-sky-front.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-alt-sky-front.svg'), linear-gradient(transparent, transparent);
+}
+.rays-alt-sky-solid {
+  background-color: #09255c;
+}
+.rays-alt-sky-border {
+  background-color: #fcc520;
+}
+.rays-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.rays-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/rays/rays-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/72da90820a526e10bad1484efd2aaea3/raw/9596cda701c2d5af036d726e2547db65dfcda134/rays-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.rays-alt-blue-solid {
+  background-color: #74b5e1;
+}
+.rays-alt-blue-border {
+  background-color: #09255c;
+}
+.rangers-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-home-solid {
+  background-color: #124886;
+}
+.rangers-home-border {
+  background-color: #ce103b;
+}
+.rangers-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-away-solid {
+  background-color: #124886;
+}
+.rangers-away-border {
+  background-color: #ce103b;
+}
+.rangers-alt-sky-back {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-alt-sky-back.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-alt-sky-back.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-alt-sky-front {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-alt-sky-front.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-alt-sky-front.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-alt-sky-solid {
+  background-color: #e60021;
+}
+.rangers-alt-sky-border {
+  background-color: #ffffff;
+}
+.rangers-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/rangers/rangers-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/468cead9ea12e6bb3ba6f62236b8d1a7/raw/80fb2958b8e027e2d8a8097bcb7cd4b3bd9bfe13/rangers-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.rangers-alt-blue-solid {
+  background-color: #ffffff;
+}
+.rangers-alt-blue-border {
+  background-color: #ce103b;
+}
+.bluejays-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/bluejays/bluejays-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/75833b35b51c8b6cd5c300e0d4117739/raw/ac65ce092e906593e512d3452a38c2e5668f8447/bluejays-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.bluejays-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/bluejays/bluejays-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/75833b35b51c8b6cd5c300e0d4117739/raw/ac65ce092e906593e512d3452a38c2e5668f8447/bluejays-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.bluejays-home-solid {
+  background-color: #1d469b;
+}
+.bluejays-home-border {
+  background-color: #122856;
+}
+.bluejays-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/bluejays/bluejays-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/75833b35b51c8b6cd5c300e0d4117739/raw/ac65ce092e906593e512d3452a38c2e5668f8447/bluejays-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.bluejays-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/bluejays/bluejays-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/75833b35b51c8b6cd5c300e0d4117739/raw/ac65ce092e906593e512d3452a38c2e5668f8447/bluejays-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.bluejays-away-solid {
+  background-color: #1d469b;
+}
+.bluejays-away-border {
+  background-color: #122856;
+}
+.bluejays-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/bluejays/bluejays-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/75833b35b51c8b6cd5c300e0d4117739/raw/ac65ce092e906593e512d3452a38c2e5668f8447/bluejays-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.bluejays-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/bluejays/bluejays-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/75833b35b51c8b6cd5c300e0d4117739/raw/ac65ce092e906593e512d3452a38c2e5668f8447/bluejays-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.bluejays-alt-blue-solid {
+  background-color: #ffffff;
+}
+.bluejays-alt-blue-border {
+  background-color: #122856;
+}
+.nationals-home-back {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-home-back.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-home-back.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-home-front {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-home-front.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-home-front.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-home-solid {
+  background-color: #b10b30;
+}
+.nationals-home-border {
+  background-color: #0a2045;
+}
+.nationals-away-back {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-away-back.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-away-back.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-away-front {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-away-front.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-away-front.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-away-solid {
+  background-color: #b10b30;
+}
+.nationals-away-border {
+  background-color: #0a2045;
+}
+.nationals-alt-blue-back {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-alt-blue-back.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-alt-blue-back.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-alt-blue-front {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-alt-blue-front.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-alt-blue-front.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-alt-blue-solid {
+  background-color: #b10b30;
+}
+.nationals-alt-blue-border {
+  background-color: #ffffff;
+}
+.nationals-alt-red-back {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-alt-red-back.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-alt-red-back.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-alt-red-front {
+  background: url('https://fairylab.surge.sh/images/teams/nationals/nationals-alt-red-front.png');
+  background: url('https://gistcdn.githack.com/brunner/7364eac50fccbb97ce1ea034da8e3c6a/raw/47d7dae296e3b5d262e9dca3effad546969670f1/nationals-alt-red-front.svg'), linear-gradient(transparent, transparent);
+}
+.nationals-alt-red-solid {
+  background-color: #ffffff;
+}
+.nationals-alt-red-border {
+  background-color: #0a2045;
+}
+.jersey-base {
+  background-size: 78px 80px;
+  border: 1px solid #eeeff0;
+  height: 82px;
+  margin: -5px -1px -5px -5px;
+  width: 80px;
+}
+.number-block-solid-0 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/0.png');
+}
+.number-block-border-0 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/0.png');
+}
+.number-block-solid-1 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/1.png');
+}
+.number-block-border-1 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/1.png');
+}
+.number-block-solid-2 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/2.png');
+}
+.number-block-border-2 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/2.png');
+}
+.number-block-solid-3 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/3.png');
+}
+.number-block-border-3 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/3.png');
+}
+.number-block-solid-4 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/4.png');
+}
+.number-block-border-4 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/4.png');
+}
+.number-block-solid-5 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/5.png');
+}
+.number-block-border-5 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/5.png');
+}
+.number-block-solid-6 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/6.png');
+}
+.number-block-border-6 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/6.png');
+}
+.number-block-solid-7 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/7.png');
+}
+.number-block-border-7 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/7.png');
+}
+.number-block-solid-8 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/8.png');
+}
+.number-block-border-8 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/8.png');
+}
+.number-block-solid-9 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/solid/9.png');
+}
+.number-block-border-9 {
+  -webkit-mask-image: url('https://fairylab.surge.sh/images/numbers/block/border/9.png');
+}
+.number-block-mid {
+  left: 29px;
+}
+.number-block-l-1 {
+  left: 24px;
+}
+.number-block-l-2 {
+  left: 22px;
+}
+.number-block-r-1 {
+  left: 34px;
+}
+.number-block-r-2 {
+  left: 36px;
+}
+.number-base {
+  height: 20px;
+  width: 12px;
+  -webkit-mask-size: 12px 20px;
+  top: 23px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ^(base.header) -->
+<header class="border-bottom sticky-top">
+<div class="container">
+<nav class="navbar navbar-light border-bottom" aria-label="nav">
+<ol class="breadcrumb flex-nowrap text-truncate m-0 p-0">
+<li class="breadcrumb-item">
+<a href="/">Fairylab</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">Jersey</li>
+</ol>
+</nav>
+
+<div class="timestamp my-1">
+<small class="text-muted">Last reloaded: 06:02:30 PDT (1985-10-26)</small>
+</div>
+
+</div>
+</header>
+<!-- $(base.header) -->
+
+<!-- ^(base.main) -->
+<main role="main" class="pb-3">
+
+<!-- ^(game.container) -->
+<div class="container">
+
+<!-- ^(game.row) -->
+<div class="row">
+
+<!-- ^(game.column) -->
+<div class="col-12">
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Arizona Diamondbacks</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute diamondbacks-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute diamondbacks-home-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-0 diamondbacks-home-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-0 diamondbacks-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute diamondbacks-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute diamondbacks-away-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-1 diamondbacks-away-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-1 diamondbacks-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute diamondbacks-alt-red-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute diamondbacks-alt-red-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-2 diamondbacks-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-2 diamondbacks-alt-red-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Atlanta Braves</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-home-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-3 braves-home-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-3 braves-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-away-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-4 braves-away-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-4 braves-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-alt-cream-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-alt-cream-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-5 braves-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-5 braves-alt-cream-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute braves-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-6 braves-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-6 braves-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Baltimore Orioles</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-home-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-7 orioles-home-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-7 orioles-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-away-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-8 orioles-away-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-8 orioles-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-alt-black-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-alt-black-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-9 orioles-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-9 orioles-alt-black-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-alt-orange-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute orioles-alt-orange-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 orioles-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 orioles-alt-orange-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-0 orioles-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-0 orioles-alt-orange-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Boston Red Sox</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-home-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-1 redsox-home-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-1 redsox-home-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-1 redsox-home-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-1 redsox-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 redsox-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 redsox-away-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-2 redsox-away-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-2 redsox-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-alt-red-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-alt-red-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 redsox-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 redsox-alt-red-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-3 redsox-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-3 redsox-alt-red-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute redsox-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 redsox-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 redsox-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-4 redsox-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-4 redsox-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Chicago White Sox</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 whitesox-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 whitesox-home-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-5 whitesox-home-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-5 whitesox-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 whitesox-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 whitesox-away-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-6 whitesox-away-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-6 whitesox-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 whitesox-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 whitesox-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-7 whitesox-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-7 whitesox-alt-blue-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-alt-black-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute whitesox-alt-black-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 whitesox-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 whitesox-alt-black-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-8 whitesox-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-8 whitesox-alt-black-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Chicago Cubs</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute cubs-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute cubs-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-1 cubs-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-1 cubs-home-border"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-solid-9 cubs-home-solid"></div>
+<div class="number-base position-absolute number-block-r-1 number-block-border-9 cubs-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute cubs-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute cubs-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 cubs-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 cubs-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 cubs-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 cubs-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute cubs-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute cubs-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-2 cubs-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-2 cubs-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 cubs-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 cubs-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Cincinnati Reds</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute reds-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute reds-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 reds-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 reds-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 reds-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 reds-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute reds-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute reds-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 reds-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 reds-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 reds-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 reds-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute reds-alt-red-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute reds-alt-red-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 reds-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 reds-alt-red-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 reds-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 reds-alt-red-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Cleveland Indians</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute indians-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute indians-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 indians-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 indians-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 indians-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 indians-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute indians-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute indians-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 indians-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 indians-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 indians-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 indians-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute indians-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute indians-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 indians-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 indians-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 indians-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 indians-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Colorado Rockies</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 rockies-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 rockies-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 rockies-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 rockies-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-2 rockies-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-2 rockies-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 rockies-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 rockies-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-alt-purple-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-alt-purple-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 rockies-alt-purple-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 rockies-alt-purple-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 rockies-alt-purple-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 rockies-alt-purple-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-alt-black-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rockies-alt-black-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-3 rockies-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-3 rockies-alt-black-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 rockies-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 rockies-alt-black-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Detroit Tigers</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 tigers-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 tigers-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 tigers-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 tigers-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 tigers-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 tigers-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 tigers-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 tigers-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 tigers-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 tigers-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 tigers-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 tigers-alt-blue-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-alt-orange-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute tigers-alt-orange-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 tigers-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 tigers-alt-orange-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 tigers-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 tigers-alt-orange-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Miami Marlins</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute marlins-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute marlins-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 marlins-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 marlins-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 marlins-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 marlins-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute marlins-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute marlins-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 marlins-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 marlins-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 marlins-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 marlins-away-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Houston Astros</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute astros-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute astros-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 astros-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 astros-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 astros-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 astros-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute astros-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute astros-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-3 astros-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-3 astros-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 astros-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 astros-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute astros-alt-orange-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute astros-alt-orange-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 astros-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 astros-alt-orange-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 astros-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 astros-alt-orange-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/royals/royals-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Kansas City Royals</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-home-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-4 royals-home-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-4 royals-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 royals-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 royals-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 royals-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 royals-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 royals-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 royals-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-alt-sky-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-alt-sky-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 royals-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 royals-alt-sky-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 royals-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 royals-alt-sky-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute royals-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 royals-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 royals-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 royals-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 royals-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Los Angeles Angels</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute angels-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute angels-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 angels-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 angels-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 angels-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 angels-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute angels-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute angels-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 angels-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 angels-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 angels-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 angels-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute angels-alt-red-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute angels-alt-red-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 angels-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 angels-alt-red-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 angels-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 angels-alt-red-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Los Angeles Dodgers</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute dodgers-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute dodgers-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 dodgers-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 dodgers-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 dodgers-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 dodgers-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute dodgers-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute dodgers-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-4 dodgers-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-4 dodgers-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 dodgers-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 dodgers-away-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/brewers/brewers-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Milwaukee Brewers</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute brewers-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute brewers-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 brewers-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 brewers-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 brewers-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 brewers-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute brewers-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute brewers-away-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-5 brewers-away-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-5 brewers-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 brewers-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 brewers-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute brewers-alt-sky-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute brewers-alt-sky-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 brewers-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 brewers-alt-sky-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 brewers-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 brewers-alt-sky-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Minnesota Twins</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 twins-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 twins-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 twins-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 twins-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 twins-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 twins-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 twins-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 twins-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-alt-cream-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-alt-cream-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 twins-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 twins-alt-cream-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 twins-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 twins-alt-cream-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute twins-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 twins-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 twins-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 twins-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 twins-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">New York Yankees</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute yankees-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute yankees-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 yankees-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 yankees-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 yankees-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 yankees-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute yankees-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute yankees-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 yankees-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 yankees-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 yankees-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 yankees-away-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">New York Mets</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-5 mets-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-5 mets-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 mets-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 mets-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 mets-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 mets-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 mets-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 mets-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-alt-black-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-alt-black-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-6 mets-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-6 mets-alt-black-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 mets-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 mets-alt-black-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mets-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 mets-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 mets-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 mets-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 mets-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/athletics/athletics-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Oakland Athletics</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 athletics-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 athletics-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 athletics-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 athletics-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 athletics-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 athletics-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 athletics-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 athletics-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-alt-yellow-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-alt-yellow-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 athletics-alt-yellow-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 athletics-alt-yellow-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 athletics-alt-yellow-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 athletics-alt-yellow-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-alt-green-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute athletics-alt-green-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 athletics-alt-green-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 athletics-alt-green-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 athletics-alt-green-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 athletics-alt-green-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/phillies/phillies-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Philadelphia Phillies</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 phillies-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 phillies-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 phillies-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 phillies-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 phillies-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 phillies-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 phillies-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 phillies-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-alt-sky-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-alt-sky-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-6 phillies-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-6 phillies-alt-sky-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 phillies-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 phillies-alt-sky-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-alt-cream-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute phillies-alt-cream-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 phillies-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 phillies-alt-cream-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 phillies-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 phillies-alt-cream-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Pittsburgh Pirates</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-home-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-7 pirates-home-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-7 pirates-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 pirates-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 pirates-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 pirates-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 pirates-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 pirates-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 pirates-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-alt-yellow-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-alt-yellow-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 pirates-alt-yellow-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 pirates-alt-yellow-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 pirates-alt-yellow-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 pirates-alt-yellow-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-alt-black-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute pirates-alt-black-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 pirates-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 pirates-alt-black-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 pirates-alt-black-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 pirates-alt-black-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">San Diego Padres</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 padres-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 padres-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 padres-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 padres-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 padres-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 padres-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 padres-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 padres-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-alt-cream-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-alt-cream-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 padres-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 padres-alt-cream-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 padres-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 padres-alt-cream-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-alt-yellow-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute padres-alt-yellow-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 padres-alt-yellow-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 padres-alt-yellow-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 padres-alt-yellow-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 padres-alt-yellow-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/mariners/mariners-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Seattle Mariners</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-7 mariners-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-7 mariners-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 mariners-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 mariners-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 mariners-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 mariners-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 mariners-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 mariners-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-alt-green-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-alt-green-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-8 mariners-alt-green-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-8 mariners-alt-green-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 mariners-alt-green-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 mariners-alt-green-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute mariners-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 mariners-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 mariners-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 mariners-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 mariners-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">San Francisco Giants</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute giants-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute giants-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 giants-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 giants-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 giants-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 giants-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute giants-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute giants-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 giants-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 giants-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 giants-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 giants-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute giants-alt-orange-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute giants-alt-orange-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 giants-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 giants-alt-orange-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 giants-alt-orange-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 giants-alt-orange-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/cardinals/cardinals-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">St. Louis Cardinals</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute cardinals-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute cardinals-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 cardinals-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 cardinals-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 cardinals-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 cardinals-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute cardinals-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute cardinals-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 cardinals-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 cardinals-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 cardinals-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 cardinals-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute cardinals-alt-cream-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute cardinals-alt-cream-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 cardinals-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 cardinals-alt-cream-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 cardinals-alt-cream-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 cardinals-alt-cream-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Tampa Bay Rays</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-8 rays-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-8 rays-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 rays-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 rays-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 rays-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 rays-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-0 rays-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-0 rays-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-alt-sky-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-alt-sky-back"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-solid-9 rays-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-l-1 number-block-border-9 rays-alt-sky-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-1 rays-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-1 rays-alt-sky-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rays-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 rays-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 rays-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-2 rays-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-2 rays-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/rangers/rangers-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Texas Rangers</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 rangers-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 rangers-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-3 rangers-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-3 rangers-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 rangers-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 rangers-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-4 rangers-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-4 rangers-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-alt-sky-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-alt-sky-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 rangers-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 rangers-alt-sky-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-5 rangers-alt-sky-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-5 rangers-alt-sky-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute rangers-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 rangers-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 rangers-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-6 rangers-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-6 rangers-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/bluejays/bluejays-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Toronto Blue Jays</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute bluejays-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute bluejays-home-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 bluejays-home-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 bluejays-home-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-7 bluejays-home-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-7 bluejays-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute bluejays-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute bluejays-away-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 bluejays-away-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 bluejays-away-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-8 bluejays-away-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-8 bluejays-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute bluejays-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute bluejays-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-solid-9 bluejays-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-l-2 number-block-border-9 bluejays-alt-blue-border"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-solid-9 bluejays-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-r-2 number-block-border-9 bluejays-alt-blue-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="table border mt-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="position-relative" colspan="2"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="20" height="20" border="0" class="position-absolute left-8p top-14p"><span class="d-block text-truncate pl-24p">Washington Nationals</span></td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-home-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-home-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-0 nationals-home-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-0 nationals-home-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-away-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-away-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-1 nationals-away-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-1 nationals-away-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-alt-blue-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-alt-blue-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-2 nationals-alt-blue-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-2 nationals-alt-blue-border"></div></div></td>
+</tr>
+<tr>
+<td scope="row"><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-alt-red-front"></div></div></td>
+<td><div class="position-relative h-72p"><div class="jersey-base position-absolute nationals-alt-red-back"></div>
+<div class="number-base position-absolute number-block-mid number-block-solid-3 nationals-alt-red-solid"></div>
+<div class="number-base position-absolute number-block-mid number-block-border-3 nationals-alt-red-border"></div></div></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- ^(game.column) -->
+
+</div>
+<!-- ^(game.row) -->
+
+</div>
+<!-- $(game.container) -->
+
+</main>
+<!-- $(base.main) -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

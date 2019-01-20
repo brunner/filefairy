@@ -6,14 +6,17 @@ import os
 import re
 import sys
 import unittest
+import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/teams', '', _path))
 
+from common.elements.elements import ruleset  # noqa
 from common.teams.teams import decoding_to_encoding  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
+from common.teams.teams import encoding_to_colors  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
@@ -23,8 +26,25 @@ from common.teams.teams import encoding_to_nickname  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
+from common.teams.teams import jersey_absolute  # noqa
+from common.teams.teams import jersey_colors  # noqa
+from common.teams.teams import jersey_style  # noqa
 from common.teams.teams import precoding_to_encoding  # noqa
 from common.teams.teams import precoding_to_encoding_sub  # noqa
+
+BLACK = 'black'
+BLUE = 'blue'
+CREAM = 'cream'
+GREEN = 'green'
+GREY = 'grey'
+ORANGE = 'orange'
+PURPLE = 'purple'
+RED = 'red'
+SKY = 'sky'
+WHITE = 'white'
+YELLOW = 'yellow'
+
+MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 DECODING_KEYS = [
     'Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles',
@@ -53,6 +73,36 @@ PRECODING_KEYS = [
     'Seattle', 'San Francisco', 'St. Louis', 'Tampa Bay', 'Texas', 'Toronto',
     'Washington', 'Chicago', 'Los Angeles', 'New York'
 ]
+
+
+def _jersey(asset, repo, tag):
+    gradient = 'linear-gradient(transparent, transparent)'
+    lower = asset.split('-')[0]
+    return ruleset(
+        selector=('.' + asset),
+        rules=[
+            ('background: url(\'https://fairylab.surge.sh/images/teams/{}/{}.p'
+             'ng\')').format(lower, asset),
+            ('background: url(\'https://gistcdn.githack.com/brunner/{}/raw/{}/'
+             '{}.svg\'), {}').format(repo, tag, asset, gradient),
+        ])
+
+
+def _number(font, fill, num):
+    return ruleset(
+        selector='.number-{}-{}-{}'.format(font, fill, num),
+        rules=[
+            ('-webkit-mask-image: url(\'https://fairylab.surge.sh/images/numbe'
+             'rs/{}/{}/{}.png\')').format(font, fill, num),
+        ])
+
+
+def _numbers(font):
+    numbers = []
+    for num in range(10):
+        numbers.append(_number(font, 'solid', num))
+        numbers.append(_number(font, 'border', num))
+    return numbers
 
 
 class TeamTest(unittest.TestCase):
@@ -132,9 +182,9 @@ class TeamTest(unittest.TestCase):
                      ['T49'], ['T50'], ['T51'], ['T52'], ['T53'], ['T54'],
                      ['T55'], ['T56'], ['T57'], ['T58'], ['T59'], ['T60'],
                      ['T35', 'T36'], ['T44', 'T45'], ['T48', 'T49']]
-        for encoding, encodings in zip(ENCODING_KEYS, encodings):
+        for encoding, inner_encodings in zip(ENCODING_KEYS, encodings):
             actual = encoding_to_encodings(encoding)
-            self.assertEqual(actual, encodings)
+            self.assertEqual(actual, inner_encodings)
 
     def test_encoding_to_hometown(self):
         hometowns = [
@@ -235,6 +285,150 @@ class TeamTest(unittest.TestCase):
                'e-block">').format(src)
         span = '<span class="d-inline-block align-middle px-2 pt-1">1-0</span>'
         expected = badge.format(img + span)
+        self.assertEqual(actual, expected)
+
+    def test_jersey_absolute__none(self):
+        colors = (WHITE, '#000000', '#ffffff')
+        actual = jersey_absolute('T35', colors, None, 'front')
+        expected = ('<div class="jersey-base position-absolute whitesox-home-f'
+                    'ront"></div>')
+        self.assertEqual(actual, expected)
+
+    def test_jersey_absolute__number(self):
+        colors = (WHITE, '#000000', '#ffffff')
+        actual = jersey_absolute('T35', colors, '1', 'back')
+        expected = ('<div class="jersey-base position-absolute whitesox-home-b'
+                    'ack"></div>\n<div class="number-base position-absolute nu'
+                    'mber-block-mid number-block-solid-1 whitesox-home-solid">'
+                    '</div>\n<div class="number-base position-absolute number-'
+                    'block-mid number-block-border-1 whitesox-home-border"></d'
+                    'iv>')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__clash_false(self, mock_random):
+        mock_random.return_value = 0.5
+
+        actual = jersey_colors('T31', SUNDAY, 'home', BLUE)
+        expected = (RED, '#000000', '#e79d94')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__clash_true(self, mock_random):
+        mock_random.return_value = 0.5
+
+        actual = jersey_colors('T31', SUNDAY, 'home', ORANGE)
+        expected = (WHITE, '#cb0c29', '#000000')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__day_false(self, mock_random):
+        mock_random.return_value = 0.5
+
+        actual = jersey_colors('T31', SATURDAY, 'home', None)
+        expected = (WHITE, '#cb0c29', '#000000')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__day_true(self, mock_random):
+        mock_random.return_value = 0.5
+
+        actual = jersey_colors('T31', SUNDAY, 'home', None)
+        expected = (RED, '#000000', '#e79d94')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__pct_false(self, mock_random):
+        mock_random.return_value = 0.5
+
+        actual = jersey_colors('T37', SUNDAY, 'home', None)
+        expected = (WHITE, '#ea164c', '#000000')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__pct_true(self, mock_random):
+        mock_random.return_value = 0.3
+
+        actual = jersey_colors('T37', SUNDAY, 'home', None)
+        expected = (RED, '#ffffff', '#000000')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__team_false(self, mock_random):
+        mock_random.return_value = 0.3
+
+        actual = jersey_colors('T37', SUNDAY, 'away', None)
+        expected = (GREY, '#ea164c', '#000000')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams.random.random')
+    def test_jersey_colors__team_true(self, mock_random):
+        mock_random.return_value = 0.3
+
+        actual = jersey_colors('T37', SUNDAY, 'home', None)
+        expected = (RED, '#ffffff', '#000000')
+        self.assertEqual(actual, expected)
+
+    @mock.patch('common.teams.teams._encoding_to_tag')
+    @mock.patch('common.teams.teams._encoding_to_repo')
+    def test_jersey_style(self, mock_repo, mock_tag):
+        mock_repo.return_value = 'repo'
+        mock_tag.return_value = 'tag'
+
+        colors35 = (BLUE, '#09285a', '#ffffff')
+        colors37 = (WHITE, '#ea164c', '#000000')
+        actual = jersey_style(('T35', colors35), ('T37', colors37))
+        expected = [
+            _jersey('whitesox-alt-blue-back', 'repo', 'tag'),
+            _jersey('whitesox-alt-blue-front', 'repo', 'tag'),
+            ruleset(
+                selector='.whitesox-alt-blue-solid',
+                rules=['background-color: #09285a']),
+            ruleset(
+                selector='.whitesox-alt-blue-border',
+                rules=['background-color: #ffffff']),
+            _jersey('reds-home-back', 'repo', 'tag'),
+            _jersey('reds-home-front', 'repo', 'tag'),
+            ruleset(
+                selector='.reds-home-solid',
+                rules=['background-color: #ea164c']),
+            ruleset(
+                selector='.reds-home-border',
+                rules=['background-color: #000000']),
+            ruleset(
+                selector='.jersey-base',
+                rules=[
+                    'background-size: 78px 80px',
+                    'border: 1px solid #eeeff0',
+                    'height: 82px',
+                    'margin: -5px -1px -5px -5px',
+                    'width: 80px',
+                ])
+        ] + _numbers('block') + [
+            ruleset(
+                selector='.number-block-mid',
+                rules=['left: 29px']),
+            ruleset(
+                selector='.number-block-l-1',
+                rules=['left: 24px']),
+            ruleset(
+                selector='.number-block-l-2',
+                rules=['left: 22px']),
+            ruleset(
+                selector='.number-block-r-1',
+                rules=['left: 34px']),
+            ruleset(
+                selector='.number-block-r-2',
+                rules=['left: 36px']),
+            ruleset(
+                selector='.number-base',
+                rules=[
+                    'height: 20px',
+                    'width: 12px',
+                    '-webkit-mask-size: 12px 20px',
+                    'top: 23px',
+                ]),
+        ]
         self.assertEqual(actual, expected)
 
     def test_precoding_to_encoding(self):

@@ -58,6 +58,9 @@ a.disabled{
   -webkit-filter: grayscale(1) opacity(0.5);
   filter: grayscale(1) opacity(0.5);
 }
+.h-72p {
+  height: 72px;
+}
 .left-8p {
   left: 8px;
 }
@@ -221,13 +224,6 @@ a.disabled{
   border-color: #721c24!important;
   background-color: #f8d7da;
 }
-.profile-image {
-  background-size: 78px 80px;
-  border: 1px solid #eeeff0;
-  height: 82px;
-  margin: -5px -1px -5px -5px;
-  width: 80px;
-}
 .profile-text {
   min-height: 72px;
   padding-left: 84px;
@@ -259,16 +255,5 @@ a.disabled{
   background-color: #d4edda;
   border-color: #155724!important;
   color: #155724;
-}
-{%- endmacro -%}
-
-{% macro jersey(team, name, rawid) -%}
-.{{ team }}-{{ name }}-back {
-  background: url('https://fairylab.surge.sh/images/teams/{{ team }}/{{ team }}-{{ name }}-back.png');
-  background: url('https://gistcdn.githack.com/brunner/{{ rawid }}/{{ team }}-{{ name }}-back.svg'), linear-gradient(transparent, transparent);
-}
-.{{ team }}-{{ name }}-front {
-  background: url('https://fairylab.surge.sh/images/teams/{{ team }}/{{ team }}-{{ name }}-front.png');
-  background: url('https://gistcdn.githack.com/brunner/{{ rawid }}/{{ team }}-{{ name }}-front.svg'), linear-gradient(transparent, transparent);
 }
 {%- endmacro -%}
