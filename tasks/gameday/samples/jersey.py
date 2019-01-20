@@ -16,7 +16,6 @@ from common.teams.teams import encoding_to_colors  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import jersey_absolute  # noqa
-from common.teams.teams import jersey_color  # noqa
 from common.teams.teams import jersey_style  # noqa
 
 CONTENT = '<div class="position-relative h-72p">{}</div>'
@@ -29,6 +28,7 @@ _breadcrumbs = [{
     'name': 'Jersey'
 }]
 
+_counter = 0
 _jerseys = []
 _tables = []
 for encoding in encoding_keys():
@@ -36,15 +36,17 @@ for encoding in encoding_keys():
         continue
 
     body = []
-    for color in ['white', 'grey'] + encoding_to_colors(encoding):
-        front = jersey_absolute(encoding, color, 'front')
-        back = jersey_absolute(encoding, color, 'back')
+    for colors in encoding_to_colors(encoding):
+        front = jersey_absolute(encoding, colors, None, 'front')
+        back = jersey_absolute(encoding, colors, str(_counter), 'back')
         row = [
             cell(content=CONTENT.format(front)),
             cell(content=CONTENT.format(back))
         ]
         body.append(row)
-        _jerseys.append((encoding, color))
+
+        _counter += 1
+        _jerseys.append((encoding, colors))
 
     decoding = encoding_to_decoding(encoding)
     head = [[cell(content=icon_absolute(encoding, decoding, '20'))]]
