@@ -175,7 +175,7 @@ TEAMS = [
     _team('T48', 'NYY', 'New York', 'Yankees',
           '5b8b9a01333351a92f6f91726dce239b',
           '0cfd7978330ee9e4c4c4fa37439b9abb903be46a',
-          (WHITE, '#051e42', '#ffffff'),
+          (WHITE, '#051e42', '#7087a3'),
           (GREY, '#051e42', '#ffffff')),
     _team('T49', 'NYM', 'New York', 'Mets',
           'aa9197d99dd2abcb7a50f13e5ae75ab0',
