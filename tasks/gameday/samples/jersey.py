@@ -28,7 +28,6 @@ _breadcrumbs = [{
     'name': 'Jersey'
 }]
 
-_counter = 0
 _jerseys = []
 _tables = []
 for encoding in encoding_keys():
@@ -38,20 +37,19 @@ for encoding in encoding_keys():
     body = []
     for colors in encoding_to_colors(encoding):
         front = jersey_absolute(encoding, colors, None, 'front')
-        back = jersey_absolute(encoding, colors, str(_counter), 'back')
-        row = [
-            cell(content=CONTENT.format(front)),
-            cell(content=CONTENT.format(back))
-        ]
-        body.append(row)
 
-        _counter += 1
+        backs = []
+        for num in ['0', '11', '19', '21', '34', '56', '78']:
+            back = jersey_absolute(encoding, colors, num, 'back')
+            backs.append(cell(content=CONTENT.format(back)))
+
+        body.append([cell(content=CONTENT.format(front))] + backs)
         _jerseys.append((encoding, colors))
 
     decoding = encoding_to_decoding(encoding)
     head = [[cell(content=icon_absolute(encoding, decoding, '20'))]]
     table_ = table(
-        hcols=[col(clazz='position-relative', colspan=2)],
+        hcols=[col(clazz='position-relative', colspan=8)],
         head=head,
         body=body)
     _tables.append(table_)

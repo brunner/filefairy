@@ -310,7 +310,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SUNDAY, 'home', BLUE)
-        expected = (RED, '#000000', '#e79d94', 'block')
+        expected = (RED, '#000000', None, 'diamondbacks')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -318,7 +318,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SUNDAY, 'home', ORANGE)
-        expected = (WHITE, '#cb0c29', '#000000', 'block')
+        expected = (WHITE, '#cb0c29', '#000000', 'diamondbacks')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -326,7 +326,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SATURDAY, 'home', None)
-        expected = (WHITE, '#cb0c29', '#000000', 'block')
+        expected = (WHITE, '#cb0c29', '#000000', 'diamondbacks')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -334,7 +334,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SUNDAY, 'home', None)
-        expected = (RED, '#000000', '#e79d94', 'block')
+        expected = (RED, '#000000', None, 'diamondbacks')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -342,7 +342,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T37', SUNDAY, 'home', None)
-        expected = (WHITE, '#ea164c', '#000000', 'block')
+        expected = (WHITE, '#ea164c', '#000000', 'reds')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -350,7 +350,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.3
 
         actual = jersey_colors('T37', SUNDAY, 'home', None)
-        expected = (RED, '#ffffff', '#000000', 'block')
+        expected = (RED, '#ffffff', '#000000', 'reds')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -358,7 +358,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.3
 
         actual = jersey_colors('T37', SUNDAY, 'away', None)
-        expected = (GREY, '#ea164c', '#000000', 'block')
+        expected = (GREY, '#ea164c', '#000000', 'reds')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -366,7 +366,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.3
 
         actual = jersey_colors('T37', SUNDAY, 'home', None)
-        expected = (RED, '#ffffff', '#000000', 'block')
+        expected = (RED, '#ffffff', '#000000', 'reds')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams._encoding_to_tag')
@@ -375,8 +375,8 @@ class TeamTest(unittest.TestCase):
         mock_repo.return_value = 'repo'
         mock_tag.return_value = 'tag'
 
-        colors35 = (BLUE, '#09285a', '#ffffff', 'block')
-        colors37 = (WHITE, '#ea164c', '#000000', 'block')
+        colors35 = (BLUE, '#09285a', None, 'basic')
+        colors37 = (WHITE, '#ea164c', '#000000', 'reds')
         actual = jersey_style(('T35', colors35), ('T37', colors37))
         expected = [
             _jersey('whitesox-alt-blue-back', 'repo', 'tag'),
@@ -384,9 +384,6 @@ class TeamTest(unittest.TestCase):
             ruleset(
                 selector='.whitesox-alt-blue-solid',
                 rules=['background-color: #09285a']),
-            ruleset(
-                selector='.whitesox-alt-blue-border',
-                rules=['background-color: #ffffff']),
             _jersey('reds-home-back', 'repo', 'tag'),
             _jersey('reds-home-front', 'repo', 'tag'),
             ruleset(
@@ -404,28 +401,44 @@ class TeamTest(unittest.TestCase):
                     'margin: -5px -1px -5px -5px',
                     'width: 80px',
                 ])
-        ] + _numbers('block') + [
+        ] + _numbers('basic') + [
             ruleset(
-                selector='.number-block-mid',
-                rules=['left: 29px']),
+                selector='.number-basic-mid',
+                rules=['left: 27px']),
             ruleset(
-                selector='.number-block-l-1',
-                rules=['left: 24px']),
-            ruleset(
-                selector='.number-block-l-2',
+                selector='.number-basic-l1',
                 rules=['left: 22px']),
             ruleset(
-                selector='.number-block-r-1',
-                rules=['left: 34px']),
+                selector='.number-basic-l2',
+                rules=['left: 20px']),
             ruleset(
-                selector='.number-block-r-2',
-                rules=['left: 36px']),
+                selector='.number-basic-r1',
+                rules=['left: 32px']),
+            ruleset(
+                selector='.number-basic-r2',
+                rules=['left: 34px'])
+        ] + _numbers('reds') + [
+            ruleset(
+                selector='.number-reds-mid',
+                rules=['left: 27px']),
+            ruleset(
+                selector='.number-reds-l1',
+                rules=['left: 22px']),
+            ruleset(
+                selector='.number-reds-l2',
+                rules=['left: 20px']),
+            ruleset(
+                selector='.number-reds-r1',
+                rules=['left: 32px']),
+            ruleset(
+                selector='.number-reds-r2',
+                rules=['left: 34px']),
             ruleset(
                 selector='.number-base',
                 rules=[
                     'height: 20px',
-                    'width: 12px',
-                    '-webkit-mask-size: 12px 20px',
+                    'width: 16px',
+                    '-webkit-mask-size: 16px 20px',
                     'top: 23px',
                 ]),
         ]
