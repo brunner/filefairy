@@ -57,6 +57,9 @@ STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 
 TESTDATA = get_testdata()
 
+COLORS_40 = ('grey', '#0b2245', '#e54927', 'block')
+COLORS_47 = ('cream', '#052046', '#d11242', 'basic')
+
 
 def _extract_box_score(num):
     return os.path.join(EXTRACT_BOX_SCORES, 'game_box_{}.html'.format(num))
@@ -104,8 +107,12 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_score__file(self, mock_isfile, mock_get, mock_open,
-                               mock_put):
+    @mock.patch('services.statslab.statslab.jersey_colors')
+    def test_parse_score__file(self, mock_colors, mock_isfile, mock_get,
+                               mock_open, mock_put):
+        mock_colors.side_effect = [
+            COLORS_47, COLORS_40, COLORS_47, COLORS_40, COLORS_47, COLORS_40
+        ]
         mock_isfile.return_value = True
         suite = Suite(
             RMock(EXTRACT_BOX_SCORES, 'game_box_2449.html', TESTDATA),
@@ -132,8 +139,12 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_score__link(self, mock_isfile, mock_get, mock_open,
-                               mock_put):
+    @mock.patch('services.statslab.statslab.jersey_colors')
+    def test_parse_score__link(self, mock_colors, mock_isfile, mock_get,
+                               mock_open, mock_put):
+        mock_colors.side_effect = [
+            COLORS_47, COLORS_40, COLORS_47, COLORS_40, COLORS_47, COLORS_40
+        ]
         mock_isfile.return_value = False
         mock_get.side_effect = [
             TESTDATA['game_box_2449.html'],

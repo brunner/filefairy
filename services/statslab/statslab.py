@@ -21,6 +21,7 @@ from common.re_.re_ import find  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
+from common.teams.teams import jersey_colors  # noqa
 
 
 def _open(in_):
@@ -99,7 +100,17 @@ def parse_score(in_, out, date):
     date = datetime_datetime_est(d.year, d.month, d.day, s.hour, s.minute)
     date = encode_datetime(datetime_as_pst(date))
 
-    data = {'away_team': away, 'date': date, 'home_team': home}
+    day = d.weekday()
+    home_colors = jersey_colors(home, day, 'home', None)
+    away_colors = jersey_colors(away, day, 'away', home_colors[0])
+
+    data = {
+        'away_colors': ' '.join(away_colors),
+        'away_team': away,
+        'date': date,
+        'home_colors': ' '.join(home_colors),
+        'home_team': home,
+    }
 
     for team in ['away', 'home']:
         i = data[team + '_team']
