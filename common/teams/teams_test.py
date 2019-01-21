@@ -288,14 +288,14 @@ class TeamTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_jersey_absolute__none(self):
-        colors = (WHITE, '#000000', '#ffffff')
+        colors = (WHITE, '#000000', '#ffffff', 'block')
         actual = jersey_absolute('T35', colors, None, 'front')
         expected = ('<div class="jersey-base position-absolute whitesox-home-f'
                     'ront"></div>')
         self.assertEqual(actual, expected)
 
     def test_jersey_absolute__number(self):
-        colors = (WHITE, '#000000', '#ffffff')
+        colors = (WHITE, '#000000', '#ffffff', 'block')
         actual = jersey_absolute('T35', colors, '1', 'back')
         expected = ('<div class="jersey-base position-absolute whitesox-home-b'
                     'ack"></div>\n<div class="number-base position-absolute nu'
@@ -310,7 +310,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SUNDAY, 'home', BLUE)
-        expected = (RED, '#000000', '#e79d94')
+        expected = (RED, '#000000', '#e79d94', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -318,7 +318,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SUNDAY, 'home', ORANGE)
-        expected = (WHITE, '#cb0c29', '#000000')
+        expected = (WHITE, '#cb0c29', '#000000', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -326,7 +326,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SATURDAY, 'home', None)
-        expected = (WHITE, '#cb0c29', '#000000')
+        expected = (WHITE, '#cb0c29', '#000000', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -334,7 +334,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T31', SUNDAY, 'home', None)
-        expected = (RED, '#000000', '#e79d94')
+        expected = (RED, '#000000', '#e79d94', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -342,7 +342,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.5
 
         actual = jersey_colors('T37', SUNDAY, 'home', None)
-        expected = (WHITE, '#ea164c', '#000000')
+        expected = (WHITE, '#ea164c', '#000000', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -350,7 +350,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.3
 
         actual = jersey_colors('T37', SUNDAY, 'home', None)
-        expected = (RED, '#ffffff', '#000000')
+        expected = (RED, '#ffffff', '#000000', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -358,7 +358,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.3
 
         actual = jersey_colors('T37', SUNDAY, 'away', None)
-        expected = (GREY, '#ea164c', '#000000')
+        expected = (GREY, '#ea164c', '#000000', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams.random.random')
@@ -366,7 +366,7 @@ class TeamTest(unittest.TestCase):
         mock_random.return_value = 0.3
 
         actual = jersey_colors('T37', SUNDAY, 'home', None)
-        expected = (RED, '#ffffff', '#000000')
+        expected = (RED, '#ffffff', '#000000', 'block')
         self.assertEqual(actual, expected)
 
     @mock.patch('common.teams.teams._encoding_to_tag')
@@ -375,8 +375,8 @@ class TeamTest(unittest.TestCase):
         mock_repo.return_value = 'repo'
         mock_tag.return_value = 'tag'
 
-        colors35 = (BLUE, '#09285a', '#ffffff')
-        colors37 = (WHITE, '#ea164c', '#000000')
+        colors35 = (BLUE, '#09285a', '#ffffff', 'block')
+        colors37 = (WHITE, '#ea164c', '#000000', 'block')
         actual = jersey_style(('T35', colors35), ('T37', colors37))
         expected = [
             _jersey('whitesox-alt-blue-back', 'repo', 'tag'),
