@@ -18,7 +18,7 @@ from common.test.test import Suite  # noqa
 from common.test.test import WMock  # noqa
 from common.test.test import get_testdata  # noqa
 from services.statslab.statslab import parse_player  # noqa
-from services.statslab.statslab import parse_score  # noqa
+from services.statslab.statslab import parse_box  # noqa
 
 DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
 DATE_08290000 = datetime_datetime_pst(2024, 8, 29)
@@ -65,6 +65,10 @@ def _extract_box_score(num):
     return os.path.join(EXTRACT_BOX_SCORES, 'game_box_{}.html'.format(num))
 
 
+def _games_box_score(num):
+    return os.path.join(GAMES_DIR, 'game_box_{}.json'.format(num))
+
+
 def _statsplus_box_score(num):
     return os.path.join(STATSPLUS_BOX_SCORES, 'game_box_{}.html'.format(num))
 
@@ -107,16 +111,16 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_score__file(self, mock_isfile, mock_get,
+    def test_parse_box__file(self, mock_isfile, mock_get,
                                mock_open, mock_put):
         mock_isfile.return_value = True
         suite = Suite(
             RMock(EXTRACT_BOX_SCORES, 'game_box_2449.html', TESTDATA),
-            WMock(GAMES_DIR, '2449.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_2449.json', TESTDATA),
             RMock(EXTRACT_BOX_SCORES, 'game_box_2469.html', TESTDATA),
-            WMock(GAMES_DIR, '2469.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_2469.json', TESTDATA),
             RMock(EXTRACT_BOX_SCORES, 'game_box_2476.html', TESTDATA),
-            WMock(GAMES_DIR, '2476.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_2476.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
@@ -127,8 +131,8 @@ class StatslabTest(unittest.TestCase):
 
         for num in ['2449', '2469', '2476']:
             in_ = _extract_box_score(num)
-            out = os.path.join(GAMES_DIR, num + '.json')
-            actual = parse_score(in_, out, None, jersey_colors=mock_colors)
+            out = _games_box_score(num)
+            actual = parse_box(in_, out, None, jersey_colors=mock_colors)
             self.assertTrue(actual)
 
         mock_get.assert_not_called()
@@ -140,7 +144,7 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_score__link(self, mock_isfile, mock_get,
+    def test_parse_box__link(self, mock_isfile, mock_get,
                                mock_open, mock_put):
         mock_isfile.return_value = False
         mock_get.side_effect = [
@@ -149,9 +153,9 @@ class StatslabTest(unittest.TestCase):
             TESTDATA['game_box_2476.html'],
         ]
         suite = Suite(
-            WMock(GAMES_DIR, '2449.json', TESTDATA),
-            WMock(GAMES_DIR, '2469.json', TESTDATA),
-            WMock(GAMES_DIR, '2476.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_2449.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_2469.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_2476.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
@@ -168,9 +172,9 @@ class StatslabTest(unittest.TestCase):
 
         for num, d in inputs:
             in_ = _statsplus_box_score(num)
-            out = os.path.join(GAMES_DIR, num + '.json')
+            out = _games_box_score(num)
             date = encode_datetime(d)
-            actual = parse_score(in_, out, date, jersey_colors=mock_colors)
+            actual = parse_box(in_, out, date, jersey_colors=mock_colors)
             self.assertTrue(actual)
 
         mock_get.assert_has_calls([

@@ -63,7 +63,7 @@ def parse_player(link):
     return ' '.join(data)
 
 
-def parse_score(in_, out, date, **services):
+def parse_box(in_, out, date, **services):
     """Parse a StatsLab box score into a task-readable format.
 
     If the box score is parsed successfully, the resulting data is written to a
