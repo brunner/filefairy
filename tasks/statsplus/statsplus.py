@@ -56,7 +56,7 @@ class Statsplus(Registrable):
         return 'statsplus'
 
     def _reload_data(self, **kwargs):
-        return {'statslab': ['parse_score']}
+        return {'statslab': ['parse_score'], 'uniforms': ['jersey_colors']}
 
     def _shadow_data(self, **kwargs):
         return self._shadow_scores() + self._shadow_table()
@@ -174,7 +174,8 @@ class Statsplus(Registrable):
         prefix = STATSPLUS_LINK if self.data['started'] else EXTRACT_DIR
         in_ = prefix + '/box_scores/game_box_{}.html'.format(num)
 
-        return self._call('parse_score', (in_, out, date))
+        services = {'jersey_colors': self._attr('jersey_colors')}
+        return self._call('parse_score', (in_, out, date), **services)
 
     def _save_scores(self, date, text):
         self.data['scores'][date] = {}

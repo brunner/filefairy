@@ -21,7 +21,6 @@ from common.re_.re_ import find  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
-from common.teams.teams import jersey_colors  # noqa
 
 
 def _open(in_):
@@ -64,7 +63,7 @@ def parse_player(link):
     return ' '.join(data)
 
 
-def parse_score(in_, out, date):
+def parse_score(in_, out, date, **services):
     """Parse a StatsLab box score into a task-readable format.
 
     If the box score is parsed successfully, the resulting data is written to a
@@ -76,10 +75,13 @@ def parse_score(in_, out, date):
         in_: The StatsLab box score link or file path.
         out: The file path to write the parsed data to.
         date: The encoded date that the box score is expected to match.
+        services: The dictionary of services expected by this method.
 
     Returns:
         True if the parse was successful, otherwise None.
     """
+    jersey_colors = services['jersey_colors']
+
     text = decoding_to_encoding_sub(_open(in_))
     text = re.sub(r'<a href="../\w+/player_(\d+)\.[^<]+</a>', r'P\1', text)
     text = re.sub(r'</?b>', '', text)

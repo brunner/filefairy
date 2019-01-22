@@ -96,7 +96,7 @@ class StatsplusTest(Test):
     def test_reload_data(self):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._reload_data(date=DATE_10260602)
-        expected = {'statslab': ['parse_score']}
+        expected = {'statslab': ['parse_score'], 'uniforms': ['jersey_colors']}
         self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -406,7 +406,10 @@ class StatsplusTest(Test):
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
     @mock.patch.object(Statsplus, '_call')
-    def test_parse_score__none(self, mock_call, mock_isfile):
+    @mock.patch.object(Statsplus, '_attr')
+    def test_parse_score__none(self, mock_attr, mock_call, mock_isfile):
+        mock_colors = mock.Mock()
+        mock_attr.return_value = mock_colors
         mock_call.return_value = None
         mock_isfile.return_value = False
 
@@ -417,13 +420,17 @@ class StatsplusTest(Test):
 
         in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
         out = os.path.join(GAMES_DIR, '2998.json')
-        mock_call.assert_called_once_with('parse_score', (in_, out, date))
+        mock_call.assert_called_once_with(
+            'parse_score', (in_, out, date), jersey_colors=mock_colors)
         mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
     @mock.patch.object(Statsplus, '_call')
-    def test_parse_score__started(self, mock_call, mock_isfile):
+    @mock.patch.object(Statsplus, '_attr')
+    def test_parse_score__started(self, mock_attr, mock_call, mock_isfile):
+        mock_colors = mock.Mock()
+        mock_attr.return_value = mock_colors
         mock_call.return_value = True
         mock_isfile.return_value = False
 
@@ -434,13 +441,17 @@ class StatsplusTest(Test):
 
         in_ = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2998.html')
         out = os.path.join(GAMES_DIR, '2998.json')
-        mock_call.assert_called_once_with('parse_score', (in_, out, date))
+        mock_call.assert_called_once_with(
+            'parse_score', (in_, out, date), jersey_colors=mock_colors)
         mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
     @mock.patch.object(Statsplus, '_call')
-    def test_parse_score__true(self, mock_call, mock_isfile):
+    @mock.patch.object(Statsplus, '_attr')
+    def test_parse_score__true(self, mock_attr, mock_call, mock_isfile):
+        mock_colors = mock.Mock()
+        mock_attr.return_value = mock_colors
         mock_call.return_value = True
         mock_isfile.return_value = False
 
@@ -451,7 +462,8 @@ class StatsplusTest(Test):
 
         in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
         out = os.path.join(GAMES_DIR, '2998.json')
-        mock_call.assert_called_once_with('parse_score', (in_, out, date))
+        mock_call.assert_called_once_with(
+            'parse_score', (in_, out, date), jersey_colors=mock_colors)
         mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

@@ -12,11 +12,11 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
 from common.teams.teams import encoding_keys  # noqa
-from common.teams.teams import encoding_to_colors  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from common.teams.teams import jersey_absolute  # noqa
-from common.teams.teams import jersey_style  # noqa
+from services.uniforms.uniforms import encoding_to_colors  # noqa
+from services.uniforms.uniforms import jersey_absolute  # noqa
+from services.uniforms.uniforms import jersey_style  # noqa
 
 CONTENT = '<div class="position-relative h-72p">{}</div>'
 

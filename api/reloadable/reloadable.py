@@ -35,8 +35,11 @@ class Reloadable():
         super().__init__(**kwargs)
         self.attrs = {}
 
+    def _attr(self, method):
+        return self.attrs[method]
+
     def _call(self, method, fargs, *args, **kwargs):
-        return self.attrs[method](*fargs, *args, **kwargs)
+        return self._attr(method)(*fargs, *args, **kwargs)
 
     def _reload_data(self, **kwargs):
         return {}

@@ -25,8 +25,6 @@ from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from common.teams.teams import jersey_colors  # noqa
-from common.teams.teams import jersey_style  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
@@ -90,6 +88,9 @@ class Gameday(Registrable):
     @staticmethod
     def _title():
         return 'gameday'
+
+    def _reload_data(self, **kwargs):
+        return {'uniforms': ['jersey_colors', 'jersey_style']}
 
     def _render_data(self, **kwargs):
         data = self.data
@@ -465,13 +466,15 @@ class Gameday(Registrable):
             colors = self.colors[game_id_]
         else:
             day = decode_datetime(game_data['date']).weekday()
-            home_color = jersey_colors(home_team, day, 'home', None)[0]
-            away_color = jersey_colors(away_team, day, 'away', home_color)[0]
-            colors = {away_team: away_color, home_team: home_color}
+            home_colors = self._call('jersey_colors',
+                                     (home_team, day, 'home', None))
+            away_colors = self._call('jersey_colors',
+                                     (away_team, day, 'away', home_colors[0]))
+            colors = {away_team: away_colors[0], home_team: home_colors[0]}
             self.colors[game_id_] = colors
 
         jerseys = [(encoding, colors[encoding]) for encoding in colors]
-        ret['styles'] = jersey_style(*jerseys)
+        ret['styles'] = self._call('jersey_style', (*jerseys, ))
 
         runs = {away_team: 0, home_team: 0}
 
