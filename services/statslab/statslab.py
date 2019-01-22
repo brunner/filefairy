@@ -24,12 +24,18 @@ from common.teams.teams import encoding_to_hometown  # noqa
 
 
 def _open(in_):
+    text = ''
     if in_.startswith('http'):
-        return get(in_)
-    if os.path.isfile(in_):
+        text = get(in_)
+    elif os.path.isfile(in_):
         with open(in_, 'r', encoding='iso-8859-1') as f:
-            return f.read()
-    return ''
+            text = f.read()
+
+    text = decoding_to_encoding_sub(text)
+    text = re.sub(r'<a href="../\w+/player_(\d+)\.[^<]+</a>', r'P\1', text)
+    text = re.sub(r'</?b>', '', text)
+
+    return text
 
 
 def parse_player(link):
@@ -41,8 +47,7 @@ def parse_player(link):
     Returns:
         A data string if the parse was successful, otherwise None.
     """
-    text = decoding_to_encoding_sub(_open(link))
-
+    text = _open(link)
     number, name = find(r'Player Report for #(\d+)  ([^<]+)</title>', text)
     if not number:
         return None
@@ -82,10 +87,7 @@ def parse_box(in_, out, date, **services):
     """
     jersey_colors = services['jersey_colors']
 
-    text = decoding_to_encoding_sub(_open(in_))
-    text = re.sub(r'<a href="../\w+/player_(\d+)\.[^<]+</a>', r'P\1', text)
-    text = re.sub(r'</?b>', '', text)
-
+    text = _open(in_)
     away, home, match = find(r'(\w+) at (\w+), (\d{2}\/\d{2}\/\d{4})', text)
     if not match:
         return None
@@ -166,6 +168,46 @@ def parse_box(in_, out, date, **services):
     data['saving_pitcher'] = ' '.join([p, saves]) if saves else ''
 
     data['ballpark'] = find(r'(?s)Ballpark:(.+?)<br>', text)
+
+    with open(out, 'w') as f:
+        f.write(dumps(data) + '\n')
+
+    return True
+
+
+def parse_log(in_, out, date):
+    """Parse a StatsLab game log into a task-readable format.
+
+    If the game log is parsed successfully, the resulting data is written to a
+    specified file and True is the returned value. Alternatively, if the game
+    log is missing or does not match the given date, no JSON data is written
+    and None is returned.
+
+    Args:
+        in_: The StatsLab game log link or file path.
+        out: The file path to write the parsed data to.
+        date: The encoded date that the game log is expected to match.
+        services: The dictionary of services expected by this method.
+
+    Returns:
+        True if the parse was successful, otherwise None.
+    """
+    text = _open(in_)
+    away, home = find(r'(\w+) batting - Pitching for (\w+)', text)
+    if not away:
+        return None
+
+    if date is not None:
+        match = find(r'>(\d{2}\/\d{2}\/\d{4})<', text)
+        if not match:
+            return None
+
+        d = datetime.datetime.strptime(match, '%m/%d/%Y')
+        d = datetime_datetime_pst(d.year, d.month, d.day)
+        if date != encode_datetime(d):
+            return None
+
+    data = {'away_team': away, 'home_team': home}
 
     with open(out, 'w') as f:
         f.write(dumps(data) + '\n')
