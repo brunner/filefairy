@@ -371,11 +371,11 @@ NUMBER_STYLE = ruleset(
 
 def _font_offset(font):
     if font == 'bluejays':
-        return [('mid', 27), ('l1', 21), ('l2', 19), ('r1', 33), ('r2', 35)]
+        return [('mid', 27), ('l1', 21), ('l2', 20), ('r1', 33), ('r2', 34)]
     if font == 'diamondbacks':
         return [('mid', 27), ('l1', 23), ('l2', 21), ('r1', 31), ('r2', 33)]
     if font == 'redsox':
-        return [('mid', 27), ('l1', 21), ('l2', 18), ('r1', 33), ('r2', 36)]
+        return [('mid', 27), ('l1', 22), ('l2', 19), ('r1', 32), ('r2', 35)]
     if font == 'rounded':
         return [('mid', 27), ('l1', 22), ('l2', 21), ('r1', 32), ('r2', 33)]
 
