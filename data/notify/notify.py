@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """Data (non-reloadable) object for status notifications."""
 
-from enum import Enum
+from enum import IntEnum
 
 
-class Notify(Enum):
+class Notify(IntEnum):
     """Describe a number of different app and task status changes."""
 
     # An arbitrary task has performed some arbitrary behavior. The app should

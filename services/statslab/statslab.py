@@ -18,9 +18,11 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.encyclopedia.encyclopedia import put_players  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.re_.re_ import find  # noqa
+from common.re_.re_ import findall  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
+from data.code.code import Code  # noqa
 
 
 def _open(in_):
@@ -33,9 +35,36 @@ def _open(in_):
 
     text = decoding_to_encoding_sub(text)
     text = re.sub(r'<a href="../\w+/player_(\d+)\.[^<]+</a>', r'P\1', text)
+    text = re.sub(r'\s+', ' ', text)
     text = re.sub(r'</?b>', '', text)
 
     return text
+
+
+def _parse_innings(text, html):
+    regex = r'(?s)(\w+) batting - Pitching for (\w+) : \w+ (\w+)(.+?)'
+    if html:
+        regex += r'</table>'
+    else:
+        regex += r'\[%T\]'
+        text += '[%T]'
+
+    return findall(regex, text)
+
+
+def _parse_lines(content, html):
+    lines = []
+    if html:
+        regex = (r'(?s)<td valign="top" width="268px" class="dl">(.+?)</td> <t'
+                 r'd class="dl" width="700px">(.+?)</td>')
+        for left, right in findall(regex, content):
+            lines.append(left)
+            for r in right.split('<br>'):
+                lines.append(r)
+    else:
+        lines += findall(r'(?s)[BN]\](.+?)\[%', content)
+
+    return list(filter(bool, lines))
 
 
 def parse_player(link):
@@ -48,7 +77,7 @@ def parse_player(link):
         A data string if the parse was successful, otherwise None.
     """
     text = _open(link)
-    number, name = find(r'Player Report for #(\d+)  ([^<]+)</title>', text)
+    number, name = find(r'Player Report for #(\d+) ([^<]+)</title>', text)
     if not number:
         return None
     name = re.sub(r' \'[^\']+\' ', r' ', name)
@@ -121,7 +150,7 @@ def parse_box(in_, out, date, **services):
         line = find(r'(?s)<td class="dl">' + i + r'(.+?)</tr>', text)
         data[team + '_record'] = find(r'^\((\d+-\d+)\)', line)
 
-        cols = [n for n in re.findall(r'>(\d+|X)<', line)]
+        cols = findall(r'>(\d+|X)<', line)
         if not cols:
             cols = ['0', '0', '0']
         for suffix in ['_errors', '_hits', '_runs']:
@@ -130,17 +159,17 @@ def parse_box(in_, out, date, **services):
 
     data['recap'] = find(r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--', text)
 
-    blines = re.findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', text)
-    plines = re.findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', text)
+    blines = findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', text)
+    plines = findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', text)
     if len(blines) != 2 or len(plines) != 2:
         return None
 
     encodings = set()
     for line in (plines + blines):
-        encodings.update(re.findall(r'>(P\d+) ', text))
+        encodings.update(findall(r'>(P\d+) ', text))
     put_players(list(sorted(encodings)))
 
-    batting = re.findall(r'(?s)BATTING<br>(.+?)</table>', text)
+    batting = findall(r'(?s)BATTING<br>(.+?)</table>', text)
     if len(batting) != 2:
         return None
 
@@ -192,7 +221,9 @@ def parse_log(in_, out, date):
     Returns:
         True if the parse was successful, otherwise None.
     """
+    html = in_.endswith('html')
     text = _open(in_)
+
     away, home = find(r'(\w+) batting - Pitching for (\w+)', text)
     if not away:
         return None
@@ -207,7 +238,36 @@ def parse_log(in_, out, date):
         if date != encode_datetime(d):
             return None
 
-    data = {'away_team': away, 'home_team': home}
+    away_pitcher = find(r'Pitching for ' + away + r' : \w+ (\w+)', text)
+    home_pitcher = find(r'Pitching for ' + home + r' : \w+ (\w+)', text)
+    pitchers = {away: away_pitcher, home: home_pitcher}
+
+    data = {
+        'away_starter': away_pitcher,
+        'away_team': away,
+        'home_starter': home_pitcher,
+        'home_team': home,
+    }
+
+    plays = []
+    for i, inning in enumerate(_parse_innings(text, html)):
+        if i > 3:
+            break
+
+        batting, pitching, pitcher, content = inning
+        for line in _parse_lines(content, html):
+            match = find(r'^Pitching: \w+ (\w+)$', line)
+            if match and match != pitchers[pitching]:
+                pitchers[pitching] = match
+                plays.append({'code': Code.PITCHER, 'encoding': match})
+                continue
+
+            match = find(r'^Batting: \w+ (\w+)$', line)
+            if match:
+                plays.append({'code': Code.BATTER, 'encoding': match})
+                continue
+
+    data['plays'] = plays
 
     with open(out, 'w') as f:
         f.write(dumps(data) + '\n')
