@@ -23,21 +23,21 @@ TESTDATA = get_testdata()
 class ScoreboardTest(unittest.TestCase):
     def test_line_score_body(self):
         for num in ['2449', '2469', '2476']:
-            data = json.loads(TESTDATA[num + '.json'])
+            data = json.loads(TESTDATA['game_box_' + num + '.json'])
             actual = line_score_body(data)
             expected = json.loads(TESTDATA['line_score_body_' + num + '.json'])
             self.assertEqual(actual, expected)
 
     def test_line_score_foot(self):
         for num in ['2449', '2469', '2476']:
-            data = json.loads(TESTDATA[num + '.json'])
+            data = json.loads(TESTDATA['game_box_' + num + '.json'])
             actual = line_score_foot(data)
             expected = json.loads(TESTDATA['line_score_foot_' + num + '.json'])
             self.assertEqual(actual, expected)
 
     def test_line_score_head(self):
         for num in ['2449', '2469', '2476']:
-            data = json.loads(TESTDATA[num + '.json'])
+            data = json.loads(TESTDATA['game_box_' + num + '.json'])
             actual = line_score_head(data['date'])
             expected = json.loads(TESTDATA['line_score_head_' + num + '.json'])
             self.assertEqual(actual, expected)

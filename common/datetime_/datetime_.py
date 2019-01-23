@@ -4,7 +4,14 @@
 
 import datetime
 import pytz
+import os
 import re
+import sys
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/common/datetime_', '', _path))
+
+from common.re_.re_ import findall  # noqa
 
 EST = pytz.timezone('America/New_York')
 CST = pytz.timezone('America/Winnipeg')
@@ -93,7 +100,7 @@ def decode_datetime(s):
     Returns:
         A Pacific time localized datetime object for the given string.
     """
-    return datetime_datetime_pst(*map(int, re.findall('\d+', s[:-6])))
+    return datetime_datetime_pst(*map(int, findall(r'\d+', s[:-6])))
 
 
 def encode_datetime(d):

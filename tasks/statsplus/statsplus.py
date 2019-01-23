@@ -56,7 +56,7 @@ class Statsplus(Registrable):
         return 'statsplus'
 
     def _reload_data(self, **kwargs):
-        return {'statslab': ['parse_score'], 'uniforms': ['jersey_colors']}
+        return {'statslab': ['parse_box'], 'uniforms': ['jersey_colors']}
 
     def _shadow_data(self, **kwargs):
         return self._shadow_scores() + self._shadow_table()
@@ -166,16 +166,16 @@ class Statsplus(Registrable):
             notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_scores())
 
     def _parse_score(self, num, date):
-        out = os.path.join(GAMES_DIR, num + '.json')
+        box_out = os.path.join(GAMES_DIR, 'game_box_' + num + '.json')
 
-        if os.path.isfile(out):
+        if os.path.isfile(box_out):
             return True
 
         prefix = STATSPLUS_LINK if self.data['started'] else EXTRACT_DIR
-        in_ = prefix + '/box_scores/game_box_{}.html'.format(num)
+        box_in = prefix + '/box_scores/game_box_{}.html'.format(num)
 
         services = {'jersey_colors': self._attr('jersey_colors')}
-        return self._call('parse_score', (in_, out, date), **services)
+        return self._call('parse_box', (box_in, box_out, date), **services)
 
     def _save_scores(self, date, text):
         self.data['scores'][date] = {}

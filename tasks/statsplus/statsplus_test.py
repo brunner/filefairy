@@ -96,7 +96,7 @@ class StatsplusTest(Test):
     def test_reload_data(self):
         statsplus = self.create_statsplus(_data())
         actual = statsplus._reload_data(date=DATE_10260602)
-        expected = {'statslab': ['parse_score'], 'uniforms': ['jersey_colors']}
+        expected = {'statslab': ['parse_box'], 'uniforms': ['jersey_colors']}
         self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -261,11 +261,11 @@ class StatsplusTest(Test):
             self, mock_listdir, mock_loads, mock_parse, mock_rm):
         mock_listdir.side_effect = [
             ['game_box_2449.html', 'game_box_2469.html'],
-            ['2449.json', '2469.json'],
+            ['game_box_2449.json', 'game_box_2469.json'],
         ]
         mock_loads.side_effect = [
-            json.loads(TESTDATA['2449.json']),
-            json.loads(TESTDATA['2469.json'])
+            json.loads(TESTDATA['game_box_2449.json']),
+            json.loads(TESTDATA['game_box_2469.json'])
         ]
 
         statsplus = self.create_statsplus(_data())
@@ -280,8 +280,8 @@ class StatsplusTest(Test):
             mock.call(GAMES_DIR),
         ])
         mock_loads.assert_has_calls([
-            mock.call(os.path.join(GAMES_DIR, '2449.json')),
-            mock.call(os.path.join(GAMES_DIR, '2469.json'))
+            mock.call(os.path.join(GAMES_DIR, 'game_box_2449.json')),
+            mock.call(os.path.join(GAMES_DIR, 'game_box_2469.json'))
         ])
         mock_parse.assert_has_calls([
             mock.call('2449', None),
@@ -299,11 +299,11 @@ class StatsplusTest(Test):
             self, mock_listdir, mock_loads, mock_parse, mock_rm):
         mock_listdir.side_effect = [
             ['game_box_2449.html', 'game_box_2469.html'],
-            ['2449.json', '2469.json'],
+            ['game_box_2449.json', 'game_box_2469.json'],
         ]
         mock_loads.side_effect = [
-            json.loads(TESTDATA['2449.json']),
-            json.loads(TESTDATA['2469.json'])
+            json.loads(TESTDATA['game_box_2449.json']),
+            json.loads(TESTDATA['game_box_2469.json'])
         ]
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -318,8 +318,8 @@ class StatsplusTest(Test):
             mock.call(GAMES_DIR),
         ])
         mock_loads.assert_has_calls([
-            mock.call(os.path.join(GAMES_DIR, '2449.json')),
-            mock.call(os.path.join(GAMES_DIR, '2469.json'))
+            mock.call(os.path.join(GAMES_DIR, 'game_box_2449.json')),
+            mock.call(os.path.join(GAMES_DIR, 'game_box_2469.json'))
         ])
         mock_parse.assert_has_calls([
             mock.call('2449', None),
@@ -401,7 +401,7 @@ class StatsplusTest(Test):
         self.assertEqual(actual, True)
 
         mock_isfile.assert_called_once_with(
-            os.path.join(GAMES_DIR, '2998.json'))
+            os.path.join(GAMES_DIR, 'game_box_2998.json'))
         self.assertNotCalled(mock_call, self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -419,9 +419,9 @@ class StatsplusTest(Test):
         self.assertEqual(actual, None)
 
         in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
-        out = os.path.join(GAMES_DIR, '2998.json')
+        out = os.path.join(GAMES_DIR, 'game_box_2998.json')
         mock_call.assert_called_once_with(
-            'parse_score', (in_, out, date), jersey_colors=mock_colors)
+            'parse_box', (in_, out, date), jersey_colors=mock_colors)
         mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
@@ -440,9 +440,9 @@ class StatsplusTest(Test):
         self.assertEqual(actual, True)
 
         in_ = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2998.html')
-        out = os.path.join(GAMES_DIR, '2998.json')
+        out = os.path.join(GAMES_DIR, 'game_box_2998.json')
         mock_call.assert_called_once_with(
-            'parse_score', (in_, out, date), jersey_colors=mock_colors)
+            'parse_box', (in_, out, date), jersey_colors=mock_colors)
         mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
@@ -461,9 +461,9 @@ class StatsplusTest(Test):
         self.assertEqual(actual, True)
 
         in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
-        out = os.path.join(GAMES_DIR, '2998.json')
+        out = os.path.join(GAMES_DIR, 'game_box_2998.json')
         mock_call.assert_called_once_with(
-            'parse_score', (in_, out, date), jersey_colors=mock_colors)
+            'parse_box', (in_, out, date), jersey_colors=mock_colors)
         mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

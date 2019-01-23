@@ -418,17 +418,17 @@ _expanded = [
     ),
 ]
 
-_game_2449 = json.loads(TESTDATA['2449.json'])
+_game_2449 = json.loads(TESTDATA['game_box_2449.json'])
 _head_2449 = line_score_head(_game_2449['date'])
 _body_2449 = line_score_body(_game_2449)
 _foot_2449 = line_score_foot(_game_2449)
 
-_game_2469 = json.loads(TESTDATA['2469.json'])
+_game_2469 = json.loads(TESTDATA['game_box_2469.json'])
 _head_2469 = line_score_head(_game_2469['date'])
 _body_2469 = line_score_body(_game_2469)
 _foot_2469 = line_score_foot(_game_2469)
 
-_game_2476 = json.loads(TESTDATA['2476.json'])
+_game_2476 = json.loads(TESTDATA['game_box_2476.json'])
 _head_2476 = line_score_head(_game_2476['date'])
 _body_2476 = line_score_body(_game_2476)
 _foot_2476 = line_score_foot(_game_2476)

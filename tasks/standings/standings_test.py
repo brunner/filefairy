@@ -41,8 +41,8 @@ TESTDATA = get_testdata()
 
 ENCODINGS = encoding_keys()
 
-GAME_2449 = json.loads(TESTDATA['2449.json'])
-GAME_2469 = json.loads(TESTDATA['2469.json'])
+GAME_2449 = json.loads(TESTDATA['game_box_2449.json'])
+GAME_2469 = json.loads(TESTDATA['game_box_2469.json'])
 
 HEAD_2449 = table(body=[[cell(content='Wednesday')]])
 BODY_2449 = table(head=[[cell(content='Final (10)')]])
@@ -301,9 +301,9 @@ class StandingsTest(Test):
     def test_finish(self, mock_listdir, mock_open, mock_render):
         mock_listdir.return_value = ['2449.json', '2469.json', '2476.json']
         suite = Suite(
-            RMock(GAMES_DIR, '2449.json', TESTDATA),
-            RMock(GAMES_DIR, '2469.json', TESTDATA),
-            RMock(GAMES_DIR, '2476.json', TESTDATA),
+            RMock(GAMES_DIR, 'game_box_2449.json', TESTDATA),
+            RMock(GAMES_DIR, 'game_box_2469.json', TESTDATA),
+            RMock(GAMES_DIR, 'game_box_2476.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
