@@ -15,6 +15,7 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.re_.re_ import find  # noqa
+from common.re_.re_ import findall  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 
 DOWNLOAD_DIR = re.sub(r'/services/leaguefile', '/resource/download', _path)
@@ -119,9 +120,9 @@ def extract_file(start):
         data = {}
         if os.path.isfile(path):
             with open(path, 'r', encoding='iso-8859-1') as f:
-                read = f.read()
+                read = re.sub(r'[ ]+', ' ', f.read())
 
-            for m in re.findall(r'(\d{8})\t([^\n]+)\n', read.strip() + '\n'):
+            for m in findall(r'(\d{8})\t([^\n]+)\n', read.strip() + '\n'):
                 if not m:
                     continue
 
@@ -143,4 +144,3 @@ def extract_file(start):
             f.write(dumps(data) + '\n')
 
     return end
-
