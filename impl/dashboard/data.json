@@ -1,39 +1,5 @@
 {
   "logs": {
-    "2019-01-17T00:00:00-08:00": [
-      {
-        "date": "2019-01-17T18:35:01.812716-08:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 87,
-        "msg": "File is up.",
-        "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
-      },
-      {
-        "date": "2019-01-17T18:35:47.651484-08:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 86,
-        "msg": "Download started.",
-        "pathname": "/home/pi/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-01-17T18:40:22.865196-08:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 73,
-        "msg": "Download finished.",
-        "pathname": "/home/pi/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-01-17T18:40:23.476834-08:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 254, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 87, in _download_start\n    return self._download_file(**kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 74, in _download_file\n    response = self._extract_file(**kwargs)\n  File \"/home/pi/filefairy/tasks/download/download.py\", line 96, in _extract_file\n    end = self._call('extract_file', (start, ))\n  File \"/home/pi/filefairy/api/reloadable/reloadable.py\", line 39, in _call\n    return self.attrs[method](*fargs, *args, **kwargs)\n  File \"/home/pi/filefairy/services/leaguefile/leaguefile.py\", line 118, in extract_file\n    with open(path, 'r', encoding='iso-8859-1') as f:\nFileNotFoundError: [Errno 2] No such file or directory: '/home/pi/filefairy/resource/download/news/txt/leagues/league_100_injuries.txt'",
-        "levelname": "ERROR",
-        "lineno": 257,
-        "msg": "Disabled download.",
-        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
-      }
-    ],
     "2019-01-18T00:00:00-08:00": [
       {
         "date": "2019-01-18T00:35:23.297927-08:00",
@@ -97,6 +63,32 @@
       },
       {
         "date": "2019-01-21T17:53:18.459009-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 73,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      }
+    ],
+    "2019-01-23T00:00:00-08:00": [
+      {
+        "date": "2019-01-23T18:12:33.716504-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 87,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
+      },
+      {
+        "date": "2019-01-23T18:12:46.441145-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 86,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-01-23T18:19:25.301075-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 73,
