@@ -18,13 +18,16 @@ class Event(Enum):
     """The player batting has changed.
 
     Attributes:
-        encoding: The encoding identifying the new batter.
+        batter: The new batter. For example, `P24322`.
     """
     CHANGE_BATTER = 1
+
+    """The inning has changed."""
+    CHANGE_INNING = 2
 
     """The player pitching has changed.
 
     Attributes:
-        encoding: The encoding identifying the new pitcher.
+        pitcher: The new pitcher. For example, `P35903`.
     """
-    CHANGE_PITCHER = 2
+    CHANGE_PITCHER = 3

@@ -254,6 +254,9 @@ def parse_log(in_, out, date):
         if i > 5:
             break
 
+        if i != 0:
+            plays.append(Event.CHANGE_INNING.encoding)
+
         batting, pitching, pitcher, content = inning
         for line in _parse_lines(content, html):
             match = find(r'^Pitching: \w+ (\w+)$', line)

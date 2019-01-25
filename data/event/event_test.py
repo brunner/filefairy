@@ -16,7 +16,8 @@ from data.event.event import Event  # noqa
 class EventTest(unittest.TestCase):
     def test_enum(self):
         self.assertEqual(Event.CHANGE_BATTER, 1)
-        self.assertEqual(Event.CHANGE_PITCHER, 2)
+        self.assertEqual(Event.CHANGE_INNING, 2)
+        self.assertEqual(Event.CHANGE_PITCHER, 3)
 
 
 if __name__ == '__main__':
