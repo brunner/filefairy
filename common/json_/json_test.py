@@ -11,6 +11,7 @@ import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/json_', '', _path))
+
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
 

@@ -2,10 +2,17 @@
 # -*- coding: utf-8 -*-
 """Data (non-reloadable) object for status notifications."""
 
-from enum import IntEnum
+import os
+import re
+import sys
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/data/notify', '', _path))
+
+from data.enum_.enum_ import Enum  # noqa
 
 
-class Notify(IntEnum):
+class Notify(Enum):
     """Describe a number of different app and task status changes."""
 
     # An arbitrary task has performed some arbitrary behavior. The app should

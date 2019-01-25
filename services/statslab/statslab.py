@@ -22,7 +22,7 @@ from common.re_.re_ import findall  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
-from data.code.code import Code  # noqa
+from data.event.event import Event  # noqa
 
 
 def _open(in_):
@@ -251,7 +251,7 @@ def parse_log(in_, out, date):
 
     plays = []
     for i, inning in enumerate(_parse_innings(text, html)):
-        if i > 3:
+        if i > 5:
             break
 
         batting, pitching, pitcher, content = inning
@@ -259,12 +259,12 @@ def parse_log(in_, out, date):
             match = find(r'^Pitching: \w+ (\w+)$', line)
             if match and match != pitchers[pitching]:
                 pitchers[pitching] = match
-                plays.append({'code': Code.PITCHER, 'encoding': match})
+                plays.append(' '.join([Event.CHANGE_PITCHER.encoding, match]))
                 continue
 
             match = find(r'^Batting: \w+ (\w+)$', line)
             if match:
-                plays.append({'code': Code.BATTER, 'encoding': match})
+                plays.append(' '.join([Event.CHANGE_BATTER.encoding, match]))
                 continue
 
     data['plays'] = plays
