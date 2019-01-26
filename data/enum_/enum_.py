@@ -12,11 +12,11 @@ class Enum(IntEnum):
     @classmethod
     def decode(cls, encoding):
         try:
-            return cls[encoding.upper()]
+            member, args = encoding.split(' ', 1)
+            return (cls[member.upper()], [a.strip() for a in args.split()])
         except Exception as e:
             _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
-            return None
+            return (None, [])
 
-    @property
-    def encoding(self):
-        return self.name.lower()
+    def encode(self, *args):
+        return ' '.join([self.name.lower()] + list(args))

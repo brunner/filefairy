@@ -249,28 +249,28 @@ def parse_log(in_, out, date):
         'home_team': home,
     }
 
-    plays = []
+    events = []
     for i, inning in enumerate(_parse_innings(text, html)):
         if i > 5:
             break
 
         if i != 0:
-            plays.append(Event.CHANGE_INNING.encoding)
+            events.append(Event.CHANGE_INNING.encode())
 
         batting, pitching, pitcher, content = inning
         for line in _parse_lines(content, html):
             match = find(r'^Pitching: \w+ (\w+)$', line)
             if match and match != pitchers[pitching]:
                 pitchers[pitching] = match
-                plays.append(' '.join([Event.CHANGE_PITCHER.encoding, match]))
+                events.append(Event.CHANGE_PITCHER.encode(match))
                 continue
 
             match = find(r'^Batting: \w+ (\w+)$', line)
             if match:
-                plays.append(' '.join([Event.CHANGE_BATTER.encoding, match]))
+                events.append(Event.CHANGE_BATTER.encode(match))
                 continue
 
-    data['plays'] = plays
+    data['events'] = events
 
     with open(out, 'w') as f:
         f.write(dumps(data) + '\n')

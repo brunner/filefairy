@@ -26,23 +26,23 @@ class JsonTest(unittest.TestCase):
         self.mock_log = patch_log.start()
 
     def test_decode__ok_false(self):
-        actual = FakeEnum.decode('bar')
-        expected = None
+        actual = FakeEnum.decode('bar data 1')
+        expected = (None, [])
         self.assertEqual(actual, expected)
 
         self.mock_log.assert_called_once_with(
             logging.WARNING, 'Handled warning.', exc_info=True)
 
     def test_decode__ok_true(self):
-        actual = FakeEnum.decode('foo')
-        expected = FakeEnum.FOO
+        actual = FakeEnum.decode('foo data 1')
+        expected = (FakeEnum.FOO, ['data', '1'])
         self.assertEqual(actual, expected)
 
         self.mock_log.assert_not_called()
 
-    def test_encoding(self):
-        actual = FakeEnum.FOO.encoding
-        expected = 'foo'
+    def test_encode(self):
+        actual = FakeEnum.FOO.encode('data', '1')
+        expected = 'foo data 1'
         self.assertEqual(actual, expected)
 
         self.mock_log.assert_not_called()
