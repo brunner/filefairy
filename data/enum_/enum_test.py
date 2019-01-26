@@ -25,24 +25,38 @@ class JsonTest(unittest.TestCase):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
-    def test_decode__ok_false(self):
-        actual = FakeEnum.decode('bar data 1')
-        expected = (None, [])
-        self.assertEqual(actual, expected)
-
-        self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
-
-    def test_decode__ok_true(self):
+    def test_decode__args(self):
         actual = FakeEnum.decode('foo data 1')
         expected = (FakeEnum.FOO, ['data', '1'])
         self.assertEqual(actual, expected)
 
         self.mock_log.assert_not_called()
 
-    def test_encode(self):
+    def test_decode__exception(self):
+        actual = FakeEnum.decode('bar')
+        expected = (None, [])
+        self.assertEqual(actual, expected)
+
+        self.mock_log.assert_called_once_with(
+            logging.WARNING, 'Handled warning.', exc_info=True)
+
+    def test_decode__member(self):
+        actual = FakeEnum.decode('foo')
+        expected = (FakeEnum.FOO, [])
+        self.assertEqual(actual, expected)
+
+        self.mock_log.assert_not_called()
+
+    def test_encode__args(self):
         actual = FakeEnum.FOO.encode('data', '1')
         expected = 'foo data 1'
+        self.assertEqual(actual, expected)
+
+        self.mock_log.assert_not_called()
+
+    def test_encode__member(self):
+        actual = FakeEnum.FOO.encode()
+        expected = 'foo'
         self.assertEqual(actual, expected)
 
         self.mock_log.assert_not_called()

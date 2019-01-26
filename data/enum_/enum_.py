@@ -12,8 +12,10 @@ class Enum(IntEnum):
     @classmethod
     def decode(cls, encoding):
         try:
-            member, args = encoding.split(' ', 1)
-            return (cls[member.upper()], [a.strip() for a in args.split()])
+            if ' ' in encoding:
+                data = encoding.split(' ')
+                return (cls[data[0].upper()], data[1:])
+            return (cls[encoding.upper()], [])
         except Exception as e:
             _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
             return (None, [])
