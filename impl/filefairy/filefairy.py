@@ -215,6 +215,8 @@ class Filefairy(Messageable, Renderable):
         self.day = date.day
 
         for t in self._get_dirs(TASKS_DIR):
+            if t == 'gameday':
+                continue
             self._reload_internal(t, False, **kwargs)
         self._try_all('_setup', **kwargs)
 

@@ -61,8 +61,9 @@ def find(pattern, string, force_groups=False):
     if groups > 1:
         return [_strip(g) for g in match.groups()]
 
-    if groups == 0 and force_groups:
-        return []
+    if groups == 1:
+        m = _strip(match.groups()[0])
+        return [m] if force_groups else m
 
-    m = _strip(match[groups])
-    return [m] if force_groups else m
+    return [] if force_groups else match.group()
+
