@@ -142,7 +142,7 @@ class Statsplus(Registrable):
             return Response()
 
         unvisited = {}
-        for num, s in self.data['scores'][date_].items():
+        for num, s in sorted(self.data['scores'][date_].items()):
             if self._parse_score(num, date_) is None:
                 unvisited[num] = s
 

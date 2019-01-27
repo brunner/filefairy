@@ -121,9 +121,9 @@ class Snacks(Registrable):
             return Response()
 
         all_ = []
-        for user in messages:
-            self.cfds[user] = get_cfd(NUM, messages[user])
-            all_ += messages[user]
+        for user, message in sorted(messages.items()):
+            self.cfds[user] = get_cfd(NUM, message)
+            all_ += message
         self.cfds['all'] = get_cfd(NUM, all_)
 
         self.users = users
