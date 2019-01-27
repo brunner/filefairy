@@ -59,11 +59,7 @@ def find(pattern, string, force_groups=False):
         return [None] * groups if groups > 1 and not force_groups else None
 
     if groups > 1:
-        try:
-            return [_strip(g) for g in match.groups()]
-        except:
-            print(pattern, string, match.groups())
-            raise
+        return [_strip(g) for g in match.groups()]
 
     if groups == 0 and force_groups:
         return []

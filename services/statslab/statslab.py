@@ -24,6 +24,53 @@ from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from data.event.event import Event  # noqa
 
+EVENT_MAP = {
+    Event.CHANGE_PITCHER:
+    r'^Pitching: \w+ (\w+)$',
+    Event.CHANGE_BATTER:
+    r'^Batting: \w+ (\w+)$',
+    Event.HIT_SINGLE:
+    r'^\d-\d: SINGLE \((\w)[\w ]+, (\w+)\)$',
+    Event.HIT_DOUBLE:
+    r'^\d-\d: DOUBLE \((\w)[\w ]+, (\w+)\)$',
+    Event.HIT_HOME_RUN:
+    r'^\d-\d: \d-RUN HOME RUN \(Flyball, (\w+)\)\, Distance : (\d+) ft$',
+    Event.OUT_FLY_OUT:
+    r'^\d-\d: Fly out, ([\w-]+) \((\w)[\w ]+, (\w+)\)$',
+    Event.OUT_GROUND_OUT:
+    r'^\d-\d: Ground out ([\w-]+) \(Groundball, (\w+)\)$',
+    Event.PITCH_BALL:
+    r'^\d-\d: (?:Ball|Base on Balls)$',
+    Event.PITCH_CALLED_STRIKE:
+    r'^\d-\d: (?:Called Strike|Strikes out looking)$',
+    Event.PITCH_FOULED_STRIKE:
+    r'^\d-\d: Foul Ball, location: 2F$',
+    Event.PITCH_SWINGING_STRIKE:
+    r'^\d-\d: (?:Swinging Strike|Strikes out swinging)$',
+    Event.RUNNER_STEALS_SECOND:
+    r'^(\w+) steals 2nd base$',
+    Event.RUNNER_OUT_STEALING_SECOND:
+    r'^(\w+) is caught stealing 2nd base$',
+    Event.RUNNER_TO_SECOND:
+    r'^(\w+) to second$',
+    Event.RUNNER_STEALS_THIRD:
+    r'^(\w+) steals 3rd base$',
+    Event.RUNNER_OUT_STEALING_THIRD:
+    r'^(\w+) is caught stealing 3rd base$',
+    Event.RUNNER_TO_THIRD:
+    r'^(\w+) to third$',
+    Event.RUNNER_SCORES_NO_THROW:
+    r'^(\w+) scores$',
+    Event.RUNNER_ON_FIRST_PICKED_OFF:
+    r'^Pickoff Throw to First - Out!$',
+    Event.RUNNER_ON_THIRD_SCORES_NO_THROW:
+    r'^Runner from 3rd tries for Home, SAFE, no throw$',
+    Event.RUNNER_ON_THIRD_SCORES_THROW_MADE:
+    r'^Runner from 3rd tags up, SCORES, throw made$',
+    Event.SAC_BUNT_OUT_AT_SECOND:
+    r'^\d-\d: Sac Bunt - play at second, runner OUT! ([\w-]+)$',
+}
+
 
 def _open(in_):
     text = ''
@@ -240,7 +287,6 @@ def parse_log(in_, out, date):
 
     away_pitcher = find(r'Pitching for ' + away + r' : \w+ (\w+)', text)
     home_pitcher = find(r'Pitching for ' + home + r' : \w+ (\w+)', text)
-    pitchers = {away: away_pitcher, home: home_pitcher}
 
     data = {
         'away_starter': away_pitcher,
@@ -251,24 +297,20 @@ def parse_log(in_, out, date):
 
     events = []
     for i, inning in enumerate(_parse_innings(text, html)):
-        if i > 5:
+        if i > 1:
             break
-
-        if i != 0:
-            events.append(Event.CHANGE_INNING.encode())
+        events.append(Event.CHANGE_INNING.encode())
 
         batting, pitching, pitcher, content = inning
         for line in _parse_lines(content, html):
-            match = find(r'^Pitching: \w+ (\w+)$', line)
-            if match and match != pitchers[pitching]:
-                pitchers[pitching] = match
-                events.append(Event.CHANGE_PITCHER.encode(match))
-                continue
-
-            match = find(r'^Batting: \w+ (\w+)$', line)
-            if match:
-                events.append(Event.CHANGE_BATTER.encode(match))
-                continue
+            for event, regex in EVENT_MAP.items():
+                match = find(regex, line, force_groups=True)
+                if match is not None:
+                    events.append(event.encode(*match))
+                    break
+            else:
+                # TODO: Handle this gracefully.
+                raise Exception(line)
 
     data['events'] = events
 
