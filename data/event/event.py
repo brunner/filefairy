@@ -20,11 +20,13 @@ class Event(Enum):
         distance: A batted ball's travel distance. For example, `402`.
         path: A batted ball's flight path. For example, `F` for a fly ball.
         player: A player that the event describes. For example, `P24322`.
+        position: A fielder position. For example, `LF`.
         scoring: A scoring notation for the event. For example, `4-3`.
         zone: A batted ball's location. For example, `7LD`.
     """
 
     CHANGE_BATTER = auto()  # [player]
+    CHANGE_FIELDER = auto()  # [position, player]
     CHANGE_INNING = auto()  # []
     CHANGE_PITCHER = auto()  # [player]
 

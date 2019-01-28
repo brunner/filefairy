@@ -27,6 +27,8 @@ from data.event.event import Event  # noqa
 EVENT_MAP = {
     Event.CHANGE_BATTER:
     r'^Batting: \w+ (\w+)$',
+    Event.CHANGE_FIELDER:
+    r'^Now in (\w+): (\w+)$',
     Event.CHANGE_PITCHER:
     r'^Pitching: \w+ (\w+)$',
     Event.BATTER_INFIELD_SINGLE:
@@ -317,7 +319,7 @@ def parse_log(in_, out, date):
 
     events = []
     for i, inning in enumerate(_parse_innings(text, html)):
-        if i > 9:
+        if i > 13:
             break
         events.append(Event.CHANGE_INNING.encode())
 
