@@ -33,9 +33,12 @@ class Event(Enum):
     BATTER_DOUBLE = auto()  # [path, zone]
     BATTER_HOME_RUN = auto()  # [zone, distance]
 
+    BATTER_REACH_ON_ERROR = auto()  # [scoring, zone]
+
     BATTER_FLY_OUT = auto()  # [scoring, path, zone]
     BATTER_GROUND_OUT = auto()  # [scoring, zone]
     BATTER_GROUNDS_INTO_DOUBLE_PLAY = auto()  # [scoring, zone]
+    BATTER_GROUNDS_INTO_FIELDERS_CHOICE_AT_SECOND = auto()  # [scoring, zone]
     BATTER_SAC_BUNT_OUT_AT_SECOND = auto()  # [scoring]
 
     PITCHER_BALL = auto()  # []
@@ -56,6 +59,7 @@ class Event(Enum):
     RUNNER_SCORES_NO_THROW = auto()  # [player]
 
     RUNNER_ON_FIRST_PICKED_OFF = auto()  # []
+    RUNNER_ON_FIRST_TO_SECOND_NO_THROW = auto()  # []
 
     RUNNER_ON_SECOND_TO_THIRD_THROW_MADE = auto()  # []
 

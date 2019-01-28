@@ -37,12 +37,16 @@ EVENT_MAP = {
     r'^\d-\d: DOUBLE \((\w)[\w ]+, (\w+)\)$',
     Event.BATTER_HOME_RUN:
     r'^\d-\d: (?:\d-RUN|SOLO) HOME RUN \(Flyball, (\w+)\)\, Distance : (\d+) ft$',
+    Event.BATTER_REACH_ON_ERROR:
+    r'^\d-\d: Reached on error, (\w+) \(Groundball, (\w+)\)$',
     Event.BATTER_FLY_OUT:
     r'^\d-\d: Fly out, ([\w-]+) \((\w)[\w ]+, (\w+)\)$',
     Event.BATTER_GROUND_OUT:
     r'^\d-\d: Ground out ([\w-]+) \(Groundball, (\w+)\)$',
     Event.BATTER_GROUNDS_INTO_DOUBLE_PLAY:
     r'^\d-\d: Grounds into double play, ([\w-]+) \(Groundball, (\w+)\)$',
+    Event.BATTER_GROUNDS_INTO_FIELDERS_CHOICE_AT_SECOND:
+    r'^\d-\d: Fielders Choice at 2nd, ([\w-]+) \(Groundball, (\w+)\)$',
     Event.BATTER_SAC_BUNT_OUT_AT_SECOND:
     r'^\d-\d: Sac Bunt - play at second, runner OUT! ([\w-]+)$',
     Event.PITCHER_BALL:
@@ -73,12 +77,14 @@ EVENT_MAP = {
     r'^(\w+) scores$',
     Event.RUNNER_ON_FIRST_PICKED_OFF:
     r'^Pickoff Throw to First - Out!$',
+    Event.RUNNER_ON_FIRST_TO_SECOND_NO_THROW:
+    r'^Runner from 1st tags up, SAFE at 2nd$',
     Event.RUNNER_ON_SECOND_TO_THIRD_THROW_MADE:
     r'^Runner from 2nd tries for 3rd, SAFE, throw made to third$',
     Event.RUNNER_ON_THIRD_SCORES_NO_THROW:
     r'^Runner from 3rd tries for Home, SAFE, no throw$',
     Event.RUNNER_ON_THIRD_SCORES_THROW_MADE:
-    r'^Runner from 3rd tags up, SCORES, throw made$',
+    r'^Runner from 3rd (?:tags up, SCORES, throw made|tries for Home, SAFE, throw made home)$',
     Event.RUNNER_ON_THIRD_OUT_AT_HOME_THROW_MADE:
     r'^Runner from 3rd tags up, OUT at HOME$',
 }
@@ -311,7 +317,7 @@ def parse_log(in_, out, date):
 
     events = []
     for i, inning in enumerate(_parse_innings(text, html)):
-        if i > 5:
+        if i > 9:
             break
         events.append(Event.CHANGE_INNING.encode())
 
