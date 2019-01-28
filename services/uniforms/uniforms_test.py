@@ -151,7 +151,7 @@ class UniformsTest(unittest.TestCase):
         mock_repo.return_value = 'repo'
         mock_tag.return_value = 'tag'
 
-        colors35 = (BLUE, '#09285a', None, 'basic')
+        colors35 = (BLUE, '#09285a', 'none', 'basic')
         colors37 = (WHITE, '#ea164c', '#000000', 'reds')
         actual = jersey_style(('T35', colors35), ('T37', colors37))
         expected = [

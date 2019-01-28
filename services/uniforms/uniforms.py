@@ -149,7 +149,7 @@ UNIFORMS = [
     _uniform(  # T33
         (WHITE, '#f94900', '#000000', 'basic'),
         (GREY, '#f94900', '#000000', 'basic'),
-        ((BLACK, '#f94900', None, 'basic'), ([FRIDAY], 1.0, BOTH)),
+        ((BLACK, '#f94900', 'none', 'basic'), ([FRIDAY], 1.0, BOTH)),
         ((ORANGE, '#000000', '#ffffff', 'basic'), ([SATURDAY], 1.0, BOTH)),
     ),
     _uniform(  # T34
@@ -159,15 +159,15 @@ UNIFORMS = [
         ((BLUE, '#d5122f', '#ffffff', 'redsox'), ([FRIDAY], 1.0, AWAY)),
     ),
     _uniform(  # T35
-        (WHITE, '#000000', None, 'basic'),
+        (WHITE, '#000000', 'none', 'basic'),
         (GREY, '#000000', '#ffffff', 'basic'),
-        ((BLUE, '#09285a', None, 'block'), ([SUNDAY], 1.0, HOME)),
-        ((BLACK, '#ffffff', None, 'basic'), (ALL, .6, BOTH)),
+        ((BLUE, '#09285a', 'none', 'block'), ([SUNDAY], 1.0, HOME)),
+        ((BLACK, '#ffffff', 'none', 'basic'), (ALL, .6, BOTH)),
     ),
     _uniform(  # T36
-        (WHITE, '#122441', None, 'serif'),
-        (GREY, '#122441', None, 'serif'),
-        ((BLUE, '#ffffff', None, 'serif'), ([SUNDAY], 1.0, BOTH)),
+        (WHITE, '#122441', 'none', 'serif'),
+        (GREY, '#122441', 'none', 'serif'),
+        ((BLUE, '#ffffff', 'none', 'serif'), ([SUNDAY], 1.0, BOTH)),
     ),
     _uniform(  # T37
         (WHITE, '#ea164c', '#000000', 'reds'),
@@ -180,8 +180,8 @@ UNIFORMS = [
         ((BLUE, '#e9144b', '#ffffff', 'basic'), (ALL, .6, BOTH)),
     ),
     _uniform(  # T39
-        (WHITE, '#000000', None, 'basic'),
-        (GREY, '#22176b', None, 'basic'),
+        (WHITE, '#000000', 'none', 'basic'),
+        (GREY, '#22176b', 'none', 'basic'),
         ((PURPLE, '#000000', '#ffffff', 'basic'), (ALL, .35, BOTH)),
         ((BLACK, '#a5a4a8', '#3b3583', 'basic'), (ALL, .15, BOTH)),
     ),
@@ -201,10 +201,10 @@ UNIFORMS = [
         ((ORANGE, '#141929', '#ffffff', 'block'), (ALL, .2, BOTH)),
     ),
     _uniform(  # T43
-        (WHITE, '#0d326f', None, 'basic'),
-        (GREY, '#0d326f', None, 'basic'),
+        (WHITE, '#0d326f', 'none', 'basic'),
+        (GREY, '#0d326f', 'none', 'basic'),
         ((SKY, '#ffffff', '#0d326f', 'basic'), ([MONDAY, FRIDAY], 1.0, HOME)),
-        ((BLUE, '#ffffff', None, 'basic'), ([SUNDAY], 1.0, AWAY)),
+        ((BLUE, '#ffffff', 'none', 'basic'), ([SUNDAY], 1.0, AWAY)),
     ),
     _uniform(  # T44
         (WHITE, '#b11132', '#0c2445', 'pointed'),
@@ -212,8 +212,8 @@ UNIFORMS = [
         ((RED, '#b11132', '#0c2445', 'pointed'), (ALL, .55, BOTH)),
     ),
     _uniform(  # T45
-        (WHITE, '#233972', None, 'basic'),
-        (GREY, '#233972', None, 'basic'),
+        (WHITE, '#233972', 'none', 'basic'),
+        (GREY, '#233972', 'none', 'basic'),
     ),
     _uniform(  # T46
         (WHITE, '#1a4ba7', '#fbc72d', 'block'),
@@ -227,7 +227,7 @@ UNIFORMS = [
         ((BLUE, '#d11242', '#d0718f', 'basic'), (ALL, .15, AWAY)),
     ),
     _uniform(  # T48
-        (WHITE, '#051e42', None, 'block'),
+        (WHITE, '#051e42', 'none', 'block'),
         (GREY, '#051e42', '#ffffff', 'block'),
     ),
     _uniform(  # T49
@@ -239,11 +239,11 @@ UNIFORMS = [
     _uniform(  # T50
         (WHITE, '#064436', '#f0b019', 'basic'),
         (GREY, '#064436', '#f0b019', 'basic'),
-        ((YELLOW, '#064436', None, 'basic'), ([FRIDAY], 1.0, HOME)),
+        ((YELLOW, '#064436', 'none', 'basic'), ([FRIDAY], 1.0, HOME)),
         ((GREEN, '#ffffff', '#f0b019', 'basic'), (ALL, .15, AWAY)),
     ),
     _uniform(  # T51
-        (WHITE, '#d11043', None, 'rounded'),
+        (WHITE, '#d11043', 'none', 'rounded'),
         (GREY, '#d11043', '#ffffff', 'rounded'),
         ((SKY, '#6d223a', '#ffffff', 'rounded'), ([THURSDAY], 1.0, HOME)),
         ((CREAM, '#d11043', '#165397', 'rounded'), ([SUNDAY], 1.0, HOME)),
@@ -258,7 +258,7 @@ UNIFORMS = [
         (WHITE, '#512c1b', '#f0aa1c', 'serif'),
         (GREY, '#512c1b', '#f0aa1c', 'serif'),
         ((CREAM, '#512c1b', '#f0aa1c', 'serif'), ([SUNDAY], 1.0, HOME)),
-        ((YELLOW, '#512c1b', None, 'serif'), (ALL, .35, AWAY)),
+        ((YELLOW, '#512c1b', 'none', 'serif'), (ALL, .35, AWAY)),
     ),
     _uniform(  # T54
         (WHITE, '#09285a', '#0b505a', 'basic'),
@@ -280,7 +280,7 @@ UNIFORMS = [
         (WHITE, '#08131e', '#284d6e', 'basic'),
         (GREY, '#08131e', '#284d6e', 'basic'),
         ((SKY, '#fcc520', '#08131e', 'rounded'), ([SUNDAY], 1.0, HOME)),
-        ((BLUE, '#74b5e1', None, 'rounded'), (ALL, .5, AWAY)),
+        ((BLUE, '#74b5e1', 'none', 'rounded'), (ALL, .5, AWAY)),
     ),
     _uniform(  # T58
         (WHITE, '#124886', '#ce103b', 'pointed'),
@@ -289,9 +289,9 @@ UNIFORMS = [
         ((BLUE, '#ffffff', '#ce103b', 'pointed'), (ALL, .5, BOTH)),
     ),
     _uniform(  # T59
-        (WHITE, '#1d469b', None, 'bluejays'),
-        (GREY, '#1d469b', None, 'bluejays'),
-        ((BLUE, '#ffffff', None, 'bluejays'), (ALL, .5, BOTH)),
+        (WHITE, '#1d469b', 'none', 'bluejays'),
+        (GREY, '#1d469b', 'none', 'bluejays'),
+        ((BLUE, '#ffffff', 'none', 'bluejays'), (ALL, .5, BOTH)),
     ),
     _uniform(  # T60
         (WHITE, '#b10b30', '#0a2045', 'block'),
@@ -432,7 +432,7 @@ def jersey_absolute(encoding, colors, num, side):
             nc += '{}-{}-{{0}}'.format(lower, name)
 
             jersey.append(DIV_TAG.format(nc.format('solid')))
-            if border is not None:
+            if border is not 'none':
                 jersey.append(DIV_TAG.format(nc.format('border')))
 
     return '\n'.join(jersey)
@@ -482,7 +482,7 @@ def jersey_style(*jerseys):
         rules = ['background-color: ' + solid]
         styles.append(ruleset(selector='.' + asset, rules=rules))
 
-        if border is not None:
+        if border is not 'none':
             asset = '-'.join([lower, name, 'border'])
             rules = ['background-color: ' + border]
             styles.append(ruleset(selector='.' + asset, rules=rules))
