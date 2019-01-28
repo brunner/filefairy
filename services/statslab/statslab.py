@@ -25,39 +25,41 @@ from common.teams.teams import encoding_to_hometown  # noqa
 from data.event.event import Event  # noqa
 
 EVENT_MAP = {
-    Event.CHANGE_PITCHER:
-    r'^Pitching: \w+ (\w+)$',
     Event.CHANGE_BATTER:
     r'^Batting: \w+ (\w+)$',
-    Event.HIT_SINGLE:
+    Event.CHANGE_PITCHER:
+    r'^Pitching: \w+ (\w+)$',
+    Event.BATTER_SINGLE:
     r'^\d-\d: SINGLE \((\w)[\w ]+, (\w+)\)$',
-    Event.HIT_DOUBLE:
+    Event.BATTER_DOUBLE:
     r'^\d-\d: DOUBLE \((\w)[\w ]+, (\w+)\)$',
-    Event.HIT_HOME_RUN:
+    Event.BATTER_HOME_RUN:
     r'^\d-\d: \d-RUN HOME RUN \(Flyball, (\w+)\)\, Distance : (\d+) ft$',
-    Event.OUT_FLY_OUT:
+    Event.BATTER_FLY_OUT:
     r'^\d-\d: Fly out, ([\w-]+) \((\w)[\w ]+, (\w+)\)$',
-    Event.OUT_GROUND_OUT:
+    Event.BATTER_GROUND_OUT:
     r'^\d-\d: Ground out ([\w-]+) \(Groundball, (\w+)\)$',
-    Event.PITCH_BALL:
+    Event.BATTER_SAC_BUNT_OUT_AT_SECOND:
+    r'^\d-\d: Sac Bunt - play at second, runner OUT! ([\w-]+)$',
+    Event.PITCHER_BALL:
     r'^\d-\d: (?:Ball|Base on Balls)$',
-    Event.PITCH_CALLED_STRIKE:
+    Event.PITCHER_CALLED_STRIKE:
     r'^\d-\d: (?:Called Strike|Strikes out looking)$',
-    Event.PITCH_FOULED_STRIKE:
+    Event.PITCHER_FOULED_STRIKE:
     r'^\d-\d: Foul Ball, location: 2F$',
-    Event.PITCH_SWINGING_STRIKE:
+    Event.PITCHER_SWINGING_STRIKE:
     r'^\d-\d: (?:Swinging Strike|Strikes out swinging)$',
-    Event.RUNNER_STEALS_SECOND:
+    Event.RUNNER_STEAL_SECOND_SAFE:
     r'^(\w+) steals 2nd base$',
-    Event.RUNNER_OUT_STEALING_SECOND:
+    Event.RUNNER_STEAL_SECOND_OUT:
     r'^(\w+) is caught stealing 2nd base$',
-    Event.RUNNER_TO_SECOND:
+    Event.RUNNER_TO_SECOND_NO_THROW:
     r'^(\w+) to second$',
-    Event.RUNNER_STEALS_THIRD:
+    Event.RUNNER_STEAL_THIRD_SAFE:
     r'^(\w+) steals 3rd base$',
-    Event.RUNNER_OUT_STEALING_THIRD:
+    Event.RUNNER_STEAL_THIRD_OUT:
     r'^(\w+) is caught stealing 3rd base$',
-    Event.RUNNER_TO_THIRD:
+    Event.RUNNER_TO_THIRD_NO_THROW:
     r'^(\w+) to third$',
     Event.RUNNER_SCORES_NO_THROW:
     r'^(\w+) scores$',
@@ -67,8 +69,6 @@ EVENT_MAP = {
     r'^Runner from 3rd tries for Home, SAFE, no throw$',
     Event.RUNNER_ON_THIRD_SCORES_THROW_MADE:
     r'^Runner from 3rd tags up, SCORES, throw made$',
-    Event.SAC_BUNT_OUT_AT_SECOND:
-    r'^\d-\d: Sac Bunt - play at second, runner OUT! ([\w-]+)$',
 }
 
 
