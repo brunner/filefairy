@@ -84,6 +84,7 @@ def _open(in_):
     text = re.sub(r'<a href="../\w+/player_(\d+)\.[^<]+</a>', r'P\1', text)
     text = re.sub(r'\s+', ' ', text)
     text = re.sub(r'</?b>', '', text)
+    text = re.sub(r' &nbsp;&nbsp;', '', text)
 
     return text
 
@@ -204,7 +205,8 @@ def parse_box(in_, out, date, **services):
             data[team + suffix] = cols.pop(-1)
         data[team + '_line'] = ' '.join(cols)
 
-    data['recap'] = find(r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--', text)
+    data['recap'] = find(
+        r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--RECAP_SUBJECT_END-->', text)
 
     blines = findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', text)
     plines = findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', text)
