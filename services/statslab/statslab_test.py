@@ -21,9 +21,10 @@ from services.statslab.statslab import parse_player  # noqa
 from services.statslab.statslab import parse_box  # noqa
 from services.statslab.statslab import parse_log  # noqa
 
-DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
-DATE_08290000 = datetime_datetime_pst(2024, 8, 29)
-DATE_08300000 = datetime_datetime_pst(2024, 8, 30)
+DATE_03100000 = datetime_datetime_pst(2025, 3, 10)
+DATE_03110000 = datetime_datetime_pst(2025, 3, 11)
+DATE_03130000 = datetime_datetime_pst(2025, 3, 13)
+DATE_03160000 = datetime_datetime_pst(2025, 3, 16)
 
 EXTRACT_DIR = re.sub(r'/services/statslab', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
@@ -33,23 +34,34 @@ GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
 
 PLAYERS = [
     [
-        'P13', 'P19570', 'P19997', 'P20584', 'P2212', 'P23845', 'P24243',
-        'P24322', 'P27200', 'P28636', 'P28677', 'P28762', 'P29790', 'P34032',
-        'P34701', 'P35889', 'P35903', 'P37114', 'P48258', 'P49108', 'P49648',
-        'P50264', 'P50664', 'P52898', 'P53142', 'P53807', 'P55093', 'P55546',
-        'P57'
+        'P1150', 'P12', 'P21314', 'P22458', 'P23026', 'P23553', 'P24176',
+        'P24184', 'P25154', 'P25189', 'P25233', 'P26617', 'P26980', 'P29705',
+        'P29741', 'P36248', 'P37050', 'P38655', 'P38811', 'P40726', 'P41755',
+        'P50258', 'P52260', 'P53426', 'P53750', 'P55021', 'P55249', 'P57'
     ],
     [
-        'P18965', 'P19997', 'P2212', 'P23845', 'P24322', 'P26432', 'P27200',
-        'P28636', 'P29037', 'P29790', 'P34032', 'P34701', 'P35889', 'P37114',
-        'P37294', 'P37544', 'P38898', 'P49648', 'P50264', 'P53142', 'P53807',
-        'P55093', 'P55546', 'P57'
+        'P1473', 'P22819', 'P23688', 'P24548', 'P26087', 'P26672', 'P26879',
+        'P27194', 'P28185', 'P28401', 'P28785', 'P33236', 'P33562', 'P34705',
+        'P37037', 'P39432', 'P41310', 'P49103', 'P49738', 'P50298', 'P50308',
+        'P51521', 'P53209', 'P53282', 'P53328'
     ],
     [
-        'P1512', 'P19570', 'P19997', 'P23845', 'P24322', 'P25132', 'P27200',
-        'P28636', 'P28762', 'P29790', 'P34032', 'P34701', 'P37027', 'P37114',
-        'P37294', 'P48258', 'P49648', 'P50264', 'P50664', 'P53142', 'P53807',
-        'P55546', 'P57'
+        'P1392', 'P1614', 'P20230', 'P20296', 'P23264', 'P23816', 'P23857',
+        'P25981', 'P27803', 'P28636', 'P30055', 'P30088', 'P30138', 'P33764',
+        'P34175', 'P36272', 'P38844', 'P42045', 'P46441', 'P48230', 'P48257',
+        'P50249', 'P50304', 'P51461', 'P53046', 'P54518', 'P91'
+    ],
+    [
+        'P22145', 'P22503', 'P22635', 'P23241', 'P23269', 'P25202', 'P25310',
+        'P25651', 'P29670', 'P29755', 'P30238', 'P30804', 'P30965', 'P38657',
+        'P40187', 'P50004', 'P50900', 'P53050', 'P53129', 'P53197', 'P54893',
+        'P55542', 'P55778', 'P57150'
+    ],
+    [
+        'P1604', 'P22470', 'P23261', 'P23619', 'P25140', 'P30583', 'P33100',
+        'P35105', 'P35481', 'P39616', 'P39880', 'P40738', 'P44320', 'P50013',
+        'P50114', 'P50254', 'P50265', 'P50269', 'P53182', 'P53626', 'P53645',
+        'P53825', 'P53987', 'P55096', 'P55237', 'P55336'
     ],
 ]
 
@@ -60,8 +72,16 @@ STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 
 TESTDATA = get_testdata()
 
-COLORS_40 = ('grey', '#0b2245', '#e54927', 'block')
-COLORS_47 = ('cream', '#052046', '#d11242', 'basic')
+COLORS_32 = ('grey', '#ab1234', '#0b2c5a', 'block')
+COLORS_39 = ('purple', '#000000', '#ffffff', 'basic')
+COLORS_41 = ('white', '#000000', '#27aab8', 'basic')
+COLORS_42 = ('grey', '#141929', '#aa563e', 'block')
+COLORS_45 = ('white', '#233972', 'none', 'basic')
+COLORS_49 = ('blue', '#a4a1a1', '#c45d3b', 'basic')
+COLORS_51 = ('white', '#d11043', 'none', 'rounded')
+COLORS_52 = ('white', '#000000', '#fcc72d', 'pirates')
+COLORS_53 = ('yellow', '#512c1b', 'none', 'serif')
+COLORS_58 = ('white', '#124886', '#ce103b', 'pointed')
 
 
 def _extract_box_score(num):
@@ -129,21 +149,26 @@ class StatslabTest(unittest.TestCase):
     def test_parse_box__file(self, mock_isfile, mock_get, mock_open, mock_put):
         mock_isfile.return_value = True
         suite = Suite(
-            RMock(EXTRACT_BOX_SCORES, 'game_box_2449.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_2449.json', TESTDATA),
-            RMock(EXTRACT_BOX_SCORES, 'game_box_2469.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_2469.json', TESTDATA),
-            RMock(EXTRACT_BOX_SCORES, 'game_box_2476.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_2476.json', TESTDATA),
+            RMock(EXTRACT_BOX_SCORES, 'game_box_23520.html', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23520.json', TESTDATA),
+            RMock(EXTRACT_BOX_SCORES, 'game_box_23766.html', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23766.json', TESTDATA),
+            RMock(EXTRACT_BOX_SCORES, 'game_box_23769.html', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23769.json', TESTDATA),
+            RMock(EXTRACT_BOX_SCORES, 'game_box_23775.html', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23775.json', TESTDATA),
+            RMock(EXTRACT_BOX_SCORES, 'game_box_23803.html', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23803.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
         mock_colors = mock.Mock()
         mock_colors.side_effect = [
-            COLORS_47, COLORS_40, COLORS_47, COLORS_40, COLORS_47, COLORS_40
+            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
+            COLORS_41, COLORS_49, COLORS_52, COLORS_53
         ]
 
-        for num in ['2449', '2469', '2476']:
+        for num in ['23520', '23766', '23769', '23775', '23803']:
             in_ = _extract_box_score(num)
             out = _games_box_score(num)
             actual = parse_box(in_, out, None, jersey_colors=mock_colors)
@@ -161,26 +186,33 @@ class StatslabTest(unittest.TestCase):
     def test_parse_box__link(self, mock_isfile, mock_get, mock_open, mock_put):
         mock_isfile.return_value = False
         mock_get.side_effect = [
-            TESTDATA['game_box_2449.html'],
-            TESTDATA['game_box_2469.html'],
-            TESTDATA['game_box_2476.html'],
+            TESTDATA['game_box_23520.html'],
+            TESTDATA['game_box_23766.html'],
+            TESTDATA['game_box_23769.html'],
+            TESTDATA['game_box_23775.html'],
+            TESTDATA['game_box_23803.html'],
         ]
         suite = Suite(
-            WMock(GAMES_DIR, 'game_box_2449.json', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_2469.json', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_2476.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23520.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23766.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23769.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23775.json', TESTDATA),
+            WMock(GAMES_DIR, 'game_box_23803.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
         mock_colors = mock.Mock()
         mock_colors.side_effect = [
-            COLORS_47, COLORS_40, COLORS_47, COLORS_40, COLORS_47, COLORS_40
+            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
+            COLORS_41, COLORS_49, COLORS_52, COLORS_53
         ]
 
         inputs = [
-            ('2449', DATE_08280000),
-            ('2469', DATE_08290000),
-            ('2476', DATE_08300000),
+            ('23520', DATE_03130000),
+            ('23766', DATE_03100000),
+            ('23769', DATE_03100000),
+            ('23775', DATE_03110000),
+            ('23803', DATE_03160000),
         ]
 
         for num, d in inputs:
@@ -191,9 +223,11 @@ class StatslabTest(unittest.TestCase):
             self.assertTrue(actual)
 
         mock_get.assert_has_calls([
-            mock.call(_statsplus_box_score('2449')),
-            mock.call(_statsplus_box_score('2469')),
-            mock.call(_statsplus_box_score('2476')),
+            mock.call(_statsplus_box_score('23520')),
+            mock.call(_statsplus_box_score('23766')),
+            mock.call(_statsplus_box_score('23769')),
+            mock.call(_statsplus_box_score('23775')),
+            mock.call(_statsplus_box_score('23803')),
         ])
         mock_open.assert_has_calls(suite.calls())
         mock_put.assert_has_calls([mock.call(p) for p in PLAYERS])
@@ -205,21 +239,20 @@ class StatslabTest(unittest.TestCase):
     def test_parse_log__file(self, mock_isfile, mock_get, mock_open):
         mock_isfile.return_value = True
         suite = Suite(
-            RMock(EXTRACT_LEAGUES, 'log_2449.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_2449.json', TESTDATA),
-            RMock(EXTRACT_LEAGUES, 'log_2469.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_2469.json', TESTDATA),
-            RMock(EXTRACT_LEAGUES, 'log_2476.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_2476.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23520.txt', TESTDATA),
+            WMock(GAMES_DIR, 'log_23520.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23766.txt', TESTDATA),
+            WMock(GAMES_DIR, 'log_23766.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23769.txt', TESTDATA),
+            WMock(GAMES_DIR, 'log_23769.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23775.txt', TESTDATA),
+            WMock(GAMES_DIR, 'log_23775.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23803.txt', TESTDATA),
+            WMock(GAMES_DIR, 'log_23803.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
-        mock_colors = mock.Mock()
-        mock_colors.side_effect = [
-            COLORS_47, COLORS_40, COLORS_47, COLORS_40, COLORS_47, COLORS_40
-        ]
-
-        for num in ['2449', '2469', '2476']:
+        for num in ['23520', '23766', '23769', '23775', '23803']:
             in_ = _extract_log(num)
             out = _games_log(num)
             actual = parse_log(in_, out, None)
@@ -235,21 +268,27 @@ class StatslabTest(unittest.TestCase):
     def test_parse_log__link(self, mock_isfile, mock_get, mock_open):
         mock_isfile.return_value = False
         mock_get.side_effect = [
-            TESTDATA['log_2449.html'],
-            TESTDATA['log_2469.html'],
-            TESTDATA['log_2476.html'],
+            TESTDATA['log_23520.html'],
+            TESTDATA['log_23766.html'],
+            TESTDATA['log_23769.html'],
+            TESTDATA['log_23775.html'],
+            TESTDATA['log_23803.html'],
         ]
         suite = Suite(
-            WMock(GAMES_DIR, 'log_2449.json', TESTDATA),
-            WMock(GAMES_DIR, 'log_2469.json', TESTDATA),
-            WMock(GAMES_DIR, 'log_2476.json', TESTDATA),
+            WMock(GAMES_DIR, 'log_23520.json', TESTDATA),
+            WMock(GAMES_DIR, 'log_23766.json', TESTDATA),
+            WMock(GAMES_DIR, 'log_23769.json', TESTDATA),
+            WMock(GAMES_DIR, 'log_23775.json', TESTDATA),
+            WMock(GAMES_DIR, 'log_23803.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
         inputs = [
-            ('2449', DATE_08280000),
-            ('2469', DATE_08290000),
-            ('2476', DATE_08300000),
+            ('23520', DATE_03130000),
+            ('23766', DATE_03100000),
+            ('23769', DATE_03100000),
+            ('23775', DATE_03110000),
+            ('23803', DATE_03160000),
         ]
 
         for num, d in inputs:
@@ -259,9 +298,11 @@ class StatslabTest(unittest.TestCase):
             self.assertTrue(actual)
 
         mock_get.assert_has_calls([
-            mock.call(_statsplus_log('2449')),
-            mock.call(_statsplus_log('2469')),
-            mock.call(_statsplus_log('2476')),
+            mock.call(_statsplus_log('23520')),
+            mock.call(_statsplus_log('23766')),
+            mock.call(_statsplus_log('23769')),
+            mock.call(_statsplus_log('23775')),
+            mock.call(_statsplus_log('23803')),
         ])
         mock_open.assert_has_calls(suite.calls())
         suite.verify()
