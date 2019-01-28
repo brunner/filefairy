@@ -29,16 +29,20 @@ EVENT_MAP = {
     r'^Batting: \w+ (\w+)$',
     Event.CHANGE_PITCHER:
     r'^Pitching: \w+ (\w+)$',
+    Event.BATTER_INFIELD_SINGLE:
+    r'^\d-\d: SINGLE \((\w)[\w ]+, (\w+)\) \(infield hit\)$',
     Event.BATTER_SINGLE:
     r'^\d-\d: SINGLE \((\w)[\w ]+, (\w+)\)$',
     Event.BATTER_DOUBLE:
     r'^\d-\d: DOUBLE \((\w)[\w ]+, (\w+)\)$',
     Event.BATTER_HOME_RUN:
-    r'^\d-\d: \d-RUN HOME RUN \(Flyball, (\w+)\)\, Distance : (\d+) ft$',
+    r'^\d-\d: (?:\d-RUN|SOLO) HOME RUN \(Flyball, (\w+)\)\, Distance : (\d+) ft$',
     Event.BATTER_FLY_OUT:
     r'^\d-\d: Fly out, ([\w-]+) \((\w)[\w ]+, (\w+)\)$',
     Event.BATTER_GROUND_OUT:
     r'^\d-\d: Ground out ([\w-]+) \(Groundball, (\w+)\)$',
+    Event.BATTER_GROUNDS_INTO_DOUBLE_PLAY:
+    r'^\d-\d: Grounds into double play, ([\w-]+) \(Groundball, (\w+)\)$',
     Event.BATTER_SAC_BUNT_OUT_AT_SECOND:
     r'^\d-\d: Sac Bunt - play at second, runner OUT! ([\w-]+)$',
     Event.PITCHER_BALL:
@@ -47,8 +51,12 @@ EVENT_MAP = {
     r'^\d-\d: (?:Called Strike|Strikes out looking)$',
     Event.PITCHER_FOULED_STRIKE:
     r'^\d-\d: Foul Ball, location: 2F$',
+    Event.PITCHER_FOULED_STRIKE_WITH_ERROR:
+    r'^Error on foul ball, (\w+)$',
     Event.PITCHER_SWINGING_STRIKE:
     r'^\d-\d: (?:Swinging Strike|Strikes out swinging)$',
+    Event.PITCHER_WILD_PITCH:
+    r'^Wild Pitch!$',
     Event.RUNNER_STEAL_SECOND_SAFE:
     r'^(\w+) steals 2nd base$',
     Event.RUNNER_STEAL_SECOND_OUT:
@@ -65,10 +73,14 @@ EVENT_MAP = {
     r'^(\w+) scores$',
     Event.RUNNER_ON_FIRST_PICKED_OFF:
     r'^Pickoff Throw to First - Out!$',
+    Event.RUNNER_ON_SECOND_TO_THIRD_THROW_MADE:
+    r'^Runner from 2nd tries for 3rd, SAFE, throw made to third$',
     Event.RUNNER_ON_THIRD_SCORES_NO_THROW:
     r'^Runner from 3rd tries for Home, SAFE, no throw$',
     Event.RUNNER_ON_THIRD_SCORES_THROW_MADE:
     r'^Runner from 3rd tags up, SCORES, throw made$',
+    Event.RUNNER_ON_THIRD_OUT_AT_HOME_THROW_MADE:
+    r'^Runner from 3rd tags up, OUT at HOME$',
 }
 
 
@@ -299,7 +311,7 @@ def parse_log(in_, out, date):
 
     events = []
     for i, inning in enumerate(_parse_innings(text, html)):
-        if i > 1:
+        if i > 5:
             break
         events.append(Event.CHANGE_INNING.encode())
 

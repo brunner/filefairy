@@ -28,18 +28,22 @@ class Event(Enum):
     CHANGE_INNING = auto()  # []
     CHANGE_PITCHER = auto()  # [player]
 
+    BATTER_INFIELD_SINGLE = auto()  # [path, zone]
     BATTER_SINGLE = auto()  # [path, zone]
     BATTER_DOUBLE = auto()  # [path, zone]
     BATTER_HOME_RUN = auto()  # [zone, distance]
 
     BATTER_FLY_OUT = auto()  # [scoring, path, zone]
     BATTER_GROUND_OUT = auto()  # [scoring, zone]
+    BATTER_GROUNDS_INTO_DOUBLE_PLAY = auto()  # [scoring, zone]
     BATTER_SAC_BUNT_OUT_AT_SECOND = auto()  # [scoring]
 
     PITCHER_BALL = auto()  # []
     PITCHER_CALLED_STRIKE = auto()  # []
     PITCHER_FOULED_STRIKE = auto()  # []
+    PITCHER_FOULED_STRIKE_WITH_ERROR = auto()  # [scoring]
     PITCHER_SWINGING_STRIKE = auto()  # []
+    PITCHER_WILD_PITCH = auto()  # []
 
     RUNNER_STEAL_SECOND_SAFE = auto()  # [player]
     RUNNER_STEAL_SECOND_OUT = auto()  # [player]
@@ -53,5 +57,8 @@ class Event(Enum):
 
     RUNNER_ON_FIRST_PICKED_OFF = auto()  # []
 
+    RUNNER_ON_SECOND_TO_THIRD_THROW_MADE = auto()  # []
+
     RUNNER_ON_THIRD_SCORES_NO_THROW = auto()  # []
     RUNNER_ON_THIRD_SCORES_THROW_MADE = auto()  # []
+    RUNNER_ON_THIRD_OUT_AT_HOME_THROW_MADE = auto()  # []
