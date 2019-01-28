@@ -96,7 +96,7 @@ def extract_file(start):
         with open(game_fname, 'r', encoding='iso-8859-1') as f:
             game_read = f.read()
 
-        match = find('MLB Box Scores[^\d]+(\d{2}\/\d{2}\/\d{4})', box_read)
+        match = find(r'MLB Box Score[^\d]+(\d{2}\/\d{2}\/\d{4})', box_read)
         if not match:
             continue
 
@@ -144,3 +144,7 @@ def extract_file(start):
             f.write(dumps(data) + '\n')
 
     return end
+
+
+from common.datetime_.datetime_ import decode_datetime
+extract_file(decode_datetime('2025-03-03T00:00:00-08:00'))
