@@ -28,7 +28,9 @@ EVENT_MAP = {
     Event.CHANGE_BATTER:
     r'^Batting: \w+ (\w+)$',
     Event.CHANGE_FIELDER:
-    r'^Now in (\w+): (\w+)$',
+    r'^Now (?:at|in) (\w+): (\w+)$',
+    Event.CHANGE_PINCH_HITTER:
+    r'^Pinch Hitting: \w+ (\w+)$',
     Event.CHANGE_PITCHER:
     r'^Pitching: \w+ (\w+)$',
     Event.BATTER_INFIELD_SINGLE:
@@ -51,6 +53,8 @@ EVENT_MAP = {
     r'^\d-\d: Fielders Choice at 2nd, ([\w-]+) \(Groundball, (\w+)\)$',
     Event.BATTER_SAC_BUNT_OUT_AT_SECOND:
     r'^\d-\d: Sac Bunt - play at second, runner OUT! ([\w-]+)$',
+    Event.BATTER_STRIKE_OUT:
+    r'^Batter strikes out\.$',
     Event.PITCHER_BALL:
     r'^\d-\d: (?:Ball|Base on Balls)$',
     Event.PITCHER_CALLED_STRIKE:
@@ -88,7 +92,7 @@ EVENT_MAP = {
     Event.RUNNER_ON_THIRD_SCORES_THROW_MADE:
     r'^Runner from 3rd (?:tags up, SCORES, throw made|tries for Home, SAFE, throw made home)$',
     Event.RUNNER_ON_THIRD_OUT_AT_HOME_THROW_MADE:
-    r'^Runner from 3rd tags up, OUT at HOME$',
+    r'^Runner from 3rd (?:tags up, OUT at HOME|tries for Home, throw and OUT!)$',
 }
 
 
@@ -120,7 +124,7 @@ def _parse_innings(text, html):
     return findall(regex, text)
 
 
-def _parse_lines(content, html):
+def _parse_lines(content, html, away_pitcher):
     lines = []
     if html:
         regex = (r'(?s)<td valign="top" width="268px" class="dl">(.+?)</td> <t'
@@ -130,7 +134,7 @@ def _parse_lines(content, html):
             for r in right.split('<br>'):
                 lines.append(r)
     else:
-        lines += findall(r'(?s)[BN]\](.+?)\[%', content)
+        lines += findall(r'(?s)[BN]\](.+?)\[%', content + '[%T]')
 
     return list(filter(bool, lines))
 
@@ -318,13 +322,11 @@ def parse_log(in_, out, date):
     }
 
     events = []
-    for i, inning in enumerate(_parse_innings(text, html)):
-        if i > 13:
-            break
+    for inning in _parse_innings(text, html):
         events.append(Event.CHANGE_INNING.encode())
 
         batting, pitching, pitcher, content = inning
-        for line in _parse_lines(content, html):
+        for line in _parse_lines(content, html, away_pitcher):
             for event, regex in EVENT_MAP.items():
                 match = find(regex, line, force_groups=True)
                 if match is not None:

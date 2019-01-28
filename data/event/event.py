@@ -28,6 +28,7 @@ class Event(Enum):
     CHANGE_BATTER = auto()  # [player]
     CHANGE_FIELDER = auto()  # [position, player]
     CHANGE_INNING = auto()  # []
+    CHANGE_PINCH_HITTER = auto()  # [player]
     CHANGE_PITCHER = auto()  # [player]
 
     BATTER_INFIELD_SINGLE = auto()  # [path, zone]
@@ -42,6 +43,7 @@ class Event(Enum):
     BATTER_GROUNDS_INTO_DOUBLE_PLAY = auto()  # [scoring, zone]
     BATTER_GROUNDS_INTO_FIELDERS_CHOICE_AT_SECOND = auto()  # [scoring, zone]
     BATTER_SAC_BUNT_OUT_AT_SECOND = auto()  # [scoring]
+    BATTER_STRIKE_OUT = auto()
 
     PITCHER_BALL = auto()  # []
     PITCHER_CALLED_STRIKE = auto()  # []
