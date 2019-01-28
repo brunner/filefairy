@@ -126,7 +126,8 @@ def line_score_foot(data):
     fcols = [col(clazz='border-0')]
     lines = []
 
-    lines.append(span(['text-underline'], data['recap']))
+    if data['recap']:
+        lines.append(span(['text-underline'], data['recap']))
 
     pitching = []
     if data['winning_pitcher']:
