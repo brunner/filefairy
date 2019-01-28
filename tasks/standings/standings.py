@@ -138,10 +138,10 @@ class Standings(Registrable):
                 cw, cl = decode_record(curr_record)
 
                 next_record = data[team + '_record']
-                nw, nl = decode_record(next_record)
-
-                if nw + nl > cw + cl:
-                    self.data['table'][encoding] = next_record
+                if next_record:
+                    nw, nl = decode_record(next_record)
+                    if nw + nl > cw + cl:
+                        self.data['table'][encoding] = next_record
 
         self.write()
         self._render(**kwargs)
