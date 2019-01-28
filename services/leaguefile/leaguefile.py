@@ -145,6 +145,3 @@ def extract_file(start):
 
     return end
 
-
-from common.datetime_.datetime_ import decode_datetime
-extract_file(decode_datetime('2025-03-03T00:00:00-08:00'))
