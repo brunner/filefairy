@@ -29,7 +29,7 @@ EVENT_MAP = {
     Event.CHANGE_BATTER: r'^Batting: \w+ {player}$',
     Event.CHANGE_FIELDER: r'^Now (?:at|in) {position}: {player}$',
     Event.CHANGE_PINCH_HITTER: r'^Pinch Hitting: \w+ {player}$',
-    Event.CHANGE_PINCH_RUNNER: r'^Pinch Runner at {num} {player}:$',
+    Event.CHANGE_PINCH_RUNNER: r'^Pinch Runner at {base} {player}:$',
     Event.CHANGE_PITCHER: r'^Pitching: \w+ {player}$',
     Event.BATTER_SINGLE: r'^\d-\d: SINGLE \({path}, {zone}\)$',
     Event.BATTER_SINGLE_APPEAL: (r'^SINGLE, but batter called out on appeal fo'
@@ -51,7 +51,7 @@ EVENT_MAP = {
                                   r'h}, {zone}\)$'),
     Event.BATTER_FLY: r'^\d-\d: Fly out, {scoring} \({path}, {zone}\)$',
     Event.BATTER_FLY_BUNT: r'^\d-\d: Bunt - Flyout to {zone}! {scoring}$',
-    Event.BATTER_FLY_BUNT_DP: (r'^\d-\d: Bunt - Flyout to {zone} - DP at {name'
+    Event.BATTER_FLY_BUNT_DP: (r'^\d-\d: Bunt - Flyout to {zone} - DP at {base'
                                r'}! {scoring}$'),
     Event.BATTER_GROUND: (r'^\d-\d: Grounds? out,? {scoring} \(Groundball, {zo'
                           r'ne}\)$'),
@@ -59,7 +59,7 @@ EVENT_MAP = {
                                r't, batter OUT! {scoring}$'),
     Event.BATTER_GROUND_DP: (r'^\d-\d: Grounds into (?:double|DOUBLE) play, {s'
                              r'coring} \(Groundball, {zone}\)$'),
-    Event.BATTER_GROUND_FC: (r'^\d-\d: Fielders Choice at {num}, {scoring} \(G'
+    Event.BATTER_GROUND_FC: (r'^\d-\d: Fielders Choice at {base}, {scoring} \(G'
                              r'roundball, {zone}\)$'),
     Event.BATTER_GROUND_HOME: (r'^\d-\d: Grounds into fielders choice {scoring'
                                r'} \(Groundball, {zone}\)$'),
@@ -67,7 +67,7 @@ EVENT_MAP = {
                             r'er OUT! {scoring}$'),
     Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt - play at second, runner OUT'
                                r' -> throw to first, DP!$'),
-    Event.BATTER_SAC_BUNT_OUT: (r'^\d-\d: Sac Bunt to {zone} - play at {name},'
+    Event.BATTER_SAC_BUNT_OUT: (r'^\d-\d: Sac Bunt to {zone} - play at {base},'
                                 r' runner OUT! {scoring}$'),
     Event.BATTER_SAC_BUNT_SAFE: (r'^\d-\d: Sac Bunt to {zone} - play at first,'
                                  r' batter safe!$'),
@@ -95,21 +95,21 @@ EVENT_MAP = {
                                         r'ball, reaches first!$'),
     Event.PITCHER_STRIKE_SWING_WILD: (r'^\d-\d: Strikes out swinging wild pitc'
                                       r'h, reaches first!$'),
-    Event.RUNNER_STEAL: r'^{player} steals {num} base(?: \(no throw\))?$',
-    Event.RUNNER_STEAL_OUT: (r'^{player} is caught stealing {num} base {scorin'
-                             r'g}$'),
-    Event.RUNNER_STEAL_THROWING: (r'^{player} steals {num}, throwing error, E2'
-                                  r'$'),
-    Event.PLAYER_MOVE: r'^{player} to {name}$',
+    Event.RUNNER_STEAL: r'^{player} steals {base} base(?: \(no throw\))?$',
+    Event.RUNNER_STEAL_OUT: (r'^{player} is caught stealing {base} base {scori'
+                             r'ng}$'),
+    Event.RUNNER_STEAL_THROWING: (r'^{player} steals {base}, throwing error, E'
+                                  r'2$'),
+    Event.PLAYER_MOVE: r'^{player} to {base}$',
     Event.PLAYER_SCORE: r'^{player} scores$',
-    Event.BASE_MOVE: (r'^Runner from {num} (?:tags up, SAFE at \w+|tries for ['
-                      r'2|3]\w+, SAFE)(?:, no throw by \w+)?$'),
-    Event.BASE_MOVE_THROW: (r'^Runner from {num} (?:tags up, SAFE at \w+ with '
-                            r'throw by \w+|tries for [2|3]\w+, SAFE, throw by '
-                            r'\w+ made to \w+)$'),
-    Event.BASE_OUT: (r'^Runner from {num} (?:tags up, OUT at \w+!|tries for \w'
-                     r'+, OUT!|tries for Home, throw by \w+ and OUT!) {scoring'
-                     r'}$'),
+    Event.BASE_MOVE: (r'^Runner from {base} (?:tags up, SAFE at \w+|tries for '
+                      r'[2|3]\w+, SAFE)(?:, no throw by \w+)?$'),
+    Event.BASE_MOVE_THROW: (r'^Runner from {base} (?:tags up, SAFE at \w+ with'
+                            r' throw by \w+|tries for [2|3]\w+, SAFE, throw by'
+                            r' \w+ made to \w+)$'),
+    Event.BASE_OUT: (r'^Runner from {base} (?:tags up, OUT at \w+!|tries for ['
+                     r'2|3]\w+, OUT!|tries for Home, throw by \w+ and OUT!) {s'
+                     r'coring}$'),
     Event.BASE_SCORE: (r'^Runner from 3rd (?:tags up, SCORES|tries for Home, S'
                        r'AFE)(?:, no throw by \w+)?$'),
     Event.BASE_SCORE_THROW: (r'^Runner from 3rd (?:tags up, SCORES|tries for H'
@@ -124,10 +124,8 @@ EVENT_MAP = {
 }
 
 EVENT_KWARGS = {
-    'base': r'(F|S|T)\w+',
+    'base': r'([fsthFST123]\w+)',
     'distance': r'(\d+)',
-    'name': r'(f|s|t|h)\w+',
-    'num': r'(1|2|3)\w+',
     'path': r'(F|G|L|P)[\w ]+',
     'player': r'(P\d+)',
     'position': r'(C|1B|2B|3B|SS|LF|CF|RF|P)',

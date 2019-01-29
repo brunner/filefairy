@@ -2,14 +2,7 @@
 # -*- coding: utf-8 -*-
 """Data (non-reloadable) object for status notifications."""
 
-import os
-import re
-import sys
-
-_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/notify', '', _path))
-
-from data.enum_.enum_ import Enum  # noqa
+from enum import Enum
 
 
 class Notify(Enum):

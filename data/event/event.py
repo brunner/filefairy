@@ -2,25 +2,32 @@
 # -*- coding: utf-8 -*-
 """Data (non-reloadable) object for game event codes."""
 
-import os
-import re
-import sys
+import logging
+from enum import IntEnum
 from enum import auto
 
-_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/event', '', _path))
-
-from data.enum_.enum_ import Enum  # noqa
+_logger = logging.getLogger('filefairy')
 
 
-class Event(Enum):
+def _transform(s):
+    if s in ['first', 'First', '1st']:
+        return 'F'
+    if s in ['second', 'Second', '2nd']:
+        return 'S'
+    if s in ['third', 'Third', '3rd']:
+        return 'T'
+    if s in ['home']:
+        return 'H'
+
+    return s
+
+
+class Event(IntEnum):
     """Describe a number of different types of events that happen in a game.
 
     Attributes:
         base: A base name for the event. For example, `S` for second base.
         distance: A batted ball's travel distance. For example, `402`.
-        name: A base name for the event. For example, `s` for second base.
-        num: A base number for the event. For example, `1` for first base.
         path: A batted ball's flight path. For example, `F` for a fly ball.
         player: A player that the event describes. For example, `P24322`.
         position: A fielder position. For example, `LF`.
@@ -103,3 +110,17 @@ class Event(Enum):
     BASE_SCORE_TRAIL_OUT = auto()  # [scoring]
 
     NONE = auto()  # []
+
+    @classmethod
+    def decode(cls, encoding):
+        try:
+            if ' ' in encoding:
+                data = encoding.split(' ')
+                return (cls[data[0].upper()], data[1:])
+            return (cls[encoding.upper()], [])
+        except Exception as e:
+            _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
+            return (None, [])
+
+    def encode(self, *args):
+        return ' '.join([self.name.lower()] + [_transform(s) for s in args])
