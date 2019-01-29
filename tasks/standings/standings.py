@@ -130,6 +130,9 @@ class Standings(Registrable):
         self.data['finished'] = True
 
         for name in os.listdir(GAMES_DIR):
+            if not name.startswith('game_box_'):
+                continue
+
             data = loads(os.path.join(GAMES_DIR, name))
             for team in ['away', 'home']:
                 encoding = data[team + '_team']
