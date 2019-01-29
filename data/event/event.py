@@ -17,91 +17,89 @@ class Event(Enum):
     """Describe a number of different types of events that happen in a game.
 
     Attributes:
-        base: A base for the event. For example, `1` for first base.
+        base: A base name for the event. For example, `S` for second base.
         distance: A batted ball's travel distance. For example, `402`.
+        name: A base name for the event. For example, `s` for second base.
+        num: A base number for the event. For example, `1` for first base.
         path: A batted ball's flight path. For example, `F` for a fly ball.
         player: A player that the event describes. For example, `P24322`.
         position: A fielder position. For example, `LF`.
         scoring: A scoring notation for the event. For example, `4-3`.
         zone: A batted ball's location. For example, `7LD`.
     """
+    CHANGE_INNING = auto()  # []
 
     CHANGE_BATTER = auto()  # [player]
     CHANGE_FIELDER = auto()  # [position, player]
-    CHANGE_INNING = auto()  # []
     CHANGE_PINCH_HITTER = auto()  # [player]
-    CHANGE_PINCH_RUNNER = auto()  # [base, player]
+    CHANGE_PINCH_RUNNER = auto()  # [num, player]
     CHANGE_PITCHER = auto()  # [player]
 
-    BATTER_INFIELD_SINGLE = auto()  # [path, zone]
     BATTER_SINGLE = auto()  # [path, zone]
+    BATTER_SINGLE_APPEAL = auto()  # []
+    BATTER_SINGLE_BUNT = auto()  # [zone]
+    BATTER_SINGLE_INFIELD = auto()  # [path, zone]
+    BATTER_SINGLE_ERROR = auto()  # [scoring, path, zone]
+
     BATTER_DOUBLE = auto()  # [path, zone]
     BATTER_TRIPLE = auto()  # [path, zone]
     BATTER_HOME_RUN = auto()  # [path, zone, distance]
-    BATTER_SINGLE_ERROR_IN_OUTFIELD = auto()  # [scoring, path, zone]
-    BATTER_SINGLE_MISSED_BASE = auto()  # []
 
-    BATTER_REACH_ON_DROPPED_THROW = auto()  # [position, scoring, zone]
-    BATTER_REACH_ON_FIELDING_ERROR = auto()  # [scoring, path, zone]
+    BATTER_REACH_DROPPED = auto()  # [position, scoring, zone]
+    BATTER_REACH_FIELDING = auto()  # [scoring, path, zone]
 
-    BATTER_BUNT_FLIES_INTO_DOUBLE_PLAY_AT_THIRD = auto()  # [zone, scoring]
-    BATTER_BUNT_FLY_OUT = auto()  # [zone, scoring]
-    BATTER_BUNT_GROUND_OUT = auto()  # [zone, scoring]
-    BATTER_BUNT_HIT = auto()  # [zone]
-    BATTER_FLY_OUT = auto()  # [scoring, path, zone]
-    BATTER_GROUND_OUT = auto()  # [scoring, zone]
-    BATTER_GROUNDS_INTO_DOUBLE_PLAY = auto()  # [scoring, zone]
-    BATTER_GROUNDS_INTO_FIELDERS_CHOICE = auto()  # [scoring, zone]
-    BATTER_SAC_BUNT_OUT_AT_FIRST = auto()  # [zone, scoring]
-    BATTER_SAC_BUNT_OUT_AT_SECOND = auto()  # [zone, scoring]
-    BATTER_SAC_BUNT_OUT_AT_SECOND_AT_FIRST = auto()  # []
-    BATTER_SAC_BUNT_OUT_AT_THIRD = auto()  # [zone, scoring]
-    BATTER_SAC_BUNT_SAFE_AT_FIRST = auto()  # [zone, scoring]
-    BATTER_STRIKE_OUT = auto()
+    BATTER_FLY = auto()  # [scoring, path, zone]
+    BATTER_FLY_BUNT = auto()  # [zone, scoring]
+    BATTER_FLY_BUNT_DP = auto()  # [zone, name, scoring]
+
+    BATTER_GROUND = auto()  # [scoring, zone]
+    BATTER_GROUND_BUNT = auto()  # [zone, scoring]
+    BATTER_GROUND_DP = auto()  # [scoring, zone]
+    BATTER_GROUND_FC = auto()  # [num, scoring, zone]
+    BATTER_GROUND_HOME = auto()  # [scoring, zone]
+
+    BATTER_SAC_BUNT = auto()  # [zone, scoring]
+    BATTER_SAC_BUNT_DP = auto()  # []
+    BATTER_SAC_BUNT_OUT = auto()  # [zone, name, scoring]
+    BATTER_SAC_BUNT_SAFE = auto()  # [zone, scoring]
 
     CATCHER_PASSED_BALL = auto()  # []
-    CATCHER_PICKOFF_FIRST_OUT = auto()  # []
-
-    FIELDER_THROWING_ERROR = auto()  # [scoring]
+    CATCHER_PICK_OUT = auto()  # [base]
+    FIELDER_THROWING = auto()  # [scoring]
+    PITCHER_PICK_ERROR = auto()  # []
+    PITCHER_PICK_OUT = auto()  # []
 
     PITCHER_BALK = auto()  # []
-    PITCHER_BALL = auto()  # []
-    PITCHER_CALLED_STRIKE = auto()  # []
-    PITCHER_FOULED_BUNT_STRIKE = auto()  # []
-    PITCHER_FOULED_STRIKE = auto()  # []
-    PITCHER_FOULED_STRIKE_WITH_ERROR = auto()  # [scoring]
     PITCHER_HIT_BY_PITCH = auto()  # []
-    PITCHER_INTENTIONAL_WALK = auto()  # []
-    PITCHER_MISSED_BUNT_STRIKE = auto()  # []
-    PITCHER_PICKOFF_FIRST_ERROR = auto()  # []
-    PITCHER_PICKOFF_FIRST_OUT = auto()  # []
-    PITCHER_SWINGING_STRIKE = auto()  # []
-    PITCHER_SWINGING_STRIKE_OUT_AT_FIRST = auto()  # []
-    PITCHER_SWINGING_STRIKE_SAFE_PASSED_BALL = auto()  # []
-    PITCHER_SWINGING_STRIKE_SAFE_WILD_PITCH = auto()  # []
     PITCHER_WILD_PITCH = auto()  # []
 
-    RUNNER_STEAL_SECOND_OUT = auto()  # [player]
-    RUNNER_STEAL_SECOND_SAFE = auto()  # [player]
-    RUNNER_STEAL_SECOND_THROWING_ERROR = auto()  # [player]
-    RUNNER_TO_SECOND_NO_THROW = auto()  # [player]
+    PITCHER_BALL = auto()  # []
+    PITCHER_WALK = auto()  # []
 
-    RUNNER_STEAL_THIRD_OUT = auto()  # [player]
-    RUNNER_STEAL_THIRD_SAFE = auto()  # [player]
-    RUNNER_TO_THIRD_NO_THROW = auto()  # [player]
+    PITCHER_STRIKE_CALL = auto()  # []
+    PITCHER_STRIKE_FOUL = auto()  # []
+    PITCHER_STRIKE_FOUL_BUNT = auto()  # []
+    PITCHER_STRIKE_FOUL_ERROR = auto()  # [scoring]
+    PITCHER_STRIKE_MISS = auto()  # []
 
-    RUNNER_SCORES_NO_THROW = auto()  # [player]
+    PITCHER_STRIKE_SWING = auto()  # []
+    PITCHER_STRIKE_SWING_OUT = auto()  # []
+    PITCHER_STRIKE_SWING_PASSED = auto()  # []
+    PITCHER_STRIKE_SWING_WILD = auto()  # []
 
-    RUNNER_ON_FIRST_TO_SECOND_NO_THROW = auto()  # []
+    RUNNER_STEAL = auto()  # [player, num]
+    RUNNER_STEAL_OUT = auto()  # [player, num, scoring]
+    RUNNER_STEAL_THROWING = auto()  # [player, num]
 
-    RUNNER_ON_SECOND_TO_THIRD_NO_THROW = auto()  # []
-    RUNNER_ON_SECOND_TO_THIRD_THROW_MADE = auto()  # []
-    RUNNER_ON_SECOND_OUT_AT_THIRD_THROW_MADE = auto()  # []
+    PLAYER_MOVE = auto()  # [player, name]
+    PLAYER_SCORE = auto()  # [player]
 
-    RUNNER_ON_THIRD_SCORES_NO_THROW = auto()  # []
-    RUNNER_ON_THIRD_SCORES_THROW_MADE = auto()  # []
-    RUNNER_ON_THIRD_OUT_AT_HOME_THROW_MADE = auto()  # []
-    RUNNER_ON_THIRD_SCORES_OUT_AT_THIRD = auto()  # []
-    RUNNER_ON_THIRD_SCORES_SAFE_AT_THIRD = auto()  # []
+    BASE_MOVE = auto()  # [num]
+    BASE_MOVE_THROW = auto()  # [num]
+    BASE_OUT = auto()  # [num, scoring]
+    BASE_SCORE = auto()  # []
+    BASE_SCORE_THROW = auto()  # []
+    BASE_SCORE_TRAIL = auto()  # []
+    BASE_SCORE_TRAIL_OUT = auto()  # [scoring]
 
     NONE = auto()  # []

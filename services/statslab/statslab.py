@@ -26,213 +26,115 @@ from common.teams.teams import encoding_to_hometown  # noqa
 from data.event.event import Event  # noqa
 
 EVENT_MAP = {
-    Event.CHANGE_BATTER: [
-        r'^Batting: \w+ {player}$',
-    ],
-    Event.CHANGE_FIELDER: [
-        r'^Now (?:at|in) {position}: {player}$',
-    ],
-    Event.CHANGE_PINCH_HITTER: [
-        r'^Pinch Hitting: \w+ {player}$',
-    ],
-    Event.CHANGE_PINCH_RUNNER: [
-        r'^Pinch Runner at {base} {player}:$',
-    ],
-    Event.CHANGE_PITCHER: [
-        r'^Pitching: \w+ {player}$',
-    ],
-    Event.BATTER_INFIELD_SINGLE: [
-        r'^\d-\d: SINGLE \({path}, {zone}\) \(infield hit\)$',
-    ],
-    Event.BATTER_SINGLE: [
-        r'^\d-\d: SINGLE \({path}, {zone}\)$',
-    ],
-    Event.BATTER_DOUBLE: [
-        r'^\d-\d: DOUBLE \({path}, {zone}\)$',
-    ],
-    Event.BATTER_TRIPLE: [
-        r'^\d-\d: TRIPLE \({path}, {zone}\)$',
-    ],
-    Event.BATTER_HOME_RUN: [
-        r'^\d-\d: (?:SOLO|\d-RUN|GRAND SLAM) HOME RUN \({path}, {zone}\)\, Distance : {distance} ft$',
-    ],
-    Event.BATTER_SINGLE_ERROR_IN_OUTFIELD: [
-        r'^\d-\d: Single, Error in OF, {scoring}, batter to second base \({path}, {zone}\)$',
-    ],
-    Event.BATTER_SINGLE_MISSED_BASE: [
-        r'^SINGLE, but batter called out on appeal for missing first base!$',
-    ],
-    Event.BATTER_REACH_ON_DROPPED_THROW: [
-        r'^\d-\d: Reached via error on a dropped throw from {position}, {scoring} \(Groundball, {zone}\)$',
-    ],
-    Event.BATTER_REACH_ON_FIELDING_ERROR: [
-        r'^\d-\d: Reached on error, {scoring} \({path}, {zone}\)$',
-    ],
-    Event.BATTER_BUNT_FLIES_INTO_DOUBLE_PLAY_AT_THIRD: [
-        r'^\d-\d: Bunt - Flyout to {zone} - DP at third! {scoring}$',
-    ],
-    Event.BATTER_BUNT_FLY_OUT: [
-        r'^\d-\d: Bunt - Flyout to {zone}! {scoring}$',
-    ],
-    Event.BATTER_BUNT_GROUND_OUT: [
-        r'^\d-\d: Bunt for hit to {zone} - play at first, batter OUT! {scoring}$',
-    ],
-    Event.BATTER_BUNT_HIT: [
-        r'^\d-\d: Bunt for hit to {zone} - play at first, batter safe!$',
-    ],
-    Event.BATTER_FLY_OUT: [
-        r'^\d-\d: Fly out, {scoring} \({path}, {zone}\)$',
-    ],
-    Event.BATTER_GROUND_OUT: [
-        r'^\d-\d: Grounds? out,? {scoring} \(Groundball, {zone}\)$',
-    ],
-    Event.BATTER_GROUNDS_INTO_DOUBLE_PLAY: [
-        r'^\d-\d: Grounds into (?:double|DOUBLE) play, {scoring} \(Groundball, {zone}\)$',
-    ],
-    Event.BATTER_GROUNDS_INTO_FIELDERS_CHOICE: [
-        r'^\d-\d: (?:Fielders Choice at 2nd,|Grounds into fielders choice) {scoring} \(Groundball, {zone}\)$',
-    ],
-    Event.BATTER_SAC_BUNT_OUT_AT_FIRST: [
-        r'^\d-\d: Sac Bunt to {zone} - play at first, batter OUT! {scoring}$',
-    ],
-    Event.BATTER_SAC_BUNT_OUT_AT_SECOND: [
-        r'^\d-\d: Sac Bunt to {zone} - play at second, runner OUT! {scoring}$',
-    ],
-    Event.BATTER_SAC_BUNT_OUT_AT_SECOND_AT_FIRST: [
-        r'^\d-\d: Sac Bunt - play at second, runner OUT -> throw to first, DP!$',
-    ],
-    Event.BATTER_SAC_BUNT_OUT_AT_THIRD: [
-        r'^\d-\d: Sac Bunt to {zone} - play at third, runner OUT! {scoring}$',
-    ],
-    Event.BATTER_SAC_BUNT_SAFE_AT_FIRST: [
-        r'^\d-\d: Sac Bunt to {zone} - play at first, batter safe!$',
-    ],
-    Event.BATTER_STRIKE_OUT: [
-        r'^Batter strikes out\.$',
-    ],
-    Event.CATCHER_PASSED_BALL: [
-        r'^Passed Ball!$',
-    ],
-    Event.CATCHER_PICKOFF_FIRST_OUT: [
-        r'^Pickoff Throw by Catcher to First - Out!$',
-    ],
-    Event.FIELDER_THROWING_ERROR: [
-        r'^Throwing error, {scoring}$',
-    ],
-    Event.PITCHER_BALK: [
-        r'^Balk!$',
-    ],
-    Event.PITCHER_BALL: [
-        r'^\d-\d: (?:Ball|Base on Balls)$',
-    ],
-    Event.PITCHER_CALLED_STRIKE: [
-        r'^\d-\d: (?:Called Strike|Strikes out looking)$',
-    ],
-    Event.PITCHER_FOULED_BUNT_STRIKE: [
-        r'^\d-\d: Bunted foul$',
-    ],
-    Event.PITCHER_FOULED_STRIKE: [
-        r'^\d-\d: Foul Ball, location: 2F$',
-    ],
-    Event.PITCHER_FOULED_STRIKE_WITH_ERROR: [
-        r'^Error on foul ball, {scoring}$',
-    ],
-    Event.PITCHER_HIT_BY_PITCH: [
-        r'^\d-\d: Hit by Pitch$',
-    ],
-    Event.PITCHER_INTENTIONAL_WALK: [
-        r'^\d-\d: Intentional Walk$',
-    ],
-    Event.PITCHER_MISSED_BUNT_STRIKE: [
-        r'^\d-\d: Bunt missed!$',
-    ],
-    Event.PITCHER_PICKOFF_FIRST_ERROR: [
-        r'^Pickoff Throw to First - Error! E1$',
-    ],
-    Event.PITCHER_PICKOFF_FIRST_OUT: [
-        r'^Pickoff Throw to First - Out! 1-3$',
-    ],
-    Event.PITCHER_SWINGING_STRIKE: [
-        r'^\d-\d: (?:Swinging Strike|Strikes out swinging)$',
-    ],
-    Event.PITCHER_SWINGING_STRIKE_OUT_AT_FIRST: [
-        r'^\d-\d: Strikes out swinging, 2-3 out at first.$',
-    ],
-    Event.PITCHER_SWINGING_STRIKE_SAFE_PASSED_BALL: [
-        r'^\d-\d: Strikes out swinging passed ball, reaches first!$',
-    ],
-    Event.PITCHER_SWINGING_STRIKE_SAFE_WILD_PITCH: [
-        r'^\d-\d: Strikes out swinging wild pitch, reaches first!$',
-    ],
-    Event.PITCHER_WILD_PITCH: [
-        r'^Wild Pitch!$',
-    ],
-    Event.RUNNER_STEAL_SECOND_OUT: [
-        r'^{player} is caught stealing 2nd base [\w-]+$',
-    ],
-    Event.RUNNER_STEAL_SECOND_SAFE: [
-        r'^{player} steals 2nd base(?: \(no throw\))?$',
-    ],
-    Event.RUNNER_STEAL_SECOND_THROWING_ERROR: [
-        r'^{player} steals 2nd, throwing error, E2$',
-    ],
-    Event.RUNNER_TO_SECOND_NO_THROW: [
-        r'^{player} to second$',
-    ],
-    Event.RUNNER_STEAL_THIRD_OUT: [
-        r'^{player} is caught stealing 3rd base [\w-]+$',
-    ],
-    Event.RUNNER_STEAL_THIRD_SAFE: [
-        r'^{player} steals 3rd base$',
-    ],
-    Event.RUNNER_TO_THIRD_NO_THROW: [
-        r'^{player} to third$',
-    ],
-    Event.RUNNER_SCORES_NO_THROW: [
-        r'^{player} scores$',
-    ],
-    Event.RUNNER_ON_FIRST_TO_SECOND_NO_THROW: [
-        r'^Runner from 1st tags up, SAFE at 2nd$',
-    ],
-    Event.RUNNER_ON_SECOND_TO_THIRD_NO_THROW: [
-        r'^Runner from 2nd (?:tags up, SAFE at 3rd|tries for 3rd, SAFE), no throw by \w+$',
-    ],
-    Event.RUNNER_ON_SECOND_TO_THIRD_THROW_MADE: [
-        r'^Runner from 2nd (?:tags up, SAFE at 3rd with throw by \w+|tries for 3rd, SAFE, throw by \w+ made to third)$',
-    ],
-    Event.RUNNER_ON_SECOND_OUT_AT_THIRD_THROW_MADE: [
-        r'^Runner from 2nd (?:tags up, OUT at 3rd!|tries for 3rd, OUT!) [\w-]+$',
-    ],
-    Event.RUNNER_ON_THIRD_SCORES_NO_THROW: [
-        r'^Runner from 3rd (?:tags up, SCORES|tries for Home, SAFE), no throw by \w+$',
-    ],
-    Event.RUNNER_ON_THIRD_SCORES_THROW_MADE: [
-        r'^Runner from 3rd (?:tags up, SCORES|tries for Home, SAFE), throw by \w+(?: to home)?$',
-    ],
-    Event.RUNNER_ON_THIRD_OUT_AT_HOME_THROW_MADE: [
-        r'^Runner from 3rd (?:tags up, OUT at HOME!|tries for Home, throw by \w+ and OUT!) [\w-]+$',
-    ],
-    Event.RUNNER_ON_THIRD_SCORES_OUT_AT_THIRD: [
-        r'^Runner from 3rd tries for Home, SAFE, throw by \w+ to trailing runner, OUT at third! [\w-]+$',
-    ],
-    Event.RUNNER_ON_THIRD_SCORES_SAFE_AT_THIRD: [
-        r'^Runner from 3rd tries for Home, SAFE, throw by \w+ to trailing runner, SAFE at third!$',
-    ],
-    Event.NONE: [
-        r'^\d-\d: Grounds into DOUBLE play, [\w-]+$',
-    ],
+    Event.CHANGE_BATTER: r'^Batting: \w+ {player}$',
+    Event.CHANGE_FIELDER: r'^Now (?:at|in) {position}: {player}$',
+    Event.CHANGE_PINCH_HITTER: r'^Pinch Hitting: \w+ {player}$',
+    Event.CHANGE_PINCH_RUNNER: r'^Pinch Runner at {num} {player}:$',
+    Event.CHANGE_PITCHER: r'^Pitching: \w+ {player}$',
+    Event.BATTER_SINGLE: r'^\d-\d: SINGLE \({path}, {zone}\)$',
+    Event.BATTER_SINGLE_APPEAL: (r'^SINGLE, but batter called out on appeal fo'
+                                 r'r missing first base!$'),
+    Event.BATTER_SINGLE_BUNT: (r'^\d-\d: Bunt for hit to {zone} - play at firs'
+                               r't, batter safe!$'),
+    Event.BATTER_SINGLE_ERROR: (r'^\d-\d: Single, Error in OF, {scoring}, batt'
+                                r'er to second base \({path}, {zone}\)$'),
+    Event.BATTER_SINGLE_INFIELD: (r'^\d-\d: SINGLE \({path}, {zone}\) \(infiel'
+                                  r'd hit\)$'),
+    Event.BATTER_DOUBLE: r'^\d-\d: DOUBLE \({path}, {zone}\)$',
+    Event.BATTER_TRIPLE: r'^\d-\d: TRIPLE \({path}, {zone}\)$',
+    Event.BATTER_HOME_RUN: (r'^\d-\d: (?:SOLO|\d-RUN|GRAND SLAM) HOME RUN \({p'
+                            r'ath}, {zone}\)\, Distance : {distance} ft$'),
+    Event.BATTER_REACH_DROPPED: (r'^\d-\d: Reached via error on a dropped thro'
+                                 r'w from {position}, {scoring} \(Groundball, '
+                                 r'{zone}\)$'),
+    Event.BATTER_REACH_FIELDING: (r'^\d-\d: Reached on error, {scoring} \({pat'
+                                  r'h}, {zone}\)$'),
+    Event.BATTER_FLY: r'^\d-\d: Fly out, {scoring} \({path}, {zone}\)$',
+    Event.BATTER_FLY_BUNT: r'^\d-\d: Bunt - Flyout to {zone}! {scoring}$',
+    Event.BATTER_FLY_BUNT_DP: (r'^\d-\d: Bunt - Flyout to {zone} - DP at {name'
+                               r'}! {scoring}$'),
+    Event.BATTER_GROUND: (r'^\d-\d: Grounds? out,? {scoring} \(Groundball, {zo'
+                          r'ne}\)$'),
+    Event.BATTER_GROUND_BUNT: (r'^\d-\d: Bunt for hit to {zone} - play at firs'
+                               r't, batter OUT! {scoring}$'),
+    Event.BATTER_GROUND_DP: (r'^\d-\d: Grounds into (?:double|DOUBLE) play, {s'
+                             r'coring} \(Groundball, {zone}\)$'),
+    Event.BATTER_GROUND_FC: (r'^\d-\d: Fielders Choice at {num}, {scoring} \(G'
+                             r'roundball, {zone}\)$'),
+    Event.BATTER_GROUND_HOME: (r'^\d-\d: Grounds into fielders choice {scoring'
+                               r'} \(Groundball, {zone}\)$'),
+    Event.BATTER_SAC_BUNT: (r'^\d-\d: Sac Bunt to {zone} - play at first, batt'
+                            r'er OUT! {scoring}$'),
+    Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt - play at second, runner OUT'
+                               r' -> throw to first, DP!$'),
+    Event.BATTER_SAC_BUNT_OUT: (r'^\d-\d: Sac Bunt to {zone} - play at {name},'
+                                r' runner OUT! {scoring}$'),
+    Event.BATTER_SAC_BUNT_SAFE: (r'^\d-\d: Sac Bunt to {zone} - play at first,'
+                                 r' batter safe!$'),
+    Event.CATCHER_PASSED_BALL: r'^Passed Ball!$',
+    Event.CATCHER_PICK_OUT: r'^Pickoff Throw by Catcher to {base} - Out!$',
+    Event.FIELDER_THROWING: r'^Throwing error, {scoring}$',
+    Event.PITCHER_PICK_ERROR: r'^Pickoff Throw to {base} - Error! {scoring}$',
+    Event.PITCHER_PICK_OUT: r'^Pickoff Throw to {base} - Out! {scoring}$',
+    Event.PITCHER_BALK: r'^Balk!$',
+    Event.PITCHER_HIT_BY_PITCH: r'^\d-\d: Hit by Pitch$',
+    Event.PITCHER_WILD_PITCH: r'^Wild Pitch!$',
+    Event.PITCHER_BALL: r'^\d-\d: (?:Ball|Base on Balls)$',
+    Event.PITCHER_WALK: r'^\d-\d: Intentional Walk$',
+    Event.PITCHER_STRIKE_CALL: (r'^\d-\d: (?:Called Strike|Strikes out looking'
+                                r')$'),
+    Event.PITCHER_STRIKE_FOUL: r'^\d-\d: Foul Ball, location: 2F$',
+    Event.PITCHER_STRIKE_FOUL_BUNT: r'^\d-\d: Bunted foul$',
+    Event.PITCHER_STRIKE_FOUL_ERROR: r'^Error on foul ball, {scoring}$',
+    Event.PITCHER_STRIKE_MISS: r'^\d-\d: Bunt missed!$',
+    Event.PITCHER_STRIKE_SWING: (r'^\d-\d: (?:Swinging Strike|Strikes out swin'
+                                 r'ging)$'),
+    Event.PITCHER_STRIKE_SWING_OUT: (r'^\d-\d: Strikes out swinging, 2-3 out a'
+                                     r't first.$'),
+    Event.PITCHER_STRIKE_SWING_PASSED: (r'^\d-\d: Strikes out swinging passed '
+                                        r'ball, reaches first!$'),
+    Event.PITCHER_STRIKE_SWING_WILD: (r'^\d-\d: Strikes out swinging wild pitc'
+                                      r'h, reaches first!$'),
+    Event.RUNNER_STEAL: r'^{player} steals {num} base(?: \(no throw\))?$',
+    Event.RUNNER_STEAL_OUT: (r'^{player} is caught stealing {num} base {scorin'
+                             r'g}$'),
+    Event.RUNNER_STEAL_THROWING: (r'^{player} steals {num}, throwing error, E2'
+                                  r'$'),
+    Event.PLAYER_MOVE: r'^{player} to {name}$',
+    Event.PLAYER_SCORE: r'^{player} scores$',
+    Event.BASE_MOVE: (r'^Runner from {num} (?:tags up, SAFE at \w+|tries for ['
+                      r'2|3]\w+, SAFE)(?:, no throw by \w+)?$'),
+    Event.BASE_MOVE_THROW: (r'^Runner from {num} (?:tags up, SAFE at \w+ with '
+                            r'throw by \w+|tries for [2|3]\w+, SAFE, throw by '
+                            r'\w+ made to \w+)$'),
+    Event.BASE_OUT: (r'^Runner from {num} (?:tags up, OUT at \w+!|tries for \w'
+                     r'+, OUT!|tries for Home, throw by \w+ and OUT!) {scoring'
+                     r'}$'),
+    Event.BASE_SCORE: (r'^Runner from 3rd (?:tags up, SCORES|tries for Home, S'
+                       r'AFE)(?:, no throw by \w+)?$'),
+    Event.BASE_SCORE_THROW: (r'^Runner from 3rd (?:tags up, SCORES|tries for H'
+                             r'ome, SAFE), throw by \w+(?: to home)?$'),
+    Event.BASE_SCORE_TRAIL: (r'^Runner from 3rd tries for Home, SAFE, throw by'
+                             r' \w+ to trailing runner, SAFE at third!$'),
+    Event.BASE_SCORE_TRAIL_OUT: (r'^Runner from 3rd tries for Home, SAFE, thro'
+                                 r'w by \w+ to trailing runner, OUT at third! '
+                                 r'{scoring}$'),
+    Event.NONE: (r'^(?:\d-\d: Grounds into DOUBLE play, [\w-]+|Batter strikes '
+                 r'out\.)$'),
 }
 
-KWARGS = {
-    'base': r'(1|2|3)\w+',
+EVENT_KWARGS = {
+    'base': r'(F|S|T)\w+',
     'distance': r'(\d+)',
+    'name': r'(f|s|t|h)\w+',
+    'num': r'(1|2|3)\w+',
     'path': r'(F|G|L|P)[\w ]+',
     'player': r'(P\d+)',
     'position': r'(C|1B|2B|3B|SS|LF|CF|RF|P)',
     'scoring': r'([EF]\d|U?[\d-]+)',
     'zone': r'(\w+)'
 }
-EVENT_MAP = {k: '|'.join(v).format(**KWARGS) for k, v in EVENT_MAP.items()}
+EVENT_MAP = {k: v.format(**EVENT_KWARGS) for k, v in EVENT_MAP.items()}
 
 
 def _open(in_):
