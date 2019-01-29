@@ -32,10 +32,12 @@ DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
 EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
+EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
+STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
 
 TESTDATA = get_testdata()
 
@@ -418,11 +420,17 @@ class StatsplusTest(Test):
         actual = statsplus._parse_score('2998', date)
         self.assertEqual(actual, None)
 
-        in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
-        out = os.path.join(GAMES_DIR, 'game_box_2998.json')
-        mock_call.assert_called_once_with(
-            'parse_box', (in_, out, date), jersey_colors=mock_colors)
-        mock_isfile.assert_called_once_with(out)
+        box_in = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
+        box_out = os.path.join(GAMES_DIR, 'game_box_2998.json')
+        log_in = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
+        log_out = os.path.join(GAMES_DIR, 'log_2998.json')
+        mock_call.assert_has_calls([
+            mock.call('parse_log', (log_in, log_out, date)),
+            mock.call(
+                'parse_box', (box_in, box_out, date),
+                jersey_colors=mock_colors),
+        ])
+        mock_isfile.assert_called_once_with(box_out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -439,11 +447,17 @@ class StatsplusTest(Test):
         actual = statsplus._parse_score('2998', date)
         self.assertEqual(actual, True)
 
-        in_ = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2998.html')
-        out = os.path.join(GAMES_DIR, 'game_box_2998.json')
-        mock_call.assert_called_once_with(
-            'parse_box', (in_, out, date), jersey_colors=mock_colors)
-        mock_isfile.assert_called_once_with(out)
+        box_in = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2998.html')
+        box_out = os.path.join(GAMES_DIR, 'game_box_2998.json')
+        log_in = os.path.join(STATSPLUS_GAME_LOGS, 'log_2998.html')
+        log_out = os.path.join(GAMES_DIR, 'log_2998.json')
+        mock_call.assert_has_calls([
+            mock.call('parse_log', (log_in, log_out, date)),
+            mock.call(
+                'parse_box', (box_in, box_out, date),
+                jersey_colors=mock_colors),
+        ])
+        mock_isfile.assert_called_once_with(box_out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -460,11 +474,17 @@ class StatsplusTest(Test):
         actual = statsplus._parse_score('2998', date)
         self.assertEqual(actual, True)
 
-        in_ = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
-        out = os.path.join(GAMES_DIR, 'game_box_2998.json')
-        mock_call.assert_called_once_with(
-            'parse_box', (in_, out, date), jersey_colors=mock_colors)
-        mock_isfile.assert_called_once_with(out)
+        box_in = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
+        box_out = os.path.join(GAMES_DIR, 'game_box_2998.json')
+        log_in = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
+        log_out = os.path.join(GAMES_DIR, 'log_2998.json')
+        mock_call.assert_has_calls([
+            mock.call('parse_log', (log_in, log_out, date)),
+            mock.call(
+                'parse_box', (box_in, box_out, date),
+                jersey_colors=mock_colors),
+        ])
+        mock_isfile.assert_called_once_with(box_out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_save_scores__one(self):

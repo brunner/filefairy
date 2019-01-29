@@ -30,9 +30,12 @@ from data.thread_.thread_ import Thread  # noqa
 
 EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
+EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
+STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
+STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
 
 
 class Statsplus(Registrable):
@@ -171,8 +174,15 @@ class Statsplus(Registrable):
         if os.path.isfile(box_out):
             return True
 
-        prefix = STATSPLUS_LINK if self.data['started'] else EXTRACT_DIR
-        box_in = prefix + '/box_scores/game_box_{}.html'.format(num)
+        if self.data['started']:
+            box_in = STATSPLUS_BOX_SCORES + '/game_box_{}.html'.format(num)
+            log_in = STATSPLUS_GAME_LOGS + '/log_{}.html'.format(num)
+        else:
+            box_in = EXTRACT_BOX_SCORES + '/game_box_{}.html'.format(num)
+            log_in = EXTRACT_GAME_LOGS + '/log_{}.txt'.format(num)
+
+        log_out = os.path.join(GAMES_DIR, 'log_' + num + '.json')
+        self._call('parse_log', (log_in, log_out, date))
 
         services = {'jersey_colors': self._attr('jersey_colors')}
         return self._call('parse_box', (box_in, box_out, date), **services)

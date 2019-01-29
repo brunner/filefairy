@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 """Service (reloadable) methods for parsing StatsLab pages."""
 
+import logging
 import datetime
 import os
 import re
 import sys
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/statslab', '', _path))
 
@@ -372,8 +374,9 @@ def parse_log(in_, out, date):
                     events.append(event.encode(*groups))
                     break
             else:
-                # TODO: Handle this gracefully.
-                raise Exception(in_, line)
+                s = in_.rsplit('/', 1)[1] + ' ' + line
+                _logger.log(logging.INFO, s)
+                return None
 
     data['events'] = events
 
