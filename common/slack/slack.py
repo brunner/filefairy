@@ -40,12 +40,13 @@ def _call(method, params):
     return obj
 
 
-def channels_history(channel, latest):
+def channels_history(channel, latest, oldest):
     """Convenience wrapper around the Slack API channels.history endpoint.
 
     Args:
         channel: Channel to fetch history for.
         latest: End of time range of messages to include in results.
+        oldest: Beginning of time range of messages to include in results.
 
     Returns:
         The endpoint response.
@@ -55,6 +56,7 @@ def channels_history(channel, latest):
         'channel': channel,
         'count': 1000,
         'latest': latest,
+        'oldest': oldest,
     })
 
 

@@ -69,7 +69,7 @@ def get_messages():
     for channel in list_['channels']:
         latest = ''
         while True:
-            history = channels_history(channel['id'], latest)
+            history = channels_history(channel['id'], latest, '')
             if not history['ok']:
                 break
 

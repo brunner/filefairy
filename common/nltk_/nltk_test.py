@@ -74,9 +74,9 @@ class JsonTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
         mock_history.assert_has_calls([
-            mock.call('C123', ''),
-            mock.call('C123', '2'),
-            mock.call('C456', ''),
+            mock.call('C123', '', ''),
+            mock.call('C123', '2', ''),
+            mock.call('C456', '', ''),
         ])
         mock_list.assert_called_once_with()
 

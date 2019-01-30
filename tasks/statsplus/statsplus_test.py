@@ -41,6 +41,9 @@ STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
 
 TESTDATA = get_testdata()
 
+FINAL_SCORES = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n'
+LIVE_TABLE = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n'
+
 SCORES_ONE = ('*<game_box_2998.html|Arizona 4, Los Angeles 2>*\n'
               '*<game_box_3003.html|Atlanta 2, Baltimore 1>*\n')
 SCORES_TWO = ('*<game_box_2998.html|Arizona 4, Los Angeles 2>*\n'
@@ -183,7 +186,7 @@ class StatsplusTest(Test):
         mock_scores.return_value = response
         mock_valid.return_value = True
 
-        text = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n' + SCORES_ONE
+        text = FINAL_SCORES + SCORES_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -208,7 +211,7 @@ class StatsplusTest(Test):
         mock_table.return_value = response
         mock_valid.return_value = True
 
-        text = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n' + TABLE_ONE
+        text = LIVE_TABLE + TABLE_ONE
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -246,6 +249,43 @@ class StatsplusTest(Test):
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_scores, mock_table, self.mock_open,
                              self.mock_handle.write)
+
+    @mock.patch.object(Statsplus, '_on_message_internal')
+    @mock.patch('tasks.statsplus.statsplus.time.time')
+    @mock.patch('tasks.statsplus.statsplus.channels_history')
+    def test_backfill(self, mock_history, mock_time, mock_on_message):
+        message1 = {'bot_id': 'B7KJ3362Y', 'text': '08/31/2024 Final Scores'}
+        message2 = {'bot_id': 'B7KJ3362Y', 'text': FINAL_SCORES}
+        message3 = {'bot_id': 'B7KJ3362Y', 'text': LIVE_TABLE}
+        messages = [message3, message2, message1]
+        mock_history.return_value = {'ok': True, 'messages': messages}
+        mock_time.return_value = 499132800.1234567
+
+        statsplus = self.create_statsplus(_data())
+
+        date = encode_datetime(DATE_08310000)
+        thread_ = Thread(target='_parse_saved_scores', args=(date, ))
+        mock_on_message.side_effect = [
+            Response(notify=[Notify.STATSPLUS_START]),
+            Response(shadow=statsplus._shadow_scores(), thread_=[thread_]),
+            Response(shadow=statsplus._shadow_table()),
+        ]
+
+        actual = statsplus.backfill('2')
+        expected = Response(
+            notify=[Notify.STATSPLUS_START],
+            shadow=statsplus._shadow_data(),
+            thread_=[thread_])
+        self.assertEqual(actual, expected)
+
+        mock_history.assert_called_once_with('C7JSGHW8G', '',
+                                             499125600.1234567)
+        mock_time.assert_called_once_with()
+        mock_on_message.assert_has_calls([
+            mock.call(obj=message1),
+            mock.call(obj=message2),
+            mock.call(obj=message3),
+        ])
 
     @mock.patch.object(Statsplus, '_rm')
     @mock.patch.object(Statsplus, '_parse_score')

@@ -3,10 +3,13 @@
 """Watches the statsplus channel for ongoing sims and saves their results."""
 
 import datetime
+import logging
 import os
 import re
 import sys
+import time
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/statsplus', '', _path))
 
@@ -20,10 +23,12 @@ from common.re_.re_ import search  # noqae
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
 from common.service.service import call_service  # noqa
+from common.slack.slack import channels_history  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import precoding_to_encoding_sub  # noqa
+from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
@@ -104,14 +109,42 @@ class Statsplus(Registrable):
 
         return Response()
 
+    def backfill(self, *args, **kwargs):
+        if len(args) != 1:
+            return Response()
+
+        oldest = time.time() - int(args[0]) * 3600
+        history = channels_history('C7JSGHW8G', '', oldest)
+        if not history['ok']:
+            return Response(debug=[Debug(msg=history['error'])])
+
+        self._clear()
+        self._rm()
+
+        response = Response()
+        for message in reversed(history['messages']):
+            message['channel'] = 'C7JSGHW8G'
+            inner = self._on_message_internal(**dict(kwargs, obj=message))
+            for notify in inner.notify:
+                response.append(notify=notify)
+            for thread_ in inner.thread_:
+                response.append(thread_=thread_)
+            if inner.shadow:
+                response.set_shadow(self._shadow_data())
+
+        return response
+
+    def _clear(self):
+        self.data['games'] = {}
+        self.data['scores'] = {}
+        self.data['table'] = {}
+
     def _rm(self):
         check_output(['rm', '-rf', GAMES_DIR])
         check_output(['mkdir', GAMES_DIR])
 
     def _parse_extracted_scores(self, *args, **kwargs):
-        self.data['games'] = {}
-        self.data['scores'] = {}
-        self.data['table'] = {}
+        self._clear()
 
         if self.data['started']:
             self.data['started'] = False
@@ -227,11 +260,9 @@ class Statsplus(Registrable):
         return Response(shadow=self._shadow_table())
 
     def _start(self):
-        self.data['games'] = {}
-        self.data['scores'] = {}
         self.data['started'] = True
-        self.data['table'] = {}
 
+        self._clear()
         self._rm()
 
         self.write()

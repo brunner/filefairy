@@ -65,7 +65,7 @@ class SlackTest(unittest.TestCase):
     def test_channels_history(self, mock_call):
         mock_call.return_value = {'ok': True}
 
-        actual = channels_history('channel', 0)
+        actual = channels_history('channel', '456', '123')
         expected = {'ok': True}
         self.assertEqual(actual, expected)
 
@@ -73,7 +73,8 @@ class SlackTest(unittest.TestCase):
             'token': FILEFAIRY,
             'channel': 'channel',
             'count': 1000,
-            'latest': 0,
+            'latest': '456',
+            'oldest': '123',
         })
         self.mock_log.assert_not_called()
 

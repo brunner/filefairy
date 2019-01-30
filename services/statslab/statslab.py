@@ -228,7 +228,7 @@ def parse_game(box_in, log_in, out, date):
                     break
             else:
                 events.append(Event.PARSE_ERROR.encode())
-                _logger.log(logging.INFO, '\n'.join([log_in, line]))
+                _logger.log(logging.DEBUG, '\n'.join([log_in, line]))
                 break
 
         regex = r'left on base; [^\d]+(\d+) - [^\d]+(\d+)'
