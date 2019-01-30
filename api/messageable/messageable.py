@@ -43,7 +43,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 
 from api.nameable.nameable import Nameable  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
@@ -74,7 +74,7 @@ class Messageable(Nameable):
                 if not callable(item):
                     continue
 
-                args = find(ARGS_PATTERN.format(self._name(), method), text)
+                args = search(ARGS_PATTERN.format(self._name(), method), text)
                 if args is not None:
                     args = [a.strip() for a in args.split(',') if a]
                     response = item(*args, **dict(kwargs, v=True))

@@ -15,7 +15,7 @@ from nltk.util import ngrams
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/nltk_', '', _path))
 
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.slack.slack import channels_history  # noqa
 from common.slack.slack import channels_list  # noqa
 from common.slack.slack import users_list  # noqa
@@ -88,7 +88,7 @@ def get_messages():
                     u = html.unescape(re.sub(r'<[^>]+>|[()]', '', t)).strip()
 
                     if u:
-                        if not find(r'[.?!:,]$', u):
+                        if not search(r'[.?!:,]$', u):
                             u += '.'
 
                         if user not in messages:
@@ -110,7 +110,7 @@ def get_topic(cfd):
     Returns:
         The random CFD condition.
     """
-    conds = list(filter(lambda c: find(r'^\w', c[0]), cfd.conditions()))
+    conds = list(filter(lambda c: search(r'^\w', c[0]), cfd.conditions()))
 
     total = 0
     for cond in conds:
@@ -164,7 +164,7 @@ def word_tokenize(text):
     while i < len(tokens):
         for j in range(min(4, len(tokens) - i), 1, -1):
             s = ''.join(tokens[i:i + j])
-            if find(SPECIAL_PATTERN, s):
+            if search(SPECIAL_PATTERN, s):
                 modified.append(s)
                 i += j - 1
                 break

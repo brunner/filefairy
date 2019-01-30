@@ -16,7 +16,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/reference', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 

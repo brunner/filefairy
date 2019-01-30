@@ -20,7 +20,7 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
@@ -230,7 +230,7 @@ class Gameday(Registrable):
         extract = FILEFAIRY_DIR + '/resource/extract'
         games = []
         for game in os.listdir(extract + '/box_scores/'):
-            id_ = find(r'game_box_(\d+).html', game)
+            id_ = search(r'game_box_(\d+).html', game)
             if id_:
                 games.append(id_)
 
@@ -263,7 +263,7 @@ class Gameday(Registrable):
     def _check_games(self):
         games = []
         for game in os.listdir(FILEFAIRY_DIR + '/resource/games/'):
-            id_ = find(r'game_(\d+).json', game)
+            id_ = search(r'game_(\d+).json', game)
             if id_:
                 games.append(id_)
 

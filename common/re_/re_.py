@@ -50,23 +50,6 @@ def findall(pattern, string):
     return [_strip(m) for m in match]
 
 
-def find(pattern, string):
-    """Convenience wrapper around re.search.
-
-    Returns the first match of pattern anywhere in string, or None if no match
-    is found. If found, the returned match is a single string if pattern has a
-    single pattern group, or a list of strings if pattern has multiple groups.
-
-    Args:
-        pattern: The regular expression pattern to match.
-        string: The string to scan for the pattern.
-
-    Returns:
-        The re.search matches of pattern within string.
-    """
-    return _transform(pattern, re.search(pattern, string), False)
-
-
 def match(pattern, string):
     """Convenience wrapper around re.match.
 
@@ -82,3 +65,20 @@ def match(pattern, string):
         The re.match matches of pattern within string.
     """
     return _transform(pattern, re.match(pattern, string), True)
+
+
+def search(pattern, string):
+    """Convenience wrapper around re.search.
+
+    Returns the first match of pattern anywhere in string, or None if no match
+    is found. If found, the returned match is a single string if pattern has a
+    single pattern group, or a list of strings if pattern has multiple groups.
+
+    Args:
+        pattern: The regular expression pattern to match.
+        string: The string to scan for the pattern.
+
+    Returns:
+        The re.search matches of pattern within string.
+    """
+    return _transform(pattern, re.search(pattern, string), False)

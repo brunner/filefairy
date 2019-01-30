@@ -14,7 +14,7 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.os_.os_ import chdir  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.re_.re_ import findall  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 
@@ -96,7 +96,7 @@ def extract_file(start):
         with open(game_fname, 'r', encoding='iso-8859-1') as f:
             game_read = f.read()
 
-        match = find(r'MLB Box Score[^\d]+(\d{2}\/\d{2}\/\d{4})', box_read)
+        match = search(r'MLB Box Score[^\d]+(\d{2}\/\d{2}\/\d{4})', box_read)
         if not match:
             continue
 

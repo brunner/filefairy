@@ -13,7 +13,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/circus', '', _path))
 
 from common.nltk_.nltk_ import word_tokenize  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 
 DECIDES = [
     '{}. Did you even need to ask?',
@@ -70,7 +70,7 @@ def discuss(topic, cfd, n, minimum, maximum):
     tokens = word_tokenize(topic)
     original = list(tokens)
 
-    while len(tokens) < minimum or not find('[.?!]', tokens[-1]):
+    while len(tokens) < minimum or not search('[.?!]', tokens[-1]):
         if len(tokens) >= maximum:
             tokens.append('...')
             break
@@ -102,10 +102,10 @@ def discuss(topic, cfd, n, minimum, maximum):
     reply = detokenizer.detokenize(tokens)
 
     sentences = []
-    while find(r'[.?!:,]', reply):
+    while search(r'[.?!:,]', reply):
         s, punctuation, reply = re.split(r'([.?!:,]+)', reply, 1)
         sentences.append(_capitalize(s.strip()) + punctuation)
-    if find(r'\S', reply):
+    if search(r'\S', reply):
         sentences.append(_capitalize(reply.strip()))
 
     return ' '.join(sentences)

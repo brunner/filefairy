@@ -14,7 +14,7 @@ from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.requests_.requests_ import get  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
@@ -57,7 +57,7 @@ class Upload(Registrable):
     @staticmethod
     def _get_date():
         text = re.sub('[.,]', '', get(EXPORTS_URL))
-        match = find(r'(?s)League File: (\w+ \d+ \d+ \d+:\d+ \w+) CST', text)
+        match = search(r'(?s)League File: (\w+ \d+ \d+ \d+:\d+ \w+) CST', text)
         if match:
             d = datetime.datetime.strptime(match.title(), '%b %d %Y %I:%M %p')
             c = datetime_datetime_cst(d.year, d.month, d.day, d.hour, d.minute)

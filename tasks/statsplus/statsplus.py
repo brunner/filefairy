@@ -16,7 +16,7 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
-from common.re_.re_ import find  # noqae
+from common.re_.re_ import search  # noqae
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
@@ -85,7 +85,7 @@ class Statsplus(Registrable):
             return Response()
 
         text = obj['text']
-        s = find(r'\d{2}\/\d{2}\/\d{4}', text)
+        s = search(r'\d{2}\/\d{2}\/\d{4}', text)
         if not s:
             return Response()
 
@@ -99,9 +99,9 @@ class Statsplus(Registrable):
         date = encode_datetime(date)
         if not self.data['started']:
             return self._start()
-        elif find(r'MAJOR LEAGUE BASEBALL Final Scores', text):
+        elif search(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self._save_scores(date, text)
-        elif find(r'MAJOR LEAGUE BASEBALL Live Table', text):
+        elif search(r'MAJOR LEAGUE BASEBALL Live Table', text):
             return self._save_table(date, text)
 
         return Response()
@@ -121,7 +121,7 @@ class Statsplus(Registrable):
             self._rm()
 
         for name in os.listdir(EXTRACT_BOX_SCORES):
-            num = find(r'\D+(\d+)\.html', name)
+            num = search(r'\D+(\d+)\.html', name)
             self._parse_score(num, None)
 
         for name in os.listdir(GAMES_DIR):
@@ -192,7 +192,7 @@ class Statsplus(Registrable):
 
         text = precoding_to_encoding_sub(text)
         for line in text.splitlines():
-            num, s = find(r'\D+(\d+)\.html\|([^>]+)>', line)
+            num, s = search(r'\D+(\d+)\.html\|([^>]+)>', line)
             if not num:
                 continue
 
@@ -214,7 +214,7 @@ class Statsplus(Registrable):
         standings_table = self.shadow.get('standings.table', {})
         text = decoding_to_encoding_sub(text)
         for line in text.splitlines():
-            encoding, wins = find(r'(\w+)\s(\d+)', line)
+            encoding, wins = search(r'(\w+)\s(\d+)', line)
             if not encoding:
                 continue
 

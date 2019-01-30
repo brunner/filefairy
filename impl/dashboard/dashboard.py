@@ -42,7 +42,7 @@ from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.secrets.secrets import secrets_sub  # noqa
 from common.slack.slack import chat_post_message  # noqa
 from common.slack.slack import files_upload  # noqa
@@ -143,7 +143,7 @@ class Dashboard(Registrable):
             self.data['logs'][date] = []
         self.data['logs'][date].append(record)
 
-        module = find('^Reloaded (\w+).$', record['msg'])
+        module = search('^Reloaded (\w+).$', record['msg'])
         if module:
             disabled = 'Disabled {}.'.format(module)
             logs = self.data['logs']

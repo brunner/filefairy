@@ -14,7 +14,7 @@ from common.nltk_.nltk_ import get_cfd  # noqa
 from common.nltk_.nltk_ import get_messages  # noqa
 from common.nltk_.nltk_ import get_topic  # noqa
 from common.nltk_.nltk_ import get_users  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.slack.slack import chat_post_message  # noqa
 from common.slack.slack import reactions_add  # noqa
 from data.notify.notify import Notify  # noqa
@@ -65,13 +65,13 @@ class Snacks(Registrable):
         channel = obj['channel']
         text = obj['text']
 
-        string = find(r'(?s)^<@U3ULC7DBP> choose (.+)$', text)
+        string = search(r'(?s)^<@U3ULC7DBP> choose (.+)$', text)
         if string:
             options = string.split(' or ')
             reply = self._call('choose', (options, ))
             chat_post_message(channel, reply)
 
-        topic = find(r'(?s)^<@U3ULC7DBP> discuss (.+)$', text)
+        topic = search(r'(?s)^<@U3ULC7DBP> discuss (.+)$', text)
         if topic:
             cfd = self.cfds.get('all', {})
             reply = self._call('discuss', (topic, cfd, NUM, MIN, MAX))
@@ -79,7 +79,7 @@ class Snacks(Registrable):
                 reply = 'I don\'t know anything about {}.'.format(topic)
             chat_post_message(channel, reply)
 
-        user = find(r'(?s)^<@U3ULC7DBP> imitate <@([^>]+)>$', text)
+        user = search(r'(?s)^<@U3ULC7DBP> imitate <@([^>]+)>$', text)
         if user:
             cfd = self.cfds.get(user, {})
             topic = get_topic(cfd)
@@ -88,7 +88,7 @@ class Snacks(Registrable):
                 reply = '<@{}> doesn\'t know anything.'.format(user)
             chat_post_message(channel, reply)
 
-        user, topic = find(r'(?s)^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$', text)
+        user, topic = search(r'(?s)^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$', text)
         if user:
             cfd = self.cfds.get(user, {})
             reply = self._call('discuss', (topic, cfd, NUM, MIN, MAX))
@@ -97,15 +97,15 @@ class Snacks(Registrable):
                     user, topic)
             chat_post_message(channel, reply)
 
-        topic = find(r'(?s)^<@U3ULC7DBP> say (.+)$', text)
+        topic = search(r'(?s)^<@U3ULC7DBP> say (.+)$', text)
         if topic:
             chat_post_message(channel, topic)
 
-        if find(r'(?s)^<@U3ULC7DBP> snack me$', text):
+        if search(r'(?s)^<@U3ULC7DBP> snack me$', text):
             for snack in self._call('snack_me', ()):
                 reactions_add(snack, channel, obj['ts'])
 
-        if find(r'(?s)^<@U3ULC7DBP> who .+$', text):
+        if search(r'(?s)^<@U3ULC7DBP> who .+$', text):
             reply = self._call('who', (self.users, ))
             chat_post_message(channel, reply)
 
@@ -138,7 +138,7 @@ class Snacks(Registrable):
         if obj['channel'] not in ['C9YE6NQG0', 'G3SUFLMK4']:
             return False
 
-        if not find(r'(?s)^<@U3ULC7DBP>', obj['text']):
+        if not search(r'(?s)^<@U3ULC7DBP>', obj['text']):
             return False
 
         return True

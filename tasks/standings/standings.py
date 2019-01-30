@@ -12,7 +12,7 @@ sys.path.append(re.sub(r'/tasks/standings', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from common.elements.elements import dialog  # noqa
 from common.json_.json_ import loads  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.record.record import add_records  # noqa
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
@@ -173,7 +173,7 @@ class Standings(Registrable):
         for date in statsplus_scores:
             scores = {}
             for s in sorted(statsplus_scores[date].values()):
-                for t in find(r'(\w+) \d+, (\w+) \d+', s):
+                for t in search(r'(\w+) \d+, (\w+) \d+', s):
                     if t not in scores:
                         scores[t] = []
                     scores[t].append(s)

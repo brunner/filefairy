@@ -19,7 +19,7 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.encyclopedia.encyclopedia import put_players  # noqa
 from common.json_.json_ import dumps  # noqa
-from common.re_.re_ import find  # noqa
+from common.re_.re_ import search  # noqa
 from common.re_.re_ import findall  # noqa
 from common.re_.re_ import match  # noqa
 from common.requests_.requests_ import get  # noqa
@@ -190,18 +190,18 @@ def parse_player(link):
         A data string if the parse was successful, otherwise None.
     """
     text = _open(link)
-    number, name = find(r'Player Report for #(\d+) ([^<]+)</title>', text)
+    number, name = search(r'Player Report for #(\d+) ([^<]+)</title>', text)
     if not number:
         return None
     name = re.sub(r' \'[^\']+\' ', r' ', name)
-    subtext = find(r'(?s)class="repsubtitle">(.+?)</div>', text)
+    subtext = search(r'(?s)class="repsubtitle">(.+?)</div>', text)
     if not subtext:
         return None
 
-    team = find(r'href=\"..\/teams\/team_\d{2}.html">(\w+)</a>', subtext)
+    team = search(r'href=\"..\/teams\/team_\d{2}.html">(\w+)</a>', subtext)
     if not team:
         team = 'T??'
-    bats, throws = find(r'Bats: (\w)[^T]+Throws: (\w)', text)
+    bats, throws = search(r'Bats: (\w)[^T]+Throws: (\w)', text)
     data = [team, number, bats, throws, name]
 
     if not all(data):
@@ -230,7 +230,7 @@ def parse_box(in_, out, date, **services):
     jersey_colors = services['jersey_colors']
 
     text = _open(in_)
-    away, home, s = find(r'(\w+) at (\w+), (\d{2}\/\d{2}\/\d{4})', text)
+    away, home, s = search(r'(\w+) at (\w+), (\d{2}\/\d{2}\/\d{4})', text)
     if not s:
         return None
 
@@ -239,7 +239,7 @@ def parse_box(in_, out, date, **services):
     if date is not None and date != encode_datetime(d):
         return None
 
-    t = find(r'(?s)Start Time:(.+?)<br>', text).strip(' EST')
+    t = search(r'(?s)Start Time:(.+?)<br>', text).strip(' EST')
     s = datetime.datetime.strptime(t.upper(), '%I:%M %p')
 
     d = datetime_as_est(d)
@@ -260,8 +260,8 @@ def parse_box(in_, out, date, **services):
 
     for team in ['away', 'home']:
         i = data[team + '_team']
-        line = find(r'(?s)<td class="dl">' + i + r'(.+?)</tr>', text)
-        data[team + '_record'] = find(r'^\((\d+-\d+)\)', line)
+        line = search(r'(?s)<td class="dl">' + i + r'(.+?)</tr>', text)
+        data[team + '_record'] = search(r'^\((\d+-\d+)\)', line)
 
         cols = findall(r'>(\d+|X)<', line)
         if not cols:
@@ -270,7 +270,7 @@ def parse_box(in_, out, date, **services):
             data[team + suffix] = cols.pop(-1)
         data[team + '_line'] = ' '.join(cols)
 
-    data['recap'] = find(
+    data['recap'] = search(
         r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--RECAP_SUBJECT_END-->', text)
 
     blines = findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', text)
@@ -289,11 +289,11 @@ def parse_box(in_, out, date, **services):
 
     for team, btext in zip(['away', 'home'], batting):
         homeruns = []
-        container = find(r'(?s)Home Runs:(.+?)<br>', btext)
+        container = search(r'(?s)Home Runs:(.+?)<br>', btext)
         if container:
             container = re.sub(r'\s+', ' ', container)
             for s in container.split(') '):
-                p, n, total = find(r'^(\w+)(?:\s(\d+))?\s\((\d+),', s)
+                p, n, total = search(r'^(\w+)(?:\s(\d+))?\s\((\d+),', s)
                 if not n:
                     n = '1'
                 homeruns.append(' '.join([p, n, total]))
@@ -301,16 +301,16 @@ def parse_box(in_, out, date, **services):
 
     for pitcher in ['winning', 'losing']:
         i = pitcher[0].upper()
-        p, line = find(r'(?s)<td class="dl">(\w+) ' + i + r' (.+?)</tr>', text)
+        p, line = search(r'(?s)<td class="dl">(\w+) ' + i + r' (.+?)</tr>', text)
 
-        record = find(r'^\((\d+-\d+)\)', line)
-        era = find(r'>([^<]+)</td>$', line)
+        record = search(r'^\((\d+-\d+)\)', line)
+        era = search(r'>([^<]+)</td>$', line)
         data[pitcher + '_pitcher'] = ' '.join([p, record, era])
 
-    p, saves = find(r'(?s)<td class="dl">(\w+) SV \((\d+)\)', text)
+    p, saves = search(r'(?s)<td class="dl">(\w+) SV \((\d+)\)', text)
     data['saving_pitcher'] = ' '.join([p, saves]) if saves else ''
 
-    data['ballpark'] = find(r'(?s)Ballpark:(.+?)<br>', text)
+    data['ballpark'] = search(r'(?s)Ballpark:(.+?)<br>', text)
 
     with open(out, 'w') as f:
         f.write(dumps(data) + '\n')
@@ -338,12 +338,12 @@ def parse_log(in_, out, date):
     html = in_.endswith('html')
     text = _open(in_)
 
-    away, home = find(r'(\w+) batting - Pitching for (\w+)', text)
+    away, home = search(r'(\w+) batting - Pitching for (\w+)', text)
     if not away:
         return None
 
     if date is not None:
-        s = find(r'>(\d{2}\/\d{2}\/\d{4})<', text)
+        s = search(r'>(\d{2}\/\d{2}\/\d{4})<', text)
         if not s:
             return None
 
@@ -352,8 +352,8 @@ def parse_log(in_, out, date):
         if date != encode_datetime(d):
             return None
 
-    away_pitcher = find(r'Pitching for ' + away + r' : \w+ (\w+)', text)
-    home_pitcher = find(r'Pitching for ' + home + r' : \w+ (\w+)', text)
+    away_pitcher = search(r'Pitching for ' + away + r' : \w+ (\w+)', text)
+    home_pitcher = search(r'Pitching for ' + home + r' : \w+ (\w+)', text)
 
     data = {
         'away_starter': away_pitcher,
