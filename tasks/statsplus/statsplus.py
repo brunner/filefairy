@@ -133,6 +133,12 @@ class Statsplus(Registrable):
 
         return response
 
+    def extract(self, *args, **kwargs):
+        self.data['started'] = False
+        self.write()
+
+        return Response(thread_=[Thread(target='_parse_extracted_scores')])
+
     def _rm(self):
         check_output(['rm', '-rf', GAMES_DIR])
         check_output(['mkdir', GAMES_DIR])

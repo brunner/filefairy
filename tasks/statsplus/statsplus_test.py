@@ -286,6 +286,18 @@ class StatsplusTest(Test):
             mock.call(obj=message3),
         ])
 
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    def test_extract(self):
+        statsplus = self.create_statsplus(_data(started=True))
+        response = statsplus.extract()
+        expected = Response(thread_=[Thread(target='_parse_extracted_scores')])
+        self.assertEqual(response, expected)
+
+        write = _data()
+        self.mock_open.assert_called_with(Statsplus._data(), 'w')
+        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+
     @mock.patch.object(Statsplus, '_rm')
     @mock.patch.object(Statsplus, '_parse_score')
     @mock.patch('tasks.statsplus.statsplus.loads')

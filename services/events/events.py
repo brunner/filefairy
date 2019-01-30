@@ -38,13 +38,13 @@ EVENT_MAP = {
                                   r'd hit\)$'),
     Event.BATTER_DOUBLE: (r'^\d-\d: DOUBLE \({path}, {zone}\)$'),
     Event.BATTER_DOUBLE_STRETCH: (r'^\d-\d: DOUBLE \({path}, {zone}\) - OUT at'
-                                  r'third base trying to stretch hit\.$'),
+                                  r' third base trying to stretch hit\.$'),
     Event.BATTER_TRIPLE: (r'^\d-\d: TRIPLE \({path}, {zone}\)$'),
     Event.BATTER_HOME_RUN: (r'^\d-\d: (?:SOLO|\d-RUN|GRAND SLAM) HOME RUN \({p'
                             r'ath}, {zone}\)\, Distance : {distance} ft$'),
     Event.BATTER_HOME_RUN_INSIDE: (r'^\d-\d: (?:SOLO|\d-RUN|GRAND SLAM) HOME R'
-                                   r'UN \({path}, {zone}\)\, \(Inside the Park'
-                                   r'\)$'),
+                                   r'UN \({path}, {zone}\) \(Inside the Park\)'
+                                   r'$'),
     Event.BATTER_REACH_DROPPED: (r'^\d-\d: Reached via error on a dropped thro'
                                  r'w from {position}, {scoring} \(Groundball, '
                                  r'{zone}\)$'),
@@ -66,8 +66,8 @@ EVENT_MAP = {
                                r'} \(Groundball, {zone}\)$'),
     Event.BATTER_SAC_BUNT: (r'^\d-\d: Sac Bunt to {zone} - play at first, batt'
                             r'er OUT! {scoring}$'),
-    Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt - play at {base}, runner OUT'
-                               r' -> throw to first, DP!$'),
+    Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt(?: to P)? - play at {base}, '
+                               r'runner OUT -> throw to first, DP!$'),
     Event.BATTER_SAC_BUNT_HIT: (r'^\d-\d: Sac Bunt to {zone} - play at first, '
                                 r'batter safe!$'),
     Event.BATTER_SAC_BUNT_OUT: (r'^\d-\d: Sac Bunt to {zone} - play at {base},'
