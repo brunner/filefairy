@@ -77,6 +77,40 @@
         "msg": "Download finished.",
         "pathname": "/home/pi/filefairy/tasks/download/download.py"
       }
+    ],
+    "2019-01-29T00:00:00-08:00": [
+      {
+        "date": "2019-01-29T15:40:33.769569-08:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 256, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/tasks/statsplus/statsplus.py\", line 149, in _parse_saved_scores\n    if self._parse_score(num, date_) is None:\n  File \"/home/pi/filefairy/tasks/statsplus/statsplus.py\", line 185, in _parse_score\n    self._call('parse_log', (log_in, log_out, date))\n  File \"/home/pi/filefairy/api/reloadable/reloadable.py\", line 42, in _call\n    return self._attr(method)(*fargs, *args, **kwargs)\n  File \"/home/pi/filefairy/api/reloadable/reloadable.py\", line 39, in _attr\n    return self.attrs[method]\nKeyError: 'parse_log'",
+        "levelname": "ERROR",
+        "lineno": 259,
+        "msg": "Disabled statsplus.",
+        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-01-29T16:32:13.498336-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 87,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/api/renderable/renderable.py"
+      },
+      {
+        "date": "2019-01-29T16:32:38.125837-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 86,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-01-29T16:37:29.860762-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 73,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      }
     ]
   }
 }
