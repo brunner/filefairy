@@ -24,8 +24,8 @@ from common.datetime_.datetime_ import datetime_now  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import card  # noqa
-from common.encyclopedia.encyclopedia import set_reference  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
+from common.reference.reference import set_reference  # noqa
 from common.slack.slack import rtm_connect  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa

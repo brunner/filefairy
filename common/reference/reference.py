@@ -23,16 +23,6 @@ def _sub(repl, text):
     return _reference._sub(repl, text)
 
 
-def set_reference(reference):
-    """Sets the reference object.
-
-    Args:
-        reference: The reference object.
-    """
-    global _reference
-    _reference = reference
-
-
 def player_to_bats(e):
     """Gets the player's batting handedness (``L``, ``R``, or ``S``).
 
@@ -108,3 +98,13 @@ def player_to_throws(e):
 def put_players(players):
     if _reference is not None:
         _reference._put(players)
+
+
+def set_reference(reference):
+    """Sets the reference object.
+
+    Args:
+        reference: The reference object.
+    """
+    global _reference
+    _reference = reference

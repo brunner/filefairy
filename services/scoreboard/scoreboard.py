@@ -15,7 +15,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
-from common.encyclopedia.encyclopedia import player_to_name_sub  # noqa
+from common.reference.reference import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa

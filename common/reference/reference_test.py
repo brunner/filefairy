@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Tests for encyclopedia.py."""
+"""Tests for reference.py."""
 
 import os
 import re
@@ -9,17 +9,17 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/common/encyclopedia', '', _path))
+sys.path.append(re.sub(r'/common/reference', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from common.encyclopedia.encyclopedia import set_reference  # noqa
-from common.encyclopedia.encyclopedia import player_to_bats  # noqa
-from common.encyclopedia.encyclopedia import player_to_name  # noqa
-from common.encyclopedia.encyclopedia import player_to_name_sub  # noqa
-from common.encyclopedia.encyclopedia import player_to_number  # noqa
-from common.encyclopedia.encyclopedia import player_to_team  # noqa
-from common.encyclopedia.encyclopedia import player_to_throws  # noqa
-from common.encyclopedia.encyclopedia import put_players  # noqa
+from common.reference.reference import player_to_bats  # noqa
+from common.reference.reference import player_to_name  # noqa
+from common.reference.reference import player_to_name_sub  # noqa
+from common.reference.reference import player_to_number  # noqa
+from common.reference.reference import player_to_team  # noqa
+from common.reference.reference import player_to_throws  # noqa
+from common.reference.reference import put_players  # noqa
+from common.reference.reference import set_reference  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from impl.reference.reference import Reference  # noqa
 

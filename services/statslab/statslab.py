@@ -17,11 +17,11 @@ from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.encyclopedia.encyclopedia import put_players  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.re_.re_ import search  # noqa
 from common.re_.re_ import findall  # noqa
 from common.re_.re_ import match  # noqa
+from common.reference.reference import put_players  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
