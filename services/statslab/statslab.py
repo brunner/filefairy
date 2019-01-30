@@ -18,9 +18,9 @@ from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
-from common.re_.re_ import search  # noqa
 from common.re_.re_ import findall  # noqa
 from common.re_.re_ import match  # noqa
+from common.re_.re_ import search  # noqa
 from common.reference.reference import put_players  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.service.service import call_service  # noqa
@@ -219,8 +219,6 @@ def parse_game(box_in, log_in, out, date):
     events = []
     events_map = call_service('events', 'get_map', ())
     for inning in _parse_innings(log_text, html):
-        events.append(Event.CHANGE_INNING.encode())
-
         batting, pitching, pitcher, content = inning
         for line in _parse_lines(content, html):
             for event, regex in events_map.items():
@@ -229,9 +227,14 @@ def parse_game(box_in, log_in, out, date):
                     events.append(event.encode(*groups))
                     break
             else:
-                s = log_in.rsplit('/', 1)[1] + ' ' + line
-                _logger.log(logging.INFO, s)
-                return None
+                events.append(Event.PARSE_ERROR.encode())
+                _logger.log(logging.INFO, '\n'.join([log_in, line]))
+                break
+
+        regex = r'left on base; [^\d]+(\d+) - [^\d]+(\d+)'
+        away_inning, home_inning = search(regex, content)
+        if away_inning:
+            events.append(Event.CHANGE_INNING.encode(away_inning, home_inning))
 
     data['away_pitcher'] = away_pitcher
     data['home_pitcher'] = home_pitcher
