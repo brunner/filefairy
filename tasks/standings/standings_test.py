@@ -41,8 +41,8 @@ TESTDATA = get_testdata()
 
 ENCODINGS = encoding_keys()
 
-GAME_2449 = json.loads(TESTDATA['game_box_2449.json'])
-GAME_2469 = json.loads(TESTDATA['game_box_2469.json'])
+GAME_2449 = json.loads(TESTDATA['2449.json'])
+GAME_2469 = json.loads(TESTDATA['2469.json'])
 
 HEAD_2449 = table(body=[[cell(content='Wednesday')]])
 BODY_2449 = table(head=[[cell(content='Final (10)')]])
@@ -283,12 +283,12 @@ class StandingsTest(Test):
     @mock.patch('tasks.standings.standings.os.listdir')
     def test_finish(self, mock_listdir, mock_open, mock_render):
         mock_listdir.return_value = [
-            'game_box_2449.json', 'game_box_2469.json', 'game_box_2476.json'
+            '2449.json', '2469.json', '2476.json'
         ]
         suite = Suite(
-            RMock(GAMES_DIR, 'game_box_2449.json', TESTDATA),
-            RMock(GAMES_DIR, 'game_box_2469.json', TESTDATA),
-            RMock(GAMES_DIR, 'game_box_2476.json', TESTDATA),
+            RMock(GAMES_DIR, '2449.json', TESTDATA),
+            RMock(GAMES_DIR, '2469.json', TESTDATA),
+            RMock(GAMES_DIR, '2476.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
@@ -308,7 +308,7 @@ class StandingsTest(Test):
     def test_line_scores(self, mock_call, mock_listdir, mock_loads):
         mock_call.side_effect = [BODY_2449, FOOT_2449, BODY_2469, FOOT_2469]
         mock_listdir.return_value = [
-            'game_box_2449.json', 'game_box_2469.json'
+            '2449.json', '2469.json'
         ]
         mock_loads.side_effect = [GAME_2449, GAME_2469]
 
@@ -328,8 +328,8 @@ class StandingsTest(Test):
         ])
         mock_listdir.assert_called_once_with(GAMES_DIR)
         mock_loads.assert_has_calls([
-            mock.call(os.path.join(GAMES_DIR, 'game_box_2449.json')),
-            mock.call(os.path.join(GAMES_DIR, 'game_box_2469.json'))
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json'))
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

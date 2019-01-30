@@ -13,14 +13,14 @@ sys.path.append(re.sub(r'/services/statslab', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.service.service import mock_service_for_test  # noqa
 from common.service.service import reload_service_for_test  # noqa
 from common.test.test import RMock  # noqa
 from common.test.test import Suite  # noqa
 from common.test.test import WMock  # noqa
 from common.test.test import get_testdata  # noqa
 from services.statslab.statslab import parse_player  # noqa
-from services.statslab.statslab import parse_box  # noqa
-from services.statslab.statslab import parse_log  # noqa
+from services.statslab.statslab import parse_game  # noqa
 
 DATE_03100000 = datetime_datetime_pst(2025, 3, 10)
 DATE_03110000 = datetime_datetime_pst(2025, 3, 11)
@@ -93,12 +93,8 @@ def _extract_log(num):
     return os.path.join(EXTRACT_LEAGUES, 'log_{}.txt'.format(num))
 
 
-def _games_box_score(num):
-    return os.path.join(GAMES_DIR, 'game_box_{}.json'.format(num))
-
-
-def _games_log(num):
-    return os.path.join(GAMES_DIR, 'log_{}.json'.format(num))
+def _games_out(num):
+    return os.path.join(GAMES_DIR, '{}.json'.format(num))
 
 
 def _statsplus_box_score(num):
@@ -147,32 +143,42 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    @mock.patch('services.statslab.statslab.call_service')
-    def test_parse_box__file(self, mock_call, mock_isfile, mock_get, mock_open,
-                             mock_put):
-        mock_call.side_effect = [
-            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
-            COLORS_41, COLORS_49, COLORS_52, COLORS_53
-        ]
+    def test_parse_game__file(self, mock_isfile, mock_get, mock_open,
+                              mock_put):
         mock_isfile.return_value = True
         suite = Suite(
             RMock(EXTRACT_BOX_SCORES, 'game_box_23520.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23520.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23520.txt', TESTDATA),
+            WMock(GAMES_DIR, '23520.json', TESTDATA),
             RMock(EXTRACT_BOX_SCORES, 'game_box_23766.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23766.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23766.txt', TESTDATA),
+            WMock(GAMES_DIR, '23766.json', TESTDATA),
             RMock(EXTRACT_BOX_SCORES, 'game_box_23769.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23769.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23769.txt', TESTDATA),
+            WMock(GAMES_DIR, '23769.json', TESTDATA),
             RMock(EXTRACT_BOX_SCORES, 'game_box_23775.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23775.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23775.txt', TESTDATA),
+            WMock(GAMES_DIR, '23775.json', TESTDATA),
             RMock(EXTRACT_BOX_SCORES, 'game_box_23803.html', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23803.json', TESTDATA),
+            RMock(EXTRACT_LEAGUES, 'log_23803.txt', TESTDATA),
+            WMock(GAMES_DIR, '23803.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
 
+        mock_jersey_colors = mock.Mock()
+        mock_jersey_colors.side_effect = [
+            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
+            COLORS_41, COLORS_49, COLORS_52, COLORS_53
+        ]
+
+        mock_service_for_test('uniforms', 'jersey_colors', mock_jersey_colors)
+        reload_service_for_test('events')
+
         for num in ['23520', '23766', '23769', '23775', '23803']:
-            in_ = _extract_box_score(num)
-            out = _games_box_score(num)
-            actual = parse_box(in_, out, None)
+            box_in = _extract_box_score(num)
+            log_in = _extract_log(num)
+            out = _games_out(num)
+            actual = parse_game(box_in, log_in, out, None)
             self.assertTrue(actual)
 
         mock_get.assert_not_called()
@@ -184,29 +190,38 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    @mock.patch('services.statslab.statslab.call_service')
-    def test_parse_box__link(self, mock_call, mock_isfile, mock_get, mock_open,
-                             mock_put):
-        mock_call.side_effect = [
-            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
-            COLORS_41, COLORS_49, COLORS_52, COLORS_53
-        ]
+    def test_parse_game__link(self, mock_isfile, mock_get, mock_open,
+                              mock_put):
         mock_isfile.return_value = False
         mock_get.side_effect = [
             TESTDATA['game_box_23520.html'],
+            TESTDATA['log_23520.html'],
             TESTDATA['game_box_23766.html'],
+            TESTDATA['log_23766.html'],
             TESTDATA['game_box_23769.html'],
+            TESTDATA['log_23769.html'],
             TESTDATA['game_box_23775.html'],
+            TESTDATA['log_23775.html'],
             TESTDATA['game_box_23803.html'],
+            TESTDATA['log_23803.html'],
         ]
         suite = Suite(
-            WMock(GAMES_DIR, 'game_box_23520.json', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23766.json', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23769.json', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23775.json', TESTDATA),
-            WMock(GAMES_DIR, 'game_box_23803.json', TESTDATA),
+            WMock(GAMES_DIR, '23520.json', TESTDATA),
+            WMock(GAMES_DIR, '23766.json', TESTDATA),
+            WMock(GAMES_DIR, '23769.json', TESTDATA),
+            WMock(GAMES_DIR, '23775.json', TESTDATA),
+            WMock(GAMES_DIR, '23803.json', TESTDATA),
         )
         mock_open.side_effect = suite.values()
+
+        mock_jersey_colors = mock.Mock()
+        mock_jersey_colors.side_effect = [
+            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
+            COLORS_41, COLORS_49, COLORS_52, COLORS_53
+        ]
+
+        mock_service_for_test('uniforms', 'jersey_colors', mock_jersey_colors)
+        reload_service_for_test('events')
 
         inputs = [
             ('23520', DATE_03130000),
@@ -217,99 +232,27 @@ class StatslabTest(unittest.TestCase):
         ]
 
         for num, d in inputs:
-            in_ = _statsplus_box_score(num)
-            out = _games_box_score(num)
+            box_in = _statsplus_box_score(num)
+            log_in = _statsplus_log(num)
+            out = _games_out(num)
             date = encode_datetime(d)
-            actual = parse_box(in_, out, date)
+            actual = parse_game(box_in, log_in, out, date)
             self.assertTrue(actual)
 
         mock_get.assert_has_calls([
             mock.call(_statsplus_box_score('23520')),
-            mock.call(_statsplus_box_score('23766')),
-            mock.call(_statsplus_box_score('23769')),
-            mock.call(_statsplus_box_score('23775')),
-            mock.call(_statsplus_box_score('23803')),
-        ])
-        mock_open.assert_has_calls(suite.calls())
-        mock_put.assert_has_calls([mock.call(p) for p in PLAYERS])
-        suite.verify()
-
-    @mock.patch('services.statslab.statslab.open', create=True)
-    @mock.patch('services.statslab.statslab.get')
-    @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_log__file(self, mock_isfile, mock_get, mock_open):
-        reload_service_for_test('events')
-
-        mock_isfile.return_value = True
-        suite = Suite(
-            RMock(EXTRACT_LEAGUES, 'log_23520.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_23520.json', TESTDATA),
-            RMock(EXTRACT_LEAGUES, 'log_23766.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_23766.json', TESTDATA),
-            RMock(EXTRACT_LEAGUES, 'log_23769.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_23769.json', TESTDATA),
-            RMock(EXTRACT_LEAGUES, 'log_23775.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_23775.json', TESTDATA),
-            RMock(EXTRACT_LEAGUES, 'log_23803.txt', TESTDATA),
-            WMock(GAMES_DIR, 'log_23803.json', TESTDATA),
-        )
-        mock_open.side_effect = suite.values()
-
-        for num in ['23520', '23766', '23769', '23775', '23803']:
-            in_ = _extract_log(num)
-            out = _games_log(num)
-            actual = parse_log(in_, out, None)
-            self.assertTrue(actual)
-
-        mock_get.assert_not_called()
-        mock_open.assert_has_calls(suite.calls())
-        suite.verify()
-
-    @mock.patch('services.statslab.statslab.open', create=True)
-    @mock.patch('services.statslab.statslab.get')
-    @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_log__link(self, mock_isfile, mock_get, mock_open):
-        reload_service_for_test('events')
-
-        mock_isfile.return_value = False
-        mock_get.side_effect = [
-            TESTDATA['log_23520.html'],
-            TESTDATA['log_23766.html'],
-            TESTDATA['log_23769.html'],
-            TESTDATA['log_23775.html'],
-            TESTDATA['log_23803.html'],
-        ]
-        suite = Suite(
-            WMock(GAMES_DIR, 'log_23520.json', TESTDATA),
-            WMock(GAMES_DIR, 'log_23766.json', TESTDATA),
-            WMock(GAMES_DIR, 'log_23769.json', TESTDATA),
-            WMock(GAMES_DIR, 'log_23775.json', TESTDATA),
-            WMock(GAMES_DIR, 'log_23803.json', TESTDATA),
-        )
-        mock_open.side_effect = suite.values()
-
-        inputs = [
-            ('23520', DATE_03130000),
-            ('23766', DATE_03100000),
-            ('23769', DATE_03100000),
-            ('23775', DATE_03110000),
-            ('23803', DATE_03160000),
-        ]
-
-        for num, d in inputs:
-            in_ = _statsplus_log(num)
-            out = _games_log(num)
-            actual = parse_log(in_, out, encode_datetime(d))
-            self.assertTrue(actual)
-
-        mock_get.assert_has_calls([
             mock.call(_statsplus_log('23520')),
+            mock.call(_statsplus_box_score('23766')),
             mock.call(_statsplus_log('23766')),
+            mock.call(_statsplus_box_score('23769')),
             mock.call(_statsplus_log('23769')),
+            mock.call(_statsplus_box_score('23775')),
             mock.call(_statsplus_log('23775')),
+            mock.call(_statsplus_box_score('23803')),
             mock.call(_statsplus_log('23803')),
         ])
         mock_open.assert_has_calls(suite.calls())
+        mock_put.assert_has_calls([mock.call(p) for p in PLAYERS])
         suite.verify()
 
 

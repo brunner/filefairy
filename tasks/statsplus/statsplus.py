@@ -167,21 +167,19 @@ class Statsplus(Registrable):
             notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_scores())
 
     def _parse_score(self, num, date):
-        box_out = os.path.join(GAMES_DIR, 'game_box_' + num + '.json')
+        out = os.path.join(GAMES_DIR, num + '.json')
 
-        if os.path.isfile(box_out):
+        if os.path.isfile(out):
             return True
 
         if self.data['started']:
-            box_in = STATSPLUS_BOX_SCORES + '/game_box_{}.html'.format(num)
-            log_in = STATSPLUS_GAME_LOGS + '/log_{}.html'.format(num)
+            box = STATSPLUS_BOX_SCORES + '/game_box_{}.html'.format(num)
+            log = STATSPLUS_GAME_LOGS + '/log_{}.html'.format(num)
         else:
-            box_in = EXTRACT_BOX_SCORES + '/game_box_{}.html'.format(num)
-            log_in = EXTRACT_GAME_LOGS + '/log_{}.txt'.format(num)
+            box = EXTRACT_BOX_SCORES + '/game_box_{}.html'.format(num)
+            log = EXTRACT_GAME_LOGS + '/log_{}.txt'.format(num)
 
-        log_out = os.path.join(GAMES_DIR, 'log_' + num + '.json')
-        call_service('statslab', 'parse_log', (log_in, log_out, date))
-        return call_service('statslab', 'parse_box', (box_in, box_out, date))
+        return call_service('statslab', 'parse_game', (box, log, out, date))
 
     def _save_scores(self, date, text):
         self.data['scores'][date] = {}

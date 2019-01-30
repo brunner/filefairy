@@ -6,6 +6,7 @@ import importlib
 import re
 import os
 import sys
+import types
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/service', '', _path))
@@ -36,6 +37,13 @@ def call_service(service, method, fargs, *args, **kwargs):
         kwargs: The keyword arguments to pass to the method.
     """
     return getattr(_services[service], method)(*fargs, *args, **kwargs)
+
+
+def mock_service_for_test(service, method, mock):
+    m = types.ModuleType(service, None)
+    m.__file__ = service + '.py'
+    _services[service] = m
+    setattr(m, method, mock)
 
 
 def reload_service_for_test(service):

@@ -57,7 +57,7 @@ def _parse_innings(text, html):
     return findall(regex, text)
 
 
-def _parse_lines(content, html, away_pitcher):
+def _parse_lines(content, html):
     lines = []
     if html:
         regex = (r'(?s)<td valign="top" width="268px" class="dl">(.+?)</td> <t'
@@ -102,24 +102,25 @@ def parse_player(link):
     return ' '.join(data)
 
 
-def parse_box(in_, out, date):
-    """Parse a StatsLab box score into a task-readable format.
+def parse_game(box_in, log_in, out, date):
+    """Parse a StatsLab box score and game log into a task-readable format.
 
-    If the box score is parsed successfully, the resulting data is written to a
-    specified file and True is the returned value. Alternatively, if the box
-    score is missing or does not match the given date, no JSON data is written
-    and None is returned.
+    If the game is parsed successfully, the resulting data is written to a
+    specified file and True is the returned value. Alternatively, if the game
+    is missing or does not match the given date, no JSON data is written and
+    None is returned.
 
     Args:
-        in_: The StatsLab box score link or file path.
+        box_in: The StatsLab box score link or file path.
+        log_in: The StatsLab game log link or file path.
         out: The file path to write the parsed data to.
-        date: The encoded date that the box score is expected to match.
+        date: The encoded date that the game is expected to match.
 
     Returns:
         True if the parse was successful, otherwise None.
     """
-    text = _open(in_)
-    away, home, s = search(r'(\w+) at (\w+), (\d{2}\/\d{2}\/\d{4})', text)
+    box_text = _open(box_in)
+    away, home, s = search(r'(\w+) at (\w+), (\d{2}\/\d{2}\/\d{4})', box_text)
     if not s:
         return None
 
@@ -128,7 +129,7 @@ def parse_box(in_, out, date):
     if date is not None and date != encode_datetime(d):
         return None
 
-    t = search(r'(?s)Start Time:(.+?)<br>', text).strip(' EST')
+    t = search(r'(?s)Start Time:(.+?)<br>', box_text).strip(' EST')
     s = datetime.datetime.strptime(t.upper(), '%I:%M %p')
 
     d = datetime_as_est(d)
@@ -141,17 +142,20 @@ def parse_box(in_, out, date):
     away_fargs = (away, day, 'away', home_colors[0])
     away_colors = call_service('uniforms', 'jersey_colors', away_fargs)
 
+    away_colors = ' '.join(away_colors)
+    home_colors = ' '.join(home_colors)
+
     data = {
-        'away_colors': ' '.join(away_colors),
+        'away_colors': away_colors,
         'away_team': away,
         'date': date,
-        'home_colors': ' '.join(home_colors),
+        'home_colors': home_colors,
         'home_team': home,
     }
 
     for team in ['away', 'home']:
         i = data[team + '_team']
-        line = search(r'(?s)<td class="dl">' + i + r'(.+?)</tr>', text)
+        line = search(r'(?s)<td class="dl">' + i + r'(.+?)</tr>', box_text)
         data[team + '_record'] = search(r'^\((\d+-\d+)\)', line)
 
         cols = findall(r'>(\d+|X)<', line)
@@ -162,19 +166,20 @@ def parse_box(in_, out, date):
         data[team + '_line'] = ' '.join(cols)
 
     data['recap'] = search(
-        r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--RECAP_SUBJECT_END-->', text)
+        r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--RECAP_SUBJECT_END-->',
+        box_text)
 
-    blines = findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', text)
-    plines = findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', text)
+    blines = findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', box_text)
+    plines = findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', box_text)
     if len(blines) != 2 or len(plines) != 2:
         return None
 
     encodings = set()
     for line in (plines + blines):
-        encodings.update(findall(r'>(P\d+) ', text))
+        encodings.update(findall(r'>(P\d+) ', box_text))
     put_players(list(sorted(encodings)))
 
-    batting = findall(r'(?s)BATTING<br>(.+?)</table>', text)
+    batting = findall(r'(?s)BATTING<br>(.+?)</table>', box_text)
     if len(batting) != 2:
         return None
 
@@ -193,85 +198,43 @@ def parse_box(in_, out, date):
     for pitcher in ['winning', 'losing']:
         i = pitcher[0].upper()
         p, line = search(r'(?s)<td class="dl">(\w+) ' + i + r' (.+?)</tr>',
-                         text)
+                         box_text)
 
         record = search(r'^\((\d+-\d+)\)', line)
         era = search(r'>([^<]+)</td>$', line)
         data[pitcher + '_pitcher'] = ' '.join([p, record, era])
 
-    p, saves = search(r'(?s)<td class="dl">(\w+) SV \((\d+)\)', text)
+    p, saves = search(r'(?s)<td class="dl">(\w+) SV \((\d+)\)', box_text)
     data['saving_pitcher'] = ' '.join([p, saves]) if saves else ''
+    data['ballpark'] = search(r'(?s)Ballpark:(.+?)<br>', box_text)
 
-    data['ballpark'] = search(r'(?s)Ballpark:(.+?)<br>', text)
+    html = log_in.endswith('html')
+    log_text = _open(log_in)
 
-    with open(out, 'w') as f:
-        f.write(dumps(data) + '\n')
-
-    return True
-
-
-def parse_log(in_, out, date):
-    """Parse a StatsLab game log into a task-readable format.
-
-    If the game log is parsed successfully, the resulting data is written to a
-    specified file and True is the returned value. Alternatively, if the game
-    log is missing or does not match the given date, no JSON data is written
-    and None is returned.
-
-    Args:
-        in_: The StatsLab game log link or file path.
-        out: The file path to write the parsed data to.
-        date: The encoded date that the game log is expected to match.
-        services: The dictionary of services expected by this method.
-
-    Returns:
-        True if the parse was successful, otherwise None.
-    """
-    html = in_.endswith('html')
-    text = _open(in_)
-
-    away, home = search(r'(\w+) batting - Pitching for (\w+)', text)
-    if not away:
+    away_pitcher = search(r'Pitching for ' + away + r' : \w+ (\w+)', log_text)
+    home_pitcher = search(r'Pitching for ' + home + r' : \w+ (\w+)', log_text)
+    if away_pitcher is None or home_pitcher is None:
         return None
 
-    if date is not None:
-        s = search(r'>(\d{2}\/\d{2}\/\d{4})<', text)
-        if not s:
-            return None
-
-        d = datetime.datetime.strptime(s, '%m/%d/%Y')
-        d = datetime_datetime_pst(d.year, d.month, d.day)
-        if date != encode_datetime(d):
-            return None
-
-    away_pitcher = search(r'Pitching for ' + away + r' : \w+ (\w+)', text)
-    home_pitcher = search(r'Pitching for ' + home + r' : \w+ (\w+)', text)
-
-    data = {
-        'away_starter': away_pitcher,
-        'away_team': away,
-        'home_starter': home_pitcher,
-        'home_team': home,
-    }
-
-    events_map = call_service('events', 'get_map', ())
-
     events = []
-    for inning in _parse_innings(text, html):
+    events_map = call_service('events', 'get_map', ())
+    for inning in _parse_innings(log_text, html):
         events.append(Event.CHANGE_INNING.encode())
 
         batting, pitching, pitcher, content = inning
-        for line in _parse_lines(content, html, away_pitcher):
+        for line in _parse_lines(content, html):
             for event, regex in events_map.items():
                 groups = match(regex, line)
                 if groups is not None:
                     events.append(event.encode(*groups))
                     break
             else:
-                s = in_.rsplit('/', 1)[1] + ' ' + line
+                s = log_in.rsplit('/', 1)[1] + ' ' + line
                 _logger.log(logging.INFO, s)
                 return None
 
+    data['away_pitcher'] = away_pitcher
+    data['home_pitcher'] = home_pitcher
     data['events'] = events
 
     with open(out, 'w') as f:

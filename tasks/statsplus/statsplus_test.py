@@ -255,11 +255,11 @@ class StatsplusTest(Test):
             self, mock_listdir, mock_loads, mock_parse, mock_rm):
         mock_listdir.side_effect = [
             ['game_box_2449.html', 'game_box_2469.html'],
-            ['game_box_2449.json', 'game_box_2469.json'],
+            ['2449.json', '2469.json'],
         ]
         mock_loads.side_effect = [
-            json.loads(TESTDATA['game_box_2449.json']),
-            json.loads(TESTDATA['game_box_2469.json'])
+            json.loads(TESTDATA['2449.json']),
+            json.loads(TESTDATA['2469.json'])
         ]
 
         statsplus = self.create_statsplus(_data())
@@ -274,8 +274,8 @@ class StatsplusTest(Test):
             mock.call(GAMES_DIR),
         ])
         mock_loads.assert_has_calls([
-            mock.call(os.path.join(GAMES_DIR, 'game_box_2449.json')),
-            mock.call(os.path.join(GAMES_DIR, 'game_box_2469.json'))
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json'))
         ])
         mock_parse.assert_has_calls([
             mock.call('2449', None),
@@ -293,11 +293,11 @@ class StatsplusTest(Test):
             self, mock_listdir, mock_loads, mock_parse, mock_rm):
         mock_listdir.side_effect = [
             ['game_box_2449.html', 'game_box_2469.html'],
-            ['game_box_2449.json', 'game_box_2469.json'],
+            ['2449.json', '2469.json'],
         ]
         mock_loads.side_effect = [
-            json.loads(TESTDATA['game_box_2449.json']),
-            json.loads(TESTDATA['game_box_2469.json'])
+            json.loads(TESTDATA['2449.json']),
+            json.loads(TESTDATA['2469.json'])
         ]
 
         statsplus = self.create_statsplus(_data(started=True))
@@ -312,8 +312,8 @@ class StatsplusTest(Test):
             mock.call(GAMES_DIR),
         ])
         mock_loads.assert_has_calls([
-            mock.call(os.path.join(GAMES_DIR, 'game_box_2449.json')),
-            mock.call(os.path.join(GAMES_DIR, 'game_box_2469.json'))
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json'))
         ])
         mock_parse.assert_has_calls([
             mock.call('2449', None),
@@ -395,7 +395,7 @@ class StatsplusTest(Test):
         self.assertEqual(actual, True)
 
         mock_isfile.assert_called_once_with(
-            os.path.join(GAMES_DIR, 'game_box_2998.json'))
+            os.path.join(GAMES_DIR, '2998.json'))
         self.assertNotCalled(mock_call, self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -409,15 +409,12 @@ class StatsplusTest(Test):
         actual = statsplus._parse_score('2998', date)
         self.assertEqual(actual, None)
 
-        box_in = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
-        box_out = os.path.join(GAMES_DIR, 'game_box_2998.json')
-        log_in = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
-        log_out = os.path.join(GAMES_DIR, 'log_2998.json')
-        mock_call.assert_has_calls([
-            mock.call('statslab', 'parse_log', (log_in, log_out, date)),
-            mock.call('statslab', 'parse_box', (box_in, box_out, date)),
-        ])
-        mock_isfile.assert_called_once_with(box_out)
+        box = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
+        log = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
+        out = os.path.join(GAMES_DIR, '2998.json')
+        mock_call.assert_called_once_with('statslab', 'parse_game',
+                                          (box, log, out, date))
+        mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -431,15 +428,12 @@ class StatsplusTest(Test):
         actual = statsplus._parse_score('2998', date)
         self.assertEqual(actual, True)
 
-        box_in = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2998.html')
-        box_out = os.path.join(GAMES_DIR, 'game_box_2998.json')
-        log_in = os.path.join(STATSPLUS_GAME_LOGS, 'log_2998.html')
-        log_out = os.path.join(GAMES_DIR, 'log_2998.json')
-        mock_call.assert_has_calls([
-            mock.call('statslab', 'parse_log', (log_in, log_out, date)),
-            mock.call('statslab', 'parse_box', (box_in, box_out, date)),
-        ])
-        mock_isfile.assert_called_once_with(box_out)
+        box = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2998.html')
+        log = os.path.join(STATSPLUS_GAME_LOGS, 'log_2998.html')
+        out = os.path.join(GAMES_DIR, '2998.json')
+        mock_call.assert_called_once_with('statslab', 'parse_game',
+                                          (box, log, out, date))
+        mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -453,15 +447,12 @@ class StatsplusTest(Test):
         actual = statsplus._parse_score('2998', date)
         self.assertEqual(actual, True)
 
-        box_in = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
-        box_out = os.path.join(GAMES_DIR, 'game_box_2998.json')
-        log_in = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
-        log_out = os.path.join(GAMES_DIR, 'log_2998.json')
-        mock_call.assert_has_calls([
-            mock.call('statslab', 'parse_log', (log_in, log_out, date)),
-            mock.call('statslab', 'parse_box', (box_in, box_out, date)),
-        ])
-        mock_isfile.assert_called_once_with(box_out)
+        box = os.path.join(EXTRACT_BOX_SCORES, 'game_box_2998.html')
+        log = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
+        out = os.path.join(GAMES_DIR, '2998.json')
+        mock_call.assert_called_once_with('statslab', 'parse_game',
+                                          (box, log, out, date))
+        mock_isfile.assert_called_once_with(out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_save_scores__one(self):
