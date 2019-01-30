@@ -118,8 +118,7 @@ class Statsplus(Registrable):
         if not history['ok']:
             return Response(debug=[Debug(msg=history['error'])])
 
-        self._clear()
-        self._rm()
+        self.data['started'] = False
 
         response = Response()
         for message in reversed(history['messages']):
@@ -134,17 +133,14 @@ class Statsplus(Registrable):
 
         return response
 
-    def _clear(self):
-        self.data['games'] = {}
-        self.data['scores'] = {}
-        self.data['table'] = {}
-
     def _rm(self):
         check_output(['rm', '-rf', GAMES_DIR])
         check_output(['mkdir', GAMES_DIR])
 
     def _parse_extracted_scores(self, *args, **kwargs):
-        self._clear()
+        self.data['games'] = {}
+        self.data['scores'] = {}
+        self.data['table'] = {}
 
         if self.data['started']:
             self.data['started'] = False
@@ -260,9 +256,11 @@ class Statsplus(Registrable):
         return Response(shadow=self._shadow_table())
 
     def _start(self):
+        self.data['games'] = {}
+        self.data['scores'] = {}
         self.data['started'] = True
+        self.data['table'] = {}
 
-        self._clear()
         self._rm()
 
         self.write()
