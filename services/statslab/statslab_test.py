@@ -13,6 +13,7 @@ sys.path.append(re.sub(r'/services/statslab', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.service.service import reload_service_for_test  # noqa
 from common.test.test import RMock  # noqa
 from common.test.test import Suite  # noqa
 from common.test.test import WMock  # noqa
@@ -184,7 +185,8 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
     @mock.patch('services.statslab.statslab.call_service')
-    def test_parse_box__link(self, mock_call, mock_isfile, mock_get, mock_open, mock_put):
+    def test_parse_box__link(self, mock_call, mock_isfile, mock_get, mock_open,
+                             mock_put):
         mock_call.side_effect = [
             COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
             COLORS_41, COLORS_49, COLORS_52, COLORS_53
@@ -236,6 +238,8 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
     def test_parse_log__file(self, mock_isfile, mock_get, mock_open):
+        reload_service_for_test('events')
+
         mock_isfile.return_value = True
         suite = Suite(
             RMock(EXTRACT_LEAGUES, 'log_23520.txt', TESTDATA),
@@ -265,6 +269,8 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
     def test_parse_log__link(self, mock_isfile, mock_get, mock_open):
+        reload_service_for_test('events')
+
         mock_isfile.return_value = False
         mock_get.side_effect = [
             TESTDATA['log_23520.html'],

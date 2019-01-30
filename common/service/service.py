@@ -16,6 +16,15 @@ from common.os_.os_ import listdirs  # noqa
 SERVICES_DIR = re.sub(r'/common/service', '/services', _path)
 
 
+def _reload(service):
+    package = 'services.{}.{}'.format(service, service)
+
+    if package in sys.modules:
+        sys.modules.pop(package, None)
+
+    _services[service] = importlib.import_module(package)
+
+
 def call_service(service, method, fargs, *args, **kwargs):
     """Calls the specified service method.
 
@@ -29,12 +38,12 @@ def call_service(service, method, fargs, *args, **kwargs):
     return getattr(_services[service], method)(*fargs, *args, **kwargs)
 
 
+def reload_service_for_test(service):
+    """Reloads the specified service only."""
+    _reload(service)
+
+
 def reload_services():
     """Reloads the services."""
     for s in listdirs(SERVICES_DIR):
-        package = 'services.{}.{}'.format(s, s)
-
-        if package in sys.modules:
-            sys.modules.pop(package, None)
-
-        _services[s] = importlib.import_module(package)
+        _reload(s)
