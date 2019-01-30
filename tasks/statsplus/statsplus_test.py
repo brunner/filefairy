@@ -278,8 +278,7 @@ class StatsplusTest(Test):
             thread_=[thread_])
         self.assertEqual(actual, expected)
 
-        mock_history.assert_called_once_with('C7JSGHW8G', '',
-                                             499125600.1234567)
+        mock_history.assert_called_once_with('C7JSGHW8G', '', 499125600)
         mock_time.assert_called_once_with()
         mock_on_message.assert_has_calls([
             mock.call(obj=message1),

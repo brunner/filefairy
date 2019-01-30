@@ -113,7 +113,7 @@ class Statsplus(Registrable):
         if len(args) != 1:
             return Response()
 
-        oldest = time.time() - int(args[0]) * 3600
+        oldest = round(time.time()) - int(args[0]) * 3600
         history = channels_history('C7JSGHW8G', '', oldest)
         if not history['ok']:
             return Response(debug=[Debug(msg=history['error'])])
