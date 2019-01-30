@@ -309,8 +309,9 @@ class FilefairyTest(Test):
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Filefairy, '_try_all')
+    @mock.patch.object(Filefairy, '_reload_services')
     @mock.patch.object(Filefairy, '_reload_internal')
-    def test_reload__base(self, mock_reload, mock_try_all):
+    def test_reload__base(self, mock_reload, mock_services, mock_try_all):
         response = Response(notify=[Notify.BASE])
         mock_reload.return_value = response
 
@@ -322,6 +323,7 @@ class FilefairyTest(Test):
         self.assertEqual(actual, response)
 
         mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
+        mock_services.assert_called_once_with()
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
@@ -329,8 +331,9 @@ class FilefairyTest(Test):
                          encode_datetime(DATE_10260604))
 
     @mock.patch.object(Filefairy, '_try_all')
+    @mock.patch.object(Filefairy, '_reload_services')
     @mock.patch.object(Filefairy, '_reload_internal')
-    def test_reload__none(self, mock_reload, mock_try_all):
+    def test_reload__none(self, mock_reload, mock_services, mock_try_all):
         response = Response()
         mock_reload.return_value = response
 
@@ -342,6 +345,7 @@ class FilefairyTest(Test):
         self.assertEqual(actual, response)
 
         mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
+        mock_services.assert_called_once_with()
         self.assertNotCalled(mock_try_all, self.mock_log, self.mock_open,
                              self.mock_handle.write)
         self.assertEqual(filefairy.data['date'],
@@ -548,6 +552,35 @@ class FilefairyTest(Test):
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
+    @mock.patch('impl.filefairy.filefairy.reload_services')
+    def test_reload_services__exception(self, mock_reload):
+        mock_reload.side_effect = Exception()
+
+        dashboard = self.create_dashboard(DATE_10260602)
+        reference = self.create_reference(DATE_10260602)
+        filefairy = self.create_filefairy(
+            _data(DATE_10260602), dashboard, reference)
+
+        filefairy._reload_services()
+
+        mock_reload.assert_called_once_with()
+        self.mock_log.assert_called_once_with(
+            logging.ERROR, 'Error reloading services.', exc_info=True)
+        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+
+    @mock.patch('impl.filefairy.filefairy.reload_services')
+    def test_reload_internal__ok(self, mock_reload):
+        dashboard = self.create_dashboard(DATE_10260602)
+        reference = self.create_reference(DATE_10260602)
+        filefairy = self.create_filefairy(
+            _data(DATE_10260602), dashboard, reference)
+
+        filefairy._reload_services()
+
+        mock_reload.assert_called_once_with()
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_try')
     def test_response__empty(self, mock_try, mock_try_all):
@@ -733,10 +766,11 @@ class FilefairyTest(Test):
         self.assertEqual(filefairy.day, 26)
 
     @mock.patch.object(Filefairy, '_try_all')
+    @mock.patch.object(Filefairy, '_reload_services')
     @mock.patch.object(Filefairy, '_reload_internal')
-    @mock.patch.object(Filefairy, '_get_dirs')
-    def test_setup(self, mock_get_dirs, mock_reload, mock_try_all):
-        mock_get_dirs.return_value = ['task']
+    @mock.patch('impl.filefairy.filefairy.listdirs')
+    def test_setup(self, mock_listdirs, mock_reload, mock_services, mock_try_all):
+        mock_listdirs.return_value = ['task']
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
@@ -744,8 +778,9 @@ class FilefairyTest(Test):
             _data(DATE_10260602), dashboard, reference)
         filefairy._setup(date=DATE_10260604)
 
-        mock_get_dirs.assert_called_once_with(TASKS_DIR)
+        mock_listdirs.assert_called_once_with(TASKS_DIR)
         mock_reload.assert_called_once_with('task', False, date=DATE_10260604)
+        mock_services.assert_called_once_with()
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
@@ -984,27 +1019,6 @@ class FilefairyTest(Test):
             'internal': internal
         }
         self.assertEqual(actual, expected)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-
-    @mock.patch('impl.filefairy.filefairy.os.listdir')
-    @mock.patch('impl.filefairy.filefairy.os.path.isdir')
-    def test_get_dirs(self, mock_isdir, mock_listdir):
-        dirs = ['__init__.py', '__pycache__', 'foo', 'bar']
-        mock_isdir.side_effect = [False, True, True, True]
-        mock_listdir.return_value = dirs
-
-        dashboard = self.create_dashboard(DATE_10260602)
-        reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
-        actual = filefairy._get_dirs(TASKS_DIR)
-        expected = ['bar', 'foo']
-        self.assertEqual(actual, expected)
-
-        mock_isdir.assert_has_calls(
-            [mock.call(os.path.join(TASKS_DIR, d)) for d in dirs])
-        mock_listdir.assert_called_once_with(TASKS_DIR)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
 

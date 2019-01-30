@@ -17,6 +17,7 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.service.service import call_service  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
@@ -88,9 +89,6 @@ class Gameday(Registrable):
     @staticmethod
     def _title():
         return 'gameday'
-
-    def _reload_data(self, **kwargs):
-        return {'uniforms': ['jersey_colors', 'jersey_style']}
 
     def _render_data(self, **kwargs):
         data = self.data
@@ -466,15 +464,16 @@ class Gameday(Registrable):
             colors = self.colors[game_id_]
         else:
             day = decode_datetime(game_data['date']).weekday()
-            home_colors = self._call('jersey_colors',
-                                     (home_team, day, 'home', None))
-            away_colors = self._call('jersey_colors',
-                                     (away_team, day, 'away', home_colors[0]))
+            home_colors = call_service('uniforms', 'jersey_colors',
+                                       (home_team, day, 'home', None))
+            away_colors = call_service(
+                'uniforms', 'jersey_colors',
+                (away_team, day, 'away', home_colors[0]))
             colors = {away_team: away_colors[0], home_team: home_colors[0]}
             self.colors[game_id_] = colors
 
         jerseys = [(encoding, colors[encoding]) for encoding in colors]
-        ret['styles'] = self._call('jersey_style', (*jerseys, ))
+        ret['styles'] = call_service('uniforms', 'jersey_style', (*jerseys, ))
 
         runs = {away_team: 0, home_team: 0}
 

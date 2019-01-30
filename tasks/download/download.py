@@ -14,6 +14,7 @@ sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.service.service import call_service  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from data.notify.notify import Notify  # noqa
 from data.shadow.shadow import Shadow  # noqa
@@ -46,9 +47,6 @@ class Download(Registrable):
     def _title():
         return 'download'
 
-    def _reload_data(self, **kwargs):
-        return {'leaguefile': ['download_file', 'extract_file']}
-
     def _shadow_data(self, **kwargs):
         return [
             Shadow(
@@ -68,7 +66,7 @@ class Download(Registrable):
             thread_=[Thread(target='_download_start', kwargs=kwargs)])
 
     def _download_file(self, *args, **kwargs):
-        output = self._call('download_file', (FILE_URL, ))
+        output = call_service('leaguefile', 'download_file', (FILE_URL, ))
         if output.get('ok'):
             _logger.log(logging.INFO, 'Download finished.')
             response = self._extract_file(**kwargs)
@@ -93,7 +91,7 @@ class Download(Registrable):
 
     def _extract_file(self, **kwargs):
         start = decode_datetime(self.data['end'])
-        end = self._call('extract_file', (start, ))
+        end = call_service('leaguefile', 'extract_file', (start, ))
         response = Response(notify=[Notify.DOWNLOAD_FINISH])
 
         self.data['end'] = encode_datetime(end)

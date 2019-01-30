@@ -72,14 +72,6 @@ class ReferenceTest(Test):
 
         return reference
 
-    def test_reload_data(self):
-        reference = self.create_reference(_data())
-        actual = reference._reload_data(date=DATE_10260602)
-        expected = {'statslab': ['parse_player']}
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
     @mock.patch.object(Reference, '_parse')
     def test_notify__fairylab_day(self, mock_parse):
         reference = self.create_reference(_data(players=PLAYERS))
@@ -144,7 +136,7 @@ class ReferenceTest(Test):
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Reference, '_call')
+    @mock.patch('impl.reference.reference.call_service')
     def test_parse__different(self, mock_call):
         mock_call.return_value = 'T32 1 L R Jim Alfa'
 
@@ -155,11 +147,11 @@ class ReferenceTest(Test):
         link = _statsplus_player_page('123')
         players = {'P123': 'T32 1 L R Jim Alfa'}
         write = _data(players=players)
-        mock_call.assert_called_once_with('parse_player', (link, ))
+        mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
         self.mock_open.assert_called_once_with(Reference._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(Reference, '_call')
+    @mock.patch('impl.reference.reference.call_service')
     def test_parse__none(self, mock_call):
         mock_call.return_value = None
 
@@ -169,11 +161,11 @@ class ReferenceTest(Test):
 
         link = _statsplus_player_page('123')
         write = _data()
-        mock_call.assert_called_once_with('parse_player', (link, ))
+        mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
         self.mock_open.assert_called_once_with(Reference._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(Reference, '_call')
+    @mock.patch('impl.reference.reference.call_service')
     def test_parse__same(self, mock_call):
         mock_call.return_value = 'T31 1 L R Jim Alfa'
 
@@ -182,7 +174,7 @@ class ReferenceTest(Test):
         reference._parse(['P123'])
 
         link = _statsplus_player_page('123')
-        mock_call.assert_called_once_with('parse_player', (link, ))
+        mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Reference, '_parse')

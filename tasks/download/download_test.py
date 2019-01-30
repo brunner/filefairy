@@ -80,15 +80,6 @@ class DownloadTest(Test):
 
         return download
 
-    def test_reload_data(self):
-        download = self.create_download(_data())
-        actual = download._reload_data(date=DATE_10260602)
-        expected = {'leaguefile': ['download_file', 'extract_file']}
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-
     def test_shadow_data(self):
         download = self.create_download(_data(end=DATE_10260602))
         actual = download._shadow_data(date=DATE_10260604)
@@ -140,7 +131,7 @@ class DownloadTest(Test):
                              self.mock_handle.write)
 
     @mock.patch.object(Download, '_extract_file')
-    @mock.patch.object(Download, '_call')
+    @mock.patch('tasks.download.download.call_service')
     def test_download_file__failed(self, mock_call, mock_extract):
         mock_call.return_value = {'ok': False, 'stdout': 'o', 'stderr': 'e'}
 
@@ -151,14 +142,15 @@ class DownloadTest(Test):
         self.assertEqual(response, Response(thread_=[thread_]))
 
         extra = {'stdout': 'o', 'stderr': 'e'}
-        mock_call.assert_called_once_with('download_file', (FILE_URL, ))
+        mock_call.assert_called_once_with('leaguefile', 'download_file',
+                                          (FILE_URL, ))
         self.mock_log.assert_called_once_with(
             logging.WARNING, 'Download failed.', extra=extra)
         self.assertNotCalled(mock_extract, self.mock_open,
                              self.mock_handle.write)
 
     @mock.patch.object(Download, '_extract_file')
-    @mock.patch.object(Download, '_call')
+    @mock.patch('tasks.download.download.call_service')
     def test_download_file__finished(self, mock_call, mock_extract):
         mock_call.return_value = {'ok': True}
         mock_extract.return_value = Response(notify=[Notify.BASE])
@@ -168,7 +160,8 @@ class DownloadTest(Test):
         response = download._download_file(date=now)
         self.assertEqual(response, Response(notify=[Notify.BASE]))
 
-        mock_call.assert_called_once_with('download_file', (FILE_URL, ))
+        mock_call.assert_called_once_with('leaguefile', 'download_file',
+                                          (FILE_URL, ))
         mock_extract.assert_called_once_with(date=now)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
@@ -211,7 +204,7 @@ class DownloadTest(Test):
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Download, '_shadow_data')
-    @mock.patch.object(Download, '_call')
+    @mock.patch('tasks.download.download.call_service')
     def test_extract_file__start(self, mock_call, mock_shadow):
         mock_call.return_value = DATE_08310000
 
@@ -221,13 +214,14 @@ class DownloadTest(Test):
         self.assertEqual(response, Response(notify=[Notify.DOWNLOAD_FINISH]))
 
         write = _data(end=DATE_08310000, start=DATE_08280000)
-        mock_call.assert_called_once_with('extract_file', (DATE_08280000, ))
+        mock_call.assert_called_once_with('leaguefile', 'extract_file',
+                                          (DATE_08280000, ))
         self.mock_open.assert_called_once_with(Download._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertNotCalled(mock_shadow, self.mock_log)
 
     @mock.patch.object(Download, '_shadow_data')
-    @mock.patch.object(Download, '_call')
+    @mock.patch('tasks.download.download.call_service')
     def test_extract_file__year(self, mock_call, mock_shadow):
         shadow = Shadow(destination='statsplus', key='download.end', info='')
         mock_call.return_value = DATE_01010000
@@ -243,7 +237,8 @@ class DownloadTest(Test):
                 shadow=[shadow]))
 
         write = _data(end=DATE_01010000, start=DATE_08280000)
-        mock_call.assert_called_once_with('extract_file', (DATE_08280000, ))
+        mock_call.assert_called_once_with('leaguefile', 'extract_file',
+                                          (DATE_08280000, ))
         mock_shadow.assert_called_once_with(date=DATE_10260604)
         self.mock_open.assert_called_once_with(Download._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')

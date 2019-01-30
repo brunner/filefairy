@@ -133,23 +133,6 @@ class StandingsTest(Test):
 
         return standings
 
-    def test_reload_data(self):
-        standings = self.create_standings(_data())
-        actual = standings._reload_data(date=DATE_10260602)
-        expected = {
-            'division': [
-                'condensed_league',
-                'expanded_league',
-            ],
-            'scoreboard': [
-                'line_score_body',
-                'line_score_foot',
-                'line_score_head',
-                'pending_score_body',
-            ],
-        }
-        self.assertEqual(actual, expected)
-
     @mock.patch.object(Standings, '_index_html')
     def test_render_data(self, mock_index):
         index_html = {'breadcrumbs': []}
@@ -265,7 +248,7 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(Standings, '_call')
+    @mock.patch('tasks.standings.standings.call_service')
     def test_dialog_tables(self, mock_call):
         mock_call.side_effect = [HEAD_2449, HEAD_2469, HEAD_2469]
 
@@ -289,9 +272,9 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_call.assert_has_calls([
-            mock.call('line_score_head', (date_0830, )),
-            mock.call('line_score_head', (date_0831, )),
-            mock.call('line_score_head', (date_0831, ))
+            mock.call('scoreboard', 'line_score_head', (date_0830, )),
+            mock.call('scoreboard', 'line_score_head', (date_0831, )),
+            mock.call('scoreboard', 'line_score_head', (date_0831, ))
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
@@ -321,7 +304,7 @@ class StandingsTest(Test):
 
     @mock.patch('tasks.standings.standings.loads')
     @mock.patch('tasks.standings.standings.os.listdir')
-    @mock.patch.object(Standings, '_call')
+    @mock.patch('tasks.standings.standings.call_service')
     def test_line_scores(self, mock_call, mock_listdir, mock_loads):
         mock_call.side_effect = [BODY_2449, FOOT_2449, BODY_2469, FOOT_2469]
         mock_listdir.return_value = [
@@ -338,10 +321,10 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_call.assert_has_calls([
-            mock.call('line_score_body', (GAME_2449, )),
-            mock.call('line_score_foot', (GAME_2449, )),
-            mock.call('line_score_body', (GAME_2469, )),
-            mock.call('line_score_foot', (GAME_2469, ))
+            mock.call('scoreboard', 'line_score_body', (GAME_2449, )),
+            mock.call('scoreboard', 'line_score_foot', (GAME_2449, )),
+            mock.call('scoreboard', 'line_score_body', (GAME_2469, )),
+            mock.call('scoreboard', 'line_score_foot', (GAME_2469, ))
         ])
         mock_listdir.assert_called_once_with(GAMES_DIR)
         mock_loads.assert_has_calls([
@@ -350,7 +333,7 @@ class StandingsTest(Test):
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Standings, '_call')
+    @mock.patch('tasks.standings.standings.call_service')
     def test_pending_scores(self, mock_call):
         body = table(clazz='', head=[[cell(content='Pending')]])
         mock_call.side_effect = [body, body]
@@ -358,7 +341,8 @@ class StandingsTest(Test):
         standings = self.create_standings(_data())
 
         date = encode_datetime(DATE_08310000)
-        statsplus_scores = {date: {'2998': 'T31 4, TLA 2'}}
+        score = 'T31 4, TLA 2'
+        statsplus_scores = {date: {'2998': score}}
         standings.shadow['statsplus.scores'] = statsplus_scores
 
         data_2998 = (date, body, None)
@@ -367,8 +351,8 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_call.assert_has_calls([
-            mock.call('pending_score_body', (['T31 4, TLA 2'], )),
-            mock.call('pending_score_body', (['T31 4, TLA 2'], ))
+            mock.call('scoreboard', 'pending_score_body', ([score], )),
+            mock.call('scoreboard', 'pending_score_body', ([score], ))
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
@@ -392,7 +376,7 @@ class StandingsTest(Test):
     @mock.patch.object(Standings, '_pending_scores')
     @mock.patch.object(Standings, '_line_scores')
     @mock.patch.object(Standings, '_dialog_tables')
-    @mock.patch.object(Standings, '_call')
+    @mock.patch('tasks.standings.standings.call_service')
     def test_index_html__finished_false(self, mock_call, mock_dialog,
                                         mock_line, mock_pending):
         date = encode_datetime(DATE_08310000)
@@ -446,22 +430,22 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_call.assert_has_calls([
-            mock.call('expanded_league', ('American League', [
+            mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, STATSPLUS_TABLE)),
                 ('Central', _table(LEAGUE_ALC, STATSPLUS_TABLE)),
                 ('West', _table(LEAGUE_ALW, STATSPLUS_TABLE)),
             ])),
-            mock.call('condensed_league', ('American League', [
+            mock.call('division', 'condensed_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, CONDENSED_TABLE)),
                 ('Central', _table(LEAGUE_ALC, CONDENSED_TABLE)),
                 ('West', _table(LEAGUE_ALW, CONDENSED_TABLE)),
             ])),
-            mock.call('expanded_league', ('National League', [
+            mock.call('division', 'expanded_league', ('National League', [
                 ('East', _table(LEAGUE_NLE, STATSPLUS_TABLE)),
                 ('Central', _table(LEAGUE_NLC, STATSPLUS_TABLE)),
                 ('West', _table(LEAGUE_NLW, STATSPLUS_TABLE)),
             ])),
-            mock.call('condensed_league', ('National League', [
+            mock.call('division', 'condensed_league', ('National League', [
                 ('East', _table(LEAGUE_NLE, CONDENSED_TABLE)),
                 ('Central', _table(LEAGUE_NLC, CONDENSED_TABLE)),
                 ('West', _table(LEAGUE_NLW, CONDENSED_TABLE)),
@@ -481,7 +465,7 @@ class StandingsTest(Test):
     @mock.patch.object(Standings, '_pending_scores')
     @mock.patch.object(Standings, '_line_scores')
     @mock.patch.object(Standings, '_dialog_tables')
-    @mock.patch.object(Standings, '_call')
+    @mock.patch('tasks.standings.standings.call_service')
     def test_index_html__finished_true(self, mock_call, mock_dialog, mock_line,
                                        mock_pending):
         date = encode_datetime(DATE_08310000)
@@ -535,22 +519,22 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_call.assert_has_calls([
-            mock.call('expanded_league', ('American League', [
+            mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, table_)),
                 ('Central', _table(LEAGUE_ALC, table_)),
                 ('West', _table(LEAGUE_ALW, table_)),
             ])),
-            mock.call('condensed_league', ('American League', [
+            mock.call('division', 'condensed_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, CONDENSED_TABLE)),
                 ('Central', _table(LEAGUE_ALC, CONDENSED_TABLE)),
                 ('West', _table(LEAGUE_ALW, CONDENSED_TABLE)),
             ])),
-            mock.call('expanded_league', ('National League', [
+            mock.call('division', 'expanded_league', ('National League', [
                 ('East', _table(LEAGUE_NLE, table_)),
                 ('Central', _table(LEAGUE_NLC, table_)),
                 ('West', _table(LEAGUE_NLW, table_)),
             ])),
-            mock.call('condensed_league', ('National League', [
+            mock.call('division', 'condensed_league', ('National League', [
                 ('East', _table(LEAGUE_NLE, CONDENSED_TABLE)),
                 ('Central', _table(LEAGUE_NLC, CONDENSED_TABLE)),
                 ('West', _table(LEAGUE_NLW, CONDENSED_TABLE)),

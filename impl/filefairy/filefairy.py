@@ -25,7 +25,9 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import card  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
+from common.os_.os_ import listdirs  # noqa
 from common.reference.reference import set_reference  # noqa
+from common.service.service import reload_services  # noqa
 from common.slack.slack import rtm_connect  # noqa
 from data.debug.debug import Debug  # noqa
 from data.notify.notify import Notify  # noqa
@@ -103,6 +105,8 @@ class Filefairy(Messageable, Renderable):
         if len(args) != 1:
             return Response()
 
+        self._reload_services()
+
         t = args[0]
         response = self._reload_internal(t, True, **kwargs)
 
@@ -179,6 +183,13 @@ class Filefairy(Messageable, Renderable):
 
         return response
 
+    def _reload_services(self):
+        try:
+            reload_services()
+        except Exception:
+            _logger.log(
+                logging.ERROR, 'Error reloading services.', exc_info=True)
+
     def _response(self, t, response, **kwargs):
         if response.notify:
             date = kwargs['date']
@@ -214,7 +225,9 @@ class Filefairy(Messageable, Renderable):
         self.data['date'] = encode_datetime(date)
         self.day = date.day
 
-        for t in self._get_dirs(TASKS_DIR):
+        self._reload_services()
+
+        for t in listdirs(TASKS_DIR):
             if t == 'gameday':
                 continue
             self._reload_internal(t, False, **kwargs)
@@ -291,13 +304,6 @@ class Filefairy(Messageable, Renderable):
                 ret['internal'].append(c)
 
         return ret
-
-    @staticmethod
-    def _get_dirs(d):
-        def is_dir(x):
-            return os.path.isdir(os.path.join(d, x)) and x != '__pycache__'
-
-        return sorted(filter(lambda x: is_dir(x), os.listdir(d)))
 
 
 if __name__ == '__main__':

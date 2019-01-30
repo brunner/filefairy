@@ -37,3 +37,17 @@ def chdir(path):
         _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
     finally:
         os.chdir(cwd)
+
+
+def listdirs(path):
+    """Convenience wrapper around os.listdir.
+
+    Returns the directories under path.
+
+    Args:
+        path: The directory check.
+    """
+    def is_dir(x):
+        return os.path.isdir(os.path.join(path, x)) and x != '__pycache__'
+
+    return sorted(filter(lambda x: is_dir(x), os.listdir(path)))

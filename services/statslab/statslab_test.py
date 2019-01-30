@@ -146,7 +146,13 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_box__file(self, mock_isfile, mock_get, mock_open, mock_put):
+    @mock.patch('services.statslab.statslab.call_service')
+    def test_parse_box__file(self, mock_call, mock_isfile, mock_get, mock_open,
+                             mock_put):
+        mock_call.side_effect = [
+            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
+            COLORS_41, COLORS_49, COLORS_52, COLORS_53
+        ]
         mock_isfile.return_value = True
         suite = Suite(
             RMock(EXTRACT_BOX_SCORES, 'game_box_23520.html', TESTDATA),
@@ -162,16 +168,10 @@ class StatslabTest(unittest.TestCase):
         )
         mock_open.side_effect = suite.values()
 
-        mock_colors = mock.Mock()
-        mock_colors.side_effect = [
-            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
-            COLORS_41, COLORS_49, COLORS_52, COLORS_53
-        ]
-
         for num in ['23520', '23766', '23769', '23775', '23803']:
             in_ = _extract_box_score(num)
             out = _games_box_score(num)
-            actual = parse_box(in_, out, None, jersey_colors=mock_colors)
+            actual = parse_box(in_, out, None)
             self.assertTrue(actual)
 
         mock_get.assert_not_called()
@@ -183,7 +183,12 @@ class StatslabTest(unittest.TestCase):
     @mock.patch('services.statslab.statslab.open', create=True)
     @mock.patch('services.statslab.statslab.get')
     @mock.patch('services.statslab.statslab.os.path.isfile')
-    def test_parse_box__link(self, mock_isfile, mock_get, mock_open, mock_put):
+    @mock.patch('services.statslab.statslab.call_service')
+    def test_parse_box__link(self, mock_call, mock_isfile, mock_get, mock_open, mock_put):
+        mock_call.side_effect = [
+            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
+            COLORS_41, COLORS_49, COLORS_52, COLORS_53
+        ]
         mock_isfile.return_value = False
         mock_get.side_effect = [
             TESTDATA['game_box_23520.html'],
@@ -201,12 +206,6 @@ class StatslabTest(unittest.TestCase):
         )
         mock_open.side_effect = suite.values()
 
-        mock_colors = mock.Mock()
-        mock_colors.side_effect = [
-            COLORS_58, COLORS_42, COLORS_45, COLORS_32, COLORS_51, COLORS_39,
-            COLORS_41, COLORS_49, COLORS_52, COLORS_53
-        ]
-
         inputs = [
             ('23520', DATE_03130000),
             ('23766', DATE_03100000),
@@ -219,7 +218,7 @@ class StatslabTest(unittest.TestCase):
             in_ = _statsplus_box_score(num)
             out = _games_box_score(num)
             date = encode_datetime(d)
-            actual = parse_box(in_, out, date, jersey_colors=mock_colors)
+            actual = parse_box(in_, out, date)
             self.assertTrue(actual)
 
         mock_get.assert_has_calls([

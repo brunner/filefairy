@@ -17,6 +17,7 @@ sys.path.append(re.sub(r'/impl/reference', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
 from common.re_.re_ import search  # noqa
+from common.service.service import call_service  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
@@ -44,9 +45,6 @@ class Reference(Registrable):
     def _title():
         return 'reference'
 
-    def _reload_data(self, **kwargs):
-        return {'statslab': ['parse_player']}
-
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == Notify.FILEFAIRY_DAY:
@@ -65,7 +63,7 @@ class Reference(Registrable):
         for e in encodings:
             n = e.strip('P')
             link = os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(n))
-            data = self._call('parse_player', (link, ))
+            data = call_service('statslab', 'parse_player', (link, ))
 
             if self.data['players'].get(e) != data:
                 if data is None:

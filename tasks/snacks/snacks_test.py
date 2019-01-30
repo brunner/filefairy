@@ -62,17 +62,6 @@ class SnacksTest(Test):
 
         return snacks
 
-    def test_reload_data(self):
-        snacks = self.create_snacks()
-        actual = snacks._reload_data(date=DATE_10260602)
-        expected = {
-            'bread': ['snack_me'],
-            'circus': ['choose', 'discuss', 'who']
-        }
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
     def test_notify__filefairy_day(self):
         snacks = self.create_snacks()
         actual = snacks._notify_internal(notify=Notify.FILEFAIRY_DAY)
@@ -93,7 +82,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__invalid(self, mock_call, mock_chat, mock_reactions,
                                  mock_topic, mock_valid):
         mock_valid.return_value = False
@@ -111,7 +100,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__choose(self, mock_call, mock_chat, mock_reactions,
                                 mock_topic, mock_valid):
         mock_call.return_value = 'Definitely a.'
@@ -122,7 +111,7 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('choose', (['a', 'b'], ))
+        mock_call.assert_called_once_with('circus', 'choose', (['a', 'b'], ))
         mock_chat.assert_called_once_with('C123', 'Definitely a.')
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
@@ -132,7 +121,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__discuss_known(self, mock_call, mock_chat,
                                        mock_reactions, mock_topic, mock_valid):
         mock_call.return_value = 'A b c.'
@@ -143,7 +132,8 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('discuss', ('a', CFD, 4, 8, 30))
+        mock_call.assert_called_once_with('circus', 'discuss',
+                                          ('a', CFD, 4, 8, 30))
         mock_chat.assert_called_once_with('C123', 'A b c.')
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
@@ -153,7 +143,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__discuss_unknown(self, mock_call, mock_chat,
                                          mock_reactions, mock_topic,
                                          mock_valid):
@@ -165,7 +155,8 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('discuss', ('a', CFD, 4, 8, 30))
+        mock_call.assert_called_once_with('circus', 'discuss',
+                                          ('a', CFD, 4, 8, 30))
         mock_chat.assert_called_once_with('C123',
                                           'I don\'t know anything about a.')
         mock_valid.assert_called_once_with(obj)
@@ -176,7 +167,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__imitate_known(self, mock_call, mock_chat,
                                        mock_reactions, mock_topic, mock_valid):
         mock_call.return_value = 'A b c.'
@@ -188,7 +179,8 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('discuss', ('a', CFD, 4, 8, 30))
+        mock_call.assert_called_once_with('circus', 'discuss',
+                                          ('a', CFD, 4, 8, 30))
         mock_chat.assert_called_once_with('C123', 'A b c.')
         mock_topic.assert_called_once_with(CFD)
         mock_valid.assert_called_once_with(obj)
@@ -199,7 +191,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__imitate_unknown(self, mock_call, mock_chat,
                                          mock_reactions, mock_topic,
                                          mock_valid):
@@ -212,7 +204,8 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('discuss', (None, {}, 4, 8, 30))
+        mock_call.assert_called_once_with('circus', 'discuss',
+                                          (None, {}, 4, 8, 30))
         mock_chat.assert_called_once_with('C123',
                                           '<@U123> doesn\'t know anything.')
         mock_topic.assert_called_once_with({})
@@ -224,7 +217,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__imitate_topic_known(self, mock_call, mock_chat,
                                              mock_reactions, mock_topic,
                                              mock_valid):
@@ -236,7 +229,8 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('discuss', ('a', CFD, 4, 8, 30))
+        mock_call.assert_called_once_with('circus', 'discuss',
+                                          ('a', CFD, 4, 8, 30))
         mock_chat.assert_called_once_with('C123', 'A b c.')
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
@@ -246,7 +240,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__imitate_topic_unknown(self, mock_call, mock_chat,
                                                mock_reactions, mock_topic,
                                                mock_valid):
@@ -258,7 +252,8 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('discuss', ('a', {}, 4, 8, 30))
+        mock_call.assert_called_once_with('circus', 'discuss',
+                                          ('a', {}, 4, 8, 30))
         mock_chat.assert_called_once_with(
             'C123', '<@U123> doesn\'t know anything about a.')
         mock_valid.assert_called_once_with(obj)
@@ -269,7 +264,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__say(self, mock_call, mock_chat, mock_reactions,
                              mock_topic, mock_valid):
         mock_valid.return_value = True
@@ -288,7 +283,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__snack_me(self, mock_call, mock_chat, mock_reactions,
                                   mock_topic, mock_valid):
         s = ['amphora', 'apple', 'avocado']
@@ -300,7 +295,7 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('snack_me', ())
+        mock_call.assert_called_once_with('bread', 'snack_me', ())
         mock_reactions.assert_has_calls([mock.call(x, 'C123', '1') for x in s])
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_chat, mock_topic, self.mock_open,
@@ -310,7 +305,7 @@ class SnacksTest(Test):
     @mock.patch('tasks.snacks.snacks.get_topic')
     @mock.patch('tasks.snacks.snacks.reactions_add')
     @mock.patch('tasks.snacks.snacks.chat_post_message')
-    @mock.patch.object(Snacks, '_call')
+    @mock.patch('tasks.snacks.snacks.call_service')
     def test_on_message__who(self, mock_call, mock_chat, mock_reactions,
                              mock_topic, mock_valid):
         mock_call.return_value = 'Definitely a.'
@@ -321,7 +316,7 @@ class SnacksTest(Test):
         response = snacks._on_message_internal(date=DATE_10260604, obj=obj)
         self.assertEqual(response, Response())
 
-        mock_call.assert_called_once_with('who', (['a', 'b'], ))
+        mock_call.assert_called_once_with('circus', 'who', (['a', 'b'], ))
         mock_chat.assert_called_once_with('C123', 'Definitely a.')
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,

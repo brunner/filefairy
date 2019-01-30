@@ -28,13 +28,12 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/registrable', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
-from api.reloadable.reloadable import Reloadable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
 
-class Registrable(Messageable, Reloadable, Renderable):
+class Registrable(Messageable, Renderable):
     def __init__(self, **kwargs):
         date = kwargs.pop('date')
         super().__init__(**kwargs)
@@ -98,7 +97,6 @@ class Registrable(Messageable, Reloadable, Renderable):
         return self._run_internal(**kwargs)
 
     def _setup(self, **kwargs):
-        self._reload(**kwargs)
         response = self._setup_internal(**kwargs)
         response.shadow = self._shadow_data()
         self._render(**kwargs)

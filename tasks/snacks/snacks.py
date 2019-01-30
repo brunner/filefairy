@@ -15,6 +15,7 @@ from common.nltk_.nltk_ import get_messages  # noqa
 from common.nltk_.nltk_ import get_topic  # noqa
 from common.nltk_.nltk_ import get_users  # noqa
 from common.re_.re_ import search  # noqa
+from common.service.service import call_service  # noqa
 from common.slack.slack import chat_post_message  # noqa
 from common.slack.slack import reactions_add  # noqa
 from data.notify.notify import Notify  # noqa
@@ -48,9 +49,6 @@ class Snacks(Registrable):
     def _title():
         return 'snacks'
 
-    def _reload_data(self, **kwargs):
-        return {'bread': ['snack_me'], 'circus': ['choose', 'discuss', 'who']}
-
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.FILEFAIRY_DAY:
             return Response(thread_=[Thread(target='_refresh')])
@@ -68,13 +66,14 @@ class Snacks(Registrable):
         string = search(r'(?s)^<@U3ULC7DBP> choose (.+)$', text)
         if string:
             options = string.split(' or ')
-            reply = self._call('choose', (options, ))
+            reply = call_service('circus', 'choose', (options, ))
             chat_post_message(channel, reply)
 
         topic = search(r'(?s)^<@U3ULC7DBP> discuss (.+)$', text)
         if topic:
             cfd = self.cfds.get('all', {})
-            reply = self._call('discuss', (topic, cfd, NUM, MIN, MAX))
+            fargs = (topic, cfd, NUM, MIN, MAX)
+            reply = call_service('circus', 'discuss', fargs)
             if not reply:
                 reply = 'I don\'t know anything about {}.'.format(topic)
             chat_post_message(channel, reply)
@@ -83,15 +82,18 @@ class Snacks(Registrable):
         if user:
             cfd = self.cfds.get(user, {})
             topic = get_topic(cfd)
-            reply = self._call('discuss', (topic, cfd, NUM, MIN, MAX))
+            fargs = (topic, cfd, NUM, MIN, MAX)
+            reply = call_service('circus', 'discuss', fargs)
             if not reply:
                 reply = '<@{}> doesn\'t know anything.'.format(user)
             chat_post_message(channel, reply)
 
-        user, topic = search(r'(?s)^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$', text)
+        user, topic = search(r'(?s)^<@U3ULC7DBP> imitate <@([^>]+)> (.+)$',
+                             text)
         if user:
             cfd = self.cfds.get(user, {})
-            reply = self._call('discuss', (topic, cfd, NUM, MIN, MAX))
+            fargs = (topic, cfd, NUM, MIN, MAX)
+            reply = call_service('circus', 'discuss', fargs)
             if not reply:
                 reply = '<@{}> doesn\'t know anything about {}.'.format(
                     user, topic)
@@ -102,11 +104,11 @@ class Snacks(Registrable):
             chat_post_message(channel, topic)
 
         if search(r'(?s)^<@U3ULC7DBP> snack me$', text):
-            for snack in self._call('snack_me', ()):
+            for snack in call_service('bread', 'snack_me', ()):
                 reactions_add(snack, channel, obj['ts'])
 
         if search(r'(?s)^<@U3ULC7DBP> who .+$', text):
-            reply = self._call('who', (self.users, ))
+            reply = call_service('circus', 'who', (self.users, ))
             chat_post_message(channel, reply)
 
         return Response()

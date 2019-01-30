@@ -19,6 +19,7 @@ from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqae
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
+from common.service.service import call_service  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
@@ -57,9 +58,6 @@ class Statsplus(Registrable):
     @staticmethod
     def _title():
         return 'statsplus'
-
-    def _reload_data(self, **kwargs):
-        return {'statslab': ['parse_box'], 'uniforms': ['jersey_colors']}
 
     def _shadow_data(self, **kwargs):
         return self._shadow_scores() + self._shadow_table()
@@ -182,10 +180,8 @@ class Statsplus(Registrable):
             log_in = EXTRACT_GAME_LOGS + '/log_{}.txt'.format(num)
 
         log_out = os.path.join(GAMES_DIR, 'log_' + num + '.json')
-        self._call('parse_log', (log_in, log_out, date))
-
-        services = {'jersey_colors': self._attr('jersey_colors')}
-        return self._call('parse_box', (box_in, box_out, date), **services)
+        call_service('statslab', 'parse_log', (log_in, log_out, date))
+        return call_service('statslab', 'parse_box', (box_in, box_out, date))
 
     def _save_scores(self, date, text):
         self.data['scores'][date] = {}

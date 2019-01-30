@@ -95,14 +95,6 @@ class StatsplusTest(Test):
 
         return statsplus
 
-    def test_reload_data(self):
-        statsplus = self.create_statsplus(_data())
-        actual = statsplus._reload_data(date=DATE_10260602)
-        expected = {'statslab': ['parse_box'], 'uniforms': ['jersey_colors']}
-        self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
     def test_shadow_data(self):
         date = encode_datetime(DATE_08310000)
         scores = {date: {'2998': 'T31 4, TLA 2'}}
@@ -393,7 +385,7 @@ class StatsplusTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
-    @mock.patch.object(Statsplus, '_call')
+    @mock.patch('tasks.statsplus.statsplus.call_service')
     def test_parse_score__isfile(self, mock_call, mock_isfile):
         mock_isfile.return_value = True
 
@@ -407,11 +399,8 @@ class StatsplusTest(Test):
         self.assertNotCalled(mock_call, self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
-    @mock.patch.object(Statsplus, '_call')
-    @mock.patch.object(Statsplus, '_attr')
-    def test_parse_score__none(self, mock_attr, mock_call, mock_isfile):
-        mock_colors = mock.Mock()
-        mock_attr.return_value = mock_colors
+    @mock.patch('tasks.statsplus.statsplus.call_service')
+    def test_parse_score__none(self, mock_call, mock_isfile):
         mock_call.return_value = None
         mock_isfile.return_value = False
 
@@ -425,20 +414,15 @@ class StatsplusTest(Test):
         log_in = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
         log_out = os.path.join(GAMES_DIR, 'log_2998.json')
         mock_call.assert_has_calls([
-            mock.call('parse_log', (log_in, log_out, date)),
-            mock.call(
-                'parse_box', (box_in, box_out, date),
-                jersey_colors=mock_colors),
+            mock.call('statslab', 'parse_log', (log_in, log_out, date)),
+            mock.call('statslab', 'parse_box', (box_in, box_out, date)),
         ])
         mock_isfile.assert_called_once_with(box_out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
-    @mock.patch.object(Statsplus, '_call')
-    @mock.patch.object(Statsplus, '_attr')
-    def test_parse_score__started(self, mock_attr, mock_call, mock_isfile):
-        mock_colors = mock.Mock()
-        mock_attr.return_value = mock_colors
+    @mock.patch('tasks.statsplus.statsplus.call_service')
+    def test_parse_score__started(self, mock_call, mock_isfile):
         mock_call.return_value = True
         mock_isfile.return_value = False
 
@@ -452,20 +436,15 @@ class StatsplusTest(Test):
         log_in = os.path.join(STATSPLUS_GAME_LOGS, 'log_2998.html')
         log_out = os.path.join(GAMES_DIR, 'log_2998.json')
         mock_call.assert_has_calls([
-            mock.call('parse_log', (log_in, log_out, date)),
-            mock.call(
-                'parse_box', (box_in, box_out, date),
-                jersey_colors=mock_colors),
+            mock.call('statslab', 'parse_log', (log_in, log_out, date)),
+            mock.call('statslab', 'parse_box', (box_in, box_out, date)),
         ])
         mock_isfile.assert_called_once_with(box_out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
-    @mock.patch.object(Statsplus, '_call')
-    @mock.patch.object(Statsplus, '_attr')
-    def test_parse_score__true(self, mock_attr, mock_call, mock_isfile):
-        mock_colors = mock.Mock()
-        mock_attr.return_value = mock_colors
+    @mock.patch('tasks.statsplus.statsplus.call_service')
+    def test_parse_score__true(self, mock_call, mock_isfile):
         mock_call.return_value = True
         mock_isfile.return_value = False
 
@@ -479,10 +458,8 @@ class StatsplusTest(Test):
         log_in = os.path.join(EXTRACT_GAME_LOGS, 'log_2998.txt')
         log_out = os.path.join(GAMES_DIR, 'log_2998.json')
         mock_call.assert_has_calls([
-            mock.call('parse_log', (log_in, log_out, date)),
-            mock.call(
-                'parse_box', (box_in, box_out, date),
-                jersey_colors=mock_colors),
+            mock.call('statslab', 'parse_log', (log_in, log_out, date)),
+            mock.call('statslab', 'parse_box', (box_in, box_out, date)),
         ])
         mock_isfile.assert_called_once_with(box_out)
         self.assertNotCalled(self.mock_open, self.mock_handle.write)

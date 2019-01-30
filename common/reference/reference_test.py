@@ -30,7 +30,7 @@ DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 PLAYERS = {'P123': 'T31 1 L R Jim Alfa', 'P456': 'T32 42 R L Jim Beta'}
 
 
-class EncyclopediaTest(unittest.TestCase):
+class ReferenceTest(unittest.TestCase):
     def setUp(self):
         reference = Reference(date=DATE_10260602, e=ENV)
         reference.data['players'] = PLAYERS
