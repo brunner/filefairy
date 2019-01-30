@@ -37,9 +37,14 @@ EVENT_MAP = {
     Event.BATTER_SINGLE_INFIELD: (r'^\d-\d: SINGLE \({path}, {zone}\) \(infiel'
                                   r'd hit\)$'),
     Event.BATTER_DOUBLE: (r'^\d-\d: DOUBLE \({path}, {zone}\)$'),
+    Event.BATTER_DOUBLE_STRETCH: (r'^\d-\d: DOUBLE \({path}, {zone}\) - OUT at'
+                                  r'third base trying to stretch hit\.$'),
     Event.BATTER_TRIPLE: (r'^\d-\d: TRIPLE \({path}, {zone}\)$'),
     Event.BATTER_HOME_RUN: (r'^\d-\d: (?:SOLO|\d-RUN|GRAND SLAM) HOME RUN \({p'
                             r'ath}, {zone}\)\, Distance : {distance} ft$'),
+    Event.BATTER_HOME_RUN_INSIDE: (r'^\d-\d: (?:SOLO|\d-RUN|GRAND SLAM) HOME R'
+                                   r'UN \({path}, {zone}\)\, \(Inside the Park'
+                                   r'\)$'),
     Event.BATTER_REACH_DROPPED: (r'^\d-\d: Reached via error on a dropped thro'
                                  r'w from {position}, {scoring} \(Groundball, '
                                  r'{zone}\)$'),
@@ -61,17 +66,19 @@ EVENT_MAP = {
                                r'} \(Groundball, {zone}\)$'),
     Event.BATTER_SAC_BUNT: (r'^\d-\d: Sac Bunt to {zone} - play at first, batt'
                             r'er OUT! {scoring}$'),
-    Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt - play at second, runner OUT'
+    Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt - play at {base}, runner OUT'
                                r' -> throw to first, DP!$'),
+    Event.BATTER_SAC_BUNT_HIT: (r'^\d-\d: Sac Bunt to {zone} - play at first, '
+                                r'batter safe!$'),
     Event.BATTER_SAC_BUNT_OUT: (r'^\d-\d: Sac Bunt to {zone} - play at {base},'
                                 r' runner OUT! {scoring}$'),
-    Event.BATTER_SAC_BUNT_SAFE: (r'^\d-\d: Sac Bunt to {zone} - play at first,'
-                                 r' batter safe!$'),
+    Event.BATTER_SAC_BUNT_SAFE: (r'^\d-\d: Sac Bunt to {zone} - play at {base}'
+                                 r', runner safe!$'),
     Event.CATCHER_PASSED_BALL: (r'^Passed Ball!$'),
     Event.CATCHER_PICK_OUT: (r'^Pickoff Throw by Catcher to {base} - Out!$'),
     Event.FIELDER_THROWING: (r'^Throwing error, {scoring}$'),
     Event.PITCHER_PICK_ERR: (r'^Pickoff Throw to {base} - Error! {scoring}$'),
-    Event.PITCHER_PICK_OUT: (r'^Pickoff Throw to {base} - Out! {scoring}$'),
+    Event.PITCHER_PICK_OUT: (r'^Pickoff Throw to {base} - Out!(?: [\w-]+)?$'),
     Event.PITCHER_BALK: (r'^Balk!$'),
     Event.PITCHER_HIT_BY_PITCH: (r'^\d-\d: Hit by Pitch$'),
     Event.PITCHER_WILD_PITCH: (r'^Wild Pitch!$'),
@@ -92,6 +99,7 @@ EVENT_MAP = {
     Event.PITCHER_STRIKE_SWING_WILD: (r'^\d-\d: Strikes out swinging wild pitc'
                                       r'h, reaches first!$'),
     Event.RUNNER_STEAL: (r'^{player} steals {base} base(?: \(no throw\))?$'),
+    Event.RUNNER_STEAL_HOME_OUT: (r'^Steal of home, {player} is out$'),
     Event.RUNNER_STEAL_OUT: (r'^{player} is caught stealing {base} base {scori'
                              r'ng}$'),
     Event.RUNNER_STEAL_THROWING: (r'^{player} steals {base}, throwing error, E'
@@ -100,6 +108,8 @@ EVENT_MAP = {
     Event.PLAYER_SCORE: (r'^{player} scores$'),
     Event.BASE_MOVE: (r'^Runner from {base} (?:tags up, SAFE at \w+|tries for '
                       r'[2|3]\w+, SAFE)(?:, no throw by \w+)?$'),
+    Event.BASE_MOVE_RUNDOWN: (r'^Runner from {base} tries for [2|3]\w+, SAFE a'
+                              r'fter rundown.$'),
     Event.BASE_MOVE_THROW: (r'^Runner from {base} (?:tags up, SAFE at \w+ with'
                             r' throw by \w+|tries for [2|3]\w+, SAFE, throw by'
                             r' \w+ made to \w+)$'),
