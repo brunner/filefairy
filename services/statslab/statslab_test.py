@@ -124,7 +124,7 @@ class StatslabTest(unittest.TestCase):
         inputs = [
             ('24322', 'T47 16 R R Jarid Joseph'),
             ('35903', 'T47 35 R R Jose Fernandez'),
-            ('54297', 'T?? 56 R R Lineu Murraas'),
+            ('54297', 'T30 56 R R Lineu Murraas'),
         ]
 
         for num, expected in inputs:

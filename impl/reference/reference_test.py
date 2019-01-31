@@ -120,9 +120,9 @@ class ReferenceTest(Test):
 
     def test_get_team(self):
         reference = self.create_reference(_data(players=PLAYERS))
-        inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T??')]
+        inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T30')]
         for num, expected in inputs:
-            actual = reference._get(num, 0, 'T??')
+            actual = reference._get(num, 0, 'T30')
             self.assertEqual(actual, expected)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)

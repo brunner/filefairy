@@ -16,7 +16,9 @@ from common.json_.json_ import dumps  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.re_.re_ import search  # noqa
 from common.re_.re_ import findall  # noqa
+from common.reference.reference import put_players  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
+from common.teams.teams import decoding_to_encoding_sub  # noqa
 
 DOWNLOAD_DIR = re.sub(r'/services/leaguefile', '/resource/download', _path)
 DOWNLOAD_BOX_SCORES = os.path.join(DOWNLOAD_DIR, 'news/html/box_scores')
@@ -28,15 +30,15 @@ EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 
 
 def _repl(m):
-    if 'teams' in m.group(3):
-        return m.group(4)
+    encoding = search(r'player_(\d+)\.html', m.group(1))
+    if encoding:
+        return 'P' + encoding
 
-    s = 'https://statsplus.net/oblootp/reports/news/html'
-    return m.group(1) + s + ''.join(m.group(3, 4, 5))
+    return m.group(2)
 
 
 def _sub(text):
-    return re.sub(r'(?s)(<a href=")(..)([^"]+">)(.+?)(</a>)', _repl, text)
+    return re.sub(r'(?s)(<a href="[^"]+">)(.+?)</a>', _repl, text)
 
 
 def download_file(url):
@@ -114,6 +116,7 @@ def extract_file(start):
         if date >= end:
             end = date + datetime.timedelta(days=1)
 
+    encodings = set()
     for name in ['injuries', 'news', 'transactions']:
         path = os.path.join(DOWNLOAD_LEAGUES, 'league_100_{}.txt'.format(name))
 
@@ -121,6 +124,9 @@ def extract_file(start):
         if os.path.isfile(path):
             with open(path, 'r', encoding='iso-8859-1') as f:
                 read = re.sub(r'[ ]+', ' ', f.read())
+
+            read = _sub(decoding_to_encoding_sub(read))
+            encodings.update(findall(r'(P\d+)\D', read))
 
             for m in findall(r'(\d{8})\t([^\n]+)\n', read.strip() + '\n'):
                 if not m:
@@ -138,10 +144,11 @@ def extract_file(start):
                 if key not in data:
                     data[key] = []
 
-                data[key].append(_sub(m[1]))
+                data[key].append(m[1])
 
         with open(os.path.join(EXTRACT_LEAGUES, name + '.json'), 'w') as f:
             f.write(dumps(data) + '\n')
 
-    return end
+    put_players(list(sorted(encodings)))
 
+    return end

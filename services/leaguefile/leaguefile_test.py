@@ -36,6 +36,20 @@ EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 FILE_HOST = 'https://statsplus.net/oblootp/files/'
 ISO = 'iso-8859-1'
 
+PLAYERS = [
+    'P10', 'P1401', 'P1407', 'P1473', 'P18826', 'P20199', 'P20225', 'P206',
+    'P23261', 'P23692', 'P23933', 'P24210', 'P25154', 'P25200', 'P26347',
+    'P26604', 'P26879', 'P27015', 'P27200', 'P27218', 'P27521', 'P27957',
+    'P29637', 'P29705', 'P29724', 'P29736', 'P29739', 'P30248', 'P30490',
+    'P30918', 'P31993', 'P32323', 'P33166', 'P33611', 'P33777', 'P33949',
+    'P33952', 'P34118', 'P34338', 'P35840', 'P35889', 'P36064', 'P36477',
+    'P37214', 'P37330', 'P38782', 'P38843', 'P38870', 'P38917', 'P38928',
+    'P39655', 'P39926', 'P42310', 'P44974', 'P49108', 'P49545', 'P50287',
+    'P52197', 'P52484', 'P53121', 'P53305', 'P53414', 'P53701', 'P53711',
+    'P53987', 'P54515', 'P54894', 'P55084', 'P55093', 'P55104', 'P55237',
+    'P55254', 'P55336', 'P59192', 'P61570'
+]
+
 TESTDATA = get_testdata()
 
 
@@ -79,12 +93,13 @@ class LeaguefileTest(unittest.TestCase):
         ])
         mock_chdir.assert_called_once_with(DOWNLOAD_DIR)
 
+    @mock.patch('services.leaguefile.leaguefile.put_players')
     @mock.patch('services.leaguefile.leaguefile.open', create=True)
     @mock.patch('services.leaguefile.leaguefile.os.listdir')
     @mock.patch('services.leaguefile.leaguefile.os.path.isfile')
     @mock.patch('services.leaguefile.leaguefile.check_output')
     def test_extract_file(self, mock_check, mock_isfile, mock_listdir,
-                          mock_open):
+                          mock_open, mock_put):
         mock_isfile.return_value = True
         mock_listdir.return_value = [
             'game_box_2449.html', 'game_box_2469.html', 'game_box_2476.html'
@@ -124,6 +139,7 @@ class LeaguefileTest(unittest.TestCase):
         ])
         mock_listdir.assert_called_once_with(DOWNLOAD_BOX_SCORES)
         mock_open.assert_has_calls(suite.calls())
+        mock_put.assert_called_once_with(PLAYERS)
         suite.verify()
 
 

@@ -92,7 +92,7 @@ def parse_player(link):
 
     team = search(r'href=\"..\/teams\/team_\d{2}.html">(\w+)</a>', subtext)
     if not team:
-        team = 'T??'
+        team = 'T30'
     bats, throws = search(r'Bats: (\w)[^T]+Throws: (\w)', text)
     data = [team, number, bats, throws, name]
 

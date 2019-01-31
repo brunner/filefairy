@@ -7,8 +7,8 @@ from functools import partial
 
 
 def _team(encoding, abbreviation, hometown, nickname):
-    special1 = encoding in ['TCH', 'TLA', 'TNY']
-    special2 = encoding in ['T35', 'T36', 'T44', 'T45', 'T48', 'T49']
+    special1 = encoding in ['T30', 'TCH', 'TLA', 'TNY']
+    special2 = encoding in ['T30', 'T35', 'T36', 'T44', 'T45', 'T48', 'T49']
 
     if encoding == 'TCH':
         encodings = ['T35', 'T36']
@@ -33,6 +33,7 @@ def _team(encoding, abbreviation, hometown, nickname):
 
 
 TEAMS = [
+    _team('T30', 'OBL', 'OBL', 'OBL'),
     _team('T31', 'ARI', 'Arizona', 'Diamondbacks'),
     _team('T32', 'ATL', 'Atlanta', 'Braves'),
     _team('T33', 'BAL', 'Baltimore', 'Orioles'),
@@ -160,7 +161,7 @@ def encoding_to_teamid(encoding):
 def icon_absolute(encoding, text):
     lower = encoding_to_lower(encoding)
     ic = 'position-absolute lt-10p'
-    sc = 'd-block text-truncate pl-4'
+    sc = 'd-block pl-4'
 
     img = IMG_TAG.format(ICON_LINK.format(lower), ic)
     span = SPAN_TAG.format(text, sc)

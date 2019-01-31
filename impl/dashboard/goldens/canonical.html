@@ -214,7 +214,7 @@ button.close {
 <div class="head position-relative py-2">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
      width="16" height="16" border="0" class="position-absolute lt-10p">
-<div class="small text-secondary text-truncate pl-4">Dashboard &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
+<div class="small text-secondary pl-4">Dashboard &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
 </div>
 </header>
@@ -284,35 +284,6 @@ NameError: name 'variable' is not defined
 
 </div>
 <!-- $(dashboard.exceptions) -->
-
-<!-- ^(dashboard.filter) -->
-<div class="container anchor" id="filter">
-
-<!-- ^(common.heading) -->
-<div class="row">
-<div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-magnifying-glass text-secondary"></span>Filter
-</div>
-</div>
-</div>
-<!-- $(common.heading) -->
-
-<!-- ^(common.form) -->
-<div class="row">
-<div class="col-12">
-<nav class="navbar navbar-light bg-light mt-3 p-0">
-<form class="w-100">
-<input class="form-control border mr-sm-2" type="search" placeholder="Search"
-       aria-label="Search">
-</form>
-</nav>
-</div>
-</div>
-<!-- $(common.form) -->
-
-</div>
-<!-- $(dashboard.filter) -->
 
 <!-- ^(dashboard.logs) -->
 <div class="container anchor" id="logs">
@@ -384,34 +355,6 @@ NameError: name 'variable' is not defined
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
 
-<!-- ^(common.form_js) -->
-<script>
-var filter = '';
-$('.form-control').on('change keyup paste mouseup', function(e) {
-  var val = $(this).val().toLowerCase();
-  if (val != filter) {
-    filter = val;
-    $.each(['logs'], function(i, v) {
-      container = $('#' + v);
-      $('tbody td', container).each(function(e) {
-        if ($(this).text().toLowerCase().indexOf(filter) != -1) {
-          $(this).removeClass('d-none');
-        } else {
-          $(this).addClass('d-none');
-        }
-      });
-      $('table', container).each(function(e) {
-        if ($(this).find('tbody td:not(.d-none)').length != 0) {
-          $(this).removeClass('d-none');
-        } else {
-          $(this).addClass('d-none');
-        }
-      });
-    })
-  }
-});
-</script>
-<!-- $(common.form_js) -->
 
 </body>
 

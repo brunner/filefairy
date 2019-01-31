@@ -12,7 +12,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/reference', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.elements.elements import anchor  # noqa
 from common.reference.reference import player_to_bats  # noqa
+from common.reference.reference import player_to_link  # noqa
+from common.reference.reference import player_to_link_sub  # noqa
 from common.reference.reference import player_to_name  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.reference.reference import player_to_number  # noqa
@@ -29,6 +32,8 @@ DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
 PLAYERS = {'P123': 'T31 1 L R Jim Alfa', 'P456': 'T32 42 R L Jim Beta'}
 
+STATSPLUS_PLAYER = 'https://statsplus.net/oblootp/player/'
+
 
 class ReferenceTest(unittest.TestCase):
     def setUp(self):
@@ -42,6 +47,22 @@ class ReferenceTest(unittest.TestCase):
         for num, expected in inputs:
             actual = player_to_bats(num)
             self.assertEqual(actual, expected)
+
+    def test_player_to_link(self):
+        inputs = [
+            ('P123', anchor(STATSPLUS_PLAYER + '123', 'Jim Alfa')),
+            ('P456', anchor(STATSPLUS_PLAYER + '456', 'Jim Beta')),
+            ('P789', anchor(STATSPLUS_PLAYER + '789', 'Jim Unknown')),
+        ]
+        for num, expected in inputs:
+            actual = player_to_link(num)
+            self.assertEqual(actual, expected)
+
+    def test_player_to_link_sub(self):
+        actual = player_to_link_sub('P123 (1-0, 0.00 ERA)')
+        expected = ' '.join(
+            [anchor(STATSPLUS_PLAYER + '123', 'Jim Alfa'), '(1-0, 0.00 ERA)'])
+        self.assertEqual(actual, expected)
 
     def test_player_to_name(self):
         inputs = [('P123', 'Jim Alfa'), ('P456', 'Jim Beta'),
@@ -62,7 +83,7 @@ class ReferenceTest(unittest.TestCase):
             self.assertEqual(actual, expected)
 
     def test_player_to_team(self):
-        inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T??')]
+        inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T30')]
         for num, expected in inputs:
             actual = player_to_team(num)
             self.assertEqual(actual, expected)

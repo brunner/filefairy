@@ -3,21 +3,11 @@
 
 {% block content %}
 
-<!-- ^(news.filter) -->
-<div class="container anchor" id="filter">
-
-{{ common.heading('magnifying-glass', 'Filter') }}
-
-{{ common.form() }}
-
-</div>
-<!-- $(news.filter) -->
-
 {% if injuries %}
 <!-- ^(news.injuries) -->
-<div class="container anchor" id="injuries"s>
+<div class="container">
 
-{{ common.heading('pulse', 'Injuries') }}
+{{ common.topper('Injury Log') }}
 
 <!-- ^(news.row) -->
 <div class="row">
@@ -41,9 +31,9 @@
 
 {% if news %}
 <!-- ^(news.news) -->
-<div class="container anchor" id="news">
+<div class="container">
 
-{{ common.heading('rss', 'News') }}
+{{ common.topper('News Log') }}
 
 <!-- ^(news.row) -->
 <div class="row">
@@ -67,9 +57,9 @@
 
 {% if transactions %}
 <!-- ^(news.transactions) -->
-<div class="container anchor" id="transactions">
+<div class="container">
 
-{{ common.heading('loop-circular', 'Transactions') }}
+{{ common.topper('Major Transactions Log') }}
 
 <!-- ^(news.row) -->
 <div class="row">
@@ -91,8 +81,4 @@
 <!-- $(news.transactions) -->
 {% endif %}
 
-{% endblock %}
-
-{% block script %}
-{{ common.form_js(['injuries', 'news', 'transactions']) }}
 {% endblock %}

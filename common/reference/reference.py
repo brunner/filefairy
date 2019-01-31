@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 """Common (non-reloadable) util methods for safely using the reference."""
 
+import os
+import re
+import sys
 from functools import partial
 
+_path = os.path.dirname(os.path.abspath(__file__))
 _reference = None
+sys.path.append(re.sub(r'/tasks/news', '', _path))
+
+from common.elements.elements import anchor  # noqa
 
 
 def _get(num, index, default):
@@ -33,6 +40,31 @@ def player_to_bats(e):
         The player's batting handedness.
     """
     return _get(e, 2, 'R')
+
+
+def player_to_link(e):
+    """Gets the player's link.
+
+    Args:
+        e: The player's encoding.
+
+    Returns:
+        The player's link.
+    """
+    url = 'https://statsplus.net/oblootp/player/' + e.lstrip('P')
+    return anchor(url, _get(e, 4, 'Jim Unknown'))
+
+
+def player_to_link_sub(text):
+    """Substitutes all player encodings with the corresponding links.
+
+    Args:
+        text: The text to replace.
+
+    Returns:
+        The substituted text.
+    """
+    return _sub(partial(_repl, player_to_link), text)
 
 
 def player_to_name(e):
@@ -80,7 +112,7 @@ def player_to_team(e):
     Returns:
         The player's team.
     """
-    return _get(e, 0, 'T??')
+    return _get(e, 0, 'T30')
 
 
 def player_to_throws(e):

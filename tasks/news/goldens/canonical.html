@@ -17,7 +17,7 @@
       crossorigin="anonymous">
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-<title>Fairylab · news</title>
+<title>Fairylab · News</title>
 
 <style>
 html {
@@ -214,7 +214,7 @@ button.close {
 <div class="head position-relative py-2">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
      width="16" height="16" border="0" class="position-absolute lt-10p">
-<div class="small text-secondary text-truncate pl-4">news &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
+<div class="small text-secondary pl-4">News &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
 </div>
 </header>
@@ -223,47 +223,30 @@ button.close {
 <!-- ^(base.main) -->
 <main role="main" class="pt-3">
 
-<!-- ^(news.filter) -->
-<div class="container anchor" id="filter">
-
-<!-- ^(common.heading) -->
-<div class="row">
-<div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-magnifying-glass text-secondary"></span>Filter
-</div>
-</div>
-</div>
-<!-- $(common.heading) -->
-
-<!-- ^(common.form) -->
-<div class="row">
-<div class="col-12">
-<nav class="navbar navbar-light bg-light mt-3 p-0">
-<form class="w-100">
-<input class="form-control border mr-sm-2" type="search" placeholder="Search"
-       aria-label="Search">
-</form>
-</nav>
-</div>
-</div>
-<!-- $(common.form) -->
-
-</div>
-<!-- $(news.filter) -->
-
 <!-- ^(news.injuries) -->
-<div class="container anchor" id="injuries"s>
+<div class="container">
 
-<!-- ^(common.heading) -->
+<!-- ^(common.topper) -->
 <div class="row">
 <div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-pulse text-secondary"></span>Injuries
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Injury Log</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
 </div>
 </div>
-</div>
-<!-- $(common.heading) -->
+<!-- $(common.topper) -->
 
 <!-- ^(news.row) -->
 <div class="row">
@@ -272,12 +255,12 @@ button.close {
 <div class="col-12">
 
 <!-- ^(common.table) -->
-<table class="small table border mt-3">
+<table class="small table border mb-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col">Monday, July 4th, 2022</td>
+<td scope="col" class="font-weight-bold text-dark">Monday, July 4th, 2022</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -285,7 +268,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row">Pittsburgh Pirates: <a href="../players/player_35155.html">John Barbato</a> diagnosed with a sore forearm, is day-to-day for 5 days.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/35155">John Barbato</a> diagnosed with a sore forearm, is day-to-day for 5 days.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -294,12 +277,12 @@ button.close {
 <!-- $(common.table) -->
 
 <!-- ^(common.table) -->
-<table class="small table border mt-3">
+<table class="small table border mb-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col">Sunday, July 3th, 2022</td>
+<td scope="col" class="font-weight-bold text-dark">Sunday, July 3th, 2022</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -307,22 +290,22 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row">Los Angeles Angels: SP <a href="../players/player_37318.html">Ty Blach</a> was injured while pitching.  The Diagnosis: back stiffness. This is a day-to-day injury expected to last 5 days.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/37318">Ty Blach</a> was injured while pitching. Diagnosis: back stiffness. This is a day-to-day injury expected to last 5 days.</span></td>
 </tr>
 <tr>
-<td scope="row">Washington Nationals: RP <a href="../players/player_32624.html">Hunter Strickland</a> was injured while pitching.  The Diagnosis: back spasms. This is a day-to-day injury expected to last 5 days.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/32624">Hunter Strickland</a> was injured while pitching. Diagnosis: back spasms. This is a day-to-day injury expected to last 5 days.</span></td>
 </tr>
 <tr>
-<td scope="row">Tampa Bay Rays: RP <a href="../players/player_1958.html">Javier Medina</a> was injured while pitching.  The diagnosis is not yet known.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/1958">Javier Medina</a> was injured while pitching. The diagnosis is not yet known.</span></td>
 </tr>
 <tr>
-<td scope="row">Pittsburgh Pirates: SP <a href="../players/player_35155.html">John Barbato</a> was injured while pitching.  The diagnosis is not yet known.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/35155">John Barbato</a> was injured while pitching. The diagnosis is not yet known.</span></td>
 </tr>
 <tr>
-<td scope="row">Pittsburgh Pirates: CF <a href="../players/player_1604.html">Carl Cester</a> was injured on a defensive play.  The diagnosis is not yet known.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">CF <a href="https://statsplus.net/oblootp/player/1604">Carl Cester</a> was injured on a defensive play. The diagnosis is not yet known.</span></td>
 </tr>
 <tr>
-<td scope="row">Detroit Tigers: RP <a href="../players/player_22457.html">Walker Buehler</a> was injured while pitching.  The diagnosis is not yet known.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/22457">Walker Buehler</a> was injured while pitching. The diagnosis is not yet known.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -340,17 +323,29 @@ button.close {
 <!-- $(news.injuries) -->
 
 <!-- ^(news.news) -->
-<div class="container anchor" id="news">
+<div class="container">
 
-<!-- ^(common.heading) -->
+<!-- ^(common.topper) -->
 <div class="row">
 <div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-rss text-secondary"></span>News
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">News Log</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
 </div>
 </div>
-</div>
-<!-- $(common.heading) -->
+<!-- $(common.topper) -->
 
 <!-- ^(news.row) -->
 <div class="row">
@@ -359,12 +354,12 @@ button.close {
 <div class="col-12">
 
 <!-- ^(common.table) -->
-<table class="small table border mt-3">
+<table class="small table border mb-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col">Monday, July 4th, 2022</td>
+<td scope="col" class="font-weight-bold text-dark">Monday, July 4th, 2022</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -372,10 +367,10 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row">1B <a href="../players/player_33892.html">Viosergy Rosa</a> of the Chicago White Sox honored: Wins the MLB AL Player of the Week Award.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">1B <a href="https://statsplus.net/oblootp/player/33892">Viosergy Rosa</a> wins the MLB AL Player of the Week Award.</span></td>
 </tr>
 <tr>
-<td scope="row">1B <a href="../players/player_27194.html">Freddie Freeman</a> of the Atlanta Braves honored: Wins the MLB NL Player of the Week Award.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">1B <a href="https://statsplus.net/oblootp/player/27194">Freddie Freeman</a> wins the MLB NL Player of the Week Award.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -393,17 +388,29 @@ button.close {
 <!-- $(news.news) -->
 
 <!-- ^(news.transactions) -->
-<div class="container anchor" id="transactions">
+<div class="container">
 
-<!-- ^(common.heading) -->
+<!-- ^(common.topper) -->
 <div class="row">
 <div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-loop-circular text-secondary"></span>Transactions
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Major Transactions Log</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
 </div>
 </div>
-</div>
-<!-- $(common.heading) -->
+<!-- $(common.topper) -->
 
 <!-- ^(news.row) -->
 <div class="row">
@@ -412,12 +419,12 @@ button.close {
 <div class="col-12">
 
 <!-- ^(common.table) -->
-<table class="small table border mt-3">
+<table class="small table border mb-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col">Monday, July 4th, 2022</td>
+<td scope="col" class="font-weight-bold text-dark">Monday, July 4th, 2022</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -425,19 +432,19 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row">San Diego Padres: Signed <a href="../players/player_56862.html">Antonio Marquis</a> to a minor league contract with a signing bonus of $180,000.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Signed <a href="https://statsplus.net/oblootp/player/56862">Antonio Marquis</a> to a minor league contract with a signing bonus of $180,000.</span></td>
 </tr>
 <tr>
-<td scope="row">The Detroit Tigers traded 25-year-old minor league left fielder <a href="../players/player_28672.html">Nick Plummer</a> to the Milwaukee Brewers, getting 33-year-old closer <a href="../players/player_36352.html">Phil Klein</a> in return.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Detroit Tigers traded 25-year-old minor league left fielder <a href="https://statsplus.net/oblootp/player/28672">Nick Plummer</a> to the Milwaukee Brewers, getting 33-year-old closer <a href="https://statsplus.net/oblootp/player/36352">Phil Klein</a> in return.</span></td>
 </tr>
 <tr>
-<td scope="row">The Detroit Tigers traded 25-year-old minor league left fielder <a href="../players/player_25202.html">Wesley Rodriguez</a> and 31-year-old left fielder <a href="../players/player_33588.html">Michael A. Taylor</a> to the Chicago Cubs, getting 30-year-old right fielder <a href="../players/player_35161.html">Drew Vettleson</a> in return.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Detroit Tigers traded 25-year-old minor league left fielder <a href="https://statsplus.net/oblootp/player/25202">Wesley Rodriguez</a> and 31-year-old left fielder <a href="https://statsplus.net/oblootp/player/33588">Michael A. Taylor</a> to the Chicago Cubs, getting 30-year-old right fielder <a href="https://statsplus.net/oblootp/player/35161">Drew Vettleson</a> in return.</span></td>
 </tr>
 <tr>
-<td scope="row">The Detroit Tigers traded 21-year-old minor league shortstop <a href="../players/player_32327.html">Jesus Martinez</a> to the Philadelphia Phillies, getting 28-year-old left fielder <a href="../players/player_37237.html">Mitch Nay</a> in return.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Detroit Tigers traded 21-year-old minor league shortstop <a href="https://statsplus.net/oblootp/player/32327">Jesus Martinez</a> to the Philadelphia Phillies, getting 28-year-old left fielder <a href="https://statsplus.net/oblootp/player/37237">Mitch Nay</a> in return.</span></td>
 </tr>
 <tr>
-<td scope="row">The Minnesota Twins traded 25-year-old first baseman <a href="../players/player_39581.html">Lewin Diaz</a> to the Chicago Cubs, getting 30-year-old starting pitcher <a href="../players/player_37975.html">Matt Anderson</a>, 19-year-old minor league starting pitcher <a href="../players/player_22921.html">Juan Monreal</a> and 21-year-old minor league catcher <a href="../players/player_55093.html">Jonathan Salazar</a> in return.</td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Minnesota Twins traded 25-year-old first baseman <a href="https://statsplus.net/oblootp/player/39581">Lewin Diaz</a> to the Chicago Cubs, getting 30-year-old starting pitcher <a href="https://statsplus.net/oblootp/player/37975">Matt Anderson</a>, 19-year-old minor league starting pitcher <a href="https://statsplus.net/oblootp/player/22921">Juan Monreal</a> and 21-year-old minor league catcher <a href="https://statsplus.net/oblootp/player/55093">Jonathan Salazar</a> in return.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -467,34 +474,6 @@ button.close {
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
 
-<!-- ^(common.form_js) -->
-<script>
-var filter = '';
-$('.form-control').on('change keyup paste mouseup', function(e) {
-  var val = $(this).val().toLowerCase();
-  if (val != filter) {
-    filter = val;
-    $.each(['injuries', 'news', 'transactions'], function(i, v) {
-      container = $('#' + v);
-      $('tbody td', container).each(function(e) {
-        if ($(this).text().toLowerCase().indexOf(filter) != -1) {
-          $(this).removeClass('d-none');
-        } else {
-          $(this).addClass('d-none');
-        }
-      });
-      $('table', container).each(function(e) {
-        if ($(this).find('tbody td:not(.d-none)').length != 0) {
-          $(this).removeClass('d-none');
-        } else {
-          $(this).addClass('d-none');
-        }
-      });
-    })
-  }
-});
-</script>
-<!-- $(common.form_js) -->
 
 </body>
 

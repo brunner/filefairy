@@ -30,16 +30,6 @@
 {% endif %}
 
 {% if logs %}
-<!-- ^(dashboard.filter) -->
-<div class="container anchor" id="filter">
-
-{{ common.heading('magnifying-glass', 'Filter') }}
-
-{{ common.form() }}
-
-</div>
-<!-- $(dashboard.filter) -->
-
 <!-- ^(dashboard.logs) -->
 <div class="container anchor" id="logs">
 
@@ -65,8 +55,4 @@
 <!-- $(dashboard.logs) -->
 {% endif %}
 
-{% endblock %}
-
-{% block script %}
-{{ common.form_js(['logs']) }}
 {% endblock %}

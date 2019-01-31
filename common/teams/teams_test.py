@@ -41,10 +41,10 @@ DECODING_KEYS = [
 ]
 
 ENCODING_KEYS = [
-    'T31', 'T32', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40',
-    'T41', 'T42', 'T43', 'T44', 'T45', 'T46', 'T47', 'T48', 'T49', 'T50',
-    'T51', 'T52', 'T53', 'T54', 'T55', 'T56', 'T57', 'T58', 'T59', 'T60',
-    'TCH', 'TLA', 'TNY'
+    'T30', 'T31', 'T32', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39',
+    'T40', 'T41', 'T42', 'T43', 'T44', 'T45', 'T46', 'T47', 'T48', 'T49',
+    'T50', 'T51', 'T52', 'T53', 'T54', 'T55', 'T56', 'T57', 'T58', 'T59',
+    'T60', 'TCH', 'TLA', 'TNY'
 ]
 
 PRECODING_KEYS = [
@@ -81,7 +81,7 @@ class TeamsTest(unittest.TestCase):
 
     def test_encoding_to_abbreviation(self):
         abbreviations = [
-            'ARI', 'ATL', 'BAL', 'BOS', 'CWS', 'CHC', 'CIN', 'CLE', 'COL',
+            '', 'ARI', 'ATL', 'BAL', 'BOS', 'CWS', 'CHC', 'CIN', 'CLE', 'COL',
             'DET', 'MIA', 'HOU', 'KC', 'LAA', 'LAD', 'MIL', 'MIN', 'NYY',
             'NYM', 'OAK', 'PHI', 'PIT', 'SD', 'SEA', 'SF', 'STL', 'TB', 'TEX',
             'TOR', 'WAS', '', '', ''
@@ -92,17 +92,17 @@ class TeamsTest(unittest.TestCase):
 
     def test_encoding_to_decoding(self):
         decodings = [
-            'Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles',
-            'Boston Red Sox', 'Chicago White Sox', 'Chicago Cubs',
-            'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies',
-            'Detroit Tigers', 'Miami Marlins', 'Houston Astros',
-            'Kansas City Royals', 'Los Angeles Angels', 'Los Angeles Dodgers',
-            'Milwaukee Brewers', 'Minnesota Twins', 'New York Yankees',
-            'New York Mets', 'Oakland Athletics', 'Philadelphia Phillies',
-            'Pittsburgh Pirates', 'San Diego Padres', 'Seattle Mariners',
-            'San Francisco Giants', 'St. Louis Cardinals', 'Tampa Bay Rays',
-            'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals', '',
-            '', ''
+            '', 'Arizona Diamondbacks', 'Atlanta Braves',
+            'Baltimore Orioles', 'Boston Red Sox', 'Chicago White Sox',
+            'Chicago Cubs', 'Cincinnati Reds', 'Cleveland Indians',
+            'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins',
+            'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels',
+            'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins',
+            'New York Yankees', 'New York Mets', 'Oakland Athletics',
+            'Philadelphia Phillies', 'Pittsburgh Pirates', 'San Diego Padres',
+            'Seattle Mariners', 'San Francisco Giants', 'St. Louis Cardinals',
+            'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays',
+            'Washington Nationals', '', '', ''
         ]
         for encoding, decoding in zip(ENCODING_KEYS, decodings):
             actual = encoding_to_decoding(encoding)
@@ -110,38 +110,38 @@ class TeamsTest(unittest.TestCase):
 
     def test_encoding_to_decoding_sub(self):
         decodings = [
-            'Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles',
-            'Boston Red Sox', 'Chicago White Sox', 'Chicago Cubs',
-            'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies',
-            'Detroit Tigers', 'Miami Marlins', 'Houston Astros',
-            'Kansas City Royals', 'Los Angeles Angels', 'Los Angeles Dodgers',
-            'Milwaukee Brewers', 'Minnesota Twins', 'New York Yankees',
-            'New York Mets', 'Oakland Athletics', 'Philadelphia Phillies',
-            'Pittsburgh Pirates', 'San Diego Padres', 'Seattle Mariners',
-            'San Francisco Giants', 'St. Louis Cardinals', 'Tampa Bay Rays',
-            'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals',
-            'TCH', 'TLA', 'TNY'
+            'T30', 'Arizona Diamondbacks', 'Atlanta Braves',
+            'Baltimore Orioles', 'Boston Red Sox', 'Chicago White Sox',
+            'Chicago Cubs', 'Cincinnati Reds', 'Cleveland Indians',
+            'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins',
+            'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels',
+            'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins',
+            'New York Yankees', 'New York Mets', 'Oakland Athletics',
+            'Philadelphia Phillies', 'Pittsburgh Pirates', 'San Diego Padres',
+            'Seattle Mariners', 'San Francisco Giants', 'St. Louis Cardinals',
+            'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays',
+            'Washington Nationals', 'TCH', 'TLA', 'TNY'
         ]
         actual = encoding_to_decoding_sub(', '.join(ENCODING_KEYS))
         expected = ', '.join(decodings)
         self.assertEqual(actual, expected)
 
     def test_encoding_to_encodings(self):
-        encodings = [['T31'], ['T32'], ['T33'], ['T34'], ['T35'], ['T36'],
-                     ['T37'], ['T38'], ['T39'], ['T40'], ['T41'], ['T42'],
-                     ['T43'], ['T44'], ['T45'], ['T46'], ['T47'], ['T48'],
-                     ['T49'], ['T50'], ['T51'], ['T52'], ['T53'], ['T54'],
-                     ['T55'], ['T56'], ['T57'], ['T58'], ['T59'], ['T60'],
-                     ['T35', 'T36'], ['T44', 'T45'], ['T48', 'T49']]
+        encodings = [['T30'], ['T31'], ['T32'], ['T33'], ['T34'], ['T35'],
+                     ['T36'], ['T37'], ['T38'], ['T39'], ['T40'], ['T41'],
+                     ['T42'], ['T43'], ['T44'], ['T45'], ['T46'], ['T47'],
+                     ['T48'], ['T49'], ['T50'], ['T51'], ['T52'], ['T53'],
+                     ['T54'], ['T55'], ['T56'], ['T57'], ['T58'], ['T59'],
+                     ['T60'], ['T35', 'T36'], ['T44', 'T45'], ['T48', 'T49']]
         for encoding, inner_encodings in zip(ENCODING_KEYS, encodings):
             actual = encoding_to_encodings(encoding)
             self.assertEqual(actual, inner_encodings)
 
     def test_encoding_to_hometown(self):
         hometowns = [
-            'Arizona', 'Atlanta', 'Baltimore', 'Boston', 'Chicago', 'Chicago',
-            'Cincinnati', 'Cleveland', 'Colorado', 'Detroit', 'Miami',
-            'Houston', 'Kansas City', 'Los Angeles', 'Los Angeles',
+            'OBL', 'Arizona', 'Atlanta', 'Baltimore', 'Boston', 'Chicago',
+            'Chicago', 'Cincinnati', 'Cleveland', 'Colorado', 'Detroit',
+            'Miami', 'Houston', 'Kansas City', 'Los Angeles', 'Los Angeles',
             'Milwaukee', 'Minnesota', 'New York', 'New York', 'Oakland',
             'Philadelphia', 'Pittsburgh', 'San Diego', 'Seattle',
             'San Francisco', 'St. Louis', 'Tampa Bay', 'Texas', 'Toronto',
@@ -153,9 +153,9 @@ class TeamsTest(unittest.TestCase):
 
     def test_encoding_to_hometown_sub(self):
         hometowns = [
-            'Arizona', 'Atlanta', 'Baltimore', 'Boston', 'Chicago', 'Chicago',
-            'Cincinnati', 'Cleveland', 'Colorado', 'Detroit', 'Miami',
-            'Houston', 'Kansas City', 'Los Angeles', 'Los Angeles',
+            'OBL', 'Arizona', 'Atlanta', 'Baltimore', 'Boston', 'Chicago',
+            'Chicago', 'Cincinnati', 'Cleveland', 'Colorado', 'Detroit',
+            'Miami', 'Houston', 'Kansas City', 'Los Angeles', 'Los Angeles',
             'Milwaukee', 'Minnesota', 'New York', 'New York', 'Oakland',
             'Philadelphia', 'Pittsburgh', 'San Diego', 'Seattle',
             'San Francisco', 'St. Louis', 'Tampa Bay', 'Texas', 'Toronto',
@@ -167,7 +167,7 @@ class TeamsTest(unittest.TestCase):
 
     def test_encoding_to_nickname(self):
         nicknames = [
-            'Diamondbacks', 'Braves', 'Orioles', 'Red Sox', 'White Sox',
+            'OBL', 'Diamondbacks', 'Braves', 'Orioles', 'Red Sox', 'White Sox',
             'Cubs', 'Reds', 'Indians', 'Rockies', 'Tigers', 'Marlins',
             'Astros', 'Royals', 'Angels', 'Dodgers', 'Brewers', 'Twins',
             'Yankees', 'Mets', 'Athletics', 'Phillies', 'Pirates', 'Padres',
@@ -180,9 +180,9 @@ class TeamsTest(unittest.TestCase):
 
     def test_encoding_to_teamid(self):
         teamids = [
-            '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41',
-            '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52',
-            '53', '54', '55', '56', '57', '58', '59', '60', '', '', ''
+            '', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40',
+            '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51',
+            '52', '53', '54', '55', '56', '57', '58', '59', '60', '', '', ''
         ]
         for encoding, teamid in zip(ENCODING_KEYS, teamids):
             actual = encoding_to_teamid(encoding)
@@ -198,7 +198,7 @@ class TeamsTest(unittest.TestCase):
                'png')
         img = ('<img src="{}" width="16" height="16" border="0" class="positio'
                'n-absolute lt-10p">').format(src)
-        span = ('<span class="d-block text-truncate pl-4">Chicago</span>')
+        span = ('<span class="d-block pl-4">Chicago</span>')
         expected = img + span
         self.assertEqual(actual, expected)
 

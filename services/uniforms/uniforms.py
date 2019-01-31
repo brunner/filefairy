@@ -63,6 +63,7 @@ WEEKENDS = [SATURDAY, SUNDAY]
 ALL = WEEKDAYS + WEEKENDS
 
 REPOS = [
+    None,  # T30
     '925f81153b44d0b35734ca0c43b9f89a',  # T31
     '70fe783889494c2c0de8cd9b2dbd05b2',  # T32
     '6df0d030fbb62f9cd169624afe5351e3',  # T33
@@ -99,6 +100,7 @@ REPOS = [
 ]
 
 TAGS = [
+    None,  # T30
     'e46d3919da84e127c46ddb9a98083fdfe45c550e',  # T31
     'af5e8226f04e295506a61636aaf6d405c6d24a54',  # T32
     'f9576bb0aa8427c19832bb972962b86c3a6cb1f2',  # T33
@@ -135,6 +137,7 @@ TAGS = [
 ]
 
 UNIFORMS = [
+    None,  # T30
     _uniform(  # T31
         (WHITE, '#cb0c29', '#000000', 'diamondbacks'),
         (GREY, '#000000', '#cb0c29', 'diamondbacks'),

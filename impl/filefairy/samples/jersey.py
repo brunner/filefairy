@@ -23,7 +23,7 @@ CONTENT = '<div class="position-relative h-72p">{}</div>'
 _jerseys = []
 _tables = []
 for encoding in encoding_keys():
-    if encoding in ['TCH', 'TLA', 'TNY']:
+    if encoding in ['T30', 'TCH', 'TLA', 'TNY']:
         continue
 
     body = []
