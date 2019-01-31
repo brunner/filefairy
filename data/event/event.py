@@ -116,6 +116,7 @@ class Event(IntEnum):
     BASE_SCORE_TRAIL_OUT = auto()  # [scoring]
 
     PARSE_ERROR = auto()  # []
+    SPECIAL = auto()  # []
 
     NONE = auto()  # []
 
