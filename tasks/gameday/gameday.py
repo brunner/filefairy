@@ -280,13 +280,6 @@ class Gameday(Registrable):
 
     def _gameday(self, schedule_data):
         ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '',
-                'name': 'Gameday'
-            }],
             'schedule': []
         }
 
@@ -434,16 +427,6 @@ class Gameday(Registrable):
 
     def _game(self, game_id_, subtitle, game_data, schedule_data):
         ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '/gameday/',
-                'name': 'Gameday'
-            }, {
-                'href': '',
-                'name': subtitle
-            }],
             'styles': [],
             'tabs': {
                 'id': 'tabs',

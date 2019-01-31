@@ -63,7 +63,7 @@ class NewsTest(Test):
 
     @mock.patch.object(News, '_index_html')
     def test_render_data(self, mock_index):
-        index_html = {'breadcrumbs': []}
+        index_html = {'injuries': []}
         mock_index.return_value = index_html
 
         news = self.create_news()
@@ -99,15 +99,7 @@ class NewsTest(Test):
 
         news = self.create_news()
         actual = news._index_html(date=DATE_10260602)
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'News'
-        }]
         expected = {
-            'breadcrumbs': breadcrumbs,
             'injuries': table_,
             'news': table_,
             'transactions': table_,

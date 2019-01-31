@@ -74,14 +74,6 @@ CONDENSED_TABLE = {
     for e in ENCODINGS
 }
 
-BREADCRUMBS = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '',
-    'name': 'Standings'
-}]
-
 LEAGUE_ALE = ['T33', 'T34', 'T48', 'T57', 'T59']
 LEAGUE_ALC = ['T35', 'T38', 'T40', 'T43', 'T47']
 LEAGUE_ALW = ['T42', 'T44', 'T50', 'T54', 'T58']
@@ -143,7 +135,7 @@ class StandingsTest(Test):
 
     @mock.patch.object(Standings, '_index_html')
     def test_render_data(self, mock_index):
-        index_html = {'breadcrumbs': []}
+        index_html = {'dialogs': []}
         mock_index.return_value = index_html
 
         standings = self.create_standings(_data())
@@ -414,7 +406,6 @@ class StandingsTest(Test):
         standings.shadow['statsplus.table'] = STATSPLUS_TABLE
         actual = standings._index_html(date=DATE_10260602)
         expected = {
-            'breadcrumbs': BREADCRUMBS,
             'recent': [TABLE_AL, TABLE_NL],
             'expanded': [
                 TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC,
@@ -503,7 +494,6 @@ class StandingsTest(Test):
         standings.shadow['statsplus.table'] = STATSPLUS_TABLE
         actual = standings._index_html(date=DATE_10260602)
         expected = {
-            'breadcrumbs': BREADCRUMBS,
             'recent': [TABLE_AL, TABLE_NL],
             'expanded': [
                 TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC,

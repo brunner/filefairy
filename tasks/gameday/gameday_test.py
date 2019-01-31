@@ -114,13 +114,6 @@ _players = {
 }
 
 _gameday = {
-    'breadcrumbs': [{
-        'href': '/',
-        'name': 'Fairylab'
-    }, {
-        'href': '',
-        'name': 'Gameday'
-    }],
     'schedule': [
         table(
             clazz='table-fixed border border-bottom-0 mt-3',
@@ -249,16 +242,6 @@ _statslab_link = ('https://orangeandblueleaguebaseball.com/StatsLab/'
 _game_box_link = 'box_scores/game_box_2998.html'
 _log_link = 'game_logs/log_2998.html'
 _game = {
-    'breadcrumbs': [{
-        'href': '/',
-        'name': 'Fairylab'
-    }, {
-        'href': '/gameday/',
-        'name': 'Gameday'
-    }, {
-        'href': '',
-        'name': 'Diamondbacks at Dodgers, 10/26/1985'
-    }],
     'jerseys': [
         ('diamondbacks', 'away', _r31),
         ('dodgers', 'home', _r45),

@@ -13,17 +13,6 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 
-_breadcrumbs = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '/gameday/',
-    'name': 'Gameday'
-}, {
-    'href': '',
-    'name': 'Diamondbacks at Dodgers, 10/09/2022'
-}]
-
 _log = [
     table(
         clazz='border mt-3',
@@ -95,8 +84,6 @@ subtitle = 'Diamondbacks at Dodgers, 10/09/2022'
 tmpl = 'game.html'
 
 context = {
-    'title': 'game',
-    'breadcrumbs': _breadcrumbs,
     'tabs': {
         'tabs': [{
             'name': 'log',

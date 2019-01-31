@@ -132,7 +132,7 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_index_html')
     def test_render_data(self, mock_index):
-        index_html = {'breadcrumbs': []}
+        index_html = {'exceptions': []}
         mock_index.return_value = index_html
 
         dashboard = self.create_dashboard(_data())
@@ -353,13 +353,6 @@ class DashboardTest(Test):
         dashboard = self.create_dashboard(data)
 
         link = 'https://github.com/brunner/filefairy/blob/master/'
-        breadcrumbs = [{
-            'href': '/',
-            'name': 'Fairylab'
-        }, {
-            'href': '',
-            'name': 'Dashboard'
-        }]
         logs = [
             table(
                 clazz='border mt-3',
@@ -395,11 +388,7 @@ class DashboardTest(Test):
                 ts='06:02:30 PDT (1985-10-26)')
         ]
         actual = dashboard._index_html(date=DATE_10260602)
-        expected = {
-            'breadcrumbs': breadcrumbs,
-            'logs': logs,
-            'exceptions': exceptions
-        }
+        expected = {'exceptions': exceptions, 'logs': logs}
         self.assertEqual(actual, expected)
         self.assertNotCalled(self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)

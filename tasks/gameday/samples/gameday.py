@@ -44,14 +44,6 @@ _s58 = icon_absolute('T58', anchor('/gameday/5/', 'Texas Rangers'))
 _s59 = icon_absolute('T59', anchor('/gameday/5/', 'Toronto Blue Jays'))
 _s60 = icon_absolute('T60', anchor('/gameday/5/', 'Washington Nationa'))
 
-_breadcrumbs = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '',
-    'name': 'Gameday'
-}]
-
 _schedule = [
     table(
         clazz='table-fixed border border-bottom-0 mt-3',
@@ -138,7 +130,5 @@ subtitle = ''
 tmpl = 'gameday.html'
 
 context = {
-    'title': 'gameday',
-    'breadcrumbs': _breadcrumbs,
     'schedule': _schedule
 }

@@ -184,13 +184,6 @@ class Standings(Registrable):
 
     def _index_html(self, **kwargs):
         ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '',
-                'name': 'Standings'
-            }],
             'dialogs': [],
             'expanded': [],
             'recent': [],

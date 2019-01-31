@@ -51,16 +51,7 @@ class News(Registrable):
         return Response()
 
     def _index_html(self, **kwargs):
-        ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '',
-                'name': 'News'
-            }]
-        }
-
+        ret = {}
         for name in ['injuries', 'news', 'transactions']:
             ret[name] = self._tables(name)
 

@@ -84,7 +84,7 @@ class Filefairy(Messageable, Renderable):
 
     @staticmethod
     def _title():
-        return 'fairylab'
+        return 'Fairylab'
 
     @staticmethod
     def _info():
@@ -280,10 +280,6 @@ class Filefairy(Messageable, Renderable):
 
     def _index_html(self, **kwargs):
         ret = {
-            'breadcrumbs': [{
-                'href': '',
-                'name': 'Fairylab'
-            }],
             'external': [],
             'internal': [],
         }

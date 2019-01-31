@@ -146,7 +146,6 @@ subtitle = ''
 tmpl = 'standings.html'
 
 context = {
-    'title': 'Standings',
     'recent': _recent,
     'expanded': _expanded,
     'dialogs': _dialogs,

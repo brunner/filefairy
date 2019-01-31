@@ -12,14 +12,6 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
 
-_breadcrumbs = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '',
-    'name': 'News'
-}]
-
 _injuries = [
     table(
         clazz='border mt-3',
@@ -156,8 +148,6 @@ subtitle = ''
 tmpl = 'news.html'
 
 context = {
-    'title': 'news',
-    'breadcrumbs': _breadcrumbs,
     'injuries': _injuries,
     'news': _news,
     'transactions': _transactions

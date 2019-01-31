@@ -11,8 +11,6 @@ sys.path.append(re.sub(r'/core/fairylab/samples', '', _path))
 
 from common.elements.elements import card  # noqa
 
-_breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
-
 _external = [
     card(
         href='/fairylab/baz/',
@@ -57,8 +55,6 @@ subtitle = ''
 tmpl = 'home.html'
 
 context = {
-    'title': 'home',
-    'breadcrumbs': _breadcrumbs,
     'external': _external,
     'internal': _internal,
 }

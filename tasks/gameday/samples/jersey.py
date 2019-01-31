@@ -20,14 +20,6 @@ from services.uniforms.uniforms import jersey_style  # noqa
 
 CONTENT = '<div class="position-relative h-72p">{}</div>'
 
-_breadcrumbs = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '',
-    'name': 'Jersey'
-}]
-
 _jerseys = []
 _tables = []
 for encoding in encoding_keys():
@@ -62,8 +54,6 @@ subtitle = ''
 tmpl = 'empty.html'
 
 context = {
-    'title': 'jersey',
-    'breadcrumbs': _breadcrumbs,
     'styles': _styles,
     'tables': _tables
 }

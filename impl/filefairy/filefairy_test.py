@@ -269,7 +269,7 @@ class FilefairyTest(Test):
 
     @mock.patch.object(Filefairy, '_index_html')
     def test_render_data(self, mock_index):
-        index_html = {'breadcrumbs': []}
+        index_html = {'external': []}
         mock_index.return_value = index_html
 
         dashboard = self.create_dashboard(DATE_10260602)
@@ -949,7 +949,6 @@ class FilefairyTest(Test):
         registrable.ok = False
         filefairy.registered['foo'] = registrable
 
-        breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
         external = [
             card(
                 href='/dashboard/',
@@ -971,7 +970,6 @@ class FilefairyTest(Test):
         ]
         actual = filefairy._index_html(date=DATE_10260602)
         expected = {
-            'breadcrumbs': breadcrumbs,
             'external': external,
             'internal': internal,
         }
@@ -989,7 +987,6 @@ class FilefairyTest(Test):
         filefairy.registered['bar'] = self.create_internal_registrable(
             DATE_10260602)
 
-        breadcrumbs = [{'href': '', 'name': 'Fairylab'}]
         external = [
             card(
                 href='/dashboard/',
@@ -1014,7 +1011,6 @@ class FilefairyTest(Test):
         ]
         actual = filefairy._index_html(date=DATE_10260602)
         expected = {
-            'breadcrumbs': breadcrumbs,
             'external': external,
             'internal': internal
         }

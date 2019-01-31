@@ -17,14 +17,6 @@ from common.elements.elements import table  # noqa
 
 LINK = 'https://github.com/brunner/filefairy/blob/master/'
 
-_breadcrumbs = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '',
-    'name': 'Dashboard'
-}]
-
 _error_title = 'filefairy.py#L127'
 _error_link = LINK + 'impl/filefairy/' + _error_title
 _error_msg = 'Disabled snacks.'
@@ -77,8 +69,6 @@ subtitle = ''
 tmpl = 'dashboard.html'
 
 context = {
-    'title': 'dashboard',
-    'breadcrumbs': _breadcrumbs,
     'exceptions': _exceptions,
     'logs': _logs,
 }

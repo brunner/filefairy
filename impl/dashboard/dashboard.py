@@ -83,7 +83,7 @@ class Dashboard(Registrable):
 
     @staticmethod
     def _title():
-        return 'dashboard'
+        return 'Dashboard'
 
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
@@ -177,13 +177,6 @@ class Dashboard(Registrable):
 
     def _index_html(self, **kwargs):
         ret = {
-            'breadcrumbs': [{
-                'href': '/',
-                'name': 'Fairylab'
-            }, {
-                'href': '',
-                'name': 'Dashboard'
-            }],
             'exceptions': [],
             'logs': []
         }
