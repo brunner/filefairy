@@ -16,19 +16,73 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import table  # noqa
+from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
 from common.test.test import get_testdata  # noqa
+from services.division.division import condensed_league  # noqa
+from services.division.division import expanded_league  # noqa
 from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa
 from services.scoreboard.scoreboard import line_score_head  # noqa
 from services.scoreboard.scoreboard import pending_score_body  # noqa
+
+
+def _table(keys, table_):
+    return {k: table_.get(k, '0-0') for k in keys}
+
 
 EXPANDED_COLS = [
     col(clazz='position-relative text-truncate'),
     col(clazz='text-right w-55p'),
     col(clazz='text-right w-55p'),
     col(clazz='text-right w-75p')
+]
+
+ENCODINGS = encoding_keys()
+
+DIALOG_TEAMS = ['T31', 'T40', 'T44', 'T45', 'T47', 'T48', 'T55']
+
+LEAGUE_ALE = ['T33', 'T34', 'T48', 'T57', 'T59']
+LEAGUE_ALC = ['T35', 'T38', 'T40', 'T43', 'T47']
+LEAGUE_ALW = ['T42', 'T44', 'T50', 'T54', 'T58']
+LEAGUE_NLE = ['T32', 'T41', 'T49', 'T51', 'T60']
+LEAGUE_NLC = ['T36', 'T37', 'T46', 'T52', 'T56']
+LEAGUE_NLW = ['T31', 'T39', 'T45', 'T53', 'T55']
+
+STATSPLUS_TABLE = {
+    'T31': '1-0',
+    'T40': '0-3',
+    'T44': '0-1',
+    'T45': '0-1',
+    'T47': '3-0',
+    'T48': '1-0',
+    'T55': '0-1'
+}
+EXPANDED_AL = [
+    ('East', _table(LEAGUE_ALE, STATSPLUS_TABLE)),
+    ('Central', _table(LEAGUE_ALC, STATSPLUS_TABLE)),
+    ('West', _table(LEAGUE_ALW, STATSPLUS_TABLE)),
+]
+EXPANDED_NL = [
+    ('East', _table(LEAGUE_NLE, STATSPLUS_TABLE)),
+    ('Central', _table(LEAGUE_NLC, STATSPLUS_TABLE)),
+    ('West', _table(LEAGUE_NLW, STATSPLUS_TABLE)),
+]
+
+CONDENSED_TABLE = {
+    e: (STATSPLUS_TABLE.get(e, '0-0'), e in DIALOG_TEAMS)
+    for e in ENCODINGS
+}
+CONDENSED_AL = [
+    ('East', _table(LEAGUE_ALE, CONDENSED_TABLE)),
+    ('Central', _table(LEAGUE_ALC, CONDENSED_TABLE)),
+    ('West', _table(LEAGUE_ALW, CONDENSED_TABLE)),
+]
+CONDENSED_NL = [
+    ('East', _table(LEAGUE_NLE, CONDENSED_TABLE)),
+    ('Central', _table(LEAGUE_NLC, CONDENSED_TABLE)),
+    ('West', _table(LEAGUE_NLW, CONDENSED_TABLE)),
 ]
 
 TESTDATA = get_testdata()
@@ -59,364 +113,13 @@ _bcols = [
     col(clazz='td-sm position-relative text-center w-20 pr-2')
 ]
 _recent = [
-    table(
-        clazz='table-fixed border mt-3',
-        hcols=[col(clazz='text-center', colspan=5)],
-        bcols=_bcols,
-        head=[[cell(content='American League')]],
-        body=[
-            [
-                cell(content=icon_badge('T48', '1-0', True, '16')),
-                cell(content=icon_badge('T33', '0-0', False, '16')),
-                cell(content=icon_badge('T34', '0-0', False, '16')),
-                cell(content=icon_badge('T57', '0-0', False, '16')),
-                cell(content=icon_badge('T59', '0-0', False, '16')),
-            ],
-            [
-                cell(content=icon_badge('T47', '3-0', True, '16')),
-                cell(content=icon_badge('T35', '0-0', False, '16')),
-                cell(content=icon_badge('T38', '0-0', False, '16')),
-                cell(content=icon_badge('T43', '0-0', False, '16')),
-                cell(content=icon_badge('T40', '0-3', True, '16')),
-            ],
-            [
-                cell(content=icon_badge('T44', '0-1', True, '16')),
-                cell(content=icon_badge('T42', '0-0', False, '16')),
-                cell(content=icon_badge('T50', '0-0', False, '16')),
-                cell(content=icon_badge('T54', '0-0', False, '16')),
-                cell(content=icon_badge('T59', '0-0', False, '16')),
-            ],
-        ],
-    ),
-    table(
-        clazz='table-fixed border mt-3',
-        hcols=[col(clazz='text-center', colspan=5)],
-        bcols=_bcols,
-        head=[[cell(content='National League')]],
-        body=[
-            [
-                cell(content=icon_badge('T32', '0-0', False, '16')),
-                cell(content=icon_badge('T41', '0-0', False, '16')),
-                cell(content=icon_badge('T49', '0-0', False, '16')),
-                cell(content=icon_badge('T51', '0-0', False, '16')),
-                cell(content=icon_badge('T60', '0-0', False, '16')),
-            ],
-            [
-                cell(content=icon_badge('T36', '0-0', False, '16')),
-                cell(content=icon_badge('T37', '0-0', False, '16')),
-                cell(content=icon_badge('T46', '0-0', False, '16')),
-                cell(content=icon_badge('T52', '0-0', False, '16')),
-                cell(content=icon_badge('T56', '0-0', False, '16')),
-            ],
-            [
-                cell(content=icon_badge('T31', '1-0', True, '16')),
-                cell(content=icon_badge('T39', '0-0', False, '16')),
-                cell(content=icon_badge('T53', '0-0', False, '16')),
-                cell(content=icon_badge('T45', '0-1', True, '16')),
-                cell(content=icon_badge('T55', '0-1', True, '16')),
-            ],
-        ],
-    ),
+    condensed_league('American League', CONDENSED_AL),
+    condensed_league('National League', CONDENSED_NL),
 ]
 
-_expanded = [
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('AL East')],
-        body=[
-            [
-                cell(content=icon_absolute('T48', 'New York', '20')),
-                cell(content='1'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T33', 'Baltimore', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='0.5'),
-            ],
-            [
-                cell(content=icon_absolute('T34', 'Boston', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='0.5'),
-            ],
-            [
-                cell(content=icon_absolute('T57', 'Tampa Bay', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='0.5'),
-            ],
-            [
-                cell(content=icon_absolute('T59', 'Toronto', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='0.5'),
-            ],
-        ],
-    ),
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('AL Central')],
-        body=[
-            [
-                cell(content=icon_absolute('T47', 'Minnesota', '20')),
-                cell(content='3'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T35', 'Chicago', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='1.5'),
-            ],
-            [
-                cell(content=icon_absolute('T38', 'Cleveland', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='1.5'),
-            ],
-            [
-                cell(content=icon_absolute('T43', 'Kansas City', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='1.5'),
-            ],
-            [
-                cell(content=icon_absolute('T40', 'Detroit', '20')),
-                cell(content='0'),
-                cell(content='3'),
-                cell(content='3.0'),
-            ],
-        ],
-    ),
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('AL West')],
-        body=[
-            [
-                cell(content=icon_absolute('T42', 'Houston', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T50', 'Oakland', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T54', 'Seattle', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T58', 'Texas', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T44', 'Los Angeles', '20')),
-                cell(content='0'),
-                cell(content='1'),
-                cell(content='0.5'),
-            ],
-        ],
-    ),
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('AL Wild Card')],
-        body=[
-            [
-                cell(content=icon_absolute('T33', 'Baltimore', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T34', 'Boston', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T35', 'Chicago', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T38', 'Cleveland', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T42', 'Houston', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-        ],
-    ),
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('NL East')],
-        body=[
-            [
-                cell(content=icon_absolute('T32', 'Atlanta', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T41', 'Miami', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T49', 'New York', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T51', 'Philadelphia', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T60', 'Washington', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-        ],
-    ),
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('NL Central')],
-        body=[
-            [
-                cell(content=icon_absolute('T36', 'Chicago', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T37', 'Cincinnati', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T46', 'Milwaukee', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T52', 'Pittsburgh', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T56', 'St. Louis', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-        ],
-    ),
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('NL West')],
-        body=[
-            [
-                cell(content=icon_absolute('T31', 'Arizona', '20')),
-                cell(content='1'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T39', 'Colorado', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='0.5'),
-            ],
-            [
-                cell(content=icon_absolute('T53', 'San Diego', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='0.5'),
-            ],
-            [
-                cell(content=icon_absolute('T45', 'Los Angeles', '20')),
-                cell(content='0'),
-                cell(content='1'),
-                cell(content='1.0'),
-            ],
-            [
-                cell(content=icon_absolute('T55', 'San Francisco', '20')),
-                cell(content='0'),
-                cell(content='1'),
-                cell(content='1.0'),
-            ],
-        ],
-    ),
-    table(
-        hcols=EXPANDED_COLS,
-        bcols=EXPANDED_COLS,
-        head=[_expanded_head('NL Wild Card')],
-        body=[
-            [
-                cell(content=icon_absolute('T32', 'Atlanta', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T36', 'Chicago', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T37', 'Cincinnati', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T39', 'Colorado', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-            [
-                cell(content=icon_absolute('T41', 'Miami', '20')),
-                cell(content='0'),
-                cell(content='0'),
-                cell(content='-'),
-            ],
-        ],
-    ),
-]
+_expanded_al = expanded_league('American League', EXPANDED_AL)
+_expanded_nl = expanded_league('National League', EXPANDED_NL)
+_expanded = _expanded_al + _expanded_nl
 
 _game_2449 = json.loads(TESTDATA['2449.json'])
 _head_2449 = line_score_head(_game_2449['date'])
