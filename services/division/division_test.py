@@ -20,13 +20,6 @@ from services.division.division import condensed_league  # noqa
 from services.division.division import expanded_impl  # noqa
 from services.division.division import expanded_league  # noqa
 
-EXPANDED_COLS = [
-    col(clazz='position-relative text-truncate'),
-    col(clazz='text-right w-55p'),
-    col(clazz='text-right w-55p'),
-    col(clazz='text-right w-75p')
-]
-
 EAST = {'T33': '1-1', 'T34': '2-0', 'T48': '0-2'}
 CENTRAL = {'T35': '1-1', 'T38': '2-0', 'T40': '0-2'}
 LEADERS = ['T34', 'T38']
@@ -37,7 +30,7 @@ def _condensed_row(*args):
     i = iter(args)
     row = []
     for encoding in i:
-        row.append(cell(content=icon_badge(encoding, next(i), True, '16')))
+        row.append(cell(content=icon_badge(encoding, next(i), True)))
     return row
 
 
@@ -46,12 +39,13 @@ def _expanded_head(subleague):
         cell(content=subleague),
         cell(content='W'),
         cell(content='L'),
+        cell(content='%'),
         cell(content='GB'),
     ]
 
 
 def _expanded_row(*args):
-    contents = [icon_absolute(args[0], args[1], '20')] + list(args[2:])
+    contents = [icon_absolute(args[0], args[1])] + list(args[2:])
     return [cell(content=content) for content in contents]
 
 
@@ -61,14 +55,15 @@ class DivisionTest(unittest.TestCase):
         c = {'T35': ('1-1', True), 'T38': ('2-0', True), 'T40': ('0-2', True)}
         tables = [('East', e), ('Central', c)]
 
+        hc = 'font-weight-bold text-dark text-center'
         actual = condensed_league('American League', tables)
         expected = table(
-            clazz='table-fixed border mt-3',
-            hcols=[col(clazz='text-center', colspan=3)],
+            clazz='table-fixed border mb-3',
+            hcols=[col(clazz=hc, colspan=3)],
             bcols=[
-                col(clazz='td-sm position-relative text-center w-20 pl-2'),
-                col(clazz='td-sm position-relative text-center w-20'),
-                col(clazz='td-sm position-relative text-center w-20 pr-2'),
+                col(clazz='position-relative text-center w-20 pl-2 pr-1'),
+                col(clazz='position-relative text-center w-20 px-1'),
+                col(clazz='position-relative text-center w-20 pl-1 pr-2'),
             ],
             head=[[cell(content='American League')]],
             body=[
@@ -277,40 +272,51 @@ class DivisionTest(unittest.TestCase):
         central = {'T35': '1-1', 'T38': '2-0', 'T40': '0-2'}
         tables = [('East', east), ('Central', central)]
 
+        hc = 'font-weight-bold text-dark '
+        clazzes = [
+            'position-relative text-truncate',
+            'text-right w-40p',
+            'text-right w-40p',
+            'text-right w-50p',
+            'text-right w-50p',
+        ]
+        hcols = [col(clazz=(hc + c)) for c in clazzes]
+        bcols = [col(clazz=c) for c in clazzes]
+
         actual = expanded_league('American League', tables)
         expected = [
             table(
-                clazz='border mt-3',
-                hcols=EXPANDED_COLS,
-                bcols=EXPANDED_COLS,
+                clazz='table-fixed border mb-3',
+                hcols=hcols,
+                bcols=bcols,
                 head=[_expanded_head('AL East')],
                 body=[
-                    _expanded_row('T34', 'Boston', '2', '0', '-'),
-                    _expanded_row('T33', 'Baltimore', '1', '1', '1.0'),
-                    _expanded_row('T48', 'New York', '0', '2', '2.0'),
+                    _expanded_row('T34', 'Boston', '2', '0', '1.000', '-'),
+                    _expanded_row('T33', 'Baltimore', '1', '1', '.500', '1.0'),
+                    _expanded_row('T48', 'New York', '0', '2', '.000', '2.0'),
                 ],
             ),
             table(
-                clazz='border mt-3',
-                hcols=EXPANDED_COLS,
-                bcols=EXPANDED_COLS,
+                clazz='table-fixed border mb-3',
+                hcols=hcols,
+                bcols=bcols,
                 head=[_expanded_head('AL Central')],
                 body=[
-                    _expanded_row('T38', 'Cleveland', '2', '0', '-'),
-                    _expanded_row('T35', 'Chicago', '1', '1', '1.0'),
-                    _expanded_row('T40', 'Detroit', '0', '2', '2.0'),
+                    _expanded_row('T38', 'Cleveland', '2', '0', '1.000', '-'),
+                    _expanded_row('T35', 'Chicago', '1', '1', '.500', '1.0'),
+                    _expanded_row('T40', 'Detroit', '0', '2', '.000', '2.0'),
                 ],
             ),
             table(
-                clazz='border mt-3',
-                hcols=EXPANDED_COLS,
-                bcols=EXPANDED_COLS,
+                clazz='table-fixed border mb-3',
+                hcols=hcols,
+                bcols=bcols,
                 head=[_expanded_head('AL Wild Card')],
                 body=[
-                    _expanded_row('T33', 'Baltimore', '1', '1', '-'),
-                    _expanded_row('T35', 'Chicago', '1', '1', '-'),
-                    _expanded_row('T40', 'Detroit', '0', '2', '1.0'),
-                    _expanded_row('T48', 'New York', '0', '2', '1.0'),
+                    _expanded_row('T33', 'Baltimore', '1', '1', '.500', '-'),
+                    _expanded_row('T35', 'Chicago', '1', '1', '.500', '-'),
+                    _expanded_row('T40', 'Detroit', '0', '2', '.000', '1.0'),
+                    _expanded_row('T48', 'New York', '0', '2', '.000', '1.0'),
                 ],
             )
         ]

@@ -17,7 +17,7 @@
       crossorigin="anonymous">
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-<title>Fairylab | dashboard</title>
+<title>Fairylab · dashboard</title>
 
 <style>
 html {
@@ -26,14 +26,6 @@ html {
 }
 header {
   background-color: #f5f5f5;
-  width: 100%;
-}
-footer {
-  background-color: #f5f5f5;
-  bottom: 0;
-  height: 60px;
-  line-height: 60px;
-  position: absolute;
   width: 100%;
 }
 a.disabled{
@@ -55,6 +47,7 @@ a.disabled{
 .badge-icon {
   border: 1px solid #dee2e6;
   font-weight: 400!important;
+  font-size: 80%;
   padding: .25rem .5rem;
   white-space: normal;
   width: 100%;
@@ -63,11 +56,10 @@ a.disabled{
   background-color: #f5f5f5;
   cursor: pointer;
 }
-.breadcrumb {
-  background-color: inherit;
-  line-height: 60px;
-  max-width: 468px;
-  overflow-x: auto;
+button.close {
+  height: 16px;
+  line-height: 16px;
+  width: 16px;
 }
 .dropdown-toggle {
   color: #6c767c;
@@ -79,17 +71,18 @@ a.disabled{
   -webkit-filter: grayscale(1) opacity(0.5);
   filter: grayscale(1) opacity(0.5);
 }
+.head {
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  padding-left: .75rem;
+  padding-right: .75rem;
+}
 .h-72p {
   height: 72px;
 }
-.left-8p {
-  left: 8px;
-}
-.modal-header {
-  height: 56px;
-}
-.modal-body {
-  padding-top: 0;
+.lt-10p {
+  left: 10px;
+  top: 10px;
 }
 .mr-8p {
   margin-right: 8px;
@@ -112,16 +105,14 @@ a.disabled{
 .nav-pills .nav-link:not(.active) {
   border: 1px solid #dee2e6;
 }
-.pl-24p {
-  padding-left: 24px;
-}
-.pr-24p {
-  padding-right: 24px;
+.rt-10p {
+  right: 10px;
+  top: 10px;
 }
 .right-8p {
   right: 8px;
 }
-.table, .table-sm {
+.table {
   margin-bottom: 0;
   word-break: break-word;
 }
@@ -131,21 +122,23 @@ a.disabled{
 .table-fixed {
   table-layout: fixed;
 }
-.table-sm td {
-  border-top: 0;
-  padding: 0 .3rem 0 0;
+.small.table td {
+  padding: .5rem;
 }
-.table .td-sm {
-  padding: .75rem .25rem;
+.small.table td:first-child {
+  padding-left: .75rem;
+}
+.small.table td:last-child {
+  padding-right: .75rem;
+}
+.small.topper {
+  font-size: 90%;
 }
 .table.collapse.show {
   display: table;
 }
 .text-underline {
   text-decoration: underline;
-}
-.top-14p {
-  top: 14px;
 }
 .w-10 {
   width: 10%;
@@ -162,8 +155,14 @@ a.disabled{
 .w-28p {
   width: 28px;
 }
-.w-55p {
-  width: 55px;
+.w-32p {
+  width: 32px;
+}
+.w-40p {
+  width: 40px;
+}
+.w-50p {
+  width: 50px;
 }
 .w-65p {
   width: 65px;
@@ -180,9 +179,9 @@ a.disabled{
   display: none;
 }
 @media (min-width: 576px) {
-  body.modal-open .navbar,
-  body.modal-open .timestamp {
-    padding-left: 8px;
+  body.modal-open header {
+    margin-right: 0!important;
+    padding-right: 0!important;
   }
   .td-sm-none {
     display: table-cell;
@@ -212,25 +211,17 @@ a.disabled{
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<nav class="navbar navbar-light border-bottom" aria-label="nav">
-<ol class="breadcrumb flex-nowrap text-truncate m-0 p-0">
-<li class="breadcrumb-item">
-<a href="/">Fairylab</a>
-</li>
-<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-</ol>
-</nav>
-
-<div class="timestamp my-1">
-<small class="text-muted">Last reloaded: 06:02:30 PDT (1985-10-26)</small>
+<div class="head position-relative py-2">
+<img src="https://fairylab.surge.sh/favicon-32x32.png"
+     width="16" height="16" border="0" class="position-absolute lt-10p">
+<div class="small text-secondary text-truncate pl-4">dashboard &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
-
 </div>
 </header>
 <!-- $(base.header) -->
 
 <!-- ^(base.main) -->
-<main role="main" class="pb-3">
+<main role="main" class="pt-3">
 
 <!-- ^(dashboard.exceptions) -->
 <div class="container anchor" id="exceptions">
@@ -343,7 +334,7 @@ NameError: name 'variable' is not defined
 <div class="col-12">
 
 <!-- ^(common.table) -->
-<table class="table border mt-3">
+<table class="small table border mt-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">

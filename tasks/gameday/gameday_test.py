@@ -43,38 +43,36 @@ def secondary(text):
 
 _fairylab_root = re.sub(r'/filefairy', '/fairylab/static', _root)
 
-_s31 = icon_absolute('T31', anchor('/gameday/2998/', 'Arizona Diamondbacks'),
-                     '20')
-_s32 = icon_absolute('T32', secondary('Atlanta Braves'), '20')
-_s33 = icon_absolute('T33', secondary('Baltimore Orioles'), '20')
-_s34 = icon_absolute('T34', secondary('Boston Red Sox'), '20')
-_s35 = icon_absolute('T35', secondary('Chicago White Sox'), '20')
-_s36 = icon_absolute('T36', secondary('Chicago Cubs'), '20')
-_s37 = icon_absolute('T37', secondary('Cincinnati Reds'), '20')
-_s38 = icon_absolute('T38', secondary('Cleveland Indians'), '20')
-_s39 = icon_absolute('T39', secondary('Colorado Rockies'), '20')
-_s40 = icon_absolute('T40', secondary('Detroit Tigers'), '20')
-_s41 = icon_absolute('T41', secondary('Miami Marlins'), '20')
-_s42 = icon_absolute('T42', secondary('Houston Astros'), '20')
-_s43 = icon_absolute('T43', secondary('Kansas City Royals'), '20')
-_s44 = icon_absolute('T44', secondary('Los Angeles Angels'), '20')
-_s45 = icon_absolute('T45', anchor('/gameday/2998/', 'Los Angeles Dodgers'),
-                     '20')
-_s46 = icon_absolute('T46', secondary('Milwaukee Brewers'), '20')
-_s47 = icon_absolute('T47', secondary('Minnesota Twins'), '20')
-_s48 = icon_absolute('T48', secondary('New York Yankees'), '20')
-_s49 = icon_absolute('T49', secondary('New York Mets'), '20')
-_s50 = icon_absolute('T50', secondary('Oakland Athletics'), '20')
-_s51 = icon_absolute('T51', secondary('Philadelphia Phillies'), '20')
-_s52 = icon_absolute('T52', secondary('Pittsburgh Pirates'), '20')
-_s53 = icon_absolute('T53', secondary('San Diego Padres'), '20')
-_s54 = icon_absolute('T54', secondary('Seattle Mariners'), '20')
-_s55 = icon_absolute('T55', secondary('San Francisco Giants'), '20')
-_s56 = icon_absolute('T56', secondary('St. Louis Cardinals'), '20')
-_s57 = icon_absolute('T57', secondary('Tampa Bay Rays'), '20')
-_s58 = icon_absolute('T58', secondary('Texas Rangers'), '20')
-_s59 = icon_absolute('T59', secondary('Toronto Blue Jays'), '20')
-_s60 = icon_absolute('T60', secondary('Washington Nationals'), '20')
+_s31 = icon_absolute('T31', anchor('/gameday/2998/', 'Arizona Diamondbacks'))
+_s32 = icon_absolute('T32', secondary('Atlanta Braves'))
+_s33 = icon_absolute('T33', secondary('Baltimore Orioles'))
+_s34 = icon_absolute('T34', secondary('Boston Red Sox'))
+_s35 = icon_absolute('T35', secondary('Chicago White Sox'))
+_s36 = icon_absolute('T36', secondary('Chicago Cubs'))
+_s37 = icon_absolute('T37', secondary('Cincinnati Reds'))
+_s38 = icon_absolute('T38', secondary('Cleveland Indians'))
+_s39 = icon_absolute('T39', secondary('Colorado Rockies'))
+_s40 = icon_absolute('T40', secondary('Detroit Tigers'))
+_s41 = icon_absolute('T41', secondary('Miami Marlins'))
+_s42 = icon_absolute('T42', secondary('Houston Astros'))
+_s43 = icon_absolute('T43', secondary('Kansas City Royals'))
+_s44 = icon_absolute('T44', secondary('Los Angeles Angels'))
+_s45 = icon_absolute('T45', anchor('/gameday/2998/', 'Los Angeles Dodgers'))
+_s46 = icon_absolute('T46', secondary('Milwaukee Brewers'))
+_s47 = icon_absolute('T47', secondary('Minnesota Twins'))
+_s48 = icon_absolute('T48', secondary('New York Yankees'))
+_s49 = icon_absolute('T49', secondary('New York Mets'))
+_s50 = icon_absolute('T50', secondary('Oakland Athletics'))
+_s51 = icon_absolute('T51', secondary('Philadelphia Phillies'))
+_s52 = icon_absolute('T52', secondary('Pittsburgh Pirates'))
+_s53 = icon_absolute('T53', secondary('San Diego Padres'))
+_s54 = icon_absolute('T54', secondary('Seattle Mariners'))
+_s55 = icon_absolute('T55', secondary('San Francisco Giants'))
+_s56 = icon_absolute('T56', secondary('St. Louis Cardinals'))
+_s57 = icon_absolute('T57', secondary('Tampa Bay Rays'))
+_s58 = icon_absolute('T58', secondary('Texas Rangers'))
+_s59 = icon_absolute('T59', secondary('Toronto Blue Jays'))
+_s60 = icon_absolute('T60', secondary('Washington Nationals'))
 
 _players = {
     'P101': {
@@ -282,9 +280,7 @@ _game = {
                         col(clazz='text-center text-secondary w-55p')
                     ],
                     fcols=[col(colspan='2')],
-                    head=[[
-                        cell(content=icon_absolute('T31', 'Top 1st', '20'))
-                    ]],
+                    head=[[cell(content=icon_absolute('T31', 'Top 1st'))]],
                     body=_log_body,
                     foot=[[
                         cell(
@@ -383,7 +379,7 @@ _game = {
                                      head=[[
                                          cell(
                                              content=icon_absolute(
-                                                 'T31', 'Top 1st', '20'))
+                                                 'T31', 'Top 1st'))
                                      ]],
                                      body=_plays_body,
                                      foot=[[

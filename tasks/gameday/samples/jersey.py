@@ -47,7 +47,7 @@ for encoding in encoding_keys():
         _jerseys.append((encoding, colors))
 
     decoding = encoding_to_decoding(encoding)
-    head = [[cell(content=icon_absolute(encoding, decoding, '20'))]]
+    head = [[cell(content=icon_absolute(encoding, decoding))]]
     table_ = table(
         clazz='border mt-3',
         hcols=[col(clazz='position-relative', colspan=8)],

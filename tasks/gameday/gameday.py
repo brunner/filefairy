@@ -305,7 +305,7 @@ class Gameday(Registrable):
                         text = anchor('/gameday/{}/'.format(sid), decoding)
                     else:
                         text = secondary(decoding)
-                    content = icon_absolute(encoding, text, '20')
+                    content = icon_absolute(encoding, text)
                     body.append([cell(content=content)])
                 ret['schedule'].append(
                     table(
@@ -491,7 +491,7 @@ class Gameday(Registrable):
             for half in inning:
                 batting = half['batting']
                 pitching = away_team if away_team != batting else home_team
-                hcontent = icon_absolute(half['batting'], half['label'], '20')
+                hcontent = icon_absolute(half['batting'], half['label'])
                 log_table = table(
                     clazz='border mt-3',
                     hcols=[col(clazz='position-relative', colspan='2')],

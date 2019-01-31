@@ -10,7 +10,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import dialog  # noqa
+from common.elements.elements import topper  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqa
 from common.record.record import add_records  # noqa
@@ -59,7 +62,7 @@ class Standings(Registrable):
 
     @staticmethod
     def _title():
-        return 'standings'
+        return 'Standings'
 
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
@@ -100,12 +103,12 @@ class Standings(Registrable):
         curr = None
         tables = []
         for date, body, foot in sorted(data, key=lambda x: x[0]):
-            head = call_service('scoreboard', 'line_score_head', (date, ))
-            if curr == head:
-                body['clazz'] += ' mt-3'
-            else:
-                tables += [head]
-            curr = head
+            if curr != date:
+                curr = date
+                d = decode_datetime(date)
+                suff = suffix(d.day)
+                text = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suff)
+                tables.append(topper(text))
 
             tables.append(body)
             if foot is not None:

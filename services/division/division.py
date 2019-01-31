@@ -18,13 +18,6 @@ from common.teams.teams import encoding_to_teamid  # noqa
 from common.teams.teams import icon_badge  # noqa
 from common.teams.teams import icon_absolute  # noqa
 
-EXPANDED_COLS = [
-    col(clazz='position-relative text-truncate'),
-    col(clazz='text-right w-55p'),
-    col(clazz='text-right w-55p'),
-    col(clazz='text-right w-75p')
-]
-
 
 def _diff(record1, record2):
     w1, l1 = decode_record(record1)
@@ -103,18 +96,19 @@ def condensed_league(league, tables):
         records = {k: table_[k][0] for k in table_}
         for team in _sort(records):
             record, active = table_[team]
-            row.append(cell(content=icon_badge(team, record, active, '16')))
+            row.append(cell(content=icon_badge(team, record, active)))
 
         body.append(row)
 
-    bc = 'td-sm position-relative text-center w-20'
-    bcols = [col(clazz=(bc + ' pl-2'))]
-    bcols += [col(clazz=bc)] * (colspan - 2)
-    bcols += [col(clazz=(bc + ' pr-2'))]
+    bc = 'position-relative text-center w-20'
+    bcols = [col(clazz=(bc + ' pl-2 pr-1'))]
+    bcols += [col(clazz=(bc + ' px-1'))] * (colspan - 2)
+    bcols += [col(clazz=(bc + ' pl-1 pr-2'))]
 
+    hc = 'font-weight-bold text-dark text-center'
     return table(
-        clazz='table-fixed border mt-3',
-        hcols=[col(clazz='text-center', colspan=colspan)],
+        clazz='table-fixed border mb-3',
+        hcols=[col(clazz=hc, colspan=colspan)],
         bcols=bcols,
         head=[[cell(content=league)]],
         body=body)
@@ -189,21 +183,33 @@ def expanded_league(league, tables):
             record, gb = table_[team]
             rw, rl = decode_record(record)
 
+            pct = 0 if rw + rl == 0 else rw / (rw + rl)
+            pct = '{:,.3f}'.format(pct).lstrip('0')
+
             row = []
-            contents = [icon_absolute(team, hometown, '20'), rw, rl, gb]
+            contents = [icon_absolute(team, hometown), rw, rl, pct, gb]
             for content in contents:
                 row.append(cell(content=str(content)))
 
             body.append(row)
 
-        contents = [subleague, 'W', 'L', 'GB']
+        contents = [subleague, 'W', 'L', '%', 'GB']
         head = [[cell(content=content) for content in contents]]
+
+        hc = 'font-weight-bold text-dark '
+        clazzes = [
+            'position-relative text-truncate',
+            'text-right w-40p',
+            'text-right w-40p',
+            'text-right w-50p',
+            'text-right w-50p',
+        ]
 
         ret.append(
             table(
-                clazz='border mt-3',
-                hcols=EXPANDED_COLS,
-                bcols=EXPANDED_COLS,
+                clazz='table-fixed border mb-3',
+                hcols=[col(clazz=(hc + c)) for c in clazzes],
+                bcols=[col(clazz=c) for c in clazzes],
                 head=head,
                 body=body,
             ))

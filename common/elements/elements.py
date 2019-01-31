@@ -77,12 +77,12 @@ def col(clazz='', colspan=''):
     return {'clazz': clazz, 'colspan': colspan}
 
 
-def dialog(id_='', header='', tables=None):
+def dialog(id_='', icon='', tables=None):
     """Builds a dialog object.
 
     Args:
         id_: The CSS id to set on the root dialog element.
-        header: The header text.
+        icon: The icon element to display in the dialog element header.
         tables: The optional list of table elements.
 
     Returns:
@@ -92,7 +92,7 @@ def dialog(id_='', header='', tables=None):
         tables = []
     return {
         'id': id_,
-        'header': header,
+        'icon': icon,
         'tables': tables,
     }
 
@@ -161,3 +161,18 @@ def table(clazz='',
         'body': body,
         'foot': foot
     }
+
+
+def topper(text):
+    """Builds a topper table element.
+
+    Args:
+        text: The text of the topper table element.
+
+    Returns:
+        The topper table element.
+    """
+    return table(
+        clazz='topper',
+        bcols=[col(clazz='border-0 font-weight-bold px-0 text-secondary')],
+        body=[[cell(content=text)]])

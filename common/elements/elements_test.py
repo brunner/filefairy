@@ -18,6 +18,7 @@ from common.elements.elements import dialog  # noqa
 from common.elements.elements import ruleset  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
+from common.elements.elements import topper  # noqa
 
 CLAZZ = 'clazz'
 COL = col(clazz=CLAZZ, colspan='2')
@@ -92,12 +93,12 @@ class ComponentTest(unittest.TestCase):
 
     def test_dialog__default(self):
         actual = dialog()
-        expected = {'id': '', 'header': '', 'tables': []}
+        expected = {'id': '', 'icon': '', 'tables': []}
         self.assertEqual(actual, expected)
 
     def test_dialog__filled(self):
-        actual = dialog(id_=ID_, header='foo', tables=[TABLE])
-        expected = {'id': ID_, 'header': 'foo', 'tables': [TABLE]}
+        actual = dialog(id_=ID_, icon='foo', tables=[TABLE])
+        expected = {'id': ID_, 'icon': 'foo', 'tables': [TABLE]}
         self.assertEqual(actual, expected)
 
     def test_ruleset__default(self):
@@ -148,6 +149,21 @@ class ComponentTest(unittest.TestCase):
             'head': [ROW],
             'body': [ROW],
             'foot': [ROW]
+        }
+        self.assertEqual(actual, expected)
+
+    def test_topper(self):
+        actual = topper('text')
+        expected = {
+            'clazz': 'topper',
+            'id': '',
+            'hcols': None,
+            'bcols':
+            [col(clazz='border-0 font-weight-bold px-0 text-secondary')],
+            'fcols': None,
+            'head': None,
+            'body': [[cell(content='text')]],
+            'foot': None
         }
         self.assertEqual(actual, expected)
 

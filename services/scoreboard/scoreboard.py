@@ -9,8 +9,6 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/scoreboard', '', _path))
 
-from common.datetime_.datetime_ import decode_datetime  # noqa
-from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
@@ -39,12 +37,12 @@ def line_score_body(data):
     away_hometown = encoding_to_hometown(away_team)
     if data['away_record']:
         away_hometown += ' (' + data['away_record'] + ')'
-    away_title = icon_absolute(away_team, away_hometown, '16')
+    away_title = icon_absolute(away_team, away_hometown)
 
     home_hometown = encoding_to_hometown(home_team)
     if data['home_record']:
         home_hometown += ' (' + data['home_record'] + ')'
-    home_title = icon_absolute(home_team, home_hometown, '16')
+    home_title = icon_absolute(home_team, home_hometown)
 
     away_line = data['away_line'].split()
     home_line = data['home_line'].split()
@@ -57,7 +55,8 @@ def line_score_body(data):
     hcols += [col(clazz='td-md-none w-24p px-1 text-center')] * 4
     hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * 8
     hcols += [col(clazz='td-sm-none w-28p pl-1 pr-2 text-center')]
-    hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 3
+    hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 2
+    hcols += [col(clazz='font-weight-bold w-32p pl-1 text-center')]
 
     head_row = [cell(content=final)]
     head_row += [cell() for _ in range(18 - max_num)]
@@ -80,7 +79,8 @@ def line_score_body(data):
     bcols += [col(clazz=(bc + ' td-md-none w-24p px-1'))] * 4
     bcols += [col(clazz=(bc + ' td-sm-none w-24p px-1'))] * 8
     bcols += [col(clazz=(bc + ' td-sm-none w-28p pl-1 pr-2'))]
-    bcols += [col(clazz='w-24p px-1 text-center')] * 3
+    bcols += [col(clazz='w-24p px-1 text-center')] * 2
+    bcols += [col(clazz='w-32p pl-1 text-center')]
 
     away_rhe = [data['away_runs'], data['away_hits'], data['away_errors']]
     home_rhe = [data['home_runs'], data['home_hits'], data['home_errors']]
@@ -104,7 +104,7 @@ def line_score_body(data):
     body = [away_row, home_row]
 
     return table(
-        clazz='border small',
+        clazz='border',
         hcols=hcols,
         bcols=bcols,
         head=head,
@@ -162,33 +162,9 @@ def line_score_foot(data):
     lines.append(player_to_name_sub(hr + hrs))
 
     return table(
-        clazz='border border-top-0 small',
+        clazz='border border-top-0 mb-3',
         fcols=fcols,
         foot=[[cell(content='<br>'.join(lines))]],
-    )
-
-
-def line_score_head(date):
-    """Creates a line score table header for a given date.
-
-    The table header contains the formatted date.
-
-    Args:
-        date: The encoded game date.
-
-    Returns:
-        A line score table header.
-    """
-    date = decode_datetime(date)
-    title = date.strftime('%A, %B %-d{S}, %Y').replace('{S}', suffix(date.day))
-
-    bcols = [col(clazz='font-weight-bold border-0')]
-    body = [[cell(content=title)]]
-
-    return table(
-        clazz='small mt-2',
-        bcols=bcols,
-        body=body,
     )
 
 
@@ -203,7 +179,7 @@ def pending_score_body(scores):
     Returns:
         A line score table body.
     """
-    hcols = [col(clazz='font-weight-bold text-secondary')]
+    hcols = [col(clazz='font-weight-bold text-dark')]
     head = [[cell(content='Pending')]]
 
     body = []
@@ -211,7 +187,7 @@ def pending_score_body(scores):
         body.append([cell(content=encoding_to_hometown_sub(score))])
 
     return table(
-        clazz='border small',
+        clazz='border mb-3',
         hcols=hcols,
         head=head,
         body=body,

@@ -16,6 +16,7 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import table  # noqa
+from common.elements.elements import topper  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.teams.teams import encoding_keys  # noqa
@@ -248,10 +249,8 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch('tasks.standings.standings.call_service')
-    def test_dialog_tables(self, mock_call):
-        mock_call.side_effect = [HEAD_2449, HEAD_2469, HEAD_2469]
-
+    maxDiff = None
+    def test_dialog_tables(self):
         date_0830 = encode_datetime(DATE_08300000)
         date_0831 = encode_datetime(DATE_08310000)
         body = table(clazz='', head=[[cell(content='Pending')]])
@@ -261,21 +260,17 @@ class StandingsTest(Test):
             (date_0831, body, None),
         ]
 
-        margin = table(clazz=' mt-3', head=[[cell(content='Pending')]])
+        head_0830 = topper('Friday, August 30th, 2024')
+        head_0831 = topper('Saturday, August 31st, 2024')
         standings = self.create_standings(_data())
         actual = standings._dialog_tables(data)
         expected = [
-            HEAD_2449, BODY_2449, FOOT_2449,
-            HEAD_2469, BODY_2469, FOOT_2469,
-            margin
+            head_0830, BODY_2449, FOOT_2449,
+            head_0831, BODY_2469, FOOT_2469,
+            body
         ]  # yapf: disable
         self.assertEqual(actual, expected)
 
-        mock_call.assert_has_calls([
-            mock.call('scoreboard', 'line_score_head', (date_0830, )),
-            mock.call('scoreboard', 'line_score_head', (date_0831, )),
-            mock.call('scoreboard', 'line_score_head', (date_0831, ))
-        ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Standings, '_render')

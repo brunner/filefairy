@@ -6,7 +6,6 @@ import os
 import re
 import sys
 import unittest
-import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/teams', '', _path))
@@ -194,21 +193,21 @@ class TeamsTest(unittest.TestCase):
         self.assertEqual(actual, ENCODING_KEYS)
 
     def test_icon_absolute(self):
-        actual = icon_absolute('T35', 'Chicago', '20')
+        actual = icon_absolute('T35', 'Chicago')
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
-        img = ('<img src="{}" width="20" height="20" border="0" class="positio'
-               'n-absolute left-8p top-14p">').format(src)
-        span = ('<span class="d-block text-truncate pl-24p">Chicago</span>')
+        img = ('<img src="{}" width="16" height="16" border="0" class="positio'
+               'n-absolute lt-10p">').format(src)
+        span = ('<span class="d-block text-truncate pl-4">Chicago</span>')
         expected = img + span
         self.assertEqual(actual, expected)
 
     def test_icon_badge__active_false(self):
-        actual = icon_badge('T35', '0-0', False, '20')
+        actual = icon_badge('T35', '0-0', False)
         badge = ('<span class="badge badge-icon badge-light">{}</span>')
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
-        img = ('<img src="{}" width="20" height="20" border="0" class="d-inlin'
+        img = ('<img src="{}" width="16" height="16" border="0" class="d-inlin'
                'e-block grayscale">').format(src)
         span = ('<span class="d-inline-block align-middle px-2 pt-1 text-secon'
                 'dary">0-0</span>')
@@ -216,24 +215,24 @@ class TeamsTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_icon_badge__active_question(self):
-        actual = icon_badge('T35', '0-0', True, '20')
+        actual = icon_badge('T35', '0-0', True)
         badge = ('<span class="badge badge-icon badge-light" data-toggle="moda'
                  'l" data-target="#35">{}</span>')
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
-        img = ('<img src="{}" width="20" height="20" border="0" class="d-inlin'
+        img = ('<img src="{}" width="16" height="16" border="0" class="d-inlin'
                'e-block">').format(src)
         span = '<span class="d-inline-block align-middle px-2 pt-1">?-?</span>'
         expected = badge.format(img + span)
         self.assertEqual(actual, expected)
 
     def test_icon_badge__active_true(self):
-        actual = icon_badge('T35', '1-0', True, '20')
+        actual = icon_badge('T35', '1-0', True)
         badge = ('<span class="badge badge-icon badge-light" data-toggle="moda'
                  'l" data-target="#35">{}</span>')
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
-        img = ('<img src="{}" width="20" height="20" border="0" class="d-inlin'
+        img = ('<img src="{}" width="16" height="16" border="0" class="d-inlin'
                'e-block">').format(src)
         span = '<span class="d-inline-block align-middle px-2 pt-1">1-0</span>'
         expected = badge.format(img + span)

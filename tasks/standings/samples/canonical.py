@@ -16,6 +16,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import table  # noqa
+from common.elements.elements import topper  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
@@ -24,7 +25,6 @@ from services.division.division import condensed_league  # noqa
 from services.division.division import expanded_league  # noqa
 from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa
-from services.scoreboard.scoreboard import line_score_head  # noqa
 from services.scoreboard.scoreboard import pending_score_body  # noqa
 
 
@@ -87,31 +87,6 @@ CONDENSED_NL = [
 
 TESTDATA = get_testdata()
 
-
-def _expanded_head(subleague):
-    return [
-        cell(content=subleague),
-        cell(content='W'),
-        cell(content='L'),
-        cell(content='GB'),
-    ]
-
-
-_breadcrumbs = [{
-    'href': '/',
-    'name': 'Fairylab'
-}, {
-    'href': '',
-    'name': 'Standings'
-}]
-
-_bcols = [
-    col(clazz='td-sm position-relative text-center w-20 pl-2'),
-    col(clazz='td-sm position-relative text-center w-20'),
-    col(clazz='td-sm position-relative text-center w-20'),
-    col(clazz='td-sm position-relative text-center w-20'),
-    col(clazz='td-sm position-relative text-center w-20 pr-2')
-]
 _recent = [
     condensed_league('American League', CONDENSED_AL),
     condensed_league('National League', CONDENSED_NL),
@@ -122,17 +97,17 @@ _expanded_nl = expanded_league('National League', EXPANDED_NL)
 _expanded = _expanded_al + _expanded_nl
 
 _game_2449 = json.loads(TESTDATA['2449.json'])
-_head_2449 = line_score_head(_game_2449['date'])
+_head_2449 = topper('Wednesday, August 28th, 2024')
 _body_2449 = line_score_body(_game_2449)
 _foot_2449 = line_score_foot(_game_2449)
 
 _game_2469 = json.loads(TESTDATA['2469.json'])
-_head_2469 = line_score_head(_game_2469['date'])
+_head_2469 = topper('Thursday, August 29th, 2024')
 _body_2469 = line_score_body(_game_2469)
 _foot_2469 = line_score_foot(_game_2469)
 
 _game_2476 = json.loads(TESTDATA['2476.json'])
-_head_2476 = line_score_head(_game_2476['date'])
+_head_2476 = topper('Friday, August 30th, 2024')
 _body_2476 = line_score_body(_game_2476)
 _foot_2476 = line_score_foot(_game_2476)
 
@@ -146,15 +121,24 @@ _body_55 = pending_score_body(['TNY 1, T55 0'])
 _body_la = pending_score_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
 _body_ny = pending_score_body(['TNY 5, TLA 3', 'TNY 1, T55 0'])
 
+_icon_31 = icon_absolute('T31', 'Arizona Diamondbacks')
+_icon_40 = icon_absolute('T40', 'Detroit Tigers')
+_icon_44 = icon_absolute('T44', 'Los Angeles Angels')
+_icon_45 = icon_absolute('T45', 'Los Angeles Dodgers')
+_icon_47 = icon_absolute('T47', 'Minnesota Twins')
+_icon_48 = icon_absolute('T48', 'New York Yankees')
+_icon_49 = icon_absolute('T49', 'New York Mets')
+_icon_55 = icon_absolute('T55', 'San Francisco Giants')
+
 _dialogs = [
-    dialog('31', 'Arizona Diamondbacks', [_head_2449, _body_31]),
-    dialog('40', 'Detroit Tigers', _tables),
-    dialog('44', 'Los Angeles Angels', [_head_2449, _body_la]),
-    dialog('45', 'Los Angeles Dodgers', [_head_2449, _body_la]),
-    dialog('47', 'Minnesota Twins', _tables),
-    dialog('48', 'New York Yankees', [_head_2449, _body_ny]),
-    dialog('49', 'New York Mets', [_head_2449, _body_ny]),
-    dialog('55', 'San Francisco Giants', [_head_2449, _body_55]),
+    dialog('31', _icon_31, [_head_2449, _body_31]),
+    dialog('40', _icon_40, _tables),
+    dialog('44', _icon_44, [_head_2449, _body_la]),
+    dialog('45', _icon_45, [_head_2449, _body_la]),
+    dialog('47', _icon_47, _tables),
+    dialog('48', _icon_48, [_head_2449, _body_ny]),
+    dialog('49', _icon_49, [_head_2449, _body_ny]),
+    dialog('55', _icon_55, [_head_2449, _body_55]),
 ]
 
 subtitle = ''
@@ -162,8 +146,7 @@ subtitle = ''
 tmpl = 'standings.html'
 
 context = {
-    'title': 'standings',
-    'breadcrumbs': _breadcrumbs,
+    'title': 'Standings',
     'recent': _recent,
     'expanded': _expanded,
     'dialogs': _dialogs,

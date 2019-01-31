@@ -137,16 +137,19 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <div class="modal-content">
 
 <!-- ^(common.dialog.header) -->
-<div class="modal-header">
-<h5 class="modal-title" id="{{ data.id }}-label">{{ data.header }}</h5>
-<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<div class="modal-header d-block py-0">
+<div class="head position-relative py-2 small">
+{{ data.icon }}
+<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+        data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
+</div>
 </div>
 <!-- $(common.dialog.header) -->
 
 <!-- ^(common.dialog.body) -->
-<div class="modal-body">
+<div class="modal-body pb-0">
 {% for t in data.tables %}
 {{ table(t) }}
 
@@ -170,7 +173,7 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 
 {% macro table(data) -%}
 <!-- ^(common.table) -->
-<table class="table{% if data.clazz %} {{ data.clazz }}{% endif %}"
+<table class="small table{% if data.clazz %} {{ data.clazz }}{% endif %}"
        {%- if data.id %}id="{{ data.id }}"{% endif %}>
 {% if data.head %}
 
@@ -291,4 +294,28 @@ $('.form-control').on('change keyup paste mouseup', function(e) {
 <!-- $(common.tabs.content) -->
 
 <!-- $(common.tabs) -->
+{%- endmacro -%}
+
+{% macro topper(text) -%}
+<!-- ^(common.topper) -->
+<div class="row">
+<div class="col-12">
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">{{ text }}</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
+</div>
+</div>
+<!-- $(common.topper) -->
 {%- endmacro -%}
