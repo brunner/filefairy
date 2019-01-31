@@ -214,6 +214,7 @@ class Dashboard(Registrable):
                 body.insert(0, r)
 
             t = table(
+                clazz='border mt-3',
                 hcols=[col(colspan='3')],
                 bcols=[None, None, col(clazz='text-right w-75p')],
                 head=[[cell(content=head_content)]],

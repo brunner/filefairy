@@ -76,6 +76,10 @@ class News(Registrable):
             head = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suf)
             body = [[cell(content=text)] for text in data[date]]
 
-            tables.append(table(head=[[cell(content=head)]], body=body))
+            tables.append(
+                table(
+                    clazz='border mt-3',
+                    head=[[cell(content=head)]],
+                    body=body))
 
         return tables

@@ -128,7 +128,7 @@ def span(classes, text):
     return '<span class="{}">{}</span>'.format(' '.join(classes), text)
 
 
-def table(clazz='border mt-3',
+def table(clazz='',
           id_='',
           hcols=None,
           bcols=None,

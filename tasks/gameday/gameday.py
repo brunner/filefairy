@@ -493,6 +493,7 @@ class Gameday(Registrable):
                 pitching = away_team if away_team != batting else home_team
                 hcontent = icon_absolute(half['batting'], half['label'], '20')
                 log_table = table(
+                    clazz='border mt-3',
                     hcols=[col(clazz='position-relative', colspan='2')],
                     head=[[cell(content=hcontent)]],
                     bcols=[
@@ -501,6 +502,7 @@ class Gameday(Registrable):
                     ],
                     body=[])
                 plays_table = table(
+                    clazz='border mt-3',
                     hcols=[col(clazz='position-relative')],
                     head=[[cell(content=hcontent)]],
                     body=[])
@@ -589,7 +591,9 @@ class Gameday(Registrable):
         jump = [[cell(content=anchor('#tabs', 'Jump to top of page'))]]
         log_tables.append(
             table(
-                head=[[cell(content='Post Game')]], body=(jump + links_body)))
+                clazz='border mt-3',
+                head=[[cell(content='Post Game')]],
+                body=(jump + links_body)))
         ret['tabs']['tabs'].append({
             'name': 'log',
             'title': 'Game Log',

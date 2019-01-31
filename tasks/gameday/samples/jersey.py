@@ -49,6 +49,7 @@ for encoding in encoding_keys():
     decoding = encoding_to_decoding(encoding)
     head = [[cell(content=icon_absolute(encoding, decoding, '20'))]]
     table_ = table(
+        clazz='border mt-3',
         hcols=[col(clazz='position-relative', colspan=8)],
         head=head,
         body=body)

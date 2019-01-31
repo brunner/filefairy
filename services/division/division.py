@@ -201,6 +201,7 @@ def expanded_league(league, tables):
 
         ret.append(
             table(
+                clazz='border mt-3',
                 hcols=EXPANDED_COLS,
                 bcols=EXPANDED_COLS,
                 head=head,

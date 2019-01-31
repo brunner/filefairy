@@ -118,7 +118,7 @@ class ComponentTest(unittest.TestCase):
     def test_table__default(self):
         actual = table()
         expected = {
-            'clazz': 'border mt-3',
+            'clazz': '',
             'id': '',
             'hcols': None,
             'bcols': None,

@@ -280,6 +280,7 @@ class DivisionTest(unittest.TestCase):
         actual = expanded_league('American League', tables)
         expected = [
             table(
+                clazz='border mt-3',
                 hcols=EXPANDED_COLS,
                 bcols=EXPANDED_COLS,
                 head=[_expanded_head('AL East')],
@@ -290,6 +291,7 @@ class DivisionTest(unittest.TestCase):
                 ],
             ),
             table(
+                clazz='border mt-3',
                 hcols=EXPANDED_COLS,
                 bcols=EXPANDED_COLS,
                 head=[_expanded_head('AL Central')],
@@ -300,6 +302,7 @@ class DivisionTest(unittest.TestCase):
                 ],
             ),
             table(
+                clazz='border mt-3',
                 hcols=EXPANDED_COLS,
                 bcols=EXPANDED_COLS,
                 head=[_expanded_head('AL Wild Card')],
