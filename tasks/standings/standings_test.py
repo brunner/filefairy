@@ -20,6 +20,7 @@ from common.elements.elements import topper  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.teams.teams import encoding_keys  # noqa
+from common.teams.teams import icon_absolute  # noqa
 from common.test.test import RMock  # noqa
 from common.test.test import Suite  # noqa
 from common.test.test import Test  # noqa
@@ -55,6 +56,12 @@ FOOT_2469 = table(foot=[[cell(content='Twins Shut Out Tigers')]])
 
 DATA_2449 = (GAME_2449['date'], BODY_2449, FOOT_2449)
 DATA_2469 = (GAME_2469['date'], BODY_2469, FOOT_2469)
+
+ICON_31 = icon_absolute('T31', 'Arizona Diamondbacks')
+ICON_40 = icon_absolute('T40', 'Detroit Tigers')
+ICON_44 = icon_absolute('T44', 'Los Angeles Angels')
+ICON_45 = icon_absolute('T45', 'Los Angeles Dodgers')
+ICON_47 = icon_absolute('T47', 'Minnesota Twins')
 
 DIALOG_TABLES = [
     HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469
@@ -249,7 +256,6 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    maxDiff = None
     def test_dialog_tables(self):
         date_0830 = encode_datetime(DATE_08300000)
         date_0831 = encode_datetime(DATE_08310000)
@@ -415,11 +421,11 @@ class StandingsTest(Test):
                 TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC
             ],
             'dialogs': [
-                dialog('31', 'Arizona Diamondbacks', [head, body]),
-                dialog('40', 'Detroit Tigers', DIALOG_TABLES),
-                dialog('44', 'Los Angeles Angels', [head, body]),
-                dialog('45', 'Los Angeles Dodgers', [head, body]),
-                dialog('47', 'Minnesota Twins', DIALOG_TABLES),
+                dialog('31', ICON_31, [head, body]),
+                dialog('40', ICON_40, DIALOG_TABLES),
+                dialog('44', ICON_44, [head, body]),
+                dialog('45', ICON_45, [head, body]),
+                dialog('47', ICON_47, DIALOG_TABLES),
             ]
         }  # yapf: disable
         self.assertEqual(actual, expected)
@@ -504,11 +510,11 @@ class StandingsTest(Test):
                 TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC
             ],
             'dialogs': [
-                dialog('31', 'Arizona Diamondbacks', [head, body]),
-                dialog('40', 'Detroit Tigers', DIALOG_TABLES),
-                dialog('44', 'Los Angeles Angels', [head, body]),
-                dialog('45', 'Los Angeles Dodgers', [head, body]),
-                dialog('47', 'Minnesota Twins', DIALOG_TABLES),
+                dialog('31', ICON_31, [head, body]),
+                dialog('40', ICON_40, DIALOG_TABLES),
+                dialog('44', ICON_44, [head, body]),
+                dialog('45', ICON_45, [head, body]),
+                dialog('47', ICON_47, DIALOG_TABLES),
             ]
         }  # yapf: disable
         self.assertEqual(actual, expected)

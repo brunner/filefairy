@@ -24,6 +24,7 @@ from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
+from common.teams.teams import icon_absolute  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 from data.shadow.shadow import Shadow  # noqa
@@ -203,7 +204,8 @@ class Standings(Registrable):
             teamid = encoding_to_teamid(encoding)
             decoding = encoding_to_decoding(encoding)
             tables = self._dialog_tables(d[encoding])
-            ret['dialogs'].append(dialog(teamid, decoding, tables))
+            icon = icon_absolute(encoding, decoding)
+            ret['dialogs'].append(dialog(teamid, icon, tables))
 
         statsplus_table = self.shadow.get('statsplus.table', {})
         for league in sorted(LEAGUES):
