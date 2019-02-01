@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% import "common.html" as common %}
+
+{% block content %}
+
+<!-- ^(gameday.tables) -->
+<div class="container">
+
+{{ common.topper('Live Sim Links') }}
+
+<!-- ^(gameday.row) -->
+<div class="row">
+
+{% set n = tables|length() // 2 %}
+<!-- ^(gameday.column) -->
+<div class="col-md-6">
+
+{% for table in tables[:n] %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(gameday.column) -->
+
+<!-- ^(gameday.column) -->
+<div class="col-md-6">
+
+{% for table in tables[n:] %}
+{{ common.table(table) }}
+
+{% endfor %}
+</div>
+<!-- $(gameday.column) -->
+</div>
+<!-- $(gameday.row) -->
+
+</div>
+<!-- $(gameday.tables) -->
+
+{% endblock %}
