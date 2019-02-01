@@ -19,7 +19,6 @@ from common.elements.elements import table  # noqa
 from common.elements.elements import topper  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from common.teams.teams import icon_badge  # noqa
 from common.test.test import get_testdata  # noqa
 from services.division.division import condensed_league  # noqa
 from services.division.division import expanded_league  # noqa
