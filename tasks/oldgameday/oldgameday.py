@@ -8,7 +8,7 @@ import sys
 from functools import partial
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/tasks/gameday', '', _path))
+sys.path.append(re.sub(r'/tasks/oldgameday', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
 from common.elements.elements import anchor  # noqa
@@ -31,8 +31,9 @@ from data.response.response import Response  # noqa
 from util.statslab.statslab import parse_game_data  # noqa
 from util.statslab.statslab import parse_player  # noqa
 
-FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/gameday', '/fairylab/static', _path)
-FILEFAIRY_DIR = re.sub(r'/tasks/gameday', '', _path)
+FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/oldgameday', '/fairylab/static',
+                      _path)
+FILEFAIRY_DIR = re.sub(r'/tasks/oldgameday', '', _path)
 
 LEAGUES = {
     'American League': [
@@ -69,7 +70,7 @@ def secondary(text):
     return span(['text-secondary'], text)
 
 
-class Gameday(Registrable):
+class Oldgameday(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.colors = {}
@@ -80,7 +81,7 @@ class Gameday(Registrable):
 
     @staticmethod
     def _href():
-        return '/gameday/'
+        return '/oldgameday/'
 
     @staticmethod
     def _info():
@@ -88,13 +89,13 @@ class Gameday(Registrable):
 
     @staticmethod
     def _title():
-        return 'gameday'
+        return 'oldgameday'
 
     def _render_data(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
-        d = FAIRYLAB_DIR + '/gameday/'
+        d = FAIRYLAB_DIR + '/oldgameday/'
         check_output(['rm', '-rf', d])
         check_output(['mkdir', d])
 
@@ -103,9 +104,9 @@ class Gameday(Registrable):
 
         ret = []
 
-        gameday = self._gameday(schedule_data)
-        html = 'gameday/index.html'
-        ret.append((html, '', 'gameday.html', gameday))
+        oldgameday = self._oldgameday(schedule_data)
+        html = 'oldgameday/index.html'
+        ret.append((html, '', 'oldgameday.html', oldgameday))
 
         for id_ in games:
             game_data = loads(FILEFAIRY_DIR + _game_path.format(id_))
@@ -115,8 +116,8 @@ class Gameday(Registrable):
                 date = decode_datetime(game_data['date']).strftime('%m/%d/%Y')
                 subtitle = '{} at {}, {}'.format(away_team, home_team, date)
                 game = self._game(id_, subtitle, game_data, schedule_data)
-                html = 'gameday/{}/index.html'.format(id_)
-                ret.append((html, subtitle, 'game.html', game))
+                html = 'oldgameday/{}/index.html'.format(id_)
+                ret.append((html, subtitle, 'oldgame.html', game))
 
         if data != original:
             self.write()
@@ -196,7 +197,7 @@ class Gameday(Registrable):
         #     if id_ == sid:
         #         body.append([cell(content=secondary(stext))])
         #     else:
-        #         url = '/gameday/{}/'.format(sid)
+        #         url = '/oldgameday/{}/'.format(sid)
         #         body.append([cell(content=anchor(url, stext))])
 
         i = 0
@@ -206,19 +207,19 @@ class Gameday(Registrable):
 
         prv = 'Previous Game'
         if i == 0:
-            body.append([cell(content=anchor('/gameday/', prv))])
+            body.append([cell(content=anchor('/oldgameday/', prv))])
         else:
             sid = schedule_data[encoding][i - 1][3]
             body.append(
-                [cell(content=anchor('/gameday/{}/'.format(sid), prv))])
+                [cell(content=anchor('/oldgameday/{}/'.format(sid), prv))])
 
         nxt = 'Next Game'
         if i == len(schedule_data[encoding]) - 1:
-            body.append([cell(content=anchor('/gameday/', nxt))])
+            body.append([cell(content=anchor('/oldgameday/', nxt))])
         else:
             sid = schedule_data[encoding][i + 1][3]
             body.append(
-                [cell(content=anchor('/gameday/{}/'.format(sid), nxt))])
+                [cell(content=anchor('/oldgameday/{}/'.format(sid), nxt))])
 
         return table(clazz='table-fixed border', body=body)
 
@@ -278,10 +279,8 @@ class Gameday(Registrable):
 
         return False
 
-    def _gameday(self, schedule_data):
-        ret = {
-            'schedule': []
-        }
+    def _oldgameday(self, schedule_data):
+        ret = {'schedule': []}
 
         for league in sorted(LEAGUES):
             abbr = ''.join(s[0] for s in league.split(' '))
@@ -295,7 +294,7 @@ class Gameday(Registrable):
                     decoding = encoding_to_decoding(encoding)
                     if encoding in schedule_data:
                         sid = schedule_data[encoding][0][3]
-                        text = anchor('/gameday/{}/'.format(sid), decoding)
+                        text = anchor('/oldgameday/{}/'.format(sid), decoding)
                     else:
                         text = secondary(decoding)
                     content = icon_absolute(encoding, text)
@@ -587,7 +586,7 @@ class Gameday(Registrable):
         links_tables.append(
             table(
                 clazz='table-fixed border border-bottom-0 mt-3',
-                head=[[cell(content='Gameday Sources')]]))
+                head=[[cell(content='Oldgameday Sources')]]))
         links_tables.append(table(clazz='table-fixed border', body=links_body))
         links_tables.append(self._schedule_head(away_decoding))
         links_tables.append(
@@ -619,9 +618,9 @@ class Gameday(Registrable):
 #         statsplus._extract(encoded_date, id_)
 # statsplus._extract('2024-08-16T00:00:00-07:00', '2285')
 
-# gameday = Gameday(date=date, e=e)
-# gameday._backfill()
-# gameday.data['started'] = True
-# gameday._check_games()
-# gameday.data['started'] = False
-# gameday._setup_internal(date=date)
+# oldgameday = Oldgameday(date=date, e=e)
+# oldgameday._backfill()
+# oldgameday.data['started'] = True
+# oldgameday._check_games()
+# oldgameday.data['started'] = False
+# oldgameday._setup_internal(date=date)

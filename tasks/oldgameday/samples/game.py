@@ -6,7 +6,7 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/tasks/gameday/samples', '', _path))
+sys.path.append(re.sub(r'/tasks/oldgameday/samples', '', _path))
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -45,12 +45,12 @@ _schedule = [
             ],
             [
                 cell(
-                    content=anchor('/gameday/1000/',
+                    content=anchor('/oldgameday/1000/',
                                    '10/10/2022 @ Los Angeles Dodgers'))
             ],
             [
                 cell(
-                    content=anchor('/gameday/2000/',
+                    content=anchor('/oldgameday/2000/',
                                    '10/11/2022 @ Los Angeles Dodgers'))
             ],
         ]),
@@ -68,12 +68,12 @@ _schedule = [
             ],
             [
                 cell(
-                    content=anchor('/gameday/1000/',
+                    content=anchor('/oldgameday/1000/',
                                    '10/10/2022 v Arizona Diamondbacks'))
             ],
             [
                 cell(
-                    content=anchor('/gameday/2000/',
+                    content=anchor('/oldgameday/2000/',
                                    '10/11/2022 v Arizona Diamondbacks'))
             ],
         ]),
