@@ -130,8 +130,14 @@ def line_score_foot(data):
     fcols = [col(clazz='border-0')]
     lines = []
 
+    box = 'game_box_{}.html'.format(data['num'])
+    url = os.path.join(STATSPLUS_BOX_SCORES, box)
+    head = anchor(url, 'Box Score')
+
     if data['recap']:
-        lines.append(span(['text-underline'], data['recap']))
+        head += ' &nbsp;|&nbsp; ' + span(['text-underline'], data['recap'])
+
+    lines.append(head)
 
     pitching = []
     for pitcher in ['winning', 'losing', 'saving']:
@@ -161,10 +167,6 @@ def line_score_foot(data):
     hr = span(['font-weight-bold text-secondary'], 'HR: ')
     hrs = '&nbsp; '.join(batting) if batting else 'None'
     lines.append(player_to_name_sub(hr + hrs))
-
-    box = 'game_box_{}.html'.format(data['num'])
-    url = os.path.join(STATSPLUS_BOX_SCORES, box)
-    lines.append(anchor(url, 'Box Score'))
 
     return table(
         clazz='border border-top-0 mb-3',
