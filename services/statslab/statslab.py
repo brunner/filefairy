@@ -119,6 +119,10 @@ def parse_game(box_in, log_in, out, date):
     Returns:
         True if the parse was successful, otherwise None.
     """
+    num = search(r'game_box_(\d+)\.html', box_in)
+    if not num:
+        return None
+
     box_text = _open(box_in)
     away, home, s = search(r'(\w+) at (\w+), (\d{2}\/\d{2}\/\d{4})', box_text)
     if not s:
@@ -151,6 +155,7 @@ def parse_game(box_in, log_in, out, date):
         'date': date,
         'home_colors': home_colors,
         'home_team': home,
+        'num': num,
     }
 
     for team in ['away', 'home']:
@@ -192,8 +197,8 @@ def parse_game(box_in, log_in, out, date):
                 p, n, total = search(r'^(\w+)(?:\s(\d+))?\s\((\d+),', s)
                 if not n:
                     n = '1'
-                homeruns.append(' '.join([p, n, total]))
-        data[team + '_homeruns'] = ', '.join(homeruns)
+                homeruns.append(','.join([p, n, total]))
+        data[team + '_homeruns'] = ' '.join(homeruns) if homeruns else None
 
     for pitcher in ['winning', 'losing']:
         i = pitcher[0].upper()
@@ -201,8 +206,7 @@ def parse_game(box_in, log_in, out, date):
                          box_text)
 
         record = search(r'^\((\d+-\d+)\)', line)
-        era = search(r'>([^<]+)</td>$', line)
-        data[pitcher + '_pitcher'] = ' '.join([p, record, era])
+        data[pitcher + '_pitcher'] = ' '.join([p, record])
 
     p, saves = search(r'(?s)<td class="dl">(\w+) SV \((\d+)\)', box_text)
     data['saving_pitcher'] = ' '.join([p, saves]) if saves else ''

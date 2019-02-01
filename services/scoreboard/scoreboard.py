@@ -9,6 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/scoreboard', '', _path))
 
+from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
@@ -18,6 +19,9 @@ from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
 from common.teams.teams import icon_absolute  # noqa
+
+STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
+STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
 
 def line_score_body(data):
@@ -130,27 +134,24 @@ def line_score_foot(data):
         lines.append(span(['text-underline'], data['recap']))
 
     pitching = []
-    if data['winning_pitcher']:
-        s = '{} ({}, {} ERA)'.format(*(data['winning_pitcher'].split()))
-        pitching.append(span(['font-weight-bold text-secondary'], 'W: ') + s)
+    for pitcher in ['winning', 'losing', 'saving']:
+        encoding = data[pitcher + '_pitcher']
+        if not encoding:
+            continue
 
-    if data['losing_pitcher']:
-        s = '{} ({}, {} ERA)'.format(*(data['losing_pitcher'].split()))
-        pitching.append(span(['font-weight-bold text-secondary'], 'L: ') + s)
+        pref = pitcher[0].upper() + ': '
+        s = '{} ({})'.format(*(encoding.split()))
+        pitching.append(span(['font-weight-bold text-secondary'], pref) + s)
 
-    if data['saving_pitcher']:
-        s = '{} ({})'.format(*(data['saving_pitcher'].split()))
-        pitching.append(span(['font-weight-bold text-secondary'], 'S: ') + s)
-
-    lines.append(player_to_name_sub(', '.join(pitching)))
+    lines.append(player_to_name_sub('&nbsp; '.join(pitching)))
 
     batting = []
     for team in ['away', 'home']:
         if data[team + '_homeruns']:
             away_abbr = encoding_to_abbreviation(data[team + '_team'])
             away_homeruns = []
-            for h in data[team + '_homeruns'].split(', '):
-                p, n, total = h.split()
+            for h in data[team + '_homeruns'].split(' '):
+                p, n, total = h.split(',')
                 if int(n) > 1:
                     p += ' ' + n
                 away_homeruns.append('{} ({})'.format(p, total))
@@ -158,8 +159,12 @@ def line_score_foot(data):
             batting.append(span(['text-secondary'], away_abbr + ': ') + s)
 
     hr = span(['font-weight-bold text-secondary'], 'HR: ')
-    hrs = ', '.join(batting) if batting else 'None'
+    hrs = '&nbsp; '.join(batting) if batting else 'None'
     lines.append(player_to_name_sub(hr + hrs))
+
+    box = 'game_box_{}.html'.format(data['num'])
+    url = os.path.join(STATSPLUS_BOX_SCORES, box)
+    lines.append(anchor(url, 'Box Score'))
 
     return table(
         clazz='border border-top-0 mb-3',

@@ -1,8 +1,8 @@
 {
-  "away_colors": "grey #052046 #d11242 basic",
+  "away_colors": "blue #d11242 #d0718f basic",
   "away_errors": "0",
   "away_hits": "12",
-  "away_homeruns": "P1452 1 1, P53142 1 2, P23582 1 1",
+  "away_homeruns": "P1452,1,1 P53142,1,2 P23582,1,1",
   "away_line": "2 0 0 0 0 2 0 0 1",
   "away_pitcher": "P25132",
   "away_record": null,
@@ -382,17 +382,18 @@
     "batter_ground_fc S 5-4 5",
     "change_inning 5 0"
   ],
-  "home_colors": "white #b11132 #0c2445 pointed",
+  "home_colors": "red #b11132 #0c2445 pointed",
   "home_errors": "0",
   "home_hits": "2",
-  "home_homeruns": "",
+  "home_homeruns": null,
   "home_line": "0 0 0 0 0 0 0 0 0",
   "home_pitcher": "P62070",
   "home_record": null,
   "home_runs": "0",
   "home_team": "T44",
-  "losing_pitcher": "P62070 0-1 5.00",
+  "losing_pitcher": "P62070 0-1",
+  "num": "23692",
   "recap": null,
   "saving_pitcher": "",
-  "winning_pitcher": "P25132 1-1 1.00"
+  "winning_pitcher": "P25132 1-1"
 }
