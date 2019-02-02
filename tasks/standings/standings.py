@@ -12,6 +12,7 @@ sys.path.append(re.sub(r'/tasks/standings', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
+from common.dict_.dict_ import merge  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import topper  # noqa
 from common.json_.json_ import loads  # noqa
@@ -137,45 +138,6 @@ class Standings(Registrable):
         self.write()
         self._render(**kwargs)
 
-    def _line_scores(self):
-        d = {}
-        for name in os.listdir(GAMES_DIR):
-            data = loads(os.path.join(GAMES_DIR, name))
-            body = call_service('scoreboard', 'line_score_body', (data, ))
-            foot = call_service('scoreboard', 'line_score_foot', (data, ))
-
-            for team in ['away', 'home']:
-                e = data[team + '_team']
-                if e not in d:
-                    d[e] = []
-                d[e].append((data['date'], body, foot))
-
-        return d
-
-    def _pending_scores(self):
-        d = {}
-        statsplus_scores = self.shadow.get('statsplus.scores', {})
-        for date in statsplus_scores:
-            scores = {}
-            for s in sorted(statsplus_scores[date].values()):
-                for t in search(r'(\w+) \d+, (\w+) \d+', s):
-                    if t not in scores:
-                        scores[t] = []
-                    scores[t].append(s)
-
-            for t in sorted(scores):
-                body = call_service(
-                    'scoreboard',
-                    'pending_score_body',
-                    (scores[t], ),
-                )
-                for e in encoding_to_encodings(t):
-                    if e not in d:
-                        d[e] = []
-                    d[e].append((date, body, None))
-
-        return d
-
     def _start(self, **kwargs):
         self.data['finished'] = False
         self.shadow['statsplus.scores'] = {}
@@ -189,9 +151,11 @@ class Standings(Registrable):
             'recent': [],
         }
 
-        line_scores = self._line_scores()
-        pending_scores = self._pending_scores()
-        d = self._merge(line_scores, pending_scores, lambda x, y: x + y, [])
+        statsplus = self.shadow.get('statsplus.scores', {})
+
+        line = call_service('scoreboard', 'line_scores', ())
+        pending = call_service('scoreboard', 'pending_scores', (statsplus, ))
+        d = merge(line, pending, lambda x, y: x + y, [])
 
         for encoding in sorted(d):
             teamid = encoding_to_teamid(encoding)
@@ -207,7 +171,7 @@ class Standings(Registrable):
                 e = {t: self.data['table'][t] for t in teams}
                 r = {t: statsplus_table.get(t, '0-0') for t in teams}
                 if not self.data['finished']:
-                    e = self._merge(e, r, add_records, '0-0')
+                    e = merge(e, r, add_records, '0-0')
 
                 r = {k: (v, k in d) for k, v in r.items()}
                 etables.append((subleague, e))
@@ -220,8 +184,3 @@ class Standings(Registrable):
             ret['recent'].append(r)
 
         return ret
-
-    @staticmethod
-    def _merge(d1, d2, f, empty):
-        keys = set(d1).union(d2)
-        return {k: f(d1.get(k, empty), d2.get(k, empty)) for k in keys}

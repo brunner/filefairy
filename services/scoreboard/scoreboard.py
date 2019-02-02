@@ -14,11 +14,16 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
+from common.json_.json_ import loads  # noqa
+from common.re_.re_ import search  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
+from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
 from common.teams.teams import icon_absolute  # noqa
+
+GAMES_DIR = re.sub(r'/services/scoreboard', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
@@ -175,6 +180,22 @@ def line_score_foot(data):
     )
 
 
+def line_scores():
+        d = {}
+        for name in os.listdir(GAMES_DIR):
+            data = loads(os.path.join(GAMES_DIR, name))
+            body = line_score_body(data)
+            foot = line_score_foot(data)
+
+            for team in ['away', 'home']:
+                e = data[team + '_team']
+                if e not in d:
+                    d[e] = []
+                d[e].append((data['date'], body, foot))
+
+        return d
+
+
 def pending_score_body(scores):
     """Creates a line score table body for a list of pending scores.
 
@@ -199,3 +220,23 @@ def pending_score_body(scores):
         head=head,
         body=body,
     )
+
+
+def pending_scores(statsplus_scores):
+    d = {}
+    for date in statsplus_scores:
+        scores = {}
+        for s in sorted(statsplus_scores[date].values()):
+            for t in search(r'(\w+) \d+, (\w+) \d+', s):
+                if t not in scores:
+                    scores[t] = []
+                scores[t].append(s)
+
+        for t in sorted(scores):
+            body = pending_score_body(scores[t])
+            for e in encoding_to_encodings(t):
+                if e not in d:
+                    d[e] = []
+                d[e].append((date, body, None))
+
+    return d

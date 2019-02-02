@@ -295,60 +295,6 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch('tasks.standings.standings.loads')
-    @mock.patch('tasks.standings.standings.os.listdir')
-    @mock.patch('tasks.standings.standings.call_service')
-    def test_line_scores(self, mock_call, mock_listdir, mock_loads):
-        mock_call.side_effect = [BODY_2449, FOOT_2449, BODY_2469, FOOT_2469]
-        mock_listdir.return_value = [
-            '2449.json', '2469.json'
-        ]
-        mock_loads.side_effect = [GAME_2449, GAME_2469]
-
-        standings = self.create_standings(_data())
-        actual = standings._line_scores()
-        expected = {
-            'T40': [DATA_2449, DATA_2469],
-            'T47': [DATA_2449, DATA_2469]
-        }
-        self.assertEqual(actual, expected)
-
-        mock_call.assert_has_calls([
-            mock.call('scoreboard', 'line_score_body', (GAME_2449, )),
-            mock.call('scoreboard', 'line_score_foot', (GAME_2449, )),
-            mock.call('scoreboard', 'line_score_body', (GAME_2469, )),
-            mock.call('scoreboard', 'line_score_foot', (GAME_2469, ))
-        ])
-        mock_listdir.assert_called_once_with(GAMES_DIR)
-        mock_loads.assert_has_calls([
-            mock.call(os.path.join(GAMES_DIR, '2449.json')),
-            mock.call(os.path.join(GAMES_DIR, '2469.json'))
-        ])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
-    @mock.patch('tasks.standings.standings.call_service')
-    def test_pending_scores(self, mock_call):
-        body = table(clazz='', head=[[cell(content='Pending')]])
-        mock_call.side_effect = [body, body]
-
-        standings = self.create_standings(_data())
-
-        date = encode_datetime(DATE_08310000)
-        score = 'T31 4, TLA 2'
-        statsplus_scores = {date: {'2998': score}}
-        standings.shadow['statsplus.scores'] = statsplus_scores
-
-        data_2998 = (date, body, None)
-        actual = standings._pending_scores()
-        expected = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
-        self.assertEqual(actual, expected)
-
-        mock_call.assert_has_calls([
-            mock.call('scoreboard', 'pending_score_body', ([score], )),
-            mock.call('scoreboard', 'pending_score_body', ([score], ))
-        ])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
     def test_start(self):
         standings = self.create_standings(_data(finished=True))
 
@@ -366,18 +312,26 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(Standings, '_pending_scores')
-    @mock.patch.object(Standings, '_line_scores')
     @mock.patch.object(Standings, '_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
-    def test_index_html__finished_false(self, mock_call, mock_dialog,
-                                        mock_line, mock_pending):
+    def test_index_html__finished_false(self, mock_call, mock_dialog):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
         body = table(clazz='', head=[[cell(content='Pending')]])
         data_2998 = (date, body, None)
 
+        line = {
+            'T40': [DATA_2449, DATA_2469],
+            'T47': [DATA_2449, DATA_2469]
+        }
+        pending = {
+            'T31': [data_2998],
+            'T44': [data_2998],
+            'T45': [data_2998]
+        }
         mock_call.side_effect = [
+            line,
+            pending,
             [TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC],
             TABLE_AL,
             [TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC],
@@ -390,20 +344,17 @@ class StandingsTest(Test):
             [head, body],
             DIALOG_TABLES,
         ]
-        mock_line.return_value = {
-            'T40': [DATA_2449, DATA_2469],
-            'T47': [DATA_2449, DATA_2469]
-        }
-        mock_pending.return_value = {
-            'T31': [data_2998],
-            'T44': [data_2998],
-            'T45': [data_2998]
-        }
 
         encodings = encoding_keys()
         table_ = _table(encodings, {})
         standings = self.create_standings(_data(table_=table_))
+
+        date = encode_datetime(DATE_08310000)
+        score = 'T31 4, TLA 2'
+        statsplus_scores = {date: {'2998': score}}
+        standings.shadow['statsplus.scores'] = statsplus_scores
         standings.shadow['statsplus.table'] = STATSPLUS_TABLE
+
         actual = standings._index_html(date=DATE_10260602)
         expected = {
             'recent': [TABLE_AL, TABLE_NL],
@@ -422,6 +373,8 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_call.assert_has_calls([
+            mock.call('scoreboard', 'line_scores', ()),
+            mock.call('scoreboard', 'pending_scores', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, STATSPLUS_TABLE)),
                 ('Central', _table(LEAGUE_ALC, STATSPLUS_TABLE)),
@@ -450,22 +403,28 @@ class StandingsTest(Test):
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
         ])
-        mock_line.assert_called_once_with()
-        mock_pending.assert_called_once_with()
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
-    @mock.patch.object(Standings, '_pending_scores')
-    @mock.patch.object(Standings, '_line_scores')
     @mock.patch.object(Standings, '_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
-    def test_index_html__finished_true(self, mock_call, mock_dialog, mock_line,
-                                       mock_pending):
+    def test_index_html__finished_true(self, mock_call, mock_dialog):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
         body = table(clazz='', head=[[cell(content='Pending')]])
         data_2998 = (date, body, None)
 
+        line = {
+            'T40': [DATA_2449, DATA_2469],
+            'T47': [DATA_2449, DATA_2469]
+        }
+        pending = {
+            'T31': [data_2998],
+            'T44': [data_2998],
+            'T45': [data_2998]
+        }
         mock_call.side_effect = [
+            line,
+            pending,
             [TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC],
             TABLE_AL,
             [TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC],
@@ -478,20 +437,17 @@ class StandingsTest(Test):
             [head, body],
             DIALOG_TABLES,
         ]
-        mock_line.return_value = {
-            'T40': [DATA_2449, DATA_2469],
-            'T47': [DATA_2449, DATA_2469]
-        }
-        mock_pending.return_value = {
-            'T31': [data_2998],
-            'T44': [data_2998],
-            'T45': [data_2998]
-        }
 
         encodings = encoding_keys()
         table_ = _table(encodings, {})
         standings = self.create_standings(_data(finished=True, table_=table_))
+
+        date = encode_datetime(DATE_08310000)
+        score = 'T31 4, TLA 2'
+        statsplus_scores = {date: {'2998': score}}
+        standings.shadow['statsplus.scores'] = statsplus_scores
         standings.shadow['statsplus.table'] = STATSPLUS_TABLE
+
         actual = standings._index_html(date=DATE_10260602)
         expected = {
             'recent': [TABLE_AL, TABLE_NL],
@@ -510,6 +466,8 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_call.assert_has_calls([
+            mock.call('scoreboard', 'line_scores', ()),
+            mock.call('scoreboard', 'pending_scores', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, table_)),
                 ('Central', _table(LEAGUE_ALC, table_)),
@@ -538,8 +496,6 @@ class StandingsTest(Test):
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
         ])
-        mock_line.assert_called_once_with()
-        mock_pending.assert_called_once_with()
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
 
