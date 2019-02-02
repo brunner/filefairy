@@ -9,6 +9,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/scoreboard', '', _path))
 
+from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import datetime_as_est  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -132,7 +134,11 @@ def line_score_foot(data):
     Returns:
         A line score table footer.
     """
-    fcols = [col(clazz='border-0')]
+    date = datetime_as_est(decode_datetime(data['date']))
+    start = date.strftime('%I:%M %p').lstrip('0')
+    ballpark = ' at ' + data['ballpark']
+    location = span(['small', 'text-secondary'], start + ballpark)
+
     lines = []
 
     box = 'game_box_{}.html'.format(data['num'])
@@ -175,8 +181,10 @@ def line_score_foot(data):
 
     return table(
         clazz='border border-top-0 mb-3',
-        fcols=fcols,
-        foot=[[cell(content='<br>'.join(lines))]],
+        foot=[
+            [cell(col=col(clazz='border-0 py-1'), content=location)],
+            [cell(content='<br>'.join(lines))],
+        ],
     )
 
 
