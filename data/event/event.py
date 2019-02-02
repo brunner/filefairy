@@ -48,6 +48,7 @@ class Event(IntEnum):
     BATTER_SINGLE_BUNT = auto()  # [zone]
     BATTER_SINGLE_INFIELD = auto()  # [path, zone]
     BATTER_SINGLE_ERR = auto()  # [scoring, path, zone]
+    BATTER_SINGLE_STRETCH = auto()  # [path, zone]
 
     BATTER_DOUBLE = auto()  # [path, zone]
     BATTER_DOUBLE_STRETCH = auto()  # [path, zone]
@@ -57,6 +58,7 @@ class Event(IntEnum):
 
     BATTER_REACH_DROPPED = auto()  # [position, scoring, zone]
     BATTER_REACH_FIELDING = auto()  # [scoring, path, zone]
+    BATTER_REACH_INTERFERENCE = auto()  # []
 
     BATTER_FLY = auto()  # [scoring, path, zone]
     BATTER_FLY_BUNT = auto()  # [zone, scoring]
@@ -68,6 +70,8 @@ class Event(IntEnum):
     BATTER_GROUND_FC = auto()  # [base, scoring, zone]
     BATTER_GROUND_HOME = auto()  # [scoring, zone]
 
+    BATTER_LINED_DP = auto()  # [scoring, path, zone]
+
     BATTER_SAC_BUNT = auto()  # [zone, scoring]
     BATTER_SAC_BUNT_DP = auto()  # [base]
     BATTER_SAC_BUNT_HIT = auto()  # [zone, scoring]
@@ -75,6 +79,7 @@ class Event(IntEnum):
     BATTER_SAC_BUNT_SAFE = auto()  # [zone, base]
 
     CATCHER_PASSED_BALL = auto()  # []
+    CATCHER_PICK_ERR = auto()  # []
     CATCHER_PICK_OUT = auto()  # [base]
     FIELDER_THROWING = auto()  # [scoring]
     PITCHER_PICK_ERR = auto()  # []

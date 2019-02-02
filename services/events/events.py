@@ -36,6 +36,8 @@ EVENT_MAP = {
                               r' to second base \({path}, {zone}\)$'),
     Event.BATTER_SINGLE_INFIELD: (r'^\d-\d: SINGLE \({path}, {zone}\) \(infiel'
                                   r'd hit\)$'),
+    Event.BATTER_SINGLE_STRETCH: (r'^\d-\d: SINGLE \({path}, {zone}\) - OUT at'
+                                  r' second base trying to stretch hit\.$'),
     Event.BATTER_DOUBLE: (r'^\d-\d: DOUBLE \({path}, {zone}\)$'),
     Event.BATTER_DOUBLE_STRETCH: (r'^\d-\d: DOUBLE \({path}, {zone}\) - OUT at'
                                   r' third base trying to stretch hit\.$'),
@@ -50,6 +52,8 @@ EVENT_MAP = {
                                  r'{zone}\)$'),
     Event.BATTER_REACH_FIELDING: (r'^\d-\d: Reached on error, {scoring} \({pat'
                                   r'h}, {zone}\)$'),
+    Event.BATTER_REACH_INTERFERENCE: (r'^\d-\d: Reaches on Catchers interferen'
+                                      r'ce$'),
     Event.BATTER_FLY: (r'^\d-\d: Fly out, {scoring} \({path}, {zone}\)$'),
     Event.BATTER_FLY_BUNT: (r'^\d-\d: Bunt - Flyout to {zone}! {scoring}$'),
     Event.BATTER_FLY_BUNT_DP: (r'^\d-\d: Bunt - Flyout to {zone} - DP at {base'
@@ -64,6 +68,7 @@ EVENT_MAP = {
                              r'Groundball, {zone}\)$'),
     Event.BATTER_GROUND_HOME: (r'^\d-\d: Grounds into fielders choice {scoring'
                                r'} \(Groundball, {zone}\)$'),
+    Event.BATTER_LINED_DP: r'^Lined into DP, {scoring} \({path}, {zone}\)$',
     Event.BATTER_SAC_BUNT: (r'^\d-\d: Sac Bunt to {zone} - play at first, batt'
                             r'er OUT! {scoring}$'),
     Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt(?: to P)? - play at {base}, '
@@ -75,6 +80,8 @@ EVENT_MAP = {
     Event.BATTER_SAC_BUNT_SAFE: (r'^\d-\d: Sac Bunt to {zone} - play at {base}'
                                  r', runner safe!$'),
     Event.CATCHER_PASSED_BALL: (r'^Passed Ball!$'),
+    Event.CATCHER_PICK_ERR: (r'^Pickoff Throw by Catcher to {base} - Error! {s'
+                             r'coring}$'),
     Event.CATCHER_PICK_OUT: (r'^Pickoff Throw by Catcher to {base} - Out!$'),
     Event.FIELDER_THROWING: (r'^Throwing error, {scoring}$'),
     Event.PITCHER_PICK_ERR: (r'^Pickoff Throw to {base} - Error! {scoring}$'),
