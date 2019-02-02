@@ -204,7 +204,8 @@ class Statsplus(Registrable):
     def _parse_score(self, num, date):
         out = os.path.join(GAMES_DIR, num + '.json')
 
-        if os.path.isfile(out):
+        # TODO: Remove date check after game log 404 error is fixed.
+        if date is not None and os.path.isfile(out):
             return True
 
         if self.data['started']:

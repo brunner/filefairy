@@ -140,20 +140,9 @@ def parse_game(box_in, log_in, out, date):
     date = datetime_datetime_est(d.year, d.month, d.day, s.hour, s.minute)
     date = encode_datetime(datetime_as_pst(date))
 
-    day = d.weekday()
-    home_fargs = (home, day, 'home', None)
-    home_colors = call_service('uniforms', 'jersey_colors', home_fargs)
-    away_fargs = (away, day, 'away', home_colors[0])
-    away_colors = call_service('uniforms', 'jersey_colors', away_fargs)
-
-    away_colors = ' '.join(away_colors)
-    home_colors = ' '.join(home_colors)
-
     data = {
-        'away_colors': away_colors,
         'away_team': away,
         'date': date,
-        'home_colors': home_colors,
         'home_team': home,
         'num': num,
     }
@@ -217,8 +206,9 @@ def parse_game(box_in, log_in, out, date):
 
     away_pitcher = search(r'Pitching for ' + away + r' : \w+ (\w+)', log_text)
     home_pitcher = search(r'Pitching for ' + home + r' : \w+ (\w+)', log_text)
-    if away_pitcher is None or home_pitcher is None:
-        return None
+
+    data['away_pitcher'] = away_pitcher
+    data['home_pitcher'] = home_pitcher
 
     events = []
     events_map = call_service('events', 'get_map', ())
@@ -240,9 +230,16 @@ def parse_game(box_in, log_in, out, date):
         if away_inning:
             events.append(Event.CHANGE_INNING.encode(away_inning, home_inning))
 
-    data['away_pitcher'] = away_pitcher
-    data['home_pitcher'] = home_pitcher
     data['events'] = events
+
+    day = d.weekday()
+    home_fargs = (home, day, 'home', None)
+    home_colors = call_service('uniforms', 'jersey_colors', home_fargs)
+    away_fargs = (away, day, 'away', home_colors[0])
+    away_colors = call_service('uniforms', 'jersey_colors', away_fargs)
+
+    data['away_colors'] = ' '.join(away_colors)
+    data['home_colors'] = ' '.join(home_colors)
 
     with open(out, 'w') as f:
         f.write(dumps(data) + '\n')

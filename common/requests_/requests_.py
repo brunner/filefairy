@@ -12,8 +12,6 @@ def get(url):
         r = requests.get(url, timeout=10)
         if r.status_code == requests.codes.ok:
             return r.text
-        raise Exception('Received status code {} for \'{}\'.'.format(
-            r.status_code, url))
     except Exception:
         _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
     return ''
