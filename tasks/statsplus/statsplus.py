@@ -71,7 +71,9 @@ class Statsplus(Registrable):
         return [Shadow(destination=d, key='statsplus.' + k, info=self.data[k])]
 
     def _shadow_scores(self):
-        return self._shadow_key('standings', 'scores')
+        gameday_scores = self._shadow_key('gameday', 'scores')
+        standings_scores = self._shadow_key('standings', 'scores')
+        return gameday_scores + standings_scores
 
     def _shadow_table(self):
         return self._shadow_key('standings', 'table')

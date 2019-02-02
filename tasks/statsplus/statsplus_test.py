@@ -115,12 +115,19 @@ class StatsplusTest(Test):
         table = {'T32': '1-0', 'T45': '0-1'}
         statsplus = self.create_statsplus(_data(scores=scores, table=table))
         actual = statsplus._shadow_scores()
-        shadow = Shadow(
-            destination='standings',
-            key='statsplus.scores',
-            info=scores,
-        )
-        self.assertEqual(actual, [shadow])
+        shadow = [
+            Shadow(
+                destination='gameday',
+                key='statsplus.scores',
+                info=scores,
+            ),
+            Shadow(
+                destination='standings',
+                key='statsplus.scores',
+                info=scores,
+            ),
+        ]
+        self.assertEqual(actual, shadow)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
@@ -130,12 +137,14 @@ class StatsplusTest(Test):
         table = {'T32': '1-0', 'T45': '0-1'}
         statsplus = self.create_statsplus(_data(scores=scores, table=table))
         actual = statsplus._shadow_table()
-        shadow = Shadow(
-            destination='standings',
-            key='statsplus.table',
-            info=table,
-        )
-        self.assertEqual(actual, [shadow])
+        shadow = [
+            Shadow(
+                destination='standings',
+                key='statsplus.table',
+                info=table,
+            )
+        ]
+        self.assertEqual(actual, shadow)
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 

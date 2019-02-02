@@ -10,11 +10,16 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/gameday', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import suffix  # noqa
+from common.dict_.dict_ import merge  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
+from common.elements.elements import topper  # noqa
 from common.json_.json_ import loads  # noqa
+from common.service.service import call_service  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import icon_absolute  # noqa
@@ -22,19 +27,6 @@ from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
 GAMES_DIR = re.sub(r'/tasks/gameday', '/resource/games', _path)
-
-LEAGUES = {
-    'American League': [
-        ('East', ('T33', 'T34', 'T48', 'T57', 'T59')),
-        ('Central', ('T35', 'T38', 'T40', 'T43', 'T47')),
-        ('West', ('T42', 'T44', 'T50', 'T54', 'T58')),
-    ],
-    'National League': [
-        ('East', ('T32', 'T41', 'T49', 'T51', 'T60')),
-        ('Central', ('T36', 'T37', 'T46', 'T52', 'T56')),
-        ('West', ('T31', 'T39', 'T45', 'T53', 'T55')),
-    ],
-}
 
 
 class Gameday(Registrable):
@@ -69,42 +61,41 @@ class Gameday(Registrable):
 
         return Response()
 
+    def _shadow_internal(self, **kwargs):
+        self._render(**kwargs)
+        return Response()
+
     def _index_html(self, **kwargs):
         ret = {
             'tables': [],
         }
 
-        games = {k: [] for k in encoding_keys()}
-        for name in os.listdir(GAMES_DIR):
-            num = name.strip('.json')
-            data = loads(os.path.join(GAMES_DIR, name))
-            date = data['date']
+        statsplus = self.shadow.get('statsplus.scores', {})
 
-            for team in ['away', 'home']:
-                encoding = data[team + '_team']
-                games[encoding].append((date, num))
+        line = call_service('scoreboard', 'line_scores', ())
+        pending = call_service('scoreboard', 'pending_scores', (statsplus, ))
+        d = merge(line, pending, lambda x, y: x + y, [])
 
-        games = {k: list(sorted(v)) for k, v in games.items()}
-        for league in sorted(LEAGUES):
-            abbr = ''.join(s[0] for s in league.split(' '))
-            for subleague, teams in LEAGUES[league]:
-                body = []
-                for encoding in teams:
-                    decoding = encoding_to_decoding(encoding)
-                    if games[encoding]:
-                        _, num = games[encoding][0]
-                        url = '/gameday/' + num + '/index.html'
-                        text = anchor(url, decoding)
-                    else:
-                        text = decoding
+        dates = {}
+        for encoding in sorted(d):
+            for date, body, foot in sorted(d[encoding], key=lambda x: x[0]):
+                if date not in dates:
+                    dates[date] = []
+                if body in dates[date]:
+                    continue
+                dates[date].append(body)
+                if foot is not None:
+                    dates[date].append(foot)
 
-                    body.append([cell(content=icon_absolute(encoding, text))])
+        for date in sorted(dates):
+            d = decode_datetime(date)
+            suff = suffix(d.day)
+            text = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suff)
+            ret['tables'].append(topper(text))
 
-                ret['tables'].append(
-                    table(
-                        clazz='border mb-3',
-                        head=[[cell(content=(abbr + ' ' + subleague))]],
-                        bcols=[col(clazz='position-relative')],
-                        body=body))
+            for t in dates[date]:
+                ret['tables'].append(t)
+
+            break
 
         return ret
