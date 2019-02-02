@@ -208,9 +208,9 @@ class TeamsTest(unittest.TestCase):
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
         img = ('<img src="{}" width="16" height="16" border="0" class="d-inlin'
-               'e-block grayscale">').format(src)
-        span = ('<span class="d-inline-block align-middle px-2 pt-1 text-secon'
-                'dary">0-0</span>')
+               'e-block-sm-lg grayscale">').format(src)
+        span = ('<span class="d-inline-block-sm-lg align-middle px-2 pt-1 text'
+                '-secondary">0-0</span>')
         expected = badge.format(img + span)
         self.assertEqual(actual, expected)
 
@@ -221,8 +221,9 @@ class TeamsTest(unittest.TestCase):
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
         img = ('<img src="{}" width="16" height="16" border="0" class="d-inlin'
-               'e-block">').format(src)
-        span = '<span class="d-inline-block align-middle px-2 pt-1">?-?</span>'
+               'e-block-sm-lg">').format(src)
+        span = ('<span class="d-inline-block-sm-lg align-middle px-2 pt-1">?-?'
+                '</span>')
         expected = badge.format(img + span)
         self.assertEqual(actual, expected)
 
@@ -233,8 +234,9 @@ class TeamsTest(unittest.TestCase):
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
         img = ('<img src="{}" width="16" height="16" border="0" class="d-inlin'
-               'e-block">').format(src)
-        span = '<span class="d-inline-block align-middle px-2 pt-1">1-0</span>'
+               'e-block-sm-lg">').format(src)
+        span = ('<span class="d-inline-block-sm-lg align-middle px-2 pt-1">1-0'
+                '</span>')
         expected = badge.format(img + span)
         self.assertEqual(actual, expected)
 

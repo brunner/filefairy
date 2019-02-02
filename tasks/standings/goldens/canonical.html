@@ -48,7 +48,7 @@ a.disabled{
   border: 1px solid #dee2e6;
   font-weight: 400!important;
   font-size: 80%;
-  padding: .25rem .75rem;
+  padding: .25rem .5rem;
   white-space: normal;
   width: 100%;
 }
@@ -173,6 +173,11 @@ button.close {
 .w-105p {
   width: 105px;
 }
+.d-inline-block-sm-lg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 .td-sm-none,
 .td-md-none,
 .td-lg-none {
@@ -183,14 +188,17 @@ button.close {
     margin-right: 0!important;
     padding-right: 0!important;
   }
-  .badge-icon {
-    padding: .25rem .5rem;
+  .d-inline-block-sm-lg {
+    display: inline-block;
   }
   .td-sm-none {
     display: table-cell;
   }
 }
 @media (min-width: 768px) {
+  .d-inline-block-sm-lg {
+    display: block;
+  }
   .modal-dialog {
     max-width: 650px; 
   }
@@ -199,6 +207,9 @@ button.close {
   }
 }
 @media (min-width: 992px) {
+  .d-inline-block-sm-lg {
+    display: inline-block;
+  }
   .modal-dialog {
     max-width: 800px; 
   }
@@ -271,25 +282,25 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#48"><img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2 pt-1">1-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#48"><img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">1-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#47"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2 pt-1">3-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#40"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2 pt-1">0-3</span></span></td>
+<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#47"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">3-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#40"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-3</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#44"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2 pt-1">0-1</span></span></td>
+<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#44"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-1</span></span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -317,25 +328,25 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#31"><img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2 pt-1">1-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="d-inline-block grayscale"><span class="d-inline-block align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#45"><img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2 pt-1">0-1</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#55"><img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="d-inline-block"><span class="d-inline-block align-middle px-2 pt-1">0-1</span></span></td>
+<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#31"><img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">1-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#45"><img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-1</span></span></td>
+<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#55"><img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-1</span></span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->

@@ -171,8 +171,8 @@ def icon_absolute(encoding, text):
 def icon_badge(encoding, text, active):
     lower = encoding_to_lower(encoding)
     teamid = encoding_to_teamid(encoding)
-    ic = 'd-inline-block'
-    sc = 'd-inline-block align-middle px-2 pt-1'
+    ic = 'd-inline-block-sm-lg'
+    sc = 'd-inline-block-sm-lg align-middle px-2 pt-1'
 
     if active:
         ba = MODAL_LINK.format(teamid)
