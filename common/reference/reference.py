@@ -13,6 +13,8 @@ sys.path.append(re.sub(r'/tasks/news', '', _path))
 
 from common.elements.elements import anchor  # noqa
 
+SEPARATORS = [' de ', ' De ', ' La ', ' Montes ', ' van ', ' Vander ', ' ']
+
 
 def _get(num, index, default):
     if _reference is None:
@@ -101,6 +103,35 @@ def player_to_number(e):
         The player's jersey number.
     """
     return _get(e, 1, '0')
+
+
+def player_to_shortname(e):
+    """Gets the player's short name.
+
+    Args:
+        e: The player's encoding.
+
+    Returns:
+        The player's short name.
+    """
+    name = player_to_name(e)
+    for s in SEPARATORS:
+        if s in name:
+            first, last = name.rsplit(s, 1)
+            return first[0] + '.' + s + last
+    return name
+
+
+def player_to_shortname_sub(text):
+    """Substitutes all player encodings with the corresponding short name.
+
+    Args:
+        text: The text to replace.
+
+    Returns:
+        The substituted text.
+    """
+    return _sub(partial(_repl, player_to_shortname), text)
 
 
 def player_to_team(e):

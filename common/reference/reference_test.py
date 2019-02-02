@@ -19,6 +19,8 @@ from common.reference.reference import player_to_link_sub  # noqa
 from common.reference.reference import player_to_name  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.reference.reference import player_to_number  # noqa
+from common.reference.reference import player_to_shortname  # noqa
+from common.reference.reference import player_to_shortname_sub  # noqa
 from common.reference.reference import player_to_team  # noqa
 from common.reference.reference import player_to_throws  # noqa
 from common.reference.reference import put_players  # noqa
@@ -59,9 +61,9 @@ class ReferenceTest(unittest.TestCase):
             self.assertEqual(actual, expected)
 
     def test_player_to_link_sub(self):
-        actual = player_to_link_sub('P123 (1-0, 0.00 ERA)')
+        actual = player_to_link_sub('P123 (1-0)')
         expected = ' '.join(
-            [anchor(STATSPLUS_PLAYER + '123', 'Jim Alfa'), '(1-0, 0.00 ERA)'])
+            [anchor(STATSPLUS_PLAYER + '123', 'Jim Alfa'), '(1-0)'])
         self.assertEqual(actual, expected)
 
     def test_player_to_name(self):
@@ -72,8 +74,8 @@ class ReferenceTest(unittest.TestCase):
             self.assertEqual(actual, expected)
 
     def test_player_to_name_sub(self):
-        actual = player_to_name_sub('P123 (1-0, 0.00 ERA)')
-        expected = 'Jim Alfa (1-0, 0.00 ERA)'
+        actual = player_to_name_sub('P123 (1-0)')
+        expected = 'Jim Alfa (1-0)'
         self.assertEqual(actual, expected)
 
     def test_player_to_number(self):
@@ -81,6 +83,18 @@ class ReferenceTest(unittest.TestCase):
         for num, expected in inputs:
             actual = player_to_number(num)
             self.assertEqual(actual, expected)
+
+    def test_player_to_shortname(self):
+        inputs = [('P123', 'J. Alfa'), ('P456', 'J. Beta'),
+                  ('P789', 'J. Unknown')]
+        for num, expected in inputs:
+            actual = player_to_shortname(num)
+            self.assertEqual(actual, expected)
+
+    def test_player_to_shortname_sub(self):
+        actual = player_to_shortname_sub('P123 (1-0)')
+        expected = 'J. Alfa (1-0)'
+        self.assertEqual(actual, expected)
 
     def test_player_to_team(self):
         inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T30')]

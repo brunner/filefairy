@@ -18,7 +18,7 @@ from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqa
-from common.reference.reference import player_to_name_sub  # noqa
+from common.reference.reference import player_to_shortname_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
@@ -160,7 +160,7 @@ def line_score_foot(data):
         s = '{} ({})'.format(*(encoding.split()))
         pitching.append(span(['font-weight-bold text-secondary'], pref) + s)
 
-    lines.append(player_to_name_sub('&nbsp; '.join(pitching)))
+    lines.append(player_to_shortname_sub('&nbsp; '.join(pitching)))
 
     batting = []
     for team in ['away', 'home']:
@@ -177,7 +177,7 @@ def line_score_foot(data):
 
     hr = span(['font-weight-bold text-secondary'], 'HR: ')
     hrs = '&nbsp; '.join(batting) if batting else 'None'
-    lines.append(player_to_name_sub(hr + hrs))
+    lines.append(player_to_shortname_sub(hr + hrs))
 
     return table(
         clazz='border border-top-0 mb-3',
