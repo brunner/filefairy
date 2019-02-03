@@ -10,7 +10,9 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/gameday', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
 from common.dict_.dict_ import merge  # noqa
 from common.elements.elements import anchor  # noqa
@@ -81,11 +83,12 @@ class Gameday(Registrable):
             for date, body, foot in sorted(d[encoding], key=lambda x: x[0]):
                 if date not in dates:
                     dates[date] = []
-                if body in dates[date]:
+
+                start = foot.get('data', {}).get('date', self._midnight(date))
+                if not start:
                     continue
-                dates[date].append(body)
-                if foot is not None:
-                    dates[date].append(foot)
+
+                dates[date].append((start, body, foot))
 
         for date in sorted(dates):
             d = decode_datetime(date)
@@ -93,9 +96,20 @@ class Gameday(Registrable):
             text = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suff)
             ret['tables'].append(topper(text))
 
-            for t in dates[date]:
-                ret['tables'].append(t)
+            for _, body, foot in sorted(dates[date], key=lambda x: x[0]):
+                if body in ret['tables']:
+                    continue
+
+                ret['tables'].append(body)
+                if foot is not None:
+                    ret['tables'].append(foot)
 
             break
 
         return ret
+
+    @staticmethod
+    def _midnight(date):
+        d = decode_datetime(date)
+        m = datetime_datetime_pst(d.year, d.month, d.day, 23, 59)
+        return encode_datetime(m)

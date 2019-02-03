@@ -181,6 +181,7 @@ def line_score_foot(data):
 
     return table(
         clazz='border border-top-0 mb-3',
+        data={'date': data['date']},
         foot=[
             [cell(col=col(clazz='border-0 py-1'), content=location)],
             [cell(content='<br>'.join(lines))],
