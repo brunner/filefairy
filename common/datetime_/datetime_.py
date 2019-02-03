@@ -91,6 +91,22 @@ def datetime_now():
     return PST.localize(datetime.datetime.now())
 
 
+def datetime_replace(s, **kwargs):
+    """Convenience wrapper around datetime.replace.
+
+    Returns a new datetime object with the same value as s, except for
+    parameters specified by kwargs.
+
+    Args:
+        s: The encoded datetime string.
+        *kwargs: The kwargs accepted by datetime.replace.
+
+    Returns:
+        A replaced datetime object.
+    """
+    return encode_datetime(decode_datetime(s).replace(**kwargs))
+
+
 def decode_datetime(s):
     """Parses an encoded datetime string into a Pacific time localized object.
 

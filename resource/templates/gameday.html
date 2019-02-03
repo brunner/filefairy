@@ -3,38 +3,54 @@
 
 {% block content %}
 
-<!-- ^(gameday.tables) -->
 <div class="container">
-
-{{ common.topper('Live Sim Links') }}
-
-<!-- ^(gameday.row) -->
 <div class="row">
+<div class="col-12">
 
-{% set n = tables|length() // 2 %}
-<!-- ^(gameday.column) -->
-<div class="col-md-6">
+<!-- ^(gameday.carousel) -->
+<div id="gamedayCarousel" class="carousel slide carousel-fade" data-interval="false">
 
-{% for table in tables[:n] %}
+<!-- ^(gameday.carousel.inner) -->
+<div class="carousel-inner">
+
+<!-- ^(gameday.carousel.inner.days) -->
+{% for day in days %}
+{% set active = ' active' if loop.first else '' %}
+<div class="carousel-item{{ active }}">
+
+<!-- ^(gameday.carousel.inner.days.tables) -->
+{% for table in day %}
 {{ common.table(table) }}
 
 {% endfor %}
+<!-- $(gameday.carousel.inner.days.tables) -->
+
 </div>
-<!-- $(gameday.column) -->
-
-<!-- ^(gameday.column) -->
-<div class="col-md-6">
-
-{% for table in tables[n:] %}
-{{ common.table(table) }}
-
 {% endfor %}
-</div>
-<!-- $(gameday.column) -->
-</div>
-<!-- $(gameday.row) -->
+<!-- $(gameday.carousel.inner.days) -->
 
 </div>
-<!-- $(gameday.tables) -->
+<!-- $(gameday.carousel.inner) -->
+
+<!-- ^(gameday.carousel.nav) -->
+<ul class="pagination">
+
+<li class="page-item">
+<a class="page-link" href="#gamedayCarousel" role="button" data-slide="prev">«</a>
+</li>
+
+<li class="page-item">
+<a class="page-link" href="#gamedayCarousel" role="button" data-slide="next">»</a>
+</li>
+
+</ul>
+<!-- $(gameday.carousel.nav) -->
+
+</div>
+<!-- $(gameday.carousel) -->
+
+</div>
+</div>
+</div>
 
 {% endblock %}

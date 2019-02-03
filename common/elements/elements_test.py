@@ -24,7 +24,6 @@ CLAZZ = 'clazz'
 COL = col(clazz=CLAZZ, colspan='2')
 CELL = cell(col=COL, content='content')
 COLS = [COL]
-DATA = {'foo': True}
 ID_ = 'id'
 ROW = [CELL]
 TABLE = table(body=[ROW])
@@ -125,7 +124,6 @@ class ComponentTest(unittest.TestCase):
     def test_table__filled(self):
         actual = table(
             clazz=CLAZZ,
-            data=DATA,
             id_=ID_,
             hcols=COLS,
             bcols=COLS,
@@ -135,7 +133,6 @@ class ComponentTest(unittest.TestCase):
             foot=[ROW])
         expected = {
             'clazz': CLAZZ,
-            'data': DATA,
             'id': ID_,
             'hcols': COLS,
             'bcols': COLS,

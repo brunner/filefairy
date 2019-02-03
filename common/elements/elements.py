@@ -140,7 +140,6 @@ def span(classes, text):
 
 
 def table(clazz='',
-          data=None,
           id_='',
           hcols=None,
           bcols=None,
@@ -152,7 +151,6 @@ def table(clazz='',
 
     Args:
         clazz: The optional CSS class to set on the root table element.
-        data: The optional data to attach to the table element object.
         id_: The optional CSS id to set on the root table element.
         hcols: The optional list of CSS classes to apply to each head column.
         bcols: The optional list of CSS classes to apply to each body column.
@@ -167,8 +165,6 @@ def table(clazz='',
     obj = {}
     if clazz:
         obj['clazz'] = clazz
-    if data:
-        obj['data'] = data
     if id_:
         obj['id'] = id_
     if hcols:

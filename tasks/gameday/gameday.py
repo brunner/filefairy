@@ -11,6 +11,7 @@ sys.path.append(re.sub(r'/tasks/gameday', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import datetime_replace  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
@@ -69,7 +70,7 @@ class Gameday(Registrable):
 
     def _index_html(self, **kwargs):
         ret = {
-            'tables': [],
+            'days': [],
         }
 
         statsplus = self.shadow.get('statsplus.scores', {})
@@ -80,13 +81,15 @@ class Gameday(Registrable):
 
         dates = {}
         for encoding in sorted(d):
-            for date, body, foot in sorted(d[encoding], key=lambda x: x[0]):
+            for start, body, foot in sorted(d[encoding], key=lambda x: x[0]):
+                if foot is None:
+                    date = start
+                    start = datetime_replace(date, hour=23, minute=59)
+                else:
+                    date = datetime_replace(start, hour=0, minute=0)
+
                 if date not in dates:
                     dates[date] = []
-
-                start = foot.get('data', {}).get('date', self._midnight(date))
-                if not start:
-                    continue
 
                 dates[date].append((start, body, foot))
 
@@ -94,22 +97,27 @@ class Gameday(Registrable):
             d = decode_datetime(date)
             suff = suffix(d.day)
             text = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suff)
-            ret['tables'].append(topper(text))
+            tables = [topper(text)]
 
             for _, body, foot in sorted(dates[date], key=lambda x: x[0]):
-                if body in ret['tables']:
+                if body in tables:
                     continue
 
-                ret['tables'].append(body)
+                tables.append(body)
                 if foot is not None:
-                    ret['tables'].append(foot)
+                    tables.append(foot)
 
-            break
+            ret['days'].append(tables)
 
         return ret
 
-    @staticmethod
-    def _midnight(date):
-        d = decode_datetime(date)
-        m = datetime_datetime_pst(d.year, d.month, d.day, 23, 59)
-        return encode_datetime(m)
+
+# from common.datetime_.datetime_ import datetime_now
+# from common.jinja2_.jinja2_ import env
+# from common.service.service import reload_service_for_test
+
+# reload_service_for_test('scoreboard')
+
+# now = datetime_now()
+# gameday = Gameday(date=now, e=env())
+# gameday._render(date=now)

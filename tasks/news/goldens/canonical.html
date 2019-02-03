@@ -21,8 +21,9 @@
 
 <style>
 html {
-  position: relative;
   min-height: 100%;
+  overflow-y: scroll;
+  position: relative;
 }
 header {
   background-color: #f5f5f5;
@@ -61,8 +62,30 @@ button.close {
   line-height: 16px;
   width: 16px;
 }
+.carousel-fade .carousel-item {
+  opacity: 0;
+  transition-duration: .6s;
+  transition-property: opacity;
+}
+.carousel-fade .carousel-item.active,
+.carousel-fade .carousel-item-next.carousel-item-left,
+.carousel-fade .carousel-item-prev.carousel-item-right {
+  opacity: 1;
+}
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-right {
+  opacity: 0;
+}
+.carousel-fade .carousel-item-next,
+.carousel-fade .carousel-item-prev,
+.carousel-fade .carousel-item.active,
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-prev {
+  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+}
 .dropdown-toggle {
-  color: #6c767c;
+ color: #6c767c;
 }
 .flex-grow {
   flex-grow: 1;
@@ -104,6 +127,14 @@ button.close {
 }
 .nav-pills .nav-link:not(.active) {
   border: 1px solid #dee2e6;
+}
+.page-link {
+  padding: .25rem .75rem;
+}
+.pagination {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 .rt-10p {
   right: 10px;

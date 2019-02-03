@@ -19,6 +19,7 @@ from common.datetime_.datetime_ import datetime_datetime_est  # noqa
 from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import datetime_now  # noqa
+from common.datetime_.datetime_ import datetime_replace  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
@@ -85,13 +86,18 @@ class DatetimeTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_datetime.datetime.now.assert_called_once_with()
 
-    def test_decode(self):
+    def test_datetime_replace(self):
+        actual = datetime_replace('2018-03-13T22:43:00-07:00', hour=0)
+        expected = '2018-03-13T00:43:00-07:00'
+        self.assertEqual(actual, expected)
+
+    def test_decode_datetime(self):
         actual = decode_datetime('2018-03-13T22:43:13.337756-07:00')
         expected = PST.localize(
             datetime.datetime(2018, 3, 13, 22, 43, 13, 337756))
         self.assertEqual(actual, expected)
 
-    def test_encode(self):
+    def test_encode_datetime(self):
         actual = encode_datetime(
             PST.localize(datetime.datetime(2018, 3, 13, 22, 43, 13, 337756)))
         expected = '2018-03-13T22:43:13.337756-07:00'
