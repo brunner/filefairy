@@ -113,11 +113,11 @@
 <tr>
 {% for cell in row %}
 {% set hcol = data.hcols[loop.index0] if data.hcols else None %}
-{% set hclazz = hcol['clazz'] if hcol else '' %}
-{% set cclazz = cell.col.clazz if cell.col else '' %}
+{% set hclazz = (hcol and hcol['clazz']) or '' %}
+{% set cclazz = (cell and cell.col and cell.col['clazz']) or '' %}
 {% set cl = cclazz + (' ' if cclazz else '') + hclazz %}
-{% set hcolspan = hcol['colspan'] if hcol else '' %}
-{% set ccolspan = cell.col.colspan if cell.col else '' %}
+{% set hcolspan = (hcol and hcol['colspan']) or '' %}
+{% set ccolspan = (cell and cell.col and cell.col['colspan']) or '' %}
 {% set co = ccolspan if ccolspan else hcolspan %}
 <td scope="col"{% if cl %} class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
 {% endfor %}
@@ -135,11 +135,11 @@
 {% for cell in row %}
 {% set scope = ' scope="row"' if loop.first else '' %}
 {% set bcol = data.bcols[loop.index0] if data.bcols else None %}
-{% set bclazz = bcol['clazz'] if bcol else '' %}
-{% set cclazz = cell.col.clazz if cell.col else '' %}
+{% set bclazz = (bcol and bcol['clazz']) or '' %}
+{% set cclazz = (cell and cell.col and cell.col['clazz']) or '' %}
 {% set cl = cclazz + (' ' if cclazz else '') + bclazz %}
-{% set bcolspan = bcol['colspan'] if bcol else '' %}
-{% set ccolspan = cell.col.colspan if cell.col else '' %}
+{% set bcolspan = (bcol and bcol['colspan']) or '' %}
+{% set ccolspan = (cell and cell.col and cell.col['colspan']) or '' %}
 {% set co = ccolspan if ccolspan else bcolspan %}
 {% set scope = scope + (' ' if cl or co else '') %}
 <td{{ scope }}{% if cl %}class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
@@ -157,11 +157,11 @@
 <tr>
 {% for cell in row %}
 {% set fcol = data.fcols[loop.index0] if data.fcols else None %}
-{% set fclazz = fcol['clazz'] if fcol else '' %}
-{% set cclazz = cell.col.clazz if cell.col else '' %}
+{% set fclazz = (fcol and fcol['clazz']) or '' %}
+{% set cclazz = (cell and cell.col and cell.col['clazz']) or '' %}
 {% set cl = cclazz + (' ' if cclazz else '') + fclazz %}
-{% set fcolspan = fcol['colspan'] if fcol else '' %}
-{% set ccolspan = cell.col.colspan if cell.col else '' %}
+{% set fcolspan = (fcol and fcol['colspan']) or '' %}
+{% set ccolspan = (cell and cell.col and cell.col['colspan']) or '' %}
 {% set co = ccolspan if ccolspan else fcolspan %}
 <td scope="col"{% if cl %} class="{{ cl }}"{% endif %}{% if co %} colspan="{{ co }}"{% endif %}>{{ cell.content }}</td>
 {% endfor %}

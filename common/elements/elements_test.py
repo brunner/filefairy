@@ -24,6 +24,7 @@ CLAZZ = 'clazz'
 COL = col(clazz=CLAZZ, colspan='2')
 CELL = cell(col=COL, content='content')
 COLS = [COL]
+DATA = {'foo': True}
 ID_ = 'id'
 ROW = [CELL]
 TABLE = table(body=[ROW])
@@ -35,7 +36,7 @@ class ComponentTest(unittest.TestCase):
         expected = '<a href="http://url">content</a>'
         self.assertEqual(actual, expected)
 
-    def test_card__empty(self):
+    def test_card__default(self):
         actual = card()
         expected = {
             'href': '',
@@ -71,9 +72,9 @@ class ComponentTest(unittest.TestCase):
         }
         self.assertEqual(actual, expected)
 
-    def test_cell__empty(self):
+    def test_cell__default(self):
         actual = cell()
-        expected = {'col': None, 'content': ''}
+        expected = {}
         self.assertEqual(actual, expected)
 
     def test_cell__filled(self):
@@ -81,9 +82,9 @@ class ComponentTest(unittest.TestCase):
         expected = {'col': COL, 'content': 'foo'}
         self.assertEqual(actual, expected)
 
-    def test_col__empty(self):
+    def test_col__default(self):
         actual = col()
-        expected = {'clazz': '', 'colspan': ''}
+        expected = {}
         self.assertEqual(actual, expected)
 
     def test_col__filled(self):
@@ -93,7 +94,7 @@ class ComponentTest(unittest.TestCase):
 
     def test_dialog__default(self):
         actual = dialog()
-        expected = {'id': '', 'icon': '', 'tables': []}
+        expected = {}
         self.assertEqual(actual, expected)
 
     def test_dialog__filled(self):
@@ -103,7 +104,7 @@ class ComponentTest(unittest.TestCase):
 
     def test_ruleset__default(self):
         actual = ruleset()
-        expected = {'selector': '', 'rules': []}
+        expected = {}
         self.assertEqual(actual, expected)
 
     def test_ruleset__filled(self):
@@ -118,21 +119,13 @@ class ComponentTest(unittest.TestCase):
 
     def test_table__default(self):
         actual = table()
-        expected = {
-            'clazz': '',
-            'id': '',
-            'hcols': None,
-            'bcols': None,
-            'fcols': None,
-            'head': None,
-            'body': None,
-            'foot': None
-        }
+        expected = {}
         self.assertEqual(actual, expected)
 
     def test_table__filled(self):
         actual = table(
             clazz=CLAZZ,
+            data=DATA,
             id_=ID_,
             hcols=COLS,
             bcols=COLS,
@@ -142,6 +135,7 @@ class ComponentTest(unittest.TestCase):
             foot=[ROW])
         expected = {
             'clazz': CLAZZ,
+            'data': DATA,
             'id': ID_,
             'hcols': COLS,
             'bcols': COLS,
@@ -154,16 +148,11 @@ class ComponentTest(unittest.TestCase):
 
     def test_topper(self):
         actual = topper('text')
+        bc = 'border-0 font-weight-bold px-0 text-secondary'
         expected = {
             'clazz': 'topper',
-            'id': '',
-            'hcols': None,
-            'bcols':
-            [col(clazz='border-0 font-weight-bold px-0 text-secondary')],
-            'fcols': None,
-            'head': None,
-            'body': [[cell(content='text')]],
-            'foot': None
+            'bcols': [col(clazz=bc)],
+            'body': [[cell(content='text')]]
         }
         self.assertEqual(actual, expected)
 

@@ -61,7 +61,12 @@ def cell(col=None, content=''):
     Returns:
         The cell object.
     """
-    return {'col': col, 'content': content}
+    obj = {}
+    if col:
+        obj['col'] = col
+    if content:
+        obj['content'] = content
+    return obj
 
 
 def col(clazz='', colspan=''):
@@ -74,7 +79,12 @@ def col(clazz='', colspan=''):
     Returns:
         The col object.
     """
-    return {'clazz': clazz, 'colspan': colspan}
+    obj = {}
+    if clazz:
+        obj['clazz'] = clazz
+    if colspan:
+        obj['colspan'] = colspan
+    return obj
 
 
 def dialog(id_='', icon='', tables=None):
@@ -88,13 +98,14 @@ def dialog(id_='', icon='', tables=None):
     Returns:
         The dialog object.
     """
-    if tables is None:
-        tables = []
-    return {
-        'id': id_,
-        'icon': icon,
-        'tables': tables,
-    }
+    obj = {}
+    if id_:
+        obj['id'] = id_
+    if icon:
+        obj['icon'] = icon
+    if tables:
+        obj['tables'] = tables
+    return obj
 
 
 def ruleset(selector='', rules=None):
@@ -107,12 +118,12 @@ def ruleset(selector='', rules=None):
     Returns:
         The ruleset element.
     """
-    if rules is None:
-        rules = []
-    return {
-        'selector': selector,
-        'rules': rules,
-    }
+    obj = {}
+    if selector:
+        obj['selector'] = selector
+    if rules:
+        obj['rules'] = rules
+    return obj
 
 
 def span(classes, text):
@@ -129,6 +140,7 @@ def span(classes, text):
 
 
 def table(clazz='',
+          data=None,
           id_='',
           hcols=None,
           bcols=None,
@@ -140,6 +152,7 @@ def table(clazz='',
 
     Args:
         clazz: The optional CSS class to set on the root table element.
+        data: The optional data to attach to the table element object.
         id_: The optional CSS id to set on the root table element.
         hcols: The optional list of CSS classes to apply to each head column.
         bcols: The optional list of CSS classes to apply to each body column.
@@ -151,16 +164,26 @@ def table(clazz='',
     Returns:
         The table element.
     """
-    return {
-        'clazz': clazz,
-        'id': id_,
-        'hcols': hcols,
-        'bcols': bcols,
-        'fcols': fcols,
-        'head': head,
-        'body': body,
-        'foot': foot
-    }
+    obj = {}
+    if clazz:
+        obj['clazz'] = clazz
+    if data:
+        obj['data'] = data
+    if id_:
+        obj['id'] = id_
+    if hcols:
+        obj['hcols'] = hcols
+    if bcols:
+        obj['bcols'] = bcols
+    if fcols:
+        obj['fcols'] = fcols
+    if head:
+        obj['head'] = head
+    if body:
+        obj['body'] = body
+    if foot:
+        obj['foot'] = foot
+    return obj
 
 
 def topper(text):
