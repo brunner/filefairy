@@ -94,7 +94,7 @@ EVENT_MAP = {
     Event.PITCHER_STRIKE_CALL: (r'^\d-\d: (?:Called Strike|Strikes out looking'
                                 r')$'),
     Event.PITCHER_STRIKE_FOUL: (r'^\d-\d: Foul Ball, location: 2F$'),
-    Event.PITCHER_STRIKE_FOUL_BUNT: (r'^\d-\d: Bunted foul$'),
+    Event.PITCHER_STRIKE_FOUL_BUNT: (r'^\d-\d: Bunted foul(?:, Strikeout!)?$'),
     Event.PITCHER_STRIKE_FOUL_ERR: (r'^Error on foul ball, {scoring}$'),
     Event.PITCHER_STRIKE_MISS: (r'^\d-\d: Bunt missed!$'),
     Event.PITCHER_STRIKE_SWING: (r'^\d-\d: (?:Swinging Strike|Strikes out swin'
@@ -114,7 +114,8 @@ EVENT_MAP = {
     Event.PLAYER_MOVE: (r'^{player} to {base}$'),
     Event.PLAYER_SCORE: (r'^{player} scores$'),
     Event.BASE_MOVE: (r'^Runner from {base} (?:tags up, SAFE at \w+|tries for '
-                      r'[2|3]\w+, SAFE)(?:, no throw by \w+)?$'),
+                      r'[2|3]\w+)(?:, SAFE)?(?:, no throw by \w+)?(?:, throw b'
+                      r'y \w+ and SAFE!)?$'),
     Event.BASE_MOVE_RUNDOWN: (r'^Runner from {base} tries for [2|3]\w+, SAFE a'
                               r'fter rundown.$'),
     Event.BASE_MOVE_THROW: (r'^Runner from {base} (?:tags up, SAFE at \w+ with'
