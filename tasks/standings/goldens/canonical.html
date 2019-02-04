@@ -33,6 +33,15 @@ a.disabled{
   pointer-events: none;
   cursor: default;
 }
+.absolute-icon-image {
+  left: 10px;
+  position: absolute;
+  top: 14px;
+}
+.absolute-right {
+  left: auto;
+  right: 10px;
+}
 .alert, .dropdown-toggle, .form-control {
   padding: .75rem;
 }
@@ -47,15 +56,16 @@ a.disabled{
 }
 .badge-icon {
   border: 1px solid #dee2e6;
+  cursor: pointer;
   font-weight: 400!important;
-  font-size: 80%;
+  font-size: 100%;
   padding: .25rem .5rem;
   white-space: normal;
   width: 100%;
 }
 .badge-icon[data-toggle="modal"]:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
 }
 button.close {
   height: 16px;
@@ -97,16 +107,20 @@ button.close {
 .head {
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
-  padding-left: .75rem;
-  padding-right: .75rem;
+  padding: .75rem;
 }
 .h-72p {
   height: 72px;
 }
-.lt-10p {
-  left: 10px;
-  top: 10px;
+.modal {
+  overflow-y: auto;
 }
+
+.modal-open {
+  overflow: auto;
+  padding-right: 0px !important;
+}
+
 .mr-8p {
   margin-right: 8px;
 }
@@ -129,12 +143,21 @@ button.close {
   border: 1px solid #dee2e6;
 }
 .page-link {
+  background-color: #f8f9fa;
+  line-height: 1;
   padding: .25rem .75rem;
 }
+.page-link-inner {
+  color: #212529;
+  display: inline-block;
+  padding: 0;
+  padding-top: 1px;
+}
 .pagination {
+  margin: 0;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 4px;
 }
 .rt-10p {
   right: 10px;
@@ -154,13 +177,16 @@ button.close {
   table-layout: fixed;
 }
 .small.table td {
-  padding: .5rem;
+  padding: .75rem .5rem;
 }
 .small.table td:first-child {
   padding-left: .75rem;
 }
 .small.table td:last-child {
   padding-right: .75rem;
+}
+.small.table td.badge-icon-wrapper {
+  padding: .5rem .25rem;
 }
 .small.topper {
   font-size: 90%;
@@ -204,10 +230,17 @@ button.close {
 .w-105p {
   width: 105px;
 }
-.d-inline-block-sm-lg {
+.badge-icon-image,
+.badge-icon-text {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+}
+.badge-icon-image {
+  margin: 1px auto 0;
+}
+.badge-icon-text {
+  color: #212529;
+  padding: 0;
+  padding-top: .25rem;
 }
 .td-sm-none,
 .td-md-none,
@@ -219,16 +252,25 @@ button.close {
     margin-right: 0!important;
     padding-right: 0!important;
   }
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
   }
   .td-sm-none {
     display: table-cell;
   }
 }
 @media (min-width: 768px) {
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: block;
+  }
+  .badge-icon-text {
+    padding: 0;
+    padding-top: .25rem;
   }
   .modal-dialog {
     max-width: 650px; 
@@ -238,8 +280,12 @@ button.close {
   }
 }
 @media (min-width: 992px) {
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
   }
   .modal-dialog {
     max-width: 800px; 
@@ -256,9 +302,9 @@ button.close {
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<div class="head position-relative py-2">
+<div class="head position-relative">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
-     width="16" height="16" border="0" class="position-absolute lt-10p">
+     width="16" height="16" border="0" class="position-absolute absolute-icon-image">
 <div class="small text-secondary pl-4">Standings &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
 </div>
@@ -313,25 +359,25 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#48"><img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">1-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td scope="row" class="position-relative text-center w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#48"><img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">1 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#47"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">3-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#40"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-3</span></span></td>
+<td scope="row" class="position-relative text-center w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#47"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">3 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#40"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 3</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#44"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-1</span></span></td>
+<td scope="row" class="position-relative text-center w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#44"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 1</span></span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -359,25 +405,25 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td scope="row" class="position-relative text-center w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
+<td scope="row" class="position-relative text-center w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-center w-20 pl-2 pr-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#31"><img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">1-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg grayscale"><span class="d-inline-block-sm-lg align-middle px-2 pt-1 text-secondary">0-0</span></span></td>
-<td class="position-relative text-center w-20 px-1"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#45"><img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-1</span></span></td>
-<td class="position-relative text-center w-20 pl-1 pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#55"><img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="d-inline-block-sm-lg"><span class="d-inline-block-sm-lg align-middle px-2 pt-1">0-1</span></span></td>
+<td scope="row" class="position-relative text-center w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#31"><img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">1 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#45"><img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 1</span></span></td>
+<td class="position-relative text-center w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light" data-toggle="modal" data-target="#55"><img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 1</span></span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -443,35 +489,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">New York</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">New York</span></td>
 <td class="text-right w-40p">1</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">1.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Baltimore</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Baltimore</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">0.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Boston</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Boston</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">0.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Tampa Bay</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Tampa Bay</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">0.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Toronto</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Toronto</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
@@ -501,35 +547,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota</span></td>
 <td class="text-right w-40p">3</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">1.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Chicago</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Chicago</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">1.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Cleveland</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Cleveland</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">1.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Kansas City</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Kansas City</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">1.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">3</td>
 <td class="text-right w-50p">.000</td>
@@ -559,35 +605,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Houston</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Houston</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Oakland</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Oakland</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Seattle</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Seattle</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Texas</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Texas</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Los Angeles</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Los Angeles</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">1</td>
 <td class="text-right w-50p">.000</td>
@@ -617,35 +663,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Baltimore</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Baltimore</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Boston</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Boston</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Chicago</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Chicago</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Cleveland</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Cleveland</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Houston</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Houston</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
@@ -681,35 +727,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Atlanta</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Atlanta</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Miami</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Miami</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">New York</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">New York</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Philadelphia</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Philadelphia</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Washington</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Washington</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
@@ -739,35 +785,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Chicago</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Chicago</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Cincinnati</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Cincinnati</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Milwaukee</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Milwaukee</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Pittsburgh</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Pittsburgh</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">St. Louis</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">St. Louis</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
@@ -797,35 +843,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Arizona</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Arizona</span></td>
 <td class="text-right w-40p">1</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">1.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Colorado</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Colorado</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">0.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">San Diego</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">San Diego</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">0.5</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Los Angeles</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Los Angeles</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">1</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">1.0</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">San Francisco</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">San Francisco</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">1</td>
 <td class="text-right w-50p">.000</td>
@@ -855,35 +901,35 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Atlanta</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Atlanta</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Chicago</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Chicago</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Cincinnati</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Cincinnati</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Colorado</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Colorado</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
 <td class="text-right w-50p">-</td>
 </tr>
 <tr>
-<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Miami</span></td>
+<td scope="row" class="position-relative text-truncate"><img src="https://fairylab.surge.sh/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Miami</span></td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-40p">0</td>
 <td class="text-right w-50p">.000</td>
@@ -912,9 +958,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Arizona Diamondbacks</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Arizona Diamondbacks</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -976,9 +1022,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit Tigers</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit Tigers</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -1037,7 +1083,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit (66-59)</span></td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit (66-59)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1061,7 +1107,7 @@ button.close {
 <td class="w-32p pl-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota (72-53)</span></td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota (72-53)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1096,7 +1142,7 @@ button.close {
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
 <tr>
-<td scope="col" class="border-0 py-1 "><span class="small text-secondary">7:10 PM at Target Field</span></td>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">7:10 PM at Target Field</span></td>
 </tr>
 <tr>
 <td scope="col"><a href="https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2449.html">Box Score</a> &nbsp;|&nbsp; <span class="text-underline">Twins Top Tigers in Extras</span><br><span class="font-weight-bold text-secondary">W: </span>P19570 (9-3)&nbsp; <span class="font-weight-bold text-secondary">L: </span>P2212 (4-2)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">DET: </span>P19997 (13)&nbsp; <span class="text-secondary">MIN: </span>P34032 (15)</td>
@@ -1156,7 +1202,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit (66-60)</span></td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit (66-60)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1180,7 +1226,7 @@ button.close {
 <td class="w-32p pl-1 text-center">1</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota (73-53)</span></td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota (73-53)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1215,7 +1261,7 @@ button.close {
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
 <tr>
-<td scope="col" class="border-0 py-1 "><span class="small text-secondary">7:10 PM at Target Field</span></td>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">7:10 PM at Target Field</span></td>
 </tr>
 <tr>
 <td scope="col"><a href="https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2469.html">Box Score</a> &nbsp;|&nbsp; <span class="text-underline">Twins Shut Out Tigers</span><br><span class="font-weight-bold text-secondary">W: </span>P18965 (9-4)&nbsp; <span class="font-weight-bold text-secondary">L: </span>P38898 (4-6)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">MIN: </span>P57 (20), P53142 (19), P29790 (10), P27200 (3)</td>
@@ -1275,7 +1321,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit (66-61)</span></td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit (66-61)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1299,7 +1345,7 @@ button.close {
 <td class="w-32p pl-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota (74-53)</span></td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota (74-53)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1334,7 +1380,7 @@ button.close {
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
 <tr>
-<td scope="col" class="border-0 py-1 "><span class="small text-secondary">7:10 PM at Target Field</span></td>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">7:10 PM at Target Field</span></td>
 </tr>
 <tr>
 <td scope="col"><a href="https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2476.html">Box Score</a> &nbsp;|&nbsp; <span class="text-underline">Lux Helps Twins Run Win Streak to 3</span><br><span class="font-weight-bold text-secondary">W: </span>P25132 (10-8)&nbsp; <span class="font-weight-bold text-secondary">L: </span>P37027 (5-8)&nbsp; <span class="font-weight-bold text-secondary">S: </span>P19570 (7)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">DET: </span>P50664 (17)&nbsp; <span class="text-secondary">MIN: </span>P29790 (11)</td>
@@ -1361,9 +1407,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Los Angeles Angels</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Los Angeles Angels</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -1428,9 +1474,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Los Angeles Dodgers</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Los Angeles Dodgers</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -1495,9 +1541,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota Twins</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota Twins</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -1556,7 +1602,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit (66-59)</span></td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit (66-59)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1580,7 +1626,7 @@ button.close {
 <td class="w-32p pl-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota (72-53)</span></td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota (72-53)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1615,7 +1661,7 @@ button.close {
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
 <tr>
-<td scope="col" class="border-0 py-1 "><span class="small text-secondary">7:10 PM at Target Field</span></td>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">7:10 PM at Target Field</span></td>
 </tr>
 <tr>
 <td scope="col"><a href="https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2449.html">Box Score</a> &nbsp;|&nbsp; <span class="text-underline">Twins Top Tigers in Extras</span><br><span class="font-weight-bold text-secondary">W: </span>P19570 (9-3)&nbsp; <span class="font-weight-bold text-secondary">L: </span>P2212 (4-2)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">DET: </span>P19997 (13)&nbsp; <span class="text-secondary">MIN: </span>P34032 (15)</td>
@@ -1675,7 +1721,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit (66-60)</span></td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit (66-60)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1699,7 +1745,7 @@ button.close {
 <td class="w-32p pl-1 text-center">1</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota (73-53)</span></td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota (73-53)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1734,7 +1780,7 @@ button.close {
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
 <tr>
-<td scope="col" class="border-0 py-1 "><span class="small text-secondary">7:10 PM at Target Field</span></td>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">7:10 PM at Target Field</span></td>
 </tr>
 <tr>
 <td scope="col"><a href="https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2469.html">Box Score</a> &nbsp;|&nbsp; <span class="text-underline">Twins Shut Out Tigers</span><br><span class="font-weight-bold text-secondary">W: </span>P18965 (9-4)&nbsp; <span class="font-weight-bold text-secondary">L: </span>P38898 (4-6)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">MIN: </span>P57 (20), P53142 (19), P29790 (10), P27200 (3)</td>
@@ -1794,7 +1840,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Detroit (66-61)</span></td>
+<td scope="row" class="position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Detroit (66-61)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1818,7 +1864,7 @@ button.close {
 <td class="w-32p pl-1 text-center">0</td>
 </tr>
 <tr>
-<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Minnesota (74-53)</span></td>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://fairylab.surge.sh/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Minnesota (74-53)</span></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
 <td class="text-center text-secondary td-lg-none w-24p px-1"></td>
@@ -1853,7 +1899,7 @@ button.close {
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
 <tr>
-<td scope="col" class="border-0 py-1 "><span class="small text-secondary">7:10 PM at Target Field</span></td>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">7:10 PM at Target Field</span></td>
 </tr>
 <tr>
 <td scope="col"><a href="https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2476.html">Box Score</a> &nbsp;|&nbsp; <span class="text-underline">Lux Helps Twins Run Win Streak to 3</span><br><span class="font-weight-bold text-secondary">W: </span>P25132 (10-8)&nbsp; <span class="font-weight-bold text-secondary">L: </span>P37027 (5-8)&nbsp; <span class="font-weight-bold text-secondary">S: </span>P19570 (7)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">DET: </span>P50664 (17)&nbsp; <span class="text-secondary">MIN: </span>P29790 (11)</td>
@@ -1880,9 +1926,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">New York Yankees</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">New York Yankees</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -1947,9 +1993,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">New York Mets</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">New York Mets</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -2014,9 +2060,9 @@ button.close {
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative py-2 small">
-<img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">San Francisco Giants</span>
-<button type="button" class="close position-absolute m-0 p-0 rt-10p"
+<div class="head position-relative small">
+<img src="https://fairylab.surge.sh/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">San Francisco Giants</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>

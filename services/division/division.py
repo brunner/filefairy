@@ -101,9 +101,9 @@ def condensed_league(league, tables):
         body.append(row)
 
     bc = 'position-relative text-center w-20'
-    bcols = [col(clazz=(bc + ' pl-2 pr-1'))]
-    bcols += [col(clazz=(bc + ' px-1'))] * (colspan - 2)
-    bcols += [col(clazz=(bc + ' pl-1 pr-2'))]
+    bcols = [col(clazz=(bc + ' badge-icon-wrapper pl-2'))]
+    bcols += [col(clazz=(bc + ' badge-icon-wrapper'))] * (colspan - 2)
+    bcols += [col(clazz=(bc + ' badge-icon-wrapper pr-2'))]
 
     hc = 'font-weight-bold text-dark text-center'
     return table(

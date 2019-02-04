@@ -13,6 +13,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/scoreboard', '', _path))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import datetime_replace  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import table  # noqa
@@ -20,8 +21,9 @@ from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score_body  # noqa
 from services.scoreboard.scoreboard import line_score_foot  # noqa
 from services.scoreboard.scoreboard import line_scores  # noqa
-from services.scoreboard.scoreboard import pending_score_body  # noqa
-from services.scoreboard.scoreboard import pending_scores  # noqa
+from services.scoreboard.scoreboard import pending_body  # noqa
+from services.scoreboard.scoreboard import pending_carousel  # noqa
+from services.scoreboard.scoreboard import pending_dialog  # noqa
 
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 
@@ -86,13 +88,29 @@ class ScoreboardTest(unittest.TestCase):
             mock.call(os.path.join(GAMES_DIR, '2469.json'))
         ])
 
-    def test_pending_score_body(self):
-        actual = pending_score_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
-        expected = json.loads(TESTDATA['pending_score_body_la.json'])
+    def test_pending_body(self):
+        actual = pending_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
+        expected = json.loads(TESTDATA['pending_body_la.json'])
         self.assertEqual(actual, expected)
 
-    @mock.patch('services.scoreboard.scoreboard.pending_score_body')
-    def test_pending_scores(self, mock_body):
+    @mock.patch('services.scoreboard.scoreboard.pending_body')
+    def test_pending_carousel(self, mock_body):
+        body = table(clazz='', head=[[cell(content='Pending')]])
+        mock_body.side_effect = [body, body]
+
+        date = encode_datetime(DATE_08310000)
+        score = 'T31 4, TLA 2'
+        statsplus = {date: {'2998': score}}
+
+        data_2998 = (datetime_replace(date, hour=23, minute=59), body)
+        actual = pending_carousel(statsplus)
+        expected = {date: data_2998}
+        self.assertEqual(actual, expected)
+
+        mock_body.assert_has_calls([mock.call([score])])
+
+    @mock.patch('services.scoreboard.scoreboard.pending_body')
+    def test_pending_dialog(self, mock_body):
         body = table(clazz='', head=[[cell(content='Pending')]])
         mock_body.side_effect = [body, body]
 
@@ -101,7 +119,7 @@ class ScoreboardTest(unittest.TestCase):
         statsplus = {date: {'2998': score}}
 
         data_2998 = (date, body, None)
-        actual = pending_scores(statsplus)
+        actual = pending_dialog(statsplus)
         expected = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
         self.assertEqual(actual, expected)
 

@@ -154,7 +154,7 @@ class Standings(Registrable):
         statsplus = self.shadow.get('statsplus.scores', {})
 
         line = call_service('scoreboard', 'line_scores', ())
-        pending = call_service('scoreboard', 'pending_scores', (statsplus, ))
+        pending = call_service('scoreboard', 'pending_dialog', (statsplus, ))
         d = merge(line, pending, lambda x, y: x + y, [])
 
         for encoding in sorted(d):

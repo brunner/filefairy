@@ -33,6 +33,15 @@ a.disabled{
   pointer-events: none;
   cursor: default;
 }
+.absolute-icon-image {
+  left: 10px;
+  position: absolute;
+  top: 14px;
+}
+.absolute-right {
+  left: auto;
+  right: 10px;
+}
 .alert, .dropdown-toggle, .form-control {
   padding: .75rem;
 }
@@ -47,15 +56,16 @@ a.disabled{
 }
 .badge-icon {
   border: 1px solid #dee2e6;
+  cursor: pointer;
   font-weight: 400!important;
-  font-size: 80%;
+  font-size: 100%;
   padding: .25rem .5rem;
   white-space: normal;
   width: 100%;
 }
 .badge-icon[data-toggle="modal"]:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
 }
 button.close {
   height: 16px;
@@ -97,16 +107,20 @@ button.close {
 .head {
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
-  padding-left: .75rem;
-  padding-right: .75rem;
+  padding: .75rem;
 }
 .h-72p {
   height: 72px;
 }
-.lt-10p {
-  left: 10px;
-  top: 10px;
+.modal {
+  overflow-y: auto;
 }
+
+.modal-open {
+  overflow: auto;
+  padding-right: 0px !important;
+}
+
 .mr-8p {
   margin-right: 8px;
 }
@@ -129,12 +143,21 @@ button.close {
   border: 1px solid #dee2e6;
 }
 .page-link {
+  background-color: #f8f9fa;
+  line-height: 1;
   padding: .25rem .75rem;
 }
+.page-link-inner {
+  color: #212529;
+  display: inline-block;
+  padding: 0;
+  padding-top: 1px;
+}
 .pagination {
+  margin: 0;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 4px;
 }
 .rt-10p {
   right: 10px;
@@ -154,13 +177,16 @@ button.close {
   table-layout: fixed;
 }
 .small.table td {
-  padding: .5rem;
+  padding: .75rem .5rem;
 }
 .small.table td:first-child {
   padding-left: .75rem;
 }
 .small.table td:last-child {
   padding-right: .75rem;
+}
+.small.table td.badge-icon-wrapper {
+  padding: .5rem .25rem;
 }
 .small.topper {
   font-size: 90%;
@@ -204,10 +230,17 @@ button.close {
 .w-105p {
   width: 105px;
 }
-.d-inline-block-sm-lg {
+.badge-icon-image,
+.badge-icon-text {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+}
+.badge-icon-image {
+  margin: 1px auto 0;
+}
+.badge-icon-text {
+  color: #212529;
+  padding: 0;
+  padding-top: .25rem;
 }
 .td-sm-none,
 .td-md-none,
@@ -219,16 +252,25 @@ button.close {
     margin-right: 0!important;
     padding-right: 0!important;
   }
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
   }
   .td-sm-none {
     display: table-cell;
   }
 }
 @media (min-width: 768px) {
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: block;
+  }
+  .badge-icon-text {
+    padding: 0;
+    padding-top: .25rem;
   }
   .modal-dialog {
     max-width: 650px; 
@@ -238,8 +280,12 @@ button.close {
   }
 }
 @media (min-width: 992px) {
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
   }
   .modal-dialog {
     max-width: 800px; 
@@ -256,9 +302,9 @@ button.close {
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<div class="head position-relative py-2">
+<div class="head position-relative">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
-     width="16" height="16" border="0" class="position-absolute lt-10p">
+     width="16" height="16" border="0" class="position-absolute absolute-icon-image">
 <div class="small text-secondary pl-4">News &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
 </div>
@@ -313,7 +359,7 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/35155">John Barbato</a> diagnosed with a sore forearm, is day-to-day for 5 days.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/35155">John Barbato</a> diagnosed with a sore forearm, is day-to-day for 5 days.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -335,22 +381,22 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/37318">Ty Blach</a> was injured while pitching. Diagnosis: back stiffness. This is a day-to-day injury expected to last 5 days.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/37318">Ty Blach</a> was injured while pitching. Diagnosis: back stiffness. This is a day-to-day injury expected to last 5 days.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/32624">Hunter Strickland</a> was injured while pitching. Diagnosis: back spasms. This is a day-to-day injury expected to last 5 days.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/32624">Hunter Strickland</a> was injured while pitching. Diagnosis: back spasms. This is a day-to-day injury expected to last 5 days.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/1958">Javier Medina</a> was injured while pitching. The diagnosis is not yet known.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/1958">Javier Medina</a> was injured while pitching. The diagnosis is not yet known.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/35155">John Barbato</a> was injured while pitching. The diagnosis is not yet known.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">SP <a href="https://statsplus.net/oblootp/player/35155">John Barbato</a> was injured while pitching. The diagnosis is not yet known.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">CF <a href="https://statsplus.net/oblootp/player/1604">Carl Cester</a> was injured on a defensive play. The diagnosis is not yet known.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">CF <a href="https://statsplus.net/oblootp/player/1604">Carl Cester</a> was injured on a defensive play. The diagnosis is not yet known.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/22457">Walker Buehler</a> was injured while pitching. The diagnosis is not yet known.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">RP <a href="https://statsplus.net/oblootp/player/22457">Walker Buehler</a> was injured while pitching. The diagnosis is not yet known.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -412,10 +458,10 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">1B <a href="https://statsplus.net/oblootp/player/33892">Viosergy Rosa</a> wins the MLB AL Player of the Week Award.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">1B <a href="https://statsplus.net/oblootp/player/33892">Viosergy Rosa</a> wins the MLB AL Player of the Week Award.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">1B <a href="https://statsplus.net/oblootp/player/27194">Freddie Freeman</a> wins the MLB NL Player of the Week Award.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">1B <a href="https://statsplus.net/oblootp/player/27194">Freddie Freeman</a> wins the MLB NL Player of the Week Award.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->
@@ -477,19 +523,19 @@ button.close {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">Signed <a href="https://statsplus.net/oblootp/player/56862">Antonio Marquis</a> to a minor league contract with a signing bonus of $180,000.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">Signed <a href="https://statsplus.net/oblootp/player/56862">Antonio Marquis</a> to a minor league contract with a signing bonus of $180,000.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Detroit Tigers traded 25-year-old minor league left fielder <a href="https://statsplus.net/oblootp/player/28672">Nick Plummer</a> to the Milwaukee Brewers, getting 33-year-old closer <a href="https://statsplus.net/oblootp/player/36352">Phil Klein</a> in return.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">The Detroit Tigers traded 25-year-old minor league left fielder <a href="https://statsplus.net/oblootp/player/28672">Nick Plummer</a> to the Milwaukee Brewers, getting 33-year-old closer <a href="https://statsplus.net/oblootp/player/36352">Phil Klein</a> in return.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Detroit Tigers traded 25-year-old minor league left fielder <a href="https://statsplus.net/oblootp/player/25202">Wesley Rodriguez</a> and 31-year-old left fielder <a href="https://statsplus.net/oblootp/player/33588">Michael A. Taylor</a> to the Chicago Cubs, getting 30-year-old right fielder <a href="https://statsplus.net/oblootp/player/35161">Drew Vettleson</a> in return.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">The Detroit Tigers traded 25-year-old minor league left fielder <a href="https://statsplus.net/oblootp/player/25202">Wesley Rodriguez</a> and 31-year-old left fielder <a href="https://statsplus.net/oblootp/player/33588">Michael A. Taylor</a> to the Chicago Cubs, getting 30-year-old right fielder <a href="https://statsplus.net/oblootp/player/35161">Drew Vettleson</a> in return.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Detroit Tigers traded 21-year-old minor league shortstop <a href="https://statsplus.net/oblootp/player/32327">Jesus Martinez</a> to the Philadelphia Phillies, getting 28-year-old left fielder <a href="https://statsplus.net/oblootp/player/37237">Mitch Nay</a> in return.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">The Detroit Tigers traded 21-year-old minor league shortstop <a href="https://statsplus.net/oblootp/player/32327">Jesus Martinez</a> to the Philadelphia Phillies, getting 28-year-old left fielder <a href="https://statsplus.net/oblootp/player/37237">Mitch Nay</a> in return.</span></td>
 </tr>
 <tr>
-<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="position-absolute lt-10p"><span class="d-block pl-4">The Minnesota Twins traded 25-year-old first baseman <a href="https://statsplus.net/oblootp/player/39581">Lewin Diaz</a> to the Chicago Cubs, getting 30-year-old starting pitcher <a href="https://statsplus.net/oblootp/player/37975">Matt Anderson</a>, 19-year-old minor league starting pitcher <a href="https://statsplus.net/oblootp/player/22921">Juan Monreal</a> and 21-year-old minor league catcher <a href="https://statsplus.net/oblootp/player/55093">Jonathan Salazar</a> in return.</span></td>
+<td scope="row" class="position-relative"><img src="https://fairylab.surge.sh/images/teams/obl/obl-icon.png" width="16" height="16" border="0" class="absolute-icon-image"><span class="d-block pl-4">The Minnesota Twins traded 25-year-old first baseman <a href="https://statsplus.net/oblootp/player/39581">Lewin Diaz</a> to the Chicago Cubs, getting 30-year-old starting pitcher <a href="https://statsplus.net/oblootp/player/37975">Matt Anderson</a>, 19-year-old minor league starting pitcher <a href="https://statsplus.net/oblootp/player/22921">Juan Monreal</a> and 21-year-old minor league catcher <a href="https://statsplus.net/oblootp/player/55093">Jonathan Salazar</a> in return.</span></td>
 </tr>
 </tbody>
 <!-- $(common.table.body) -->

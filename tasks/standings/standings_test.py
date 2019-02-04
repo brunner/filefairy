@@ -374,7 +374,7 @@ class StandingsTest(Test):
 
         mock_call.assert_has_calls([
             mock.call('scoreboard', 'line_scores', ()),
-            mock.call('scoreboard', 'pending_scores', (statsplus_scores, )),
+            mock.call('scoreboard', 'pending_dialog', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, STATSPLUS_TABLE)),
                 ('Central', _table(LEAGUE_ALC, STATSPLUS_TABLE)),
@@ -467,7 +467,7 @@ class StandingsTest(Test):
 
         mock_call.assert_has_calls([
             mock.call('scoreboard', 'line_scores', ()),
-            mock.call('scoreboard', 'pending_scores', (statsplus_scores, )),
+            mock.call('scoreboard', 'pending_dialog', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, table_)),
                 ('Central', _table(LEAGUE_ALC, table_)),

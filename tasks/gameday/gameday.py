@@ -73,25 +73,25 @@ class Gameday(Registrable):
             'days': [],
         }
 
-        statsplus = self.shadow.get('statsplus.scores', {})
-
         line = call_service('scoreboard', 'line_scores', ())
-        pending = call_service('scoreboard', 'pending_scores', (statsplus, ))
-        d = merge(line, pending, lambda x, y: x + y, [])
 
         dates = {}
-        for encoding in sorted(d):
-            for start, body, foot in sorted(d[encoding], key=lambda x: x[0]):
-                if foot is None:
-                    date = start
-                    start = datetime_replace(date, hour=23, minute=59)
-                else:
-                    date = datetime_replace(start, hour=0, minute=0)
-
+        for e in sorted(line):
+            for start, body, foot in sorted(line[e], key=lambda x: x[0]):
+                date = datetime_replace(start, hour=0, minute=0)
                 if date not in dates:
                     dates[date] = []
 
                 dates[date].append((start, body, foot))
+
+        statsplus = self.shadow.get('statsplus.scores', {})
+        pending = call_service('scoreboard', 'pending_carousel', (statsplus, ))
+        for date in sorted(pending):
+            if date not in dates:
+                dates[date] = []
+
+            start, body = pending[date]
+            dates[date].append((start, body, None))
 
         for date in sorted(dates):
             d = decode_datetime(date)

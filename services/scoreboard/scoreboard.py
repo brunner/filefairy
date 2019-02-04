@@ -9,8 +9,9 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/scoreboard', '', _path))
 
-from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import datetime_as_est  # noqa
+from common.datetime_.datetime_ import datetime_replace  # noqa
+from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -182,7 +183,7 @@ def line_score_foot(data):
     return table(
         clazz='border border-top-0 mb-3',
         foot=[
-            [cell(col=col(clazz='border-0 py-1'), content=location)],
+            [cell(col=col(clazz='border-0 py-2'), content=location)],
             [cell(content='<br>'.join(lines))],
         ],
     )
@@ -204,8 +205,8 @@ def line_scores():
         return d
 
 
-def pending_score_body(scores):
-    """Creates a line score table body for a list of pending scores.
+def pending_body(scores):
+    """Creates a pending table body for a given game data object.
 
     The table body contains the teams and runs for the games.
 
@@ -230,7 +231,18 @@ def pending_score_body(scores):
     )
 
 
-def pending_scores(statsplus_scores):
+def pending_carousel(statsplus_scores):
+    d = {}
+    for date in statsplus_scores:
+        start = datetime_replace(date, hour=23, minute=59)
+        scores = list(sorted(statsplus_scores[date].values()))
+        body = pending_body(scores)
+        d[date] = (start, body)
+
+    return d
+
+
+def pending_dialog(statsplus_scores):
     d = {}
     for date in statsplus_scores:
         scores = {}
@@ -241,7 +253,7 @@ def pending_scores(statsplus_scores):
                 scores[t].append(s)
 
         for t in sorted(scores):
-            body = pending_score_body(scores[t])
+            body = pending_body(scores[t])
             for e in encoding_to_encodings(t):
                 if e not in d:
                     d[e] = []

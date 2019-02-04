@@ -55,15 +55,16 @@ class DivisionTest(unittest.TestCase):
         c = {'T35': ('1-1', True), 'T38': ('2-0', True), 'T40': ('0-2', True)}
         tables = [('East', e), ('Central', c)]
 
+        bc = 'position-relative text-center w-20 badge-icon-wrapper'
         hc = 'font-weight-bold text-dark text-center'
         actual = condensed_league('American League', tables)
         expected = table(
             clazz='table-fixed border mb-3',
             hcols=[col(clazz=hc, colspan=3)],
             bcols=[
-                col(clazz='position-relative text-center w-20 pl-2 pr-1'),
-                col(clazz='position-relative text-center w-20 px-1'),
-                col(clazz='position-relative text-center w-20 pl-1 pr-2'),
+                col(clazz=(bc + ' pl-2')),
+                col(clazz=bc),
+                col(clazz=(bc + ' pr-2')),
             ],
             head=[[cell(content='American League')]],
             body=[

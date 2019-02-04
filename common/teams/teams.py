@@ -160,7 +160,7 @@ def encoding_to_teamid(encoding):
 
 def icon_absolute(encoding, text):
     lower = encoding_to_lower(encoding)
-    ic = 'position-absolute lt-10p'
+    ic = 'absolute-icon-image'
     sc = 'd-block pl-4'
 
     img = IMG_TAG.format(ICON_LINK.format(lower), ic)
@@ -171,8 +171,8 @@ def icon_absolute(encoding, text):
 def icon_badge(encoding, text, active):
     lower = encoding_to_lower(encoding)
     teamid = encoding_to_teamid(encoding)
-    ic = 'd-inline-block-sm-lg'
-    sc = 'd-inline-block-sm-lg align-middle px-2 pt-1'
+    ic = 'badge-icon-image'
+    sc = 'badge-icon-text align-middle'
 
     if active:
         ba = MODAL_LINK.format(teamid)
@@ -184,7 +184,7 @@ def icon_badge(encoding, text, active):
         sc += ' text-secondary'
 
     img = IMG_TAG.format(ICON_LINK.format(lower), ic)
-    span = SPAN_TAG.format(text, sc)
+    span = SPAN_TAG.format(text.replace('-', ' - '), sc)
     return BADGE_TAG.format(ba, img + span)
 
 

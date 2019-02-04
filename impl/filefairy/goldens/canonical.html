@@ -33,6 +33,15 @@ a.disabled{
   pointer-events: none;
   cursor: default;
 }
+.absolute-icon-image {
+  left: 10px;
+  position: absolute;
+  top: 14px;
+}
+.absolute-right {
+  left: auto;
+  right: 10px;
+}
 .alert, .dropdown-toggle, .form-control {
   padding: .75rem;
 }
@@ -47,15 +56,16 @@ a.disabled{
 }
 .badge-icon {
   border: 1px solid #dee2e6;
+  cursor: pointer;
   font-weight: 400!important;
-  font-size: 80%;
+  font-size: 100%;
   padding: .25rem .5rem;
   white-space: normal;
   width: 100%;
 }
 .badge-icon[data-toggle="modal"]:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
 }
 button.close {
   height: 16px;
@@ -97,16 +107,20 @@ button.close {
 .head {
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
-  padding-left: .75rem;
-  padding-right: .75rem;
+  padding: .75rem;
 }
 .h-72p {
   height: 72px;
 }
-.lt-10p {
-  left: 10px;
-  top: 10px;
+.modal {
+  overflow-y: auto;
 }
+
+.modal-open {
+  overflow: auto;
+  padding-right: 0px !important;
+}
+
 .mr-8p {
   margin-right: 8px;
 }
@@ -129,12 +143,21 @@ button.close {
   border: 1px solid #dee2e6;
 }
 .page-link {
+  background-color: #f8f9fa;
+  line-height: 1;
   padding: .25rem .75rem;
 }
+.page-link-inner {
+  color: #212529;
+  display: inline-block;
+  padding: 0;
+  padding-top: 1px;
+}
 .pagination {
+  margin: 0;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 4px;
 }
 .rt-10p {
   right: 10px;
@@ -154,13 +177,16 @@ button.close {
   table-layout: fixed;
 }
 .small.table td {
-  padding: .5rem;
+  padding: .75rem .5rem;
 }
 .small.table td:first-child {
   padding-left: .75rem;
 }
 .small.table td:last-child {
   padding-right: .75rem;
+}
+.small.table td.badge-icon-wrapper {
+  padding: .5rem .25rem;
 }
 .small.topper {
   font-size: 90%;
@@ -204,10 +230,17 @@ button.close {
 .w-105p {
   width: 105px;
 }
-.d-inline-block-sm-lg {
+.badge-icon-image,
+.badge-icon-text {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+}
+.badge-icon-image {
+  margin: 1px auto 0;
+}
+.badge-icon-text {
+  color: #212529;
+  padding: 0;
+  padding-top: .25rem;
 }
 .td-sm-none,
 .td-md-none,
@@ -219,16 +252,25 @@ button.close {
     margin-right: 0!important;
     padding-right: 0!important;
   }
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
   }
   .td-sm-none {
     display: table-cell;
   }
 }
 @media (min-width: 768px) {
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: block;
+  }
+  .badge-icon-text {
+    padding: 0;
+    padding-top: .25rem;
   }
   .modal-dialog {
     max-width: 650px; 
@@ -238,8 +280,12 @@ button.close {
   }
 }
 @media (min-width: 992px) {
-  .d-inline-block-sm-lg {
+  .badge-icon-image,
+  .badge-icon-text {
     display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
   }
   .modal-dialog {
     max-width: 800px; 
@@ -256,9 +302,9 @@ button.close {
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<div class="head position-relative py-2">
+<div class="head position-relative">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
-     width="16" height="16" border="0" class="position-absolute lt-10p">
+     width="16" height="16" border="0" class="position-absolute absolute-icon-image">
 <div class="small text-secondary pl-4">Fairylab &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
 </div>
