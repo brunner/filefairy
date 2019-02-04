@@ -86,17 +86,21 @@ class News(Registrable):
     @staticmethod
     def _transform(text):
         encoding = search(r'(T\d+)\D', text)
-        if encoding is None:
-            return text
-
-        if match(r'(The ' + encoding + r' traded)', text):
+        if encoding is None or match(r'(The ' + encoding + r' traded)', text):
             encoding = 'T30'
 
-        text = text.lstrip(encoding + ': ')
-        text = text.replace('of the ' + encoding + ' honored: Wins', 'wins')
-        text = text.replace('The Diagnosis', 'Diagnosis')
+        text = re.sub(r'^' + encoding + r': ', '', text)
+        text = re.sub(r'was injured \.', 'was injured.', text)
+        text = re.sub(r'of the ' + encoding + r' honored: Wins', 'wins', text)
+        text = re.sub(r'original Organization ', '', text)
+        text = re.sub(r'The Diagnosis: (\w)', News._transform_diagnosis, text)
+        text = re.sub(r'Rule 5 draft pick(\w)', r'Rule 5 draft pick \1', text)
 
         text = encoding_to_decoding_sub(text)
         text = player_to_link_sub(text)
 
         return icon_absolute(encoding, text)
+
+    @staticmethod
+    def _transform_diagnosis(m):
+        return 'Diagnosis: ' + m.group(1).lower()
