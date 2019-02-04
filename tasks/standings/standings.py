@@ -10,6 +10,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.datetime_.datetime_ import datetime_replace  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
 from common.dict_.dict_ import merge  # noqa
@@ -104,7 +105,8 @@ class Standings(Registrable):
     def _dialog_tables(self, data):
         curr = None
         tables = []
-        for date, body, foot in sorted(data, key=lambda x: x[0]):
+        for start, body, foot in sorted(data, key=lambda x: x[0]):
+            date = datetime_replace(start, hour=0, minute=0)
             if curr != date:
                 curr = date
                 d = decode_datetime(date)
