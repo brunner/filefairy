@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Tests for statslab.py."""
 
+import json
 import os
 import re
 import sys
@@ -179,7 +180,8 @@ class StatslabTest(unittest.TestCase):
             log_in = _extract_log(num)
             out = _games_out(num)
             actual = parse_game(box_in, log_in, out, None)
-            self.assertTrue(actual)
+            expected = json.loads(TESTDATA[num + '.json'])
+            self.assertTrue(actual, expected)
 
         mock_get.assert_not_called()
         mock_open.assert_has_calls(suite.calls())
@@ -237,7 +239,8 @@ class StatslabTest(unittest.TestCase):
             out = _games_out(num)
             date = encode_datetime(d)
             actual = parse_game(box_in, log_in, out, date)
-            self.assertTrue(actual)
+            expected = json.loads(TESTDATA[num + '.json'])
+            self.assertTrue(actual, expected)
 
         mock_get.assert_has_calls([
             mock.call(_statsplus_box_score('23520')),

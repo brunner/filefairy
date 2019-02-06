@@ -106,8 +106,6 @@ class Statsplus(Registrable):
             return self._start()
         elif search(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self._save_scores(date, text)
-        elif search(r'MAJOR LEAGUE BASEBALL Live Table', text):
-            return self._save_table(date, text)
 
         return Response()
 
@@ -141,12 +139,11 @@ class Statsplus(Registrable):
 
         return Response(thread_=[Thread(target='_parse_extracted_scores')])
 
-    def _rm(self):
-        check_output(['rm', '-rf', GAMES_DIR])
-        check_output(['mkdir', GAMES_DIR])
+    def _next(self, data, encoding, win):
+        cw, cl = self._record(encoding, self.data['table'])
+        return encode_record(cw + 1, cl) if win else encode_record(cw, cl + 1)
 
     def _parse_extracted_scores(self, *args, **kwargs):
-        self.data['games'] = {}
         self.data['scores'] = {}
         self.data['table'] = {}
 
@@ -163,13 +160,8 @@ class Statsplus(Registrable):
             data = loads(os.path.join(GAMES_DIR, name))
             for team, other in [('away', 'home'), ('home', 'away')]:
                 encoding = data[team + '_team']
-                cw, cl = self._record(encoding, self.data['table'])
-
-                if int(data[team + '_runs']) > int(data[other + '_runs']):
-                    next_ = encode_record(cw + 1, cl)
-                else:
-                    next_ = encode_record(cw, cl + 1)
-                self.data['table'][encoding] = next_
+                win = int(data[team + '_runs']) > int(data[other + '_runs'])
+                self.data['table'][encoding] = self._next(data, encoding, win)
 
         self.write()
         return Response(
@@ -181,8 +173,15 @@ class Statsplus(Registrable):
 
         unvisited = {}
         for num, s in sorted(self.data['scores'][date_].items()):
-            if self._parse_score(num, date_) is None:
+            data = self._parse_score(num, date_)
+            if data is None:
                 unvisited[num] = s
+                continue
+
+            for team, other in [('away', 'home'), ('home', 'away')]:
+                encoding = data[team + '_team']
+                win = int(data[team + '_runs']) > int(data[other + '_runs'])
+                self.data['table'][encoding] = self._next(data, encoding, win)
 
         if unvisited:
             thread_ = Thread(target='_parse_saved_scores', args=(date_, ))
@@ -219,6 +218,10 @@ class Statsplus(Registrable):
 
         return call_service('statslab', 'parse_game', (box, log, out, date))
 
+    def _rm(self):
+        check_output(['rm', '-rf', GAMES_DIR])
+        check_output(['mkdir', GAMES_DIR])
+
     def _save_scores(self, date, text):
         self.data['scores'][date] = {}
 
@@ -230,42 +233,11 @@ class Statsplus(Registrable):
 
             self.data['scores'][date][num] = s
 
-        for encoding in encoding_keys():
-            games = text.count(encoding)
-            if games > 1:
-                if date not in self.data['games']:
-                    self.data['games'][date] = {}
-
-                self.data['games'][date][encoding] = games
-
         self.write()
         thread_ = Thread(target='_parse_saved_scores', args=(date, ))
         return Response(shadow=self._shadow_scores(), thread_=[thread_])
 
-    def _save_table(self, date, text):
-        standings_table = self.shadow.get('standings.table', {})
-        text = decoding_to_encoding_sub(text)
-        for line in text.splitlines():
-            encoding, wins = search(r'(\w+)\s(\d+)', line)
-            if not encoding:
-                continue
-
-            cw, cl = self._record(encoding, self.data['table'])
-            pw, pl = self._record(encoding, standings_table)
-
-            nw = int(wins) - cw - pw
-            nl = self.data['games'].get(date, {}).get(encoding, 1) - nw
-            next_ = encode_record(cw + nw, cl + nl)
-            self.data['table'][encoding] = next_
-
-        if date in self.data['games']:
-            self.data['games'].pop(date)
-
-        self.write()
-        return Response(shadow=self._shadow_table())
-
     def _start(self):
-        self.data['games'] = {}
         self.data['scores'] = {}
         self.data['started'] = True
         self.data['table'] = {}

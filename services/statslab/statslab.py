@@ -106,7 +106,7 @@ def parse_game(box_in, log_in, out, date):
     """Parse a StatsLab box score and game log into a task-readable format.
 
     If the game is parsed successfully, the resulting data is written to a
-    specified file and True is the returned value. Alternatively, if the game
+    specified file and also returned to the caller. Alternatively, if the game
     is missing or does not match the given date, no JSON data is written and
     None is returned.
 
@@ -117,7 +117,7 @@ def parse_game(box_in, log_in, out, date):
         date: The encoded date that the game is expected to match.
 
     Returns:
-        True if the parse was successful, otherwise None.
+        The game data if the parse was successful, otherwise None.
     """
     num = search(r'game_box_(\d+)\.html', box_in)
     if not num:
@@ -244,4 +244,4 @@ def parse_game(box_in, log_in, out, date):
     with open(out, 'w') as f:
         f.write(dumps(data) + '\n')
 
-    return True
+    return data

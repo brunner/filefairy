@@ -153,10 +153,16 @@ class Standings(Registrable):
             'recent': [],
         }
 
-        statsplus = self.shadow.get('statsplus.scores', {})
+        statsplus_scores = self.shadow.get('statsplus.scores', {})
+        statsplus_table = self.shadow.get('statsplus.table', {})
 
         line = call_service('scoreboard', 'line_scores', ())
-        pending = call_service('scoreboard', 'pending_dialog', (statsplus, ))
+        pending = call_service(
+            'scoreboard',
+            'pending_dialog',
+            (statsplus_scores, ),
+        )
+
         d = merge(line, pending, lambda x, y: x + y, [])
 
         for encoding in sorted(d):
@@ -166,12 +172,25 @@ class Standings(Registrable):
             icon = icon_absolute(encoding, decoding)
             ret['dialogs'].append(dialog(teamid, icon, tables))
 
-        statsplus_table = self.shadow.get('statsplus.table', {})
+        pending_table = {}
+        for date in statsplus_scores:
+            for num, s in statsplus_scores[date].items():
+                t1, t2 = search(r'(\w+) \d+, (\w+) \d+', s)
+                w1, l1 = decode_record(pending_table.get(t1, '0-0'))
+                pending_table[t1] = encode_record(w1 + 1, l1)
+                w2, l2 = decode_record(pending_table.get(t2, '0-0'))
+                pending_table[t2] = encode_record(w2, l2 + 1)
+
         for league in sorted(LEAGUES):
             etables, rtables = [], []
             for subleague, teams in LEAGUES[league]:
-                e = {t: self.data['table'][t] for t in teams}
-                r = {t: statsplus_table.get(t, '0-0') for t in teams}
+                e, r = {}, {}
+                for t in teams:
+                    e[t] = self.data['table'][t]
+                    pw, pl = decode_record(pending_table.get(t, '0-0'))
+                    sw, sl = decode_record(statsplus_table.get(t, '0-0'))
+                    r[t] = encode_record(pw + sw, pl + sl)
+
                 if not self.data['finished']:
                     e = merge(e, r, add_records, '0-0')
 

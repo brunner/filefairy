@@ -69,8 +69,10 @@ DIALOG_TABLES = [
 DIALOG_TEAMS = ['T31', 'T40', 'T44', 'T45', 'T47']
 
 STATSPLUS_TABLE = {'T31': '1-0', 'T40': '0-2', 'T45': '0-1', 'T47': '2-0'}
+EXPANDED_TABLE = {'T31': '2-0', 'T40': '0-2', 'T45': '0-1', 'T47': '2-0'}
+
 CONDENSED_TABLE = {
-    e: (STATSPLUS_TABLE.get(e, '0-0'), e in DIALOG_TEAMS)
+    e: (EXPANDED_TABLE.get(e, '0-0'), e in DIALOG_TEAMS)
     for e in ENCODINGS
 }
 
@@ -376,9 +378,9 @@ class StandingsTest(Test):
             mock.call('scoreboard', 'line_scores', ()),
             mock.call('scoreboard', 'pending_dialog', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
-                ('East', _table(LEAGUE_ALE, STATSPLUS_TABLE)),
-                ('Central', _table(LEAGUE_ALC, STATSPLUS_TABLE)),
-                ('West', _table(LEAGUE_ALW, STATSPLUS_TABLE)),
+                ('East', _table(LEAGUE_ALE, EXPANDED_TABLE)),
+                ('Central', _table(LEAGUE_ALC, EXPANDED_TABLE)),
+                ('West', _table(LEAGUE_ALW, EXPANDED_TABLE)),
             ])),
             mock.call('division', 'condensed_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, CONDENSED_TABLE)),
@@ -386,9 +388,9 @@ class StandingsTest(Test):
                 ('West', _table(LEAGUE_ALW, CONDENSED_TABLE)),
             ])),
             mock.call('division', 'expanded_league', ('National League', [
-                ('East', _table(LEAGUE_NLE, STATSPLUS_TABLE)),
-                ('Central', _table(LEAGUE_NLC, STATSPLUS_TABLE)),
-                ('West', _table(LEAGUE_NLW, STATSPLUS_TABLE)),
+                ('East', _table(LEAGUE_NLE, EXPANDED_TABLE)),
+                ('Central', _table(LEAGUE_NLC, EXPANDED_TABLE)),
+                ('West', _table(LEAGUE_NLW, EXPANDED_TABLE)),
             ])),
             mock.call('division', 'condensed_league', ('National League', [
                 ('East', _table(LEAGUE_NLE, CONDENSED_TABLE)),
