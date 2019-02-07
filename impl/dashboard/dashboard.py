@@ -100,7 +100,7 @@ class Dashboard(Registrable):
         data = self.data
         original = copy.deepcopy(data)
 
-        d = kwargs['date'] - datetime.timedelta(days=7)
+        d = kwargs['date'] - datetime.timedelta(days=3)
         rounded = datetime_datetime_pst(d.year, d.month, d.day)
 
         for date in list(data['logs'].keys()):
