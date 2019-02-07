@@ -68,14 +68,6 @@ DIALOG_TABLES = [
 ]
 DIALOG_TEAMS = ['T31', 'T40', 'T44', 'T45', 'T47']
 
-STATSPLUS_TABLE = {'T31': '1-0', 'T40': '0-2', 'T45': '0-1', 'T47': '2-0'}
-EXPANDED_TABLE = {'T31': '2-0', 'T40': '0-2', 'T45': '0-1', 'T47': '2-0'}
-
-CONDENSED_TABLE = {
-    e: (EXPANDED_TABLE.get(e, '0-0'), e in DIALOG_TEAMS)
-    for e in ENCODINGS
-}
-
 LEAGUE_ALE = ['T33', 'T34', 'T48', 'T57', 'T59']
 LEAGUE_ALC = ['T35', 'T38', 'T40', 'T43', 'T47']
 LEAGUE_ALW = ['T42', 'T44', 'T50', 'T54', 'T58']
@@ -253,7 +245,7 @@ class StandingsTest(Test):
     def test_dialog_tables(self):
         date_0830 = encode_datetime(DATE_08300000)
         date_0831 = encode_datetime(DATE_08310000)
-        body = table(clazz='', head=[[cell(content='Pending')]])
+        body = table(head=[[cell(content='Pending')]])
         data = [
             (date_0830, BODY_2449, FOOT_2449),
             (date_0831, BODY_2469, FOOT_2469),
@@ -277,9 +269,7 @@ class StandingsTest(Test):
     @mock.patch('common.json_.json_.open', create=True)
     @mock.patch('tasks.standings.standings.os.listdir')
     def test_finish(self, mock_listdir, mock_open, mock_render):
-        mock_listdir.return_value = [
-            '2449.json', '2469.json', '2476.json'
-        ]
+        mock_listdir.return_value = ['2449.json', '2469.json', '2476.json']
         suite = Suite(
             RMock(GAMES_DIR, '2449.json', TESTDATA),
             RMock(GAMES_DIR, '2469.json', TESTDATA),
@@ -314,23 +304,17 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
+    maxDiff = None
     @mock.patch.object(Standings, '_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
     def test_index_html__finished_false(self, mock_call, mock_dialog):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
-        body = table(clazz='', head=[[cell(content='Pending')]])
+        body = table(head=[[cell(content='Pending')]])
         data_2998 = (date, body, None)
 
-        line = {
-            'T40': [DATA_2449, DATA_2469],
-            'T47': [DATA_2449, DATA_2469]
-        }
-        pending = {
-            'T31': [data_2998],
-            'T44': [data_2998],
-            'T45': [data_2998]
-        }
+        line = {'T40': [DATA_2449, DATA_2469], 'T47': [DATA_2449, DATA_2469]}
+        pending = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
         mock_call.side_effect = [
             line,
             pending,
@@ -355,7 +339,9 @@ class StandingsTest(Test):
         score = 'T31 4, TLA 2'
         statsplus_scores = {date: {'2998': score}}
         standings.shadow['statsplus.scores'] = statsplus_scores
-        standings.shadow['statsplus.table'] = STATSPLUS_TABLE
+
+        statsplus_table = {'T40': '0-2', 'T47': '2-0'}
+        standings.shadow['statsplus.table'] = statsplus_table
 
         actual = standings._index_html(date=DATE_10260602)
         expected = {
@@ -374,28 +360,33 @@ class StandingsTest(Test):
         }  # yapf: disable
         self.assertEqual(actual, expected)
 
+        etable = {'T31': '1-0', 'T40': '0-2', 'T47': '2-0', 'TLA': '0-1'}
+        rtable = {
+            e: (etable.get(e, '0-0'), e in DIALOG_TEAMS)
+            for e in ENCODINGS
+        }
         mock_call.assert_has_calls([
             mock.call('scoreboard', 'line_scores', ()),
             mock.call('scoreboard', 'pending_dialog', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
-                ('East', _table(LEAGUE_ALE, EXPANDED_TABLE)),
-                ('Central', _table(LEAGUE_ALC, EXPANDED_TABLE)),
-                ('West', _table(LEAGUE_ALW, EXPANDED_TABLE)),
+                ('East', _table(LEAGUE_ALE, etable)),
+                ('Central', _table(LEAGUE_ALC, etable)),
+                ('West', _table(LEAGUE_ALW, etable)),
             ])),
             mock.call('division', 'condensed_league', ('American League', [
-                ('East', _table(LEAGUE_ALE, CONDENSED_TABLE)),
-                ('Central', _table(LEAGUE_ALC, CONDENSED_TABLE)),
-                ('West', _table(LEAGUE_ALW, CONDENSED_TABLE)),
+                ('East', _table(LEAGUE_ALE, rtable)),
+                ('Central', _table(LEAGUE_ALC, rtable)),
+                ('West', _table(LEAGUE_ALW, rtable)),
             ])),
             mock.call('division', 'expanded_league', ('National League', [
-                ('East', _table(LEAGUE_NLE, EXPANDED_TABLE)),
-                ('Central', _table(LEAGUE_NLC, EXPANDED_TABLE)),
-                ('West', _table(LEAGUE_NLW, EXPANDED_TABLE)),
+                ('East', _table(LEAGUE_NLE, etable)),
+                ('Central', _table(LEAGUE_NLC, etable)),
+                ('West', _table(LEAGUE_NLW, etable)),
             ])),
             mock.call('division', 'condensed_league', ('National League', [
-                ('East', _table(LEAGUE_NLE, CONDENSED_TABLE)),
-                ('Central', _table(LEAGUE_NLC, CONDENSED_TABLE)),
-                ('West', _table(LEAGUE_NLW, CONDENSED_TABLE)),
+                ('East', _table(LEAGUE_NLE, rtable)),
+                ('Central', _table(LEAGUE_NLC, rtable)),
+                ('West', _table(LEAGUE_NLW, rtable)),
             ])),
         ])
         mock_dialog.assert_has_calls([
@@ -412,31 +403,28 @@ class StandingsTest(Test):
     def test_index_html__finished_true(self, mock_call, mock_dialog):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
-        body = table(clazz='', head=[[cell(content='Pending')]])
-        data_2998 = (date, body, None)
+        body = table(head=[[cell(content='Final')]])
+        foot = table(foot=[[cell(content='Diamondbacks')]])
+        data_2998 = (date, body, foot)
 
         line = {
-            'T40': [DATA_2449, DATA_2469],
-            'T47': [DATA_2449, DATA_2469]
-        }
-        pending = {
             'T31': [data_2998],
-            'T44': [data_2998],
-            'T45': [data_2998]
+            'T40': [DATA_2449, DATA_2469],
+            'T45': [data_2998],
+            'T47': [DATA_2449, DATA_2469]
         }
         mock_call.side_effect = [
             line,
-            pending,
+            {},
             [TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC],
             TABLE_AL,
             [TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC],
             TABLE_NL,
         ]
         mock_dialog.side_effect = [
-            [head, body],
+            [head, body, foot],
             DIALOG_TABLES,
-            [head, body],
-            [head, body],
+            [head, body, foot],
             DIALOG_TABLES,
         ]
 
@@ -444,11 +432,13 @@ class StandingsTest(Test):
         table_ = _table(encodings, {})
         standings = self.create_standings(_data(finished=True, table_=table_))
 
-        date = encode_datetime(DATE_08310000)
-        score = 'T31 4, TLA 2'
-        statsplus_scores = {date: {'2998': score}}
-        standings.shadow['statsplus.scores'] = statsplus_scores
-        standings.shadow['statsplus.table'] = STATSPLUS_TABLE
+        statsplus_table = {
+            'T31': '1-0',
+            'T40': '0-2',
+            'T45': '0-1',
+            'T47': '2-0'
+        }
+        standings.shadow['statsplus.table'] = statsplus_table
 
         actual = standings._index_html(date=DATE_10260602)
         expected = {
@@ -458,27 +448,31 @@ class StandingsTest(Test):
                 TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC
             ],
             'dialogs': [
-                dialog('31', ICON_31, [head, body]),
+                dialog('31', ICON_31, [head, body, foot]),
                 dialog('40', ICON_40, DIALOG_TABLES),
-                dialog('44', ICON_44, [head, body]),
-                dialog('45', ICON_45, [head, body]),
+                dialog('45', ICON_45, [head, body, foot]),
                 dialog('47', ICON_47, DIALOG_TABLES),
             ]
         }  # yapf: disable
         self.assertEqual(actual, expected)
 
+        etable = {'T31': '1-0', 'T40': '0-2', 'T45': '0-1', 'T47': '2-0'}
+        rtable = {
+            e: (etable.get(e, '0-0'), e in etable)
+            for e in ENCODINGS
+        }
         mock_call.assert_has_calls([
             mock.call('scoreboard', 'line_scores', ()),
-            mock.call('scoreboard', 'pending_dialog', (statsplus_scores, )),
+            mock.call('scoreboard', 'pending_dialog', ({}, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, table_)),
                 ('Central', _table(LEAGUE_ALC, table_)),
                 ('West', _table(LEAGUE_ALW, table_)),
             ])),
             mock.call('division', 'condensed_league', ('American League', [
-                ('East', _table(LEAGUE_ALE, CONDENSED_TABLE)),
-                ('Central', _table(LEAGUE_ALC, CONDENSED_TABLE)),
-                ('West', _table(LEAGUE_ALW, CONDENSED_TABLE)),
+                ('East', _table(LEAGUE_ALE, rtable)),
+                ('Central', _table(LEAGUE_ALC, rtable)),
+                ('West', _table(LEAGUE_ALW, rtable)),
             ])),
             mock.call('division', 'expanded_league', ('National League', [
                 ('East', _table(LEAGUE_NLE, table_)),
@@ -486,15 +480,14 @@ class StandingsTest(Test):
                 ('West', _table(LEAGUE_NLW, table_)),
             ])),
             mock.call('division', 'condensed_league', ('National League', [
-                ('East', _table(LEAGUE_NLE, CONDENSED_TABLE)),
-                ('Central', _table(LEAGUE_NLC, CONDENSED_TABLE)),
-                ('West', _table(LEAGUE_NLW, CONDENSED_TABLE)),
+                ('East', _table(LEAGUE_NLE, rtable)),
+                ('Central', _table(LEAGUE_NLC, rtable)),
+                ('West', _table(LEAGUE_NLW, rtable)),
             ])),
         ])
         mock_dialog.assert_has_calls([
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
-            mock.call([data_2998]),
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
         ])
