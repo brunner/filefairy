@@ -121,6 +121,11 @@ EVENT_MAP = {
     Event.BASE_MOVE_THROW: (r'^Runner from {base} (?:tags up, SAFE at \w+ with'
                             r' throw by \w+|tries for [2|3]\w+, SAFE, throw by'
                             r' \w+ made to \w+)$'),
+    Event.BASE_MOVE_TRAIL: (r'^Runner from 2nd tries for 3rd, SAFE, throw by '
+                            r'\w+ made at trailing runner, SAFE!$'),
+    Event.BASE_MOVE_TRAIL_OUT: (r'^Runner from 2nd tries for 3rd, SAFE, throw '
+                                r'by \w+ made at trailing runner, OUT! {scorin'
+                                r'g}$'),
     Event.BASE_OUT: (r'^Runner from {base} (?:tags up, OUT at \w+!|tries for ['
                      r'2|3]\w+, OUT!|tries for Home, throw by \w+ and OUT!) {s'
                      r'coring}$'),

@@ -114,6 +114,8 @@ class Event(IntEnum):
     BASE_MOVE = auto()  # [base]
     BASE_MOVE_RUNDOWN = auto()  # [base]
     BASE_MOVE_THROW = auto()  # [base]
+    BASE_MOVE_TRAIL = auto()  # []
+    BASE_MOVE_TRAIL_OUT = auto()  # [scoring]
     BASE_OUT = auto()  # [base, scoring]
     BASE_SCORE = auto()  # []
     BASE_SCORE_THROW = auto()  # []
