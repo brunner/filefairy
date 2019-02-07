@@ -63,11 +63,6 @@ ICON_44 = icon_absolute('T44', 'Los Angeles Angels')
 ICON_45 = icon_absolute('T45', 'Los Angeles Dodgers')
 ICON_47 = icon_absolute('T47', 'Minnesota Twins')
 
-DIALOG_TABLES = [
-    HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469
-]
-DIALOG_TEAMS = ['T31', 'T40', 'T44', 'T45', 'T47']
-
 LEAGUE_ALE = ['T33', 'T34', 'T48', 'T57', 'T59']
 LEAGUE_ALC = ['T35', 'T38', 'T40', 'T43', 'T47']
 LEAGUE_ALW = ['T42', 'T44', 'T50', 'T54', 'T58']
@@ -304,7 +299,6 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    maxDiff = None
     @mock.patch.object(Standings, '_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
     def test_index_html__finished_false(self, mock_call, mock_dialog):
@@ -323,12 +317,14 @@ class StandingsTest(Test):
             [TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC],
             TABLE_NL,
         ]
+
+        ds = [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469]
         mock_dialog.side_effect = [
             [head, body],
-            DIALOG_TABLES,
+            [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469],
             [head, body],
             [head, body],
-            DIALOG_TABLES,
+            [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469],
         ]
 
         encodings = encoding_keys()
@@ -352,17 +348,17 @@ class StandingsTest(Test):
             ],
             'dialogs': [
                 dialog('31', ICON_31, [head, body]),
-                dialog('40', ICON_40, DIALOG_TABLES),
+                dialog('40', ICON_40, ds),
                 dialog('44', ICON_44, [head, body]),
                 dialog('45', ICON_45, [head, body]),
-                dialog('47', ICON_47, DIALOG_TABLES),
+                dialog('47', ICON_47, ds),
             ]
         }  # yapf: disable
         self.assertEqual(actual, expected)
 
         etable = {'T31': '1-0', 'T40': '0-2', 'T47': '2-0', 'TLA': '0-1'}
         rtable = {
-            e: (etable.get(e, '0-0'), e in DIALOG_TEAMS)
+            e: (etable.get(e, '0-0'), e in ['T31', 'T40', 'T44', 'T45', 'T47'])
             for e in ENCODINGS
         }
         mock_call.assert_has_calls([
@@ -421,11 +417,13 @@ class StandingsTest(Test):
             [TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC],
             TABLE_NL,
         ]
+
+        ds = [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469]
         mock_dialog.side_effect = [
             [head, body, foot],
-            DIALOG_TABLES,
+            ds,
             [head, body, foot],
-            DIALOG_TABLES,
+            ds,
         ]
 
         encodings = encoding_keys()
@@ -449,9 +447,9 @@ class StandingsTest(Test):
             ],
             'dialogs': [
                 dialog('31', ICON_31, [head, body, foot]),
-                dialog('40', ICON_40, DIALOG_TABLES),
+                dialog('40', ICON_40, ds),
                 dialog('45', ICON_45, [head, body, foot]),
-                dialog('47', ICON_47, DIALOG_TABLES),
+                dialog('47', ICON_47, ds),
             ]
         }  # yapf: disable
         self.assertEqual(actual, expected)
