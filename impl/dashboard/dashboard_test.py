@@ -16,6 +16,7 @@ from common.elements.elements import anchor  # noqa
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import pre  # noqa
 from common.elements.elements import table  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
@@ -287,22 +288,6 @@ class DashboardTest(Test):
         self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
         self.assertNotCalled(self.mock_chat, self.mock_upload)
 
-    @mock.patch.object(Dashboard, '_render')
-    def test_log__reloaded(self, mock_render):
-        new = encode_datetime(DATE_10260000)
-        error = _record(PATH, 123, 'ERROR', 'Disabled foo.', '', DATE_10260602)
-
-        data = _data({new: [error]})
-        record = _record(PATH, 456, 'INFO', 'Reloaded foo.', '', DATE_10260602)
-        dashboard = self.create_dashboard(data)
-        dashboard._log(record)
-
-        data = _data({new: [record]})
-        mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
-        self.assertNotCalled(self.mock_chat, self.mock_upload)
-
     @mock.patch.object(Dashboard, '_alert')
     def test_warning__alert(self, mock_alert):
         kwargs = _kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
@@ -355,9 +340,13 @@ class DashboardTest(Test):
         link = 'https://github.com/brunner/filefairy/blob/master/'
         logs = [
             table(
-                clazz='border mt-3',
-                hcols=[col(colspan='3')],
-                bcols=[None, None, col(clazz='text-right w-75p')],
+                clazz='border mb-3',
+                hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
+                bcols=[
+                    col(clazz='w-150p'), None,
+                    col(clazz='text-right w-75p')
+                ],
+                fcols=[col(colspan='3')],
                 head=[[cell(content='Saturday, October 26th, 1985')]],
                 body=[[
                     cell(
@@ -365,11 +354,16 @@ class DashboardTest(Test):
                                        'module.py#L123')),
                     cell(content='foo'),
                     cell(content='06:02')
-                ]]),
+                ]],
+                foot=[[cell(content=pre('...'))]]),
             table(
-                clazz='border mt-3',
-                hcols=[col(colspan='3')],
-                bcols=[None, None, col(clazz='text-right w-75p')],
+                clazz='border mb-3',
+                hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
+                bcols=[
+                    col(clazz='w-150p'), None,
+                    col(clazz='text-right w-75p')
+                ],
+                fcols=None,
                 head=[[cell(content='Friday, October 25th, 1985')]],
                 body=[[
                     cell(
@@ -377,18 +371,11 @@ class DashboardTest(Test):
                                        'module.py#L456')),
                     cell(content='bar'),
                     cell(content='00:07')
-                ]]),
-        ]
-        exceptions = [
-            card(
-                href=link + 'path/to/module.py#L123',
-                title='module.py#L123',
-                info='foo',
-                code='...',
-                ts='06:02:30 PDT (1985-10-26)')
+                ]],
+                foot=None)
         ]
         actual = dashboard._index_html(date=DATE_10260602)
-        expected = {'exceptions': exceptions, 'logs': logs}
+        expected = {'logs': logs}
         self.assertEqual(actual, expected)
         self.assertNotCalled(self.mock_chat, self.mock_open,
                              self.mock_handle.write, self.mock_upload)

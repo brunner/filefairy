@@ -15,6 +15,7 @@ from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
+from common.elements.elements import pre  # noqa
 from common.elements.elements import ruleset  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
@@ -99,6 +100,11 @@ class ComponentTest(unittest.TestCase):
     def test_dialog__filled(self):
         actual = dialog(id_=ID_, icon='foo', tables=[TABLE])
         expected = {'id': ID_, 'icon': 'foo', 'tables': [TABLE]}
+        self.assertEqual(actual, expected)
+
+    def test_pre(self):
+        actual = pre('content')
+        expected = '<pre>content</pre>'
         self.assertEqual(actual, expected)
 
     def test_ruleset__default(self):

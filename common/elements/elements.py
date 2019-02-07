@@ -108,6 +108,18 @@ def dialog(id_='', icon='', tables=None):
     return obj
 
 
+def pre(content):
+    """Builds a pre element.
+
+    Args:
+        content: The inner HTML of the pre element.
+
+    Returns:
+        The pre element.
+    """
+    return '<pre>{}</pre>'.format(content)
+
+
 def ruleset(selector='', rules=None):
     """Builds a CSS ruleset element.
 

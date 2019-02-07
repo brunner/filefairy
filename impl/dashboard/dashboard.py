@@ -41,6 +41,7 @@ from common.elements.elements import anchor  # noqa
 from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import pre  # noqa
 from common.elements.elements import table  # noqa
 from common.re_.re_ import search  # noqa
 from common.secrets.secrets import secrets_sub  # noqa
@@ -143,15 +144,6 @@ class Dashboard(Registrable):
             self.data['logs'][date] = []
         self.data['logs'][date].append(record)
 
-        module = search('^Reloaded (\w+).$', record['msg'])
-        if module:
-            disabled = 'Disabled {}.'.format(module)
-            logs = self.data['logs']
-            for date in logs:
-                for record in list(logs[date]):
-                    if disabled == record['msg']:
-                        logs[date].remove(record)
-
         self._render(date=d, log=False)
         self.write()
 
@@ -176,10 +168,7 @@ class Dashboard(Registrable):
             self.warnings.append(warning)
 
     def _index_html(self, **kwargs):
-        ret = {
-            'exceptions': [],
-            'logs': []
-        }
+        ret = {'logs': []}
 
         for date in sorted(self.data['logs']):
             d = decode_datetime(date)
@@ -195,24 +184,24 @@ class Dashboard(Registrable):
                 levelname = record['levelname']
                 msg = record['msg']
 
-                if levelname == 'ERROR':
-                    exc = record['exc']
-                    ts = timestamp(decode_datetime(date))
-                    c = card(href=link, title=title, info=msg, code=exc, ts=ts)
-                    ret['exceptions'].insert(0, c)
-
                 a = anchor(link, title)
                 time = decode_datetime(date).strftime('%H:%M')
-                r = [cell(content=a), cell(content=msg), cell(content=time)]
-                body.insert(0, r)
+                row = [cell(content=a), cell(content=msg), cell(content=time)]
 
-            t = table(
-                clazz='border mt-3',
-                hcols=[col(colspan='3')],
-                bcols=[None, None, col(clazz='text-right w-75p')],
-                head=[[cell(content=head_content)]],
-                body=body)
-            ret['logs'].insert(0, t)
+                if levelname == 'ERROR':
+                    if body:
+                        t = self._table(head_content, body, None)
+                        ret['logs'].insert(0, t)
+
+                    foot = [[cell(content=pre(record['exc']))]]
+                    t = self._table(head_content, [row], foot)
+                    ret['logs'].insert(0, t)
+                else:
+                    body.insert(0, row)
+
+            if body:
+                t = self._table(head_content, body, None)
+                ret['logs'].insert(0, t)
 
         return ret
 
@@ -254,6 +243,19 @@ class Dashboard(Registrable):
     @staticmethod
     def _sort(record):
         return (record['date'], record['pathname'], record['lineno'])
+
+    @staticmethod
+    def _table(head_content, body, foot):
+        fcols = [col(colspan='3')] if foot else None
+        return table(
+            clazz='border mb-3',
+            hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
+            bcols=[col(clazz='w-150p'), None,
+                   col(clazz='text-right w-75p')],
+            fcols=fcols,
+            head=[[cell(content=head_content)]],
+            body=body,
+            foot=foot)
 
 
 class LoggingHandler(logging.Handler):

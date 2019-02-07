@@ -3,10 +3,12 @@
 """Alerts whenever a new league file is uploaded."""
 
 import datetime
+import logging
 import os
 import re
 import sys
 
+_logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/upload', '', _path))
 
@@ -16,6 +18,7 @@ from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.re_.re_ import search  # noqa
 from common.requests_.requests_ import get  # noqa
+from common.slack.slack import chat_post_message  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
 
@@ -45,7 +48,8 @@ class Upload(Registrable):
     def _run_internal(self, **kwargs):
         date = self._get_date()
         if date is not None and date != self.data['date']:
-            self._chat('fairylab', 'File is up.')
+            _logger.log(logging.INFO, 'File is up.')
+            chat_post_message('fairylab', 'File is up.')
 
             self.data['date'] = date
             self.write()

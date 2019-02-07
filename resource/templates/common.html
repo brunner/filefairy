@@ -12,7 +12,7 @@
 
 {% macro card(data) -%}
 <!-- ^(common.card) -->
-<div class="card d-flex flex-column flex-grow mt-3">
+<div class="small card d-flex flex-column flex-grow mb-3">
 
 <!-- ^(common.card.body) -->
 <div class="card-body d-flex flex-column">
@@ -42,7 +42,7 @@
 
 {% endif %}
 {% if data.code %}
-<pre class="pre-scrollable d-flex"><code>{{- data.code -}}</code></pre>
+<pre>{{- data.code -}}</pre>
 {% endif %}
 </div>
 <!-- $(common.card.body) -->

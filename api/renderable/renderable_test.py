@@ -163,42 +163,6 @@ class RenderableTest(unittest.TestCase):
 
         return renderable
 
-    def test_attachments(self):
-        renderable = self.create_renderable(ENV)
-
-        actual = renderable._attachments()
-        expected = [{
-            'fallback': 'Description.',
-            'title': 'Fairylab | foo',
-            'title_link': 'http://fairylab.surge.sh/foo/',
-            'text': 'Description.'
-        }]
-        self.assertEqual(actual, expected)
-
-        self.mock_log.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.assert_not_called()
-
-    @mock.patch('api.renderable.renderable.chat_post_message')
-    @mock.patch.object(FakeRenderable, '_attachments')
-    def test_chat(self, mock_attachments, mock_chat):
-        attachments = [{'title': 'title', 'text': 'text'}]
-        mock_attachments.return_value = attachments
-        mock_chat.return_value = {'ok': True, 'message': {'text': 'foo'}}
-
-        renderable = self.create_renderable(ENV)
-
-        actual = renderable._chat('channel', 'foo')
-        expected = {'ok': True, 'message': {'text': 'foo'}}
-        self.assertEqual(actual, expected)
-
-        mock_attachments.assert_called_once_with()
-        mock_chat.assert_called_once_with(
-            'channel', 'foo', attachments=attachments)
-        self.mock_log.assert_called_once_with(logging.INFO, 'foo')
-        self.mock_open.assert_not_called()
-        self.mock_handle.assert_not_called()
-
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.os.makedirs')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')

@@ -83,11 +83,6 @@ class Renderable(Serializable):
     def _render_data(self, **kwargs):
         return []
 
-    def _chat(self, channel, text):
-        _logger.log(logging.INFO, text)
-        attachments = self._attachments() if self._href() else []
-        return chat_post_message(channel, text, attachments=attachments)
-
     def _render(self, **kwargs):
         date = timestamp(kwargs['date'])
         test = kwargs.get('test')
@@ -123,14 +118,3 @@ class Renderable(Serializable):
                 pass
             else:
                 raise
-
-    def _attachments(self):
-        info = self._info()
-        title = 'Fairylab | ' + self._title()
-        link = 'http://fairylab.surge.sh' + self._href()
-        return [{
-            'fallback': info,
-            'title': title,
-            'title_link': link,
-            'text': info
-        }]

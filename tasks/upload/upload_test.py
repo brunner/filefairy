@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Tests for upload.py."""
 
+import logging
 import os
 import re
 import sys
@@ -36,9 +37,13 @@ def _data(date=None):
 
 class UploadTest(Test):
     def setUp(self):
-        patch_chat = mock.patch.object(Upload, '_chat')
+        patch_chat = mock.patch('tasks.upload.upload.chat_post_message')
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
+
+        patch_log = mock.patch('tasks.upload.upload._logger.log')
+        self.addCleanup(patch_log.stop)
+        self.mock_log = patch_log.start()
 
         patch_open = mock.patch(
             'api.serializable.serializable.open', create=True)
@@ -52,6 +57,7 @@ class UploadTest(Test):
 
     def reset_mocks(self):
         self.mock_chat.reset_mock()
+        self.mock_log.reset_mock()
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
 
@@ -60,7 +66,8 @@ class UploadTest(Test):
         upload = Upload(date=DATE_10260602, e=ENV)
 
         self.mock_open.assert_called_once_with(Upload._data(), 'r')
-        self.assertNotCalled(self.mock_chat, self.mock_handle.write)
+        self.assertNotCalled(self.mock_chat, self.mock_log,
+                             self.mock_handle.write)
         self.assertEqual(upload.data, data)
 
         self.reset_mocks()
@@ -81,6 +88,7 @@ class UploadTest(Test):
         write = _data(date=DATE_10260604)
         mock_get_date.assert_called_once_with()
         self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
+        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
         self.mock_open.assert_called_once_with(Upload._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -95,7 +103,7 @@ class UploadTest(Test):
         self.assertEqual(actual, expected)
 
         mock_get_date.assert_called_once_with()
-        self.assertNotCalled(self.mock_chat, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
     @mock.patch('tasks.upload.upload.get')
@@ -108,7 +116,7 @@ class UploadTest(Test):
         expected = encode_datetime(DATE_10260604)
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_chat, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
 

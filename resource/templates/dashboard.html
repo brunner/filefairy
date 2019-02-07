@@ -3,37 +3,11 @@
 
 {% block content %}
 
-{% if exceptions %}
-<!-- ^(dashboard.exceptions) -->
-<div class="container anchor" id="exceptions">
-
-{{ common.heading('warning', 'Exceptions') }}
-
-<!-- ^(dashboard.row) -->
-<div class="row">
-
-{% for card in exceptions %}
-<!-- ^(dashboard.column) -->
-<div class="col-12">
-
-{{ common.card(card) }}
-
-</div>
-<!-- $(dashboard.column) -->
-
-{% endfor %}
-</div>
-<!-- $(dashboard.row) -->
-
-</div>
-<!-- $(dashboard.exceptions) -->
-{% endif %}
-
 {% if logs %}
 <!-- ^(dashboard.logs) -->
-<div class="container anchor" id="logs">
+<div class="container">
 
-{{ common.heading('timer', 'Logs') }}
+{{ common.topper('Log Records') }}
 
 <!-- ^(dashboard.row) -->
 <div class="row">

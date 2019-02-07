@@ -29,6 +29,14 @@ header {
   background-color: #f5f5f5;
   width: 100%;
 }
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
 a.disabled{
   pointer-events: none;
   cursor: default;
@@ -230,6 +238,9 @@ button.close {
 .w-105p {
   width: 105px;
 }
+.w-150p {
+  width: 150px;
+}
 .badge-icon-image,
 .badge-icon-text {
   display: block;
@@ -314,80 +325,30 @@ button.close {
 <!-- ^(base.main) -->
 <main role="main" class="pt-3">
 
-<!-- ^(dashboard.exceptions) -->
-<div class="container anchor" id="exceptions">
-
-<!-- ^(common.heading) -->
-<div class="row">
-<div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-warning text-secondary"></span>Exceptions
-</div>
-</div>
-</div>
-<!-- $(common.heading) -->
-
-<!-- ^(dashboard.row) -->
-<div class="row">
-
-<!-- ^(dashboard.column) -->
-<div class="col-12">
-
-<!-- ^(common.card) -->
-<div class="card d-flex flex-column flex-grow mt-3">
-
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-<a href="https://github.com/brunner/filefairy/blob/master/impl/filefairy/filefairy.py#L127">filefairy.py#L127</a>
-</h5>
-<div></div>
-</div>
-
-<p class="card-text flex-grow">Disabled snacks.</p>
-<pre class="pre-scrollable d-flex"><code>Traceback (most recent call last):
-  File "impl/filefairy/filefairy.py", line 127, in _foo
-    a = func(*args, **kwargs)
-  File "/home/pi/filefairy/tasks/snacks/snacks.py", line 234, in _bar
-    b = self._baz()
-  File "/home/pi/filefairy/tasks/snacks/snacks.py", line 190, in _baz
-    return variable
-NameError: name 'variable' is not defined
-</code></pre>
-</div>
-<!-- $(common.card.body) -->
-
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 PDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
-
-</div>
-<!-- $(common.card) -->
-
-</div>
-<!-- $(dashboard.column) -->
-
-</div>
-<!-- $(dashboard.row) -->
-
-</div>
-<!-- $(dashboard.exceptions) -->
-
 <!-- ^(dashboard.logs) -->
-<div class="container anchor" id="logs">
+<div class="container">
 
-<!-- ^(common.heading) -->
+<!-- ^(common.topper) -->
 <div class="row">
 <div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-timer text-secondary"></span>Logs
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Log Records</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
 </div>
 </div>
-</div>
-<!-- $(common.heading) -->
+<!-- $(common.topper) -->
 
 <!-- ^(dashboard.row) -->
 <div class="row">
@@ -396,12 +357,12 @@ NameError: name 'variable' is not defined
 <div class="col-12">
 
 <!-- ^(common.table) -->
-<table class="small table border mt-3">
+<table class="small table border mb-3">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 <tr>
-<td scope="col" colspan="3">Saturday, October 26th, 1985</td>
+<td scope="col" class="font-weight-bold text-dark" colspan="3">Saturday, October 26th, 1985</td>
 </tr>
 </thead>
 <!-- $(common.table.head) -->
@@ -409,12 +370,46 @@ NameError: name 'variable' is not defined
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row"><a href="https://github.com/brunner/filefairy/blob/master/impl/filefairy/filefairy.py#L127">filefairy.py#L127</a></td>
+<td scope="row" class="w-150p"><a href="https://github.com/brunner/filefairy/blob/master/impl/filefairy/filefairy.py#L127">filefairy.py#L127</a></td>
 <td>Disabled snacks.</td>
 <td class="text-right w-75p">06:02</td>
 </tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
 <tr>
-<td scope="row"><a href="https://github.com/brunner/filefairy/blob/master/tasks/leaguefile/leaguefile.py#L317">leaguefile.py#L317</a></td>
+<td scope="col" colspan="3"><pre>Traceback (most recent call last):
+  File "impl/filefairy/filefairy.py", line 127, in _foo
+    a = func(*args, **kwargs)
+  File "/home/pi/filefairy/tasks/snacks/snacks.py", line 234, in _bar
+    b = self._baz()
+  File "/home/pi/filefairy/tasks/snacks/snacks.py", line 190, in _baz
+    return variable
+NameError: name 'variable' is not defined
+</pre></td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark" colspan="3">Saturday, October 26th, 1985</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="w-150p"><a href="https://github.com/brunner/filefairy/blob/master/tasks/leaguefile/leaguefile.py#L317">leaguefile.py#L317</a></td>
 <td>File is up.</td>
 <td class="text-right w-75p">02:30</td>
 </tr>
