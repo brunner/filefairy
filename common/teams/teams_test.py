@@ -197,7 +197,7 @@ class TeamsTest(unittest.TestCase):
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
         img = ('<img src="{}" width="16" height="16" border="0" class="absolut'
-               'e-icon-image">').format(src)
+               'e-icon left">').format(src)
         span = ('<span class="d-block pl-4">Chicago</span>')
         expected = img + span
         self.assertEqual(actual, expected)

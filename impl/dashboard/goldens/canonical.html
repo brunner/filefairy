@@ -41,11 +41,6 @@ a.disabled{
   pointer-events: none;
   cursor: default;
 }
-.absolute-icon-image {
-  left: 10px;
-  position: absolute;
-  top: 14px;
-}
 .absolute-icon {
   position: absolute;
   top: 14px;
@@ -53,22 +48,18 @@ a.disabled{
 span.absolute-icon {
   border-radius: .25rem;
   padding: 3px;
-  position: absolute;
   top: 12px;
 }
 .absolute-icon.left {
   left: 10px;
 }
 .absolute-icon.right {
+  left: auto;
   right: 10px;
 }
 .absolute-icon.hover:hover {
   background-color: #e9ecef;
   cursor: pointer;
-}
-.absolute-right {
-  left: auto;
-  right: 10px;
 }
 .alert, .dropdown-toggle, .form-control {
   padding: .75rem;
@@ -335,7 +326,7 @@ button.close {
 <div class="container">
 <div class="head position-relative small text-secondary">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
-     width="16" height="16" border="0" class="position-absolute absolute-icon-image">
+     width="16" height="16" border="0" class="position-absolute absolute-icon left">
 <div class="px-4">Dashboard &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 <span class="oi oi-menu absolute-icon hover right"
       data-toggle="modal" data-target="#menu"></span></div>
@@ -459,7 +450,7 @@ NameError: name 'variable' is not defined
 <div class="modal-header d-block py-0">
 <div class="head position-relative small">
 <img src="https://fairylab.surge.sh/favicon-32x32.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block px-4">Fairylab</span>
-<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
+<button type="button" class="close absolute-icon right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>

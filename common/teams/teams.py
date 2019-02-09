@@ -165,7 +165,7 @@ def encoding_to_teamid(encoding):
 def icon_absolute(encoding, text):
     lower = encoding_to_lower(encoding)
 
-    img = icon_img(ICON_LINK.format(lower), '16', ['absolute-icon-image'])
+    img = icon_img(ICON_LINK.format(lower), '16', ['absolute-icon', 'left'])
     span_ = span(['d-block pl-4'], text)
     return img + span_
 
