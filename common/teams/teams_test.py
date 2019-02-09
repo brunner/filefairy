@@ -217,7 +217,7 @@ class TeamsTest(unittest.TestCase):
     def test_icon_badge__active_question(self):
         actual = icon_badge('T35', '0-0', True)
         badge = ('<span class="badge badge-icon badge-light" data-toggle="moda'
-                 'l" data-target="#35">{}</span>')
+                 'l" data-target="#whitesox">{}</span>')
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
@@ -229,7 +229,7 @@ class TeamsTest(unittest.TestCase):
     def test_icon_badge__active_true(self):
         actual = icon_badge('T35', '1-0', True)
         badge = ('<span class="badge badge-icon badge-light" data-toggle="moda'
-                 'l" data-target="#35">{}</span>')
+                 'l" data-target="#whitesox">{}</span>')
         src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
                'png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'

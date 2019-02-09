@@ -25,7 +25,7 @@ from common.service.service import call_service  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
-from common.teams.teams import encoding_to_teamid  # noqa
+from common.teams.teams import encoding_to_lower  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
@@ -166,11 +166,11 @@ class Standings(Registrable):
         d = merge(line, pending, lambda x, y: x + y, [])
 
         for encoding in sorted(d):
-            teamid = encoding_to_teamid(encoding)
+            lower = encoding_to_lower(encoding)
             decoding = encoding_to_decoding(encoding)
             tables = self._dialog_tables(d[encoding])
             icon = icon_absolute(encoding, decoding)
-            ret['dialogs'].append(dialog(teamid, icon, tables))
+            ret['dialogs'].append(dialog(lower, icon, tables))
 
         pending_table = {}
         for date in statsplus_scores:

@@ -129,14 +129,14 @@ _icon_49 = icon_absolute('T49', 'New York Mets')
 _icon_55 = icon_absolute('T55', 'San Francisco Giants')
 
 _dialogs = [
-    dialog('31', _icon_31, [_head_2449, _body_31]),
-    dialog('40', _icon_40, _tables),
-    dialog('44', _icon_44, [_head_2449, _body_la]),
-    dialog('45', _icon_45, [_head_2449, _body_la]),
-    dialog('47', _icon_47, _tables),
-    dialog('48', _icon_48, [_head_2449, _body_ny]),
-    dialog('49', _icon_49, [_head_2449, _body_ny]),
-    dialog('55', _icon_55, [_head_2449, _body_55]),
+    dialog('diamondbacks', _icon_31, [_head_2449, _body_31]),
+    dialog('tigers', _icon_40, _tables),
+    dialog('angels', _icon_44, [_head_2449, _body_la]),
+    dialog('dodgers', _icon_45, [_head_2449, _body_la]),
+    dialog('twins', _icon_47, _tables),
+    dialog('yankees', _icon_48, [_head_2449, _body_ny]),
+    dialog('mets', _icon_49, [_head_2449, _body_ny]),
+    dialog('giants', _icon_55, [_head_2449, _body_55]),
 ]
 
 subtitle = ''

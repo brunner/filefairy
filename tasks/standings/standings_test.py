@@ -299,6 +299,7 @@ class StandingsTest(Test):
         self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
+    maxDiff = None
     @mock.patch.object(Standings, '_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
     def test_index_html__finished_false(self, mock_call, mock_dialog):
@@ -347,11 +348,11 @@ class StandingsTest(Test):
                 TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC
             ],
             'dialogs': [
-                dialog('31', ICON_31, [head, body]),
-                dialog('40', ICON_40, ds),
-                dialog('44', ICON_44, [head, body]),
-                dialog('45', ICON_45, [head, body]),
-                dialog('47', ICON_47, ds),
+                dialog('diamondbacks', ICON_31, [head, body]),
+                dialog('tigers', ICON_40, ds),
+                dialog('angels', ICON_44, [head, body]),
+                dialog('dodgers', ICON_45, [head, body]),
+                dialog('twins', ICON_47, ds),
             ]
         }  # yapf: disable
         self.assertEqual(actual, expected)
@@ -446,10 +447,10 @@ class StandingsTest(Test):
                 TABLE_NLE, TABLE_NLC, TABLE_NLW, TABLE_NLWC
             ],
             'dialogs': [
-                dialog('31', ICON_31, [head, body, foot]),
-                dialog('40', ICON_40, ds),
-                dialog('45', ICON_45, [head, body, foot]),
-                dialog('47', ICON_47, ds),
+                dialog('diamondbacks', ICON_31, [head, body, foot]),
+                dialog('tigers', ICON_40, ds),
+                dialog('dodgers', ICON_45, [head, body, foot]),
+                dialog('twins', ICON_47, ds),
             ]
         }  # yapf: disable
         self.assertEqual(actual, expected)

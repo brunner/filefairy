@@ -61,4 +61,11 @@
 </div>
 <!-- $(standings.expanded) -->
 
+ <!-- ^(standings.dialogs) -->  
+{% for dialog in dialogs %} 
+{{ common.dialog(dialog) }} 
+
+ {% endfor %}   
+<!-- $(standings.dialogs) -->   
+
 {% endblock %}
