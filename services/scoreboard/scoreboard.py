@@ -19,6 +19,8 @@ from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqa
+from common.record.record import decode_record  # noqa
+from common.record.record import encode_record  # noqa
 from common.reference.reference import player_to_shortname_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
@@ -32,8 +34,96 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
 
-def line_score_body(data):
-    """Creates a line score table body for a given game data object.
+def _location_row(data):
+    date = datetime_as_est(decode_datetime(data['date']))
+    start = date.strftime('%I:%M %p').lstrip('0')
+    ballpark = ' at ' + data['ballpark']
+    location = span(['small', 'text-secondary'], start + ballpark)
+    return [cell(col=col(clazz='border-0 py-2'), content=location)]
+
+
+def line_score_hide_body(data):
+    """Creates a hidden line score table body for a given game data object.
+
+    The table body contains the teams for the game.
+
+    Args:
+        data: The parsed game data.
+
+    Returns:
+        A line score table body.
+    """
+    hcols = [col(clazz='font-weight-bold')]
+    bcols = [col(clazz='position-relative')]
+    head = [[cell(content='Warmup')]]
+
+    body = []
+    for team, other in [('away', 'home'), ('home', 'away')]:
+        encoding = data[team + '_team']
+        record = data[team + '_record']
+
+        hometown = encoding_to_hometown(encoding)
+        if record:
+            rw, rl = decode_record(record)
+            win = data[team + '_runs'] > data[other + '_runs']
+            r = encode_record(rw - 1, rl) if win else encode_record(rw, rl - 1)
+            text = hometown + ' (' + r + ')'
+        else:
+            text = hometown
+
+        title = icon_absolute(encoding, text)
+        body.append([cell(content=title)])
+
+    return table(
+        clazz='border',
+        hcols=hcols,
+        bcols=bcols,
+        head=head,
+        body=body,
+    )
+
+
+def line_score_hide_foot(data):
+    """Creates a hidden line score table footer for a given game data object.
+
+    The table footer contains game details, such as starting pitchers.
+
+    Args:
+        data: The parsed game data.
+
+    Returns:
+        A line score table footer.
+    """
+    lines = []
+
+    head = anchor('/gameday/' + data['num'] + '/', 'Gameday')
+    lines.append(head)
+
+    # TODO: Remove events check after game log 404 error is fixed.
+    if data['events']:
+        pitching = []
+        for team in ['away', 'home']:
+            encoding = data[team + '_team']
+            pitcher = data[team + '_pitcher']
+
+            abbr = encoding_to_abbreviation(encoding)
+            pitching.append(span(['text-secondary'], abbr + ': ') + pitcher)
+
+        sp = span(['font-weight-bold text-secondary'], 'SP: ')
+        sps = '&nbsp; '.join(pitching)
+        lines.append(player_to_shortname_sub(sp + sps))
+
+    return table(
+        clazz='border border-top-0 mb-3',
+        foot=[
+            _location_row(data),
+            [cell(content='<br>'.join(lines))],
+        ],
+    )
+
+
+def line_score_show_body(data):
+    """Creates a shown line score table body for a given game data object.
 
     The table body contains the teams, records, and runs for the game.
 
@@ -43,22 +133,7 @@ def line_score_body(data):
     Returns:
         A line score table body.
     """
-    away_team = data['away_team']
-    home_team = data['home_team']
-
-    away_hometown = encoding_to_hometown(away_team)
-    if data['away_record']:
-        away_hometown += ' (' + data['away_record'] + ')'
-    away_title = icon_absolute(away_team, away_hometown)
-
-    home_hometown = encoding_to_hometown(home_team)
-    if data['home_record']:
-        home_hometown += ' (' + data['home_record'] + ')'
-    home_title = icon_absolute(home_team, home_hometown)
-
-    away_line = data['away_line'].split()
-    home_line = data['home_line'].split()
-    num = len(home_line)
+    num = len(data['home_line'].split())
     max_num = max(num, 9)
     final = 'Final' + ('' if num == 9 else ' ({})'.format(num))
 
@@ -70,21 +145,6 @@ def line_score_body(data):
     hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 2
     hcols += [col(clazz='font-weight-bold w-32p pl-1 text-center')]
 
-    head_row = [cell(content=final)]
-    head_row += [cell() for _ in range(18 - max_num)]
-    head_row += [cell(content=str(i + 1)) for i in range(max_num)]
-    head_row += [cell(content=content) for content in ['R', 'H', 'E']]
-
-    away_runs = data['away_runs']
-    home_runs = data['home_runs']
-
-    if int(away_runs) > int(home_runs):
-        away_col = col(clazz='font-weight-bold')
-        home_col = col()
-    else:
-        away_col = col()
-        home_col = col(clazz='font-weight-bold')
-
     bc = 'text-center text-secondary'
     bcols = [col(clazz='position-relative pr-3')]
     bcols += [col(clazz=(bc + ' td-lg-none w-24p px-1'))] * 5
@@ -94,38 +154,43 @@ def line_score_body(data):
     bcols += [col(clazz='w-24p px-1 text-center')] * 2
     bcols += [col(clazz='w-32p pl-1 text-center')]
 
-    away_rhe = [data['away_runs'], data['away_hits'], data['away_errors']]
-    home_rhe = [data['home_runs'], data['home_hits'], data['home_errors']]
-
-    away_row = [cell(col=away_col, content=away_title)]
-    home_row = [cell(col=home_col, content=home_title)]
-
-    away_row += [cell() for _ in range(18 - max_num)]
-    home_row += [cell() for _ in range(18 - max_num)]
-
-    away_row += [cell(content=inning) for inning in away_line]
-    home_row += [cell(content=inning) for inning in home_line]
-
-    away_row += [cell() for _ in range(9 - num)]
-    home_row += [cell() for _ in range(9 - num)]
-
-    away_row += [cell(col=away_col, content=content) for content in away_rhe]
-    home_row += [cell(col=home_col, content=content) for content in home_rhe]
-
+    head_row = [cell(content=final)]
+    head_row += [cell() for _ in range(18 - max_num)]
+    head_row += [cell(content=str(i + 1)) for i in range(max_num)]
+    head_row += [cell(content=content) for content in ['R', 'H', 'E']]
     head = [head_row]
-    body = [away_row, home_row]
+
+    body = []
+    for team, other in [('away', 'home'), ('home', 'away')]:
+        encoding = data[team + '_team']
+        record = data[team + '_record']
+        win = data[team + '_runs'] > data[other + '_runs']
+        primary = col(clazz='font-weight-bold') if win else col()
+
+        text = encoding_to_hometown(encoding)
+        text += ' (' + record + ')' if record else ''
+        title = icon_absolute(encoding, text)
+        row = [cell(col=primary, content=title)]
+
+        rhe = [data[team + suff] for suff in ('_runs', '_hits', '_errors')]
+        row += [cell() for _ in range(18 - max_num)]
+        row += [cell(content=s) for s in data[team + '_line'].split()]
+        row += [cell() for _ in range(9 - num)]
+        row += [cell(col=primary, content=s) for s in rhe]
+
+        body.append(row)
 
     return table(
-        clazz='border',
-        hcols=hcols,
-        bcols=bcols,
-        head=head,
-        body=body,
-    )
+            clazz='border',
+            hcols=hcols,
+            bcols=bcols,
+            head=head,
+            body=body,
+        )
 
 
-def line_score_foot(data):
-    """Creates a line score table footer for a given game data object.
+def line_score_show_foot(data):
+    """Creates a shown line score table footer for a given game data object.
 
     The table footer contains game details, such as winning and losing pitcher.
 
@@ -135,11 +200,6 @@ def line_score_foot(data):
     Returns:
         A line score table footer.
     """
-    date = datetime_as_est(decode_datetime(data['date']))
-    start = date.strftime('%I:%M %p').lstrip('0')
-    ballpark = ' at ' + data['ballpark']
-    location = span(['small', 'text-secondary'], start + ballpark)
-
     lines = []
 
     box = 'game_box_{}.html'.format(data['num'])
@@ -148,7 +208,6 @@ def line_score_foot(data):
 
     if data['recap']:
         head += ' &nbsp;|&nbsp; ' + span(['text-underline'], data['recap'])
-
     lines.append(head)
 
     pitching = []
@@ -166,15 +225,15 @@ def line_score_foot(data):
     batting = []
     for team in ['away', 'home']:
         if data[team + '_homeruns']:
-            away_abbr = encoding_to_abbreviation(data[team + '_team'])
-            away_homeruns = []
+            abbr = encoding_to_abbreviation(data[team + '_team'])
+            homeruns = []
             for h in data[team + '_homeruns'].split(' '):
                 p, n, total = h.split(',')
                 if int(n) > 1:
                     p += ' ' + n
-                away_homeruns.append('{} ({})'.format(p, total))
-            s = ', '.join(away_homeruns)
-            batting.append(span(['text-secondary'], away_abbr + ': ') + s)
+                homeruns.append('{} ({})'.format(p, total))
+            s = ', '.join(homeruns)
+            batting.append(span(['text-secondary'], abbr + ': ') + s)
 
     hr = span(['font-weight-bold text-secondary'], 'HR: ')
     hrs = '&nbsp; '.join(batting) if batting else 'None'
@@ -183,26 +242,26 @@ def line_score_foot(data):
     return table(
         clazz='border border-top-0 mb-3',
         foot=[
-            [cell(col=col(clazz='border-0 py-2'), content=location)],
+            _location_row(data),
             [cell(content='<br>'.join(lines))],
         ],
     )
 
 
 def line_scores():
-        d = {}
-        for name in os.listdir(GAMES_DIR):
-            data = loads(os.path.join(GAMES_DIR, name))
-            body = line_score_body(data)
-            foot = line_score_foot(data)
+    d = {}
+    for name in os.listdir(GAMES_DIR):
+        data = loads(os.path.join(GAMES_DIR, name))
+        body = line_score_show_body(data)
+        foot = line_score_show_foot(data)
 
-            for team in ['away', 'home']:
-                e = data[team + '_team']
-                if e not in d:
-                    d[e] = []
-                d[e].append((data['date'], body, foot))
+        for team in ['away', 'home']:
+            e = data[team + '_team']
+            if e not in d:
+                d[e] = []
+            d[e].append((data['date'], body, foot))
 
-        return d
+    return d
 
 
 def pending_body(scores):

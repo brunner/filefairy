@@ -18,8 +18,8 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import table  # noqa
 from common.test.test import get_testdata  # noqa
-from services.scoreboard.scoreboard import line_score_body  # noqa
-from services.scoreboard.scoreboard import line_score_foot  # noqa
+from services.scoreboard.scoreboard import line_score_show_body  # noqa
+from services.scoreboard.scoreboard import line_score_show_foot  # noqa
 from services.scoreboard.scoreboard import line_scores  # noqa
 from services.scoreboard.scoreboard import pending_body  # noqa
 from services.scoreboard.scoreboard import pending_carousel  # noqa
@@ -47,24 +47,26 @@ DATA_2469 = (GAME_2469['date'], BODY_2469, FOOT_2469)
 
 
 class ScoreboardTest(unittest.TestCase):
-    def test_line_score_body(self):
+    def test_line_score_show_body(self):
         for num in ['2449', '2469', '2476']:
             data = json.loads(TESTDATA[num + '.json'])
-            actual = line_score_body(data)
-            expected = json.loads(TESTDATA['line_score_body_' + num + '.json'])
+            actual = line_score_show_body(data)
+            s = 'line_score_show_body_' + num + '.json'
+            expected = json.loads(TESTDATA[s])
             self.assertEqual(actual, expected)
 
-    def test_line_score_foot(self):
+    def test_line_score_show_foot(self):
         for num in ['2449', '2469', '2476']:
             data = json.loads(TESTDATA[num + '.json'])
-            actual = line_score_foot(data)
-            expected = json.loads(TESTDATA['line_score_foot_' + num + '.json'])
+            actual = line_score_show_foot(data)
+            s = 'line_score_show_foot_' + num + '.json'
+            expected = json.loads(TESTDATA[s])
             self.assertEqual(actual, expected)
 
     @mock.patch('services.scoreboard.scoreboard.loads')
     @mock.patch('services.scoreboard.scoreboard.os.listdir')
-    @mock.patch('services.scoreboard.scoreboard.line_score_foot')
-    @mock.patch('services.scoreboard.scoreboard.line_score_body')
+    @mock.patch('services.scoreboard.scoreboard.line_score_show_foot')
+    @mock.patch('services.scoreboard.scoreboard.line_score_show_body')
     def test_line_scores(self, mock_body, mock_foot, mock_listdir, mock_loads):
         mock_body.side_effect = [BODY_2449, BODY_2469]
         mock_foot.side_effect = [FOOT_2449, FOOT_2469]
