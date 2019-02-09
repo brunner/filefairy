@@ -194,13 +194,13 @@ class Statsplus(Registrable):
 
             return Response(
                 notify=[Notify.STATSPLUS_PARSE],
-                shadow=self._shadow_scores(),
+                shadow=self._shadow_data(),
                 thread_=[thread_])
 
         self.data['scores'].pop(date_, None)
         self.write()
         return Response(
-            notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_scores())
+            notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_data())
 
     def _parse_score(self, num, date):
         out = os.path.join(GAMES_DIR, num + '.json')

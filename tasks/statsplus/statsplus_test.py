@@ -42,8 +42,6 @@ STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
 TESTDATA = get_testdata()
 
 FINAL_SCORES = '08/31/2024 MAJOR LEAGUE BASEBALL Final Scores\n'
-LIVE_TABLE = '```MAJOR LEAGUE BASEBALL Live Table - 08/31/2024\n'
-
 SCORES = '*<game_box_2449.html|Minnesota 6, Detroit 5>*\n'
 
 
@@ -225,8 +223,7 @@ class StatsplusTest(Test):
     def test_backfill(self, mock_history, mock_time, mock_on_message):
         message1 = {'bot_id': 'B7KJ3362Y', 'text': '08/31/2024 Final Scores'}
         message2 = {'bot_id': 'B7KJ3362Y', 'text': FINAL_SCORES}
-        message3 = {'bot_id': 'B7KJ3362Y', 'text': LIVE_TABLE}
-        messages = [message3, message2, message1]
+        messages = [message2, message1]
         mock_history.return_value = {'ok': True, 'messages': messages}
         mock_time.return_value = 499132800.1234567
 
@@ -237,7 +234,6 @@ class StatsplusTest(Test):
         mock_on_message.side_effect = [
             Response(notify=[Notify.STATSPLUS_START]),
             Response(shadow=statsplus._shadow_scores(), thread_=[thread_]),
-            Response(shadow=statsplus._shadow_table()),
         ]
 
         actual = statsplus.backfill('2')
@@ -252,7 +248,6 @@ class StatsplusTest(Test):
         mock_on_message.assert_has_calls([
             mock.call(obj=message1),
             mock.call(obj=message2),
-            mock.call(obj=message3),
         ])
 
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
@@ -367,7 +362,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data(scores=scores))
         actual = statsplus._parse_saved_scores(date)
         expected = Response(
-            notify=[Notify.STATSPLUS_PARSE], shadow=statsplus._shadow_scores())
+            notify=[Notify.STATSPLUS_PARSE], shadow=statsplus._shadow_data())
         self.assertEqual(actual, expected)
 
         write = _data(table={'T40': '0-1', 'T47': '1-0'})
