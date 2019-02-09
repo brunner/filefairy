@@ -18,7 +18,7 @@ sys.path.extend((_path, re.sub(r'/impl/filefairy', '', _path)))
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.elements.elements import card  # noqa
+from common.elements.elements import topper  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.test.test import Test  # noqa
@@ -769,7 +769,8 @@ class FilefairyTest(Test):
     @mock.patch.object(Filefairy, '_reload_services')
     @mock.patch.object(Filefairy, '_reload_internal')
     @mock.patch('impl.filefairy.filefairy.listdirs')
-    def test_setup(self, mock_listdirs, mock_reload, mock_services, mock_try_all):
+    def test_setup(self, mock_listdirs, mock_reload, mock_services,
+                   mock_try_all):
         mock_listdirs.return_value = ['task']
 
         dashboard = self.create_dashboard(DATE_10260602)
@@ -939,81 +940,18 @@ class FilefairyTest(Test):
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
 
-    def test_index_html__disabled(self):
+    @mock.patch('impl.filefairy.filefairy.sitelinks')
+    def test_index_html(self, mock_sitelinks):
+        sitelinks = [topper('Site Links')]
+        mock_sitelinks.return_value = sitelinks
+
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(
             _data(DATE_10260602), dashboard, reference)
 
-        registrable = self.create_external_registrable(DATE_10260602)
-        registrable.ok = False
-        filefairy.registered['foo'] = registrable
-
-        external = [
-            card(
-                href='/dashboard/',
-                title='dashboard',
-                info='Tails exceptions and log messages.',
-                ts='06:02:30 PDT (1985-10-26)'),
-            card(
-                href='/foo/',
-                title='foo',
-                info='Description of foo.',
-                ts='06:02:30 PDT (1985-10-26)',
-                danger='disabled')
-        ]
-        internal = [
-            card(
-                title='reference',
-                info='Stores player identity information.',
-                ts='06:02:30 PDT (1985-10-26)'),
-        ]
         actual = filefairy._index_html(date=DATE_10260602)
-        expected = {
-            'external': external,
-            'internal': internal,
-        }
-        self.assertEqual(actual, expected)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-
-    def test_index_html__ok(self):
-        dashboard = self.create_dashboard(DATE_10260602)
-        reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
-        filefairy.registered['bar'] = self.create_internal_registrable(
-            DATE_10260602)
-
-        external = [
-            card(
-                href='/dashboard/',
-                title='dashboard',
-                info='Tails exceptions and log messages.',
-                ts='06:02:30 PDT (1985-10-26)'),
-            card(
-                href='/foo/',
-                title='foo',
-                info='Description of foo.',
-                ts='06:02:30 PDT (1985-10-26)')
-        ]
-        internal = [
-            card(
-                title='bar',
-                info='Description of bar.',
-                ts='06:02:30 PDT (1985-10-26)'),
-            card(
-                title='reference',
-                info='Stores player identity information.',
-                ts='06:02:30 PDT (1985-10-26)'),
-        ]
-        actual = filefairy._index_html(date=DATE_10260602)
-        expected = {
-            'external': external,
-            'internal': internal
-        }
+        expected = {'sitelinks': sitelinks}
         self.assertEqual(actual, expected)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)

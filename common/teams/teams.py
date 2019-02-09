@@ -100,10 +100,10 @@ ENCODING_MAP = _map('encoding', [
 PRECODING_MAP = _map('precoding', ['encoding'])
 
 ICON_LINK = 'https://fairylab.surge.sh/images/teams/{0}/{0}-icon.png'
-MODAL_LINK = ' data-toggle="modal" data-target="#{0}"'
-BADGE_TAG = '<span class="badge badge-icon badge-light"{0}>{1}</span>'
-IMG_TAG = '<img src="{0}" width="16" height="16" border="0" class="{1}">'
-SPAN_TAG = '<span class="{1}">{0}</span>'
+MODAL_LINK = ' data-toggle="modal" data-target="#{}"'
+BADGE_TAG = '<span class="badge badge-icon badge-light"{}>{}</span>'
+IMG_TAG = '<img src="{}" width="16" height="16" border="0" class="{}">'
+SPAN_TAG = '<span class="{}">{}</span>'
 
 
 def decoding_to_encoding(decoding):
@@ -164,7 +164,7 @@ def icon_absolute(encoding, text):
     sc = 'd-block pl-4'
 
     img = IMG_TAG.format(ICON_LINK.format(lower), ic)
-    span = SPAN_TAG.format(text, sc)
+    span = SPAN_TAG.format(sc, text)
     return img + span
 
 
@@ -184,7 +184,7 @@ def icon_badge(encoding, text, active):
         sc += ' text-secondary'
 
     img = IMG_TAG.format(ICON_LINK.format(lower), ic)
-    span = SPAN_TAG.format(text.replace('-', ' - '), sc)
+    span = SPAN_TAG.format(sc, text.replace('-', ' - '))
     return BADGE_TAG.format(ba, img + span)
 
 

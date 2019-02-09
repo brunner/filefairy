@@ -46,6 +46,26 @@ a.disabled{
   position: absolute;
   top: 14px;
 }
+.absolute-icon {
+  position: absolute;
+  top: 14px;
+}
+span.absolute-icon {
+  border-radius: .25rem;
+  padding: 3px;
+  position: absolute;
+  top: 12px;
+}
+.absolute-icon.left {
+  left: 10px;
+}
+.absolute-icon.right {
+  right: 10px;
+}
+.absolute-icon.hover:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
 .absolute-right {
   left: auto;
   right: 10px;
@@ -313,11 +333,12 @@ button.close {
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<div class="head position-relative">
+<div class="head position-relative small text-secondary">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
      width="16" height="16" border="0" class="position-absolute absolute-icon-image">
-<div class="small text-secondary pl-4">News &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
-</div>
+<div class="px-4">News &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
+<span class="oi oi-menu absolute-icon hover right"
+      data-toggle="modal" data-target="#menu"></span></div>
 </div>
 </header>
 <!-- $(base.header) -->
@@ -563,7 +584,100 @@ button.close {
 </div>
 <!-- $(news.transactions) -->
 
-</main>
+<!-- ^(common.dialog) -->
+<div class="modal fade" id="menu" tabindex="-1" role="dialog"
+     aria-labelledby="menu-label" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+
+<!-- ^(common.dialog.header) -->
+<div class="modal-header d-block py-0">
+<div class="head position-relative small">
+<span class="oi oi-menu absolute-icon left text-secondary"></span><span class="d-block pl-4">Menu</span>
+<button type="button" class="close absolute-icon-image absolute-right m-0 p-0"
+        data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+</div>
+<!-- $(common.dialog.header) -->
+
+<!-- ^(common.dialog.body) -->
+<div class="modal-body pb-0">
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Site Links</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Tasks</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-timer absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/gameday/">Gameday</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-people absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/news/">News</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-spreadsheet absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/standings/">Standings</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Other</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-dashboard absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/dashboard/">Dashboard</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-home absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/">Home</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(common.dialog.body) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.dialog) --></main>
 <!-- $(base.main) -->
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -575,7 +689,6 @@ button.close {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
-
 
 </body>
 

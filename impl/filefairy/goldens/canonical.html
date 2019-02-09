@@ -46,6 +46,26 @@ a.disabled{
   position: absolute;
   top: 14px;
 }
+.absolute-icon {
+  position: absolute;
+  top: 14px;
+}
+span.absolute-icon {
+  border-radius: .25rem;
+  padding: 3px;
+  position: absolute;
+  top: 12px;
+}
+.absolute-icon.left {
+  left: 10px;
+}
+.absolute-icon.right {
+  right: 10px;
+}
+.absolute-icon.hover:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
 .absolute-right {
   left: auto;
   right: 10px;
@@ -313,10 +333,10 @@ button.close {
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<div class="head position-relative">
+<div class="head position-relative small text-secondary">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
      width="16" height="16" border="0" class="position-absolute absolute-icon-image">
-<div class="small text-secondary pl-4">Fairylab &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
+<div class="px-4">Fairylab &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
 </div>
 </header>
@@ -325,142 +345,81 @@ button.close {
 <!-- ^(base.main) -->
 <main role="main" class="pt-3">
 
-<!-- ^(home.external) -->
-<div class="container anchor" id="external">
-
-<!-- ^(common.heading) -->
-<div class="row">
-<div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-globe text-secondary"></span>External Tasks
-</div>
-</div>
-</div>
-<!-- $(common.heading) -->
+<!-- ^(home.sitelinks) -->
+<div class="container">
 
 <!-- ^(home.row) -->
-<div class="row d-flex flex-wrap">
+<div class="row">
 
 <!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
+<div class="col-12">
 
-<!-- ^(common.card) -->
-<div class="small card d-flex flex-column flex-grow mb-3">
+<!-- ^(common.table) -->
+<table class="small table topper">
 
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-<a href="/fairylab/baz/">baz</a>
-</h5>
-<div><span class="btn btn-danger btn-sm disabled">disabled</span></div>
-</div>
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Site Links</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
 
-<p class="card-text flex-grow">Description of baz.</p>
-</div>
-<!-- $(common.card.body) -->
+</table>
+<!-- $(common.table) -->
 
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
 
-</div>
-<!-- $(common.card) -->
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Tasks</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
 
-</div>
-<!-- $(home.column) -->
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-timer absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/gameday/">Gameday</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-people absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/news/">News</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-spreadsheet absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/standings/">Standings</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
 
-<!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
+</table>
+<!-- $(common.table) -->
 
-<!-- ^(common.card) -->
-<div class="small card d-flex flex-column flex-grow mb-3">
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
 
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-<a href="/fairylab/foo/">foo</a>
-</h5>
-<div></div>
-</div>
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Other</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
 
-<p class="card-text flex-grow">Description of foo.</p>
-</div>
-<!-- $(common.card.body) -->
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-dashboard absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/dashboard/">Dashboard</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-home absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/">Home</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
 
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
-
-</div>
-<!-- $(common.card) -->
-
-</div>
-<!-- $(home.column) -->
-
-<!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
-
-<!-- ^(common.card) -->
-<div class="small card d-flex flex-column flex-grow mb-3">
-
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-<a href="/fairylab/quuz/">quuz</a>
-</h5>
-<div></div>
-</div>
-
-<p class="card-text flex-grow">Description of quuz.</p>
-</div>
-<!-- $(common.card.body) -->
-
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
-
-</div>
-<!-- $(common.card) -->
-
-</div>
-<!-- $(home.column) -->
-
-<!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
-
-<!-- ^(common.card) -->
-<div class="small card d-flex flex-column flex-grow mb-3">
-
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-<a href="/fairylab/qux/">qux</a>
-</h5>
-<div></div>
-</div>
-
-<p class="card-text flex-grow">Description of qux.</p>
-</div>
-<!-- $(common.card.body) -->
-
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
-
-</div>
-<!-- $(common.card) -->
+</table>
+<!-- $(common.table) -->
 
 </div>
 <!-- $(home.column) -->
@@ -469,91 +428,7 @@ button.close {
 <!-- $(home.row) -->
 
 </div>
-<!-- $(home.external) -->
-
-<!-- ^(home.internal) -->
-<div class="container anchor" id="internal">
-
-<!-- ^(common.heading) -->
-<div class="row">
-<div class="col-12">
-<div class="alert alert-secondary mt-3 mb-0">
-<span class="oi oi-dashboard text-secondary"></span>Internal Tasks
-</div>
-</div>
-</div>
-<!-- $(common.heading) -->
-
-<!-- ^(home.row) -->
-<div class="row d-flex flex-wrap">
-
-<!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
-
-<!-- ^(common.card) -->
-<div class="small card d-flex flex-column flex-grow mb-3">
-
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-bar
-</h5>
-<div></div>
-</div>
-
-<p class="card-text flex-grow">Description of bar.</p>
-</div>
-<!-- $(common.card.body) -->
-
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
-
-</div>
-<!-- $(common.card) -->
-
-</div>
-<!-- $(home.column) -->
-
-<!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
-
-<!-- ^(common.card) -->
-<div class="small card d-flex flex-column flex-grow mb-3">
-
-<!-- ^(common.card.body) -->
-<div class="card-body d-flex flex-column">
-<div class="d-flex flex-row">
-<h5 class="card-title flex-grow">
-quux
-</h5>
-<div><span class="btn btn-danger btn-sm disabled">disabled</span></div>
-</div>
-
-<p class="card-text flex-grow">Description of quux.</p>
-</div>
-<!-- $(common.card.body) -->
-
-<!-- ^(common.card.footer) -->
-<div class="card-footer text-muted text-truncate">
-<small>Last activity: 06:02:30 EDT (1985-10-26)</small>
-</div>
-<!-- $(common.card.footer) -->
-
-</div>
-<!-- $(common.card) -->
-
-</div>
-<!-- $(home.column) -->
-
-</div>
-<!-- $(home.row) -->
-
-</div>
-<!-- $(home.internal) -->
+<!-- $(home.sitelinks) -->
 
 </main>
 <!-- $(base.main) -->
@@ -567,7 +442,6 @@ quux
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
-
 
 </body>
 

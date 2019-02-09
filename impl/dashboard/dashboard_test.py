@@ -13,7 +13,6 @@ sys.path.extend((_path, re.sub(r'/impl/dashboard', '', _path)))
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import anchor  # noqa
-from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import pre  # noqa

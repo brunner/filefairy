@@ -46,6 +46,26 @@ a.disabled{
   position: absolute;
   top: 14px;
 }
+.absolute-icon {
+  position: absolute;
+  top: 14px;
+}
+span.absolute-icon {
+  border-radius: .25rem;
+  padding: 3px;
+  position: absolute;
+  top: 12px;
+}
+.absolute-icon.left {
+  left: 10px;
+}
+.absolute-icon.right {
+  right: 10px;
+}
+.absolute-icon.hover:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
 .absolute-right {
   left: auto;
   right: 10px;
@@ -2541,10 +2561,10 @@ button.close {
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<div class="head position-relative">
+<div class="head position-relative small text-secondary">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
      width="16" height="16" border="0" class="position-absolute absolute-icon-image">
-<div class="small text-secondary pl-4">Fairylab &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
+<div class="px-4">Fairylab &nbsp;|&nbsp; 06:02:30 PDT (1985-10-26)</div>
 </div>
 </div>
 </header>
@@ -6611,7 +6631,6 @@ button.close {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
-
 
 </body>
 

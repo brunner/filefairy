@@ -23,7 +23,7 @@ from api.renderable.renderable import Renderable  # noqa
 from common.datetime_.datetime_ import datetime_now  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
-from common.elements.elements import card  # noqa
+from common.elements.elements import sitelinks  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.os_.os_ import listdirs  # noqa
 from common.reference.reference import set_reference  # noqa
@@ -279,27 +279,7 @@ class Filefairy(Messageable, Renderable):
             self._try(t, method, *args, **kwargs)
 
     def _index_html(self, **kwargs):
-        ret = {
-            'external': [],
-            'internal': [],
-        }
-
-        for t in sorted(self.registered.keys()):
-            instance = self.registered[t]
-
-            info = instance._info() if isinstance(instance, Nameable) else ''
-            href = instance._href() if isinstance(instance, Renderable) else ''
-            ts = timestamp(instance.date)
-            danger = 'disabled' if not instance.ok else ''
-
-            c = card(href=href, title=t, info=info, ts=ts, danger=danger)
-
-            if href:
-                ret['external'].append(c)
-            else:
-                ret['internal'].append(c)
-
-        return ret
+        return {'sitelinks': sitelinks()}
 
 
 if __name__ == '__main__':

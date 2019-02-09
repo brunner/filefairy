@@ -3,54 +3,6 @@
 """Common (non-reloadable) util methods for rendering templates."""
 
 
-def anchor(url, content):
-    """Builds an anchor element.
-
-    Args:
-        url: The link url.
-        content: The inner HTML of the anchor element.
-
-    Returns:
-        The anchor element.
-    """
-    return '<a href="{}">{}</a>'.format(url, content)
-
-
-def card(href='',
-         title='',
-         info='',
-         code='',
-         table=None,
-         ts='',
-         success='',
-         danger=''):
-    """Builds a card element.
-
-    Args:
-        href: The optional title link.
-        title: The title text.
-        info: The optional description text.
-        code: The optional preformatted text.
-        table: The optional table content.
-        ts: The timestamp to display in the card footer.
-        success: The optional green-badge card text.
-        danger: The optional red-badge card text.
-
-    Returns:
-        The card element.
-    """
-    return {
-        'href': href,
-        'title': title,
-        'info': info,
-        'code': code,
-        'table': table,
-        'ts': ts,
-        'success': success,
-        'danger': danger
-    }
-
-
 def cell(col=None, content=''):
     """Builds a cell object, describing a table cell.
 
@@ -87,6 +39,34 @@ def col(clazz='', colspan=''):
     return obj
 
 
+SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
+SITELINKS_BCOLS = [col(clazz='position-relative')]
+SITELINKS_TABLES = [
+    ('Tasks', [
+        ('timer', '/gameday/', 'Gameday'),
+        ('people', '/news/', 'News'),
+        ('spreadsheet', '/standings/', 'Standings'),
+    ]),
+    ('Other', [
+        ('dashboard', '/dashboard/', 'Dashboard'),
+        ('home', '/', 'Home'),
+    ]),
+]
+
+
+def anchor(url, content):
+    """Builds an anchor element.
+
+    Args:
+        url: The link url.
+        content: The inner HTML of the anchor element.
+
+    Returns:
+        The anchor element.
+    """
+    return '<a href="{}">{}</a>'.format(url, content)
+
+
 def dialog(id_='', icon='', tables=None):
     """Builds a dialog object.
 
@@ -106,6 +86,29 @@ def dialog(id_='', icon='', tables=None):
     if tables:
         obj['tables'] = tables
     return obj
+
+
+def icon(name):
+    """Builds a span element for Iconic font.
+
+    Args:
+        name: The name of the icon.
+
+    Returns:
+        The span element.
+    """
+    classes = ['oi', 'oi-' + name, 'absolute-icon', 'left', 'text-secondary']
+    return span(classes, '')
+
+
+def menu():
+    """Builds a menu dialog.
+
+    Returns:
+        The menu dialog.
+    """
+    icon_ = icon('menu') + span(['d-block', 'pl-4'], 'Menu')
+    return dialog(id_='menu', icon=icon_, tables=sitelinks())
 
 
 def pre(content):
@@ -136,6 +139,30 @@ def ruleset(selector='', rules=None):
     if rules:
         obj['rules'] = rules
     return obj
+
+
+def sitelinks():
+    """Builds a list of sitelinks tables.
+
+    Returns:
+        The list of sitelinks tables.
+    """
+    tables = [topper('Site Links')]
+    for head, rows in SITELINKS_TABLES:
+        body = []
+        for name, href, text in rows:
+            span_ = span(['d-block pl-4'], anchor(href, text))
+            body.append([cell(content=(icon(name) + span_))])
+
+        tables.append(
+            table(
+                clazz='border mb-3',
+                hcols=SITELINKS_HCOLS,
+                bcols=SITELINKS_BCOLS,
+                head=[[cell(content=head)]],
+                body=body))
+
+    return tables
 
 
 def span(classes, text):

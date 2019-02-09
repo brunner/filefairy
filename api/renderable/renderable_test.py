@@ -15,6 +15,8 @@ sys.path.append(re.sub(r'/api/renderable', '', _path))
 
 from api.renderable.renderable import Renderable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.elements.elements import dialog  # noqa
+from common.elements.elements import topper  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 
@@ -33,11 +35,14 @@ LDR = jinja2.DictLoader({
     '{{ title }}: Hello {{ z }} -- {{ date }}'
 })
 
+MENU = dialog(id_='menu', icon='<img>', tables=[topper('Site Links')])
+
 THEN = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 THEN_DISPLAYED = '00:02:30 PDT (1985-10-26)'
 STREAM_CALLS = [
     mock.call({
         'date': THEN_DISPLAYED,
+        'menu': MENU,
         'title': 'foo',
         'a': 1,
         'b': True,
@@ -45,22 +50,26 @@ STREAM_CALLS = [
     }),
     mock.call({
         'date': THEN_DISPLAYED,
+        'menu': MENU,
         'title': 'foo » sub',
         'm': 2,
         'n': 'bar'
     }),
     mock.call({
         'date': THEN_DISPLAYED,
+        'menu': MENU,
         'title': 'foo » dyn0',
         'z': True
     }),
     mock.call({
         'date': THEN_DISPLAYED,
+        'menu': MENU,
         'title': 'foo » dyn1',
         'z': False
     }),
     mock.call({
         'date': THEN_DISPLAYED,
+        'menu': MENU,
         'title': 'foo » dyn2',
         'z': True
     })
@@ -136,18 +145,24 @@ class RenderableTest(unittest.TestCase):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
+        patch_menu = mock.patch('api.renderable.renderable.menu')
+        self.addCleanup(patch_menu.stop)
+        self.mock_menu = patch_menu.start()
+
         patch_open = mock.patch(
             'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
     def init_mocks(self):
+        self.mock_menu.return_value = MENU
         mo = mock.mock_open(read_data=dumps({}))
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
 
     def reset_mocks(self):
         self.mock_log.reset_mock()
+        self.mock_menu.reset_mock()
         self.mock_open.reset_mock()
         self.mock_handle.write.reset_mock()
 
@@ -156,6 +171,7 @@ class RenderableTest(unittest.TestCase):
         renderable = FakeRenderable(e=e)
 
         self.mock_log.assert_not_called()
+        self.mock_menu.assert_not_called()
         self.mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
         self.mock_handle.write.assert_not_called()
         self.reset_mocks()

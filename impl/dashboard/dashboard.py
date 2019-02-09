@@ -38,7 +38,6 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import anchor  # noqa
-from common.elements.elements import card  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import pre  # noqa

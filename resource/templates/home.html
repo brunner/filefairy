@@ -3,56 +3,26 @@
 
 {% block content %}
 
-{% if external %}
-<!-- ^(home.external) -->
-<div class="container anchor" id="external">
-
-{{ common.heading('globe', 'External Tasks') }}
+<!-- ^(home.sitelinks) -->
+<div class="container">
 
 <!-- ^(home.row) -->
-<div class="row d-flex flex-wrap">
+<div class="row">
 
-{% for card in external %}
 <!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
+<div class="col-12">
 
-{{ common.card(card) }}
+{% for table in sitelinks %}
+{{ common.table(table) }}
 
+{% endfor %}
 </div>
 <!-- $(home.column) -->
 
-{% endfor %}
 </div>
 <!-- $(home.row) -->
 
 </div>
-<!-- $(home.external) -->
-{% endif %}
-
-{% if internal %}
-<!-- ^(home.internal) -->
-<div class="container anchor" id="internal">
-
-{{ common.heading('dashboard', 'Internal Tasks') }}
-
-<!-- ^(home.row) -->
-<div class="row d-flex flex-wrap">
-
-{% for card in internal %}
-<!-- ^(home.column) -->
-<div class="col-md-6 col-lg-4 d-flex flex-column">
-
-{{ common.card(card) }}
-
-</div>
-<!-- $(home.column) -->
-
-{% endfor %}
-</div>
-<!-- $(home.row) -->
-
-</div>
-<!-- $(home.internal) -->
-{% endif %}
+<!-- $(home.sitelinks) -->
 
 {% endblock %}

@@ -56,6 +56,7 @@ sys.path.append(re.sub(r'/api/renderable', '', _path))
 from api.serializable.serializable import Serializable  # noqa
 from common.abc_.abc_ import abstractstatic  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
+from common.elements.elements import menu  # noqa
 from common.slack.slack import chat_post_message  # noqa
 
 CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
@@ -94,11 +95,14 @@ class Renderable(Serializable):
 
         for html, subtitle, tmpl, context in data:
             try:
+                title = self._title()
+                m = None if title == 'Fairylab' else menu()
+
                 subtitle = ' » ' + subtitle if subtitle else ''
-                title = self._title() + subtitle
+                title = title + subtitle
 
                 tmpl = self.environment.get_template(tmpl)
-                ts = tmpl.stream(dict(context, title=title, date=date))
+                ts = tmpl.stream(dict(context, menu=m, title=title, date=date))
 
                 root = FILEFAIRY_DIR if test else FAIRYLAB_DIR
                 path = os.path.join(root, html)

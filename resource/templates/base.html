@@ -18,7 +18,7 @@
       crossorigin="anonymous">
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-<title>Fairylab{% if title != 'Fairylab' %} · {{ title }}{% endif %}</title>
+<title>Fairylab{% if menu %} · {{ title }}{% endif %}</title>
 
 <style>
 {{ style.base() }}
@@ -33,10 +33,14 @@
 <!-- ^(base.header) -->
 <header class="border-bottom sticky-top">
 <div class="container">
-<div class="head position-relative">
+<div class="head position-relative small text-secondary">
 <img src="https://fairylab.surge.sh/favicon-32x32.png"
      width="16" height="16" border="0" class="position-absolute absolute-icon-image">
-<div class="small text-secondary pl-4">{{ title }} &nbsp;|&nbsp; {{ date }}</div>
+<div class="px-4">{{ title }} &nbsp;|&nbsp; {{ date }}</div>
+{% if menu -%}
+<span class="oi oi-menu absolute-icon hover right"
+      data-toggle="modal" data-target="#menu"></span>
+{%- endif %}
 </div>
 </div>
 </header>
@@ -45,6 +49,9 @@
 <!-- ^(base.main) -->
 <main role="main" class="pt-3">
 {% block content %}{% endblock %}
+{% if menu -%}
+{{ common.dialog(menu) }}
+{%- endif %}
 </main>
 <!-- $(base.main) -->
 
@@ -57,8 +64,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
-
-{% block script %}{% endblock %}
 
 </body>
 
