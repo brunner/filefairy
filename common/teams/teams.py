@@ -2,8 +2,16 @@
 # -*- coding: utf-8 -*-
 """Common (non-reloadable) util methods for team information."""
 
+import os
 import re
+import sys
 from functools import partial
+
+_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(re.sub(r'/common/teams', '', _path))
+
+from common.elements.elements import icon_img  # noqa
+from common.elements.elements import span  # noqa
 
 
 def _team(encoding, abbreviation, hometown, nickname):
@@ -100,10 +108,6 @@ ENCODING_MAP = _map('encoding', [
 PRECODING_MAP = _map('precoding', ['encoding'])
 
 ICON_LINK = 'https://fairylab.surge.sh/images/teams/{0}/{0}-icon.png'
-MODAL_LINK = ' data-toggle="modal" data-target="#{}"'
-BADGE_TAG = '<span class="badge badge-icon badge-light"{}>{}</span>'
-IMG_TAG = '<img src="{}" width="16" height="16" border="0" class="{}">'
-SPAN_TAG = '<span class="{}">{}</span>'
 
 
 def decoding_to_encoding(decoding):
@@ -160,31 +164,30 @@ def encoding_to_teamid(encoding):
 
 def icon_absolute(encoding, text):
     lower = encoding_to_lower(encoding)
-    ic = 'absolute-icon-image'
-    sc = 'd-block pl-4'
 
-    img = IMG_TAG.format(ICON_LINK.format(lower), ic)
-    span = SPAN_TAG.format(sc, text)
-    return img + span
+    img = icon_img(ICON_LINK.format(lower), '16', ['absolute-icon-image'])
+    span_ = span(['d-block pl-4'], text)
+    return img + span_
 
 
 def icon_badge(encoding, text, active):
     lower = encoding_to_lower(encoding)
-    ic = 'badge-icon-image'
-    sc = 'badge-icon-text align-middle'
+    ic = ['badge-icon-image']
+    sc = ['badge-icon-text', 'align-middle']
 
     if active:
-        ba = MODAL_LINK.format(lower)
+        ba = ' data-toggle="modal" data-target="#{}"'.format(lower)
         if text == '0-0':
             text = '?-?'
     else:
         ba = ''
-        ic += ' grayscale'
-        sc += ' text-secondary'
+        ic.append('grayscale')
+        sc.append('text-secondary')
 
-    img = IMG_TAG.format(ICON_LINK.format(lower), ic)
-    span = SPAN_TAG.format(sc, text.replace('-', ' - '))
-    return BADGE_TAG.format(ba, img + span)
+    img = icon_img(ICON_LINK.format(lower), '16', ic)
+    span_ = span(sc, text.replace('-', ' - '))
+    tag = '<span class="badge badge-icon badge-light"{}>{}</span>'
+    return tag.format(ba, img + span_)
 
 
 def precoding_to_encoding(precoding):

@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """Common (non-reloadable) util methods for rendering templates."""
 
+FAVICON_LINK = 'https://fairylab.surge.sh/favicon-32x32.png'
+
 
 def cell(col=None, content=''):
     """Builds a cell object, describing a table cell.
@@ -88,8 +90,23 @@ def dialog(id_='', icon='', tables=None):
     return obj
 
 
-def icon(name):
-    """Builds a span element for Iconic font.
+def icon_img(src, size, clazz):
+    """Builds an icon element for an image resource.
+
+    Args:
+        src: The source of the image.
+        size: The size of the image, in pixels.
+
+    Returns:
+        The span element.
+    """
+    classes = ' class="{}"'.format(' '.join(clazz)) if clazz else ''
+    tag = '<img src="{0}" width="{1}" height="{1}" border="0"{2}>'
+    return tag.format(src, size, classes)
+
+
+def icon_span(name):
+    """Builds an icon element for an Iconic font span.
 
     Args:
         name: The name of the icon.
@@ -107,8 +124,9 @@ def menu():
     Returns:
         The menu dialog.
     """
-    icon_ = icon('menu') + span(['d-block', 'pl-4'], 'Menu')
-    return dialog(id_='menu', icon=icon_, tables=sitelinks(home=True))
+    img = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'])
+    span_ = span(['d-block', 'px-4'], 'Fairylab')
+    return dialog(id_='menu', icon=(img + span_), tables=sitelinks(home=True))
 
 
 def pre(content):
@@ -157,7 +175,7 @@ def sitelinks(home=False):
             if name == 'home' and not home:
                 continue
             span_ = span(['d-block pl-4'], anchor(href, text))
-            body.append([cell(content=(icon(name) + span_))])
+            body.append([cell(content=(icon_span(name) + span_))])
 
         tables.append(
             table(

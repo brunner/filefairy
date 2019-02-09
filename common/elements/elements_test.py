@@ -15,7 +15,8 @@ from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
-from common.elements.elements import icon  # noqa
+from common.elements.elements import icon_img  # noqa
+from common.elements.elements import icon_span  # noqa
 from common.elements.elements import menu  # noqa
 from common.elements.elements import pre  # noqa
 from common.elements.elements import ruleset  # noqa
@@ -32,11 +33,13 @@ ID_ = 'id'
 ROW = [CELL]
 TABLE = table(body=[ROW])
 
+FAVICON_LINK = 'https://fairylab.surge.sh/favicon-32x32.png'
+
 SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
 SITELINKS_BCOLS = [col(clazz='position-relative')]
 
 
-class ComponentTest(unittest.TestCase):
+class ElemementsTest(unittest.TestCase):
     def test_cell__default(self):
         actual = cell()
         expected = {}
@@ -72,8 +75,14 @@ class ComponentTest(unittest.TestCase):
         expected = {'id': ID_, 'icon': 'foo', 'tables': [TABLE]}
         self.assertEqual(actual, expected)
 
-    def test_icon(self):
-        actual = icon('menu')
+    def test_icon_img(self):
+        actual = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'])
+        expected = ('<img src="{}" width="16" height="16" border="0" class="ab'
+                    'solute-icon left">').format(FAVICON_LINK)
+        self.assertEqual(actual, expected)
+
+    def test_icon_span(self):
+        actual = icon_span('menu')
         expected = span(
             ['oi', 'oi-menu', 'absolute-icon', 'left', 'text-secondary'], '')
         self.assertEqual(actual, expected)
@@ -83,8 +92,9 @@ class ComponentTest(unittest.TestCase):
         mock_sitelinks.return_value = [TABLE]
 
         actual = menu()
-        icon_ = icon('menu') + span(['d-block', 'pl-4'], 'Menu')
-        expected = dialog(id_='menu', icon=icon_, tables=[TABLE])
+        img = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'])
+        span_ = span(['d-block', 'px-4'], 'Fairylab')
+        expected = dialog(id_='menu', icon=(img + span_), tables=[TABLE])
         self.assertEqual(actual, expected)
 
         mock_sitelinks.assert_called_once_with(home=True)
@@ -110,14 +120,13 @@ class ComponentTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_sitelinks__home_false(self):
-        def _span(href, text):
-            return span(['d-block pl-4'], anchor(href, text))
+        def _content(name, href, text):
+            return icon_span(name) + span(['d-block pl-4'], anchor(href, text))
 
-        gameday = icon('timer') + _span('/gameday/', 'Gameday')
-        news = icon('people') + _span('/news/', 'News')
-        standings = icon('spreadsheet') + _span('/standings/', 'Standings')
-        dashboard = icon('dashboard') + _span('/dashboard/', 'Dashboard')
-        home = icon('home') + _span('/', 'Home')
+        gameday = _content('timer', '/gameday/', 'Gameday')
+        news = _content('people', '/news/', 'News')
+        standings = _content('spreadsheet', '/standings/', 'Standings')
+        dashboard = _content('dashboard', '/dashboard/', 'Dashboard')
 
         actual = sitelinks()
         expected = [
@@ -144,14 +153,14 @@ class ComponentTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_sitelinks__home_true(self):
-        def _span(href, text):
-            return span(['d-block pl-4'], anchor(href, text))
+        def _content(name, href, text):
+            return icon_span(name) + span(['d-block pl-4'], anchor(href, text))
 
-        gameday = icon('timer') + _span('/gameday/', 'Gameday')
-        news = icon('people') + _span('/news/', 'News')
-        standings = icon('spreadsheet') + _span('/standings/', 'Standings')
-        dashboard = icon('dashboard') + _span('/dashboard/', 'Dashboard')
-        home = icon('home') + _span('/', 'Home')
+        gameday = _content('timer', '/gameday/', 'Gameday')
+        news = _content('people', '/news/', 'News')
+        standings = _content('spreadsheet', '/standings/', 'Standings')
+        dashboard = _content('dashboard', '/dashboard/', 'Dashboard')
+        home = _content('home', '/', 'Home')
 
         actual = sitelinks(home=True)
         expected = [
