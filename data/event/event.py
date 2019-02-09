@@ -87,6 +87,7 @@ class Event(IntEnum):
 
     PITCHER_BALK = auto()  # []
     PITCHER_HIT_BY_PITCH = auto()  # []
+    PITCHER_HIT_BY_PITCH_CHARGE = auto()  # []
     PITCHER_WILD_PITCH = auto()  # []
 
     PITCHER_BALL = auto()  # []

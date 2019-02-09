@@ -88,6 +88,8 @@ EVENT_MAP = {
     Event.PITCHER_PICK_OUT: (r'^Pickoff Throw to {base} - Out!(?: [\w-]+)?$'),
     Event.PITCHER_BALK: (r'^Balk!$'),
     Event.PITCHER_HIT_BY_PITCH: (r'^\d-\d: Hit by Pitch$'),
+    Event.PITCHER_HIT_BY_PITCH_CHARGE: (r'^\d-\d: Hit by Pitch, AND HE CHARGES'
+                                        r' THE MOUND! The benches clear!$'),
     Event.PITCHER_WILD_PITCH: (r'^Wild Pitch!$'),
     Event.PITCHER_BALL: (r'^\d-\d: (?:Ball|Base on Balls)$'),
     Event.PITCHER_WALK: (r'^\d-\d: Intentional Walk$'),
