@@ -108,7 +108,7 @@ def menu():
         The menu dialog.
     """
     icon_ = icon('menu') + span(['d-block', 'pl-4'], 'Menu')
-    return dialog(id_='menu', icon=icon_, tables=sitelinks())
+    return dialog(id_='menu', icon=icon_, tables=sitelinks(home=True))
 
 
 def pre(content):
@@ -141,8 +141,11 @@ def ruleset(selector='', rules=None):
     return obj
 
 
-def sitelinks():
+def sitelinks(home=False):
     """Builds a list of sitelinks tables.
+
+    Args:
+        home: Whether or not to include a Home link in the sitelinks.
 
     Returns:
         The list of sitelinks tables.
@@ -151,6 +154,8 @@ def sitelinks():
     for head, rows in SITELINKS_TABLES:
         body = []
         for name, href, text in rows:
+            if name == 'home' and not home:
+                continue
             span_ = span(['d-block pl-4'], anchor(href, text))
             body.append([cell(content=(icon(name) + span_))])
 

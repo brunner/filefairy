@@ -87,6 +87,8 @@ class ComponentTest(unittest.TestCase):
         expected = dialog(id_='menu', icon=icon_, tables=[TABLE])
         self.assertEqual(actual, expected)
 
+        mock_sitelinks.assert_called_once_with(home=True)
+
     def test_pre(self):
         actual = pre('content')
         expected = '<pre>content</pre>'
@@ -107,7 +109,7 @@ class ComponentTest(unittest.TestCase):
         expected = '<span class="foo bar">text</span>'
         self.assertEqual(actual, expected)
 
-    def test_sitelinks(self):
+    def test_sitelinks__home_false(self):
         def _span(href, text):
             return span(['d-block pl-4'], anchor(href, text))
 
@@ -118,6 +120,40 @@ class ComponentTest(unittest.TestCase):
         home = icon('home') + _span('/', 'Home')
 
         actual = sitelinks()
+        expected = [
+            topper('Site Links'),
+            table(
+                clazz='border mb-3',
+                hcols=SITELINKS_HCOLS,
+                bcols=SITELINKS_BCOLS,
+                head=[[cell(content='Tasks')]],
+                body=[
+                    [cell(content=gameday)],
+                    [cell(content=news)],
+                    [cell(content=standings)],
+                ]),
+            table(
+                clazz='border mb-3',
+                hcols=SITELINKS_HCOLS,
+                bcols=SITELINKS_BCOLS,
+                head=[[cell(content='Other')]],
+                body=[
+                    [cell(content=dashboard)],
+                ])
+        ]
+        self.assertEqual(actual, expected)
+
+    def test_sitelinks__home_true(self):
+        def _span(href, text):
+            return span(['d-block pl-4'], anchor(href, text))
+
+        gameday = icon('timer') + _span('/gameday/', 'Gameday')
+        news = icon('people') + _span('/news/', 'News')
+        standings = icon('spreadsheet') + _span('/standings/', 'Standings')
+        dashboard = icon('dashboard') + _span('/dashboard/', 'Dashboard')
+        home = icon('home') + _span('/', 'Home')
+
+        actual = sitelinks(home=True)
         expected = [
             topper('Site Links'),
             table(
