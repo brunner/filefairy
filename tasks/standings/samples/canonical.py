@@ -23,7 +23,7 @@ from services.division.division import condensed_league  # noqa
 from services.division.division import expanded_league  # noqa
 from services.scoreboard.scoreboard import line_score_show_body  # noqa
 from services.scoreboard.scoreboard import line_score_show_foot  # noqa
-from services.scoreboard.scoreboard import pending_body  # noqa
+from services.scoreboard.scoreboard import pending_show_body  # noqa
 
 
 def _table(keys, table_):
@@ -114,10 +114,10 @@ _tables = [
     _head_2476, _body_2476, _foot_2476,
 ]  # yapf: disable
 
-_body_31 = pending_body(['T31 4, TLA 2'])
-_body_55 = pending_body(['TNY 1, T55 0'])
-_body_la = pending_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
-_body_ny = pending_body(['TNY 5, TLA 3', 'TNY 1, T55 0'])
+_body_31 = pending_show_body(['T31 4, TLA 2'])
+_body_55 = pending_show_body(['TNY 1, T55 0'])
+_body_la = pending_show_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
+_body_ny = pending_show_body(['TNY 5, TLA 3', 'TNY 1, T55 0'])
 
 _icon_31 = icon_absolute('T31', 'Arizona Diamondbacks')
 _icon_40 = icon_absolute('T40', 'Detroit Tigers')

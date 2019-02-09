@@ -60,17 +60,7 @@ def line_score_hide_body(data):
     body = []
     for team, other in [('away', 'home'), ('home', 'away')]:
         encoding = data[team + '_team']
-        record = data[team + '_record']
-
-        hometown = encoding_to_hometown(encoding)
-        if record:
-            rw, rl = decode_record(record)
-            win = data[team + '_runs'] > data[other + '_runs']
-            r = encode_record(rw - 1, rl) if win else encode_record(rw, rl - 1)
-            text = hometown + ' (' + r + ')'
-        else:
-            text = hometown
-
+        text = encoding_to_hometown(encoding)
         title = icon_absolute(encoding, text)
         body.append([cell(content=title)])
 
@@ -264,8 +254,36 @@ def line_scores():
     return d
 
 
-def pending_body(scores):
-    """Creates a pending table body for a given game data object.
+def pending_hide_body(scores):
+    """Creates a hidden pending table body for a given game data object.
+
+    The table body contains the teams for the games.
+
+    Args:
+        data: The list of pending scores.
+
+    Returns:
+        A line score table body.
+    """
+    hcols = [col(clazz='font-weight-bold text-dark')]
+    head = [[cell(content='Pending')]]
+
+    body = []
+    for score in scores:
+        t1, t2 = search(r'(\w+) \d+, (\w+) \d+', score)
+        hometowns = [encoding_to_hometown(t) for t in (t1, t2)]
+        body.append([cell(content=' · '.join(sorted(hometowns)))])
+
+    return table(
+        clazz='border mb-3',
+        hcols=hcols,
+        head=head,
+        body=body,
+    )
+
+
+def pending_show_body(scores):
+    """Creates a shown pending table body for a given game data object.
 
     The table body contains the teams and runs for the games.
 
@@ -295,7 +313,7 @@ def pending_carousel(statsplus_scores):
     for date in statsplus_scores:
         start = datetime_replace(date, hour=23, minute=59)
         scores = list(sorted(statsplus_scores[date].values()))
-        body = pending_body(scores)
+        body = pending_show_body(scores)
         d[date] = (start, body)
 
     return d
@@ -312,7 +330,7 @@ def pending_dialog(statsplus_scores):
                 scores[t].append(s)
 
         for t in sorted(scores):
-            body = pending_body(scores[t])
+            body = pending_show_body(scores[t])
             for e in encoding_to_encodings(t):
                 if e not in d:
                     d[e] = []
