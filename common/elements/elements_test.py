@@ -201,6 +201,7 @@ class ElemementsTest(unittest.TestCase):
         actual = table(
             clazz=CLAZZ,
             id_=ID_,
+            attributes={'data-key': 'value'},
             hcols=COLS,
             bcols=COLS,
             fcols=COLS,
@@ -210,6 +211,7 @@ class ElemementsTest(unittest.TestCase):
         expected = {
             'clazz': CLAZZ,
             'id': ID_,
+            'attributes': ' data-key="value"',
             'hcols': COLS,
             'bcols': COLS,
             'fcols': COLS,

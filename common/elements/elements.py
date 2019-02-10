@@ -5,6 +5,14 @@
 FAVICON_LINK = 'https://fairylab.surge.sh/favicon-32x32.png'
 
 
+def _attr(attributes):
+    if attributes is None:
+        return ''
+
+    items = sorted(attributes.items())
+    return ' ' + ' '.join('{}="{}"'.format(k, v) for k, v in items)
+
+
 def cell(col=None, content=''):
     """Builds a cell object, describing a table cell.
 
@@ -205,11 +213,7 @@ def span(classes=None, attributes=None, text=''):
     Returns:
         The span element.
     """
-    if attributes is None:
-        attr = ''
-    else:
-        items = sorted(attributes.items())
-        attr = ' ' + ' '.join('{}="{}"'.format(k, v) for k, v in items)
+    attr = _attr(attributes)
     if classes is None:
         classes = []
     return '<span class="{}"{}>{}</span>'.format(' '.join(classes), attr, text)
@@ -217,6 +221,7 @@ def span(classes=None, attributes=None, text=''):
 
 def table(clazz='',
           id_='',
+          attributes=None,
           hcols=None,
           bcols=None,
           fcols=None,
@@ -228,6 +233,7 @@ def table(clazz='',
     Args:
         clazz: The optional CSS class to set on the root table element.
         id_: The optional CSS id to set on the root table element.
+        attributes: The set of data attributes to apply to the table.
         hcols: The optional list of CSS classes to apply to each head column.
         bcols: The optional list of CSS classes to apply to each body column.
         fcols: The optional list of CSS classes to apply to each footer column.
@@ -243,6 +249,8 @@ def table(clazz='',
         obj['clazz'] = clazz
     if id_:
         obj['id'] = id_
+    if attributes:
+        obj['attributes'] = _attr(attributes)
     if hcols:
         obj['hcols'] = hcols
     if bcols:

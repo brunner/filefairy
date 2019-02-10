@@ -35,6 +35,10 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
 
+def _date(date):
+    return decode_datetime(date).strftime('%m%d')
+
+
 def _location_row(data):
     date = datetime_as_est(decode_datetime(data['date']))
     start = date.strftime('%I:%M %p').lstrip('0')
@@ -61,11 +65,12 @@ def line_score_hide_body(data):
     ]
     bcols = [col(colspan="2", clazz='position-relative')]
 
-    attributes = {'data-toggle': 'modal', 'data-target': '#game' + data['num']}
+    d, g = _date(data['date']), data['num']
+    attr = {'data-toggle': 'modal', 'data-target': '#d{}g{}'.format(d, g)}
     span_ = icon_span(
         name='eye',
         classes=['hover', 'right', 'text-dark'],
-        attributes=attributes,
+        attributes=attr,
     )
     head = [[cell(content='Warmup'), cell(content=span_)]]
 
@@ -76,9 +81,10 @@ def line_score_hide_body(data):
         title = icon_absolute(encoding, text)
         body.append([cell(content=title)])
 
+    attr = {'data-game': g, 'data-date': d}
     return table(
-        id_='hidebody' + data['num'],
         clazz='border',
+        attributes=attr,
         hcols=hcols,
         bcols=bcols,
         head=head,
@@ -117,9 +123,10 @@ def line_score_hide_foot(data):
         sps = '&nbsp; '.join(pitching)
         lines.append(player_to_shortname_sub(sp + sps))
 
+    attributes = {'data-game': data['num'], 'data-date': _date(data['date'])}
     return table(
-        id_='hidefoot' + data['num'],
         clazz='border border-top-0 mb-3',
+        attributes=attributes,
         foot=[
             _location_row(data),
             [cell(content='<br>'.join(lines))],
@@ -186,12 +193,11 @@ def line_score_show_body(data, hidden=False):
 
         body.append(row)
 
-    id_ = 'showbody' + data['num']
     clazz = 'border' + (' d-none' if hidden else '')
-
+    attributes = {'data-game': data['num'], 'data-date': _date(data['date'])}
     return table(
-        id_=id_,
         clazz=clazz,
+        attributes=attributes,
         hcols=hcols,
         bcols=bcols,
         head=head,
@@ -253,12 +259,11 @@ def line_score_show_foot(data, hidden=False):
     hrs = '&nbsp; '.join(batting) if batting else 'None'
     lines.append(player_to_shortname_sub(hr + hrs))
 
-    id_ = 'showfoot' + data['num']
     clazz = 'border border-top-0 mb-3' + (' d-none' if hidden else '')
-
+    attributes = {'data-game': data['num'], 'data-date': _date(data['date'])}
     return table(
-        id_=id_,
         clazz=clazz,
+        attributes=attributes,
         foot=[
             _location_row(data),
             [cell(content='<br>'.join(lines))],
@@ -300,12 +305,12 @@ def pending_hide_body(date, scores):
     ]
     bcols = [col(colspan="2")]
 
-    s = decode_datetime(date).strftime('%m%d')
-    attributes = {'data-toggle': 'modal', 'data-target': '#date' + s}
+    d, g = _date(date), '0'
+    attr = {'data-toggle': 'modal', 'data-target': '#d{}g{}'.format(d, g)}
     span_ = icon_span(
         name='eye',
         classes=['hover', 'right', 'text-dark'],
-        attributes=attributes,
+        attributes=attr,
     )
     head = [[cell(content='Pending'), cell(content=span_)]]
 
@@ -315,9 +320,10 @@ def pending_hide_body(date, scores):
         hometowns = [encoding_to_hometown(t) for t in (t1, t2)]
         body.append([cell(content=' · '.join(sorted(hometowns)))])
 
+    attr = {'data-game': g, 'data-date': d}
     return table(
-        id_='hidedate' + s,
         clazz='border mb-3',
+        attributes=attr,
         hcols=hcols,
         bcols=bcols,
         head=head,
@@ -345,13 +351,11 @@ def pending_show_body(date, scores, hidden=False):
     for score in scores:
         body.append([cell(content=encoding_to_hometown_sub(score))])
 
-    s = decode_datetime(date).strftime('%m%d')
-    id_ = 'showdate' + s
     clazz = 'border mb-3' + (' d-none' if hidden else '')
-
+    attributes = {'data-game': '0', 'data-date': _date(date)}
     return table(
-        id_=id_,
         clazz=clazz,
+        attributes=attributes,
         hcols=hcols,
         head=head,
         body=body,

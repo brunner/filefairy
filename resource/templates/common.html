@@ -43,7 +43,8 @@
 {% macro table(data) -%}
 <!-- ^(common.table) -->
 <table class="small table{% if data.clazz %} {{ data.clazz }}{% endif %}"
-       {%- if data.id %}id="{{ data.id }}"{% endif %}>
+       {%- if data.id %}id="{{ data.id }}"{% endif %}
+       {%- if data.attributes %}{{ data.attributes }}{% endif %}>
 {% if data.head %}
 
 <!-- ^(common.table.head) -->

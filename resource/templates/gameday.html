@@ -69,16 +69,20 @@
 {% block script %}
 
 <script>
-$('.badge-icon[data-show]').click(function() {
-    num = $(this).data('show');
-    if ($('#hidebody' + num).length) {
-        ids = ['#hidebody', '#hidefoot', '#showbody', '#showfoot'];
-    } else {
-        ids = ['#hidedate', '#showdate'];
-    }
-    ids.forEach(function(id) {
-        $(id + num).toggleClass('d-none');
-    });
+function toggle() {
+    $(this).toggleClass('d-none');
+    $(this).removeAttr('data-date');
+    $(this).removeAttr('data-game');
+}
+$('.badge-icon[data-show-date]').click(function() {
+    num = $(this).data('show-date');
+    els = num == '0' ? 'table[data-date]' : 'table[data-date=' + num + ']';
+    $(els).each(toggle);
+});
+$('.badge-icon[data-show-game]').click(function() {
+    num = $(this).data('show-game');
+    els = 'table[data-game=' + num + ']';
+    $(els).each(toggle);
 });
 </script>
 
