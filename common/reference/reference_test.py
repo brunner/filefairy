@@ -21,6 +21,8 @@ from common.reference.reference import player_to_name_sub  # noqa
 from common.reference.reference import player_to_number  # noqa
 from common.reference.reference import player_to_shortname  # noqa
 from common.reference.reference import player_to_shortname_sub  # noqa
+from common.reference.reference import player_to_starter  # noqa
+from common.reference.reference import player_to_starter_sub  # noqa
 from common.reference.reference import player_to_team  # noqa
 from common.reference.reference import player_to_throws  # noqa
 from common.reference.reference import put_players  # noqa
@@ -94,6 +96,18 @@ class ReferenceTest(unittest.TestCase):
     def test_player_to_shortname_sub(self):
         actual = player_to_shortname_sub('P123 (1-0)')
         expected = 'J. Alfa (1-0)'
+        self.assertEqual(actual, expected)
+
+    def test_player_to_starter(self):
+        inputs = [('P123', 'Jim Alfa (R)'), ('P456', 'Jim Beta (L)'),
+                  ('P789', 'Jim Unknown (R)')]
+        for num, expected in inputs:
+            actual = player_to_starter(num)
+            self.assertEqual(actual, expected)
+
+    def test_player_to_starter_sub(self):
+        actual = player_to_starter_sub('ARI: P123')
+        expected = 'ARI: Jim Alfa (R)'
         self.assertEqual(actual, expected)
 
     def test_player_to_team(self):

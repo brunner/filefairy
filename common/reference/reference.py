@@ -134,6 +134,32 @@ def player_to_shortname_sub(text):
     return _sub(partial(_repl, player_to_shortname), text)
 
 
+def player_to_starter(e):
+    """Gets the player's starter text.
+
+    Args:
+        e: The player's encoding.
+
+    Returns:
+        The player's starter text.
+    """
+    throws = player_to_throws(e)
+    name = player_to_name(e)
+    return name + ' (' + throws + ')'
+
+
+def player_to_starter_sub(text):
+    """Substitutes all player encodings with the corresponding starter text.
+
+    Args:
+        text: The text to replace.
+
+    Returns:
+        The substituted text.
+    """
+    return _sub(partial(_repl, player_to_starter), text)
+
+
 def player_to_team(e):
     """Gets the player's team.
 

@@ -23,6 +23,7 @@ from common.re_.re_ import search  # noqa
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
 from common.reference.reference import player_to_shortname_sub  # noqa
+from common.reference.reference import player_to_starter_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
@@ -130,7 +131,7 @@ def line_score_hide_foot(data):
 
         sp = span(classes=['font-weight-bold text-secondary'], text='SP: ')
         sps = '&nbsp; '.join(pitching)
-        lines.append(player_to_shortname_sub(sp + sps))
+        lines.append(player_to_starter_sub(sp + sps))
 
     foot = [_location_row(data)]
     if lines:
