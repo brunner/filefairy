@@ -40,8 +40,9 @@ _schedule = [
         body=[
             [
                 cell(
-                    content=span(['text-secondary'],
-                                 '10/09/2022 @ Los Angeles Dodgers'))
+                    content=span(
+                        classes=['text-secondary'],
+                        text='10/09/2022 @ Los Angeles Dodgers'))
             ],
             [
                 cell(
@@ -63,8 +64,9 @@ _schedule = [
         body=[
             [
                 cell(
-                    content=span(['text-secondary'],
-                                 '10/09/2022 v Arizona Diamondbacks'))
+                    content=span(
+                        classes=['text-secondary'],
+                        text='10/09/2022 v Arizona Diamondbacks'))
             ],
             [
                 cell(

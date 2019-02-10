@@ -63,11 +63,11 @@ _statslab_link = ('https://orangeandblueleaguebaseball.com/StatsLab/'
 
 
 def bold(text):
-    return span(['text-bold'], text)
+    return span(classes=['text-bold'], text=text)
 
 
 def secondary(text):
-    return span(['text-secondary'], text)
+    return span(classes=['text-secondary'], text=text)
 
 
 class Oldgameday(Registrable):

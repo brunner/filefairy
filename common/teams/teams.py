@@ -166,28 +166,30 @@ def icon_absolute(encoding, text):
     lower = encoding_to_lower(encoding)
 
     img = icon_img(ICON_LINK.format(lower), '16', ['absolute-icon', 'left'])
-    span_ = span(['d-block pl-4'], text)
+    span_ = span(classes=['d-block pl-4'], text=text)
     return img + span_
 
 
 def icon_badge(encoding, text, active):
     lower = encoding_to_lower(encoding)
+
     ic = ['badge-icon-image']
     sc = ['badge-icon-text', 'align-middle']
 
     if active:
-        ba = ' data-toggle="modal" data-target="#{}"'.format(lower)
+        ba = {'data-toggle': 'modal', 'data-target': '#' + lower}
         if text == '0-0':
             text = '?-?'
     else:
-        ba = ''
+        ba = None
         ic.append('grayscale')
         sc.append('text-secondary')
 
     img = icon_img(ICON_LINK.format(lower), '16', ic)
-    span_ = span(sc, text.replace('-', ' - '))
-    tag = '<span class="badge badge-icon badge-light"{}>{}</span>'
-    return tag.format(ba, img + span_)
+    span_ = span(classes=sc, text=text.replace('-', ' - '))
+
+    bc = ['badge', 'badge-icon', 'badge-light']
+    return span(classes=bc, attributes=ba, text=(img + span_))
 
 
 def precoding_to_encoding(precoding):

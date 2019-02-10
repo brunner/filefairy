@@ -90,34 +90,37 @@ def dialog(id_='', icon='', tables=None):
     return obj
 
 
-def icon_img(src, size, clazz):
+def icon_img(src, size, classes):
     """Builds an icon element for an image resource.
 
     Args:
         src: The source of the image.
         size: The size of the image, in pixels.
-        clazz: The list of CSS classes to apply to the img.
+        classes: The list of CSS classes to apply to the img.
 
     Returns:
         The span element.
     """
-    classes = ' class="{}"'.format(' '.join(clazz)) if clazz else ''
+    classes = ' class="{}"'.format(' '.join(classes)) if classes else ''
     tag = '<img src="{0}" width="{1}" height="{1}" border="0"{2}>'
     return tag.format(src, size, classes)
 
 
-def icon_span(name, clazz):
+def icon_span(name='', attributes=None, classes=None):
     """Builds an icon element for an Iconic font span.
 
     Args:
         name: The name of the icon.
-        clazz: The list of CSS classes to apply to the span.
+        attributes: The set of data attributes to apply to the span.
+        classes: The list of CSS classes to apply to the span.
 
     Returns:
         The span element.
     """
-    classes = ['oi', 'oi-' + name, 'absolute-icon'] + clazz
-    return span(classes, '')
+    if classes is None:
+        classes = []
+    classes = ['oi', 'oi-' + name, 'absolute-icon'] + classes
+    return span(classes=classes, attributes=attributes)
 
 
 def menu():
@@ -127,7 +130,7 @@ def menu():
         The menu dialog.
     """
     img = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'])
-    span_ = span(['d-block', 'px-4'], 'Fairylab')
+    span_ = span(classes=['d-block', 'px-4'], text='Fairylab')
     return dialog(id_='menu', icon=(img + span_), tables=sitelinks(home=True))
 
 
@@ -176,8 +179,8 @@ def sitelinks(home=False):
         for name, href, text in rows:
             if name == 'home' and not home:
                 continue
-            icon = icon_span(name, ['left', 'text-secondary'])
-            span_ = span(['d-block pl-4'], anchor(href, text))
+            icon = icon_span(name=name, classes=['left', 'text-secondary'])
+            span_ = span(classes=['d-block pl-4'], text=anchor(href, text))
             body.append([cell(content=(icon + span_))])
 
         tables.append(
@@ -191,17 +194,25 @@ def sitelinks(home=False):
     return tables
 
 
-def span(classes, text):
+def span(classes=None, attributes=None, text=''):
     """Builds a span element.
 
     Args:
         classes: The list of CSS classes to apply to the span.
+        attributes: The set of data attributes to apply to the span.
         content: The inner HTML of the span element.
 
     Returns:
         The span element.
     """
-    return '<span class="{}">{}</span>'.format(' '.join(classes), text)
+    if attributes is None:
+        attr = ''
+    else:
+        items = sorted(attributes.items())
+        attr = ' ' + ' '.join('{}="{}"'.format(k, v) for k, v in items)
+    if classes is None:
+        classes = []
+    return '<span class="{}"{}>{}</span>'.format(' '.join(classes), attr, text)
 
 
 def table(clazz='',

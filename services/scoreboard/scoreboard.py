@@ -39,7 +39,8 @@ def _location_row(data):
     date = datetime_as_est(decode_datetime(data['date']))
     start = date.strftime('%I:%M %p').lstrip('0')
     ballpark = ' at ' + data['ballpark']
-    location = span(['small', 'text-secondary'], start + ballpark)
+    location = span(
+        classes=['small', 'text-secondary'], text=(start + ballpark))
     return [cell(col=col(clazz='border-0 py-2'), content=location)]
 
 
@@ -57,7 +58,12 @@ def line_score_hide_body(data):
     hcols = [col(clazz='font-weight-bold'), col(clazz='position-relative')]
     bcols = [col(colspan="2", clazz='position-relative')]
 
-    span_ = icon_span('eye', ['hover', 'right', 'text-dark'])
+    attributes = {'data-toggle': 'modal', 'data-target': '#game' + data['num']}
+    span_ = icon_span(
+        name='eye',
+        classes=['hover', 'right', 'text-dark'],
+        attributes=attributes,
+    )
     head = [[cell(content='Warmup'), cell(content=span_)]]
 
     body = []
@@ -100,9 +106,10 @@ def line_score_hide_foot(data):
             pitcher = data[team + '_pitcher']
 
             abbr = encoding_to_abbreviation(encoding)
-            pitching.append(span(['text-secondary'], abbr + ': ') + pitcher)
+            span_ = span(classes=['text-secondary'], text=(abbr + ': '))
+            pitching.append(span_ + pitcher)
 
-        sp = span(['font-weight-bold text-secondary'], 'SP: ')
+        sp = span(classes=['font-weight-bold text-secondary'], text='SP: ')
         sps = '&nbsp; '.join(pitching)
         lines.append(player_to_shortname_sub(sp + sps))
 
@@ -200,7 +207,8 @@ def line_score_show_foot(data):
     head = anchor(url, 'Box Score')
 
     if data['recap']:
-        head += ' &nbsp;|&nbsp; ' + span(['text-underline'], data['recap'])
+        span_ = span(classes=['text-underline'], text=data['recap'])
+        head += ' &nbsp;|&nbsp; ' + span_
     lines.append(head)
 
     pitching = []
@@ -210,8 +218,9 @@ def line_score_show_foot(data):
             continue
 
         pref = pitcher[0].upper() + ': '
+        span_ = span(classes=['font-weight-bold text-secondary'], text=pref)
         s = '{} ({})'.format(*(encoding.split()))
-        pitching.append(span(['font-weight-bold text-secondary'], pref) + s)
+        pitching.append(span_ + s)
 
     lines.append(player_to_shortname_sub('&nbsp; '.join(pitching)))
 
@@ -225,10 +234,11 @@ def line_score_show_foot(data):
                 if int(n) > 1:
                     p += ' ' + n
                 homeruns.append('{} ({})'.format(p, total))
+            span_ = span(classes=['text-secondary'], text=(abbr + ': '))
             s = ', '.join(homeruns)
-            batting.append(span(['text-secondary'], abbr + ': ') + s)
+            batting.append(span_ + s)
 
-    hr = span(['font-weight-bold text-secondary'], 'HR: ')
+    hr = span(classes=['font-weight-bold text-secondary'], text='HR: ')
     hrs = '&nbsp; '.join(batting) if batting else 'None'
     lines.append(player_to_shortname_sub(hr + hrs))
 
@@ -257,13 +267,14 @@ def line_scores():
     return d
 
 
-def pending_hide_body(scores):
-    """Creates a hidden pending table body for a given game data object.
+def pending_hide_body(date, scores):
+    """Creates a hidden pending table body for a given list of pending scores.
 
     The table body contains the teams for the games.
 
     Args:
-        data: The list of pending scores.
+        date: The encoded date for the scores.
+        scores: The list of pending scores.
 
     Returns:
         A line score table body.
@@ -274,7 +285,13 @@ def pending_hide_body(scores):
     ]
     bcols = [col(colspan="2")]
 
-    span_ = icon_span('eye', ['hover', 'right', 'text-dark'])
+    s = decode_datetime(date).strftime('%m%d')
+    attributes = {'data-toggle': 'modal', 'data-target': '#date' + s}
+    span_ = icon_span(
+        name='eye',
+        classes=['hover', 'right', 'text-dark'],
+        attributes=attributes,
+    )
     head = [[cell(content='Pending'), cell(content=span_)]]
 
     body = []
@@ -293,12 +310,12 @@ def pending_hide_body(scores):
 
 
 def pending_show_body(scores):
-    """Creates a shown pending table body for a given game data object.
+    """Creates a shown pending table body for a given list of pending scores.
 
     The table body contains the teams and runs for the games.
 
     Args:
-        data: The list of pending scores.
+        scores: The list of pending scores.
 
     Returns:
         A line score table body.
