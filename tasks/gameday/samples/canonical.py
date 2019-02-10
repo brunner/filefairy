@@ -75,19 +75,16 @@ _days = [
     ],
 ]
 
-_icon_0828 = icon_absolute('T30', 'Pending Games')
-_icon_2449 = icon_absolute('T30', 'Tigers at Twins, 7:10 PM')
-
-_bc = ['badge', 'badge-icon', 'badge-light']
-_tc = ['align-middle', 'badge-icon-button']
-
 
 def _tables(d, g):
     date = {'data-dismiss': 'modal', 'data-show-date': d}
     game = {'data-dismiss': 'modal', 'data-show-game': g}
 
-    t = 'Pending Games Only' if g == '0' else 'Current Game Only'
+    bc = ['badge', 'badge-icon', 'badge-light']
+    tc = ['align-middle', 'badge-icon-button']
+    t = 'Pending Games Only' if g == '0' else 'Selected Game Only'
     return [
+        topper('Reveal Final Scores'),
         table(
             clazz='border mb-3',
             hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
@@ -95,32 +92,33 @@ def _tables(d, g):
                 col(clazz='w-50 badge-icon-wrapper pl-2'),
                 col(clazz='w-50 badge-icon-wrapper pr-2')
             ],
-            head=[[cell(content='Spoiler Options')]],
+            head=[[cell(content='Options')]],
             body=[[
                 cell(
                     content=span(
-                        classes=_bc,
-                        text=span(classes=_tc, text='All Games for Today'),
+                        classes=bc,
+                        text=span(classes=tc, text='All Games for Today'),
                         attributes=date)),
                 cell(
                     content=span(
-                        classes=_bc,
-                        text=span(classes=_tc, text=t),
+                        classes=bc,
+                        text=span(classes=tc, text=t),
                         attributes=game)),
             ]])
     ]
 
 
+_icon = icon_absolute('T30', 'Spoilers Hidden')
 _tables_2449 = _tables('0828', '2449')
 _tables_0828 = _tables('0828', '0')
 _tables_2469 = _tables('0829', '2469')
 _tables_2476 = _tables('0830', '2476')
 
 _dialogs = [
-    dialog(id_='d0828g2449', icon=_icon_2449, tables=_tables_2449),
-    dialog(id_='d0828g0', icon=_icon_0828, tables=_tables_0828),
-    dialog(id_='d0829g2469', icon=_icon_2449, tables=_tables_2469),
-    dialog(id_='d0830g2476', icon=_icon_2449, tables=_tables_2476),
+    dialog(id_='d0828g2449', icon=_icon, tables=_tables_2449),
+    dialog(id_='d0828g0', icon=_icon, tables=_tables_0828),
+    dialog(id_='d0829g2469', icon=_icon, tables=_tables_2469),
+    dialog(id_='d0830g2476', icon=_icon, tables=_tables_2476),
 ]
 
 subtitle = ''

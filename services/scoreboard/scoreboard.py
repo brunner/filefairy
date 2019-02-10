@@ -105,6 +105,7 @@ def line_score_hide_foot(data):
     """
     lines = []
 
+    # TODO: Uncomment after Gameday is finished.
     # head = anchor('/gameday/' + data['num'] + '/', 'Gameday')
     # lines.append(head)
 
@@ -304,7 +305,7 @@ def pending_hide_body(date, scores):
         col(clazz='font-weight-bold text-dark'),
         col(clazz='position-relative')
     ]
-    bcols = [col(colspan="2")]
+    bcols = [col(clazz='position-relative', colspan="2")]
 
     d, g = _date(date), '0'
     attr = {'data-toggle': 'modal', 'data-target': '#d{}g{}'.format(d, g)}
@@ -319,7 +320,8 @@ def pending_hide_body(date, scores):
     for score in scores:
         t1, t2 = search(r'(\w+) \d+, (\w+) \d+', score)
         hometowns = [encoding_to_hometown(t) for t in (t1, t2)]
-        body.append([cell(content=' · '.join(sorted(hometowns)))])
+        text = icon_absolute('T30', ' · '.join(sorted(hometowns)))
+        body.append([cell(content=text)])
 
     attr = {'data-game': g, 'data-date': d}
     return table(
@@ -346,11 +348,14 @@ def pending_show_body(date, scores, hidden=False):
         A line score table body.
     """
     hcols = [col(clazz='font-weight-bold text-dark')]
+    bcols = [col(clazz='position-relative')]
+
     head = [[cell(content='Pending')]]
 
     body = []
     for score in scores:
-        body.append([cell(content=encoding_to_hometown_sub(score))])
+        text = icon_absolute('T30', encoding_to_hometown_sub(score))
+        body.append([cell(content=text)])
 
     clazz = 'border mb-3' + (' d-none' if hidden else '')
     attributes = {'data-game': '0', 'data-date': _date(date)}
@@ -358,6 +363,7 @@ def pending_show_body(date, scores, hidden=False):
         clazz=clazz,
         attributes=attributes,
         hcols=hcols,
+        bcols=bcols,
         head=head,
         body=body,
     )

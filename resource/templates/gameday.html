@@ -76,7 +76,7 @@ function toggle() {
 }
 $('.badge-icon[data-show-date]').click(function() {
     num = $(this).data('show-date');
-    els = num == '0' ? 'table[data-date]' : 'table[data-date=' + num + ']';
+    els = 'table[data-date=' + num + ']';
     $(els).each(toggle);
 });
 $('.badge-icon[data-show-game]').click(function() {

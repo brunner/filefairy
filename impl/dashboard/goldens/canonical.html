@@ -43,7 +43,7 @@ a.disabled{
 }
 .absolute-icon {
   position: absolute;
-  top: 14px;
+  top: 13px;
 }
 span.absolute-icon {
   border-radius: .25rem;
@@ -135,12 +135,14 @@ button.close {
 .modal {
   overflow-y: auto;
 }
-
+.modal-header {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #dee2e6;
+}
 .modal-open {
   overflow: auto;
   padding-right: 0px !important;
 }
-
 .mr-8p {
   margin-right: 8px;
 }
@@ -456,7 +458,7 @@ NameError: name 'variable' is not defined
 
 <!-- ^(common.dialog.header) -->
 <div class="modal-header d-block py-0">
-<div class="head position-relative small">
+<div class="head position-relative small text-secondary">
 <img src="https://fairylab.surge.sh/favicon-32x32.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block px-4">Fairylab</span>
 <button type="button" class="close absolute-icon right m-0 p-0"
         data-dismiss="modal" aria-label="Close">
