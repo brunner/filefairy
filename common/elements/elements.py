@@ -96,6 +96,7 @@ def icon_img(src, size, clazz):
     Args:
         src: The source of the image.
         size: The size of the image, in pixels.
+        clazz: The list of CSS classes to apply to the img.
 
     Returns:
         The span element.
@@ -105,16 +106,17 @@ def icon_img(src, size, clazz):
     return tag.format(src, size, classes)
 
 
-def icon_span(name):
+def icon_span(name, clazz):
     """Builds an icon element for an Iconic font span.
 
     Args:
         name: The name of the icon.
+        clazz: The list of CSS classes to apply to the span.
 
     Returns:
         The span element.
     """
-    classes = ['oi', 'oi-' + name, 'absolute-icon', 'left', 'text-secondary']
+    classes = ['oi', 'oi-' + name, 'absolute-icon'] + clazz
     return span(classes, '')
 
 
@@ -174,8 +176,9 @@ def sitelinks(home=False):
         for name, href, text in rows:
             if name == 'home' and not home:
                 continue
+            icon = icon_span(name, ['left', 'text-secondary'])
             span_ = span(['d-block pl-4'], anchor(href, text))
-            body.append([cell(content=(icon_span(name) + span_))])
+            body.append([cell(content=(icon + span_))])
 
         tables.append(
             table(

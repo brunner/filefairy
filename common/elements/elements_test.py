@@ -82,7 +82,7 @@ class ElemementsTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_icon_span(self):
-        actual = icon_span('menu')
+        actual = icon_span('menu', ['left', 'text-secondary'])
         expected = span(
             ['oi', 'oi-menu', 'absolute-icon', 'left', 'text-secondary'], '')
         self.assertEqual(actual, expected)
@@ -121,7 +121,8 @@ class ElemementsTest(unittest.TestCase):
 
     def test_sitelinks__home_false(self):
         def _content(name, href, text):
-            return icon_span(name) + span(['d-block pl-4'], anchor(href, text))
+            text = span(['d-block pl-4'], anchor(href, text))
+            return icon_span(name, ['left', 'text-secondary']) + text
 
         gameday = _content('timer', '/gameday/', 'Gameday')
         news = _content('people', '/news/', 'News')
@@ -154,7 +155,8 @@ class ElemementsTest(unittest.TestCase):
 
     def test_sitelinks__home_true(self):
         def _content(name, href, text):
-            return icon_span(name) + span(['d-block pl-4'], anchor(href, text))
+            text = span(['d-block pl-4'], anchor(href, text))
+            return icon_span(name, ['left', 'text-secondary']) + text
 
         gameday = _content('timer', '/gameday/', 'Gameday')
         news = _content('people', '/news/', 'News')

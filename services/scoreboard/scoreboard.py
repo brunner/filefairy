@@ -15,6 +15,7 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import icon_span  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.json_.json_ import loads  # noqa
@@ -53,9 +54,11 @@ def line_score_hide_body(data):
     Returns:
         A line score table body.
     """
-    hcols = [col(clazz='font-weight-bold')]
-    bcols = [col(clazz='position-relative')]
-    head = [[cell(content='Warmup')]]
+    hcols = [col(clazz='font-weight-bold'), col(clazz='position-relative')]
+    bcols = [col(colspan="2", clazz='position-relative')]
+
+    span_ = icon_span('eye', ['hover', 'right', 'text-dark'])
+    head = [[cell(content='Warmup'), cell(content=span_)]]
 
     body = []
     for team, other in [('away', 'home'), ('home', 'away')]:
@@ -171,12 +174,12 @@ def line_score_show_body(data):
         body.append(row)
 
     return table(
-            clazz='border',
-            hcols=hcols,
-            bcols=bcols,
-            head=head,
-            body=body,
-        )
+        clazz='border',
+        hcols=hcols,
+        bcols=bcols,
+        head=head,
+        body=body,
+    )
 
 
 def line_score_show_foot(data):
@@ -265,8 +268,14 @@ def pending_hide_body(scores):
     Returns:
         A line score table body.
     """
-    hcols = [col(clazz='font-weight-bold text-dark')]
-    head = [[cell(content='Pending')]]
+    hcols = [
+        col(clazz='font-weight-bold text-dark'),
+        col(clazz='position-relative')
+    ]
+    bcols = [col(colspan="2")]
+
+    span_ = icon_span('eye', ['hover', 'right', 'text-dark'])
+    head = [[cell(content='Pending'), cell(content=span_)]]
 
     body = []
     for score in scores:
@@ -277,6 +286,7 @@ def pending_hide_body(scores):
     return table(
         clazz='border mb-3',
         hcols=hcols,
+        bcols=bcols,
         head=head,
         body=body,
     )
