@@ -35,6 +35,14 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
 
+def _add_line_score(d, data, body, foot):
+    for team in ['away', 'home']:
+        e = data[team + '_team']
+        if e not in d:
+            d[e] = []
+        d[e].append((data['date'], body, foot))
+
+
 def _date(date):
     return decode_datetime(date).strftime('%m%d')
 
@@ -273,18 +281,26 @@ def line_score_show_foot(data, hidden=False):
     )
 
 
-def line_scores():
+def line_scores(hidden=False):
+    """Returns a dictionary of all line scores.
+
+    Args:
+        hidden: Whether to include hidden line scores.
+
+    Returns:
+        A dictionary of line scores.
+    """
     d = {}
     for name in os.listdir(GAMES_DIR):
         data = loads(os.path.join(GAMES_DIR, name))
-        body = line_score_show_body(data)
-        foot = line_score_show_foot(data)
+        if hidden:
+            body = line_score_hide_body(data)
+            foot = line_score_hide_foot(data)
+            _add_line_score(d, data, body, foot)
 
-        for team in ['away', 'home']:
-            e = data[team + '_team']
-            if e not in d:
-                d[e] = []
-            d[e].append((data['date'], body, foot))
+        body = line_score_show_body(data, hidden=hidden)
+        foot = line_score_show_foot(data, hidden=hidden)
+        _add_line_score(d, data, body, foot)
 
     return d
 
@@ -369,18 +385,40 @@ def pending_show_body(date, scores, hidden=False):
     )
 
 
-def pending_carousel(statsplus_scores):
+def pending_carousel(statsplus_scores, hidden=False):
+    """Returns a dictionary of all pending scores, grouped for a carousel.
+
+    Args:
+        statsplus_scores: A mapping from date to a list of pending scores.
+        hidden: Whether to include pending line scores.
+
+    Returns:
+        A dictionary of pending scores.
+    """
     d = {}
     for date in statsplus_scores:
         start = datetime_replace(date, hour=23, minute=59)
         scores = list(sorted(statsplus_scores[date].values()))
-        body = pending_show_body(date, scores)
-        d[date] = (start, body)
+
+        value = []
+        if hidden:
+            value.append((start, pending_hide_body(date, scores)))
+        value.append((start, pending_show_body(date, scores, hidden=hidden)))
+
+        d[date] = value
 
     return d
 
 
 def pending_dialog(statsplus_scores):
+    """Returns a dictionary of all pending scores, grouped for a dialog.
+
+    Args:
+        statsplus_scores: A mapping from date to a list of pending scores.
+
+    Returns:
+        A dictionary of pending scores.
+    """
     d = {}
     for date in statsplus_scores:
         scores = {}

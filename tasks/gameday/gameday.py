@@ -73,7 +73,7 @@ class Gameday(Registrable):
             'days': [],
         }
 
-        line = call_service('scoreboard', 'line_scores', ())
+        line = call_service('scoreboard', 'line_scores', (), hidden=True)
 
         dates = {}
         for e in sorted(line):
@@ -84,14 +84,20 @@ class Gameday(Registrable):
 
                 dates[date].append((start, body, foot))
 
-        statsplus = self.shadow.get('statsplus.scores', {})
-        pending = call_service('scoreboard', 'pending_carousel', (statsplus, ))
+        statsplus_scores = self.shadow.get('statsplus.scores', {})
+        pending = call_service(
+            'scoreboard',
+            'pending_carousel',
+            (statsplus_scores, ),
+            hidden=True,
+        )
+
         for date in sorted(pending):
             if date not in dates:
                 dates[date] = []
 
-            start, body = pending[date]
-            dates[date].append((start, body, None))
+            for start, body in pending[date]:
+                dates[date].append((start, body, None))
 
         for date in sorted(dates):
             d = decode_datetime(date)
@@ -114,10 +120,17 @@ class Gameday(Registrable):
 
 # from common.datetime_.datetime_ import datetime_now
 # from common.jinja2_.jinja2_ import env
+# from common.reference.reference import set_reference
 # from common.service.service import reload_service_for_test
+# from impl.reference.reference import Reference
+
+# date = datetime_now()
+# e = env()
+
+# reference = Reference(date=date, e=e)
+# set_reference(reference)
 
 # reload_service_for_test('scoreboard')
 
-# now = datetime_now()
-# gameday = Gameday(date=now, e=env())
-# gameday._render(date=now)
+# gameday = Gameday(date=date, e=e)
+# gameday._render(date=date)

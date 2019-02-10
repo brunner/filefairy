@@ -36,15 +36,21 @@ GAME_2449 = json.loads(TESTDATA['2449.json'])
 GAME_2469 = json.loads(TESTDATA['2469.json'])
 
 HEAD_2449 = table(body=[[cell(content='Wednesday')]])
+HIDE_BODY_2449 = table(head=[[cell(content='Warmup')]])
+HIDE_FOOT_2449 = table(foot=[[cell(content='7:10 PM at Target Field')]])
 SHOW_BODY_2449 = table(head=[[cell(content='Final (10)')]])
 SHOW_FOOT_2449 = table(foot=[[cell(content='Twins Top Tigers in Extras')]])
 
 HEAD_2469 = table(body=[[cell(content='Thursday')]])
+HIDE_BODY_2469 = table(head=[[cell(content='Warmup')]])
+HIDE_FOOT_2469 = table(foot=[[cell(content='7:10 PM at Target Field')]])
 SHOW_BODY_2469 = table(head=[[cell(content='Final')]])
 SHOW_FOOT_2469 = table(foot=[[cell(content='Twins Shut Out Tigers')]])
 
-SHOW_DATA_2449 = (GAME_2449['date'], SHOW_BODY_2449, SHOW_FOOT_2449)
-SHOW_DATA_2469 = (GAME_2469['date'], SHOW_BODY_2469, SHOW_FOOT_2469)
+HIDE_2449 = (GAME_2449['date'], HIDE_BODY_2449, HIDE_FOOT_2449)
+HIDE_2469 = (GAME_2469['date'], HIDE_BODY_2469, HIDE_FOOT_2469)
+SHOW_2449 = (GAME_2449['date'], SHOW_BODY_2449, SHOW_FOOT_2449)
+SHOW_2469 = (GAME_2469['date'], SHOW_BODY_2469, SHOW_FOOT_2469)
 
 
 class ScoreboardTest(unittest.TestCase):
@@ -68,23 +74,74 @@ class ScoreboardTest(unittest.TestCase):
     @mock.patch('services.scoreboard.scoreboard.os.listdir')
     @mock.patch('services.scoreboard.scoreboard.line_score_show_foot')
     @mock.patch('services.scoreboard.scoreboard.line_score_show_body')
-    def test_line_scores(self, mock_body, mock_foot, mock_listdir, mock_loads):
-        mock_body.side_effect = [SHOW_BODY_2449, SHOW_BODY_2469]
-        mock_foot.side_effect = [SHOW_FOOT_2449, SHOW_FOOT_2469]
+    @mock.patch('services.scoreboard.scoreboard.line_score_hide_foot')
+    @mock.patch('services.scoreboard.scoreboard.line_score_hide_body')
+    def test_line_scores__hidden_false(self, mock_hide_body, mock_hide_foot,
+                                       mock_show_body, mock_show_foot,
+                                       mock_listdir, mock_loads):
+        mock_show_body.side_effect = [SHOW_BODY_2449, SHOW_BODY_2469]
+        mock_show_foot.side_effect = [SHOW_FOOT_2449, SHOW_FOOT_2469]
         mock_listdir.return_value = ['2449.json', '2469.json']
         mock_loads.side_effect = [GAME_2449, GAME_2469]
 
         actual = line_scores()
         expected = {
-            'T40': [SHOW_DATA_2449, SHOW_DATA_2469],
-            'T47': [SHOW_DATA_2449, SHOW_DATA_2469]
+            'T40': [SHOW_2449, SHOW_2469],
+            'T47': [SHOW_2449, SHOW_2469]
         }
         self.assertEqual(actual, expected)
 
-        mock_body.assert_has_calls(
+        mock_hide_body.assert_not_called()
+        mock_hide_foot.assert_not_called()
+        mock_show_body.assert_has_calls([
+            mock.call(GAME_2449, hidden=False),
+            mock.call(GAME_2469, hidden=False)
+        ])
+        mock_show_foot.assert_has_calls([
+            mock.call(GAME_2449, hidden=False),
+            mock.call(GAME_2469, hidden=False)
+        ])
+        mock_listdir.assert_called_once_with(GAMES_DIR)
+        mock_loads.assert_has_calls([
+            mock.call(os.path.join(GAMES_DIR, '2449.json')),
+            mock.call(os.path.join(GAMES_DIR, '2469.json'))
+        ])
+
+    @mock.patch('services.scoreboard.scoreboard.loads')
+    @mock.patch('services.scoreboard.scoreboard.os.listdir')
+    @mock.patch('services.scoreboard.scoreboard.line_score_show_foot')
+    @mock.patch('services.scoreboard.scoreboard.line_score_show_body')
+    @mock.patch('services.scoreboard.scoreboard.line_score_hide_foot')
+    @mock.patch('services.scoreboard.scoreboard.line_score_hide_body')
+    def test_line_scores__hidden_true(self, mock_hide_body, mock_hide_foot,
+                                      mock_show_body, mock_show_foot,
+                                      mock_listdir, mock_loads):
+        mock_hide_body.side_effect = [HIDE_BODY_2449, HIDE_BODY_2469]
+        mock_hide_foot.side_effect = [HIDE_FOOT_2449, HIDE_FOOT_2469]
+        mock_show_body.side_effect = [SHOW_BODY_2449, SHOW_BODY_2469]
+        mock_show_foot.side_effect = [SHOW_FOOT_2449, SHOW_FOOT_2469]
+        mock_listdir.return_value = ['2449.json', '2469.json']
+        mock_loads.side_effect = [GAME_2449, GAME_2469]
+
+        actual = line_scores(hidden=True)
+        expected = {
+            'T40': [HIDE_2449, SHOW_2449, HIDE_2469, SHOW_2469],
+            'T47': [HIDE_2449, SHOW_2449, HIDE_2469, SHOW_2469]
+        }
+        self.assertEqual(actual, expected)
+
+        mock_hide_body.assert_has_calls(
             [mock.call(GAME_2449), mock.call(GAME_2469)])
-        mock_foot.assert_has_calls(
+        mock_hide_foot.assert_has_calls(
             [mock.call(GAME_2449), mock.call(GAME_2469)])
+        mock_show_body.assert_has_calls([
+            mock.call(GAME_2449, hidden=True),
+            mock.call(GAME_2469, hidden=True)
+        ])
+        mock_show_foot.assert_has_calls([
+            mock.call(GAME_2449, hidden=True),
+            mock.call(GAME_2469, hidden=True)
+        ])
         mock_listdir.assert_called_once_with(GAMES_DIR)
         mock_loads.assert_has_calls([
             mock.call(os.path.join(GAMES_DIR, '2449.json')),
@@ -98,25 +155,52 @@ class ScoreboardTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     @mock.patch('services.scoreboard.scoreboard.pending_show_body')
-    def test_pending_carousel(self, mock_body):
+    @mock.patch('services.scoreboard.scoreboard.pending_hide_body')
+    def test_pending_carousel__hidden_false(self, mock_hide_body,
+                                            mock_show_body):
         body = table(clazz='', head=[[cell(content='Pending')]])
-        mock_body.side_effect = [body, body]
+        mock_show_body.side_effect = [body, body]
 
         date = encode_datetime(DATE_08310000)
         score = 'T31 4, TLA 2'
         statsplus = {date: {'2998': score}}
 
-        data_2998 = (datetime_replace(date, hour=23, minute=59), body)
+        data_2998 = [(datetime_replace(date, hour=23, minute=59), body)]
         actual = pending_carousel(statsplus)
         expected = {date: data_2998}
         self.assertEqual(actual, expected)
 
-        mock_body.assert_has_calls([mock.call(date, [score])])
+        mock_hide_body.assert_not_called()
+        mock_show_body.assert_has_calls(
+            [mock.call(date, [score], hidden=False)])
 
     @mock.patch('services.scoreboard.scoreboard.pending_show_body')
-    def test_pending_dialog(self, mock_body):
+    @mock.patch('services.scoreboard.scoreboard.pending_hide_body')
+    def test_pending_carousel__hidden_true(self, mock_hide_body,
+                                           mock_show_body):
+        hide = table(clazz='', head=[[cell(content='Pending (hidden)')]])
+        show = table(clazz='', head=[[cell(content='Pending (shown)')]])
+        mock_hide_body.side_effect = [hide, hide]
+        mock_show_body.side_effect = [show, show]
+
+        date = encode_datetime(DATE_08310000)
+        score = 'T31 4, TLA 2'
+        statsplus_scores = {date: {'2998': score}}
+
+        data_2998 = [(datetime_replace(date, hour=23, minute=59), hide),
+                     (datetime_replace(date, hour=23, minute=59), show)]
+        actual = pending_carousel(statsplus_scores, hidden=True)
+        expected = {date: data_2998}
+        self.assertEqual(actual, expected)
+
+        mock_hide_body.assert_has_calls([mock.call(date, [score])])
+        mock_show_body.assert_has_calls(
+            [mock.call(date, [score], hidden=True)])
+
+    @mock.patch('services.scoreboard.scoreboard.pending_show_body')
+    def test_pending_dialog(self, mock_show_body):
         body = table(clazz='', head=[[cell(content='Pending')]])
-        mock_body.side_effect = [body, body]
+        mock_show_body.side_effect = [body, body]
 
         date = encode_datetime(DATE_08310000)
         score = 'T31 4, TLA 2'
@@ -127,7 +211,7 @@ class ScoreboardTest(unittest.TestCase):
         expected = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
         self.assertEqual(actual, expected)
 
-        mock_body.assert_has_calls(
+        mock_show_body.assert_has_calls(
             [mock.call(date, [score]),
              mock.call(date, [score])])
 
