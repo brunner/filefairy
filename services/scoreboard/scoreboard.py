@@ -105,8 +105,8 @@ def line_score_hide_foot(data):
     """
     lines = []
 
-    head = anchor('/gameday/' + data['num'] + '/', 'Gameday')
-    lines.append(head)
+    # head = anchor('/gameday/' + data['num'] + '/', 'Gameday')
+    # lines.append(head)
 
     # TODO: Remove events check after game log 404 error is fixed.
     if data['events']:
@@ -123,14 +123,15 @@ def line_score_hide_foot(data):
         sps = '&nbsp; '.join(pitching)
         lines.append(player_to_shortname_sub(sp + sps))
 
+    foot = [_location_row(data)]
+    if lines:
+        foot.append([cell(content='<br>'.join(lines))])
+
     attributes = {'data-game': data['num'], 'data-date': _date(data['date'])}
     return table(
         clazz='border border-top-0 mb-3',
         attributes=attributes,
-        foot=[
-            _location_row(data),
-            [cell(content='<br>'.join(lines))],
-        ],
+        foot=foot,
     )
 
 
