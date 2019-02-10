@@ -25,6 +25,7 @@ from services.scoreboard.scoreboard import pending_show_body  # noqa
 from services.scoreboard.scoreboard import pending_carousel  # noqa
 from services.scoreboard.scoreboard import pending_dialog  # noqa
 
+DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 
 GAMES_DIR = re.sub(r'/services/scoreboard', '/resource/games', _path)
@@ -91,7 +92,8 @@ class ScoreboardTest(unittest.TestCase):
         ])
 
     def test_pending_show_body(self):
-        actual = pending_show_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
+        date = encode_datetime(DATE_08280000)
+        actual = pending_show_body(date, ['T31 4, TLA 2', 'TNY 5, TLA 3'])
         expected = json.loads(TESTDATA['pending_show_body_la.json'])
         self.assertEqual(actual, expected)
 
@@ -109,7 +111,7 @@ class ScoreboardTest(unittest.TestCase):
         expected = {date: data_2998}
         self.assertEqual(actual, expected)
 
-        mock_body.assert_has_calls([mock.call([score])])
+        mock_body.assert_has_calls([mock.call(date, [score])])
 
     @mock.patch('services.scoreboard.scoreboard.pending_show_body')
     def test_pending_dialog(self, mock_body):
@@ -125,7 +127,9 @@ class ScoreboardTest(unittest.TestCase):
         expected = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
         self.assertEqual(actual, expected)
 
-        mock_body.assert_has_calls([mock.call([score]), mock.call([score])])
+        mock_body.assert_has_calls(
+            [mock.call(date, [score]),
+             mock.call(date, [score])])
 
 
 if __name__ == '__main__':

@@ -77,6 +77,7 @@ def line_score_hide_body(data):
         body.append([cell(content=title)])
 
     return table(
+        id_='hidebody' + data['num'],
         clazz='border',
         hcols=hcols,
         bcols=bcols,
@@ -117,6 +118,7 @@ def line_score_hide_foot(data):
         lines.append(player_to_shortname_sub(sp + sps))
 
     return table(
+        id_='hidefoot' + data['num'],
         clazz='border border-top-0 mb-3',
         foot=[
             _location_row(data),
@@ -125,13 +127,14 @@ def line_score_hide_foot(data):
     )
 
 
-def line_score_show_body(data):
+def line_score_show_body(data, hidden=False):
     """Creates a shown line score table body for a given game data object.
 
     The table body contains the teams, records, and runs for the game.
 
     Args:
         data: The parsed game data.
+        hidden: Whether to initially hide the table body.
 
     Returns:
         A line score table body.
@@ -183,8 +186,12 @@ def line_score_show_body(data):
 
         body.append(row)
 
+    id_ = 'showbody' + data['num']
+    clazz = 'border' + (' d-none' if hidden else '')
+
     return table(
-        clazz='border',
+        id_=id_,
+        clazz=clazz,
         hcols=hcols,
         bcols=bcols,
         head=head,
@@ -192,13 +199,14 @@ def line_score_show_body(data):
     )
 
 
-def line_score_show_foot(data):
+def line_score_show_foot(data, hidden=False):
     """Creates a shown line score table footer for a given game data object.
 
     The table footer contains game details, such as winning and losing pitcher.
 
     Args:
         data: The parsed game data.
+        hidden: Whether to initially hide the table footer.
 
     Returns:
         A line score table footer.
@@ -245,8 +253,12 @@ def line_score_show_foot(data):
     hrs = '&nbsp; '.join(batting) if batting else 'None'
     lines.append(player_to_shortname_sub(hr + hrs))
 
+    id_ = 'showfoot' + data['num']
+    clazz = 'border border-top-0 mb-3' + (' d-none' if hidden else '')
+
     return table(
-        clazz='border border-top-0 mb-3',
+        id_=id_,
+        clazz=clazz,
         foot=[
             _location_row(data),
             [cell(content='<br>'.join(lines))],
@@ -304,6 +316,7 @@ def pending_hide_body(date, scores):
         body.append([cell(content=' · '.join(sorted(hometowns)))])
 
     return table(
+        id_='hidedate' + s,
         clazz='border mb-3',
         hcols=hcols,
         bcols=bcols,
@@ -312,13 +325,15 @@ def pending_hide_body(date, scores):
     )
 
 
-def pending_show_body(scores):
+def pending_show_body(date, scores, hidden=False):
     """Creates a shown pending table body for a given list of pending scores.
 
     The table body contains the teams and runs for the games.
 
     Args:
+        date: The encoded date for the scores.
         scores: The list of pending scores.
+        hidden: Whether to initially hide the table body.
 
     Returns:
         A line score table body.
@@ -330,8 +345,13 @@ def pending_show_body(scores):
     for score in scores:
         body.append([cell(content=encoding_to_hometown_sub(score))])
 
+    s = decode_datetime(date).strftime('%m%d')
+    id_ = 'showdate' + s
+    clazz = 'border mb-3' + (' d-none' if hidden else '')
+
     return table(
-        clazz='border mb-3',
+        id_=id_,
+        clazz=clazz,
         hcols=hcols,
         head=head,
         body=body,
@@ -343,7 +363,7 @@ def pending_carousel(statsplus_scores):
     for date in statsplus_scores:
         start = datetime_replace(date, hour=23, minute=59)
         scores = list(sorted(statsplus_scores[date].values()))
-        body = pending_show_body(scores)
+        body = pending_show_body(date, scores)
         d[date] = (start, body)
 
     return d
@@ -360,7 +380,7 @@ def pending_dialog(statsplus_scores):
                 scores[t].append(s)
 
         for t in sorted(scores):
-            body = pending_show_body(scores[t])
+            body = pending_show_body(date, scores[t])
             for e in encoding_to_encodings(t):
                 if e not in d:
                     d[e] = []

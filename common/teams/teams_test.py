@@ -202,7 +202,6 @@ class TeamsTest(unittest.TestCase):
         expected = img + span
         self.assertEqual(actual, expected)
 
-    maxDiff = None
     def test_icon_badge__active_false(self):
         actual = icon_badge('T35', '0-0', False)
         badge = ('<span class="badge badge-icon badge-light">{}</span>')

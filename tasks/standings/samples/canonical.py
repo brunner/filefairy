@@ -10,6 +10,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings/samples', '', _path))
 
+from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
+from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -24,6 +26,8 @@ from services.division.division import expanded_league  # noqa
 from services.scoreboard.scoreboard import line_score_show_body  # noqa
 from services.scoreboard.scoreboard import line_score_show_foot  # noqa
 from services.scoreboard.scoreboard import pending_show_body  # noqa
+
+DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
 
 
 def _table(keys, table_):
@@ -114,10 +118,11 @@ _tables = [
     _head_2476, _body_2476, _foot_2476,
 ]  # yapf: disable
 
-_body_31 = pending_show_body(['T31 4, TLA 2'])
-_body_55 = pending_show_body(['TNY 1, T55 0'])
-_body_la = pending_show_body(['T31 4, TLA 2', 'TNY 5, TLA 3'])
-_body_ny = pending_show_body(['TNY 5, TLA 3', 'TNY 1, T55 0'])
+_date = encode_datetime(DATE_08280000)
+_body_31 = pending_show_body(_date, ['T31 4, TLA 2'])
+_body_55 = pending_show_body(_date, ['TNY 1, T55 0'])
+_body_la = pending_show_body(_date, ['T31 4, TLA 2', 'TNY 5, TLA 3'])
+_body_ny = pending_show_body(_date, ['TNY 5, TLA 3', 'TNY 1, T55 0'])
 
 _icon_31 = icon_absolute('T31', 'Arizona Diamondbacks')
 _icon_40 = icon_absolute('T40', 'Detroit Tigers')

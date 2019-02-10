@@ -57,4 +57,29 @@
 </div>
 </div>
 
+ <!-- ^(standings.dialogs) -->  
+{% for dialog in dialogs %} 
+{{ common.dialog(dialog) }} 
+
+ {% endfor %}   
+<!-- $(standings.dialogs) -->   
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+$('.badge-icon[data-show]').click(function() {
+    num = $(this).data('show');
+    if ($('#hidebody' + num).length) {
+        ids = ['#hidebody', '#hidefoot', '#showbody', '#showfoot'];
+    } else {
+        ids = ['#hidedate', '#showdate'];
+    }
+    ids.forEach(function(id) {
+        $(id + num).toggleClass('d-none');
+    });
+});
+</script>
+
 {% endblock %}
