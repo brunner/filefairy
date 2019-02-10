@@ -55,7 +55,10 @@ def line_score_hide_body(data):
     Returns:
         A line score table body.
     """
-    hcols = [col(clazz='font-weight-bold'), col(clazz='position-relative')]
+    hcols = [
+        col(clazz='font-weight-bold text-dark'),
+        col(clazz='position-relative')
+    ]
     bcols = [col(colspan="2", clazz='position-relative')]
 
     attributes = {'data-toggle': 'modal', 'data-target': '#game' + data['num']}
