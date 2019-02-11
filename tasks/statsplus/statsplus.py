@@ -24,6 +24,7 @@ from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
 from common.service.service import call_service  # noqa
 from common.slack.slack import channels_history  # noqa
+from common.slack.slack import chat_post_message  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
@@ -102,7 +103,7 @@ class Statsplus(Registrable):
             return Response()
 
         date = encode_datetime(date)
-        if not self.data['started']:
+        if not self.data['started'] and search(r'\d{4} Final Scores', text):
             return self._start()
         elif search(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self._save_scores(date, text)
@@ -162,6 +163,9 @@ class Statsplus(Registrable):
                 encoding = data[team + '_team']
                 win = int(data[team + '_runs']) > int(data[other + '_runs'])
                 self.data['table'][encoding] = self._next(data, encoding, win)
+
+        _logger.log(logging.INFO, 'Download complete.')
+        chat_post_message('fairylab', 'Download complete.')
 
         self.write()
         return Response(
@@ -243,6 +247,9 @@ class Statsplus(Registrable):
         self.data['table'] = {}
 
         self._rm()
+
+        _logger.log(logging.INFO, 'Sim in progress.')
+        chat_post_message('fairylab', 'Sim in progress.')
 
         self.write()
         return Response(notify=[Notify.STATSPLUS_START])
