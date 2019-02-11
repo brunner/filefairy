@@ -233,7 +233,7 @@ def line_score_show_body(data, hidden=False):
     for team, other in [('away', 'home'), ('home', 'away')]:
         encoding = data[team + '_team']
         record = data[team + '_record']
-        win = data[team + '_runs'] > data[other + '_runs']
+        win = int(data[team + '_runs']) > int(data[other + '_runs'])
         primary = col(clazz='font-weight-bold') if win else col()
 
         text = encoding_to_hometown(encoding)
