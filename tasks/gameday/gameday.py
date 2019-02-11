@@ -71,9 +71,13 @@ class Gameday(Registrable):
     def _index_html(self, **kwargs):
         ret = {
             'days': [],
+            'dialogs': [],
         }
 
-        line = call_service('scoreboard', 'line_scores', (), hidden=True)
+        data = call_service('scoreboard', 'line_scores', (), hidden=True)
+        line = data['scores']
+
+        ret['dialogs'] += data['dialogs']
 
         dates = {}
         for e in sorted(line):
@@ -85,12 +89,14 @@ class Gameday(Registrable):
                 dates[date].append((start, body, foot))
 
         statsplus_scores = self.shadow.get('statsplus.scores', {})
-        pending = call_service(
+        data = call_service(
             'scoreboard',
             'pending_carousel',
             (statsplus_scores, ),
             hidden=True,
         )
+        pending = data['scores']
+        ret['dialogs'] += data['dialogs']
 
         for date in sorted(pending):
             if date not in dates:

@@ -15,9 +15,11 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import dialog  # noqa
 from common.elements.elements import icon_span  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
+from common.elements.elements import topper  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqa
 from common.record.record import decode_record  # noqa
@@ -36,12 +38,22 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
 
-def _add_line_score(d, data, body, foot):
+def _add_line_score(s, data, body, foot):
     for team in ['away', 'home']:
         e = data[team + '_team']
-        if e not in d:
-            d[e] = []
-        d[e].append((data['date'], body, foot))
+        if e not in s:
+            s[e] = []
+        s[e].append((data['date'], body, foot))
+
+
+def _cell(text, attributes):
+    text = span(classes=['align-middle', 'badge-icon-button'], text=text)
+    attributes.update({'data-dismiss': 'modal'})
+    return cell(
+        content=span(
+            classes=['badge', 'badge-icon', 'badge-light'],
+            text=text,
+            attributes=attributes))
 
 
 def _date(date):
@@ -55,6 +67,39 @@ def _location_row(data):
     location = span(
         classes=['small', 'text-secondary'], text=(start + ballpark))
     return [cell(col=col(clazz='border-0 py-2'), content=location)]
+
+
+def create_dialog(date, game):
+    """Creates a dialog for showing a hidden game score.
+
+    Args:
+        date: The MMDD-formatted date of the game.
+        game: The game id number.
+
+    Returns:
+        A dialog.
+    """
+    id_ = 'd{}g{}'.format(date, game)
+    icon = icon_absolute('T30', 'Spoilers Hidden')
+
+    t = 'Pending Games Only' if game == '0' else 'Selected Game Only'
+    tables = [
+        topper('Reveal Final Scores'),
+        table(
+            clazz='border mb-3',
+            hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
+            bcols=[
+                col(clazz='w-50 badge-icon-wrapper pl-2'),
+                col(clazz='w-50 badge-icon-wrapper pr-2')
+            ],
+            head=[[cell(content='Options')]],
+            body=[[
+                _cell('All Games for Today', {'data-show-date': date}),
+                _cell(t, {'data-show-game': game})
+            ]])
+    ]
+
+    return dialog(id_=id_, icon=icon, tables=tables)
 
 
 def line_score_hide_body(data):
@@ -285,25 +330,30 @@ def line_score_show_foot(data, hidden=False):
 def line_scores(hidden=False):
     """Returns a dictionary of all line scores.
 
+    If including hidden line scores, also return the necessary dialogs.
+
     Args:
         hidden: Whether to include hidden line scores.
 
     Returns:
         A dictionary of line scores.
     """
-    d = {}
+    d = []
+    s = {}
     for name in os.listdir(GAMES_DIR):
         data = loads(os.path.join(GAMES_DIR, name))
         if hidden:
+            d.append(create_dialog(_date(data['date']), data['num']))
+
             body = line_score_hide_body(data)
             foot = line_score_hide_foot(data)
-            _add_line_score(d, data, body, foot)
+            _add_line_score(s, data, body, foot)
 
         body = line_score_show_body(data, hidden=hidden)
         foot = line_score_show_foot(data, hidden=hidden)
-        _add_line_score(d, data, body, foot)
+        _add_line_score(s, data, body, foot)
 
-    return d
+    return {'dialogs': d, 'scores': s}
 
 
 def pending_hide_body(date, scores):
@@ -389,6 +439,8 @@ def pending_show_body(date, scores, hidden=False):
 def pending_carousel(statsplus_scores, hidden=False):
     """Returns a dictionary of all pending scores, grouped for a carousel.
 
+    If including hidden line scores, also return the necessary dialogs.
+
     Args:
         statsplus_scores: A mapping from date to a list of pending scores.
         hidden: Whether to include pending line scores.
@@ -396,19 +448,21 @@ def pending_carousel(statsplus_scores, hidden=False):
     Returns:
         A dictionary of pending scores.
     """
-    d = {}
+    d = []
+    s = {}
     for date in statsplus_scores:
         start = datetime_replace(date, hour=23, minute=59)
         scores = list(sorted(statsplus_scores[date].values()))
 
         value = []
         if hidden:
+            d.append(create_dialog(_date(date), '0'))
             value.append((start, pending_hide_body(date, scores)))
         value.append((start, pending_show_body(date, scores, hidden=hidden)))
 
-        d[date] = value
+        s[date] = value
 
-    return d
+    return {'dialogs': d, 'scores': s}
 
 
 def pending_dialog(statsplus_scores):

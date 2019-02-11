@@ -312,7 +312,7 @@ class StandingsTest(Test):
         line = {'T40': [DATA_2449, DATA_2469], 'T47': [DATA_2449, DATA_2469]}
         pending = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
         mock_call.side_effect = [
-            line,
+            {'dialogs': [], 'scores': line},
             pending,
             [TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC],
             TABLE_AL,
@@ -413,7 +413,7 @@ class StandingsTest(Test):
             'T47': [DATA_2449, DATA_2469]
         }
         mock_call.side_effect = [
-            line,
+            {'dialogs': [], 'scores': line},
             {},
             [TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC],
             TABLE_AL,

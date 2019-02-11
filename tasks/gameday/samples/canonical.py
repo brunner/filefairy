@@ -20,6 +20,7 @@ from common.elements.elements import table  # noqa
 from common.elements.elements import topper  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.test.test import get_testdata  # noqa
+from services.scoreboard.scoreboard import create_dialog  # noqa
 from services.scoreboard.scoreboard import line_score_hide_body  # noqa
 from services.scoreboard.scoreboard import line_score_hide_foot  # noqa
 from services.scoreboard.scoreboard import line_score_show_body  # noqa
@@ -75,50 +76,11 @@ _days = [
     ],
 ]
 
-
-def _tables(d, g):
-    date = {'data-dismiss': 'modal', 'data-show-date': d}
-    game = {'data-dismiss': 'modal', 'data-show-game': g}
-
-    bc = ['badge', 'badge-icon', 'badge-light']
-    tc = ['align-middle', 'badge-icon-button']
-    t = 'Pending Games Only' if g == '0' else 'Selected Game Only'
-    return [
-        topper('Reveal Final Scores'),
-        table(
-            clazz='border mb-3',
-            hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
-            bcols=[
-                col(clazz='w-50 badge-icon-wrapper pl-2'),
-                col(clazz='w-50 badge-icon-wrapper pr-2')
-            ],
-            head=[[cell(content='Options')]],
-            body=[[
-                cell(
-                    content=span(
-                        classes=bc,
-                        text=span(classes=tc, text='All Games for Today'),
-                        attributes=date)),
-                cell(
-                    content=span(
-                        classes=bc,
-                        text=span(classes=tc, text=t),
-                        attributes=game)),
-            ]])
-    ]
-
-
-_icon = icon_absolute('T30', 'Spoilers Hidden')
-_tables_2449 = _tables('0828', '2449')
-_tables_0828 = _tables('0828', '0')
-_tables_2469 = _tables('0829', '2469')
-_tables_2476 = _tables('0830', '2476')
-
 _dialogs = [
-    dialog(id_='d0828g2449', icon=_icon, tables=_tables_2449),
-    dialog(id_='d0828g0', icon=_icon, tables=_tables_0828),
-    dialog(id_='d0829g2469', icon=_icon, tables=_tables_2469),
-    dialog(id_='d0830g2476', icon=_icon, tables=_tables_2476),
+    create_dialog('0828', '2449'),
+    create_dialog('0828', '0'),
+    create_dialog('0829', '2469'),
+    create_dialog('0830', '2476'),
 ]
 
 subtitle = ''

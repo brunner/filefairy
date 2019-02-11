@@ -156,7 +156,9 @@ class Standings(Registrable):
         statsplus_scores = self.shadow.get('statsplus.scores', {})
         statsplus_table = self.shadow.get('statsplus.table', {})
 
-        line = call_service('scoreboard', 'line_scores', ())
+        data = call_service('scoreboard', 'line_scores', ())
+        line = data['scores']
+
         pending = call_service(
             'scoreboard',
             'pending_dialog',
