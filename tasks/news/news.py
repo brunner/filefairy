@@ -95,6 +95,7 @@ class News(Registrable):
         text = re.sub(r'original Organization ', '', text)
         text = re.sub(r'The Diagnosis: (\w)', News._transform_diagnosis, text)
         text = re.sub(r'Rule 5 draft pick(\w)', r'Rule 5 draft pick \1', text)
+        text = re.sub(r'NO-HITTER', r'no-hitter', text)
 
         text = encoding_to_decoding_sub(text)
         text = player_to_link_sub(text)
