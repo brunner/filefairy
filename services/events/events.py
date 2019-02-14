@@ -108,6 +108,7 @@ EVENT_MAP = {
     Event.PITCHER_STRIKE_SWING_WILD: (r'^\d-\d: Strikes out swinging wild pitc'
                                       r'h, reaches first!$'),
     Event.RUNNER_STEAL: (r'^{player} steals {base} base(?: \(no throw\))?$'),
+    Event.RUNNER_STEAL_HOME: (r'^Steal of home, {player} is safe$'),
     Event.RUNNER_STEAL_HOME_OUT: (r'^Steal of home, {player} is out$'),
     Event.RUNNER_STEAL_OUT: (r'^{player} is caught stealing {base} base {scori'
                              r'ng}$'),

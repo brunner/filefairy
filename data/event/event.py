@@ -105,7 +105,8 @@ class Event(IntEnum):
     PITCHER_STRIKE_SWING_WILD = auto()  # []
 
     RUNNER_STEAL = auto()  # [player, base]
-    RUNNER_STEAL_HOME_OUT = auto()  # [player, base]
+    RUNNER_STEAL_HOME = auto()  # [player]
+    RUNNER_STEAL_HOME_OUT = auto()  # [player]
     RUNNER_STEAL_OUT = auto()  # [player, base, scoring]
     RUNNER_STEAL_THROWING = auto()  # [player, base]
 
