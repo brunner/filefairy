@@ -30,6 +30,8 @@ EVENT_MAP = {
     Event.BATTER_SINGLE: (r'^\d-\d: SINGLE \({path}, {zone}\)$'),
     Event.BATTER_SINGLE_APPEAL: (r'^SINGLE, but batter called out on appeal fo'
                                  r'r missing first base!$'),
+    Event.BATTER_SINGLE_BATTED_OUT: (r'^\d-\d: SINGLE \({path}, {zone}\) - run'
+                                     r'ner OUT being hit by batted ball\.$'),
     Event.BATTER_SINGLE_BUNT: (r'^\d-\d: Bunt for hit to {zone} - play at firs'
                                r't, batter safe!$'),
     Event.BATTER_SINGLE_ERR: (r'^\d-\d: Single, Error in OF, {scoring}, batter'
@@ -68,7 +70,7 @@ EVENT_MAP = {
                              r'Groundball, {zone}\)$'),
     Event.BATTER_GROUND_HOME: (r'^\d-\d: Grounds into fielders choice {scoring'
                                r'} \(Groundball, {zone}\)$'),
-    Event.BATTER_LINED_DP: r'^Lined into DP, {scoring} \({path}, {zone}\)$',
+    Event.BATTER_LINED_DP: (r'^Lined into DP, {scoring} \({path}, {zone}\)$'),
     Event.BATTER_SAC_BUNT: (r'^\d-\d: Sac Bunt to {zone} - play at first, batt'
                             r'er OUT! {scoring}$'),
     Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt(?: to P)? - play at {base}, '
@@ -95,6 +97,8 @@ EVENT_MAP = {
     Event.PITCHER_WALK: (r'^\d-\d: Intentional Walk$'),
     Event.PITCHER_STRIKE_CALL: (r'^\d-\d: (?:Called Strike|Strikes out looking'
                                 r')$'),
+    Event.PITCHER_STRIKE_CALL_TOSSED: (r'^\d-\d: Strikes out looking and he AR'
+                                       r'GUES THE CALL AND IS TOSSED!$'),
     Event.PITCHER_STRIKE_FOUL: (r'^\d-\d: Foul Ball, location: 2F$'),
     Event.PITCHER_STRIKE_FOUL_BUNT: (r'^\d-\d: Bunted foul(?:, Strikeout!)?$'),
     Event.PITCHER_STRIKE_FOUL_ERR: (r'^Error on foul ball, {scoring}$'),

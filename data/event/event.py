@@ -45,6 +45,7 @@ class Event(IntEnum):
 
     BATTER_SINGLE = auto()  # [path, zone]
     BATTER_SINGLE_APPEAL = auto()  # []
+    BATTER_SINGLE_BATTED_OUT = auto()  # [path, zone]
     BATTER_SINGLE_BUNT = auto()  # [zone]
     BATTER_SINGLE_INFIELD = auto()  # [path, zone]
     BATTER_SINGLE_ERR = auto()  # [scoring, path, zone]
@@ -94,6 +95,7 @@ class Event(IntEnum):
     PITCHER_WALK = auto()  # []
 
     PITCHER_STRIKE_CALL = auto()  # []
+    PITCHER_STRIKE_CALL_TOSSED = auto()  # []
     PITCHER_STRIKE_FOUL = auto()  # []
     PITCHER_STRIKE_FOUL_BUNT = auto()  # []
     PITCHER_STRIKE_FOUL_ERR = auto()  # [scoring]
