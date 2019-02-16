@@ -1,8 +1,8 @@
 {
   "logs": {
-    "2019-02-13T00:00:00-08:00": [
+    "2019-02-15T00:00:00-08:00": [
       {
-        "date": "2019-02-13T16:08:56.871089-08:00",
+        "date": "2019-02-15T18:57:49.992903-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 251,
@@ -10,7 +10,7 @@
         "pathname": "/home/pi/filefairy/tasks/statsplus/statsplus.py"
       },
       {
-        "date": "2019-02-13T16:50:26.485021-08:00",
+        "date": "2019-02-15T20:19:44.049510-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 51,
@@ -18,7 +18,7 @@
         "pathname": "/home/pi/filefairy/tasks/upload/upload.py"
       },
       {
-        "date": "2019-02-13T16:51:53.467898-08:00",
+        "date": "2019-02-15T20:22:09.676920-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 84,
@@ -26,7 +26,7 @@
         "pathname": "/home/pi/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-02-13T16:56:29.647963-08:00",
+        "date": "2019-02-15T20:28:01.639397-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 71,
@@ -34,28 +34,12 @@
         "pathname": "/home/pi/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-02-13T16:59:11.098192-08:00",
+        "date": "2019-02-15T20:30:57.349510-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 167,
         "msg": "Download complete.",
         "pathname": "/home/pi/filefairy/tasks/statsplus/statsplus.py"
-      },
-      {
-        "date": "2019-02-13T22:43:59.002705-08:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 188, in _reload_services\n    reload_services()\n  File \"/home/pi/filefairy/common/service/service.py\", line 57, in reload_services\n    _reload(s)\n  File \"/home/pi/filefairy/common/service/service.py\", line 26, in _reload\n    _services[service] = importlib.import_module(package)\n  File \"/usr/local/lib/python3.6/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n  File \"<frozen importlib._bootstrap>\", line 994, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 971, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 955, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 665, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 678, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 219, in _call_with_frames_removed\n  File \"/home/pi/filefairy/services/events/events.py\", line 33, in <module>\n    Event.BATTER_SINGLE_BATTED_OUT: (r'^\\d-\\d: SINGLE \\({path}, {zone}\\) - run'\n  File \"/usr/local/lib/python3.6/enum.py\", line 326, in __getattr__\n    raise AttributeError(name) from None\nAttributeError: BATTER_SINGLE_BATTED_OUT",
-        "levelname": "ERROR",
-        "lineno": 191,
-        "msg": "Error reloading services.",
-        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-02-13T22:44:00.361814-08:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 179,
-        "msg": "Reloaded news.",
-        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
       }
     ]
   }
