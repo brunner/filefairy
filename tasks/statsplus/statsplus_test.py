@@ -37,8 +37,7 @@ EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
-STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
-STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
+STATSPLUS_RT_SIM = os.path.join(STATSPLUS_LINK, 'rt_sim')
 
 TESTDATA = get_testdata()
 
@@ -447,8 +446,8 @@ class StatsplusTest(Test):
         actual = statsplus._parse_score('2449', date)
         self.assertEqual(actual, True)
 
-        box = os.path.join(STATSPLUS_BOX_SCORES, 'game_box_2449.html')
-        log = os.path.join(STATSPLUS_GAME_LOGS, 'log_2449.html')
+        box = os.path.join(STATSPLUS_RT_SIM, 'game_box_2449.html')
+        log = os.path.join(STATSPLUS_RT_SIM, 'log_2449.html')
         out = os.path.join(GAMES_DIR, '2449.json')
         mock_call.assert_called_once_with('statslab', 'parse_game',
                                           (box, log, out, date))

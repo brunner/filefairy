@@ -41,8 +41,7 @@ EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
-STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
-STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
+STATSPLUS_RT_SIM = os.path.join(STATSPLUS_LINK, 'rt_sim')
 
 
 class Statsplus(Registrable):
@@ -214,8 +213,8 @@ class Statsplus(Registrable):
             return True
 
         if self.data['started']:
-            box = STATSPLUS_BOX_SCORES + '/game_box_{}.html'.format(num)
-            log = STATSPLUS_GAME_LOGS + '/log_{}.html'.format(num)
+            box = STATSPLUS_RT_SIM + '/game_box_{}.html'.format(num)
+            log = STATSPLUS_RT_SIM + '/log_{}.html'.format(num)
         else:
             box = EXTRACT_BOX_SCORES + '/game_box_{}.html'.format(num)
             log = EXTRACT_GAME_LOGS + '/log_{}.txt'.format(num)
