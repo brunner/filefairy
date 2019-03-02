@@ -63,6 +63,9 @@ class Upload(Registrable):
         text = re.sub('[.,]', '', get(EXPORTS_URL))
         match = search(r'(?s)League File: (\w+ \d+ \d+ \d+:\d+ \w+) CST', text)
         if match:
+            month, remainder = match.split(' ', 1)
+            match = month[:3] + ' ' + remainder
+
             d = datetime.datetime.strptime(match.title(), '%b %d %Y %I:%M %p')
             c = datetime_datetime_cst(d.year, d.month, d.day, d.hour, d.minute)
 
