@@ -1,24 +1,8 @@
 {
   "logs": {
-    "2019-03-01T00:00:00-08:00": [
+    "2019-03-03T00:00:00-08:00": [
       {
-        "date": "2019-03-01T15:56:38.504005-08:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 97, in _run\n    return self._run_internal(**kwargs)\n  File \"/home/pi/filefairy/tasks/upload/upload.py\", line 49, in _run_internal\n    date = self._get_date()\n  File \"/home/pi/filefairy/tasks/upload/upload.py\", line 66, in _get_date\n    d = datetime.datetime.strptime(match.title(), '%b %d %Y %I:%M %p')\n  File \"/usr/local/lib/python3.6/_strptime.py\", line 565, in _strptime_datetime\n    tt, fraction = _strptime(data_string, format)\n  File \"/usr/local/lib/python3.6/_strptime.py\", line 362, in _strptime\n    (data_string, format))\nValueError: time data 'March 1 2019 5:55 Pm' does not match format '%b %d %Y %I:%M %p'",
-        "levelname": "ERROR",
-        "lineno": 272,
-        "msg": "Disabled upload.",
-        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-03-01T16:25:37.645735-08:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/pi/filefairy/api/registrable/registrable.py\", line 97, in _run\n    return self._run_internal(**kwargs)\n  File \"/home/pi/filefairy/tasks/upload/upload.py\", line 49, in _run_internal\n    date = self._get_date()\n  File \"/home/pi/filefairy/tasks/upload/upload.py\", line 66, in _get_date\n    d = datetime.datetime.strptime(match.title(), '%b %d %Y %I:%M %p')\n  File \"/usr/local/lib/python3.6/_strptime.py\", line 565, in _strptime_datetime\n    tt, fraction = _strptime(data_string, format)\n  File \"/usr/local/lib/python3.6/_strptime.py\", line 362, in _strptime\n    (data_string, format))\nValueError: time data 'March 1 2019 5:55 Pm' does not match format '%b %d %Y %I:%M %p'",
-        "levelname": "ERROR",
-        "lineno": 272,
-        "msg": "Disabled upload.",
-        "pathname": "/home/pi/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-03-01T21:22:51.190715-08:00",
+        "date": "2019-03-03T17:25:01.683112-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 51,
@@ -26,7 +10,7 @@
         "pathname": "/home/pi/filefairy/tasks/upload/upload.py"
       },
       {
-        "date": "2019-03-01T21:47:48.769002-08:00",
+        "date": "2019-03-03T17:27:27.274497-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 84,
@@ -34,7 +18,7 @@
         "pathname": "/home/pi/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-01T21:53:03.457079-08:00",
+        "date": "2019-03-03T17:34:13.021718-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 71,
@@ -42,7 +26,7 @@
         "pathname": "/home/pi/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-01T21:55:14.879127-08:00",
+        "date": "2019-03-03T17:37:24.539395-08:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 166,
