@@ -1,3 +1,38 @@
 {
-  "logs": {}
+  "logs": {
+    "2019-03-06T00:00:00-08:00": [
+      {
+        "date": "2019-03-06T19:02:38.108101-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 51,
+        "msg": "File is up.",
+        "pathname": "/home/pi/filefairy/tasks/upload/upload.py"
+      },
+      {
+        "date": "2019-03-06T19:05:01.749504-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 84,
+        "msg": "Download started.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-03-06T19:10:10.041490-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 71,
+        "msg": "Download finished.",
+        "pathname": "/home/pi/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-03-06T19:15:16.304602-08:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 166,
+        "msg": "Download complete.",
+        "pathname": "/home/pi/filefairy/tasks/statsplus/statsplus.py"
+      }
+    ]
+  }
 }
