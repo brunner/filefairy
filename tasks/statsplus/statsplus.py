@@ -247,8 +247,8 @@ class Statsplus(Registrable):
 
         self._rm()
 
-        # _logger.log(logging.INFO, 'Sim in progress.')
-        # chat_post_message('fairylab', 'Sim in progress.')
+        _logger.log(logging.INFO, 'Sim in progress.')
+        chat_post_message('fairylab', 'Sim in progress.')
 
         self.write()
         return Response(notify=[Notify.STATSPLUS_START])

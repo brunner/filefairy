@@ -1,3 +1,54 @@
 {
-  "logs": {}
+  "logs": {
+    "2019-03-14T00:00:00-07:00": [
+      {
+        "date": "2019-03-14T23:23:11.688970-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/api/registrable/registrable.py\", line 102, in _setup\n    self._render(**kwargs)\n  File \"/home/jbrunner/filefairy/api/renderable/renderable.py\", line 92, in _render\n    data = self._render_data(**kwargs)\n  File \"/home/jbrunner/filefairy/tasks/gameday/gameday.py\", line 56, in _render_data\n    _index_html = self._index_html(**kwargs)\n  File \"/home/jbrunner/filefairy/tasks/gameday/gameday.py\", line 77, in _index_html\n    data = call_service('scoreboard', 'line_scores', (), hidden=True)\n  File \"/home/jbrunner/filefairy/common/service/service.py\", line 39, in call_service\n    return getattr(_services[service], method)(*fargs, *args, **kwargs)\n  File \"/home/jbrunner/filefairy/services/scoreboard/scoreboard.py\", line 343, in line_scores\n    for name in os.listdir(GAMES_DIR):\nFileNotFoundError: [Errno 2] No such file or directory: '/home/jbrunner/filefairy/resource/games'",
+        "levelname": "ERROR",
+        "lineno": 272,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-03-14T23:23:12.288041-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/api/registrable/registrable.py\", line 102, in _setup\n    self._render(**kwargs)\n  File \"/home/jbrunner/filefairy/api/renderable/renderable.py\", line 92, in _render\n    data = self._render_data(**kwargs)\n  File \"/home/jbrunner/filefairy/tasks/standings/standings.py\", line 71, in _render_data\n    _index_html = self._index_html(**kwargs)\n  File \"/home/jbrunner/filefairy/tasks/standings/standings.py\", line 159, in _index_html\n    data = call_service('scoreboard', 'line_scores', ())\n  File \"/home/jbrunner/filefairy/common/service/service.py\", line 39, in call_service\n    return getattr(_services[service], method)(*fargs, *args, **kwargs)\n  File \"/home/jbrunner/filefairy/services/scoreboard/scoreboard.py\", line 343, in line_scores\n    for name in os.listdir(GAMES_DIR):\nFileNotFoundError: [Errno 2] No such file or directory: '/home/jbrunner/filefairy/resource/games'",
+        "levelname": "ERROR",
+        "lineno": 272,
+        "msg": "Disabled standings.",
+        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-03-14T23:28:24.793049-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 51,
+        "msg": "File is up.",
+        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
+      },
+      {
+        "date": "2019-03-14T23:30:25.845217-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 84,
+        "msg": "Download started.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-03-14T23:31:02.537642-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 71,
+        "msg": "Download finished.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-03-14T23:32:13.287418-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 166,
+        "msg": "Download complete.",
+        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
+      }
+    ]
+  }
 }

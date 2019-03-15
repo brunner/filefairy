@@ -61,7 +61,7 @@ class Upload(Registrable):
     @staticmethod
     def _get_date():
         text = re.sub('[.,]', '', get(EXPORTS_URL))
-        match = search(r'(?s)League File: (\w+ \d+ \d+ \d+:\d+ \w+) CST', text)
+        match = search(r'(?s)League File: (\w+ \d+ \d+ \d+:\d+ \w+) C', text)
         if match:
             month, remainder = match.split(' ', 1)
             match = month[:3] + ' ' + remainder
