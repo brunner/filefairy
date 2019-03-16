@@ -175,6 +175,8 @@ class Statsplus(Registrable):
             return Response()
 
         unvisited = {}
+        print('\n\nparsing saved scores...')
+        print(self.data['scores'][date_])
         for num, s in sorted(self.data['scores'][date_].items()):
             data = self._parse_score(num, date_)
             if data is None:
