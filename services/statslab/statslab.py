@@ -42,6 +42,7 @@ def _open(in_):
     text = re.sub(r'\s+', ' ', text)
     text = re.sub(r'</?b>', '', text)
     text = re.sub(r' &nbsp;&nbsp;', '', text)
+    text = re.sub(r' &#xA0;&#xA0;', '', text)
 
     return text
 
@@ -121,19 +122,16 @@ def parse_game(box_in, log_in, out, date):
     """
     num = search(r'game_box_(\d+)\.html', box_in)
     if not num:
-        print('game number not found: ', box_in)
         return None
 
     box_text = _open(box_in)
     away, home, s = search(r'(\w+) at (\w+), (\d{2}\/\d{2}\/\d{4})', box_text)
     if not s:
-        print('home and away team not found: ', box_text)
         return None
 
     d = datetime.datetime.strptime(s, '%m/%d/%Y')
     d = datetime_datetime_pst(d.year, d.month, d.day)
     if date is not None and date != encode_datetime(d):
-        print('date is invalid: ', s)
         return None
 
     t = search(r'(?s)Start Time:(.+?)<br>', box_text).strip(' EST')
@@ -169,7 +167,6 @@ def parse_game(box_in, log_in, out, date):
     blines = findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', box_text)
     plines = findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', box_text)
     if len(blines) != 2 or len(plines) != 2:
-        print('invalid box score format: ', box_text)
         return None
 
     encodings = set()
@@ -179,7 +176,6 @@ def parse_game(box_in, log_in, out, date):
 
     batting = findall(r'(?s)BATTING<br>(.+?)</table>', box_text)
     if len(batting) != 2:
-        print('invalid batting format: ', box_text)
         return None
 
     for team, btext in zip(['away', 'home'], batting):
