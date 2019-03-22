@@ -1,60 +1,8 @@
 {
   "logs": {
-    "2019-03-15T00:00:00-07:00": [
+    "2019-03-20T00:00:00-07:00": [
       {
-        "date": "2019-03-15T21:32:58.548584-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 252,
-        "msg": "Sim in progress.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      }
-    ],
-    "2019-03-16T00:00:00-07:00": [
-      {
-        "date": "2019-03-16T12:11:29.385613-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 51,
-        "msg": "File is up.",
-        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
-      },
-      {
-        "date": "2019-03-16T14:36:18.420399-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 181, in _parse_saved_scores\n    data = self._parse_score(num, date_)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 224, in _parse_score\n    return call_service('statslab', 'parse_game', (box, log, out, date))\n  File \"/home/jbrunner/filefairy/common/service/service.py\", line 39, in call_service\n    return getattr(_services[service], method)(*fargs, *args, **kwargs)\n  File \"/home/jbrunner/filefairy/services/statslab/statslab.py\", line 172, in parse_game\n    print('invalid box score format: ', box_text)\nBrokenPipeError: [Errno 32] Broken pipe",
-        "levelname": "ERROR",
-        "lineno": 272,
-        "msg": "Disabled statsplus.",
-        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-03-16T15:21:31.950695-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 85,
-        "msg": "Download started.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-03-16T15:24:30.171125-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 71,
-        "msg": "Download finished.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-03-16T15:25:38.250406-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 166,
-        "msg": "Download complete.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      }
-    ],
-    "2019-03-17T00:00:00-07:00": [
-      {
-        "date": "2019-03-17T20:31:29.304712-07:00",
+        "date": "2019-03-20T19:15:50.430715-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 250,
@@ -62,7 +10,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
       },
       {
-        "date": "2019-03-17T20:55:00.223002-07:00",
+        "date": "2019-03-20T19:37:59.011984-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 51,
@@ -70,7 +18,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
       },
       {
-        "date": "2019-03-17T20:55:47.900930-07:00",
+        "date": "2019-03-20T19:38:07.051054-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 84,
@@ -78,7 +26,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-17T20:56:24.469572-07:00",
+        "date": "2019-03-20T19:38:42.935298-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 71,
@@ -86,7 +34,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-17T20:57:27.231118-07:00",
+        "date": "2019-03-20T19:39:45.764564-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 166,
