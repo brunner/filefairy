@@ -61,11 +61,13 @@ class Upload(Registrable):
     @staticmethod
     def _get_date():
         text = re.sub('[.,]', '', get(EXPORTS_URL))
-        match = search(r'(?s)League File: (\w+ \d+ \d+ \d+:\d+ \w+) C', text)
+        match = search(r'(?s)League File: (\w+ \d+ \d+ [\d:]+ \w+) C', text)
         if match:
-            month, remainder = match.split(' ', 1)
-            match = month[:3] + ' ' + remainder
+            month, day, year, time, period = match.split()
+            if ':' not in time:
+                time = time + ':00'
 
+            match = ' '.join([month[:3], day, year, time, period])
             d = datetime.datetime.strptime(match.title(), '%b %d %Y %I:%M %p')
             c = datetime_datetime_cst(d.year, d.month, d.day, d.hour, d.minute)
 
