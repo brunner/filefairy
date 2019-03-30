@@ -22,12 +22,18 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import table  # noqa
 from common.elements.elements import topper  # noqa
 from common.json_.json_ import loads  # noqa
+from common.os_.os_ import listdirs  # noqa
 from common.service.service import call_service  # noqa
+from common.subprocess_.subprocess_ import check_output  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from data.notify.notify import Notify  # noqa
 from data.response.response import Response  # noqa
+
+CONTAINING_DIR = re.sub(r'/filefairy/tasks/gameday', '', _path)
+FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
+GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
 
 GAMES_DIR = re.sub(r'/tasks/gameday', '/resource/games', _path)
 
@@ -53,14 +59,37 @@ class Gameday(Registrable):
         return 'Gameday'
 
     def _render_data(self, **kwargs):
-        _index_html = self._index_html(**kwargs)
-        return [('gameday/index.html', '', 'gameday.html', _index_html)]
+        index_html = self._index_html(**kwargs)
+        datas = [('gameday/index.html', '', 'gameday.html', index_html)]
+
+        nums = listdirs(GAMEDAY_DIR)
+        for name in os.listdir(GAMES_DIR):
+            num = name.strip('.json')
+            if num in nums:
+                continue
+            check_output(['mkdir', os.path.join(GAMEDAY_DIR, num)])
+
+            data = loads(os.path.join(GAMES_DIR, name))
+            if not data['events']:
+                continue
+
+            url = 'gameday/{}/index.html'.format(num)
+            livesim_html = self._livesim_html(data, **kwargs)
+            datas.append((url, num, 'livesim.html', livesim_html))
+
+        return datas
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.STATSPLUS_FINISH:
+            if not self.data['started']:
+                self._rm()
+            self.data['started'] = False
             self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_PARSE:
             self._render(**kwargs)
+        if kwargs['notify'] == Notify.STATSPLUS_START:
+            self._rm()
+            self.data['started'] = True
 
         return Response()
 
@@ -122,6 +151,15 @@ class Gameday(Registrable):
             ret['days'].append(tables)
 
         return ret
+
+    def _livesim_html(self, data, **kwargs):
+        ret = {}
+
+        return ret
+
+    def _rm(self):
+        check_output(['rm', '-rf', GAMEDAY_DIR])
+        check_output(['mkdir', GAMEDAY_DIR])
 
 
 # from common.datetime_.datetime_ import datetime_now
