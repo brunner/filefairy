@@ -35,7 +35,7 @@ from common.teams.teams import icon_absolute  # noqa
 GAMES_DIR = re.sub(r'/services/scoreboard', '/resource/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
-STATSPLUS_RT_SIM = os.path.join(STATSPLUS_LINK, 'rt_sim')
+STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 
 
 def _add_line_score(s, data, body, foot):
@@ -276,7 +276,7 @@ def line_score_show_foot(data, hidden=False):
     lines = []
 
     box = 'game_box_{}.html'.format(data['num'])
-    url = os.path.join(STATSPLUS_RT_SIM, box)
+    url = os.path.join(STATSPLUS_BOX_SCORES, box)
     head = anchor(url, 'Box Score')
 
     if data['recap']:
