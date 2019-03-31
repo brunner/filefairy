@@ -27,6 +27,30 @@ from common.teams.teams import encoding_to_abbreviation_sub  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
 from data.event.event import Event  # noqa
 
+EVENT_CHANGES = [
+    Event.CHANGE_INNING,
+    Event.CHANGE_BATTER,
+    Event.CHANGE_FIELDER,
+    Event.CHANGE_PINCH_HITTER,
+    Event.CHANGE_PINCH_RUNNER,
+    Event.CHANGE_PITCHER,
+]
+
+EVENT_PITCHES = [
+    Event.PITCHER_BALL,
+    Event.PITCHER_WALK,
+    Event.PITCHER_STRIKE_CALL,
+    Event.PITCHER_STRIKE_CALL_TOSSED,
+    Event.PITCHER_STRIKE_FOUL,
+    Event.PITCHER_STRIKE_FOUL_BUNT,
+    Event.PITCHER_STRIKE_FOUL_ERR,
+    Event.PITCHER_STRIKE_MISS,
+    Event.PITCHER_STRIKE_SWING,
+    Event.PITCHER_STRIKE_SWING_OUT,
+    Event.PITCHER_STRIKE_SWING_PASSED,
+    Event.PITCHER_STRIKE_SWING_WILD,
+]
+
 SMALLCAPS = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 
 
@@ -55,7 +79,7 @@ def _play(text, runs):
 
 
 def _profile(team, num, colors, s):
-    args = (team, colors, num, 'back')
+    args = (team, colors[team], num, 'back')
     img = call_service('uniforms', 'jersey_absolute', args)
     spn = '<span class="profile-text align-middle d-block">{}</span>'.format(s)
     return '<div class="position-relative h-58p">{}</div>'.format(img + spn)
@@ -112,12 +136,40 @@ def _head(score, bases, outs):
     return [[cell(content=text)]]
 
 
+def _summary(summary, outs):
+    text = ' '.join(summary)
+    if 'out' in text:
+        text += ' <b>{} out</b>'.format(outs)
+    content = player_to_name_sub(text)
+    return [cell(col=col(colspan='2'), content=content)]
+
+
 def _table(score, bases, outs, body):
     clazz = 'border mb-3'
     hcols = [col(colspan='2', clazz='font-weight-bold text-dark')]
     bcols = [col(), col(clazz='text-right w-50p')]
     head = _head(score, bases, outs)
     return table(clazz=clazz, hcols=hcols, bcols=bcols, head=head, body=body)
+
+
+def _group(encodings):
+    change = None
+    group = []
+    for encoding in encodings:
+        e, _ = Event.decode(encoding)
+        c = e in EVENT_CHANGES
+        if not group:
+            change = c
+            group.append(encoding)
+        elif change == c:
+            group.append(encoding)
+        else:
+            yield group
+            change = c
+            group = [encoding]
+
+    if group:
+        yield group
 
 
 def get_html(game_in):
@@ -154,73 +206,85 @@ def get_html(game_in):
     half, inning, outs, pitch, balls, strikes = 0, True, 0, 0, 0, 0
     bases = [None, None, None]
 
-    t, body, tables = table(), [], []
-    for encoding in data['events']:
-        e, args = Event.decode(encoding)
-        if e == Event.CHANGE_INNING:
-            inning = True
-        elif inning:
-            tables.append(topper(_inning(half)))
-            batting, throwing = throwing, batting
-            batter, pitcher = None, pitchers[throwing]
-            half, inning, outs = half + 1, False, 0
-            bases = [None, None, None]
-
-        if e in [Event.CHANGE_BATTER, Event.CHANGE_PINCH_HITTER]:
-            batter, = args
-            pitch, balls, strikes = 0, 0, 0
-            score = '{} {} · {} {}'.format(away_team, runs[away_team],
-                                           home_team, runs[home_team])
-            if e == Event.CHANGE_PINCH_HITTER:
-                _title = 'Offensive Substitution'
-                _text = 'Pinch hitting: {}'.format(batter)
-                body.append(_change(_title, _text))
-            t, body = _table(score, bases, outs, body), []
-            tbody(t, _player(False, throwing, pitcher, '', colors[throwing]))
-            tbody(t, _player(True, batting, batter, '', colors[batting]))
-            tables.append(t)
-            continue
-        if e == Event.CHANGE_PITCHER:
-            pitcher, = args
-            if pitcher == pitchers[throwing]:
+    t, body, post, tables = table(), [], [], []
+    for group in _group(data['events']):
+        summary = []
+        for encoding in group:
+            e, args = Event.decode(encoding)
+            if e == Event.CHANGE_INNING:
+                inning = True
                 continue
-            _title = 'Pitching Substitution'
-            _text = '{} replaces {}.'.format(pitcher, pitchers[throwing])
-            body.append(_change(_title, _text))
-            pitchers[throwing] = pitcher
-            continue
+            elif inning:
+                tables.append(topper(_inning(half)))
+                batting, throwing = throwing, batting
+                batter, pitcher = None, pitchers[throwing]
+                half, inning, outs = half + 1, False, 0
+                bases = [None, None, None]
 
-        row = None
-        if e == Event.PITCHER_BALL:
-            pitch, balls = pitch + 1, balls + 1
-            row = _pitch('success', pitch, balls, strikes, 'Ball')
-        if e in [Event.PITCHER_STRIKE_CALL, Event.PITCHER_STRIKE_CALL_TOSSED]:
-            pitch, strikes = pitch + 1, strikes + 1
-            row = _pitch('danger', pitch, balls, strikes, 'Called Strike')
-            if strikes == 3:
-                outs += 1
-                _text = '{} called out on strikes. <b>{} out</b>'
-                body.append(_play(_text.format(batter, outs), None))
-            if e == Event.PITCHER_STRIKE_CALL_TOSSED:
-                _title = 'Ejection'
-                _text = '{} ejected for arguing the call.'.format(batter)
+            if e in [Event.CHANGE_BATTER, Event.CHANGE_PINCH_HITTER]:
+                batter, = args
+                pitch, balls, strikes = 0, 0, 0
+                score = '{} {} · {} {}'.format(away_team, runs[away_team],
+                                               home_team, runs[home_team])
+                if e == Event.CHANGE_PINCH_HITTER:
+                    _title = 'Offensive Substitution'
+                    _text = 'Pinch hitting: {}'.format(batter)
+                    body.append(_change(_title, _text))
+                t, body = _table(score, bases, outs, body), []
+                tbody(t, _player(False, throwing, pitcher, '', colors))
+                tbody(t, _player(True, batting, batter, '', colors))
+                tables.append(t)
+                continue
+            if e == Event.CHANGE_PITCHER:
+                pitcher, = args
+                if pitcher == pitchers[throwing]:
+                    continue
+                _title = 'Pitching Substitution'
+                _text = '{} replaces {}.'.format(pitcher, pitchers[throwing])
                 body.append(_change(_title, _text))
-        if e == Event.PITCHER_STRIKE_FOUL:
-            pitch, strikes = pitch + 1, min(2, strikes + 1)
-            row = _pitch('danger', pitch, balls, strikes, 'Foul Ball')
-        if e == Event.PITCHER_STRIKE_SWING:
-            pitch, strikes = pitch + 1, strikes + 1
-            row = _pitch('danger', pitch, balls, strikes, 'Swinging Strike')
-            if strikes == 3:
-                outs += 1
-                _text = '{} strikes out swinging. <b>{} out</b>'
-                body.append(_play(_text.format(batter, outs), None))
-        if row:
-            tbody(t, row)
-            row = None
-        if body:
-            for _row in body:
-                tbody(t, _row)
-            body = []
+                pitchers[throwing] = pitcher
+                continue
+
+            if summary and e in EVENT_PITCHES:
+                body.append(_summary(summary, outs))
+
+            if e == Event.PITCHER_BALL:
+                pitch, balls = pitch + 1, balls + 1
+                _row = _pitch('success', pitch, balls, strikes, 'Ball')
+                body.append(_row)
+            if e in [
+                    Event.PITCHER_STRIKE_CALL,
+                    Event.PITCHER_STRIKE_CALL_TOSSED,
+            ]:
+                pitch, strikes = pitch + 1, strikes + 1
+                _row = _pitch('danger', pitch, balls, strikes, 'Called Strike')
+                body.append(_row)
+                if strikes == 3:
+                    outs += 1
+                    summary.append('{} called out on strikes.'.format(batter))
+                if e == Event.PITCHER_STRIKE_CALL_TOSSED:
+                    _title = 'Ejection'
+                    _text = '{} ejected for arguing the call.'.format(batter)
+                    post.append(_change(_title, _text))
+            if e == Event.PITCHER_STRIKE_FOUL:
+                pitch, strikes = pitch + 1, min(2, strikes + 1)
+                _row = _pitch('danger', pitch, balls, strikes, 'Foul Ball')
+                body.append(_row)
+            if e == Event.PITCHER_STRIKE_SWING:
+                pitch, strikes = pitch + 1, strikes + 1
+                _text = 'Swinging Strike'
+                _row = _pitch('danger', pitch, balls, strikes, _text)
+                body.append(_row)
+                if strikes == 3:
+                    outs += 1
+                    summary.append('{} strikes out swinging.'.format(batter))
+
+        if summary:
+            body.append(_summary(summary, outs))
+        for _row in body:
+            tbody(t, _row)
+        for _row in post:
+            tbody(t, _row)
+        body, post = [], []
 
     return {'styles': styles, 'tables': tables}
