@@ -59,23 +59,21 @@ class Gameday(Registrable):
         return 'Gameday'
 
     def _render_data(self, **kwargs):
-        index_html = self._index_html(**kwargs)
-        datas = [('gameday/index.html', '', 'gameday.html', index_html)]
+        _index_html = self._index_html(**kwargs)
+        datas = [('gameday/index.html', '', 'gameday.html', _index_html)]
 
         nums = listdirs(GAMEDAY_DIR)
         for name in os.listdir(GAMES_DIR):
             num = name.strip('.json')
             if num in nums:
                 continue
-            check_output(['mkdir', os.path.join(GAMEDAY_DIR, num)])
 
-            data = loads(os.path.join(GAMES_DIR, name))
-            if not data['events']:
-                continue
-
-            url = 'gameday/{}/index.html'.format(num)
-            livesim_html = self._livesim_html(data, **kwargs)
-            datas.append((url, num, 'livesim.html', livesim_html))
+            _in = os.path.join(GAMES_DIR, name)
+            _livesim_html = call_service('livesim', 'get_html', (_in, ))
+            if _livesim_html:
+                url = 'gameday/{}/index.html'.format(num)
+                datas.append((url, num, 'livesim.html', _livesim_html))
+                check_output(['mkdir', os.path.join(GAMEDAY_DIR, num)])
 
         return datas
 
@@ -152,11 +150,6 @@ class Gameday(Registrable):
 
         return ret
 
-    def _livesim_html(self, data, **kwargs):
-        ret = {}
-
-        return ret
-
     def _rm(self):
         check_output(['rm', '-rf', GAMEDAY_DIR])
         check_output(['mkdir', GAMEDAY_DIR])
@@ -174,7 +167,10 @@ class Gameday(Registrable):
 # reference = Reference(date=date, e=e)
 # set_reference(reference)
 
+# reload_service_for_test('livesim')
 # reload_service_for_test('scoreboard')
+# reload_service_for_test('uniforms')
 
 # gameday = Gameday(date=date, e=e)
+# gameday._rm()
 # gameday._render(date=date)
