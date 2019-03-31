@@ -13,6 +13,14 @@ def _attr(attributes):
     return ' ' + ' '.join('{}="{}"'.format(k, v) for k, v in items)
 
 
+def _trow(t, name, row):
+    if row is None:
+        return
+    if name not in t or t[name] is None:
+        t[name] = []
+    t[name].append(row)
+
+
 def cell(col=None, content=''):
     """Builds a cell object, describing a table cell.
 
@@ -264,6 +272,16 @@ def table(clazz='',
     if foot:
         obj['foot'] = foot
     return obj
+
+
+def tbody(obj, row):
+    """Appends a body row to an existing table.
+
+    Args:
+        obj: The table.
+        row: The row.
+    """
+    _trow(obj, 'body', row)
 
 
 def topper(text):

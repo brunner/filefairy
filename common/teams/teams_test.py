@@ -15,6 +15,7 @@ from common.teams.teams import decoding_to_encoding  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_abbreviation  # noqa
+from common.teams.teams import encoding_to_abbreviation_sub  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
@@ -90,19 +91,30 @@ class TeamsTest(unittest.TestCase):
             actual = encoding_to_abbreviation(encoding)
             self.assertEqual(actual, abbreviation)
 
+    def test_encoding_to_abbreviation_sub(self):
+        hometowns = [
+            'T30', 'ARI', 'ATL', 'BAL', 'BOS', 'CWS', 'CHC', 'CIN', 'CLE',
+            'COL', 'DET', 'MIA', 'HOU', 'KC', 'LAA', 'LAD', 'MIL', 'MIN',
+            'NYY', 'NYM', 'OAK', 'PHI', 'PIT', 'SD', 'SEA', 'SF', 'STL', 'TB',
+            'TEX', 'TOR', 'WAS', 'TCH', 'TLA', 'TNY'
+        ]
+        actual = encoding_to_abbreviation_sub(', '.join(ENCODING_KEYS))
+        expected = ', '.join(hometowns)
+        self.assertEqual(actual, expected)
+
     def test_encoding_to_decoding(self):
         decodings = [
-            '', 'Arizona Diamondbacks', 'Atlanta Braves',
-            'Baltimore Orioles', 'Boston Red Sox', 'Chicago White Sox',
-            'Chicago Cubs', 'Cincinnati Reds', 'Cleveland Indians',
-            'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins',
-            'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels',
-            'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins',
-            'New York Yankees', 'New York Mets', 'Oakland Athletics',
-            'Philadelphia Phillies', 'Pittsburgh Pirates', 'San Diego Padres',
-            'Seattle Mariners', 'San Francisco Giants', 'St. Louis Cardinals',
-            'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays',
-            'Washington Nationals', '', '', ''
+            '', 'Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles',
+            'Boston Red Sox', 'Chicago White Sox', 'Chicago Cubs',
+            'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies',
+            'Detroit Tigers', 'Miami Marlins', 'Houston Astros',
+            'Kansas City Royals', 'Los Angeles Angels', 'Los Angeles Dodgers',
+            'Milwaukee Brewers', 'Minnesota Twins', 'New York Yankees',
+            'New York Mets', 'Oakland Athletics', 'Philadelphia Phillies',
+            'Pittsburgh Pirates', 'San Diego Padres', 'Seattle Mariners',
+            'San Francisco Giants', 'St. Louis Cardinals', 'Tampa Bay Rays',
+            'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals', '',
+            '', ''
         ]
         for encoding, decoding in zip(ENCODING_KEYS, decodings):
             actual = encoding_to_decoding(encoding)

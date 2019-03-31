@@ -126,6 +126,10 @@ def encoding_to_abbreviation(encoding):
     return ENCODING_MAP.get(encoding, {}).get('abbreviation', '')
 
 
+def encoding_to_abbreviation_sub(text):
+    return _sub(ENCODING_KEYS, encoding_to_abbreviation, text)
+
+
 def encoding_to_colors(encoding):
     return ENCODING_MAP.get(encoding, {}).get('colors', [])
 
