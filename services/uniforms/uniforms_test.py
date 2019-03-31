@@ -183,39 +183,39 @@ class UniformsTest(unittest.TestCase):
                 rules=['left: 20px']),
             ruleset(
                 selector='.number-basic-l1',
-                rules=['left: 15px']),
+                rules=['left: 16px']),
             ruleset(
                 selector='.number-basic-l2',
-                rules=['left: 13px']),
+                rules=['left: 14px']),
             ruleset(
                 selector='.number-basic-r1',
-                rules=['left: 24px']),
+                rules=['left: 25px']),
             ruleset(
                 selector='.number-basic-r2',
-                rules=['left: 26px'])
+                rules=['left: 27px'])
         ] + _numbers('reds') + [
             ruleset(
                 selector='.number-reds-mid',
                 rules=['left: 20px']),
             ruleset(
                 selector='.number-reds-l1',
-                rules=['left: 15px']),
+                rules=['left: 16px']),
             ruleset(
                 selector='.number-reds-l2',
-                rules=['left: 13px']),
+                rules=['left: 14px']),
             ruleset(
                 selector='.number-reds-r1',
-                rules=['left: 24px']),
+                rules=['left: 25px']),
             ruleset(
                 selector='.number-reds-r2',
-                rules=['left: 26px']),
+                rules=['left: 27px']),
             ruleset(
                 selector='.number-base',
                 rules=[
                     'height: 18px',
                     'width: 14px',
                     '-webkit-mask-size: 14px 18px',
-                    'top: 20px',
+                    'top: 18px',
                 ]),
         ]
         self.assertEqual(actual, expected)

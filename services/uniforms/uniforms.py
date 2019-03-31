@@ -368,21 +368,21 @@ NUMBER_STYLE = ruleset(
         'height: 18px',
         'width: 14px',
         '-webkit-mask-size: 14px 18px',
-        'top: 20px',
+        'top: 18px',
     ])
 
 
 def _font_offset(font):
     if font == 'bluejays':
-        return [('mid', 20), ('l1', 14), ('l2', 13), ('r1', 25), ('r2', 26)]
+        return [('mid', 20), ('l1', 15), ('l2', 14), ('r1', 26), ('r2', 27)]
     if font == 'diamondbacks':
-        return [('mid', 20), ('l1', 16), ('l2', 14), ('r1', 23), ('r2', 25)]
+        return [('mid', 20), ('l1', 17), ('l2', 15), ('r1', 24), ('r2', 26)]
     if font == 'redsox':
-        return [('mid', 20), ('l1', 15), ('l2', 13), ('r1', 24), ('r2', 26)]
+        return [('mid', 20), ('l1', 16), ('l2', 14), ('r1', 25), ('r2', 27)]
     if font == 'rounded':
-        return [('mid', 20), ('l1', 15), ('l2', 14), ('r1', 24), ('r2', 25)]
+        return [('mid', 20), ('l1', 16), ('l2', 15), ('r1', 25), ('r2', 26)]
 
-    return [('mid', 20), ('l1', 15), ('l2', 13), ('r1', 24), ('r2', 26)]
+    return [('mid', 20), ('l1', 16), ('l2', 14), ('r1', 25), ('r2', 27)]
 
 
 def _nums(num):
