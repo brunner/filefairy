@@ -12,6 +12,7 @@ sys.path.append(re.sub(r'/services/livesim', '', _path))
 from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.elements.elements import topper  # noqa
 from common.json_.json_ import loads  # noqa
@@ -30,6 +31,14 @@ def _inning(half):
     s = 'Top' if half % 2 == 0 else 'Bottom'
     n = (half // 2) + 1
     return '{} {}{}'.format(s, n, suffix(n))
+
+
+def _pitch(clazz, pitch, balls, strikes, text):
+    pill = '<div class="badge badge-pill pitch alert-{}">{}</div>'
+    left = cell(content=(pill.format(clazz, pitch) + text))
+    count = '{} - {}'.format(balls, strikes)
+    right = cell(content=span(classes=['text-secondary'], text=count))
+    return [left, right]
 
 
 def _profile(team, num, colors, s):
@@ -55,7 +64,12 @@ def _player(bats, team, player, fielding, colors):
         name,
         stats,
     )
-    return cell(content=_profile(team, num, colors, s))
+    return [cell(col=col(colspan='2'), content=_profile(team, num, colors, s))]
+
+
+def _table(body):
+    bcols = [col(), col(clazz='text-right w-50p')]
+    return table(clazz='border mb-3', bcols=bcols, body=body)
 
 
 def get_html(game_in):
@@ -80,8 +94,7 @@ def get_html(game_in):
     styles = call_service('uniforms', 'jersey_style', (*jerseys, ))
 
     batting, throwing = data['home_team'], data['away_team']
-    half = 0
-    inning = True
+    half, inning, pitch, balls, strikes = 0, True, 0, 0, 0
 
     tables = []
     body = []
@@ -91,18 +104,34 @@ def get_html(game_in):
         if event == Event.CHANGE_INNING:
             inning = True
         elif inning:
-            if body:
-                tables.append(table(clazz='border mb-3', body=body))
-                body = []
             tables.append(topper(_inning(half)))
             batting, throwing = throwing, batting
             half, inning = half + 1, False
 
+        row = None
         if event == Event.CHANGE_BATTER:
-            cell = _player(True, batting, args[0], '', colors[batting])
-            body.append([cell])
+            if body:
+                tables.append(_table(body))
+                body = []
+            pitch, balls, strikes = 0, 0, 0
+            row = _player(True, batting, args[0], '', colors[batting])
+        elif event == Event.PITCHER_BALL:
+            pitch, balls = pitch + 1, balls + 1
+            row = _pitch('success', pitch, balls, strikes, 'Ball')
+        elif event == Event.PITCHER_STRIKE_CALL:
+            pitch, strikes = pitch + 1, strikes + 1
+            row = _pitch('danger', pitch, balls, strikes, 'Called Strike')
+        elif event == Event.PITCHER_STRIKE_FOUL:
+            pitch, strikes = pitch + 1, min(2, strikes + 1)
+            row = _pitch('danger', pitch, balls, strikes, 'Foul Ball')
+        elif event == Event.PITCHER_STRIKE_SWING:
+            pitch, strikes = pitch + 1, strikes + 1
+            row = _pitch('danger', pitch, balls, strikes, 'Swinging Strike')
+
+        if row:
+            body.append(row)
 
     if body:
-        tables.append(table(clazz='border mb-3', body=body))
+        tables.append(_table(body))
 
     return {'styles': styles, 'tables': tables}
