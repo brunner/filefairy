@@ -18,7 +18,7 @@ from services.uniforms.uniforms import encoding_to_colors  # noqa
 from services.uniforms.uniforms import jersey_absolute  # noqa
 from services.uniforms.uniforms import jersey_style  # noqa
 
-CONTENT = '<div class="position-relative h-72p">{}</div>'
+CONTENT = '<div class="position-relative h-58p">{}</div>'
 
 _jerseys = []
 _tables = []

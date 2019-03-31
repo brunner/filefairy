@@ -147,23 +147,23 @@ UNIFORMS = [
         (WHITE, '#ab1234', '#0b2c5a', 'block'),
         (GREY, '#ab1234', '#0b2c5a', 'block'),
         ((CREAM, '#ab1234', '#0b2c5a', 'block'), ([SUNDAY], 1.0, HOME)),
-        ((BLUE, '#0b2c5a', '#ffffff', 'block'), (ALL, .5, AWAY)),
+        ((BLUE, '#0b2c5a', '#f5f5f5', 'block'), (ALL, .5, AWAY)),
     ),
     _uniform(  # T33
         (WHITE, '#f94900', '#000000', 'basic'),
         (GREY, '#f94900', '#000000', 'basic'),
         ((BLACK, '#f94900', 'none', 'basic'), ([FRIDAY], 1.0, BOTH)),
-        ((ORANGE, '#000000', '#ffffff', 'basic'), ([SATURDAY], 1.0, BOTH)),
+        ((ORANGE, '#000000', '#7f7f7f', 'basic'), ([SATURDAY], 1.0, BOTH)),
     ),
     _uniform(  # T34
         (WHITE, '#d5122f', '#09285a', 'redsox'),
         (GREY, '#d5122f', '#09285a', 'redsox'),
-        ((RED, '#09285a', '#ffffff', 'redsox'), ([FRIDAY], 1.0, HOME)),
-        ((BLUE, '#d5122f', '#ffffff', 'redsox'), ([FRIDAY], 1.0, AWAY)),
+        ((RED, '#09285a', '#88a7d9', 'redsox'), ([FRIDAY], 1.0, HOME)),
+        ((BLUE, '#d5122f', '#82a7d9', 'redsox'), ([FRIDAY], 1.0, AWAY)),
     ),
     _uniform(  # T35
         (WHITE, '#000000', 'none', 'basic'),
-        (GREY, '#000000', '#ffffff', 'basic'),
+        (GREY, '#000000', '#f5f5f5', 'basic'),
         ((BLUE, '#09285a', 'none', 'block'), ([SUNDAY], 1.0, HOME)),
         ((BLACK, '#ffffff', 'none', 'basic'), (ALL, .6, BOTH)),
     ),
@@ -180,19 +180,19 @@ UNIFORMS = [
     _uniform(  # T38
         (WHITE, '#e9144b', '#09295c', 'basic'),
         (GREY, '#09295c', '#e9144b', 'basic'),
-        ((BLUE, '#e9144b', '#ffffff', 'basic'), (ALL, .6, BOTH)),
+        ((BLUE, '#e9144b', '#82b0e2', 'basic'), (ALL, .6, BOTH)),
     ),
     _uniform(  # T39
         (WHITE, '#000000', 'none', 'basic'),
         (GREY, '#22176b', 'none', 'basic'),
-        ((PURPLE, '#000000', '#ffffff', 'basic'), (ALL, .35, BOTH)),
+        ((PURPLE, '#000000', '#f5f5f5', 'basic'), (ALL, .35, BOTH)),
         ((BLACK, '#a5a4a8', '#3b3583', 'basic'), (ALL, .15, BOTH)),
     ),
     _uniform(  # T40
         (WHITE, '#0b2245', '#e54927', 'block'),
         (GREY, '#0b2245', '#e54927', 'block'),
         ((BLUE, '#ffffff', '#e54927', 'block'), (ALL, .6, HOME)),
-        ((ORANGE, '#0b2245', '#ffffff', 'block'), (ALL, .5, AWAY)),
+        ((ORANGE, '#0b2245', '#98aece', 'block'), (ALL, .5, AWAY)),
     ),
     _uniform(  # T41
         (WHITE, '#000000', '#27aab8', 'basic'),
@@ -201,7 +201,7 @@ UNIFORMS = [
     _uniform(  # T42
         (WHITE, '#141929', '#aa563e', 'block'),
         (GREY, '#141929', '#aa563e', 'block'),
-        ((ORANGE, '#141929', '#ffffff', 'block'), (ALL, .2, BOTH)),
+        ((ORANGE, '#141929', '#f5f5f5', 'block'), (ALL, .2, BOTH)),
     ),
     _uniform(  # T43
         (WHITE, '#0d326f', 'none', 'basic'),
@@ -227,11 +227,11 @@ UNIFORMS = [
         (WHITE, '#d11242', '#052046', 'basic'),
         (GREY, '#052046', '#d11242', 'basic'),
         ((CREAM, '#052046', '#d11242', 'basic'), (WEEKDAYS, 1.0, HOME)),
-        ((BLUE, '#d11242', '#d0718f', 'basic'), (ALL, .15, AWAY)),
+        ((BLUE, '#d11242', '#ff94c4', 'basic'), (ALL, .15, AWAY)),
     ),
     _uniform(  # T48
         (WHITE, '#051e42', 'none', 'block'),
-        (GREY, '#051e42', '#ffffff', 'block'),
+        (GREY, '#051e42', '#f5f5f5', 'block'),
     ),
     _uniform(  # T49
         (WHITE, '#144a8b', '#d57437', 'basic'),
@@ -247,15 +247,15 @@ UNIFORMS = [
     ),
     _uniform(  # T51
         (WHITE, '#d11043', 'none', 'rounded'),
-        (GREY, '#d11043', '#ffffff', 'rounded'),
-        ((SKY, '#6d223a', '#ffffff', 'rounded'), ([THURSDAY], 1.0, HOME)),
+        (GREY, '#d11043', '#f5f5f5', 'rounded'),
+        ((SKY, '#6d223a', '#d991a8', 'rounded'), ([THURSDAY], 1.0, HOME)),
         ((CREAM, '#d11043', '#165397', 'rounded'), ([SUNDAY], 1.0, HOME)),
     ),
     _uniform(  # T52
         (WHITE, '#000000', '#fcc72d', 'pirates'),
         (GREY, '#000000', '#fcc72d', 'pirates'),
-        ((YELLOW, '#000000', '#ffffff', 'basic'), ([SUNDAY], 1.0, HOME)),
-        ((BLACK, '#fcc72d', '#ffffff', 'pirates'), (ALL, .4, BOTH)),
+        ((YELLOW, '#000000', '#f5f5f5', 'basic'), ([SUNDAY], 1.0, HOME)),
+        ((BLACK, '#fcc72d', '#ffffd0', 'pirates'), (ALL, .4, BOTH)),
     ),
     _uniform(  # T53
         (WHITE, '#512c1b', '#f0aa1c', 'serif'),
@@ -272,7 +272,7 @@ UNIFORMS = [
     _uniform(  # T55
         (WHITE, '#000000', '#c85633', 'basic'),
         (GREY, '#000000', '#c85633', 'basic'),
-        ((ORANGE, '#000000', '#ffffff', 'basic'), ([FRIDAY], 1.0, HOME)),
+        ((ORANGE, '#000000', '#f5f5f5', 'basic'), ([FRIDAY], 1.0, HOME)),
     ),
     _uniform(  # T56
         (WHITE, '#d11043', '#0c2340', 'basic'),
@@ -288,7 +288,7 @@ UNIFORMS = [
     _uniform(  # T58
         (WHITE, '#124886', '#ce103b', 'pointed'),
         (GREY, '#124886', '#ce103b', 'pointed'),
-        ((SKY, '#e60021', '#ffffff', 'block'), ([SUNDAY], 1.0, HOME)),
+        ((SKY, '#e60021', '#99dcff', 'block'), ([SUNDAY], 1.0, HOME)),
         ((BLUE, '#ffffff', '#ce103b', 'pointed'), (ALL, .5, BOTH)),
     ),
     _uniform(  # T59
@@ -299,7 +299,7 @@ UNIFORMS = [
     _uniform(  # T60
         (WHITE, '#b10b30', '#0a2045', 'block'),
         (GREY, '#b10b30', '#0a2045', 'block'),
-        ((BLUE, '#b10b30', '#ffffff', 'block'), ([FRIDAY], 1.0, BOTH)),
+        ((BLUE, '#b10b30', '#7f9fc2', 'block'), ([FRIDAY], 1.0, BOTH)),
         ((RED, '#ffffff', '#0a2045', 'block'), ([SUNDAY], 1.0, BOTH)),
     ),
     None,  # TCH
@@ -348,11 +348,11 @@ JERSEY_RULES = [r.format(**JERSEY_KWARGS) for r in JERSEY_RULES]
 JERSEY_STYLE = ruleset(
     selector='.jersey-base',
     rules=[
-        'background-size: 78px 80px',
+        'background-size: 62px 66px',
         'border: 1px solid #eeeff0',
-        'height: 82px',
+        'height: 68px',
         'margin: -5px -1px -5px -5px',
-        'width: 80px',
+        'width: 64px',
     ])
 
 NUMBER_KWARGS = {
@@ -365,24 +365,24 @@ NUMBER_RULES = [r.format(**NUMBER_KWARGS) for r in NUMBER_RULES]
 NUMBER_STYLE = ruleset(
     selector='.number-base',
     rules=[
-        'height: 20px',
-        'width: 16px',
-        '-webkit-mask-size: 16px 20px',
-        'top: 23px',
+        'height: 18px',
+        'width: 14px',
+        '-webkit-mask-size: 14px 18px',
+        'top: 20px',
     ])
 
 
 def _font_offset(font):
     if font == 'bluejays':
-        return [('mid', 27), ('l1', 21), ('l2', 20), ('r1', 33), ('r2', 34)]
+        return [('mid', 20), ('l1', 14), ('l2', 13), ('r1', 25), ('r2', 26)]
     if font == 'diamondbacks':
-        return [('mid', 27), ('l1', 23), ('l2', 21), ('r1', 31), ('r2', 33)]
+        return [('mid', 20), ('l1', 16), ('l2', 14), ('r1', 23), ('r2', 25)]
     if font == 'redsox':
-        return [('mid', 27), ('l1', 22), ('l2', 19), ('r1', 32), ('r2', 35)]
+        return [('mid', 20), ('l1', 15), ('l2', 13), ('r1', 24), ('r2', 26)]
     if font == 'rounded':
-        return [('mid', 27), ('l1', 22), ('l2', 21), ('r1', 32), ('r2', 33)]
+        return [('mid', 20), ('l1', 15), ('l2', 14), ('r1', 24), ('r2', 25)]
 
-    return [('mid', 27), ('l1', 22), ('l2', 20), ('r1', 32), ('r2', 34)]
+    return [('mid', 20), ('l1', 15), ('l2', 13), ('r1', 24), ('r2', 26)]
 
 
 def _nums(num):
