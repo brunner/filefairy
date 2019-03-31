@@ -54,6 +54,23 @@ EVENT_PITCHES = [
 SMALLCAPS = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 
 
+def _advance(bases, scored, player, base):
+    if base > 2:
+        scored.append(player)
+        return
+    elif bases[base]:
+        _advance(bases, scored, bases[base], base + 1)
+    bases[base] = player
+
+
+def _base(bases, scored, player, base):
+    for i in range(base, -1, -1):
+        if bases[i]:
+            _advance(bases, scored, bases[i], base + 1)
+            bases[i] = None
+    bases[base] = player
+
+
 def _change(title, text):
     content = player_to_name_sub('<b>{}</b><br>{}'.format(title, text))
     return [cell(col=col(colspan='2'), content=content)]
@@ -205,6 +222,7 @@ def get_html(game_in):
     batter, pitcher = None, pitchers[home_team]
     half, inning, outs, pitch, balls, strikes = 0, True, 0, 0, 0, 0
     bases = [None, None, None]
+    scored = []
 
     t, body, post, tables = table(), [], [], []
     for group in _group(data['events']):
@@ -228,13 +246,22 @@ def get_html(game_in):
                                                home_team, runs[home_team])
                 if e == Event.CHANGE_PINCH_HITTER:
                     _title = 'Offensive Substitution'
-                    _text = 'Pinch hitting: {}'.format(batter)
+                    _text = 'Pinch hitter: {}'.format(batter)
                     body.append(_change(_title, _text))
                 t, body = _table(score, bases, outs, body), []
                 tbody(t, _player(False, throwing, pitcher, '', colors))
                 tbody(t, _player(True, batting, batter, '', colors))
                 tables.append(t)
                 continue
+            if e == Event.CHANGE_FIELDER:
+                _title = 'Defensive Substitution'
+                _text = 'Now in {}: {}'.format(*args)
+                body.append(_change(_title, _text))
+            if e == Event.CHANGE_PINCH_RUNNER:
+                base, player = args
+                _title = 'Offensive Substitution'
+                _text = 'Pinch runner at {}: {}'.format(base, player)
+                body.append(_change(_title, _text))
             if e == Event.CHANGE_PITCHER:
                 pitcher, = args
                 if pitcher == pitchers[throwing]:
@@ -278,6 +305,37 @@ def get_html(game_in):
                 if strikes == 3:
                     outs += 1
                     summary.append('{} strikes out swinging.'.format(batter))
+
+            if e in [Event.BATTER_SINGLE, Event.BATTER_SINGLE_INFIELD]:
+                _base(bases, scored, batter, 0)
+                summary.append('{} singles.'.format(batter))
+            if e == Event.BATTER_SINGLE_APPEAL:
+                _base(bases, scored, batter, 0)
+                bases[0] = None
+                outs += 1
+                summary.append(
+                    '{} singles. Batter out on appeal for missing first base.'.
+                    format(batter))
+            if e == Event.BATTER_SINGLE_BATTED_OUT:
+                _base(bases, scored, batter, 0)
+                outs += 1
+                summary.append(
+                    '{} singles. Runner out being hit by batted ball.'.format(
+                        batter))
+            if e == Event.BATTER_SINGLE_BUNT:
+                _base(bases, scored, batter, 0)
+                summary.append('{} singles on a bunt.'.format(batter))
+            if e == Event.BATTER_SINGLE_ERR:
+                _base(bases, scored, batter, 1)
+                summary.append(
+                    '{} singles. Error in OF, batter to second base.')
+            if e == Event.BATTER_SINGLE_STRETCH:
+                _base(bases, scored, batter, 1)
+                bases[1] = None
+                outs += 1
+                summary.append(
+                    '{} singles. Batter out at second base trying to stretch hit.'
+                    .format(batter))
 
         if summary:
             body.append(_summary(summary, outs))
