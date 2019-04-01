@@ -1,58 +1,8 @@
 {
   "logs": {
-    "2019-03-27T00:00:00-07:00": [
+    "2019-03-31T00:00:00-07:00": [
       {
-        "date": "2019-03-27T19:35:18.558968-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 250,
-        "msg": "Sim in progress.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      },
-      {
-        "date": "2019-03-27T20:44:57.657401-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/api/registrable/registrable.py\", line 97, in _run\n    return self._run_internal(**kwargs)\n  File \"/home/jbrunner/filefairy/tasks/upload/upload.py\", line 49, in _run_internal\n    date = self._get_date()\n  File \"/home/jbrunner/filefairy/tasks/upload/upload.py\", line 71, in _get_date\n    match = ' '.join(month[:3], day, year, time, period)\nTypeError: join() takes exactly one argument (5 given)",
-        "levelname": "ERROR",
-        "lineno": 272,
-        "msg": "Disabled upload.",
-        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-03-27T20:45:27.864137-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 51,
-        "msg": "File is up.",
-        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
-      },
-      {
-        "date": "2019-03-27T20:48:24.869581-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 84,
-        "msg": "Download started.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-03-27T20:49:06.085394-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 71,
-        "msg": "Download finished.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-03-27T20:50:12.799281-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 167,
-        "msg": "Download complete.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      }
-    ],
-    "2019-03-29T00:00:00-07:00": [
-      {
-        "date": "2019-03-29T22:06:02.734909-07:00",
+        "date": "2019-03-31T19:05:28.440946-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 251,
@@ -60,7 +10,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
       },
       {
-        "date": "2019-03-29T22:45:49.078799-07:00",
+        "date": "2019-03-31T19:28:16.321229-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 51,
@@ -68,7 +18,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
       },
       {
-        "date": "2019-03-29T22:46:08.021256-07:00",
+        "date": "2019-03-31T19:28:46.210296-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 84,
@@ -76,7 +26,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-29T22:46:47.078318-07:00",
+        "date": "2019-03-31T19:29:24.489570-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 71,
@@ -84,7 +34,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-29T22:47:51.415706-07:00",
+        "date": "2019-03-31T19:30:30.582513-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 167,
