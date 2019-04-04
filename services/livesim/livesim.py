@@ -195,7 +195,10 @@ class State(object):
         pill = '<div class="badge badge-pill pitch alert-{}">{}</div>'
         left = cell(content=(pill.format(clazz, self.pitch) + text))
         count = '{} - {}'.format(self.balls, self.strikes)
-        right = cell(content=span(classes=['text-secondary'], text=count))
+        if clazz == 'primary':
+            right = cell()
+        else:
+            right = cell(content=span(classes=['text-secondary'], text=count))
         tables.append_body([left, right])
 
     def create_batting_substitution_row(self, args, tables):
@@ -225,8 +228,18 @@ class State(object):
 
     def create_summary_row(self, tables):
         content = player_to_name_sub(' '.join(tables.get_summary()))
-        if 'out' in content:
+        outs = 'out' in content and 'advances to 1st' not in content
+
+        if tables.is_inplay():
+            runs = 'scores' in content
+            text = 'In play, '
+            text += 'run(s)' if runs else 'out(s)' if outs else 'no out'
+            self.handle_pitch_strike()
+            self.create_pitch_row(text, tables)
+
+        if outs:
             content += ' <b>{}</b>'.format(self.to_outs_str())
+
         tables.append_body([cell(col=col(colspan='2'), content=content)])
 
     def get_batter(self):
@@ -241,6 +254,9 @@ class State(object):
         position, title = LOCATIONS[_location(zone, infield)]
         fielder = self.fielders[self.throwing][position]
         return title + ' ' + fielder
+
+    def get_pitcher(self):
+        return self.pitcher
 
     def get_runner(self, base):
         return self.bases[base - 1]
@@ -314,6 +330,9 @@ class State(object):
 
     def is_strikeout(self):
         return self.strikes == 3
+
+    def is_walk(self):
+        return self.balls == 4
 
     def set_change_inning(self):
         self.change = True
@@ -394,6 +413,7 @@ class Tables(object):
     def __init__(self):
         self.body = []
         self.foot = []
+        self.inplay = False
         self.summary = []
         self.table = table()
         self.tables = []
@@ -426,9 +446,13 @@ class Tables(object):
     def get_tables(self):
         return self.tables
 
+    def is_inplay(self):
+        return self.inplay
+
     def reset_all(self):
         self.body = []
         self.foot = []
+        self.inplay = False
         self.summary = []
 
     def reset_body(self):
@@ -436,6 +460,9 @@ class Tables(object):
 
     def reset_summary(self):
         self.summary = []
+
+    def set_inplay(self):
+        self.inplay = True
 
 
 EVENT_CHANGES = [
@@ -482,6 +509,7 @@ EVENT_SINGLE_BASES = [
 
 def _check_single_base_events(e, args, state, tables):
     batter = state.get_batter()
+    tables.set_inplay()
     if e == Event.BATTER_SINGLE:
         tables.append_summary(state.to_hit_outfield_str('singles', args))
         state.handle_batter_to_base(1)
@@ -508,8 +536,9 @@ def _check_single_base_events(e, args, state, tables):
         args = (path, zone)
         fielder = state.get_fielder(scoring.strip('E'), False)
         tables.append_summary(state.to_hit_outfield_str('singles', args))
-        tables.append_summary('{} to 2nd.'.format(batter))
-        tables.append_summary('Fielding error by {}.'.format(fielder))
+        s = '{} advances to 2nd, on a fielding error by {}.'.format(
+            batter, fielder)
+        tables.append_summary(s)
         state.handle_batter_to_base(2)
     if e == Event.BATTER_SINGLE_STRETCH:
         tables.append_summary(state.to_hit_outfield_str('singles', args))
@@ -543,26 +572,72 @@ def _check_pitch_events(e, args, state, tables):
     if e == Event.PITCHER_BALL:
         state.handle_pitch_ball()
         state.create_pitch_row('Ball', tables)
+        if state.is_walk():
+            tables.append_summary('{} walks.'.format(batter))
+            state.handle_batter_to_base(1)
+    if e == Event.PITCHER_WALK:
+        pitcher = state.get_pitcher()
+        tables.append_summary('{} walked intentionally by {}.'.format(
+            batter, pitcher))
+        state.handle_batter_to_base(1)
     if e in [Event.PITCHER_STRIKE_CALL, Event.PITCHER_STRIKE_CALL_TOSSED]:
         state.handle_pitch_strike()
         state.create_pitch_row('Called Strike', tables)
         if state.is_strikeout():
+            tables.append_summary('{} called out on strikes.'.format(batter))
             state.handle_out_batter()
-            s = '{} called out on strikes.'.format(batter)
-            tables.append_summary(s)
         if e == Event.PITCHER_STRIKE_CALL_TOSSED:
-            s = '{} ejected for arguing the call.'.format(batter)
-            tables.append_foot(state.create_titled_row('Ejection', s))
-    if e == Event.PITCHER_STRIKE_FOUL:
+            foot = state.create_titled_row(
+                'Ejection', '{} ejected for arguing the call.'.format(batter))
+            tables.append_foot(foot)
+    if e in [Event.PITCHER_STRIKE_FOUL, Event.PITCHER_STRIKE_FOUL_ERR]:
         state.handle_pitch_foul()
         state.create_pitch_row('Foul', tables)
+        if e == Event.PITCHER_STRIKE_FOUL_ERR:
+            scoring, = args
+            location = scoring.strip('E')
+            fielder = state.get_fielder(location, int(location) < 7)
+            body = state.create_titled_row(
+                'Error', 'Dropped foul ball error by {}.'.format(fielder))
+            tables.append_body(body)
+    if e == Event.PITCHER_STRIKE_FOUL_BUNT:
+        state.handle_pitch_strike()
+        state.create_pitch_row('Foul Bunt', tables)
+        if state.is_strikeout():
+            tables.append_summary(
+                '{} strikes out on a foul bunt.'.format(batter))
+            state.handle_out_batter()
+    if e == Event.PITCHER_STRIKE_MISS:
+        state.handle_pitch_strike()
+        state.create_pitch_row('Missed Bunt', tables)
+        if state.is_strikeout():
+            tables.append_summary(
+                '{} strikes out on a missed bunt.'.format(batter))
+            state.handle_out_batter()
     if e == Event.PITCHER_STRIKE_SWING:
         state.handle_pitch_strike()
         state.create_pitch_row('Swinging Strike', tables)
         if state.is_strikeout():
+            tables.append_summary('{} strikes out swinging.'.format(batter))
             state.handle_out_batter()
-            s = '{} strikes out swinging.'.format(batter)
-            tables.append_summary(s)
+    if e == Event.PITCHER_STRIKE_SWING_PASSED:
+        state.handle_pitch_strike()
+        state.create_pitch_row('Swinging Strike', tables)
+        tables.append_summary('{} strikes out swinging.'.format(batter))
+        fielder = state.get_fielder('2', True)
+        s = '{} advances to 1st, on a passed ball by {}.'.format(
+            batter, fielder)
+        tables.append_summary(s)
+        state.handle_batter_to_base(1)
+    if e == Event.PITCHER_STRIKE_SWING_WILD:
+        state.handle_pitch_strike()
+        state.create_pitch_row('Swinging Strike', tables)
+        tables.append_summary('{} strikes out swinging.'.format(batter))
+        fielder = state.get_fielder('1', True)
+        s = '{} advances to 1st, on a wild pitch by {}.'.format(
+            batter, fielder)
+        tables.append_summary(s)
+        state.handle_batter_to_base(1)
 
 
 def _group(encodings):
