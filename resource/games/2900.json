@@ -11,9 +11,10 @@
     "P28250 P 1,0,0,0,0,1"
   ],
   "away_bench": [
-    "P39288 PH 1,0,0,0,0,0 P28250"
+    "P48258 P 0,0,0,0,0,0 P28250",
+    "P39288 PH 1,0,0,0,0,0 P48258"
   ],
-  "away_colors": "blue #74b5e1 none rounded",
+  "away_colors": "grey #08131e #284d6e basic",
   "away_errors": "1",
   "away_hits": "2",
   "away_homeruns": "P39461,1,13",
@@ -362,7 +363,8 @@
     "P33949 P 3,0,2,0,0,0"
   ],
   "home_bench": [
-    "P49646 1B 0,0,0,0,0,0 P55366"
+    "P49646 1B 0,0,0,0,0,0 P55366",
+    "P33474 P 0,0,0,0,0,0 P33949"
   ],
   "home_colors": "white #ea164c #000000 reds",
   "home_errors": "0",

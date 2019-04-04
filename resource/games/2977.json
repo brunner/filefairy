@@ -11,7 +11,9 @@
     "P50312 P 2,0,0,0,0,1"
   ],
   "away_bench": [
-    "P51127 PH 1,0,0,0,0,0 P50312"
+    "P51127 PH 1,0,0,0,0,0 P50312",
+    "P24464 P 0,0,0,0,0,0 P51127",
+    "P29463 P 0,0,0,0,0,0 P24464"
   ],
   "away_colors": "red #000000 #e79d94 diamondbacks",
   "away_errors": "0",
@@ -396,9 +398,11 @@
   ],
   "home_bench": [
     "P1614 PH 1,0,0,0,0,1 P55037",
-    "P52163 PH 1,0,0,0,0,0 P1614"
+    "P37296 P 0,0,0,0,0,0 P1614",
+    "P52163 PH 1,0,0,0,0,0 P37296",
+    "P33418 P 0,0,0,0,0,0 P52163"
   ],
-  "home_colors": "white #000000 none basic",
+  "home_colors": "black #a5a4a8 #3b3583 basic",
   "home_errors": "0",
   "home_hits": "10",
   "home_homeruns": "P57411,1,16 P41025,2,21",

@@ -12,9 +12,10 @@
   ],
   "away_bench": [
     "P44320 PH 1,0,0,0,0,1 P56974",
-    "P33100 PH 1,0,1,0,0,0 P44320"
+    "P40738 P 0,0,0,0,0,0 P44320",
+    "P33100 PH 1,0,1,0,0,0 P40738"
   ],
-  "away_colors": "grey #000000 #fcc72d pirates",
+  "away_colors": "black #fcc72d #ffffd0 pirates",
   "away_errors": "0",
   "away_hits": "10",
   "away_homeruns": null,
@@ -421,7 +422,10 @@
   ],
   "home_bench": [
     "P21579 PH 1,0,0,0,0,1 P35153",
-    "P35777 PH 1,0,0,0,0,0 P21579"
+    "P24340 P 0,0,0,0,0,0 P21579",
+    "P35777 PH 1,0,0,0,0,0 P24340",
+    "P50653 P 0,0,0,0,0,0 P35777",
+    "P28811 P 0,0,0,0,0,0 P50653"
   ],
   "home_colors": "white #122441 none serif",
   "home_errors": "0",

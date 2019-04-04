@@ -12,7 +12,9 @@
   ],
   "away_bench": [
     "P33114 C 1,0,0,0,0,1 P23857",
-    "P24166 PH 1,0,0,0,0,0 P38786"
+    "P30055 P 0,0,0,0,0,0 P38786",
+    "P24166 PH 1,0,0,0,0,0 P30055",
+    "P36421 P 0,0,0,0,0,0 P24166"
   ],
   "away_colors": "grey #d11043 #f5f5f5 rounded",
   "away_errors": "1",
@@ -423,10 +425,11 @@
     "P25193 2B 3,0,0,0,0,1"
   ],
   "home_bench": [
-    "P1614 PH 1,0,0,0,0,0 P41025",
+    "P20230 P 0,0,0,0,0,0 P41025",
+    "P1614 PH 1,0,0,0,0,0 P20230",
     "P23816 C 1,0,0,0,0,1 P40726"
   ],
-  "home_colors": "purple #000000 #f5f5f5 basic",
+  "home_colors": "white #000000 none basic",
   "home_errors": "1",
   "home_hits": "4",
   "home_homeruns": "P53787,2,46",
