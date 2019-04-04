@@ -168,7 +168,8 @@ def parse_game(box_in, log_in, out, date):
     if len(blines) != 2 or len(plines) != 2:
         return None
 
-    regex = r'([>-])(P\d+)([^<]+)</td>' + (r'\s*<td class="dc">(\d+)</td>' * 6)
+    regex = r'([\s>-])(P\d+) ([^<]+)</td>'
+    regex += (r'\s*<td class="dc">(\d+)</td>' * 6)
     for team, bline in zip(['away', 'home'], blines):
         batting = []
         bench = []
