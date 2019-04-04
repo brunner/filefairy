@@ -93,14 +93,12 @@ class Event(IntEnum):
 
     PITCHER_BALL = auto()  # []
     PITCHER_WALK = auto()  # []
-
     PITCHER_STRIKE_CALL = auto()  # []
     PITCHER_STRIKE_CALL_TOSSED = auto()  # []
     PITCHER_STRIKE_FOUL = auto()  # []
     PITCHER_STRIKE_FOUL_BUNT = auto()  # []
     PITCHER_STRIKE_FOUL_ERR = auto()  # [scoring]
     PITCHER_STRIKE_MISS = auto()  # []
-
     PITCHER_STRIKE_SWING = auto()  # []
     PITCHER_STRIKE_SWING_OUT = auto()  # []
     PITCHER_STRIKE_SWING_PASSED = auto()  # []
