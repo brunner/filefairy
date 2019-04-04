@@ -30,6 +30,83 @@ from data.event.event import Event  # noqa
 SMALLCAPS = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 
 
+def _fielders(data, team):
+    fielders = {}
+    for line in data[team + '_batting']:
+        player, position, _ = line.split()
+        position = position.split(',')[0]
+        fielders[position] = player
+    if 'P' not in fielders:
+        fielders['P'] = data[team + '_pitcher']
+    return fielders
+
+
+def _players(data):
+    players = {}
+    for team in ['away', 'home']:
+        for line in data[team + '_batting']:
+            player, position, _ = line.split()
+            players[player] = {'pos': position, 'prev': None}
+        for line in data[team + '_bench']:
+            player, position, _, prev = line.split()
+            players[player] = {'pos': position, 'prev': prev}
+    return players
+
+
+LOCATIONS = {
+    '1': ('P', 'pitcher'),
+    '2': ('C', 'catcher'),
+    '3': ('1B', 'first baseman'),
+    '4': ('2B', 'second baseman'),
+    '5': ('3B', 'third baseman'),
+    '6': ('SS', 'shortstop'),
+    '7': ('LF', 'left fielder'),
+    '8': ('CF', 'center fielder'),
+    '9': ('RF', 'right fielder')
+}
+
+
+def _location(zone, infield):
+    if infield:
+        if '1' in zone or 'P' in zone:
+            return '1'
+        if '2' in zone:
+            return '2'
+        if '3' in zone:
+            return '3'
+        if '5' in zone:
+            return '5'
+        if '4' in zone:
+            return '4'
+        return '6'
+    else:
+        if '8' in zone or 'M' in zone:
+            return '8'
+        if '3' in zone or '4' in zone or '9' in zone:
+            return '9'
+        return '7'
+
+
+def _hit_path_str(path):
+    if path == 'F':
+        return 'fly ball'
+    if path == 'G':
+        return 'ground ball'
+    if path == 'L':
+        return 'line drive'
+    return 'pop up'
+
+
+def _out_path_str(path):
+    if path == 'F':
+        return 'flies out'
+    if path == 'G':
+        return 'grounds out'
+    if path == 'L':
+        return 'lines out'
+    return 'pops out'
+
+
 class State(object):
     def __init__(self, data):
         self.away_team = data['away_team']
@@ -44,6 +121,12 @@ class State(object):
         self.pitchers = {}
         self.pitchers[self.away_team] = data['away_pitcher']
         self.pitchers[self.home_team] = data['home_pitcher']
+
+        self.fielders = {}
+        self.fielders[self.away_team] = _fielders(data, 'away')
+        self.fielders[self.home_team] = _fielders(data, 'home')
+
+        self.players = _players(data)
 
         self.batting = self.home_team
         self.throwing = self.away_team
@@ -152,6 +235,16 @@ class State(object):
     def get_change_inning(self):
         return self.change
 
+    def get_fielder(self, zone, infield):
+        if zone is None:
+            return None
+        position, title = LOCATIONS[_location(zone, infield)]
+        fielder = self.fielders[self.throwing][position]
+        return title + ' ' + fielder
+
+    def get_runner(self, base):
+        return self.bases[base - 1]
+
     def get_styles(self):
         jerseys = [(team, self.colors[team]) for team in self.colors]
         return call_service('uniforms', 'jersey_style', (*jerseys, ))
@@ -225,6 +318,14 @@ class State(object):
     def set_change_inning(self):
         self.change = True
 
+    def to_assist_out_str(self, runner, base, args):
+        path, zone1 = args
+        zone2 = '5' if base == 3 else '4' if '7' in zone1 else '6'
+        fielder1 = self.get_fielder(zone1, False)
+        fielder2 = self.get_fielder(zone2, True)
+        return '{} out at {}{}, {} to {}.'.format(runner, base, suffix(base),
+                                                  fielder1, fielder2)
+
     def to_bases_str(self):
         first, second, third = self.bases
         if first and second and third:
@@ -247,6 +348,29 @@ class State(object):
         return '{} &nbsp;|&nbsp; {}, {}'.format(self.to_score_str(),
                                                 self.to_bases_str(),
                                                 self.to_outs_str())
+
+    def to_hit_bunt_str(self, text, args):
+        path, zone = args
+        path = 'bunt ' + _hit_path_str(path)
+        fielder = self.get_fielder(zone, True)
+        return self.to_hit_str(text, path, fielder, zone)
+
+    def to_hit_infield_str(self, text, args):
+        path, zone = args
+        path = _hit_path_str(path)
+        fielder = self.get_fielder(zone, True)
+        return self.to_hit_str(text, path, fielder, zone)
+
+    def to_hit_outfield_str(self, text, args):
+        path, zone = args
+        path = _hit_path_str(path)
+        fielder = self.get_fielder(zone, False)
+        return self.to_hit_str(text, path, fielder, zone)
+
+    def to_hit_str(self, text, path, fielder, zone):
+        batter = self.get_batter()
+        return '{} {} on a {} to {} (zone {}).'.format(batter, text, path,
+                                                       fielder, zone)
 
     def to_inning_str(self):
         s = 'Top' if self.half % 2 == 1 else 'Bottom'
@@ -348,7 +472,6 @@ def _check_change_events(e, args, state, tables):
 
 EVENT_SINGLE_BASES = [
     Event.BATTER_SINGLE,
-    Event.BATTER_SINGLE_APPEAL,
     Event.BATTER_SINGLE_BATTED_OUT,
     Event.BATTER_SINGLE_BUNT,
     Event.BATTER_SINGLE_INFIELD,
@@ -359,33 +482,40 @@ EVENT_SINGLE_BASES = [
 
 def _check_single_base_events(e, args, state, tables):
     batter = state.get_batter()
-    if e in [Event.BATTER_SINGLE, Event.BATTER_SINGLE_INFIELD]:
+    if e == Event.BATTER_SINGLE:
+        tables.append_summary(state.to_hit_outfield_str('singles', args))
         state.handle_batter_to_base(1)
-        tables.append_summary('{} singles.'.format(batter))
-    if e == Event.BATTER_SINGLE_APPEAL:
+    if e == Event.BATTER_SINGLE_INFIELD:
+        tables.append_summary(state.to_hit_infield_str('singles', args))
         state.handle_batter_to_base(1)
-        state.handle_out_runner(1)
-        s = '{} singles. Out on appeal for missing first base.'.format(batter)
-        tables.append_summary(s)
     if e == Event.BATTER_SINGLE_BATTED_OUT:
-        state.handle_batter_to_base(1)
-        # TODO: Determine which runner is out.
-        # state.handle_out_runner(1)
-        state.handle_out()
-        s = '{} singles. Runner out being hit by batted ball.'.format(batter)
+        path, zone = args
+        tables.append_summary(state.to_hit_infield_str('singles', args))
+        base = 1 if ('3' in zone or '4' in zone) else 2
+        runner = state.get_runner(base)
+        advance = '2nd' if base == 1 else '3rd'
+        s = '{} out at {} (hit by batted ball).'.format(runner, advance)
         tables.append_summary(s)
+        state.handle_out_runner(base)
+        state.handle_batter_to_base(1)
     if e == Event.BATTER_SINGLE_BUNT:
+        zone, = args
+        args = ('G', zone)
+        tables.append_summary(state.to_hit_bunt_str('singles', args))
         state.handle_batter_to_base(1)
-        tables.append_summary('{} singles on a bunt.'.format(batter))
     if e == Event.BATTER_SINGLE_ERR:
+        scoring, path, zone = args
+        args = (path, zone)
+        fielder = state.get_fielder(scoring.strip('E'), False)
+        tables.append_summary(state.to_hit_outfield_str('singles', args))
+        tables.append_summary('{} to 2nd.'.format(batter))
+        tables.append_summary('Fielding error by {}.'.format(fielder))
         state.handle_batter_to_base(2)
-        s = '{} singles. Advance to second base on error.'.format(batter)
-        tables.append_summary(s)
     if e == Event.BATTER_SINGLE_STRETCH:
+        tables.append_summary(state.to_hit_outfield_str('singles', args))
+        tables.append_summary(state.to_assist_out_str(batter, 2, args))
         state.handle_batter_to_base(1)
         state.handle_out_runner(1)
-        s = '{} singles. Batter out trying to stretch hit.'.format(batter)
-        tables.append_summary(s)
 
 
 EVENT_PITCHES = [

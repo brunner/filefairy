@@ -28,8 +28,6 @@ EVENT_MAP = {
     Event.CHANGE_PINCH_RUNNER: (r'^Pinch Runner at {base} {player}:$'),
     Event.CHANGE_PITCHER: (r'^Pitching: \w+ {player}$'),
     Event.BATTER_SINGLE: (r'^\d-\d: SINGLE \({path}, {zone}\)$'),
-    Event.BATTER_SINGLE_APPEAL: (r'^SINGLE, but batter called out on appeal fo'
-                                 r'r missing first base!$'),
     Event.BATTER_SINGLE_BATTED_OUT: (r'^\d-\d: SINGLE \({path}, {zone}\) - run'
                                      r'ner OUT being hit by batted ball\.$'),
     Event.BATTER_SINGLE_BUNT: (r'^\d-\d: Bunt for hit to {zone} - play at firs'
@@ -70,6 +68,8 @@ EVENT_MAP = {
                              r'Groundball, {zone}\)$'),
     Event.BATTER_GROUND_HOME: (r'^\d-\d: Grounds into fielders choice {scoring'
                                r'} \(Groundball, {zone}\)$'),
+    Event.BATTER_SINGLE_APPEAL: (r'^SINGLE, but batter called out on appeal fo'
+                                 r'r missing first base!$'),
     Event.BATTER_LINED_DP: (r'^Lined into DP, {scoring} \({path}, {zone}\)$'),
     Event.BATTER_SAC_BUNT: (r'^\d-\d: Sac Bunt to {zone} - play at first, batt'
                             r'er OUT! {scoring}$'),

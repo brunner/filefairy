@@ -44,7 +44,6 @@ class Event(IntEnum):
     CHANGE_PITCHER = auto()  # [player]
 
     BATTER_SINGLE = auto()  # [path, zone]
-    BATTER_SINGLE_APPEAL = auto()  # []
     BATTER_SINGLE_BATTED_OUT = auto()  # [path, zone]
     BATTER_SINGLE_BUNT = auto()  # [zone]
     BATTER_SINGLE_INFIELD = auto()  # [path, zone]
@@ -70,6 +69,7 @@ class Event(IntEnum):
     BATTER_GROUND_DP = auto()  # [scoring, zone]
     BATTER_GROUND_FC = auto()  # [base, scoring, zone]
     BATTER_GROUND_HOME = auto()  # [scoring, zone]
+    BATTER_SINGLE_APPEAL = auto()  # []
 
     BATTER_LINED_DP = auto()  # [scoring, path, zone]
 
