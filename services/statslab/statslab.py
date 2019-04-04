@@ -160,25 +160,48 @@ def parse_game(box_in, log_in, out, date):
             data[team + suffix] = cols.pop(-1)
         data[team + '_line'] = ' '.join(cols)
 
-    data['recap'] = search(
-        r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--RECAP_SUBJECT_END-->',
-        box_text)
+    regex = r'(?s)<!--RECAP_SUBJECT_START-->(.+?)<!--RECAP_SUBJECT_END-->'
+    data['recap'] = search(regex, box_text)
 
     blines = findall(r'(?s)>RBI</th>\s*</tr>(.+?)</table>', box_text)
     plines = findall(r'(?s)>ERA</th>\s*</tr>(.+?)</table>', box_text)
     if len(blines) != 2 or len(plines) != 2:
         return None
 
+    regex = r'([>-])(P\d+)([^<]+)</td>' + (r'\s*<td class="dc">(\d+)</td>' * 6)
+    for team, bline in zip(['away', 'home'], blines):
+        batting = []
+        bench = []
+        prev = ''
+        for line in findall(regex, bline):
+            delim, player, pos, ab, r, h, rbi, bb, k = line
+            pos = pos.replace(' ', '')
+            stats = ','.join([ab, r, h, rbi, bb, k])
+            if delim == '>':
+                batting.append(' '.join([player, pos, stats]))
+            else:
+                bench.append(' '.join([player, pos, stats, prev]))
+            prev = player
+        data[team + '_batting'] = batting
+        data[team + '_bench'] = bench
+
+    regex = r'(P\d+)[^<]+</td>' + (r'\s*<td class="dc">([\d.]+)</td>' * 6)
+    for team, pline in zip(['away', 'home'], plines):
+        pitching = []
+        for line in findall(regex, pline):
+            player, ip, h, r, er, bb, k = line
+            stats = ','.join([ip, h, r, er, bb, k])
+            pitching.append(player + ' ' + stats)
+        data[team + '_pitching'] = pitching
+
     encodings = set()
-    for line in (plines + blines):
-        encodings.update(findall(r'>(P\d+) ', box_text))
+    encodings.update(findall(r'>(P\d+) ', box_text))
     put_players(list(sorted(encodings)))
 
-    batting = findall(r'(?s)BATTING<br>(.+?)</table>', box_text)
-    if len(batting) != 2:
+    bdetails = findall(r'(?s)BATTING<br>(.+?)</table>', box_text)
+    if len(bdetails) != 2:
         return None
-
-    for team, btext in zip(['away', 'home'], batting):
+    for team, btext in zip(['away', 'home'], bdetails):
         homeruns = []
         container = search(r'(?s)Home Runs:(.+?)<br>', btext)
         if container:

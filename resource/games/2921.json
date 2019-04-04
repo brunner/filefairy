@@ -1,10 +1,27 @@
 {
-  "away_colors": "blue #e9144b #82b0e2 basic",
+  "away_batting": [
+    "P35840 2B 3,1,0,0,1,1",
+    "P28678 LF 5,0,2,0,0,1",
+    "P55650 RF 2,0,0,0,2,2",
+    "P25761 DH 5,0,1,1,0,1",
+    "P39486 1B 4,0,0,0,0,3",
+    "P26531 3B 4,0,2,0,0,0",
+    "P31802 SS 3,0,0,0,1,1",
+    "P57647 CF 4,0,1,0,0,2",
+    "P28695 C 4,0,0,0,0,2"
+  ],
+  "away_bench": [],
+  "away_colors": "grey #09295c #e9144b basic",
   "away_errors": "0",
   "away_hits": "6",
   "away_homeruns": null,
   "away_line": "0 0 0 0 1 0 0 0 0 0",
   "away_pitcher": "P33166",
+  "away_pitching": [
+    "P33166 5.2,4,1,1,1,4",
+    "P39647 2.1,1,0,0,1,1",
+    "P39181 1.0,1,1,1,0,2"
+  ],
   "away_record": "76-81",
   "away_runs": "1",
   "away_team": "T38",
@@ -421,12 +438,29 @@
     "pitcher_ball",
     "batter_home_run F 9D 360"
   ],
+  "home_batting": [
+    "P34701 3B 3,0,0,0,1,0",
+    "P33764 DH 4,1,2,0,0,2",
+    "P23845 RF 4,0,1,0,0,0",
+    "P816 1B 2,0,0,1,1,2",
+    "P41819 2B 4,1,1,1,0,1",
+    "P53807 CF 3,0,0,0,0,1",
+    "P19997 C 3,0,1,0,0,1",
+    "P26641 LF 3,0,1,0,0,0",
+    "P55609 SS 3,0,0,0,0,0"
+  ],
+  "home_bench": [],
   "home_colors": "blue #ffffff #e54927 block",
   "home_errors": "0",
   "home_hits": "6",
   "home_homeruns": "P41819,1,26",
   "home_line": "0 0 0 1 0 0 0 0 0 1",
   "home_pitcher": "P55336",
+  "home_pitching": [
+    "P55336 5.0,4,1,1,4,5",
+    "P26432 2.0,1,0,0,0,4",
+    "P23979 3.0,1,0,0,0,4"
+  ],
   "home_record": "85-72",
   "home_runs": "2",
   "home_team": "T40",

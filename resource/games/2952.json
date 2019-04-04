@@ -1,10 +1,29 @@
 {
-  "away_colors": "blue #ffffff none bluejays",
+  "away_batting": [
+    "P34691 3B 5,0,1,1,0,2",
+    "P50320 DH 4,0,0,0,0,2",
+    "P23768 CF 4,0,0,0,0,2",
+    "P53368 1B 3,1,0,0,1,2",
+    "P36297 SS 4,1,1,2,0,3",
+    "P28933 LF 3,0,1,0,1,1",
+    "P1424 2B 4,1,1,0,0,2",
+    "P30074 C 4,0,1,0,0,2",
+    "P54843 RF 4,0,1,0,0,2"
+  ],
+  "away_bench": [],
+  "away_colors": "grey #1d469b none bluejays",
   "away_errors": "0",
   "away_hits": "6",
   "away_homeruns": "P36297,1,13",
   "away_line": "0 2 0 0 0 0 0 1 0 0",
   "away_pitcher": "P30082",
+  "away_pitching": [
+    "P30082 7.0,7,3,3,1,6",
+    "P53622 1.0,0,0,0,0,1",
+    "P49985 0.1,1,0,0,0,0",
+    "P55064 1.0,1,1,1,0,1",
+    "P23920 0.0,1,0,0,0,0"
+  ],
   "away_record": "65-94",
   "away_runs": "3",
   "away_team": "T59",
@@ -405,12 +424,32 @@
     "batter_double L 89D",
     "player_score P49595"
   ],
+  "home_batting": [
+    "P22595 2B 3,0,2,0,1,0",
+    "P25187 3B 5,0,1,1,0,1",
+    "P35142 SS 4,0,0,0,0,1",
+    "P53966 RF 4,2,2,0,0,1",
+    "P32314 1B 4,1,2,1,0,0",
+    "P28116 C 3,0,2,1,0,1",
+    "P30166 DH 3,0,0,1,0,1",
+    "P53927 CF 3,0,0,0,0,0",
+    "P49595 LF,CF 4,1,1,0,0,2"
+  ],
+  "home_bench": [
+    "P1169 PH,LF 1,0,0,0,0,1 P53927"
+  ],
   "home_colors": "red #09285a #88a7d9 redsox",
   "home_errors": "0",
   "home_hits": "10",
   "home_homeruns": "P32314,1,54",
   "home_line": "0 1 0 1 0 1 0 0 0 1",
   "home_pitcher": "P38158",
+  "home_pitching": [
+    "P38158 7.0,1,2,2,2,11",
+    "P37285 0.1,2,1,1,0,0",
+    "P23428 0.2,1,0,0,0,2",
+    "P23597 2.0,2,0,0,0,5"
+  ],
   "home_record": "105-54",
   "home_runs": "4",
   "home_team": "T34",

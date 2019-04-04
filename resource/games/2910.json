@@ -1,10 +1,26 @@
 {
-  "away_colors": "grey #09285a #0b505a basic",
+  "away_batting": [
+    "P28737 CF 4,0,1,0,0,2",
+    "P36650 DH 3,0,1,0,1,1",
+    "P37079 2B 4,0,0,0,0,0",
+    "P34032 1B 4,0,1,0,0,3",
+    "P38656 SS 3,0,0,0,0,0",
+    "P22818 3B 2,0,0,0,1,0",
+    "P55764 RF 3,0,1,0,0,2",
+    "P24455 LF 2,0,0,0,1,0",
+    "P40187 C 3,0,0,0,0,1"
+  ],
+  "away_bench": [],
+  "away_colors": "blue #c9d0d1 #0b505a mariners",
   "away_errors": "0",
   "away_hits": "4",
   "away_homeruns": null,
   "away_line": "0 0 0 0 0 0 0 0 0",
   "away_pitcher": "P53369",
+  "away_pitching": [
+    "P53369 5.1,4,1,1,1,5",
+    "P54914 2.2,1,0,0,0,3"
+  ],
   "away_record": "98-58",
   "away_runs": "0",
   "away_team": "T54",
@@ -337,12 +353,28 @@
     "pitcher_strike_call",
     "change_inning 0 1"
   ],
+  "home_batting": [
+    "P55283 2B 4,1,1,0,0,1",
+    "P62067 RF 4,0,1,1,0,1",
+    "P55093 C 2,0,0,0,1,1",
+    "P53142 DH 3,0,0,0,0,1",
+    "P27015 1B 3,0,0,0,0,2",
+    "P37294 LF 3,0,1,0,0,1",
+    "P50252 3B 3,0,0,0,0,0",
+    "P25146 CF 3,0,1,0,0,1",
+    "P33871 SS 3,0,1,0,0,0"
+  ],
+  "home_bench": [],
   "home_colors": "cream #052046 #d11242 basic",
   "home_errors": "0",
   "home_hits": "5",
   "home_homeruns": null,
   "home_line": "0 0 0 0 0 1 0 0 X",
   "home_pitcher": "P54297",
+  "home_pitching": [
+    "P54297 7.0,4,0,0,3,6",
+    "P28762 2.0,0,0,0,0,3"
+  ],
   "home_record": "89-67",
   "home_runs": "1",
   "home_team": "T47",
