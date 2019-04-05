@@ -516,8 +516,7 @@ def _check_single_base_events(e, args, roster, state, tables):
         state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SINGLE_BUNT:
         zone, = args
-        position = get_position(zone, False)
-        fielder = roster.get_fielder(position)
+        fielder = roster.get_fielder(get_position(zone, False))
         tables.append_summary('{} singles on a bunt ground ball to {}.'.format(
             batter, fielder))
         state.handle_batter_to_base(batter, 1)
@@ -559,12 +558,20 @@ EVENT_BATTED_OUTS = [
 
 
 def _check_batted_out_events(e, args, roster, state, tables):
-    # batter = roster.get_batter()
-    # state.set_inplay()
-    # if e == Event.BATTER_FLY:
-    #     tables.append_summary(roster.to_out_outfield_str(args))
-    #     state.handle_batter_to_base(batter, 1)
-    pass
+    batter = roster.get_batter()
+    state.set_inplay()
+    if e == Event.BATTER_FLY:
+        scoring, path, _ = args
+        outcome = get_outcome(path, True)
+        fielder = roster.get_fielder(get_position(scoring, False))
+        tables.append_summary('{} {} to {}.'.format(batter, outcome, fielder))
+        state.handle_out_batter()
+    if e == Event.BATTER_FLY_BUNT:
+        _, scoring = args
+        fielder = roster.get_fielder(get_position(scoring, False))
+        tables.append_summary('{} bunt flies out to {}.'.format(
+            batter, fielder))
+        state.handle_out_batter()
 
 
 EVENT_PITCHES = [
