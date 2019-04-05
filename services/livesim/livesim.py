@@ -30,29 +30,6 @@ from data.event.event import Event  # noqa
 SMALLCAPS = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 
 
-def _fielders(data, team):
-    fielders = {}
-    for line in data[team + '_batting']:
-        player, position, _ = line.split()
-        position = position.split(',')[0]
-        fielders[position] = player
-    if 'P' not in fielders:
-        fielders['P'] = data[team + '_pitcher']
-    return fielders
-
-
-def _players(data):
-    players = {}
-    for team in ['away', 'home']:
-        for line in data[team + '_batting']:
-            player, position, _ = line.split()
-            players[player] = {'pos': position, 'prev': None}
-        for line in data[team + '_bench']:
-            player, position, _, prev = line.split()
-            players[player] = {'pos': position, 'prev': prev}
-    return players
-
-
 LOCATIONS = {
     '1': ('P', 'pitcher'),
     '2': ('C', 'catcher'),
@@ -125,37 +102,50 @@ class Roster(object):
         self.colors[self.away_team] = data['away_colors'].split()
         self.colors[self.home_team] = data['home_colors'].split()
 
-        self.pitchers = {}
-        self.pitchers[self.away_team] = data['away_pitcher']
-        self.pitchers[self.home_team] = data['home_pitcher']
-
         self.batting = self.home_team
         self.throwing = self.away_team
 
-        self.batter = None
-        self.pitcher = self.pitchers[self.home_team]
+        self.batters = {}
+        self.indices = {self.away_team: 8, self.home_team: 8}
+        self.fielders = {self.away_team: {}, self.home_team: {}}
+        self.lineups = {self.away_team: [], self.home_team: []}
+        for team in ['away', 'home']:
+            encoding = data[team + '_team']
+            fielders = self.fielders[encoding]
+            lineups = self.lineups[encoding]
+            for line in data[team + '_batting']:
+                player, pos, _ = line.split()
+                curr, change = (pos + ',').split(',', 1)
+                index = len(lineups)
+                fielders[curr] = player
+                lineups.append([player])
+                self.batters[player] = [curr, change.strip(','), index, None]
+            for line in data[team + '_bench']:
+                player, pos, _, prev = line.split()
+                self.batters[player] = [None, pos, None, prev]
+            if 'P' not in fielders:
+                fielders['P'] = data[team + '_pitcher']
 
-        self.fielders = {}
-        self.fielders[data['away_team']] = _fielders(data, 'away')
-        self.fielders[data['home_team']] = _fielders(data, 'home')
-
-        self.players = _players(data)
+        self.pitchers = {}
+        self.pitchers[self.away_team] = [data['away_pitcher']]
+        self.pitchers[self.home_team] = [data['home_pitcher']]
 
     def create_player_row(self, bats):
         team = self.batting if bats else self.throwing
-        player = self.batter if bats else self.pitcher
-        position = ''
-
+        player = self.get_batter() if bats else self.get_pitcher()
         title = 'ᴀᴛ ʙᴀᴛ' if bats else 'ᴘɪᴛᴄʜɪɴɢ'
         hand = player_to_bats(player) if bats else player_to_throws(player)
         name = player_to_name(player)
         num = player_to_number(player)
-        pos = ''.join(SMALLCAPS.get(c, c) for c in position)
+        if bats:
+            curr = self.batters[player][0]
+            pos = ''.join(SMALLCAPS.get(c, c) for c in curr) + ' '
+        else:
+            pos = ''
         stats = ''
 
-        s = '{}: {} #{} ({})<br>{}<br>{}'
+        s = '{}: {}#{} ({})<br>{}<br>{}'
         s = s.format(title, pos, num, SMALLCAPS.get(hand, 'ʀ'), name, stats)
-
         args = (team, self.colors[team], num, 'back')
         img = call_service('uniforms', 'jersey_absolute', args)
         spn = span(classes=['profile-text', 'align-middle', 'd-block'], text=s)
@@ -165,7 +155,12 @@ class Roster(object):
         return [cell(col=col(colspan='2'), content=content)]
 
     def create_change_batter_row(self, batter):
-        prev = self.get_player(batter)['prev']
+        _1, change, _2, prev = self.batters[batter]
+        curr, change = (change + ',').split(',', 1)
+        index = self.get_index()
+        self.batters[batter] = [curr, change, index, prev]
+        self.lineups[self.batting][index].insert(0, batter)
+
         title = 'Offensive Substitution'
         text = 'Pinch hitter {} replaces {}.'.format(batter, prev)
         return self.create_titled_row(title, text)
@@ -177,11 +172,16 @@ class Roster(object):
 
     def create_change_pitcher_row(self, pitcher):
         title = 'Pitching Substitution'
-        text = '{} replaces {}.'.format(pitcher, self.pitchers[self.throwing])
+        text = '{} replaces {}.'.format(pitcher, self.get_pitcher())
         return self.create_titled_row(title, text)
 
     def create_change_runner_row(self, runner):
-        prev = self.get_player(runner)['prev']
+        _1, change, _2, prev = self.batters[runner]
+        _3, _4, index, _5 = self.batters[prev]
+        curr, change = (change + ',').split(',', 1)
+        self.batters[runner] = [curr, change, index, prev]
+        self.lineups[self.batting][index].insert(0, runner)
+
         title = 'Offensive Substitution'
         text = 'Pinch runner {} replaces {}.'.format(runner, prev)
         return self.create_titled_row(title, text)
@@ -191,7 +191,7 @@ class Roster(object):
         return [cell(col=col(colspan='2'), content=content)]
 
     def get_batter(self):
-        return self.batter
+        return self.lineups[self.batting][self.get_index()][0]
 
     def get_fielder(self, zone, infield):
         if zone is None:
@@ -200,30 +200,27 @@ class Roster(object):
         fielder = self.fielders[self.throwing][position]
         return title + ' ' + fielder
 
-    def get_pitcher(self):
-        return self.pitcher
+    def get_index(self):
+        return self.indices[self.batting]
 
-    def get_player(self, player):
-        return self.players[player]
+    def get_pitcher(self):
+        return self.pitchers[self.throwing][0]
 
     def get_styles(self):
         jerseys = [(team, self.colors[team]) for team in self.colors]
         return call_service('uniforms', 'jersey_style', (*jerseys, ))
 
-    def handle_change_batter(self, batter):
-        self.batter = batter
+    def handle_change_batter(self):
+        self.indices[self.batting] = (self.get_index() + 1) % 9
 
     def handle_change_inning(self):
         self.batting, self.throwing = self.throwing, self.batting
-        self.batter = None
-        self.pitcher = self.pitchers[self.throwing]
 
     def handle_change_pitcher(self, pitcher):
-        self.pitcher = pitcher
-        self.pitchers[self.throwing] = pitcher
+        self.pitchers[self.throwing].insert(0, pitcher)
 
     def is_change_pitcher(self, pitcher):
-        return pitcher != self.pitcher
+        return pitcher != self.get_pitcher()
 
     def to_assist_out_str(self, runner, base, args):
         path, zone1 = args
@@ -503,11 +500,11 @@ def _check_change_events(e, args, roster, state, tables):
         tables.append_table(topper(state.to_inning_str()))
 
     if e in [Event.CHANGE_BATTER, Event.CHANGE_PINCH_HITTER]:
-        batter, = args
-        if e == Event.CHANGE_PINCH_HITTER:
-            tables.append_body(roster.create_change_batter_row(batter))
-        roster.handle_change_batter(batter)
+        roster.handle_change_batter()
         state.handle_change_batter()
+        if e == Event.CHANGE_PINCH_HITTER:
+            batter, = args
+            tables.append_body(roster.create_change_batter_row(batter))
         tables.create_table(roster, state)
     if e == Event.CHANGE_FIELDER:
         position, player = args
