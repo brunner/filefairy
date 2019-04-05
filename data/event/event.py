@@ -54,7 +54,7 @@ class Event(IntEnum):
     BATTER_DOUBLE_STRETCH = auto()  # [path, zone]
     BATTER_TRIPLE = auto()  # [path, zone]
     BATTER_HOME_RUN = auto()  # [path, zone, distance]
-    BATTER_HOME_RUN_INSIDE = auto()  # [path, zone, distance]
+    BATTER_HOME_RUN_INSIDE = auto()  # [path, zone]
 
     BATTER_REACH_DROPPED = auto()  # [position, scoring, zone]
     BATTER_REACH_FIELDING = auto()  # [scoring, path, zone]

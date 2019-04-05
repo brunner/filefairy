@@ -94,6 +94,18 @@ def get_position(zone, outfield):
     return 'SS'
 
 
+def get_seats(zone):
+    if '78' in zone:
+        return 'left center field'
+    if '89' in zone:
+        return 'right center field'
+    if '7' in zone:
+        return 'left field'
+    if '8' in zone:
+        return 'center field'
+    return 'right field'
+
+
 def get_title(position):
     if position == 'P':
         return 'pitcher'
@@ -315,6 +327,9 @@ class State(object):
 
         self.runs = {self.away_team: 0, self.home_team: 0}
 
+        self.batting = self.home_team
+        self.throwing = self.away_team
+
         self.half = 0
         self.change = True
         self.outs = 0
@@ -323,6 +338,7 @@ class State(object):
         self.balls = 0
         self.strikes = 0
         self.inplay = False
+        self.score = False
 
         self.bases = [None, None, None]
         self.scored = []
@@ -347,7 +363,14 @@ class State(object):
         tables.append_body([left, right])
 
     def create_summary_row(self, tables):
-        content = player_to_name_sub(' '.join(tables.get_summary()))
+        summary = tables.get_summary()
+        for player in self.scored:
+            summary.append('{} scores.'.format(player))
+            self.runs[self.batting] += 1
+            self.score = True
+        self.scored = []
+
+        content = player_to_name_sub(' '.join(summary))
         outs = 'out' in content and 'advances to 1st' not in content
 
         if self.inplay:
@@ -359,6 +382,11 @@ class State(object):
 
         if outs:
             content += ' <b>{}</b>'.format(self.to_outs_str())
+        if self.score:
+            classes = ['badge', 'border', 'tag', 'tag-light']
+            content += '&nbsp;&nbsp;'
+            content += span(classes=classes, text=self.to_score_str())
+            self.score = False
 
         tables.append_body([cell(col=col(colspan='2'), content=content)])
 
@@ -369,19 +397,25 @@ class State(object):
         return self.bases[base - 1]
 
     def handle_batter_to_base(self, batter, base):
-        for i in range(base, 0, -1):
+        for i in range(min(3, base), 0, -1):
             if self.bases[i - 1]:
                 self.handle_runner_to_base(self.bases[i - 1], base + 1)
                 self.bases[i - 1] = None
-        self.bases[base - 1] = batter
+        if base == 4:
+            self.runs[self.batting] += 1
+            self.score = True
+        else:
+            self.bases[base - 1] = batter
 
     def handle_change_batter(self):
         self.pitch = 0
         self.balls = 0
         self.strikes = 0
         self.inplay = False
+        self.score = False
 
     def handle_change_inning(self):
+        self.batting, self.throwing = self.throwing, self.batting
         self.half += 1
         self.change = False
         self.outs = 0
@@ -640,8 +674,60 @@ def _check_single_base_events(e, args, roster, state, tables):
             batter, outcome, fielder))
         tables.append_summary('{} out at 2nd, {} to {}.'.format(
             batter, fielder, receiver))
-        state.handle_batter_to_base(batter, 1)
-        state.handle_out_runner(1)
+        state.handle_batter_to_base(batter, 2)
+        state.handle_out_runner(2)
+
+
+EVENT_EXTRA_BASES = [
+    Event.BATTER_DOUBLE,
+    Event.BATTER_DOUBLE_STRETCH,
+    Event.BATTER_TRIPLE,
+    Event.BATTER_HOME_RUN,
+    Event.BATTER_HOME_RUN_INSIDE,
+]
+
+
+def _check_extra_base_events(e, args, roster, state, tables):
+    batter = roster.get_batter()
+    state.set_inplay()
+    if e == Event.BATTER_DOUBLE:
+        path, zone = args
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(zone, True))
+        tables.append_summary('{} doubles on a {} to {}.'.format(
+            batter, outcome, fielder))
+        state.handle_batter_to_base(batter, 2)
+    if e == Event.BATTER_DOUBLE_STRETCH:
+        path, zone = args
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(zone, False))
+        receiver = roster.get_fielder('3B')
+        tables.append_summary('{} doubles on a {} to {}.'.format(
+            batter, outcome, fielder))
+        tables.append_summary('{} out at 3rd, {} to {}.'.format(
+            batter, fielder, receiver))
+        state.handle_batter_to_base(batter, 3)
+        state.handle_out_runner(3)
+    if e == Event.BATTER_TRIPLE:
+        path, zone = args
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(zone, True))
+        tables.append_summary('{} triples on a {} to {}.'.format(
+            batter, outcome, fielder))
+        state.handle_batter_to_base(batter, 3)
+    if e == Event.BATTER_HOME_RUN:
+        path, zone, distance = args
+        outcome = get_outcome(path, False)
+        tables.append_summary('{} homers on a {} to {} ({} ft).'.format(
+            batter, outcome, get_seats(zone), distance))
+        state.handle_batter_to_base(batter, 4)
+    if e == Event.BATTER_HOME_RUN_INSIDE:
+        path, zone = args
+        outcome = get_outcome(path, False)
+        tables.append_summary(
+            '{} hits an inside-the-park home run on a {} to {}.'.format(
+                batter, outcome, get_seats(zone)))
+        state.handle_batter_to_base(batter, 4)
 
 
 EVENT_BATTED_OUTS = [
@@ -869,6 +955,8 @@ def get_html(game_in):
                     _check_change_events(e, args, roster, state, tables)
                 if e in EVENT_SINGLE_BASES:
                     _check_single_base_events(e, args, roster, state, tables)
+                if e in EVENT_EXTRA_BASES:
+                    _check_extra_base_events(e, args, roster, state, tables)
                 if e in EVENT_BATTED_OUTS:
                     _check_batted_out_events(e, args, roster, state, tables)
                 if e in EVENT_PITCHES:
