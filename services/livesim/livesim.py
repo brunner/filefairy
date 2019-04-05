@@ -133,7 +133,7 @@ class Roster(object):
                 self.batters[player] = [curr, change.strip(','), index, None]
             for line in data[team + '_bench']:
                 player, pos, _, prev = line.split()
-                self.batters[player] = [None, pos, None, prev]
+                self.batters[player] = [None, pos, self.batters[prev][2], prev]
             if 'P' not in fielders:
                 fielders['P'] = data[team + '_pitcher']
 
@@ -166,9 +166,8 @@ class Roster(object):
         return [cell(col=col(colspan='2'), content=content)]
 
     def create_change_batter_row(self, batter):
-        _1, change, _2, prev = self.batters[batter]
+        _1, change, index, prev = self.batters[batter]
         curr, change = (change + ',').split(',', 1)
-        index = self.get_index()
         self.batters[batter] = [curr, change, index, prev]
         self.lineups[self.batting][index].insert(0, batter)
 
@@ -187,8 +186,7 @@ class Roster(object):
         return self.create_titled_row(title, text)
 
     def create_change_runner_row(self, runner):
-        _1, change, _2, prev = self.batters[runner]
-        _3, _4, index, _5 = self.batters[prev]
+        _, change, index, prev = self.batters[runner]
         curr, change = (change + ',').split(',', 1)
         self.batters[runner] = [curr, change, index, prev]
         self.lineups[self.batting][index].insert(0, runner)
@@ -226,6 +224,12 @@ class Roster(object):
 
     def handle_change_pitcher(self, pitcher):
         self.pitchers[self.throwing].insert(0, pitcher)
+        self.fielders[self.throwing]['P'] = pitcher
+        if pitcher in self.batters:
+            _, change, index, prev = self.batters[pitcher]
+            curr, change = (change + ',').split(',', 1)
+            self.batters[pitcher] = [curr, change, index, prev]
+            self.lineups[self.throwing][index].insert(0, pitcher)
 
     def is_change_pitcher(self, pitcher):
         return pitcher != self.get_pitcher()
@@ -358,6 +362,29 @@ class State(object):
     def set_inplay(self):
         self.inplay = True
 
+    def to_bases_str(self):
+        first, second, third = self.bases
+        if first and second and third:
+            return 'Bases loaded'
+        if first and second:
+            return 'Runners on 1st and 2nd'
+        if first and third:
+            return 'Runners on 1st and 3rd'
+        if second and third:
+            return 'Runners on 2nd and 3rd'
+        if first:
+            return 'Runner on 1st'
+        if second:
+            return 'Runner on 2nd'
+        if third:
+            return 'Runner on 3rd'
+        return 'Bases empty'
+
+    def to_head_str(self):
+        return '{} &nbsp;|&nbsp; {}, {}'.format(self.to_score_str(),
+                                                self.to_bases_str(),
+                                                self.to_outs_str())
+
     def to_inning_str(self):
         s = 'Top' if self.half % 2 == 1 else 'Bottom'
         n = (self.half + 1) // 2
@@ -407,11 +434,13 @@ class Tables(object):
         clazz = 'border mb-3'
         hcols = [col(colspan='2', clazz='font-weight-bold text-dark')]
         bcols = [col(), col(clazz='text-right w-50p')]
+        head = [[cell(content=state.to_head_str())]]
         body, self.body = list(self.body), []
 
         self.body.append(roster.create_player_row(False))
         self.body.append(roster.create_player_row(True))
-        self.table = table(clazz=clazz, hcols=hcols, bcols=bcols, body=body)
+        self.table = table(
+            clazz=clazz, hcols=hcols, bcols=bcols, head=head, body=body)
         self.tables.append(self.table)
 
     def get_body(self):
@@ -470,7 +499,7 @@ def _check_change_events(e, args, roster, state, tables):
     if e == Event.CHANGE_PITCHER:
         pitcher, = args
         if roster.is_change_pitcher(pitcher):
-            roster.create_change_pitcher_row(pitcher)
+            tables.append_body(roster.create_change_pitcher_row(pitcher))
             roster.handle_change_pitcher(pitcher)
 
 
