@@ -30,6 +30,17 @@ from data.event.event import Event  # noqa
 SMALLCAPS = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 
 
+def get_bag(base):
+    if base == 1:
+        return '1st'
+    if base == 2:
+        return '2nd'
+    if base == 3:
+        return '3rd'
+    if base == 4:
+        return 'home'
+
+
 def get_base(base):
     if base == 'F':
         return 1
@@ -222,6 +233,14 @@ class Roster(object):
 
     def get_pitcher(self):
         return self.pitchers[self.throwing][0]
+
+    def get_scoring(self, scoring):
+        zones = scoring.replace('U', '').split('-')
+        zones = [self.get_fielder(get_position(zone, False)) for zone in zones]
+
+        if len(zones) > 1:
+            return ' to '.join(zones)
+        return zones[0] + ' unassisted'
 
     def get_styles(self):
         jerseys = [(team, self.colors[team]) for team in self.colors]
@@ -619,8 +638,8 @@ def _check_single_base_events(e, args, roster, state, tables):
         receiver = roster.get_fielder('2B' if '7' in zone else 'SS')
         tables.append_summary('{} singles on a {} to {}.'.format(
             batter, outcome, fielder))
-        tables.append_summary('{} out at {}{}, {} to {}.'.format(
-            batter, 2, suffix(2), fielder, receiver))
+        tables.append_summary('{} out at 2nd, {} to {}.'.format(
+            batter, fielder, receiver))
         state.handle_batter_to_base(batter, 1)
         state.handle_out_runner(1)
 
@@ -654,6 +673,62 @@ def _check_batted_out_events(e, args, roster, state, tables):
         tables.append_summary('{} bunt flies out to {}.'.format(
             batter, fielder))
         state.handle_out_batter()
+    if e == Event.BATTER_FLY_BUNT_DP:
+        _1, _2, scoring = args
+        base = 1 if scoring[-1] == '3' else 3 if scoring[-1] == '5' else 2
+        runner = state.get_runner(base)
+        tables.append_summary('{} bunt lines into a double play, {}.'.format(
+            batter, roster.get_scoring(scoring)))
+        tables.append_summary('{} out at {}.'.format(runner, get_bag(base)))
+        state.handle_out_batter()
+        state.handle_out_runner(base)
+    if e in [Event.BATTER_GROUND, Event.BATTER_GROUND_BUNT]:
+        scoring, _ = args
+        outcome = 'bunt ' if e == Event.BATTER_GROUND_BUNT else ''
+        outcome += 'grounds out'
+        tables.append_summary('{} {}, {}.'.format(batter, outcome,
+                                                  roster.get_scoring(scoring)))
+        state.handle_out_batter()
+    if e == Event.BATTER_GROUND_DP:
+        scoring, _ = args
+        i = 1 if scoring[0] == 'U' else 2
+        base = 3 if scoring[i] == '2' else 2 if scoring[i] == '5' else 1
+        runner = state.get_runner(base)
+        tables.append_summary('{} grounds into a double play, {}.'.format(
+            batter, roster.get_scoring(scoring)))
+        tables.append_summary('{} out at {}.'.format(runner,
+                                                     get_bag(base + 1)))
+        state.handle_out_batter()
+        state.handle_out_runner(base)
+    if e == Event.BATTER_GROUND_FC:
+        base, scoring, _ = args
+        base = get_base(base)
+        runner = state.get_runner(base - 1)
+        tables.append_summary('{} grounds into a force out, {}.'.format(
+            batter, roster.get_scoring(scoring)))
+        tables.append_summary('{} out at {}.'.format(runner, get_bag(base)))
+        state.handle_batter_to_base(batter, 1)
+        state.handle_out_runner(base)
+    if e == Event.BATTER_GROUND_HOME:
+        scoring, _ = args
+        runner = state.get_runner(3)
+        tables.append_summary('{} grounds into a force out, {}.'.format(
+            batter, roster.get_scoring(scoring)))
+        tables.append_summary('{} out at home.'.format(runner))
+        state.handle_out_runner(3)
+        state.handle_batter_to_base(batter, 1)
+    if e == Event.BATTER_SINGLE_APPEAL:
+        tables.append_summary('{} grounds out, {}.'.format(
+            batter, roster.get_scoring('U3')))
+        state.handle_out_batter()
+    if e == Event.BATTER_LINED_DP:
+        scoring, _1, _2 = args
+        i = 1 if scoring[0] == 'U' else 2
+        base = 1 if scoring[i] == '3' else 3 if scoring[i] == '5' else 2
+        runner = state.get_runner(base)
+        tables.append_summary('{} out at {}, {}.'.format(
+            runner, get_bag(base), roster.get_scoring(scoring)))
+        state.handle_out_runner(base)
 
 
 EVENT_PITCHES = [
