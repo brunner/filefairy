@@ -104,6 +104,27 @@ def get_title(position):
         return 'right fielder'
 
 
+def get_written(position):
+    if position == 'P':
+        return 'pitcher'
+    if position == 'C':
+        return 'catcher'
+    if position == '1B':
+        return 'first base'
+    if position == '2B':
+        return 'second base'
+    if position == '3B':
+        return 'third base'
+    if position == 'SS':
+        return 'shortstop'
+    if position == 'LF':
+        return 'left field'
+    if position == 'CF':
+        return 'center field'
+    if position == 'RF':
+        return 'right field'
+
+
 class Roster(object):
     def __init__(self, data):
         self.away_team = data['away_team']
@@ -127,10 +148,10 @@ class Roster(object):
             for line in data[team + '_batting']:
                 player, pos, _ = line.split()
                 curr, change = (pos + ',').split(',', 1)
-                index = len(lineups)
+                i = len(lineups)
                 fielders[curr] = player
                 lineups.append([player])
-                self.batters[player] = [curr, change.strip(','), index, None]
+                self.batters[player] = [curr, change.strip(','), i, None]
             for line in data[team + '_bench']:
                 player, pos, _, prev = line.split()
                 self.batters[player] = [None, pos, self.batters[prev][2], prev]
@@ -166,36 +187,26 @@ class Roster(object):
         return [cell(col=col(colspan='2'), content=content)]
 
     def create_change_batter_row(self, batter):
-        _1, change, index, prev = self.batters[batter]
+        _1, change, i, prev = self.batters[batter]
         curr, change = (change + ',').split(',', 1)
-        self.batters[batter] = [curr, change, index, prev]
-        self.lineups[self.batting][index].insert(0, batter)
+        self.batters[batter] = [curr, change, i, prev]
+        self.lineups[self.batting][i].insert(0, batter)
 
-        title = 'Offensive Substitution'
+        bold = 'Offensive Substitution'
         text = 'Pinch hitter {} replaces {}.'.format(batter, prev)
-        return self.create_titled_row(title, text)
-
-    def create_change_fielder_row(self, position, player):
-        title = 'Defensive Substitution'
-        text = 'Now in {}: {}'.format(position, player)
-        return self.create_titled_row(title, text)
-
-    def create_change_pitcher_row(self, pitcher):
-        title = 'Pitching Substitution'
-        text = '{} replaces {}.'.format(pitcher, self.get_pitcher())
-        return self.create_titled_row(title, text)
+        return self.create_bolded_row(bold, text)
 
     def create_change_runner_row(self, runner):
-        _, change, index, prev = self.batters[runner]
+        _, change, i, prev = self.batters[runner]
         curr, change = (change + ',').split(',', 1)
-        self.batters[runner] = [curr, change, index, prev]
-        self.lineups[self.batting][index].insert(0, runner)
+        self.batters[runner] = [curr, change, i, prev]
+        self.lineups[self.batting][i].insert(0, runner)
 
-        title = 'Offensive Substitution'
+        bold = 'Offensive Substitution'
         text = 'Pinch runner {} replaces {}.'.format(runner, prev)
-        return self.create_titled_row(title, text)
+        return self.create_bolded_row(bold, text)
 
-    def create_titled_row(self, title, text):
+    def create_bolded_row(self, title, text):
         content = player_to_name_sub('<b>{}</b><br>{}'.format(title, text))
         return [cell(col=col(colspan='2'), content=content)]
 
@@ -219,17 +230,60 @@ class Roster(object):
     def handle_change_batter(self):
         self.indices[self.batting] = (self.get_index() + 1) % 9
 
+    def handle_change_fielder(self, player, tables):
+        curr, change, i, prev = self.batters[player]
+        position, change = (change + ',').split(',', 1)
+
+        if curr is None:
+            bold = 'Defensive Substitution'
+            title = get_title(self.batters[prev][0])
+            title = title + ' ' if title else ''
+            text = '{} replaces {}{}, batting {}{}, playing {}.'.format(
+                player, title, prev, i + 1, suffix(i + 1),
+                get_written(position))
+            tables.append_body(self.create_bolded_row(bold, text))
+        elif curr == 'PH' or curr == 'PR':
+            bold = 'Defensive Switch'
+            text = '{} remains in the game as the {}.'.format(
+                player, get_written(position))
+            return self.create_bolded_row(bold, text)
+        else:
+            bold = 'Defensive Switch'
+            text = 'Defensive switch from {} to {} for {}.'.format(
+                get_written(curr), get_written(position), player)
+            return self.create_bolded_row(bold, text)
+
+        self.batters[player] = [position, change, i, prev]
+        self.lineups[self.throwing][i].insert(0, player)
+
+        fielder = self.fielders[self.throwing][position]
+        _1, _2, j, _3 = self.batters[fielder]
+        if self.lineups[self.throwing][j][0] == fielder:
+            self.handle_change_fielder(fielder, tables)
+
+        self.fielders[self.throwing][position] = player
+
     def handle_change_inning(self):
         self.batting, self.throwing = self.throwing, self.batting
 
-    def handle_change_pitcher(self, pitcher):
+    def handle_change_pitcher(self, pitcher, tables):
+        bold = 'Pitching Substitution'
+        if pitcher in self.batters:
+            _, change, i, prev = self.batters[pitcher]
+            curr, change = (change + ',').split(',', 1)
+            title = get_title(self.batters[prev][0])
+            title = title + ' ' if title else ''
+            text = '{} replaces {}, batting {}{}, replacing {}{}.'.format(
+                pitcher, self.get_pitcher(), i + 1, suffix(i + 1), title, prev)
+            tables.append_body(self.create_bolded_row(bold, text))
+            self.batters[pitcher] = [curr, change, i, prev]
+            self.lineups[self.throwing][i].insert(0, pitcher)
+        else:
+            text = '{} replaces {}.'.format(pitcher, self.get_pitcher())
+            tables.append_body(self.create_bolded_row(bold, text))
+
         self.pitchers[self.throwing].insert(0, pitcher)
         self.fielders[self.throwing]['P'] = pitcher
-        if pitcher in self.batters:
-            _, change, index, prev = self.batters[pitcher]
-            curr, change = (change + ',').split(',', 1)
-            self.batters[pitcher] = [curr, change, index, prev]
-            self.lineups[self.throwing][index].insert(0, pitcher)
 
     def is_change_pitcher(self, pitcher):
         return pitcher != self.get_pitcher()
@@ -490,8 +544,8 @@ def _check_change_events(e, args, roster, state, tables):
             tables.append_body(roster.create_change_batter_row(batter))
         tables.create_table(roster, state)
     if e == Event.CHANGE_FIELDER:
-        position, player = args
-        tables.append_body(roster.create_change_fielder_row(position, player))
+        _, player = args
+        roster.handle_change_fielder(player, tables)
     if e == Event.CHANGE_PINCH_RUNNER:
         base, runner = args
         state.handle_change_runner(get_base(base), runner)
@@ -499,8 +553,7 @@ def _check_change_events(e, args, roster, state, tables):
     if e == Event.CHANGE_PITCHER:
         pitcher, = args
         if roster.is_change_pitcher(pitcher):
-            tables.append_body(roster.create_change_pitcher_row(pitcher))
-            roster.handle_change_pitcher(pitcher)
+            roster.handle_change_pitcher(pitcher, tables)
 
 
 EVENT_SINGLE_BASES = [
@@ -643,7 +696,7 @@ def _check_pitch_events(e, args, roster, state, tables):
             tables.append_summary('{} called out on strikes.'.format(batter))
             state.handle_out_batter()
         if e == Event.PITCHER_STRIKE_CALL_TOSSED:
-            foot = roster.create_titled_row(
+            foot = roster.create_bolded_row(
                 'Ejection', '{} ejected for arguing the call.'.format(batter))
             tables.append_foot(foot)
     if e in [Event.PITCHER_STRIKE_FOUL, Event.PITCHER_STRIKE_FOUL_ERR]:
@@ -652,7 +705,7 @@ def _check_pitch_events(e, args, roster, state, tables):
         if e == Event.PITCHER_STRIKE_FOUL_ERR:
             scoring, = args
             fielder = roster.get_fielder(get_position(scoring, False))
-            body = roster.create_titled_row(
+            body = roster.create_bolded_row(
                 'Error', 'Dropped foul ball error by {}.'.format(fielder))
             tables.append_body(body)
     if e == Event.PITCHER_STRIKE_FOUL_BUNT:
