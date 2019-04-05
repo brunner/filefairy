@@ -30,19 +30,6 @@ from data.event.event import Event  # noqa
 SMALLCAPS = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 
 
-LOCATIONS = {
-    '1': ('P', 'pitcher'),
-    '2': ('C', 'catcher'),
-    '3': ('1B', 'first baseman'),
-    '4': ('2B', 'second baseman'),
-    '5': ('3B', 'third baseman'),
-    '6': ('SS', 'shortstop'),
-    '7': ('LF', 'left fielder'),
-    '8': ('CF', 'center fielder'),
-    '9': ('RF', 'right fielder')
-}
-
-
 def get_base(base):
     if base == 'F':
         return 1
@@ -52,28 +39,15 @@ def get_base(base):
         return 3
 
 
-def _location(zone, infield):
-    if infield:
-        if '1' in zone or 'P' in zone:
-            return '1'
-        if '2' in zone:
-            return '2'
-        if '3' in zone:
-            return '3'
-        if '5' in zone:
-            return '5'
-        if '4' in zone:
-            return '4'
-        return '6'
-    else:
-        if '8' in zone or 'M' in zone:
-            return '8'
-        if '3' in zone or '4' in zone or '9' in zone:
-            return '9'
-        return '7'
-
-
-def _hit_path_str(path):
+def get_outcome(path, out):
+    if out:
+        if path == 'F':
+            return 'flies out'
+        if path == 'G':
+            return 'grounds out'
+        if path == 'L':
+            return 'lines out'
+        return 'pops out'
     if path == 'F':
         return 'fly ball'
     if path == 'G':
@@ -83,14 +57,51 @@ def _hit_path_str(path):
     return 'pop up'
 
 
-def _out_path_str(path):
-    if path == 'F':
-        return 'flies out'
-    if path == 'G':
-        return 'grounds out'
-    if path == 'L':
-        return 'lines out'
-    return 'pops out'
+def get_position(zone, outfield):
+    if outfield:
+        if '8' in zone or 'M' in zone:
+            return 'CF'
+        if '3' in zone or '4' in zone or '9' in zone:
+            return 'RF'
+        return 'LF'
+    if '1' in zone or 'P' in zone:
+        return 'P'
+    if '2' in zone:
+        return 'C'
+    if '3' in zone:
+        return '1B'
+    if '5' in zone:
+        return '3B'
+    if '4' in zone:
+        return '2B'
+    if '7' in zone:
+        return 'LF'
+    if '8' in zone:
+        return 'CF'
+    if '9' in zone:
+        return 'RF'
+    return 'SS'
+
+
+def get_title(position):
+    if position == 'P':
+        return 'pitcher'
+    if position == 'C':
+        return 'catcher'
+    if position == '1B':
+        return 'first baseman'
+    if position == '2B':
+        return 'second baseman'
+    if position == '3B':
+        return 'third baseman'
+    if position == 'SS':
+        return 'shortstop'
+    if position == 'LF':
+        return 'left fielder'
+    if position == 'CF':
+        return 'center fielder'
+    if position == 'RF':
+        return 'right fielder'
 
 
 class Roster(object):
@@ -193,12 +204,9 @@ class Roster(object):
     def get_batter(self):
         return self.lineups[self.batting][self.get_index()][0]
 
-    def get_fielder(self, zone, infield):
-        if zone is None:
-            return None
-        position, title = LOCATIONS[_location(zone, infield)]
-        fielder = self.fielders[self.throwing][position]
-        return title + ' ' + fielder
+    def get_fielder(self, position):
+        player = self.fielders[self.throwing][position]
+        return get_title(position) + ' ' + player
 
     def get_index(self):
         return self.indices[self.batting]
@@ -221,36 +229,6 @@ class Roster(object):
 
     def is_change_pitcher(self, pitcher):
         return pitcher != self.get_pitcher()
-
-    def to_assist_out_str(self, runner, base, args):
-        path, zone1 = args
-        zone2 = '5' if base == 3 else '4' if '7' in zone1 else '6'
-        fielder1 = self.get_fielder(zone1, False)
-        fielder2 = self.get_fielder(zone2, True)
-        return '{} out at {}{}, {} to {}.'.format(runner, base, suffix(base),
-                                                  fielder1, fielder2)
-
-    def to_hit_bunt_str(self, text, args):
-        path, zone = args
-        path = 'bunt ' + _hit_path_str(path)
-        fielder = self.get_fielder(zone, True)
-        return self.to_hit_str(text, path, fielder)
-
-    def to_hit_infield_str(self, text, args):
-        path, zone = args
-        path = _hit_path_str(path)
-        fielder = self.get_fielder(zone, True)
-        return self.to_hit_str(text, path, fielder)
-
-    def to_hit_outfield_str(self, text, args):
-        path, zone = args
-        path = _hit_path_str(path)
-        fielder = self.get_fielder(zone, False)
-        return self.to_hit_str(text, path, fielder)
-
-    def to_hit_str(self, text, path, fielder):
-        batter = self.get_batter()
-        return '{} {} on a {} to {}.'.format(batter, text, path, fielder)
 
 
 class State(object):
@@ -380,29 +358,6 @@ class State(object):
     def set_inplay(self):
         self.inplay = True
 
-    def to_bases_str(self):
-        first, second, third = self.bases
-        if first and second and third:
-            return 'Bases loaded'
-        if first and second:
-            return 'Runners on 1st and 2nd'
-        if first and third:
-            return 'Runners on 1st and 3rd'
-        if second and third:
-            return 'Runners on 2nd and 3rd'
-        if first:
-            return 'Runner on 1st'
-        if second:
-            return 'Runner on 2nd'
-        if third:
-            return 'Runner on 3rd'
-        return 'Bases empty'
-
-    def to_head_str(self):
-        return '{} &nbsp;|&nbsp; {}, {}'.format(self.to_score_str(),
-                                                self.to_bases_str(),
-                                                self.to_outs_str())
-
     def to_inning_str(self):
         s = 'Top' if self.half % 2 == 1 else 'Bottom'
         n = (self.half + 1) // 2
@@ -449,15 +404,14 @@ class Tables(object):
         self.tables.append(table_)
 
     def create_table(self, roster, state):
-        cl = 'border mb-3'
-        hc = [col(colspan='2', clazz='font-weight-bold text-dark')]
-        bc = [col(), col(clazz='text-right w-50p')]
-        head = [[cell(content=state.to_head_str())]]
+        clazz = 'border mb-3'
+        hcols = [col(colspan='2', clazz='font-weight-bold text-dark')]
+        bcols = [col(), col(clazz='text-right w-50p')]
         body, self.body = list(self.body), []
 
         self.body.append(roster.create_player_row(False))
         self.body.append(roster.create_player_row(True))
-        self.table = table(clazz=cl, hcols=hc, bcols=bc, head=head, body=body)
+        self.table = table(clazz=clazz, hcols=hcols, bcols=bcols, body=body)
         self.tables.append(self.table)
 
     def get_body(self):
@@ -534,40 +488,83 @@ def _check_single_base_events(e, args, roster, state, tables):
     batter = roster.get_batter()
     state.set_inplay()
     if e == Event.BATTER_SINGLE:
-        tables.append_summary(roster.to_hit_outfield_str('singles', args))
+        path, zone = args
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(zone, True))
+        tables.append_summary('{} singles on a {} to {}.'.format(
+            batter, outcome, fielder))
         state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SINGLE_INFIELD:
-        tables.append_summary(roster.to_hit_infield_str('singles', args))
+        path, zone = args
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(zone, False))
+        tables.append_summary('{} singles on a {} to {}.'.format(
+            batter, outcome, fielder))
         state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SINGLE_BATTED_OUT:
         path, zone = args
-        tables.append_summary(roster.to_hit_infield_str('singles', args))
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(zone, False))
+        tables.append_summary('{} singles on a {} to {}.'.format(
+            batter, outcome, fielder))
         base = 1 if ('3' in zone or '4' in zone) else 2
         runner = state.get_runner(base)
         advance = '2nd' if base == 1 else '3rd'
-        s = '{} out at {} (hit by batted ball).'.format(runner, advance)
-        tables.append_summary(s)
+        tables.append_summary('{} out at {} (hit by batted ball).'.format(
+            runner, advance))
         state.handle_out_runner(base)
         state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SINGLE_BUNT:
         zone, = args
-        args = ('G', zone)
-        tables.append_summary(roster.to_hit_bunt_str('singles', args))
+        position = get_position(zone, False)
+        fielder = roster.get_fielder(position)
+        tables.append_summary('{} singles on a bunt ground ball to {}.'.format(
+            batter, fielder))
         state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SINGLE_ERR:
-        scoring, path, zone = args
-        args = (path, zone)
-        fielder = roster.get_fielder(scoring.strip('E'), False)
-        tables.append_summary(roster.to_hit_outfield_str('singles', args))
-        s = '{} advances to 2nd, on a fielding error by {}.'.format(
-            batter, fielder)
-        tables.append_summary(s)
+        scoring, path, _ = args
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(scoring, True))
+        tables.append_summary('{} singles on a {} to {}.'.format(
+            batter, outcome, fielder))
+        tables.append_summary(
+            '{} advances to 2nd, on a fielding error by {}.'.format(
+                batter, fielder))
         state.handle_batter_to_base(batter, 2)
     if e == Event.BATTER_SINGLE_STRETCH:
-        tables.append_summary(roster.to_hit_outfield_str('singles', args))
-        tables.append_summary(roster.to_assist_out_str(batter, 2, args))
+        path, zone = args
+        outcome = get_outcome(path, False)
+        fielder = roster.get_fielder(get_position(zone, False))
+        receiver = roster.get_fielder('2B' if '7' in zone else 'SS')
+        tables.append_summary('{} singles on a {} to {}.'.format(
+            batter, outcome, fielder))
+        tables.append_summary('{} out at {}{}, {} to {}.'.format(
+            batter, 2, suffix(2), fielder, receiver))
         state.handle_batter_to_base(batter, 1)
         state.handle_out_runner(1)
+
+
+EVENT_BATTED_OUTS = [
+    Event.BATTER_FLY,
+    Event.BATTER_FLY_BUNT,
+    Event.BATTER_FLY_BUNT_DP,
+    Event.BATTER_GROUND,
+    Event.BATTER_GROUND_BUNT,
+    Event.BATTER_GROUND_DP,
+    Event.BATTER_GROUND_FC,
+    Event.BATTER_GROUND_HOME,
+    Event.BATTER_SINGLE_APPEAL,
+    Event.BATTER_LINED_DP,
+]
+
+
+def _check_batted_out_events(e, args, roster, state, tables):
+    # batter = roster.get_batter()
+    # state.set_inplay()
+    # if e == Event.BATTER_FLY:
+    #     tables.append_summary(roster.to_out_outfield_str(args))
+    #     state.handle_batter_to_base(batter, 1)
+    pass
 
 
 EVENT_PITCHES = [
@@ -618,8 +615,7 @@ def _check_pitch_events(e, args, roster, state, tables):
         state.create_pitch_row('Foul', tables)
         if e == Event.PITCHER_STRIKE_FOUL_ERR:
             scoring, = args
-            location = scoring.strip('E')
-            fielder = roster.get_fielder(location, int(location) < 7)
+            fielder = roster.get_fielder(get_position(scoring, False))
             body = roster.create_titled_row(
                 'Error', 'Dropped foul ball error by {}.'.format(fielder))
             tables.append_body(body)
@@ -647,7 +643,7 @@ def _check_pitch_events(e, args, roster, state, tables):
         state.handle_pitch_strike()
         state.create_pitch_row('Swinging Strike', tables)
         tables.append_summary('{} strikes out swinging.'.format(batter))
-        fielder = roster.get_fielder('2', True)
+        fielder = roster.get_fielder('C')
         s = '{} advances to 1st, on a passed ball by {}.'.format(
             batter, fielder)
         tables.append_summary(s)
@@ -656,7 +652,7 @@ def _check_pitch_events(e, args, roster, state, tables):
         state.handle_pitch_strike()
         state.create_pitch_row('Swinging Strike', tables)
         tables.append_summary('{} strikes out swinging.'.format(batter))
-        fielder = roster.get_fielder('1', True)
+        fielder = roster.get_fielder('P')
         s = '{} advances to 1st, on a wild pitch by {}.'.format(
             batter, fielder)
         tables.append_summary(s)
@@ -709,6 +705,8 @@ def get_html(game_in):
                     _check_change_events(e, args, roster, state, tables)
                 if e in EVENT_SINGLE_BASES:
                     _check_single_base_events(e, args, roster, state, tables)
+                if e in EVENT_BATTED_OUTS:
+                    _check_batted_out_events(e, args, roster, state, tables)
                 if e in EVENT_PITCHES:
                     _check_pitch_events(e, args, roster, state, tables)
 

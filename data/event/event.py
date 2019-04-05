@@ -63,14 +63,12 @@ class Event(IntEnum):
     BATTER_FLY = auto()  # [scoring, path, zone]
     BATTER_FLY_BUNT = auto()  # [zone, scoring]
     BATTER_FLY_BUNT_DP = auto()  # [zone, base, scoring]
-
     BATTER_GROUND = auto()  # [scoring, zone]
     BATTER_GROUND_BUNT = auto()  # [zone, scoring]
     BATTER_GROUND_DP = auto()  # [scoring, zone]
     BATTER_GROUND_FC = auto()  # [base, scoring, zone]
     BATTER_GROUND_HOME = auto()  # [scoring, zone]
     BATTER_SINGLE_APPEAL = auto()  # []
-
     BATTER_LINED_DP = auto()  # [scoring, path, zone]
 
     BATTER_SAC_BUNT = auto()  # [zone, scoring]
