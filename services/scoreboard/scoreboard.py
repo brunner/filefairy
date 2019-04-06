@@ -159,9 +159,8 @@ def line_score_hide_foot(data):
     """
     lines = []
 
-    # TODO: Uncomment after Gameday is finished.
-    # head = anchor('/gameday/' + data['num'] + '/', 'Gameday')
-    # lines.append(head)
+    head = anchor('/gameday/' + data['num'] + '/', 'Watch Live')
+    lines.append(head)
 
     # TODO: Remove events check after game log 404 error is fixed.
     if data['events']:
