@@ -167,6 +167,9 @@ class Gameday(Registrable):
 # reference = Reference(date=date, e=e)
 # set_reference(reference)
 
+# reload_service_for_test('roster')
+# reload_service_for_test('state')
+# reload_service_for_test('tables')
 # reload_service_for_test('livesim')
 # reload_service_for_test('scoreboard')
 # reload_service_for_test('uniforms')
