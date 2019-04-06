@@ -15,6 +15,7 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation_sub  # noqa
+from common.teams.teams import encoding_to_hometown_sub  # noqa
 
 
 class State(object):
@@ -82,7 +83,7 @@ class State(object):
         if self.score:
             classes = ['badge', 'border', 'tag', 'tag-light']
             content += '&nbsp;&nbsp;'
-            content += span(classes=classes, text=self.to_score_str())
+            content += span(classes=classes, text=self.to_score_short_str())
             self.score = False
 
         tables.append_body([cell(col=col(colspan='2'), content=content)])
@@ -92,6 +93,12 @@ class State(object):
 
     def get_runner(self, base):
         return self.bases[base - 1]
+
+    def get_runs_away(self):
+        return self.runs[self.away_team]
+
+    def get_runs_home(self):
+        return self.runs[self.home_team]
 
     def handle_batter_to_base(self, batter, base):
         for i in range(min(3, base), 0, -1):
@@ -161,50 +168,64 @@ class State(object):
         return self.balls == 4
 
     def set_change_inning(self):
+        self.outs = 3
+        self.bases = [None, None, None]
         self.change = True
 
     def set_inplay(self):
         self.inplay = True
 
+    def set_runs(self, aruns, hruns):
+        self.runs = {self.away_team: aruns, self.home_team: hruns}
+
     def to_bases_str(self):
         first, second, third = self.bases
         if first and second and third:
-            return 'Bases loaded'
+            return 'bases loaded'
         if first and second:
-            return 'Runners on 1st and 2nd'
+            return 'runners on 1st and 2nd'
         if first and third:
-            return 'Runners on 1st and 3rd'
+            return 'runners on 1st and 3rd'
         if second and third:
-            return 'Runners on 2nd and 3rd'
+            return 'runners on 2nd and 3rd'
         if first:
-            return 'Runner on 1st'
+            return 'runner on 1st'
         if second:
-            return 'Runner on 2nd'
+            return 'runner on 2nd'
         if third:
-            return 'Runner on 3rd'
-        return 'Bases empty'
+            return 'runner on 3rd'
+        return 'bases empty'
 
-    def to_head_str(self):
-        return '{} &nbsp;|&nbsp; {}, {}'.format(self.to_score_str(),
-                                                self.to_bases_str(),
-                                                self.to_outs_str())
+    def to_head_str(self, start):
+        return '{} &nbsp;|&nbsp; {} &nbsp;|&nbsp; {}, {}'.format(
+            self.to_inning_str(start), self.to_score_long_str(),
+            self.to_outs_str(), self.to_bases_str())
 
-    def to_inning_str(self):
-        s = 'Top' if self.half % 2 == 1 else 'Bottom'
+    def to_inning_str(self, start):
+        if start:
+            s = 'Top' if self.half % 2 == 1 else 'Bottom'
+        else:
+            s = 'Mid' if self.half % 2 == 1 else 'End'
         n = (self.half + 1) // 2
         return '{} {}{}'.format(s, n, suffix(n))
 
     def to_outs_str(self):
         return '{} out'.format(self.outs)
 
-    def to_score_str(self):
+    def to_score_long_str(self):
+        return self.to_score_str(encoding_to_hometown_sub)
+
+    def to_score_short_str(self):
+        return self.to_score_str(encoding_to_abbreviation_sub)
+
+    def to_score_str(self, f):
         s = '{} {} · {} {}'.format(
             self.away_team,
             self.runs[self.away_team],
             self.home_team,
             self.runs[self.home_team],
         )
-        return encoding_to_abbreviation_sub(s)
+        return f(s)
 
 
 def create_state(data):

@@ -239,14 +239,15 @@ def parse_game(box_in, log_in, out, date):
     events_map = call_service('events', 'get_map', ())
     for inning in _parse_innings(log_text, html):
         batting, pitching, pitcher, content = inning
-        for line in _parse_lines(content, html):
+        lines = _parse_lines(content, html)
+        for i, line in enumerate(lines):
             for event, regex in events_map.items():
                 groups = match(regex, line)
                 if groups is not None:
                     events.append(event.encode(*groups))
                     break
             else:
-                events.append(Event.PARSE_ERROR.encode())
+                events.append(Event.SPECIAL.encode('<br>'.join(lines[i:])))
                 _logger.log(logging.DEBUG, '\n'.join([log_in, line]))
                 break
 
@@ -270,3 +271,31 @@ def parse_game(box_in, log_in, out, date):
         f.write(dumps(data) + '\n')
 
     return data
+
+# from common.datetime_.datetime_ import datetime_now
+# from common.jinja2_.jinja2_ import env
+# from common.reference.reference import set_reference
+# from common.service.service import reload_service_for_test
+# from impl.reference.reference import Reference
+
+# date = datetime_now()
+# e = env()
+
+# reference = Reference(date=date, e=e)
+# set_reference(reference)
+
+# reload_service_for_test('events')
+# reload_service_for_test('roster')
+# reload_service_for_test('state')
+# reload_service_for_test('tables')
+# reload_service_for_test('livesim')
+# reload_service_for_test('scoreboard')
+# reload_service_for_test('uniforms')
+
+# GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
+
+# box_in = 'https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2894.html'
+# log_in = 'https://statsplus.net/oblootp/reports/news/html/game_logs/log_2894.html'
+# out = os.path.join(GAMES_DIR, '2894.json')
+# date = encode_datetime(datetime_datetime_pst(2025, 9, 28))
+# parse_game(box_in, log_in, out, date)

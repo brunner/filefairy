@@ -21,9 +21,9 @@ from common.events.events import get_outcome  # noqa
 from common.events.events import get_position  # noqa
 from common.events.events import get_seats  # noqa
 from common.json_.json_ import loads  # noqa
+from common.reference.reference import player_to_name_sub  # noqa
 from common.service.service import call_service  # noqa
 from data.event.event import Event  # noqa
-
 
 EVENT_CHANGES = [
     Event.CHANGE_INNING,
@@ -37,11 +37,18 @@ EVENT_CHANGES = [
 
 def _check_change_events(e, args, roster, state, tables):
     if e == Event.CHANGE_INNING:
+        aruns, hruns = [int(a) for a in args]
         state.set_change_inning()
+        if aruns != state.get_runs_away() or hruns != state.get_runs_home():
+            state.set_runs(aruns, hruns)
+            text = state.to_head_str(False)
+            body = roster.create_bolded_row('Score Update', text)
+            tables.append_body(body)
+            tables.append_all()
+            tables.reset_all()
     elif state.get_change_inning():
         roster.handle_change_inning()
         state.handle_change_inning()
-        tables.append_table(topper(state.to_inning_str()))
 
     if e in [Event.CHANGE_BATTER, Event.CHANGE_PINCH_HITTER]:
         roster.handle_change_batter()
@@ -198,7 +205,7 @@ def _check_batter_reach_events(e, args, roster, state, tables):
         state.handle_batter_to_base(batter, 1)
 
 
-EVENT_BATTED_OUTS = [
+EVENT_BATTER_OUTS = [
     Event.BATTER_FLY,
     Event.BATTER_FLY_BUNT,
     Event.BATTER_FLY_BUNT_DP,
@@ -212,7 +219,7 @@ EVENT_BATTED_OUTS = [
 ]
 
 
-def _check_batted_out_events(e, args, roster, state, tables):
+def _check_batter_out_events(e, args, roster, state, tables):
     batter = roster.get_batter()
     state.set_inplay()
     if e == Event.BATTER_FLY:
@@ -283,6 +290,29 @@ def _check_batted_out_events(e, args, roster, state, tables):
         tables.append_summary('{} out at {}, {}.'.format(
             runner, get_bag(base), roster.get_scoring(scoring)))
         state.handle_out_runner(base)
+
+
+EVENT_MISC_BATTERS = [
+    Event.BATTER_SAC_BUNT,
+    Event.BATTER_SAC_BUNT_DP,
+    Event.BATTER_SAC_BUNT_HIT,
+    Event.BATTER_SAC_BUNT_OUT,
+    Event.BATTER_SAC_BUNT_SAFE,
+    Event.CATCHER_PASSED_BALL,
+    Event.CATCHER_PICK_ERR,
+    Event.CATCHER_PICK_OUT,
+    Event.FIELDER_THROWING,
+    Event.PITCHER_PICK_ERR,
+    Event.PITCHER_PICK_OUT,
+    Event.PITCHER_BALK,
+    Event.PITCHER_HIT_BY_PITCH,
+    Event.PITCHER_HIT_BY_PITCH_CHARGE,
+    Event.PITCHER_WILD_PITCH,
+]
+
+
+def _check_misc_batter_events(e, args, roster, state, tables):
+    pass
 
 
 EVENT_PITCHES = [
@@ -377,6 +407,31 @@ def _check_pitch_events(e, args, roster, state, tables):
         state.handle_batter_to_base(batter, 1)
 
 
+EVENT_MISC_RUNNERS = [
+    Event.RUNNER_STEAL,
+    Event.RUNNER_STEAL_HOME,
+    Event.RUNNER_STEAL_HOME_OUT,
+    Event.RUNNER_STEAL_OUT,
+    Event.RUNNER_STEAL_THROWING,
+    Event.PLAYER_MOVE,
+    Event.PLAYER_SCORE,
+    Event.BASE_MOVE,
+    Event.BASE_MOVE_RUNDOWN,
+    Event.BASE_MOVE_THROW,
+    Event.BASE_MOVE_TRAIL,
+    Event.BASE_MOVE_TRAIL_OUT,
+    Event.BASE_OUT,
+    Event.BASE_SCORE,
+    Event.BASE_SCORE_THROW,
+    Event.BASE_SCORE_TRAIL,
+    Event.BASE_SCORE_TRAIL_OUT,
+]
+
+
+def _check_misc_runner_events(e, args, roster, state, tables):
+    pass
+
+
 def _group(encodings):
     change = None
     group = []
@@ -423,10 +478,21 @@ def get_html(game_in):
                     _check_change_events(e, args, roster, state, tables)
                 if e in EVENT_BATTER_REACHES:
                     _check_batter_reach_events(e, args, roster, state, tables)
-                if e in EVENT_BATTED_OUTS:
-                    _check_batted_out_events(e, args, roster, state, tables)
+                if e in EVENT_BATTER_OUTS:
+                    _check_batter_out_events(e, args, roster, state, tables)
+                if e in EVENT_MISC_BATTERS:
+                    _check_misc_batter_events(e, args, roster, state, tables)
                 if e in EVENT_PITCHES:
                     _check_pitch_events(e, args, roster, state, tables)
+
+                if e == Event.SPECIAL:
+                    body = roster.create_bolded_row(
+                        'Parse Error', 'Unable to parse game event.')
+                    tables.append_body(body)
+
+                    text = player_to_name_sub(' '.join(args))
+                    body = [cell(col=col(colspan='2'), content=text)]
+                    tables.append_body(body)
 
             if tables.get_summary():
                 state.create_summary_row(tables)
