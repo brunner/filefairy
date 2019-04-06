@@ -1,8 +1,8 @@
 {
   "logs": {
-    "2019-03-31T00:00:00-07:00": [
+    "2019-04-05T00:00:00-07:00": [
       {
-        "date": "2019-03-31T19:05:28.440946-07:00",
+        "date": "2019-04-05T22:58:26.786248-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 251,
@@ -10,7 +10,15 @@
         "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
       },
       {
-        "date": "2019-03-31T19:28:16.321229-07:00",
+        "date": "2019-04-05T22:59:32.421498-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 180, in _parse_saved_scores\n    data = self._parse_score(num, date_)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 223, in _parse_score\n    return call_service('statslab', 'parse_game', (box, log, out, date))\n  File \"/home/jbrunner/filefairy/common/service/service.py\", line 39, in call_service\n    return getattr(_services[service], method)(*fargs, *args, **kwargs)\n  File \"/home/jbrunner/filefairy/services/statslab/statslab.py\", line 137, in parse_game\n    t = search(r'(?s)Start Time:(.+?)<br>', box_text).strip(' EST')\nAttributeError: 'NoneType' object has no attribute 'strip'",
+        "levelname": "ERROR",
+        "lineno": 272,
+        "msg": "Disabled statsplus.",
+        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
+      },
+      {
+        "date": "2019-04-05T23:15:59.079568-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 51,
@@ -18,7 +26,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
       },
       {
-        "date": "2019-03-31T19:28:46.210296-07:00",
+        "date": "2019-04-05T23:16:41.000495-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 84,
@@ -26,7 +34,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-31T19:29:24.489570-07:00",
+        "date": "2019-04-05T23:17:23.051854-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 71,
@@ -34,49 +42,7 @@
         "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
       },
       {
-        "date": "2019-03-31T19:30:30.582513-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 167,
-        "msg": "Download complete.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      }
-    ],
-    "2019-04-03T00:00:00-07:00": [
-      {
-        "date": "2019-04-03T19:50:46.826198-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 251,
-        "msg": "Sim in progress.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      },
-      {
-        "date": "2019-04-03T20:58:20.932441-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 51,
-        "msg": "File is up.",
-        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
-      },
-      {
-        "date": "2019-04-03T20:58:50.073090-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 84,
-        "msg": "Download started.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-03T20:59:32.042297-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 71,
-        "msg": "Download finished.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-03T21:00:37.856285-07:00",
+        "date": "2019-04-05T23:18:27.312165-07:00",
         "exc": "",
         "levelname": "INFO",
         "lineno": 167,
