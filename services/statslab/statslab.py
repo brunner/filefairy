@@ -134,8 +134,10 @@ def parse_game(box_in, log_in, out, date):
     if date is not None and date != encode_datetime(d):
         return None
 
-    t = search(r'(?s)Start Time:(.+?)<br>', box_text).strip(' EST')
-    s = datetime.datetime.strptime(t.upper(), '%I:%M %p')
+    t = search(r'(?s)Start Time:(.+?)<br>', box_text)
+    if not t:
+        return None
+    s = datetime.datetime.strptime(t.strip(' EST').upper(), '%I:%M %p')
 
     d = datetime_as_est(d)
     date = datetime_datetime_est(d.year, d.month, d.day, s.hour, s.minute)
