@@ -34,6 +34,8 @@ EVENT_MAP = {
                                r't, batter safe!$'),
     Event.BATTER_SINGLE_ERR: (r'^\d-\d: Single, Error in OF, {scoring}, batter'
                               r' to second base \({path}, {zone}\)$'),
+    Event.BATTER_SAC_BUNT_HIT: (r'^\d-\d: Sac Bunt to {zone} - play at first, '
+                                r'batter safe!$'),
     Event.BATTER_SINGLE_INFIELD: (r'^\d-\d: SINGLE \({path}, {zone}\) \(infiel'
                                   r'd hit\)$'),
     Event.BATTER_SINGLE_STRETCH: (r'^\d-\d: SINGLE \({path}, {zone}\) - OUT at'
@@ -75,8 +77,6 @@ EVENT_MAP = {
                             r'er OUT! {scoring}$'),
     Event.BATTER_SAC_BUNT_DP: (r'^\d-\d: Sac Bunt(?: to P)? - play at {base}, '
                                r'runner OUT -> throw to first, DP!$'),
-    Event.BATTER_SAC_BUNT_HIT: (r'^\d-\d: Sac Bunt to {zone} - play at first, '
-                                r'batter safe!$'),
     Event.BATTER_SAC_BUNT_OUT: (r'^\d-\d: Sac Bunt to {zone} - play at {base},'
                                 r' runner OUT! {scoring}$'),
     Event.BATTER_SAC_BUNT_SAFE: (r'^\d-\d: Sac Bunt to {zone} - play at {base}'

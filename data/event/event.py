@@ -46,6 +46,7 @@ class Event(IntEnum):
     BATTER_SINGLE = auto()  # [path, zone]
     BATTER_SINGLE_BATTED_OUT = auto()  # [path, zone]
     BATTER_SINGLE_BUNT = auto()  # [zone]
+    BATTER_SAC_BUNT_HIT = auto()  # [zone]
     BATTER_SINGLE_INFIELD = auto()  # [path, zone]
     BATTER_SINGLE_ERR = auto()  # [scoring, path, zone]
     BATTER_SINGLE_STRETCH = auto()  # [path, zone]
@@ -71,7 +72,6 @@ class Event(IntEnum):
 
     BATTER_SAC_BUNT = auto()  # [zone, scoring]
     BATTER_SAC_BUNT_DP = auto()  # [base]
-    BATTER_SAC_BUNT_HIT = auto()  # [zone, scoring]
     BATTER_SAC_BUNT_OUT = auto()  # [zone, base, scoring]
     BATTER_SAC_BUNT_SAFE = auto()  # [zone, base]
 

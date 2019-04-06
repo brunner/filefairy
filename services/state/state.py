@@ -160,6 +160,9 @@ class State(object):
         elif self.bases[base - 1]:
             self.handle_runner_to_base(self.bases[base - 1], base + 1)
         self.bases[base - 1] = player
+        for i in range(base - 1, 0, -1):
+            if self.bases[i - 1] == player:
+                self.bases[i - 1] = None
 
     def is_strikeout(self):
         return self.strikes == 3

@@ -16,6 +16,7 @@ from common.elements.elements import span  # noqa
 from common.events.events import get_position  # noqa
 from common.events.events import get_title  # noqa
 from common.events.events import get_written  # noqa
+from common.math.math import crange  # noqa
 from common.reference.reference import player_to_bats  # noqa
 from common.reference.reference import player_to_name  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
@@ -88,13 +89,9 @@ class Roster(object):
         return [cell(col=col(colspan='2'), content=content)]
 
     def create_change_batter_row(self, batter):
-        _1, change, i, prev = self.batters[batter]
-        curr, change = (change + ',').split(',', 1)
-        self.batters[batter] = [curr, change, i, prev]
-        self.lineups[self.batting][i].insert(0, batter)
-
         bold = 'Offensive Substitution'
-        text = 'Pinch hitter {} replaces {}.'.format(batter, prev)
+        text = 'Pinch hitter {} replaces {}.'.format(batter,
+                                                     self.batters[batter][3])
         return self.create_bolded_row(bold, text)
 
     def create_change_runner_row(self, runner):
@@ -138,8 +135,13 @@ class Roster(object):
     def get_title_fielder(self, position):
         return get_title(position) + ' ' + self.get_fielder(position)
 
-    def handle_change_batter(self):
-        self.indices[self.batting] = (self.get_index() + 1) % 9
+    def handle_change_batter(self, batter):
+        for i in crange(self.get_index() + 1, 9):
+            if batter == self.lineups[self.batting][i][0]:
+                self.indices[self.batting] = i
+                break
+        else:
+            raise Exception('Unable to change batter.')
 
     def handle_change_fielder(self, player, tables):
         curr, change, i, prev = self.batters[player]
@@ -176,6 +178,13 @@ class Roster(object):
 
     def handle_change_inning(self):
         self.batting, self.throwing = self.throwing, self.batting
+
+    def handle_change_pinch_hitter(self, batter):
+        _1, change, i, prev = self.batters[batter]
+        curr, change = (change + ',').split(',', 1)
+        self.batters[batter] = [curr, change, i, prev]
+        self.lineups[self.batting][i].insert(0, batter)
+        self.handle_change_batter(batter)
 
     def handle_change_pitcher(self, pitcher, tables):
         bold = 'Pitching Substitution'

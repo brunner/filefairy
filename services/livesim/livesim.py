@@ -9,6 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/livesim', '', _path))
 
+from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
@@ -50,12 +51,16 @@ def _check_change_events(e, args, roster, state, tables):
         roster.handle_change_inning()
         state.handle_change_inning()
 
-    if e in [Event.CHANGE_BATTER, Event.CHANGE_PINCH_HITTER]:
-        roster.handle_change_batter()
+    if e == Event.CHANGE_BATTER:
+        batter, = args
+        roster.handle_change_batter(batter)
         state.handle_change_batter()
-        if e == Event.CHANGE_PINCH_HITTER:
-            batter, = args
-            tables.append_body(roster.create_change_batter_row(batter))
+        tables.create_table(roster, state)
+    if e == Event.CHANGE_PINCH_HITTER:
+        batter, = args
+        roster.handle_change_pinch_hitter(batter)
+        state.handle_change_batter()
+        tables.append_body(roster.create_change_batter_row(batter))
         tables.create_table(roster, state)
     if e == Event.CHANGE_FIELDER:
         _, player = args
@@ -74,6 +79,7 @@ EVENT_BATTER_REACHES = [
     Event.BATTER_SINGLE,
     Event.BATTER_SINGLE_BATTED_OUT,
     Event.BATTER_SINGLE_BUNT,
+    Event.BATTER_SAC_BUNT_HIT,
     Event.BATTER_SINGLE_INFIELD,
     Event.BATTER_SINGLE_ERR,
     Event.BATTER_SINGLE_STRETCH,
@@ -118,7 +124,7 @@ def _check_batter_reach_events(e, args, roster, state, tables):
             runner, advance))
         state.handle_out_runner(base)
         state.handle_batter_to_base(batter, 1)
-    if e == Event.BATTER_SINGLE_BUNT:
+    if e in [Event.BATTER_SINGLE_BUNT, Event.BATTER_SAC_BUNT_HIT]:
         zone, = args
         fielder = roster.get_title_fielder(get_position(zone, False))
         tables.append_summary('{} singles on a bunt ground ball to {}.'.format(
@@ -295,7 +301,6 @@ def _check_batter_out_events(e, args, roster, state, tables):
 EVENT_MISC_BATTERS = [
     Event.BATTER_SAC_BUNT,
     Event.BATTER_SAC_BUNT_DP,
-    Event.BATTER_SAC_BUNT_HIT,
     Event.BATTER_SAC_BUNT_OUT,
     Event.BATTER_SAC_BUNT_SAFE,
     Event.CATCHER_PASSED_BALL,
@@ -312,7 +317,22 @@ EVENT_MISC_BATTERS = [
 
 
 def _check_misc_batter_events(e, args, roster, state, tables):
-    pass
+    batter = roster.get_batter()
+    if e == Event.BATTER_SAC_BUNT:
+        tables.append_summary('{} hits a sacrifice bunt.'.format(batter))
+        state.handle_batter_to_base(batter, 1)
+        state.handle_out_runner(1)
+    if e == Event.BATTER_SAC_BUNT_DP:
+        base, _ = args
+        base = get_base(base)
+        scoring = '1-5-3' if base == 3 else '1-6-3'
+        runner = state.get_runner(base - 1)
+        tables.append_summary('{} bunt grounds into a double play, {}.'.format(
+            batter, roster.get_scoring(scoring)))
+        tables.append_summary('{} out at {}.'.format(runner,
+                                                     get_bag(base)))
+        state.handle_out_batter()
+        state.handle_out_runner(base - 1)
 
 
 EVENT_PITCHES = [
@@ -429,7 +449,11 @@ EVENT_MISC_RUNNERS = [
 
 
 def _check_misc_runner_events(e, args, roster, state, tables):
-    pass
+    if e == Event.PLAYER_MOVE:
+        runner, base = args
+        base = get_base(base)
+        state.handle_runner_to_base(runner, base)
+        tables.append_summary('{} to {}{}.'.format(runner, base, suffix(base)))
 
 
 def _group(encodings):
@@ -484,8 +508,14 @@ def get_html(game_in):
                     _check_misc_batter_events(e, args, roster, state, tables)
                 if e in EVENT_PITCHES:
                     _check_pitch_events(e, args, roster, state, tables)
+                if e in EVENT_MISC_RUNNERS:
+                    _check_misc_runner_events(e, args, roster, state, tables)
 
                 if e == Event.SPECIAL:
+                    if tables.get_summary():
+                        state.create_summary_row(tables)
+                        tables.reset_summary()
+
                     body = roster.create_bolded_row(
                         'Parse Error', 'Unable to parse game event.')
                     tables.append_body(body)
