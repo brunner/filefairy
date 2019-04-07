@@ -274,8 +274,10 @@ def _check_batter_out_events(e, args, roster, state, tables):
         tables.append_summary('{} grounds into a force out, {}.'.format(
             batter, roster.get_scoring(scoring)))
         tables.append_summary('{} out at {}.'.format(runner, get_bag(base)))
-        state.handle_batter_to_base(batter, 1)
-        state.handle_out_runner(base)
+        state.handle_out_runner(base - 1)
+        if state.get_outs() < 2:
+            tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
+            state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_GROUND_HOME:
         scoring, _ = args
         runner = state.get_runner(3)
@@ -283,7 +285,9 @@ def _check_batter_out_events(e, args, roster, state, tables):
             batter, roster.get_scoring(scoring)))
         tables.append_summary('{} out at home.'.format(runner))
         state.handle_out_runner(3)
-        state.handle_batter_to_base(batter, 1)
+        if state.get_outs() < 2:
+            tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
+            state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SINGLE_APPEAL:
         tables.append_summary('{} grounds out, {}.'.format(
             batter, roster.get_scoring('U3')))
@@ -318,8 +322,11 @@ EVENT_MISC_BATTERS = [
 
 def _check_misc_batter_events(e, args, roster, state, tables):
     batter = roster.get_batter()
+    pitcher = roster.get_pitcher()
     if e == Event.BATTER_SAC_BUNT:
-        tables.append_summary('{} hits a sacrifice bunt.'.format(batter))
+        _, scoring = args
+        tables.append_summary('{} out on a sacrifice bunt, {}.'.format(
+            batter, roster.get_scoring(scoring)))
         state.handle_batter_to_base(batter, 1)
         state.handle_out_runner(1)
     if e == Event.BATTER_SAC_BUNT_DP:
@@ -329,10 +336,52 @@ def _check_misc_batter_events(e, args, roster, state, tables):
         runner = state.get_runner(base - 1)
         tables.append_summary('{} bunt grounds into a double play, {}.'.format(
             batter, roster.get_scoring(scoring)))
-        tables.append_summary('{} out at {}.'.format(runner,
-                                                     get_bag(base)))
+        tables.append_summary('{} out at {}.'.format(runner, get_bag(base)))
         state.handle_out_batter()
         state.handle_out_runner(base - 1)
+    if e == Event.BATTER_SAC_BUNT_OUT:
+        _, base, scoring = args
+        base = get_base(base)
+        runner = state.get_runner(base - 1)
+        tables.append_summary('{} bunt grounds into a force out, {}.'.format(
+            batter, roster.get_scoring(scoring)))
+        tables.append_summary('{} out at {}.'.format(runner, get_bag(base)))
+        state.handle_out_runner(base - 1)
+        if state.get_outs() < 2:
+            tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
+            state.handle_batter_to_base(batter, 1)
+    if e == Event.BATTER_SAC_BUNT_SAFE:
+        _, base = args
+        base = get_base(base)
+        runner = state.get_runner(base - 1)
+        tables.append_summary('{} hits a sacrifice bunt.'.format(batter))
+        tables.append_summary('{} to {}.'.format(runner, get_bag(base)))
+        tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
+        state.handle_runner_to_base(runner, base)
+        state.handle_batter_to_base(batter, 1)
+    if e == Event.CATCHER_PASSED_BALL:
+        pass
+    if e == Event.CATCHER_PICK_ERR:
+        pass
+    if e == Event.CATCHER_PICK_OUT:
+        pass
+    if e == Event.FIELDER_THROWING:
+        pass
+    if e == Event.PITCHER_PICK_ERR:
+        tables.append_summary(
+            'With {} batting, throwing error by {} on the pickoff attempt.'.
+            format(batter, pitcher))
+    if e == Event.PITCHER_PICK_OUT:
+        pass
+    if e == Event.PITCHER_BALK:
+        pass
+    if e == Event.PITCHER_HIT_BY_PITCH:
+        pass
+    if e == Event.PITCHER_HIT_BY_PITCH_CHARGE:
+        pass
+    if e == Event.PITCHER_WILD_PITCH:
+        tables.append_summary('With {} batting, wild pitch by {}.'.format(
+            batter, pitcher))
 
 
 EVENT_PITCHES = [
@@ -407,6 +456,13 @@ def _check_pitch_events(e, args, roster, state, tables):
         if state.is_strikeout():
             tables.append_summary('{} strikes out swinging.'.format(batter))
             state.handle_out_batter()
+    if e == Event.PITCHER_STRIKE_SWING_OUT:
+        state.handle_pitch_strike()
+        state.create_pitch_row('Swinging Strike', tables)
+        if state.is_strikeout():
+            tables.append_summary('{} strikes out swinging, {}.'.format(
+                batter, roster.get_scoring('2-3')))
+            state.handle_out_batter()
     if e == Event.PITCHER_STRIKE_SWING_PASSED:
         state.handle_pitch_strike()
         state.create_pitch_row('Swinging Strike', tables)
@@ -449,11 +505,54 @@ EVENT_MISC_RUNNERS = [
 
 
 def _check_misc_runner_events(e, args, roster, state, tables):
+    batter = roster.get_batter()
+    if e == Event.RUNNER_STEAL:
+        runner, base = args
+        base = get_base(base)
+        state.handle_runner_to_base(runner, base)
+        tables.append_summary('With {} batting, {} steals {} base.'.format(
+            batter, runner, get_bag(base)))
+    if e == Event.RUNNER_STEAL_HOME:
+        pass
+    if e == Event.RUNNER_STEAL_HOME_OUT:
+        pass
+    if e == Event.RUNNER_STEAL_OUT:
+        runner, base, scoring = args
+        base = get_base(base)
+        state.handle_out_runner(base - 1)
+        tables.append_summary(
+            'With {} batting, {} caught stealing {} base, {}.'.format(
+                batter, runner, get_bag(base), roster.get_scoring(scoring)))
+    if e == Event.RUNNER_STEAL_THROWING:
+        pass
     if e == Event.PLAYER_MOVE:
         runner, base = args
         base = get_base(base)
         state.handle_runner_to_base(runner, base)
         tables.append_summary('{} to {}{}.'.format(runner, base, suffix(base)))
+    if e == Event.PLAYER_SCORE:
+        runner, = args
+        state.handle_runner_to_base(runner, 4)
+    if e == Event.BASE_MOVE:
+        pass
+    if e == Event.BASE_MOVE_RUNDOWN:
+        pass
+    if e == Event.BASE_MOVE_THROW:
+        pass
+    if e == Event.BASE_MOVE_TRAIL:
+        pass
+    if e == Event.BASE_MOVE_TRAIL_OUT:
+        pass
+    if e == Event.BASE_OUT:
+        pass
+    if e == Event.BASE_SCORE:
+        pass
+    if e == Event.BASE_SCORE_THROW:
+        pass
+    if e == Event.BASE_SCORE_TRAIL:
+        pass
+    if e == Event.BASE_SCORE_TRAIL_OUT:
+        pass
 
 
 def _group(encodings):

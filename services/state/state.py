@@ -13,6 +13,7 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
+from common.re_.re_ import search  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation_sub  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
@@ -68,7 +69,21 @@ class State(object):
             self.score = True
         self.scored = []
 
-        content = player_to_name_sub(' '.join(summary))
+        end, players = [], set()
+        for s in ['scores', '3rd', '2nd', '1st']:
+            lines, summary = list(summary), []
+            regex = r'(P\d+) .+ {}.'.format(s)
+            for line in lines:
+                player = search(regex, line)
+                if player:
+                    if player in players:
+                        continue
+                    end.append(line)
+                    players.add(player)
+                else:
+                    summary.append(line)
+
+        content = player_to_name_sub(' '.join(summary + end))
         outs = 'out' in content and 'advances to 1st' not in content
 
         if self.inplay:
@@ -81,15 +96,19 @@ class State(object):
         if outs:
             content += ' <b>{}</b>'.format(self.to_outs_str())
         if self.score:
-            classes = ['badge', 'border', 'tag', 'tag-light']
-            content += '&nbsp;&nbsp;'
-            content += span(classes=classes, text=self.to_score_short_str())
+            ac = ['badge', 'border', 'tag', 'tag-light']
+            before = span(classes=['before-score'], text=content)
+            after = span(classes=ac, text=self.to_score_short_str())
+            content = before + after
             self.score = False
 
         tables.append_body([cell(col=col(colspan='2'), content=content)])
 
     def get_change_inning(self):
         return self.change
+
+    def get_outs(self):
+        return self.outs
 
     def get_runner(self, base):
         return self.bases[base - 1]
@@ -156,11 +175,11 @@ class State(object):
     def handle_runner_to_base(self, player, base):
         if base > 3:
             self.scored.append(player)
-            return
-        elif self.bases[base - 1]:
-            self.handle_runner_to_base(self.bases[base - 1], base + 1)
-        self.bases[base - 1] = player
-        for i in range(base - 1, 0, -1):
+        else:
+            if self.bases[base - 1] and self.bases[base - 1] != player:
+                self.handle_runner_to_base(self.bases[base - 1], base + 1)
+            self.bases[base - 1] = player
+        for i in range(min(3, base - 1), 0, -1):
             if self.bases[i - 1] == player:
                 self.bases[i - 1] = None
 
