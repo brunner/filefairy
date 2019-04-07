@@ -222,6 +222,10 @@ EVENT_BATTER_OUTS = [
     Event.BATTER_GROUND_HOME,
     Event.BATTER_SINGLE_APPEAL,
     Event.BATTER_LINED_DP,
+    Event.BATTER_SAC_BUNT,
+    Event.BATTER_SAC_BUNT_DP,
+    Event.BATTER_SAC_BUNT_OUT,
+    Event.BATTER_SAC_BUNT_SAFE,
 ]
 
 
@@ -300,29 +304,6 @@ def _check_batter_out_events(e, args, roster, state, tables):
         tables.append_summary('{} out at {}, {}.'.format(
             runner, get_bag(base), roster.get_scoring(scoring)))
         state.handle_out_runner(base)
-
-
-EVENT_MISC_BATTERS = [
-    Event.BATTER_SAC_BUNT,
-    Event.BATTER_SAC_BUNT_DP,
-    Event.BATTER_SAC_BUNT_OUT,
-    Event.BATTER_SAC_BUNT_SAFE,
-    Event.CATCHER_PASSED_BALL,
-    Event.CATCHER_PICK_ERR,
-    Event.CATCHER_PICK_OUT,
-    Event.FIELDER_THROWING,
-    Event.PITCHER_PICK_ERR,
-    Event.PITCHER_PICK_OUT,
-    Event.PITCHER_BALK,
-    Event.PITCHER_HIT_BY_PITCH,
-    Event.PITCHER_HIT_BY_PITCH_CHARGE,
-    Event.PITCHER_WILD_PITCH,
-]
-
-
-def _check_misc_batter_events(e, args, roster, state, tables):
-    batter = roster.get_batter()
-    pitcher = roster.get_pitcher()
     if e == Event.BATTER_SAC_BUNT:
         _, scoring = args
         tables.append_summary('{} out on a sacrifice bunt, {}.'.format(
@@ -359,6 +340,25 @@ def _check_misc_batter_events(e, args, roster, state, tables):
         tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
         state.handle_runner_to_base(runner, base)
         state.handle_batter_to_base(batter, 1)
+
+
+EVENT_MISC_BATTERS = [
+    Event.CATCHER_PASSED_BALL,
+    Event.CATCHER_PICK_ERR,
+    Event.CATCHER_PICK_OUT,
+    Event.FIELDER_THROWING,
+    Event.PITCHER_PICK_ERR,
+    Event.PITCHER_PICK_OUT,
+    Event.PITCHER_BALK,
+    Event.PITCHER_HIT_BY_PITCH,
+    Event.PITCHER_HIT_BY_PITCH_CHARGE,
+    Event.PITCHER_WILD_PITCH,
+]
+
+
+def _check_misc_batter_events(e, args, roster, state, tables):
+    batter = roster.get_batter()
+    pitcher = roster.get_pitcher()
     if e == Event.CATCHER_PASSED_BALL:
         pass
     if e == Event.CATCHER_PICK_ERR:
@@ -376,7 +376,10 @@ def _check_misc_batter_events(e, args, roster, state, tables):
     if e == Event.PITCHER_BALK:
         pass
     if e == Event.PITCHER_HIT_BY_PITCH:
-        pass
+        state.handle_pitch_ball()
+        state.create_pitch_row('Hit By Pitch', tables)
+        tables.append_summary('{} hit by pitch.'.format(batter))
+        state.handle_batter_to_base(batter, 1)
     if e == Event.PITCHER_HIT_BY_PITCH_CHARGE:
         pass
     if e == Event.PITCHER_WILD_PITCH:
@@ -552,7 +555,12 @@ def _check_misc_runner_events(e, args, roster, state, tables):
     if e == Event.BASE_SCORE_TRAIL:
         pass
     if e == Event.BASE_SCORE_TRAIL_OUT:
-        pass
+        scoring, = args
+        runner = state.get_runner(3)
+        state.handle_runner_to_base(runner, 4)
+        tables.append_summary('{} out at 3rd on the throw, {}.'.format(
+            state.get_runner(2), roster.get_scoring(scoring)))
+        state.handle_out_runner(2)
 
 
 def _group(encodings):

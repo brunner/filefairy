@@ -44,7 +44,7 @@ class State(object):
 
     @staticmethod
     def _get_pitch_clazz(text):
-        if 'Ball' in text:
+        if 'Ball' in text or 'Hit By Pitch' in text:
             return 'success'
         if 'In play' in text:
             return 'primary'
@@ -70,10 +70,12 @@ class State(object):
         self.scored = []
 
         end, players = [], set()
-        for s in ['scores', '3rd', '2nd', '1st']:
+        for s in ['home', 'scores', '3rd', '2nd', '1st']:
             lines, summary = list(summary), []
-            regex = r'(P\d+) .+ {}.'.format(s)
+            safe = r' .*{}\.'.format(s)
+            out = r' out at {}'.format(s)
             for line in lines:
+                regex = r'(P\d+)(?:{}|{})'.format(safe, out)
                 player = search(regex, line)
                 if player:
                     if player in players:
@@ -174,7 +176,8 @@ class State(object):
 
     def handle_runner_to_base(self, player, base):
         if base > 3:
-            self.scored.append(player)
+            if player not in self.scored:
+                self.scored.append(player)
         else:
             if self.bases[base - 1] and self.bases[base - 1] != player:
                 self.handle_runner_to_base(self.bases[base - 1], base + 1)
