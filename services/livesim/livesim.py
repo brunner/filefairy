@@ -95,6 +95,10 @@ EVENT_BATTER_REACHES = [
 
 
 def _check_batter_reach_events(e, args, roster, state, tables):
+    if tables.get_summary():
+        state.create_summary_row(tables)
+        tables.reset_summary()
+
     batter = roster.get_batter()
     state.set_inplay()
     if e == Event.BATTER_SINGLE:
@@ -230,6 +234,10 @@ EVENT_BATTER_OUTS = [
 
 
 def _check_batter_out_events(e, args, roster, state, tables):
+    if tables.get_summary():
+        state.create_summary_row(tables)
+        tables.reset_summary()
+
     batter = roster.get_batter()
     state.set_inplay()
     if e == Event.BATTER_FLY:
@@ -360,7 +368,8 @@ def _check_misc_batter_events(e, args, roster, state, tables):
     batter = roster.get_batter()
     pitcher = roster.get_pitcher()
     if e == Event.CATCHER_PASSED_BALL:
-        pass
+        tables.append_summary('With {} batting, passed ball by {}.'.format(
+            batter, roster.get_title_fielder('C')))
     if e == Event.CATCHER_PICK_ERR:
         pass
     if e == Event.CATCHER_PICK_OUT:
@@ -547,11 +556,15 @@ def _check_misc_runner_events(e, args, roster, state, tables):
     if e == Event.BASE_MOVE_TRAIL_OUT:
         pass
     if e == Event.BASE_OUT:
-        pass
-    if e == Event.BASE_SCORE:
-        pass
-    if e == Event.BASE_SCORE_THROW:
-        pass
+        base, scoring = args
+        base = get_base(base)
+        runner = state.get_runner(base)
+        tables.append_summary('{} out at {} on the throw, {}.'.format(
+            runner, get_bag(base + 1), roster.get_scoring(scoring)))
+        state.handle_out_runner(base)
+    if e in [Event.BASE_SCORE, Event.BASE_SCORE_THROW]:
+        runner = state.get_runner(3)
+        state.handle_runner_to_base(runner, 4)
     if e == Event.BASE_SCORE_TRAIL:
         pass
     if e == Event.BASE_SCORE_TRAIL_OUT:
@@ -596,13 +609,16 @@ def get_html(game_in):
     if not data['events']:
         return None
 
+    if '2991' not in game_in:
+        return
+
     roster = call_service('roster', 'create_roster', (data, ))
     state = call_service('state', 'create_state', (data, ))
     tables = call_service('tables', 'create_tables', ())
 
     try:
         for group in _group(data['events']):
-            for encoding in group:
+            for i, encoding in enumerate(list(group)):
                 e, args = Event.decode(encoding)
 
                 if e in EVENT_CHANGES:

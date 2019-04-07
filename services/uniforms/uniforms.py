@@ -427,7 +427,7 @@ def jersey_absolute(encoding, colors, num, side):
     base = 'jersey-base position-absolute ' + '-'.join([lower, name, side])
     jersey.append(DIV_TAG.format(base))
 
-    if num is not None:
+    if side == 'back' and num is not None:
         for n, offset in _nums(num):
             nc = 'number-base position-absolute '
             nc += 'number-{}-{} '.format(font, offset)

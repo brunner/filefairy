@@ -72,7 +72,7 @@ class State(object):
         end, players = [], set()
         for s in ['home', 'scores', '3rd', '2nd', '1st']:
             lines, summary = list(summary), []
-            safe = r' .*{}\.'.format(s)
+            safe = r' scores\.' if s == 'scores' else r' to {}\.'.format(s)
             out = r' out at {}'.format(s)
             for line in lines:
                 regex = r'(P\d+)(?:{}|{})'.format(safe, out)
@@ -85,15 +85,18 @@ class State(object):
                 else:
                     summary.append(line)
 
-        content = player_to_name_sub(' '.join(summary + end))
+        content = ' '.join(summary + end)
         outs = 'out' in content and 'advances to 1st' not in content
-
         if self.inplay:
-            runs = 'scores' in content
+            runs = search(r' scores\.', content)
             text = 'In play, '
             text += 'run(s)' if runs else 'out(s)' if outs else 'no out'
             self.handle_pitch_strike()
             self.create_pitch_row(text, tables)
+
+            if runs and not search(r' error', content):
+                content = re.sub(r'(?:flies|lines|pops) out',
+                                 r'out on a sacrifice fly', content)
 
         if outs:
             content += ' <b>{}</b>'.format(self.to_outs_str())
@@ -104,6 +107,7 @@ class State(object):
             content = before + after
             self.score = False
 
+        content = player_to_name_sub(content)
         tables.append_body([cell(col=col(colspan='2'), content=content)])
 
     def get_change_inning(self):
