@@ -287,7 +287,7 @@ def _check_batter_out_events(e, args, roster, state, tables):
             batter, roster.get_scoring(scoring)))
         tables.append_summary('{} out at {}.'.format(runner, get_bag(base)))
         state.handle_out_runner(base - 1)
-        if state.get_outs() < 2:
+        if state.get_outs() < 3:
             tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
             state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_GROUND_HOME:
@@ -297,7 +297,7 @@ def _check_batter_out_events(e, args, roster, state, tables):
             batter, roster.get_scoring(scoring)))
         tables.append_summary('{} out at home.'.format(runner))
         state.handle_out_runner(3)
-        if state.get_outs() < 2:
+        if state.get_outs() < 3:
             tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
             state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SINGLE_APPEAL:
@@ -336,7 +336,7 @@ def _check_batter_out_events(e, args, roster, state, tables):
             batter, roster.get_scoring(scoring)))
         tables.append_summary('{} out at {}.'.format(runner, get_bag(base)))
         state.handle_out_runner(base - 1)
-        if state.get_outs() < 2:
+        if state.get_outs() < 3:
             tables.append_summary('{} to {}.'.format(batter, get_bag(1)))
             state.handle_batter_to_base(batter, 1)
     if e == Event.BATTER_SAC_BUNT_SAFE:
@@ -371,26 +371,53 @@ def _check_misc_batter_events(e, args, roster, state, tables):
         tables.append_summary('With {} batting, passed ball by {}.'.format(
             batter, roster.get_title_fielder('C')))
     if e == Event.CATCHER_PICK_ERR:
-        pass
+        tables.append_summary(
+            'With {} batting, throwing error by {} on the pickoff attempt.'.
+            format(batter, roster.get_title_fielder('C')))
     if e == Event.CATCHER_PICK_OUT:
-        pass
+        base, = args
+        base = get_base(base)
+        runner = state.get_runner(base)
+        position = '3B' if base == 3 else '1B' if base == 1 else 'SS'
+        tables.append_summary(
+            'With {} batting, {} picks off {} on throw to {}.'.format(
+                batter, roster.get_title_fielder('C'), runner,
+                roster.get_title_fielder(position)))
+        state.handle_out_runner(base)
     if e == Event.FIELDER_THROWING:
-        pass
+        scoring, = args
+        fielder = roster.get_title_fielder(get_position(scoring, False))
+        foot = roster.create_bolded_row(
+            'Error', 'Throwing error by {}.'.format(fielder))
+        tables.append_foot(foot)
     if e == Event.PITCHER_PICK_ERR:
         tables.append_summary(
             'With {} batting, throwing error by {} on the pickoff attempt.'.
             format(batter, pitcher))
     if e == Event.PITCHER_PICK_OUT:
-        pass
+        base, = args
+        base = get_base(base)
+        runner = state.get_runner(base)
+        position = '3B' if base == 3 else '1B' if base == 1 else 'SS'
+        tables.append_summary(
+            'With {} batting, {} picks off {} on throw to {}.'.format(
+                batter, pitcher, runner, roster.get_title_fielder(position)))
+        state.handle_out_runner(base)
     if e == Event.PITCHER_BALK:
-        pass
-    if e == Event.PITCHER_HIT_BY_PITCH:
+        tables.append_summary('With {} batting, balk by {}.'.format(
+            batter, pitcher))
+        for base in range(3, 0, -1):
+            runner = state.get_runner(base)
+            if runner:
+                state.handle_runner_to_base(runner, base + 1)
+                if base < 3:
+                    tables.append_summary('{} to {}.'.format(
+                        runner, get_bag(base + 1)))
+    if e in [Event.PITCHER_HIT_BY_PITCH, Event.PITCHER_HIT_BY_PITCH_CHARGE]:
         state.handle_pitch_ball()
         state.create_pitch_row('Hit By Pitch', tables)
         tables.append_summary('{} hit by pitch.'.format(batter))
         state.handle_batter_to_base(batter, 1)
-    if e == Event.PITCHER_HIT_BY_PITCH_CHARGE:
-        pass
     if e == Event.PITCHER_WILD_PITCH:
         tables.append_summary('With {} batting, wild pitch by {}.'.format(
             batter, pitcher))
@@ -518,16 +545,30 @@ EVENT_MISC_RUNNERS = [
 
 def _check_misc_runner_events(e, args, roster, state, tables):
     batter = roster.get_batter()
-    if e == Event.RUNNER_STEAL:
+    if e in [Event.RUNNER_STEAL, Event.RUNNER_STEAL_THROWING]:
         runner, base = args
         base = get_base(base)
         state.handle_runner_to_base(runner, base)
         tables.append_summary('With {} batting, {} steals {} base.'.format(
             batter, runner, get_bag(base)))
+        if e == Event.RUNNER_STEAL_THROWING:
+            foot = roster.create_bolded_row(
+                'Error', 'Throwing error by {}.'.format(
+                    roster.get_title_fielder('C')))
+            tables.append_foot(foot)
     if e == Event.RUNNER_STEAL_HOME:
-        pass
+        runner, = args
+        state.handle_runner_to_base(runner, 4)
+        tables.append_summary('With {} batting, {} steals home.'.format(
+            batter, runner, get_bag(base)))
+        state.handle_runner_to_base(runner, 4)
     if e == Event.RUNNER_STEAL_HOME_OUT:
-        pass
+        runner, = args
+        scoring = '1-2'
+        state.handle_out_runner(3)
+        tables.append_summary(
+            'With {} batting, {} caught stealing home, {}.'.format(
+                batter, runner, roster.get_scoring(scoring)))
     if e == Event.RUNNER_STEAL_OUT:
         runner, base, scoring = args
         base = get_base(base)
@@ -535,26 +576,33 @@ def _check_misc_runner_events(e, args, roster, state, tables):
         tables.append_summary(
             'With {} batting, {} caught stealing {} base, {}.'.format(
                 batter, runner, get_bag(base), roster.get_scoring(scoring)))
-    if e == Event.RUNNER_STEAL_THROWING:
-        pass
     if e == Event.PLAYER_MOVE:
         runner, base = args
         base = get_base(base)
         state.handle_runner_to_base(runner, base)
-        tables.append_summary('{} to {}{}.'.format(runner, base, suffix(base)))
+        tables.append_summary('{} to {}.'.format(runner, get_bag(base)))
     if e == Event.PLAYER_SCORE:
         runner, = args
         state.handle_runner_to_base(runner, 4)
-    if e == Event.BASE_MOVE:
-        pass
-    if e == Event.BASE_MOVE_RUNDOWN:
-        pass
-    if e == Event.BASE_MOVE_THROW:
-        pass
-    if e == Event.BASE_MOVE_TRAIL:
-        pass
-    if e == Event.BASE_MOVE_TRAIL_OUT:
-        pass
+    if e in [Event.BASE_MOVE, Event.BASE_MOVE_RUNDOWN, Event.BASE_MOVE_THROW]:
+        base, = args
+        base = get_base(base)
+        runner = state.get_runner(base)
+        state.handle_runner_to_base(runner, base + 1)
+        tables.append_summary('{} to {}.'.format(runner, get_bag(base)))
+    if e in [Event.BASE_MOVE_TRAIL, Event.BASE_MOVE_TRAIL_OUT]:
+        runner = state.get_runner(2)
+        state.handle_runner_to_base(runner, 3)
+        tables.append_summary('{} to 3rd.'.format(runner))
+        trailer = state.get_runner(1)
+        if e == Event.BASE_MOVE_TRAIL:
+            state.handle_runner_to_base(trailer, 2)
+            tables.append_summary('{} to 2nd.'.format(trailer))
+        else:
+            scoring, = args
+            state.handle_out_runner(1)
+            tables.append_summary('{} out at 2nd on the throw, {}.'.format(
+                trailer, roster.get_scoring(scoring)))
     if e == Event.BASE_OUT:
         base, scoring = args
         base = get_base(base)
@@ -565,15 +613,18 @@ def _check_misc_runner_events(e, args, roster, state, tables):
     if e in [Event.BASE_SCORE, Event.BASE_SCORE_THROW]:
         runner = state.get_runner(3)
         state.handle_runner_to_base(runner, 4)
-    if e == Event.BASE_SCORE_TRAIL:
-        pass
-    if e == Event.BASE_SCORE_TRAIL_OUT:
-        scoring, = args
+    if e in [Event.BASE_SCORE_TRAIL, Event.BASE_SCORE_TRAIL_OUT]:
         runner = state.get_runner(3)
         state.handle_runner_to_base(runner, 4)
-        tables.append_summary('{} out at 3rd on the throw, {}.'.format(
-            state.get_runner(2), roster.get_scoring(scoring)))
-        state.handle_out_runner(2)
+        trailer = state.get_runner(2)
+        if e == Event.BASE_MOVE_TRAIL:
+            state.handle_runner_to_base(trailer, 3)
+            tables.append_summary('{} to 3rd.'.format(trailer))
+        else:
+            scoring, = args
+            tables.append_summary('{} out at 3rd on the throw, {}.'.format(
+                trailer, roster.get_scoring(scoring)))
+            state.handle_out_runner(2)
 
 
 def _group(encodings):
@@ -608,9 +659,6 @@ def get_html(game_in):
     data = loads(game_in)
     if not data['events']:
         return None
-
-    if '2991' not in game_in:
-        return
 
     roster = call_service('roster', 'create_roster', (data, ))
     state = call_service('state', 'create_state', (data, ))

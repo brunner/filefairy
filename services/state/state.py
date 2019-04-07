@@ -32,6 +32,7 @@ class State(object):
         self.half = 0
         self.change = True
         self.outs = 0
+        self.souts = 0
 
         self.pitch = 0
         self.balls = 0
@@ -86,7 +87,10 @@ class State(object):
                     summary.append(line)
 
         content = ' '.join(summary + end)
-        outs = 'out' in content and 'advances to 1st' not in content
+
+        outs = self.souts != self.outs
+        self.souts = self.outs
+
         if self.inplay:
             runs = search(r' scores\.', content)
             text = 'In play, '
@@ -94,7 +98,8 @@ class State(object):
             self.handle_pitch_strike()
             self.create_pitch_row(text, tables)
 
-            if runs and not search(r' error', content):
+            advances = search(r' (?:scores|to 3rd|to 2nd)\.', content)
+            if advances and not search(r' error', content):
                 content = re.sub(r'(?:flies|lines|pops) out',
                                  r'out on a sacrifice fly', content)
 
@@ -148,6 +153,7 @@ class State(object):
         self.half += 1
         self.change = False
         self.outs = 0
+        self.souts = 0
         self.bases = [None, None, None]
 
     def handle_change_runner(self, base, runner):
