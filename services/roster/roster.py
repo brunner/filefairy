@@ -80,13 +80,7 @@ class Roster(object):
 
         s = '{}: {}#{} ({})<br>{}<br>{}'
         s = s.format(title, pos, num, SMALLCAPS.get(hand, 'ʀ'), name, stats)
-        args = (team, self.colors[team], num, 'back')
-        img = call_service('uniforms', 'jersey_absolute', args)
-        spn = span(classes=['profile-text', 'align-middle', 'd-block'], text=s)
-        inner = img + spn
-
-        content = '<div class="position-relative h-58p">{}</div>'.format(inner)
-        return [cell(col=col(colspan='2'), content=content)]
+        return self.create_jersey_row(team, num, 'back', s)
 
     def create_change_batter_row(self, batter):
         bold = 'Offensive Substitution'
@@ -104,12 +98,33 @@ class Roster(object):
         text = 'Pinch runner {} replaces {}.'.format(runner, prev)
         return self.create_bolded_row(bold, text)
 
+    def create_due_up_row(self):
+        due = []
+        i = self.get_index()
+        for j in crange((i + 1) % 9, (i + 3) % 9, 9):
+            due.append(self.get_batter_at(j))
+
+        s = 'ᴅᴜᴇ ᴜᴘ:<br>{}<br>'.format(player_to_name_sub(', '.join(due)))
+        return self.create_jersey_row(self.batting, None, 'front', s)
+
+    def create_jersey_row(self, team, num, side, s):
+        args = (team, self.colors[team], num, side)
+        img = call_service('uniforms', 'jersey_absolute', args)
+        spn = span(classes=['profile-text', 'align-middle', 'd-block'], text=s)
+        inner = img + spn
+
+        content = '<div class="position-relative h-58p">{}</div>'.format(inner)
+        return [cell(col=col(colspan='2'), content=content)]
+
     def create_bolded_row(self, title, text):
         content = player_to_name_sub('<b>{}</b><br>{}'.format(title, text))
         return [cell(col=col(colspan='2'), content=content)]
 
+    def get_batter_at(self, i):
+        return self.lineups[self.batting][i][0]
+
     def get_batter(self):
-        return self.lineups[self.batting][self.get_index()][0]
+        return self.get_batter_at(self.get_index())
 
     def get_fielder(self, position):
         return self.fielders[self.throwing][position]
@@ -136,8 +151,10 @@ class Roster(object):
         return get_title(position) + ' ' + self.get_fielder(position)
 
     def handle_change_batter(self, batter):
-        for i in crange(self.get_index() + 1, 9):
-            if batter == self.lineups[self.batting][i][0]:
+        start = (self.get_index() + 1) % 9
+        end = (start + 8) % 9
+        for i in crange(start, end, 9):
+            if batter == self.get_batter_at(i):
                 self.indices[self.batting] = i
                 break
         else:

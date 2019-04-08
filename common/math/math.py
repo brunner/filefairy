@@ -3,21 +3,23 @@
 """Common (non-reloadable) util methods for math operations."""
 
 
-def crange(start, modulo):
+def crange(start, end, modulo):
     """Simulate a circular range generator.
 
     Args:
-        start: The start (and end) of the range.
+        start: The start of the range.
+        end: The end of the range.
         modulo: The upper bound of the range.
 
     Yields:
         The circular range.
     """
-    i = start
-    while i < modulo:
-        yield i
-        i += 1
-    i = 0
-    while i < start:
-        yield i
-        i += 1
+    if start > end:
+        while start < modulo:
+            yield start
+            start += 1
+        start = 0
+
+    while start <= end:
+        yield start
+        start += 1

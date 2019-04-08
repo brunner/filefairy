@@ -42,7 +42,7 @@ def _check_change_events(e, args, roster, state, tables):
         state.set_change_inning()
         if aruns != state.get_runs_away() or hruns != state.get_runs_home():
             state.set_runs(aruns, hruns)
-            text = state.to_head_str(False)
+            text = state.to_score_long_str()
             body = roster.create_bolded_row('Score Update', text)
             tables.append_body(body)
             tables.append_all()

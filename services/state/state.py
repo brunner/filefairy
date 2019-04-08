@@ -12,11 +12,23 @@ sys.path.append(re.sub(r'/services/state', '', _path))
 from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import icon_img  # noqa
 from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 from common.re_.re_ import search  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation_sub  # noqa
+from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
+
+HLEFTCLZ = 'font-weight-bold text-dark text-dark w-95p'
+HMIDCLZ = 'font-weight-bold text-dark text-truncate text-center '
+HMEDCLZ = HMIDCLZ + 'td-md-show'
+HLONGCLZ = HMIDCLZ + 'td-md-none'
+HRIGHTCLZ = HLEFTCLZ + ' text-right'
+HEADCLZ = 'table-fixed border border-bottom-0'
+
+ICON_LINK = 'https://fairylab.surge.sh/images/bases/{}.png'
 
 
 class State(object):
@@ -50,6 +62,22 @@ class State(object):
         if 'In play' in text:
             return 'primary'
         return 'danger'
+
+    def create_head_table(self):
+        hcols = [
+            col(clazz=HLEFTCLZ),
+            col(clazz=HMEDCLZ),
+            col(clazz=HLONGCLZ),
+            col(clazz=HRIGHTCLZ)
+        ]
+        right = '{} &nbsp; {}'.format(self.to_outs_str(), self.to_bases_str())
+        head = [[
+            cell(content=self.to_inning_str(True)),
+            cell(content=self.to_score_medium_str()),
+            cell(content=self.to_score_long_str()),
+            cell(content=right)
+        ]]
+        return table(clazz=HEADCLZ, hcols=hcols, head=head)
 
     def create_pitch_row(self, text, tables):
         clazz = self._get_pitch_clazz(text)
@@ -214,27 +242,8 @@ class State(object):
         self.runs = {self.away_team: aruns, self.home_team: hruns}
 
     def to_bases_str(self):
-        first, second, third = self.bases
-        if first and second and third:
-            return 'bases loaded'
-        if first and second:
-            return 'runners on 1st and 2nd'
-        if first and third:
-            return 'runners on 1st and 3rd'
-        if second and third:
-            return 'runners on 2nd and 3rd'
-        if first:
-            return 'runner on 1st'
-        if second:
-            return 'runner on 2nd'
-        if third:
-            return 'runner on 3rd'
-        return 'bases empty'
-
-    def to_head_str(self, start):
-        return '{} &nbsp;|&nbsp; {} &nbsp;|&nbsp; {}, {}'.format(
-            self.to_inning_str(start), self.to_score_long_str(),
-            self.to_outs_str(), self.to_bases_str())
+        s = ''.join('x' if b else 'o' for b in self.bases)
+        return icon_img(ICON_LINK.format(s), '16', None)
 
     def to_inning_str(self, start):
         if start:
@@ -248,19 +257,18 @@ class State(object):
         return '{} out'.format(self.outs)
 
     def to_score_long_str(self):
-        return self.to_score_str(encoding_to_hometown_sub)
+        return self.to_score_str(encoding_to_decoding_sub, '{} {}, {} {}')
+
+    def to_score_medium_str(self):
+        return self.to_score_str(encoding_to_hometown_sub, '{} {}, {} {}')
 
     def to_score_short_str(self):
-        return self.to_score_str(encoding_to_abbreviation_sub)
+        return self.to_score_str(encoding_to_abbreviation_sub, '{} {} · {} {}')
 
-    def to_score_str(self, f):
-        s = '{} {} · {} {}'.format(
-            self.away_team,
-            self.runs[self.away_team],
-            self.home_team,
-            self.runs[self.home_team],
-        )
-        return f(s)
+    def to_score_str(self, f, s):
+        args = (self.away_team, self.runs[self.away_team], self.home_team,
+                self.runs[self.home_team])
+        return f(s.format(*args))
 
 
 def create_state(data):

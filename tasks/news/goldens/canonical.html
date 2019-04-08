@@ -199,12 +199,13 @@ button.close {
 .pitch {
   border-radius: 16px;
   height: 16px;
-  line-height: 100%;
+  line-height: 16px;
   margin-left: 15px;
   margin-right: 26px;
-  padding: .25em .4em 0;
+  padding: 0 .4em;
   text-align: center;
   width: 24px;
+  vertical-align: top;
 }
 .profile-text {
   min-height: 72px;
@@ -291,6 +292,9 @@ button.close {
 .w-75p {
   width: 75px;
 }
+.w-95p {
+  width: 95px;
+}
 .w-105p {
   width: 105px;
 }
@@ -317,6 +321,9 @@ button.close {
 .td-md-none,
 .td-lg-none {
   display: none;
+}
+.td-md-show {
+  display: table-cell;
 }
 @media (min-width: 576px) {
   body.modal-open header {
@@ -348,6 +355,9 @@ button.close {
   }
   .td-md-none {
     display: table-cell;
+  }
+  .td-md-show {
+    display: none
   }
 }
 @media (min-width: 992px) {

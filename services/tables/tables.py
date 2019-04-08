@@ -39,17 +39,13 @@ class Tables(object):
         self.summary.append(s)
 
     def create_table(self, roster, state):
-        clazz = 'table-fixed border mb-3'
-        hcols = [col(colspan='2', clazz='font-weight-bold text-dark')]
-        bcols = [col(), col(clazz='text-right w-50p')]
-        hcontent = state.to_head_str(True)
-        head = [[cell(col=col(clazz='text-truncate'), content=hcontent)]]
+        bcols = [col(), col(clazz='w-50p text-right')]
         body, self.body = list(self.body), []
-
         self.body.append(roster.create_player_row(False))
         self.body.append(roster.create_player_row(True))
-        self.table = table(
-            clazz=clazz, hcols=hcols, bcols=bcols, head=head, body=body)
+        self.table = table(clazz='border mb-3', bcols=bcols, body=body)
+
+        self.tables.append(state.create_head_table())
         self.tables.append(self.table)
 
     def get_body(self):
