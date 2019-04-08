@@ -589,7 +589,7 @@ def _check_misc_runner_events(e, args, roster, state, tables):
         base = get_base(base)
         runner = state.get_runner(base)
         state.handle_runner_to_base(runner, base + 1)
-        tables.append_summary('{} to {}.'.format(runner, get_bag(base)))
+        tables.append_summary('{} to {}.'.format(runner, get_bag(base + 1)))
     if e in [Event.BASE_MOVE_TRAIL, Event.BASE_MOVE_TRAIL_OUT]:
         runner = state.get_runner(2)
         state.handle_runner_to_base(runner, 3)
