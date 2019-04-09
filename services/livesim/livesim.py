@@ -51,24 +51,18 @@ def _check_change_events(e, args, roster, state, tables):
         roster.handle_change_inning()
         state.handle_change_inning()
 
-    if e == Event.CHANGE_BATTER:
+    if e in [Event.CHANGE_BATTER, Event.CHANGE_PINCH_HITTER]:
         batter, = args
-        roster.handle_change_batter(batter)
+        roster.handle_change_batter(batter, tables)
         state.handle_change_batter()
-        tables.create_table(roster, state)
-    if e == Event.CHANGE_PINCH_HITTER:
-        batter, = args
-        roster.handle_change_pinch_hitter(batter)
-        state.handle_change_batter()
-        tables.append_body(roster.create_change_batter_row(batter))
         tables.create_table(roster, state)
     if e == Event.CHANGE_FIELDER:
         _, player = args
         roster.handle_change_fielder(player, tables)
     if e == Event.CHANGE_PINCH_RUNNER:
         base, runner = args
+        roster.handle_change_runner(runner, tables)
         state.handle_change_runner(get_base(base), runner)
-        tables.append_body(roster.create_change_runner_row(runner))
     if e == Event.CHANGE_PITCHER:
         pitcher, = args
         if roster.is_change_pitcher(pitcher):

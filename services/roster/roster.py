@@ -49,11 +49,11 @@ class Roster(object):
             lineups = self.lineups[encoding]
             for line in data[team + '_batting']:
                 player, pos, _ = line.split()
-                curr, change = (pos + ',').split(',', 1)
+                curr, change = self.pop_change(pos)
                 i = len(lineups)
                 fielders[curr] = player
                 lineups.append([player])
-                self.batters[player] = [curr, change.strip(','), i, None]
+                self.batters[player] = [curr, change, i, None]
             for line in data[team + '_bench']:
                 player, pos, _, prev = line.split()
                 self.batters[player] = [None, pos, self.batters[prev][2], prev]
@@ -63,6 +63,8 @@ class Roster(object):
         self.pitchers = {}
         self.pitchers[self.away_team] = [data['away_pitcher']]
         self.pitchers[self.home_team] = [data['home_pitcher']]
+
+        self.injuries = data['injuries']
 
     def create_player_row(self, bats):
         team = self.batting if bats else self.throwing
@@ -81,22 +83,6 @@ class Roster(object):
         s = '{}: {}#{} ({})<br>{}<br>{}'
         s = s.format(title, pos, num, SMALLCAPS.get(hand, 'ʀ'), name, stats)
         return self.create_jersey_row(team, num, 'back', s)
-
-    def create_change_batter_row(self, batter):
-        bold = 'Offensive Substitution'
-        text = 'Pinch hitter {} replaces {}.'.format(batter,
-                                                     self.batters[batter][3])
-        return self.create_bolded_row(bold, text)
-
-    def create_change_runner_row(self, runner):
-        _, change, i, prev = self.batters[runner]
-        curr, change = (change + ',').split(',', 1)
-        self.batters[runner] = [curr, change, i, prev]
-        self.lineups[self.batting][i].insert(0, runner)
-
-        bold = 'Offensive Substitution'
-        text = 'Pinch runner {} replaces {}.'.format(runner, prev)
-        return self.create_bolded_row(bold, text)
 
     def create_due_up_row(self):
         due = []
@@ -150,7 +136,7 @@ class Roster(object):
     def get_title_fielder(self, position):
         return get_title(position) + ' ' + self.get_fielder(position)
 
-    def handle_change_batter(self, batter):
+    def handle_change_batter(self, batter, tables):
         start = (self.get_index() + 1) % 9
         end = (start + 8) % 9
         for i in crange(start, end, 9):
@@ -158,12 +144,20 @@ class Roster(object):
                 self.indices[self.batting] = i
                 break
         else:
-            raise Exception('Unable to change batter.')
+            _1, change, i, prev = self.batters[batter]
+            curr, change = self.pop_change(change)
+            self.batters[batter] = [curr, change, i, prev]
+            self.lineups[self.batting][i].insert(0, batter)
+            self.indices[self.batting] = i
+            self.handle_possible_injury(prev, tables)
+            bold = 'Offensive Substitution'
+            text = 'Pinch hitter {} replaces {}.'.format(batter, prev)
+            tables.append_body(self.create_bolded_row(bold, text))
 
     def handle_change_fielder(self, player, tables):
         curr, change, i, prev = self.batters[player]
-        position, change = (change + ',').split(',', 1)
-
+        position, change = self.pop_change(change)
+        self.handle_possible_injury(prev, tables)
         if curr is None:
             bold = 'Defensive Substitution'
             title = get_title(self.batters[prev][0])
@@ -175,13 +169,13 @@ class Roster(object):
         elif curr == 'PH' or curr == 'PR':
             bold = 'Defensive Switch'
             text = '{} remains in the game as the {}.'.format(
-                player, get_written(position))
-            return self.create_bolded_row(bold, text)
+                player, get_title(position))
+            tables.append_body(self.create_bolded_row(bold, text))
         else:
             bold = 'Defensive Switch'
             text = 'Defensive switch from {} to {} for {}.'.format(
-                get_written(curr), get_written(position), player)
-            return self.create_bolded_row(bold, text)
+                get_title(curr), get_title(position), player)
+            tables.append_body(self.create_bolded_row(bold, text))
 
         self.batters[player] = [position, change, i, prev]
         self.lineups[self.throwing][i].insert(0, player)
@@ -196,34 +190,50 @@ class Roster(object):
     def handle_change_inning(self):
         self.batting, self.throwing = self.throwing, self.batting
 
-    def handle_change_pinch_hitter(self, batter):
-        _1, change, i, prev = self.batters[batter]
-        curr, change = (change + ',').split(',', 1)
-        self.batters[batter] = [curr, change, i, prev]
-        self.lineups[self.batting][i].insert(0, batter)
-        self.handle_change_batter(batter)
-
     def handle_change_pitcher(self, pitcher, tables):
+        prev = self.get_pitcher()
+        self.handle_possible_injury(prev, tables)
+
         bold = 'Pitching Substitution'
         if pitcher in self.batters:
             _, change, i, prev = self.batters[pitcher]
-            curr, change = (change + ',').split(',', 1)
+            curr, change = self.pop_change(change)
             title = get_title(self.batters[prev][0])
             title = title + ' ' if title else ''
             text = '{} replaces {}, batting {}{}, replacing {}{}.'.format(
-                pitcher, self.get_pitcher(), i + 1, suffix(i + 1), title, prev)
+                pitcher, prev, i + 1, suffix(i + 1), title, prev)
             tables.append_body(self.create_bolded_row(bold, text))
             self.batters[pitcher] = [curr, change, i, prev]
             self.lineups[self.throwing][i].insert(0, pitcher)
         else:
-            text = '{} replaces {}.'.format(pitcher, self.get_pitcher())
+            text = '{} replaces {}.'.format(pitcher, prev)
             tables.append_body(self.create_bolded_row(bold, text))
 
         self.pitchers[self.throwing].insert(0, pitcher)
         self.fielders[self.throwing]['P'] = pitcher
 
+    def handle_change_runner(self, runner, tables):
+        _, change, i, prev = self.batters[runner]
+        curr, change = self.pop_change(change)
+        self.batters[runner] = [curr, change, i, prev]
+        self.lineups[self.batting][i].insert(0, runner)
+        self.handle_possible_injury(prev, tables)
+        bold = 'Offensive Substitution'
+        text = 'Pinch runner {} replaces {}.'.format(runner, prev)
+        return self.create_bolded_row(bold, text)
+
+    def handle_possible_injury(self, player, tables):
+        if player in self.injuries:
+            bold = 'Injury Delay'
+            text = '{} was injured {}.'.format(player, self.injuries[player])
+            tables.append_body(self.create_bolded_row(bold, text))
+
     def is_change_pitcher(self, pitcher):
         return pitcher != self.get_pitcher()
+
+    def pop_change(self, change):
+        curr, change = (change + ',').split(',', 1)
+        return (curr, change.strip(','))
 
 
 def create_roster(data):
