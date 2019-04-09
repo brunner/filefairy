@@ -99,7 +99,7 @@ class State(object):
         self.scored = []
 
         end, players = [], set()
-        for s in ['home', 'scores', '3rd', '2nd', '1st']:
+        for s in ['scores', 'home', '3rd', '2nd', '1st']:
             lines, summary = list(summary), []
             safe = r' scores\.' if s == 'scores' else r' to {}\.'.format(s)
             out = r' out at {}'.format(s)
