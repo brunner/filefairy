@@ -269,6 +269,10 @@ def parse_game(box_in, log_in, out, date):
     data['away_colors'] = ' '.join(away_colors)
     data['home_colors'] = ' '.join(home_colors)
 
+    data['injuries'] = {}
+    for player, injury in findall(r'(P\d+) was injured ([^.]+)', box_text):
+        data['injuries'][player] = injury
+
     with open(out, 'w') as f:
         f.write(dumps(data) + '\n')
 
@@ -294,10 +298,13 @@ def parse_game(box_in, log_in, out, date):
 # reload_service_for_test('scoreboard')
 # reload_service_for_test('uniforms')
 
+# CONTAINING_DIR = re.sub(r'/services/statslab', '/resource/extract', _path)
+# BOX_SCORES_DIR = os.path.join(CONTAINING_DIR, 'box_scores')
+# GAME_LOGS_DIR = os.path.join(CONTAINING_DIR, 'game_logs')
 # GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
 
-# box_in = 'https://statsplus.net/oblootp/reports/news/html/box_scores/game_box_2894.html'
-# log_in = 'https://statsplus.net/oblootp/reports/news/html/game_logs/log_2894.html'
-# out = os.path.join(GAMES_DIR, '2894.json')
+# box_in = os.path.join(BOX_SCORES_DIR, 'game_box_24969.html')
+# log_in = os.path.join(GAME_LOGS_DIR, 'log_24969.txt')
+# out = os.path.join(GAMES_DIR, '24969.json')
 # date = encode_datetime(datetime_datetime_pst(2025, 9, 28))
-# parse_game(box_in, log_in, out, date)
+# parse_game(box_in, log_in, out, None)
