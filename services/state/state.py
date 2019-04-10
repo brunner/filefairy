@@ -120,7 +120,7 @@ class State(object):
         self.souts = self.outs
 
         if self.inplay:
-            runs = search(r' scores\.', content)
+            runs = search(r'(?: scores\.| homers )', content)
             text = 'In play, '
             text += 'run(s)' if runs else 'out(s)' if outs else 'no out'
             self.handle_pitch_strike()
