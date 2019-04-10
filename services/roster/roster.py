@@ -158,11 +158,8 @@ class Roster(object):
         curr, change, i, prev = self.batters[player]
         position, change = self.pop_change(change)
 
-        if not position:
-            return
-
-        self.handle_possible_injury(prev, tables)
         if curr is None:
+            self.handle_possible_injury(prev, tables)
             bold = 'Defensive Substitution'
             title = get_title(self.batters[prev][0])
             title = title + ' ' if title else ''
@@ -218,13 +215,16 @@ class Roster(object):
 
     def handle_change_runner(self, runner, tables):
         _, change, i, prev = self.batters[runner]
-        curr, change = self.pop_change(change)
+        if change.startswith('PR,'):
+            curr, change = self.pop_change(change)
+        else:
+            curr = 'PR'
         self.batters[runner] = [curr, change, i, prev]
         self.lineups[self.batting][i].insert(0, runner)
         self.handle_possible_injury(prev, tables)
         bold = 'Offensive Substitution'
         text = 'Pinch runner {} replaces {}.'.format(runner, prev)
-        return self.create_bolded_row(bold, text)
+        tables.append_body(self.create_bolded_row(bold, text))
 
     def handle_possible_injury(self, player, tables):
         if player in self.injuries:
