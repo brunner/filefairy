@@ -157,6 +157,10 @@ class Roster(object):
     def handle_change_fielder(self, player, tables):
         curr, change, i, prev = self.batters[player]
         position, change = self.pop_change(change)
+
+        if not position:
+            return
+
         self.handle_possible_injury(prev, tables)
         if curr is None:
             bold = 'Defensive Substitution'

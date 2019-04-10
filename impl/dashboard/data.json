@@ -149,6 +149,56 @@
         "msg": "Download complete.",
         "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
       }
+    ],
+    "2019-04-09T00:00:00-07:00": [
+      {
+        "date": "2019-04-09T18:49:04.787074-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 251,
+        "msg": "Sim in progress.",
+        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
+      },
+      {
+        "date": "2019-04-09T19:30:19.489928-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 51,
+        "msg": "File is up.",
+        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
+      },
+      {
+        "date": "2019-04-09T19:30:34.254590-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 84,
+        "msg": "Download started.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-04-09T19:31:16.882930-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 71,
+        "msg": "Download finished.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-04-09T19:32:21.506683-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 167,
+        "msg": "Download complete.",
+        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
+      },
+      {
+        "date": "2019-04-09T19:32:21.961815-07:00",
+        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/api/registrable/registrable.py\", line 91, in _notify\n    response = self._notify_internal(**kwargs)\n  File \"/home/jbrunner/filefairy/tasks/gameday/gameday.py\", line 85, in _notify_internal\n    self._render(**kwargs)\n  File \"/home/jbrunner/filefairy/api/renderable/renderable.py\", line 92, in _render\n    data = self._render_data(**kwargs)\n  File \"/home/jbrunner/filefairy/tasks/gameday/gameday.py\", line 72, in _render_data\n    _livesim_html = call_service('livesim', 'get_html', (_in, ))\n  File \"/home/jbrunner/filefairy/common/service/service.py\", line 39, in call_service\n    return getattr(_services[service], method)(*fargs, *args, **kwargs)\n  File \"/home/jbrunner/filefairy/services/livesim/livesim.py\", line 700, in get_html\n    raise e\n  File \"/home/jbrunner/filefairy/services/livesim/livesim.py\", line 667, in get_html\n    _check_change_events(e, args, roster, state, tables)\n  File \"/home/jbrunner/filefairy/services/livesim/livesim.py\", line 61, in _check_change_events\n    roster.handle_change_fielder(player, tables)\n  File \"/home/jbrunner/filefairy/services/roster/roster.py\", line 183, in handle_change_fielder\n    fielder = self.fielders[self.throwing][position]\nKeyError: ''",
+        "levelname": "ERROR",
+        "lineno": 272,
+        "msg": "Disabled gameday.",
+        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
+      }
     ]
   }
 }
