@@ -1,155 +1,5 @@
 {
   "logs": {
-    "2019-04-05T00:00:00-07:00": [
-      {
-        "date": "2019-04-05T22:58:26.786248-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 251,
-        "msg": "Sim in progress.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      },
-      {
-        "date": "2019-04-05T22:59:32.421498-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 180, in _parse_saved_scores\n    data = self._parse_score(num, date_)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 223, in _parse_score\n    return call_service('statslab', 'parse_game', (box, log, out, date))\n  File \"/home/jbrunner/filefairy/common/service/service.py\", line 39, in call_service\n    return getattr(_services[service], method)(*fargs, *args, **kwargs)\n  File \"/home/jbrunner/filefairy/services/statslab/statslab.py\", line 137, in parse_game\n    t = search(r'(?s)Start Time:(.+?)<br>', box_text).strip(' EST')\nAttributeError: 'NoneType' object has no attribute 'strip'",
-        "levelname": "ERROR",
-        "lineno": 272,
-        "msg": "Disabled statsplus.",
-        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-04-05T23:15:59.079568-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 51,
-        "msg": "File is up.",
-        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
-      },
-      {
-        "date": "2019-04-05T23:16:41.000495-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 84,
-        "msg": "Download started.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-05T23:17:23.051854-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 71,
-        "msg": "Download finished.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-05T23:18:27.312165-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 167,
-        "msg": "Download complete.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      }
-    ],
-    "2019-04-07T00:00:00-07:00": [
-      {
-        "date": "2019-04-07T19:00:13.865745-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 251,
-        "msg": "Sim in progress.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      },
-      {
-        "date": "2019-04-07T19:00:36.921452-07:00",
-        "exc": "Traceback (most recent call last):\n  File \"impl/filefairy/filefairy.py\", line 269, in _try\n    response = item(*args, **kwargs)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 180, in _parse_saved_scores\n    data = self._parse_score(num, date_)\n  File \"/home/jbrunner/filefairy/tasks/statsplus/statsplus.py\", line 223, in _parse_score\n    return call_service('statslab', 'parse_game', (box, log, out, date))\n  File \"/home/jbrunner/filefairy/common/service/service.py\", line 39, in call_service\n    return getattr(_services[service], method)(*fargs, *args, **kwargs)\n  File \"/home/jbrunner/filefairy/services/statslab/statslab.py\", line 224, in parse_game\n    record = search(r'^\\((\\d+-\\d+)\\)', line)\n  File \"/home/jbrunner/filefairy/common/re_/re_.py\", line 84, in search\n    return _transform(pattern, re.search(pattern, string), False)\n  File \"/usr/lib/python3.6/re.py\", line 182, in search\n    return _compile(pattern, flags).search(string)\nTypeError: expected string or bytes-like object",
-        "levelname": "ERROR",
-        "lineno": 272,
-        "msg": "Disabled statsplus.",
-        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-04-07T19:03:20.290286-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 179,
-        "msg": "Reloaded statsplus.",
-        "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
-      },
-      {
-        "date": "2019-04-07T19:19:19.804894-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 51,
-        "msg": "File is up.",
-        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
-      },
-      {
-        "date": "2019-04-07T19:20:18.974797-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 84,
-        "msg": "Download started.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-07T19:20:59.230873-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 71,
-        "msg": "Download finished.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-07T19:22:06.833572-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 167,
-        "msg": "Download complete.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      }
-    ],
-    "2019-04-08T00:00:00-07:00": [
-      {
-        "date": "2019-04-08T21:23:16.900521-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 251,
-        "msg": "Sim in progress.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      },
-      {
-        "date": "2019-04-08T21:47:47.530736-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 51,
-        "msg": "File is up.",
-        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
-      },
-      {
-        "date": "2019-04-08T21:48:48.391769-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 84,
-        "msg": "Download started.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-08T21:49:29.017151-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 71,
-        "msg": "Download finished.",
-        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
-      },
-      {
-        "date": "2019-04-08T21:50:37.216665-07:00",
-        "exc": "",
-        "levelname": "INFO",
-        "lineno": 167,
-        "msg": "Download complete.",
-        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
-      }
-    ],
     "2019-04-09T00:00:00-07:00": [
       {
         "date": "2019-04-09T18:49:04.787074-07:00",
@@ -198,6 +48,48 @@
         "lineno": 272,
         "msg": "Disabled gameday.",
         "pathname": "/home/jbrunner/filefairy/impl/filefairy/filefairy.py"
+      }
+    ],
+    "2019-04-10T00:00:00-07:00": [
+      {
+        "date": "2019-04-10T19:46:29.053912-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 251,
+        "msg": "Sim in progress.",
+        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
+      },
+      {
+        "date": "2019-04-10T20:35:26.367776-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 51,
+        "msg": "File is up.",
+        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
+      },
+      {
+        "date": "2019-04-10T20:35:44.072815-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 84,
+        "msg": "Download started.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-04-10T20:36:24.703334-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 71,
+        "msg": "Download finished.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-04-10T20:37:27.109699-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 167,
+        "msg": "Download complete.",
+        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
       }
     ]
   }
