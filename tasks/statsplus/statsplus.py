@@ -223,8 +223,10 @@ class Statsplus(Registrable):
         return call_service('statslab', 'parse_game', (box, log, out, date))
 
     def _rm(self):
-        check_output(['rm', '-rf', GAMES_DIR])
-        check_output(['mkdir', GAMES_DIR])
+        # TODO: Remove after the World Series.
+        # check_output(['rm', '-rf', GAMES_DIR])
+        # check_output(['mkdir', GAMES_DIR])
+        pass
 
     def _save_scores(self, date, text):
         self.data['scores'][date] = {}

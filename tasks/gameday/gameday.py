@@ -151,8 +151,10 @@ class Gameday(Registrable):
         return ret
 
     def _rm(self):
-        check_output(['rm', '-rf', GAMEDAY_DIR])
-        check_output(['mkdir', GAMEDAY_DIR])
+        # TODO: Remove after the World Series
+        # check_output(['rm', '-rf', GAMEDAY_DIR])
+        # check_output(['mkdir', GAMEDAY_DIR])
+        pass
 
 
 # from common.datetime_.datetime_ import datetime_now
