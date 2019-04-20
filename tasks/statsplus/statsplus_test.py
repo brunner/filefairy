@@ -498,12 +498,13 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(_data())
         statsplus._rm()
 
-        mock_check.assert_has_calls([
-            mock.call(['rm', '-rf', GAMES_DIR]),
-            mock.call(['mkdir', GAMES_DIR]),
-        ])
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        # TODO: Remove after the World Series.
+        # mock_check.assert_has_calls([
+        #     mock.call(['rm', '-rf', GAMES_DIR]),
+        #     mock.call(['mkdir', GAMES_DIR]),
+        # ])
+        # self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        #                      self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_rm')
     def test_start(self, mock_rm):

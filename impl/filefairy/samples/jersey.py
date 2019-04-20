@@ -28,11 +28,11 @@ for encoding in encoding_keys():
 
     body = []
     for colors in encoding_to_colors(encoding):
-        front = jersey_absolute(encoding, colors, None, 'front')
+        front = jersey_absolute(encoding, colors, None, 'front', [])
 
         backs = []
         for num in ['0', '11', '19', '21', '34', '56', '78']:
-            back = jersey_absolute(encoding, colors, num, 'back')
+            back = jersey_absolute(encoding, colors, num, 'back', [])
             backs.append(cell(content=CONTENT.format(back)))
 
         body.append([cell(content=CONTENT.format(front))] + backs)

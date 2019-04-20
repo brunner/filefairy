@@ -38,10 +38,10 @@ def _jersey(asset, repo, tag):
     return ruleset(
         selector=('.' + asset),
         rules=[
-            ('background: url(\'https://fairylab.surge.sh/images/teams/{}/{}.p'
-             'ng\')').format(lower, asset),
-            ('background: url(\'https://gistcdn.githack.com/brunner/{}/raw/{}/'
-             '{}.svg\'), {}').format(repo, tag, asset, gradient),
+            ('background-image: url(\'https://fairylab.surge.sh/images/teams/'
+             '{}/{}.png\')').format(lower, asset),
+            ('background-image: url(\'https://gistcdn.githack.com/brunner/{}/r'
+             'aw/{}/{}.svg\'), {}').format(repo, tag, asset, gradient),
         ])
 
 
@@ -65,14 +65,14 @@ def _numbers(font):
 class UniformsTest(unittest.TestCase):
     def test_jersey_absolute__none(self):
         colors = (WHITE, '#000000', '#ffffff', 'block')
-        actual = jersey_absolute('T35', colors, None, 'front')
+        actual = jersey_absolute('T35', colors, None, 'front', [])
         expected = ('<div class="jersey-base position-absolute whitesox-home-f'
                     'ront"></div>')
         self.assertEqual(actual, expected)
 
     def test_jersey_absolute__number(self):
         colors = (WHITE, '#000000', '#ffffff', 'block')
-        actual = jersey_absolute('T35', colors, '1', 'back')
+        actual = jersey_absolute('T35', colors, '1', 'back', [])
         expected = ('<div class="jersey-base position-absolute whitesox-home-b'
                     'ack"></div>\n<div class="number-base position-absolute nu'
                     'mber-block-mid number-block-solid-1 whitesox-home-solid">'
@@ -168,15 +168,6 @@ class UniformsTest(unittest.TestCase):
             ruleset(
                 selector='.reds-home-border',
                 rules=['background-color: #000000']),
-            ruleset(
-                selector='.jersey-base',
-                rules=[
-                    'background-size: 62px 66px',
-                    'border: 1px solid #eeeff0',
-                    'height: 68px',
-                    'margin: -5px -1px -5px -5px',
-                    'width: 64px',
-                ])
         ] + _numbers('basic') + [
             ruleset(
                 selector='.number-basic-mid',

@@ -341,19 +341,10 @@ JERSEY_KWARGS = {
     'grad': 'linear-gradient(transparent, transparent)',
 }
 JERSEY_RULES = [
-    'background: url(\'{fairylab}/{{lower}}/{{asset}}.png\')',
-    'background: url(\'{gist}/{{repo}}/raw/{{tag}}/{{asset}}.svg\'), {grad}',
+    'background-image: url(\'{fairylab}/{{lower}}/{{asset}}.png\')',
+    'background-image: url(\'{gist}/{{repo}}/raw/{{tag}}/{{asset}}.svg\'), {grad}',
 ]
 JERSEY_RULES = [r.format(**JERSEY_KWARGS) for r in JERSEY_RULES]
-JERSEY_STYLE = ruleset(
-    selector='.jersey-base',
-    rules=[
-        'background-size: 62px 66px',
-        'border: 1px solid #eeeff0',
-        'height: 68px',
-        'margin: -5px -1px -5px -5px',
-        'width: 64px',
-    ])
 
 NUMBER_KWARGS = {
     'fairylab': 'https://fairylab.surge.sh/images/numbers',
@@ -412,7 +403,7 @@ def encoding_to_colors(encoding):
     return UNIFORM_MAP.get(encoding, {}).get('colors', None)
 
 
-def jersey_absolute(encoding, colors, num, side):
+def jersey_absolute(encoding, colors, num, side, classes):
     jersey = []
 
     color, solid, border, font = colors
@@ -425,6 +416,8 @@ def jersey_absolute(encoding, colors, num, side):
 
     lower = encoding_to_lower(encoding)
     base = 'jersey-base position-absolute ' + '-'.join([lower, name, side])
+    if classes:
+        base += ' ' + ' '.join(classes)
     jersey.append(DIV_TAG.format(base))
 
     if side == 'back' and num is not None:
@@ -489,8 +482,6 @@ def jersey_style(*jerseys):
             asset = '-'.join([lower, name, 'border'])
             rules = ['background-color: ' + border]
             styles.append(ruleset(selector='.' + asset, rules=rules))
-
-    styles.append(JERSEY_STYLE)
 
     for font in sorted(fonts):
         for i in range(10):

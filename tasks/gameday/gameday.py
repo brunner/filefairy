@@ -151,9 +151,8 @@ class Gameday(Registrable):
         return ret
 
     def _rm(self):
-        # TODO: Remove after the World Series
-        # check_output(['rm', '-rf', GAMEDAY_DIR])
-        # check_output(['mkdir', GAMEDAY_DIR])
+        check_output(['rm', '-rf', GAMEDAY_DIR])
+        check_output(['mkdir', GAMEDAY_DIR])
         pass
 
 

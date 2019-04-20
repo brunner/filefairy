@@ -13,6 +13,7 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
+from common.elements.elements import table  # noqa
 from common.events.events import get_position  # noqa
 from common.events.events import get_title  # noqa
 from common.events.events import get_written  # noqa
@@ -23,6 +24,20 @@ from common.reference.reference import player_to_name_sub  # noqa
 from common.reference.reference import player_to_number  # noqa
 from common.reference.reference import player_to_throws  # noqa
 from common.service.service import call_service  # noqa
+from common.teams.teams import encoding_to_lower  # noqa
+
+BALLPARK = """<div class="ballpark">
+<svg class="ballpark-inner"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+<image xlink:href="https://fairylab.surge.sh/images/teams/{0}/{0}-ballpark.png"
+       width="256" height="256"></image>
+<circle cx="128" cy="184" r="6"
+        stroke="#000000" stroke-width="2" fill="#ffffff"></circle>
+</svg>
+{1}
+{2}
+"""
 
 SMALLCAPS = {k: v for k, v in zip('BCDFHLPRS', 'ʙᴄᴅꜰʜʟᴘʀs')}
 
@@ -66,6 +81,20 @@ class Roster(object):
 
         self.injuries = data['injuries']
 
+    def create_ballpark_table(self):
+        aargs = (self.away_team, self.colors[self.away_team], None, 'front',
+                 ['jersey-ballpark', 'jersey-left'])
+        aimg = call_service('uniforms', 'jersey_absolute', aargs)
+        hargs = (self.home_team, self.colors[self.home_team], None, 'front',
+                 ['jersey-ballpark', 'jersey-right'])
+        himg = call_service('uniforms', 'jersey_absolute', hargs)
+
+        lower = encoding_to_lower(self.home_team)
+        clazz = 'border mb-3'
+        bcols = [col(clazz='p-0')]
+        body = [[cell(content=BALLPARK.format(lower, aimg, himg))]]
+        return table(clazz=clazz, bcols=bcols, body=body)
+
     def create_player_row(self, bats):
         team = self.batting if bats else self.throwing
         player = self.get_batter() if bats else self.get_pitcher()
@@ -95,7 +124,7 @@ class Roster(object):
 
     def create_jersey_row(self, team, num, side, s):
         args = (team, self.colors[team], num, side)
-        img = call_service('uniforms', 'jersey_absolute', args)
+        img = call_service('uniforms', 'jersey_absolute', args, [])
         spn = span(classes=['profile-text', 'align-middle', 'd-block'], text=s)
         inner = img + spn
 

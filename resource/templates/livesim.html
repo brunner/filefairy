@@ -6,13 +6,68 @@
 <div class="container">
 <div class="row">
 <div class="col-12">
-{% for t in tables %}
-{{ common.table(t) }}
+
+<!-- ^(livesim.nav) -->
+<div class="small mb-3">
+<ul class="pagination justify-content-center position-relative top-0">
+
+<!-- ^(livesim.nav.tabs) -->
+{% for tab in tabs %}
+{% set active = ' active' if loop.first else '' %}
+<li class="page-item{{ active }}">
+<a class="page-link" href="#livesimCarousel" role="button" data-slide-to="{{ loop.index - 1 }}">
+<span class="page-link-inner">{{ tab.title }}</span>
+</a>
+</li>
 
 {% endfor %}
 
+</ul>
+</div>
+<!-- $(livesim.nav) -->
+
+<!-- ^(livesim.carousel) -->
+<div id="livesimCarousel" class="carousel slide carousel-fade" data-interval="false">
+
+<!-- ^(livesim.carousel.inner) -->
+<div class="carousel-inner">
+
+<!-- ^(livesim.carousel.inner.tabs) -->
+{% for tab in tabs %}
+{% set active = ' active' if loop.first else '' %}
+<div class="carousel-item{{ active }}">
+
+<!-- ^(livesim.carousel.inner.tabs.tables) -->
+{% for table in tab.tables %}
+{{ common.table(table) }}
+
+{% endfor %}
+<!-- $(livesim.carousel.inner.tabs.tables) -->
+
+</div>
+{% endfor %}
+<!-- $(livesim.carousel.inner.tabs) -->
+
+</div>
+<!-- $(livesim.carousel.inner) -->
+
+</div>
+<!-- $(livesim.carousel) -->
+
 </div>
 </div>
 </div>
 
+{% endblock %}
+
+{% block script %}
+<script>
+$(document).ready(function() {
+  var $pageItems = $('.page-item');
+  $pageItems.click(function() {
+    $pageItems.removeClass('active');
+    $(this).addClass('active');
+  });
+});
+</script>
 {% endblock %}

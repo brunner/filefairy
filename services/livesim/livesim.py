@@ -700,4 +700,19 @@ def get_html(game_in):
         raise e
 
     styles = roster.get_styles()
-    return {'styles': styles, 'tables': tables.get_tables()}
+    tabs = [{
+        'title': 'Live',
+        'tables': [roster.create_ballpark_table()],
+    }, {
+        'title': 'Box',
+        'tables': [],
+    }, {
+        'title': 'Plays',
+        'tables': [],
+    }, {
+        'title': 'Old',
+        'tables': tables.get_tables(),
+    }
+
+    ]
+    return {'styles': styles, 'tabs': tabs}

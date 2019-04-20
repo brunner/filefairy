@@ -75,6 +75,24 @@ span.absolute-icon {
   background-color: #e9ecef;
   border-color: #dee2e6;
 }
+.ballpark {
+  height: 256px;
+  overflow: hidden;
+  position: relative;
+}
+.ballpark-inner {
+  height: 256px;
+  left: 0;
+  margin: 0 auto;
+  position: absolute;
+  right: 0;
+  width: 256px;
+  z-index: 100;
+}
+.ballpark-table {
+  margin: 0 auto;
+  max-width: 512px;
+}
 .before-score {
   padding-right: .75rem;
 }
@@ -158,6 +176,10 @@ button.close {
 .nav-pills .nav-link:not(.active) {
   border: 1px solid #dee2e6;
 }
+.page-item.active .page-link {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
 .page-link {
   background-color: #f8f9fa;
   line-height: 1;
@@ -237,6 +259,9 @@ button.close {
 }
 .text-underline {
   text-decoration: underline;
+}
+.top-0 {
+  top: 0;
 }
 .w-10 {
   width: 10%;
@@ -396,5 +421,26 @@ button.close {
   background-color: #d4edda;
   border-color: #155724!important;
   color: #155724;
+}
+.jersey-base {
+  background-size: 62px 66px;
+  border: 1px solid #eeeff0;
+  height: 68px;
+  margin: -5px -1px -5px -5px;
+  width: 64px;
+}
+.jersey-ballpark {
+  background-position: -122px -36px;
+  background-size: 500px 512px;
+  height: 256px;
+  margin: 0;
+  opacity: 0.3;
+  width: 256px;
+}
+.jersey-left {
+  right: 50%;
+}
+.jersey-right {
+  left: 50%;
 }
 {%- endmacro -%}
