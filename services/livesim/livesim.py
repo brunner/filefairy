@@ -44,7 +44,7 @@ def _check_change_events(e, args, roster, state, tables):
             state.set_runs(aruns, hruns)
             text = state.to_score_long_str()
             body = roster.create_bolded_row('Score Update', text)
-            tables.append_body(body)
+            tables.append_old_body(body)
             tables.append_all()
             tables.reset_all()
     elif state.get_change_inning():
@@ -55,7 +55,7 @@ def _check_change_events(e, args, roster, state, tables):
         batter, = args
         roster.handle_change_batter(batter, tables)
         state.handle_change_batter()
-        tables.create_table(roster, state)
+        tables.create_old_table(roster, state)
     if e == Event.CHANGE_FIELDER:
         _, player = args
         roster.handle_change_fielder(player, tables)
@@ -381,9 +381,7 @@ def _check_misc_batter_events(e, args, roster, state, tables):
     if e == Event.FIELDER_THROWING:
         scoring, = args
         fielder = roster.get_title_fielder(get_position(scoring, False))
-        foot = roster.create_bolded_row(
-            'Error', 'Throwing error by {}.'.format(fielder))
-        tables.append_foot(foot)
+        tables.append_summary('Throwing error by {}.'.format(fielder))
     if e == Event.PITCHER_PICK_ERR:
         tables.append_summary(
             'With {} batting, throwing error by {} on the pickoff attempt.'.
@@ -457,9 +455,8 @@ def _check_pitch_events(e, args, roster, state, tables):
             tables.append_summary('{} called out on strikes.'.format(batter))
             state.handle_out_batter()
         if e == Event.PITCHER_STRIKE_CALL_TOSSED:
-            foot = roster.create_bolded_row(
-                'Ejection', '{} ejected for arguing the call.'.format(batter))
-            tables.append_foot(foot)
+            tables.append_summary(
+                '{} ejected for arguing the call.'.format(batter))
     if e in [Event.PITCHER_STRIKE_FOUL, Event.PITCHER_STRIKE_FOUL_ERR]:
         state.handle_pitch_foul()
         state.create_pitch_row('Foul', tables)
@@ -546,10 +543,8 @@ def _check_misc_runner_events(e, args, roster, state, tables):
         tables.append_summary('With {} batting, {} steals {} base.'.format(
             batter, runner, get_bag(base)))
         if e == Event.RUNNER_STEAL_THROWING:
-            foot = roster.create_bolded_row(
-                'Error', 'Throwing error by {}.'.format(
-                    roster.get_title_fielder('C')))
-            tables.append_foot(foot)
+            tables.append_summary('Throwing error by {}.'.format(
+                roster.get_title_fielder('C')))
     if e == Event.RUNNER_STEAL_HOME:
         runner, = args
         state.handle_runner_to_base(runner, 4)
@@ -658,6 +653,8 @@ def get_html(game_in):
     state = call_service('state', 'create_state', (data, ))
     tables = call_service('tables', 'create_tables', ())
 
+    tables.append_live_table(roster.create_ballpark_table())
+
     try:
         for group in _group(data['events']):
             for i, encoding in enumerate(list(group)):
@@ -683,11 +680,11 @@ def get_html(game_in):
 
                     body = roster.create_bolded_row(
                         'Parse Error', 'Unable to parse game event.')
-                    tables.append_body(body)
+                    tables.append_old_body(body)
 
                     text = player_to_name_sub(' '.join(args))
                     body = [cell(col=col(colspan='2'), content=text)]
-                    tables.append_body(body)
+                    tables.append_old_body(body)
 
             if tables.get_summary():
                 state.create_summary_row(tables)
@@ -702,7 +699,7 @@ def get_html(game_in):
     styles = roster.get_styles()
     tabs = [{
         'title': 'Live',
-        'tables': [roster.create_ballpark_table()],
+        'tables': tables.get_live_tables(),
     }, {
         'title': 'Box',
         'tables': [],
@@ -711,8 +708,6 @@ def get_html(game_in):
         'tables': [],
     }, {
         'title': 'Old',
-        'tables': tables.get_tables(),
-    }
-
-    ]
+        'tables': tables.get_old_tables(),
+    }]
     return {'styles': styles, 'tabs': tabs}
