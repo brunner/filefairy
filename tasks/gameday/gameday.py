@@ -156,25 +156,25 @@ class Gameday(Registrable):
         pass
 
 
-from common.datetime_.datetime_ import datetime_now
-from common.jinja2_.jinja2_ import env
-from common.reference.reference import set_reference
-from common.service.service import reload_service_for_test
-from impl.reference.reference import Reference
+# from common.datetime_.datetime_ import datetime_now
+# from common.jinja2_.jinja2_ import env
+# from common.reference.reference import set_reference
+# from common.service.service import reload_service_for_test
+# from impl.reference.reference import Reference
 
-date = datetime_now()
-e = env()
+# date = datetime_now()
+# e = env()
 
-reference = Reference(date=date, e=e)
-set_reference(reference)
+# reference = Reference(date=date, e=e)
+# set_reference(reference)
 
-reload_service_for_test('roster')
-reload_service_for_test('state')
-reload_service_for_test('tables')
-reload_service_for_test('livesim')
-reload_service_for_test('scoreboard')
-reload_service_for_test('uniforms')
+# reload_service_for_test('roster')
+# reload_service_for_test('state')
+# reload_service_for_test('tables')
+# reload_service_for_test('livesim')
+# reload_service_for_test('scoreboard')
+# reload_service_for_test('uniforms')
 
-gameday = Gameday(date=date, e=e)
-gameday._rm()
-gameday._render(date=date)
+# gameday = Gameday(date=date, e=e)
+# gameday._rm()
+# gameday._render(date=date)
