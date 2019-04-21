@@ -126,7 +126,7 @@ class Roster(object):
 
         s = 'ᴀᴛ ʙᴀᴛ: {}#{} ({})<br>{}<br>{}'
         s = s.format(pos, num_text, hand, name, stats)
-        content = self.create_jersey_row(team, num, 'back', s)
+        content = self.create_jersey_content(team, num, 'back', s)
         body = [row(cells=[cell(content=content)])]
         clazz = 'border' if live else 'border border-bottom-0'
         return table(clazz=clazz, body=body)
@@ -160,7 +160,7 @@ class Roster(object):
 
         s = 'ᴘɪᴛᴄʜɪɴɢ: {}#{} ({})<br>{}<br>{}'
         s = s.format(pos, num_text, hand, name, stats)
-        content = self.create_jersey_row(team, num, 'back', s)
+        content = self.create_jersey_content(team, num, 'back', s)
         body = [row(cells=[cell(content=content)])]
         return table(clazz='border border-bottom-0', body=body)
 
@@ -171,14 +171,14 @@ class Roster(object):
             due.append(self.get_batter_at(j))
 
         s = 'ᴅᴜᴇ ᴜᴘ:<br>{}<br>'.format(player_to_name_sub(', '.join(due)))
-        return self.create_jersey_row(self.batting, None, 'front', s)
+        content = self.create_jersey_content(self.batting, None, 'front', s)
+        return row(cells=[cell(content=content)])
 
-    def create_jersey_row(self, team, num, side, s):
+    def create_jersey_content(self, team, num, side, s):
         args = (team, self.colors[team], num, side)
         img = call_service('uniforms', 'jersey_absolute', args, [])
         spn = span(classes=['profile-text', 'align-middle', 'd-block'], text=s)
         inner = img + spn
-
         return '<div class="position-relative h-58p">{}</div>'.format(inner)
 
     def create_bolded_row(self, title, text):

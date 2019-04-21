@@ -101,7 +101,7 @@ class State(object):
             right = cell()
         else:
             right = cell(content=span(classes=['text-secondary'], text=count))
-        tables.append_old_body([left, right])
+        tables.append_old_body(row(cells=[left, right]))
 
     def create_summary_row(self, tables):
         summary = tables.get_summary()
@@ -154,7 +154,8 @@ class State(object):
             self.score = False
 
         content = player_to_name_sub(content)
-        tables.append_old_body([cell(col=col(colspan='2'), content=content)])
+        tables.append_old_body(
+            row(cells=[cell(col=col(colspan='2'), content=content)]))
 
     def get_change_inning(self):
         return self.change
