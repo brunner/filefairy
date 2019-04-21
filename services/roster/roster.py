@@ -91,7 +91,7 @@ class Roster(object):
         himg = call_service('uniforms', 'jersey_absolute', hargs)
 
         lower = encoding_to_lower(self.home_team)
-        clazz = 'border mb-3 ballpark-table'
+        clazz = 'border mb-3'
         bcols = [col(clazz='p-0')]
         body = [row(cells=[cell(content=BALLPARK.format(lower, aimg, himg))])]
         return table(clazz=clazz, bcols=bcols, body=body)
