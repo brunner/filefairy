@@ -16,7 +16,6 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import span  # noqa
-from common.elements.elements import table  # noqa
 from common.elements.elements import topper  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.test.test import get_testdata  # noqa

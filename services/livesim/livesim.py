@@ -12,10 +12,7 @@ sys.path.append(re.sub(r'/services/livesim', '', _path))
 from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
-from common.elements.elements import span  # noqa
-from common.elements.elements import table  # noqa
-from common.elements.elements import tbody  # noqa
-from common.elements.elements import topper  # noqa
+from common.elements.elements import row  # noqa
 from common.events.events import get_bag  # noqa
 from common.events.events import get_base  # noqa
 from common.events.events import get_outcome  # noqa
@@ -686,8 +683,8 @@ def get_html(game_in):
                     tables.append_old_body(body)
 
                     text = player_to_name_sub(' '.join(args))
-                    body = [cell(col=col(colspan='2'), content=text)]
-                    tables.append_old_body(body)
+                    cells = [cell(col=col(colspan='2'), content=text)]
+                    tables.append_old_body(row(cells=cells))
 
             if tables.get_summary():
                 state.create_summary_row(tables)

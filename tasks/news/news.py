@@ -12,6 +12,7 @@ from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
 from common.json_.json_ import loads  # noqa
@@ -71,14 +72,16 @@ class News(Registrable):
             d = decode_datetime(date)
             suf = suffix(d.day)
             head = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suf)
-            body = [[cell(content=self._transform(t))] for t in data[date]]
+            body = []
+            for t in data[date]:
+                body.append(row(cells=[cell(content=self._transform(t))]))
 
             tables.append(
                 table(
                     clazz='border mb-3',
                     hcols=[col(clazz='font-weight-bold text-dark')],
                     bcols=[col(clazz='position-relative')],
-                    head=[[cell(content=head)]],
+                    head=[row(cells=[cell(content=head)])],
                     body=body))
 
         return tables

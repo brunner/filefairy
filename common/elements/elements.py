@@ -165,6 +165,27 @@ def pre(content):
     return '<pre>{}</pre>'.format(content)
 
 
+def row(cells=None, attributes=None, clazz=''):
+    """Builds a row object, describing a table row.
+
+    Args:
+        cells: The cells in the row.
+        attributes: The set of data attributes to apply to the row.
+        clazz: The CSS class(es) to apply to the row.
+
+    Returns:
+        The row object.
+    """
+    obj = {}
+    if cells:
+        obj['cells'] = cells
+    if attributes:
+        obj['attr'] = _attr(attributes)
+    if clazz:
+        obj['clazz'] = clazz
+    return obj
+
+
 def ruleset(selector='', rules=None):
     """Builds a CSS ruleset element.
 
@@ -200,14 +221,14 @@ def sitelinks(home=False):
                 continue
             icon = icon_span(name=name, classes=['left', 'text-secondary'])
             span_ = span(classes=['d-block pl-4'], text=anchor(href, text))
-            body.append([cell(content=(icon + span_))])
+            body.append(row(cells=[cell(content=(icon + span_))]))
 
         tables.append(
             table(
                 clazz='border mb-3',
                 hcols=SITELINKS_HCOLS,
                 bcols=SITELINKS_BCOLS,
-                head=[[cell(content=head)]],
+                head=[row(cells=[cell(content=head)])],
                 body=body))
 
     return tables
@@ -251,9 +272,9 @@ def table(clazz='',
         hcols: The optional list of CSS classes to apply to each head column.
         bcols: The optional list of CSS classes to apply to each body column.
         fcols: The optional list of CSS classes to apply to each footer column.
-        head: The optional list of head rows. Each row is a list of cells.
-        body: The optional list of body rows. Each row is a list of cells.
-        foot: The optional list of footer rows. Each row is a list of cells.
+        head: The optional list of head rows.
+        body: The optional list of body rows.
+        foot: The optional list of footer rows.
 
     Returns:
         The table element.
@@ -302,4 +323,4 @@ def topper(text):
     return table(
         clazz='topper',
         bcols=[col(clazz='border-0 font-weight-bold px-0 text-secondary')],
-        body=[[cell(content=text)]])
+        body=[row(cells=[cell(content=text)])])

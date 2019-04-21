@@ -17,6 +17,7 @@ from common.datetime_.datetime_ import datetime_replace  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import dialog  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.test.test import get_testdata  # noqa
 from services.scoreboard.scoreboard import line_score_show_body  # noqa
@@ -40,17 +41,21 @@ DIALOG_0 = dialog(id_='d0828g0')
 GAME_2449 = json.loads(TESTDATA['2449.json'])
 GAME_2469 = json.loads(TESTDATA['2469.json'])
 
-HEAD_2449 = table(body=[[cell(content='Wednesday')]])
-HIDE_BODY_2449 = table(head=[[cell(content='Warmup')]])
-HIDE_FOOT_2449 = table(foot=[[cell(content='7:10 PM at Target Field')]])
-SHOW_BODY_2449 = table(head=[[cell(content='Final (10)')]])
-SHOW_FOOT_2449 = table(foot=[[cell(content='Twins Top Tigers in Extras')]])
+HEAD_2449 = table(body=[row(cells=[cell(content='Wednesday')])])
+HIDE_BODY_2449 = table(head=[row(cells=[cell(content='Warmup')])])
+HIDE_FOOT_2449 = table(
+    foot=[row(cells=[cell(content='7:10 PM at Target Field')])])
+SHOW_BODY_2449 = table(head=[row(cells=[cell(content='Final (10)')])])
+SHOW_FOOT_2449 = table(
+    foot=[row(cells=[cell(content='Twins Top Tigers in Extras')])])
 
-HEAD_2469 = table(body=[[cell(content='Thursday')]])
-HIDE_BODY_2469 = table(head=[[cell(content='Warmup')]])
-HIDE_FOOT_2469 = table(foot=[[cell(content='7:10 PM at Target Field')]])
-SHOW_BODY_2469 = table(head=[[cell(content='Final')]])
-SHOW_FOOT_2469 = table(foot=[[cell(content='Twins Shut Out Tigers')]])
+HEAD_2469 = table(body=[row(cells=[cell(content='Thursday')])])
+HIDE_BODY_2469 = table(head=[row(cells=[cell(content='Warmup')])])
+HIDE_FOOT_2469 = table(
+    foot=[row(cells=[cell(content='7:10 PM at Target Field')])])
+SHOW_BODY_2469 = table(head=[row(cells=[cell(content='Final')])])
+SHOW_FOOT_2469 = table(
+    foot=[row(cells=[cell(content='Twins Shut Out Tigers')])])
 
 HIDE_2449 = (GAME_2449['date'], HIDE_BODY_2449, HIDE_FOOT_2449)
 HIDE_2469 = (GAME_2469['date'], HIDE_BODY_2469, HIDE_FOOT_2469)
@@ -177,7 +182,7 @@ class ScoreboardTest(unittest.TestCase):
     @mock.patch('services.scoreboard.scoreboard.create_dialog')
     def test_pending_carousel__hidden_false(self, mock_create_dialog,
                                             mock_hide_body, mock_show_body):
-        body = table(clazz='', head=[[cell(content='Pending')]])
+        body = table(clazz='', head=[row(cells=[cell(content='Pending')])])
         mock_show_body.side_effect = [body, body]
 
         date = encode_datetime(DATE_08280000)
@@ -199,8 +204,10 @@ class ScoreboardTest(unittest.TestCase):
     def test_pending_carousel__hidden_true(self, mock_create_dialog,
                                            mock_hide_body, mock_show_body):
         mock_create_dialog.side_effect = [DIALOG_0]
-        hide = table(clazz='', head=[[cell(content='Pending (hidden)')]])
-        show = table(clazz='', head=[[cell(content='Pending (shown)')]])
+        hide = table(
+            clazz='', head=[row(cells=[cell(content='Pending (hidden)')])])
+        show = table(
+            clazz='', head=[row(cells=[cell(content='Pending (shown)')])])
         mock_hide_body.side_effect = [hide, hide]
         mock_show_body.side_effect = [show, show]
 
@@ -220,7 +227,7 @@ class ScoreboardTest(unittest.TestCase):
 
     @mock.patch('services.scoreboard.scoreboard.pending_show_body')
     def test_pending_dialog(self, mock_show_body):
-        body = table(clazz='', head=[[cell(content='Pending')]])
+        body = table(clazz='', head=[row(cells=[cell(content='Pending')])])
         mock_show_body.side_effect = [body, body]
 
         date = encode_datetime(DATE_08310000)

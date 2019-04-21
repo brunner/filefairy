@@ -41,6 +41,7 @@ from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import pre  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.re_.re_ import search  # noqa
 from common.secrets.secrets import secrets_sub  # noqa
@@ -185,18 +186,22 @@ class Dashboard(Registrable):
 
                 a = anchor(link, title)
                 time = decode_datetime(date).strftime('%H:%M')
-                row = [cell(content=a), cell(content=msg), cell(content=time)]
+                row_ = row(cells=[
+                    cell(content=a),
+                    cell(content=msg),
+                    cell(content=time)
+                ])
 
                 if levelname == 'ERROR':
                     if body:
                         t = self._table(head_content, body, None)
                         ret['logs'].insert(0, t)
 
-                    foot = [[cell(content=pre(record['exc']))]]
-                    t = self._table(head_content, [row], foot)
+                    foot = [row(cells=[cell(content=pre(record['exc']))])]
+                    t = self._table(head_content, [row_], foot)
                     ret['logs'].insert(0, t)
                 else:
-                    body.insert(0, row)
+                    body.insert(0, row_)
 
             if body:
                 t = self._table(head_content, body, None)
@@ -249,10 +254,11 @@ class Dashboard(Registrable):
         return table(
             clazz='border mb-3',
             hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
-            bcols=[col(clazz='w-150p'), None,
+            bcols=[col(clazz='w-150p'),
+                   col(),
                    col(clazz='text-right w-75p')],
             fcols=fcols,
-            head=[[cell(content=head_content)]],
+            head=[row(cells=[cell(content=head_content)])],
             body=body,
             foot=foot)
 

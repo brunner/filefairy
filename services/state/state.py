@@ -14,6 +14,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import icon_img  # noqa
 from common.elements.elements import span  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.re_.re_ import search  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
@@ -81,12 +82,14 @@ class State(object):
         inning = self.to_inning_str(True)
         if live:
             inning = span(id_='livesimInning', text='Top 1st')
-        head = [[
-            cell(content=inning),
-            cell(content=self.to_score_medium_str(live)),
-            cell(content=self.to_score_long_str(live)),
-            cell(content=right)
-        ]]
+        head = [
+            row(cells=[
+                cell(content=inning),
+                cell(content=self.to_score_medium_str(live)),
+                cell(content=self.to_score_long_str(live)),
+                cell(content=right)
+            ])
+        ]
         return table(clazz=HEADCLZ, hcols=hcols, head=head)
 
     def create_pitch_row(self, text, tables):

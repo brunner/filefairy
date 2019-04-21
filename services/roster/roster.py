@@ -13,6 +13,7 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import span  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.events.events import get_position  # noqa
 from common.events.events import get_title  # noqa
@@ -92,7 +93,7 @@ class Roster(object):
         lower = encoding_to_lower(self.home_team)
         clazz = 'border mb-3 ballpark-table'
         bcols = [col(clazz='p-0')]
-        body = [[cell(content=BALLPARK.format(lower, aimg, himg))]]
+        body = [row(cells=[cell(content=BALLPARK.format(lower, aimg, himg))])]
         return table(clazz=clazz, bcols=bcols, body=body)
 
     def create_live_batter_table(self):
@@ -126,7 +127,7 @@ class Roster(object):
         s = 'ᴀᴛ ʙᴀᴛ: {}#{} ({})<br>{}<br>{}'
         s = s.format(pos, num_text, hand, name, stats)
         content = self.create_jersey_row(team, num, 'back', s)
-        body = [[cell(content=content)]]
+        body = [row(cells=[cell(content=content)])]
         clazz = 'border' if live else 'border border-bottom-0'
         return table(clazz=clazz, body=body)
 
@@ -160,7 +161,7 @@ class Roster(object):
         s = 'ᴘɪᴛᴄʜɪɴɢ: {}#{} ({})<br>{}<br>{}'
         s = s.format(pos, num_text, hand, name, stats)
         content = self.create_jersey_row(team, num, 'back', s)
-        body = [[cell(content=content)]]
+        body = [row(cells=[cell(content=content)])]
         return table(clazz='border border-bottom-0', body=body)
 
     def create_due_up_row(self):

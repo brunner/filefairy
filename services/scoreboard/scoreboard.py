@@ -17,6 +17,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import icon_span  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import table  # noqa
 from common.elements.elements import topper  # noqa
@@ -66,7 +67,7 @@ def _location_row(data):
     ballpark = ' at ' + data['ballpark']
     location = span(
         classes=['small', 'text-secondary'], text=(start + ballpark))
-    return [cell(col=col(clazz='border-0 py-2'), content=location)]
+    return row(cells=[cell(col=col(clazz='border-0 py-2'), content=location)])
 
 
 def create_dialog(date, game):
@@ -92,11 +93,11 @@ def create_dialog(date, game):
                 col(clazz='w-50 badge-icon-wrapper pl-2'),
                 col(clazz='w-50 badge-icon-wrapper pr-2')
             ],
-            head=[[cell(content='Options')]],
-            body=[[
+            head=[row(cells=[cell(content='Options')])],
+            body=[row(cells=[
                 _cell('All Games for Today', {'data-show-date': date}),
                 _cell(t, {'data-show-game': game})
-            ]])
+            ])])
     ]
 
     return dialog(id_=id_, icon=icon, tables=tables)
@@ -126,14 +127,14 @@ def line_score_hide_body(data):
         classes=['hover', 'right', 'text-dark'],
         attributes=attr,
     )
-    head = [[cell(content='Warmup'), cell(content=span_)]]
+    head = [row(cells=[cell(content='Warmup'), cell(content=span_)])]
 
     body = []
     for team, other in [('away', 'home'), ('home', 'away')]:
         encoding = data[team + '_team']
         text = encoding_to_hometown(encoding)
         title = icon_absolute(encoding, text)
-        body.append([cell(content=title)])
+        body.append(row(cells=[cell(content=title)]))
 
     attr = {'data-game': g, 'data-date': d}
     return table(
@@ -179,7 +180,7 @@ def line_score_hide_foot(data):
 
     foot = [_location_row(data)]
     if lines:
-        foot.append([cell(content='<br>'.join(lines))])
+        foot.append(row(cells=[cell(content='<br>'.join(lines))]))
 
     attributes = {'data-game': data['num'], 'data-date': _date(data['date'])}
     return table(
@@ -222,11 +223,11 @@ def line_score_show_body(data, hidden=False):
     bcols += [col(clazz='w-24p px-1 text-center')] * 2
     bcols += [col(clazz='w-32p pl-1 text-center')]
 
-    head_row = [cell(content=final)]
-    head_row += [cell() for _ in range(18 - max_num)]
-    head_row += [cell(content=str(i + 1)) for i in range(max_num)]
-    head_row += [cell(content=content) for content in ['R', 'H', 'E']]
-    head = [head_row]
+    head_cells = [cell(content=final)]
+    head_cells += [cell() for _ in range(18 - max_num)]
+    head_cells += [cell(content=str(i + 1)) for i in range(max_num)]
+    head_cells += [cell(content=content) for content in ['R', 'H', 'E']]
+    head = [row(cells=head_cells)]
 
     body = []
     for team, other in [('away', 'home'), ('home', 'away')]:
@@ -238,15 +239,15 @@ def line_score_show_body(data, hidden=False):
         text = encoding_to_hometown(encoding)
         text += ' (' + record + ')' if record else ''
         title = icon_absolute(encoding, text)
-        row = [cell(col=primary, content=title)]
+        body_cells = [cell(col=primary, content=title)]
 
         rhe = [data[team + suff] for suff in ('_runs', '_hits', '_errors')]
-        row += [cell() for _ in range(18 - max_num)]
-        row += [cell(content=s) for s in data[team + '_line'].split()]
-        row += [cell() for _ in range(9 - num)]
-        row += [cell(col=primary, content=s) for s in rhe]
+        body_cells += [cell() for _ in range(18 - max_num)]
+        body_cells += [cell(content=s) for s in data[team + '_line'].split()]
+        body_cells += [cell() for _ in range(9 - num)]
+        body_cells += [cell(col=primary, content=s) for s in rhe]
 
-        body.append(row)
+        body.append(row(cells=body_cells))
 
     clazz = 'border' + (' d-none' if hidden else '')
     attributes = {'data-game': data['num'], 'data-date': _date(data['date'])}
@@ -321,7 +322,7 @@ def line_score_show_foot(data, hidden=False):
         attributes=attributes,
         foot=[
             _location_row(data),
-            [cell(content='<br>'.join(lines))],
+            row(cells=[cell(content='<br>'.join(lines))]),
         ],
     )
 
@@ -380,14 +381,14 @@ def pending_hide_body(date, scores):
         classes=['hover', 'right', 'text-dark'],
         attributes=attr,
     )
-    head = [[cell(content='Pending'), cell(content=span_)]]
+    head = [row(cells=[cell(content='Pending'), cell(content=span_)])]
 
     body = []
     for score in scores:
         t1, t2 = search(r'(\w+) \d+, (\w+) \d+', score)
         hometowns = [encoding_to_hometown(t) for t in (t1, t2)]
         text = icon_absolute('T30', ' · '.join(sorted(hometowns)))
-        body.append([cell(content=text)])
+        body.append(row(cells=[cell(content=text)]))
 
     attr = {'data-game': g, 'data-date': d}
     return table(
@@ -416,12 +417,12 @@ def pending_show_body(date, scores, hidden=False):
     hcols = [col(clazz='font-weight-bold text-dark')]
     bcols = [col(clazz='position-relative')]
 
-    head = [[cell(content='Pending')]]
+    head = [row(cells=[cell(content='Pending')])]
 
     body = []
     for score in scores:
         text = icon_absolute('T30', encoding_to_hometown_sub(score))
-        body.append([cell(content=text)])
+        body.append(row(cells=[cell(content=text)]))
 
     clazz = 'border mb-3' + (' d-none' if hidden else '')
     attributes = {'data-game': '0', 'data-date': _date(date)}

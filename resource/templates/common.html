@@ -50,8 +50,10 @@
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
 {% for row in data.head %}
-<tr>
-{% for cell in row %}
+{% set rattr = (row and row['attr']) or '' %}
+{% set rclazz = (row and row['clazz']) or '' %}
+<tr{{ rattr }}{% if rclazz %} class="{{ rclazz }}"{% endif %}>
+{% for cell in row['cells'] %}
 {% set hcol = data.hcols[loop.index0] if data.hcols else None %}
 {% set hclazz = (hcol and hcol['clazz']) or '' %}
 {% set cclazz = (cell and cell.col and cell.col['clazz']) or '' %}
@@ -71,8 +73,10 @@
 <!-- ^(common.table.body) -->
 <tbody>
 {% for row in data.body %}
-<tr>
-{% for cell in row %}
+{% set rattr = (row and row['attr']) or '' %}
+{% set rclazz = (row and row['clazz']) or '' %}
+<tr{{ rattr }}{% if rclazz %} class="{{ rclazz }}"{% endif %}>
+{% for cell in row['cells'] %}
 {% set scope = ' scope="row"' if loop.first else '' %}
 {% set bcol = data.bcols[loop.index0] if data.bcols else None %}
 {% set bclazz = (bcol and bcol['clazz']) or '' %}
@@ -94,8 +98,10 @@
 <!-- ^(common.table.foot) -->
 <tfoot class="thead-light">
 {% for row in data.foot %}
-<tr>
-{% for cell in row %}
+{% set rattr = (row and row['attr']) or '' %}
+{% set rclazz = (row and row['clazz']) or '' %}
+<tr{{ rattr }}{% if rclazz %} class="{{ rclazz }}"{% endif %}>
+{% for cell in row['cells'] %}
 {% set fcol = data.fcols[loop.index0] if data.fcols else None %}
 {% set fclazz = (fcol and fcol['clazz']) or '' %}
 {% set cclazz = (cell and cell.col and cell.col['clazz']) or '' %}

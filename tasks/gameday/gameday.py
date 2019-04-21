@@ -19,7 +19,7 @@ from common.dict_.dict_ import merge  # noqa
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
-from common.elements.elements import table  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import topper  # noqa
 from common.json_.json_ import loads  # noqa
 from common.os_.os_ import listdirs  # noqa

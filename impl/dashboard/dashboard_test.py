@@ -16,6 +16,7 @@ from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import pre  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
@@ -342,36 +343,40 @@ class DashboardTest(Test):
                 clazz='border mb-3',
                 hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
                 bcols=[
-                    col(clazz='w-150p'), None,
+                    col(clazz='w-150p'), col(),
                     col(clazz='text-right w-75p')
                 ],
                 fcols=[col(colspan='3')],
-                head=[[cell(content='Saturday, October 26th, 1985')]],
-                body=[[
-                    cell(
-                        content=anchor(link + 'path/to/module.py#L123',
-                                       'module.py#L123')),
-                    cell(content='foo'),
-                    cell(content='06:02')
-                ]],
-                foot=[[cell(content=pre('...'))]]),
+                head=[
+                    row(cells=[cell(content='Saturday, October 26th, 1985')])
+                ],
+                body=[
+                    row(cells=[
+                        cell(
+                            content=anchor(link + 'path/to/module.py#L123',
+                                           'module.py#L123')),
+                        cell(content='foo'),
+                        cell(content='06:02')
+                    ])
+                ],
+                foot=[row(cells=[cell(content=pre('...'))])]),
             table(
                 clazz='border mb-3',
                 hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
                 bcols=[
-                    col(clazz='w-150p'), None,
+                    col(clazz='w-150p'), col(),
                     col(clazz='text-right w-75p')
                 ],
-                fcols=None,
-                head=[[cell(content='Friday, October 25th, 1985')]],
-                body=[[
-                    cell(
-                        content=anchor(link + 'path/to/module.py#L456',
-                                       'module.py#L456')),
-                    cell(content='bar'),
-                    cell(content='00:07')
-                ]],
-                foot=None)
+                head=[row(cells=[cell(content='Friday, October 25th, 1985')])],
+                body=[
+                    row(cells=[
+                        cell(
+                            content=anchor(link + 'path/to/module.py#L456',
+                                           'module.py#L456')),
+                        cell(content='bar'),
+                        cell(content='00:07')
+                    ])
+                ])
         ]
         actual = dashboard._index_html(date=DATE_10260602)
         expected = {'logs': logs}

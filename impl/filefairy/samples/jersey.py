@@ -10,6 +10,7 @@ sys.path.append(re.sub(r'/tasks/gameday/samples', '', _path))
 from common.elements.elements import anchor  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
@@ -35,11 +36,12 @@ for encoding in encoding_keys():
             back = jersey_absolute(encoding, colors, num, 'back', [])
             backs.append(cell(content=CONTENT.format(back)))
 
-        body.append([cell(content=CONTENT.format(front))] + backs)
+        cells = [cell(content=CONTENT.format(front))] + backs
+        body.append(row(cells=cells))
         _jerseys.append((encoding, colors))
 
     decoding = encoding_to_decoding(encoding)
-    head = [[cell(content=icon_absolute(encoding, decoding))]]
+    head = [row(cells=[cell(content=icon_absolute(encoding, decoding))])]
     table_ = table(
         clazz='border mt-3',
         hcols=[col(clazz='position-relative', colspan=8)],

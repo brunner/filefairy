@@ -11,6 +11,7 @@ sys.path.append(re.sub(r'/services/division', '', _path))
 
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.record.record import decode_record  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
@@ -90,15 +91,15 @@ def condensed_league(league, tables):
     colspan = 0
 
     for _, table_ in tables:
-        row = []
+        body_cells = []
         colspan = max(colspan, len(table_))
 
         records = {k: table_[k][0] for k in table_}
         for team in _sort(records):
             record, active = table_[team]
-            row.append(cell(content=icon_badge(team, record, active)))
+            body_cells.append(cell(content=icon_badge(team, record, active)))
 
-        body.append(row)
+        body.append(row(cells=body_cells))
 
     bcols = [col(clazz=('w-20 badge-icon-wrapper pl-2'))]
     bcols += [col(clazz=('w-20 badge-icon-wrapper'))] * (colspan - 2)
@@ -109,7 +110,7 @@ def condensed_league(league, tables):
         clazz='table-fixed border mb-3',
         hcols=[col(clazz=hc, colspan=colspan)],
         bcols=bcols,
-        head=[[cell(content=league)]],
+        head=[row(cells=[cell(content=league)])],
         body=body)
 
 
@@ -185,15 +186,15 @@ def expanded_league(league, tables):
             pct = 0 if rw + rl == 0 else rw / (rw + rl)
             pct = '{:,.3f}'.format(pct).lstrip('0')
 
-            row = []
+            body_cells = []
             contents = [icon_absolute(team, hometown), rw, rl, pct, gb]
             for content in contents:
-                row.append(cell(content=str(content)))
+                body_cells.append(cell(content=str(content)))
 
-            body.append(row)
+            body.append(row(cells=body_cells))
 
         contents = [subleague, 'W', 'L', '%', 'GB']
-        head = [[cell(content=content) for content in contents]]
+        head = [row(cells=[cell(content=content) for content in contents])]
 
         hc = 'font-weight-bold text-dark '
         clazzes = [

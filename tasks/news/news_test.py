@@ -12,6 +12,7 @@ sys.path.extend((_path, re.sub(r'/tasks/news', '', _path)))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.elements.elements import cell  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
@@ -94,7 +95,7 @@ class NewsTest(Test):
 
     @mock.patch.object(News, '_tables')
     def test_index_html(self, mock_tables):
-        table_ = table(head=[[cell(content='Wednesday')]])
+        table_ = table(head=[row(cells=[cell(content='Wednesday')])])
         mock_tables.return_value = table_
 
         news = self.create_news()

@@ -14,6 +14,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import pre  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 
 LINK = 'https://github.com/brunner/filefairy/blob/master/'
@@ -40,28 +41,31 @@ _logs = [
     table(
         clazz='border mb-3',
         hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
-        bcols=[col(clazz='w-150p'), None, col(clazz='text-right w-75p')],
+        bcols=[col(clazz='w-150p'), None,
+               col(clazz='text-right w-75p')],
         fcols=[col(colspan='3')],
-        head=[[cell(content='Saturday, October 26th, 1985')]],
+        head=[row(cells=[cell(content='Saturday, October 26th, 1985')])],
         body=[
-            [
+            row(cells=[
                 cell(content=anchor(_error_link, _error_title)),
                 cell(content=_error_msg),
                 cell(content='06:02')
-            ]],
-        foot=[[cell(content=pre(_exc))]]),
+            ])
+        ],
+        foot=[row(cells=[cell(content=pre(_exc))])]),
     table(
         clazz='border mb-3',
         hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
-        bcols=[col(clazz='w-150p'), None, col(clazz='text-right w-75p')],
+        bcols=[col(clazz='w-150p'), None,
+               col(clazz='text-right w-75p')],
         fcols=[col(colspan='3')],
-        head=[[cell(content='Saturday, October 26th, 1985')]],
+        head=[row(cells=[cell(content='Saturday, October 26th, 1985')])],
         body=[
-            [
+            row(cells=[
                 cell(content=anchor(_info_link, _info_title)),
                 cell(content=_info_msg),
                 cell(content='02:30')
-            ],
+            ]),
         ]),
 ]
 

@@ -19,6 +19,7 @@ from common.elements.elements import icon_img  # noqa
 from common.elements.elements import icon_span  # noqa
 from common.elements.elements import menu  # noqa
 from common.elements.elements import pre  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import ruleset  # noqa
 from common.elements.elements import sitelinks  # noqa
 from common.elements.elements import span  # noqa
@@ -30,7 +31,7 @@ COL = col(clazz=CLAZZ, colspan='2')
 CELL = cell(col=COL, content='content')
 COLS = [COL]
 ID_ = 'id'
-ROW = [CELL]
+ROW = row(cells=[CELL])
 TABLE = table(body=[ROW])
 
 FAVICON_LINK = 'https://fairylab.surge.sh/favicon-32x32.png'
@@ -138,19 +139,19 @@ class ElemementsTest(unittest.TestCase):
                 clazz='border mb-3',
                 hcols=SITELINKS_HCOLS,
                 bcols=SITELINKS_BCOLS,
-                head=[[cell(content='Tasks')]],
+                head=[row(cells=[cell(content='Tasks')])],
                 body=[
-                    [cell(content=gameday)],
-                    [cell(content=news)],
-                    [cell(content=standings)],
+                    row(cells=[cell(content=gameday)]),
+                    row(cells=[cell(content=news)]),
+                    row(cells=[cell(content=standings)]),
                 ]),
             table(
                 clazz='border mb-3',
                 hcols=SITELINKS_HCOLS,
                 bcols=SITELINKS_BCOLS,
-                head=[[cell(content='Other')]],
+                head=[row(cells=[cell(content='Other')])],
                 body=[
-                    [cell(content=dashboard)],
+                    row(cells=[cell(content=dashboard)]),
                 ])
         ]
         self.assertEqual(actual, expected)
@@ -174,20 +175,20 @@ class ElemementsTest(unittest.TestCase):
                 clazz='border mb-3',
                 hcols=SITELINKS_HCOLS,
                 bcols=SITELINKS_BCOLS,
-                head=[[cell(content='Tasks')]],
+                head=[row(cells=[cell(content='Tasks')])],
                 body=[
-                    [cell(content=gameday)],
-                    [cell(content=news)],
-                    [cell(content=standings)],
+                    row(cells=[cell(content=gameday)]),
+                    row(cells=[cell(content=news)]),
+                    row(cells=[cell(content=standings)]),
                 ]),
             table(
                 clazz='border mb-3',
                 hcols=SITELINKS_HCOLS,
                 bcols=SITELINKS_BCOLS,
-                head=[[cell(content='Other')]],
+                head=[row(cells=[cell(content='Other')])],
                 body=[
-                    [cell(content=dashboard)],
-                    [cell(content=home)],
+                    row(cells=[cell(content=dashboard)]),
+                    row(cells=[cell(content=home)]),
                 ])
         ]
         self.assertEqual(actual, expected)
@@ -227,7 +228,7 @@ class ElemementsTest(unittest.TestCase):
         expected = {
             'clazz': 'topper',
             'bcols': [col(clazz=bc)],
-            'body': [[cell(content='text')]]
+            'body': [row(cells=[cell(content='text')])]
         }
         self.assertEqual(actual, expected)
 

@@ -13,6 +13,7 @@ sys.path.append(re.sub(r'/services/division', '', _path))
 
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
+from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from common.teams.teams import icon_badge  # noqa
@@ -28,25 +29,25 @@ WILD_CARD = {'T33': '1-1', 'T35': '1-1', 'T40': '0-2', 'T48': '0-2'}
 
 def _condensed_row(*args):
     i = iter(args)
-    row = []
+    cells = []
     for encoding in i:
-        row.append(cell(content=icon_badge(encoding, next(i), True)))
-    return row
+        cells.append(cell(content=icon_badge(encoding, next(i), True)))
+    return row(cells=cells)
 
 
 def _expanded_head(subleague):
-    return [
+    return row(cells=[
         cell(content=subleague),
         cell(content='W'),
         cell(content='L'),
         cell(content='%'),
         cell(content='GB'),
-    ]
+    ])
 
 
 def _expanded_row(*args):
     contents = [icon_absolute(args[0], args[1])] + list(args[2:])
-    return [cell(content=content) for content in contents]
+    return row(cells=[cell(content=content) for content in contents])
 
 
 class DivisionTest(unittest.TestCase):
@@ -66,7 +67,7 @@ class DivisionTest(unittest.TestCase):
                 col(clazz=bc),
                 col(clazz=(bc + ' pr-2')),
             ],
-            head=[[cell(content='American League')]],
+            head=[row(cells=[cell(content='American League')])],
             body=[
                 _condensed_row('T34', '2-0', 'T33', '1-1', 'T48', '0-2'),
                 _condensed_row('T38', '2-0', 'T35', '1-1', 'T40', '0-2'),
