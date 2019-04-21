@@ -169,7 +169,8 @@ def encoding_to_teamid(encoding):
 def icon_absolute(encoding, text):
     lower = encoding_to_lower(encoding)
 
-    img = icon_img(ICON_LINK.format(lower), '16', ['absolute-icon', 'left'])
+    ic = ['absolute-icon', 'left']
+    img = icon_img(ICON_LINK.format(lower), '16', ic, '')
     span_ = span(classes=['d-block pl-4'], text=text)
     return img + span_
 
@@ -189,7 +190,7 @@ def icon_badge(encoding, text, active):
         ic.append('grayscale')
         sc.append('text-secondary')
 
-    img = icon_img(ICON_LINK.format(lower), '16', ic)
+    img = icon_img(ICON_LINK.format(lower), '16', ic, '')
     span_ = span(classes=sc, text=text.replace('-', ' - '))
 
     bc = ['badge', 'badge-icon', 'badge-light']

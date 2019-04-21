@@ -43,13 +43,17 @@ class Tables(object):
         self.summary.append(s)
 
     def create_old_table(self, roster, state):
-        bcols = [col(), col(clazz='w-50p text-right')]
-        body, self.old_body = list(self.old_body), []
-        self.old_body.append(roster.create_player_row(False))
-        self.old_body.append(roster.create_player_row(True))
-        self.old_table = table(clazz='border mb-3', bcols=bcols, body=body)
+        self.old_tables.append(state.create_old_head_table())
 
-        self.old_tables.append(state.create_head_table())
+        body, self.old_body = list(self.old_body), []
+        if body:
+            t = table(clazz='border border-bottom-0', body=body)
+            self.old_tables.append(t)
+        self.old_tables.append(roster.create_old_pitcher_table())
+        self.old_tables.append(roster.create_old_batter_table())
+
+        bcols = [col(), col(clazz='w-50p text-right')]
+        self.old_table = table(clazz='border mb-3', bcols=bcols, body=[])
         self.old_tables.append(self.old_table)
 
     def get_old_body(self):

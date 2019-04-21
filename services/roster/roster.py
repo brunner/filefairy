@@ -95,23 +95,73 @@ class Roster(object):
         body = [[cell(content=BALLPARK.format(lower, aimg, himg))]]
         return table(clazz=clazz, bcols=bcols, body=body)
 
-    def create_player_row(self, bats):
-        team = self.batting if bats else self.throwing
-        player = self.get_batter() if bats else self.get_pitcher()
-        title = 'ᴀᴛ ʙᴀᴛ' if bats else 'ᴘɪᴛᴄʜɪɴɢ'
-        hand = player_to_bats(player) if bats else player_to_throws(player)
+    def create_live_batter_table(self):
+        return self.create_batter_table(True)
+
+    def create_old_batter_table(self):
+        return self.create_batter_table(False)
+
+    def create_batter_table(self, live):
+        if live:
+            team = self.away_team
+            player = self.lineups[team][0][0]
+        else:
+            team = self.batting
+            player = self.get_batter()
+
+        hand = SMALLCAPS.get(player_to_bats(player), 'ʀ')
         name = player_to_name(player)
         num = player_to_number(player)
-        if bats:
-            curr = self.batters[player][0]
-            pos = ''.join(SMALLCAPS.get(c, c) for c in curr) + ' '
-        else:
-            pos = ''
+        num_text = num
+
+        if live:
+            hand = span(id_='livesimBatterHand', text=hand)
+            name = span(id_='livesimBatterName', text=name)
+            num_text = span(id_='livesimBatterNum', text=num)
+
+        curr = self.batters[player][0]
+        pos = ''.join(SMALLCAPS.get(c, c) for c in curr) + ' '
         stats = ''
 
-        s = '{}: {}#{} ({})<br>{}<br>{}'
-        s = s.format(title, pos, num, SMALLCAPS.get(hand, 'ʀ'), name, stats)
-        return self.create_jersey_row(team, num, 'back', s)
+        s = 'ᴀᴛ ʙᴀᴛ: {}#{} ({})<br>{}<br>{}'
+        s = s.format(pos, num_text, hand, name, stats)
+        content = self.create_jersey_row(team, num, 'back', s)
+        body = [[cell(content=content)]]
+        clazz = 'border' if live else 'border border-bottom-0'
+        return table(clazz=clazz, body=body)
+
+    def create_live_pitcher_table(self):
+        return self.create_pitcher_table(True)
+
+    def create_old_pitcher_table(self):
+        return self.create_pitcher_table(False)
+
+    def create_pitcher_table(self, live):
+        if live:
+            team = self.home_team
+            player = self.pitchers[team][0]
+        else:
+            team = self.throwing
+            player = self.get_pitcher()
+
+        hand = SMALLCAPS.get(player_to_throws(player), 'ʀ')
+        name = player_to_name(player)
+        num = player_to_number(player)
+        num_text = num
+
+        if live:
+            hand = span(id_='livesimPitcherHand', text=hand)
+            name = span(id_='livesimPitcherName', text=name)
+            num_text = span(id_='livesimPitcherNum', text=num)
+
+        pos = ''
+        stats = ''
+
+        s = 'ᴘɪᴛᴄʜɪɴɢ: {}#{} ({})<br>{}<br>{}'
+        s = s.format(pos, num_text, hand, name, stats)
+        content = self.create_jersey_row(team, num, 'back', s)
+        body = [[cell(content=content)]]
+        return table(clazz='border border-bottom-0', body=body)
 
     def create_due_up_row(self):
         due = []
@@ -128,8 +178,7 @@ class Roster(object):
         spn = span(classes=['profile-text', 'align-middle', 'd-block'], text=s)
         inner = img + spn
 
-        content = '<div class="position-relative h-58p">{}</div>'.format(inner)
-        return [cell(col=col(colspan='2'), content=content)]
+        return '<div class="position-relative h-58p">{}</div>'.format(inner)
 
     def create_bolded_row(self, title, text):
         content = player_to_name_sub('<b>{}</b><br>{}'.format(title, text))

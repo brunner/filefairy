@@ -63,18 +63,28 @@ class State(object):
             return 'primary'
         return 'danger'
 
-    def create_head_table(self):
+    def create_live_head_table(self):
+        return self.create_head_table(True)
+
+    def create_old_head_table(self):
+        return self.create_head_table(False)
+
+    def create_head_table(self, live):
         hcols = [
             col(clazz=HLEFTCLZ),
             col(clazz=HMEDCLZ),
             col(clazz=HLONGCLZ),
             col(clazz=HRIGHTCLZ)
         ]
-        right = '{} &nbsp; {}'.format(self.to_outs_str(), self.to_bases_str())
+        right = '{} &nbsp; {}'.format(
+            self.to_outs_str(live), self.to_bases_str(live))
+        inning = self.to_inning_str(True)
+        if live:
+            inning = span(id_='livesimInning', text='Top 1st')
         head = [[
-            cell(content=self.to_inning_str(True)),
-            cell(content=self.to_score_medium_str()),
-            cell(content=self.to_score_long_str()),
+            cell(content=inning),
+            cell(content=self.to_score_medium_str(live)),
+            cell(content=self.to_score_long_str(live)),
             cell(content=right)
         ]]
         return table(clazz=HEADCLZ, hcols=hcols, head=head)
@@ -132,7 +142,7 @@ class State(object):
                                  r'out on a sacrifice fly', content)
 
         if outs:
-            content += ' <b>{}</b>'.format(self.to_outs_str())
+            content += ' <b>{}</b>'.format(self.to_outs_str(False))
         if self.score:
             ac = ['badge', 'border', 'tag', 'tag-light']
             before = span(classes=['before-score'], text=content)
@@ -241,9 +251,10 @@ class State(object):
     def set_runs(self, aruns, hruns):
         self.runs = {self.away_team: aruns, self.home_team: hruns}
 
-    def to_bases_str(self):
+    def to_bases_str(self, live):
+        id_ = 'livesimBases' if live else ''
         s = ''.join('x' if b else 'o' for b in self.bases)
-        return icon_img(ICON_LINK.format(s), '16', None)
+        return icon_img(ICON_LINK.format(s), '16', None, id_)
 
     def to_inning_str(self, start):
         if start:
@@ -253,21 +264,30 @@ class State(object):
         n = (self.half + 1) // 2
         return '{} {}{}'.format(s, n, suffix(n))
 
-    def to_outs_str(self):
-        return '{} out'.format(self.outs)
+    def to_outs_str(self, live):
+        outs = span(id_='livesimOuts', text=self.outs) if live else self.outs
+        return '{} out'.format(outs)
 
-    def to_score_long_str(self):
-        return self.to_score_str(encoding_to_decoding_sub, '{} {}, {} {}')
+    def to_score_long_str(self, live):
+        return self.to_score_str(encoding_to_decoding_sub, '{} {}, {} {}',
+                                 live)
 
-    def to_score_medium_str(self):
-        return self.to_score_str(encoding_to_hometown_sub, '{} {}, {} {}')
+    def to_score_medium_str(self, live):
+        return self.to_score_str(encoding_to_hometown_sub, '{} {}, {} {}',
+                                 live)
 
     def to_score_short_str(self):
-        return self.to_score_str(encoding_to_abbreviation_sub, '{} {} · {} {}')
+        return self.to_score_str(encoding_to_abbreviation_sub, '{} {} · {} {}',
+                                 False)
 
-    def to_score_str(self, f, s):
-        args = (self.away_team, self.runs[self.away_team], self.home_team,
-                self.runs[self.home_team])
+    def to_score_str(self, f, s, live):
+        aruns = self.runs[self.away_team]
+        hruns = self.runs[self.home_team]
+        if live:
+            aruns = span(classes=['livesimAwayRuns'], text=aruns)
+            hruns = span(classes=['livesimHomeRuns'], text=hruns)
+
+        args = (self.away_team, aruns, self.home_team, hruns)
         return f(s.format(*args))
 
 
