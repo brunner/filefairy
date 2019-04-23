@@ -17,27 +17,24 @@ from common.elements.elements import tbody  # noqa
 
 class Tables(object):
     def __init__(self):
-        self.live_summaries = []
-        self.live_pitch = table()
-        self.live_pitches = []
-        self.live_play = table()
-        self.live_play = []
-        self.live_tables = []
+        self.live_head = []
+        self.live_body = []
+        self.live_foot = []
 
         self.old_body = []
         self.old_table = table()
         self.old_tables = []
         self.summary = []
 
-    def append_live_table(self, t):
-        self.live_tables.append(t)
-
     def append_all(self):
-        for row in self.old_body:
-            tbody(self.old_table, row)
+        for r in self.old_body:
+            tbody(self.old_table, r)
 
-    def append_old_body(self, row):
-        self.old_body.append(row)
+    def append_live_head(self, t):
+        self.live_head.append(t)
+
+    def append_old_body(self, r):
+        self.old_body.append(r)
 
     def append_summary(self, s):
         self.summary.append(s)
@@ -60,13 +57,25 @@ class Tables(object):
         return list(self.old_body)
 
     def get_live_tables(self):
-        return self.live_tables
+        return self.live_head + [
+            table(
+                clazz='table-fixed border mb-3',
+                bcols=[col(), col(clazz='w-50p text-right')],
+                body=self.live_body),
+            table(clazz='border mb-3', body=self.live_foot),
+        ]
 
     def get_old_tables(self):
         return self.old_tables
 
     def get_summary(self):
         return list(self.summary)
+
+    def prepend_live_body(self, r):
+        self.live_body.insert(0, r)
+
+    def prepend_live_foot(self, r):
+        self.live_foot.insert(0, r)
 
     def reset_all(self):
         self.old_body = []

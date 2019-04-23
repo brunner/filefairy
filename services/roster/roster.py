@@ -128,8 +128,9 @@ class Roster(object):
         s = s.format(pos, num_text, hand, name, stats)
         content = self.create_jersey_content(team, num, 'back', s)
         body = [row(cells=[cell(content=content)])]
+        id_ = 'livesimBatterTable' if live else ''
         clazz = 'border' if live else 'border border-bottom-0'
-        return table(clazz=clazz, body=body)
+        return table(id_=id_, clazz=clazz, body=body)
 
     def create_live_pitcher_table(self):
         return self.create_pitcher_table(True)

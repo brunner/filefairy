@@ -650,10 +650,10 @@ def get_html(game_in):
     state = call_service('state', 'create_state', (data, ))
     tables = call_service('tables', 'create_tables', ())
 
-    tables.append_live_table(roster.create_ballpark_table())
-    tables.append_live_table(state.create_live_head_table())
-    tables.append_live_table(roster.create_live_pitcher_table())
-    tables.append_live_table(roster.create_live_batter_table())
+    tables.append_live_head(roster.create_ballpark_table())
+    tables.append_live_head(state.create_live_head_table())
+    tables.append_live_head(roster.create_live_pitcher_table())
+    tables.append_live_head(roster.create_live_batter_table())
 
     try:
         for group in _group(data['events']):
