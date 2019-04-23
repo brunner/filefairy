@@ -147,18 +147,27 @@ class State(object):
                 content = re.sub(r'(?:flies|lines|pops) out',
                                  r'out on a sacrifice fly', content)
 
+        content = re.sub(r' With \w+ batting, (.)',
+                         lambda x: r' {}'.format(x.group(1).upper()), content)
+
         if outs:
             content += ' <b>{}</b>'.format(self.to_outs_str(False))
+
         if self.score:
             ac = ['badge', 'border', 'tag', 'tag-light']
             before = span(classes=['before-score'], text=content)
             after = span(classes=ac, text=self.to_score_short_str())
-            content = before + after
+            old_content = before + after
             self.score = False
+        else:
+            old_content = content
+
+        old_content = player_to_name_sub(old_content)
+        old_cells = [cell(col=col(colspan='2'), content=old_content)]
+        tables.append_old_body(row(cells=old_cells))
 
         content = player_to_name_sub(content)
         cells = [cell(col=col(colspan='2'), content=content)]
-        tables.append_old_body(row(cells=cells))
         tables.prepend_live_body(row(cells=cells))
 
     def get_change_inning(self):
