@@ -52,11 +52,11 @@ class Roster(object):
         self.colors[self.away_team] = data['away_colors'].split()
         self.colors[self.home_team] = data['home_colors'].split()
 
-        self.batting = self.home_team
-        self.throwing = self.away_team
+        self.batting = self.away_team
+        self.throwing = self.home_team
 
         self.batters = {}
-        self.indices = {self.away_team: 8, self.home_team: 8}
+        self.indices = {self.away_team: 0, self.home_team: 0}
         self.fielders = {self.away_team: {}, self.home_team: {}}
         self.lineups = {self.away_team: [], self.home_team: []}
         for team in ['away', 'home']:
@@ -103,12 +103,8 @@ class Roster(object):
         return self.create_batter_table(False)
 
     def create_batter_table(self, live):
-        if live:
-            team = self.away_team
-            player = self.lineups[team][0][0]
-        else:
-            team = self.batting
-            player = self.get_batter()
+        team = self.batting
+        player = self.get_batter()
 
         hand = SMALLCAPS.get(player_to_bats(player), 'ʀ')
         name = player_to_name(player)
@@ -139,12 +135,8 @@ class Roster(object):
         return self.create_pitcher_table(False)
 
     def create_pitcher_table(self, live):
-        if live:
-            team = self.home_team
-            player = self.pitchers[team][0]
-        else:
-            team = self.throwing
-            player = self.get_pitcher()
+        team = self.throwing
+        player = self.get_pitcher()
 
         hand = SMALLCAPS.get(player_to_throws(player), 'ʀ')
         name = player_to_name(player)
@@ -217,7 +209,7 @@ class Roster(object):
         return get_title(position) + ' ' + self.get_fielder(position)
 
     def handle_change_batter(self, batter, tables):
-        start = (self.get_index() + 1) % 9
+        start = self.get_index()
         end = (start + 8) % 9
         for i in crange(start, end, 9):
             if batter == self.get_batter_at(i):

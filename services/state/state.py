@@ -39,11 +39,11 @@ class State(object):
 
         self.runs = {self.away_team: 0, self.home_team: 0}
 
-        self.batting = self.home_team
-        self.throwing = self.away_team
+        self.batting = self.away_team
+        self.throwing = self.home_team
 
         self.half = 0
-        self.change = True
+        self.change = False
         self.outs = 0
         self.souts = 0
 
@@ -81,7 +81,7 @@ class State(object):
             self.to_outs_str(live), self.to_bases_str(live))
         inning = self.to_inning_str(True)
         if live:
-            inning = span(id_='livesimInning', text='Top 1st')
+            inning = span(id_='livesimInning', text=inning)
         head = [
             row(cells=[
                 cell(content=inning),
@@ -275,10 +275,10 @@ class State(object):
 
     def to_inning_str(self, start):
         if start:
-            s = 'Top' if self.half % 2 == 1 else 'Bottom'
+            s = 'Top' if (self.half + 1) % 2 == 1 else 'Bottom'
         else:
-            s = 'Mid' if self.half % 2 == 1 else 'End'
-        n = (self.half + 1) // 2
+            s = 'Mid' if (self.half + 1) % 2 == 1 else 'End'
+        n = (self.half + 2) // 2
         return '{} {}{}'.format(s, n, suffix(n))
 
     def to_outs_str(self, live):
