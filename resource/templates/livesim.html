@@ -68,6 +68,44 @@ $(document).ready(function() {
     $pageItems.removeClass('active');
     $(this).addClass('active');
   });
+
+  function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  function change(selector, content) {
+    $(selector).html(content);
+  }
+
+  function tick(ts) {
+    $('.livesimEvent[data-show="' + ts + '"]').removeClass('d-none');
+    $('.livesimEvent[data-hide="' + ts + '"]').addClass('d-none');
+
+    if (ts.endsWith('.0')) {
+      $('#livesimBatterTable').removeClass('border-bottom-0');
+    } else if (ts.endsWith('.1')) {
+      $('#livesimBatterTable').addClass('border-bottom-0');
+    }
+  }
+
+  var events = {{ events | tojson | safe }};
+  var i = 0;
+
+  function loop() {
+    var event = events[i];
+    if (event[0] == 'change') {
+      change(event[2], event[3]);      
+    }
+    if (event[0] == 'tick') {
+      tick(event[2]);      
+    }
+
+    i += 1;
+    if (i < events.length) {
+      setTimeout(loop, event[1]*1000);
+    }
+  }
+  loop();
 });
 </script>
 {% endblock %}

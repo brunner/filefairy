@@ -46,12 +46,12 @@ def _check_change_events(e, args, roster, state, tables):
             tables.reset_all()
     elif state.get_change_inning():
         roster.handle_change_inning()
-        state.handle_change_inning()
+        state.handle_change_inning(tables)
 
     if e in [Event.CHANGE_BATTER, Event.CHANGE_PINCH_HITTER]:
         batter, = args
         roster.handle_change_batter(batter, tables)
-        state.handle_change_batter()
+        state.handle_change_batter(tables)
         tables.create_old_table(roster, state)
     if e == Event.CHANGE_FIELDER:
         _, player = args
@@ -710,4 +710,4 @@ def get_html(game_in):
         'title': 'Old',
         'tables': tables.get_old_tables(),
     }]
-    return {'styles': styles, 'tabs': tabs}
+    return {'events': tables.get_live_events(), 'styles': styles, 'tabs': tabs}

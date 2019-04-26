@@ -17,6 +17,7 @@ from common.elements.elements import tbody  # noqa
 
 class Tables(object):
     def __init__(self):
+        self.live_events = []
         self.live_head = []
         self.live_body = []
         self.live_foot = []
@@ -29,6 +30,9 @@ class Tables(object):
     def append_all(self):
         for r in self.old_body:
             tbody(self.old_table, r)
+
+    def append_live_event(self, e):
+        self.live_events.append(e)
 
     def append_live_head(self, t):
         self.live_head.append(t)
@@ -55,6 +59,9 @@ class Tables(object):
 
     def get_old_body(self):
         return list(self.old_body)
+
+    def get_live_events(self):
+        return self.live_events
 
     def get_live_tables(self):
         return self.live_head + [

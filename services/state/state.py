@@ -16,6 +16,7 @@ from common.elements.elements import icon_img  # noqa
 from common.elements.elements import span  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
+from common.elements.elements import ts  # noqa
 from common.re_.re_ import search  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.teams.teams import encoding_to_abbreviation_sub  # noqa
@@ -43,6 +44,8 @@ class State(object):
         self.throwing = self.home_team
 
         self.half = 0
+        self.minute = 0
+        self.second = 0
         self.change = False
         self.outs = 0
         self.souts = 0
@@ -94,17 +97,28 @@ class State(object):
 
     def create_pitch_row(self, text, tables):
         clazz = self._get_pitch_clazz(text)
+        primary = clazz == 'primary'
         pill = '<div class="badge badge-pill pitch alert-{}">{}</div>'
         left = cell(content=(pill.format(clazz, self.pitch) + text))
         count = '{} - {}'.format(self.balls, self.strikes)
-        if clazz == 'primary':
+        if primary:
             right = cell()
         else:
             right = cell(content=span(classes=['text-secondary'], text=count))
 
+        self.second += 1
+        show = ts(self.half, self.minute, self.second)
+        hide = ts(self.half, self.minute + 1, 0)
+        attributes = {'data-show': show, 'data-hide': hide}
+
         cells = [left, right]
         tables.append_old_body(row(cells=cells))
-        tables.prepend_live_body(row(cells=cells))
+        tables.prepend_live_body(
+            row(attributes=attributes,
+                clazz='livesimEvent d-none',
+                cells=cells))
+        delay = 1 if primary or self.balls == 4 or self.strikes == 3 else 2
+        tables.append_live_event(('tick', delay, show))
 
     def create_summary_row(self, tables):
         summary = tables.get_summary()
@@ -166,9 +180,18 @@ class State(object):
         old_cells = [cell(col=col(colspan='2'), content=old_content)]
         tables.append_old_body(row(cells=old_cells))
 
+        self.second += 1
+        show = ts(self.half, self.minute, self.second)
+        hide = ts(self.half, self.minute + 1, 0)
+        attributes = {'data-show': show, 'data-hide': hide}
+
         content = player_to_name_sub(content)
         cells = [cell(col=col(colspan='2'), content=content)]
-        tables.prepend_live_body(row(cells=cells))
+        tables.prepend_live_body(
+            row(attributes=attributes,
+                clazz='livesimEvent d-none',
+                cells=cells))
+        tables.append_live_event(('tick', 3, show))
 
     def get_change_inning(self):
         return self.change
@@ -196,20 +219,30 @@ class State(object):
         else:
             self.bases[base - 1] = batter
 
-    def handle_change_batter(self):
+    def handle_change_batter(self, tables):
         self.pitch = 0
         self.balls = 0
         self.strikes = 0
         self.inplay = False
         self.score = False
+        if self.second > 0:
+            self.minute += 1
+            self.second = 0
+            event = ('tick', 2, ts(self.half, self.minute, self.second))
+            tables.append_live_event(event)
 
-    def handle_change_inning(self):
+    def handle_change_inning(self, tables):
+        tables.append_live_event(('tick', 1, ts(self.half, self.minute + 1,
+                                                0)))
         self.batting, self.throwing = self.throwing, self.batting
         self.half += 1
+        self.minute = 0
+        self.second = 0
         self.change = False
         self.outs = 0
         self.souts = 0
         self.bases = [None, None, None]
+        tables.append_live_event(('tick', 1, ts(self.half, 0, 0)))
 
     def handle_change_runner(self, base, runner):
         self.bases[base - 1] = runner

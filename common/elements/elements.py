@@ -324,3 +324,17 @@ def topper(text):
         clazz='topper',
         bcols=[col(clazz='border-0 font-weight-bold px-0 text-secondary')],
         body=[row(cells=[cell(content=text)])])
+
+
+def ts(half, minute, second):
+    """Returns a string representing a livesim timestamp.
+
+    Args:
+        half: The index of the inning.
+        minute: The index of the minute.
+        second: The index of the second.
+
+    Returns:
+        The timestamp string.
+    """
+    return '{}.{}.{}'.format(half, minute, second)

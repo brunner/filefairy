@@ -109,19 +109,19 @@ class Roster(object):
         hand = SMALLCAPS.get(player_to_bats(player), 'ʀ')
         name = player_to_name(player)
         num = player_to_number(player)
-        num_text = num
+        curr = self.batters[player][0]
+        pos = ''.join(SMALLCAPS.get(c, c) for c in curr) + ' '
+        stats = ''
+        num_text, pos_text = num, pos
 
         if live:
             hand = span(id_='livesimBatterHand', text=hand)
             name = span(id_='livesimBatterName', text=name)
             num_text = span(id_='livesimBatterNum', text=num)
-
-        curr = self.batters[player][0]
-        pos = ''.join(SMALLCAPS.get(c, c) for c in curr) + ' '
-        stats = ''
+            pos_text = span(id_='livesimBatterPos', text=pos)
 
         s = 'ᴀᴛ ʙᴀᴛ: {}#{} ({})<br>{}<br>{}'
-        s = s.format(pos, num_text, hand, name, stats)
+        s = s.format(pos_text, num_text, hand, name, stats)
         content = self.create_jersey_content(team, num, 'back', s)
         body = [row(cells=[cell(content=content)])]
         id_ = 'livesimBatterTable' if live else ''
@@ -225,6 +225,17 @@ class Roster(object):
             bold = 'Offensive Substitution'
             text = 'Pinch hitter {} replaces {}.'.format(batter, prev)
             tables.append_old_body(self.create_bolded_row(bold, text))
+
+        player = self.get_batter()
+        hand = SMALLCAPS.get(player_to_bats(player), 'ʀ')
+        tables.append_live_event(('change', 0, '#livesimBatterHand', hand))
+        name = player_to_name(player)
+        tables.append_live_event(('change', 0, '#livesimBatterName', name))
+        num = player_to_number(player)
+        tables.append_live_event(('change', 0, '#livesimBatterNum', num))
+        curr = self.batters[player][0]
+        pos = ''.join(SMALLCAPS.get(c, c) for c in curr) + ' '
+        tables.append_live_event(('change', 0, '#livesimBatterPos', pos))
 
     def handle_change_fielder(self, player, tables):
         curr, change, i, prev = self.batters[player]
