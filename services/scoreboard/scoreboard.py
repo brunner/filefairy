@@ -160,7 +160,7 @@ def line_score_hide_foot(data):
     """
     lines = []
 
-    head = anchor('/gameday/' + data['num'] + '/', 'Watch Live')
+    head = anchor('/fairylab/gameday/' + data['num'] + '/', 'Watch Live')
     lines.append(head)
 
     # TODO: Remove events check after game log 404 error is fixed.

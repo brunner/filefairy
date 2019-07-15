@@ -80,7 +80,7 @@ class Filefairy(Messageable, Renderable):
 
     @staticmethod
     def _href():
-        return '/'
+        return '/fairylab/'
 
     @staticmethod
     def _title():

@@ -57,7 +57,7 @@ class Standings(Registrable):
 
     @staticmethod
     def _href():
-        return '/standings/'
+        return '/fairylab/standings/'
 
     @staticmethod
     def _info():

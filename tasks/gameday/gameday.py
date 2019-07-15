@@ -48,7 +48,7 @@ class Gameday(Registrable):
 
     @staticmethod
     def _href():
-        return '/gameday/'
+        return '/fairylab/gameday/'
 
     @staticmethod
     def _info():

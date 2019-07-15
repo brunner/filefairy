@@ -61,13 +61,13 @@ SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
 SITELINKS_BCOLS = [col(clazz='position-relative')]
 SITELINKS_TABLES = [
     ('Tasks', [
-        ('timer', '/gameday/', 'Gameday'),
-        ('people', '/news/', 'News'),
-        ('spreadsheet', '/standings/', 'Standings'),
+        ('timer', '/fairylab/gameday/', 'Gameday'),
+        ('people', '/fairylab/news/', 'News'),
+        ('spreadsheet', '/fairylab/standings/', 'Standings'),
     ]),
     ('Other', [
-        ('dashboard', '/dashboard/', 'Dashboard'),
-        ('home', '/', 'Home'),
+        ('dashboard', '/fairylab/dashboard/', 'Dashboard'),
+        ('home', '/fairylab/', 'Home'),
     ]),
 ]
 

@@ -76,7 +76,7 @@ class Dashboard(Registrable):
 
     @staticmethod
     def _href():
-        return '/dashboard/'
+        return '/fairylab/dashboard/'
 
     @staticmethod
     def _info():

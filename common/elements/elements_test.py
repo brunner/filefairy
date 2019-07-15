@@ -127,10 +127,11 @@ class ElemementsTest(unittest.TestCase):
             text = span(classes=['d-block pl-4'], text=anchor(href, text))
             return icon + text
 
-        gameday = _content('timer', '/gameday/', 'Gameday')
-        news = _content('people', '/news/', 'News')
-        standings = _content('spreadsheet', '/standings/', 'Standings')
-        dashboard = _content('dashboard', '/dashboard/', 'Dashboard')
+        gameday = _content('timer', '/fairylab/gameday/', 'Gameday')
+        news = _content('people', '/fairylab/news/', 'News')
+        standings = _content('spreadsheet', '/fairylab/standings/',
+                             'Standings')
+        dashboard = _content('dashboard', '/fairylab/dashboard/', 'Dashboard')
 
         actual = sitelinks()
         expected = [
@@ -162,11 +163,12 @@ class ElemementsTest(unittest.TestCase):
             text = span(classes=['d-block pl-4'], text=anchor(href, text))
             return icon + text
 
-        gameday = _content('timer', '/gameday/', 'Gameday')
-        news = _content('people', '/news/', 'News')
-        standings = _content('spreadsheet', '/standings/', 'Standings')
-        dashboard = _content('dashboard', '/dashboard/', 'Dashboard')
-        home = _content('home', '/', 'Home')
+        gameday = _content('timer', '/fairylab/gameday/', 'Gameday')
+        news = _content('people', '/fairylab/news/', 'News')
+        standings = _content('spreadsheet', '/fairylab/standings/',
+                             'Standings')
+        dashboard = _content('dashboard', '/fairylab/dashboard/', 'Dashboard')
+        home = _content('home', '/fairylab/', 'Home')
 
         actual = sitelinks(home=True)
         expected = [

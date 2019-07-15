@@ -38,7 +38,7 @@ class News(Registrable):
 
     @staticmethod
     def _href():
-        return '/news/'
+        return '/fairylab/news/'
 
     @staticmethod
     def _info():
