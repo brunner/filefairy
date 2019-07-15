@@ -34,7 +34,7 @@ ID_ = 'id'
 ROW = row(cells=[CELL])
 TABLE = table(body=[ROW])
 
-FAVICON_LINK = 'https://fairylab.surge.sh/favicon-32x32.png'
+FAVICON_LINK = 'https://brunnerj.com/fairylab/favicon-32x32.png'
 
 SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
 SITELINKS_BCOLS = [col(clazz='position-relative')]

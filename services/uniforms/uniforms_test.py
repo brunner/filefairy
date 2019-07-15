@@ -38,8 +38,8 @@ def _jersey(asset, repo, tag):
     return ruleset(
         selector=('.' + asset),
         rules=[
-            ('background-image: url(\'https://fairylab.surge.sh/images/teams/'
-             '{}/{}.png\')').format(lower, asset),
+            ('background-image: url(\'https://brunnerj.com/fairylab/images/tea'
+             'ms/{}/{}.png\')').format(lower, asset),
             ('background-image: url(\'https://gistcdn.githack.com/brunner/{}/r'
              'aw/{}/{}.svg\'), {}').format(repo, tag, asset, gradient),
         ])
@@ -49,8 +49,8 @@ def _number(font, fill, num):
     return ruleset(
         selector='.number-{}-{}-{}'.format(font, fill, num),
         rules=[
-            ('-webkit-mask-image: url(\'https://fairylab.surge.sh/images/numbe'
-             'rs/{}/{}/{}.png\')').format(font, fill, num),
+            ('-webkit-mask-image: url(\'https://brunnerj.com/fairylab/images/n'
+             'umbers/{}/{}/{}.png\')').format(font, fill, num),
         ])
 
 

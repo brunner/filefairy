@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Common (non-reloadable) util methods for rendering templates."""
 
-FAVICON_LINK = 'https://fairylab.surge.sh/favicon-32x32.png'
+FAVICON_LINK = 'https://brunnerj.com/fairylab/favicon-32x32.png'
 
 
 def _attr(attributes):

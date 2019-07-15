@@ -206,8 +206,8 @@ class TeamsTest(unittest.TestCase):
 
     def test_icon_absolute(self):
         actual = icon_absolute('T35', 'Chicago')
-        src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
-               'png')
+        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
+               'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="absolut'
                'e-icon left">').format(src)
         span = ('<span class="d-block pl-4">Chicago</span>')
@@ -217,8 +217,8 @@ class TeamsTest(unittest.TestCase):
     def test_icon_badge__active_false(self):
         actual = icon_badge('T35', '0-0', False)
         badge = ('<span class="badge badge-icon badge-light">{}</span>')
-        src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
-               'png')
+        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
+               'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
                'con-image grayscale">').format(src)
         span = ('<span class="badge-icon-text align-middle text-secondary">0 -'
@@ -230,8 +230,8 @@ class TeamsTest(unittest.TestCase):
         actual = icon_badge('T35', '0-0', True)
         badge = ('<span class="badge badge-icon badge-light" data-target="#whi'
                  'tesox" data-toggle="modal">{}</span>')
-        src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
-               'png')
+        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
+               'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
                'con-image">').format(src)
         span = '<span class="badge-icon-text align-middle">? - ?</span>'
@@ -242,8 +242,8 @@ class TeamsTest(unittest.TestCase):
         actual = icon_badge('T35', '1-0', True)
         badge = ('<span class="badge badge-icon badge-light" data-target="#whi'
                  'tesox" data-toggle="modal">{}</span>')
-        src = ('https://fairylab.surge.sh/images/teams/whitesox/whitesox-icon.'
-               'png')
+        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
+               'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
                'con-image">').format(src)
         span = '<span class="badge-icon-text align-middle">1 - 0</span>'

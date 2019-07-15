@@ -107,7 +107,7 @@ ENCODING_MAP = _map('encoding', [
 
 PRECODING_MAP = _map('precoding', ['encoding'])
 
-ICON_LINK = 'https://fairylab.surge.sh/images/teams/{0}/{0}-icon.png'
+ICON_LINK = 'https://brunnerj.com/fairylab/images/teams/{0}/{0}-icon.png'
 
 
 def decoding_to_encoding(decoding):

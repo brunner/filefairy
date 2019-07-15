@@ -336,7 +336,7 @@ def _encoding_to_tag(encoding):
 DIV_TAG = '<div class="{}"></div>'
 
 JERSEY_KWARGS = {
-    'fairylab': 'https://fairylab.surge.sh/images/teams',
+    'fairylab': 'https://brunnerj.com/fairylab/images/teams',
     'gist': 'https://gistcdn.githack.com/brunner',
     'grad': 'linear-gradient(transparent, transparent)',
 }
@@ -347,7 +347,7 @@ JERSEY_RULES = [
 JERSEY_RULES = [r.format(**JERSEY_KWARGS) for r in JERSEY_RULES]
 
 NUMBER_KWARGS = {
-    'fairylab': 'https://fairylab.surge.sh/images/numbers',
+    'fairylab': 'https://brunnerj.com/fairylab/images/numbers',
 }
 NUMBER_RULES = [
     '-webkit-mask-image: url(\'{fairylab}/{{font}}/{{fill}}/{{num}}.png\')',

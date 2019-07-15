@@ -30,7 +30,7 @@ HLONGCLZ = HMIDCLZ + 'td-md-none'
 HRIGHTCLZ = HLEFTCLZ + ' text-right'
 HEADCLZ = 'table-fixed border border-bottom-0'
 
-ICON_LINK = 'https://fairylab.surge.sh/images/bases/{}.png'
+ICON_LINK = 'https://brunnerj.com/fairylab/images/bases/{}.png'
 
 
 class State(object):

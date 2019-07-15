@@ -228,8 +228,6 @@ class Filefairy(Messageable, Renderable):
         self._reload_services()
 
         for t in listdirs(TASKS_DIR):
-            if t == 'oldgameday':
-                continue
             self._reload_internal(t, False, **kwargs)
         self._try_all('_setup', **kwargs)
 
