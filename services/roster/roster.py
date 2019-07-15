@@ -31,7 +31,7 @@ BALLPARK = """<div class="ballpark">
 <svg class="ballpark-inner"
      xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
-<image xlink:href="https://brunner.com/fairylab/images/teams/{0}/{0}-ballpark.png"
+<image xlink:href="https://brunnerj.com/fairylab/images/teams/{0}/{0}-ballpark.png"
        width="256" height="256"></image>
 <circle cx="128" cy="184" r="6"
         stroke="#000000" stroke-width="2" fill="#ffffff"></circle>
