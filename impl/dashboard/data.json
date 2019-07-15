@@ -1,3 +1,38 @@
 {
-  "logs": {}
+  "logs": {
+    "2019-05-01T00:00:00-07:00": [
+      {
+        "date": "2019-05-01T00:14:29.605442-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 51,
+        "msg": "File is up.",
+        "pathname": "/home/jbrunner/filefairy/tasks/upload/upload.py"
+      },
+      {
+        "date": "2019-05-01T00:14:40.040672-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 84,
+        "msg": "Download started.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-05-01T00:17:35.159207-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 71,
+        "msg": "Download finished.",
+        "pathname": "/home/jbrunner/filefairy/tasks/download/download.py"
+      },
+      {
+        "date": "2019-05-01T00:18:37.812538-07:00",
+        "exc": "",
+        "levelname": "INFO",
+        "lineno": 167,
+        "msg": "Download complete.",
+        "pathname": "/home/jbrunner/filefairy/tasks/statsplus/statsplus.py"
+      }
+    ]
+  }
 }

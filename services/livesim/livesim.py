@@ -701,12 +701,6 @@ def get_html(game_in):
         'title': 'Live',
         'tables': tables.get_live_tables(),
     }, {
-        'title': 'Box',
-        'tables': [],
-    }, {
-        'title': 'Plays',
-        'tables': [],
-    }, {
         'title': 'Old',
         'tables': tables.get_old_tables(),
     }]
