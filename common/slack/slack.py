@@ -31,11 +31,12 @@ def _call(method, params):
     url = 'https://slack.com/api/{}'.format(method)
     obj = {'ok': False}
 
-    try:
-        response = urlopen(url, params).decode('utf-8')
-        obj = json.loads(response)
-    except Exception:
-        _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
+    # TODO: uncomment after finishing refactors.
+    # try:
+    #     response = urlopen(url, params).decode('utf-8')
+    #     obj = json.loads(response)
+    # except Exception:
+    #     _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
 
     return obj
 
