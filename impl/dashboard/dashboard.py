@@ -269,4 +269,6 @@ class LoggingHandler(logging.Handler):
         self.dashboard = dashboard
 
     def emit(self, record):
-        self.dashboard._emit(**vars(record))
+        # TODO: uncomment after finishing refactors.
+        # self.dashboard._emit(**vars(record))
+        print(record)
