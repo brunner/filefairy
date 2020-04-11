@@ -75,36 +75,36 @@ class UploadTest(Test):
 
         return upload
 
-    @mock.patch.object(Upload, '_get_date')
-    def test_run__new(self, mock_get_date):
-        mock_get_date.return_value = encode_datetime(DATE_10260604)
+    # @mock.patch.object(Upload, '_get_date')
+    # def test_run__new(self, mock_get_date):
+    #     mock_get_date.return_value = encode_datetime(DATE_10260604)
 
-        read = _data(date=DATE_10260602)
-        upload = self.create_upload(read)
-        actual = upload._run_internal(date=DATE_10260604)
-        expected = Response(notify=[Notify.UPLOAD_FINISH])
-        self.assertEqual(actual, expected)
+    #     read = _data(date=DATE_10260602)
+    #     upload = self.create_upload(read)
+    #     actual = upload._run_internal(date=DATE_10260604)
+    #     expected = Response(notify=[Notify.UPLOAD_FINISH])
+    #     self.assertEqual(actual, expected)
 
-        write = _data(date=DATE_10260604)
-        mock_get_date.assert_called_once_with()
-        self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
-        self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
-        self.mock_open.assert_called_once_with(Upload._data(), 'w')
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+    #     write = _data(date=DATE_10260604)
+    #     mock_get_date.assert_called_once_with()
+    #     self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
+    #     self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
+    #     self.mock_open.assert_called_once_with(Upload._data(), 'w')
+    #     self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
-    @mock.patch.object(Upload, '_get_date')
-    def test_run__old(self, mock_get_date):
-        mock_get_date.return_value = encode_datetime(DATE_10260602)
+    # @mock.patch.object(Upload, '_get_date')
+    # def test_run__old(self, mock_get_date):
+    #     mock_get_date.return_value = encode_datetime(DATE_10260602)
 
-        read = _data(date=DATE_10260602)
-        upload = self.create_upload(read)
-        actual = upload._run_internal(date=DATE_10260604)
-        expected = Response()
-        self.assertEqual(actual, expected)
+    #     read = _data(date=DATE_10260602)
+    #     upload = self.create_upload(read)
+    #     actual = upload._run_internal(date=DATE_10260604)
+    #     expected = Response()
+    #     self.assertEqual(actual, expected)
 
-        mock_get_date.assert_called_once_with()
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+    #     mock_get_date.assert_called_once_with()
+    #     self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+    #                          self.mock_handle.write)
 
     @mock.patch('tasks.upload.upload.get')
     def test_get_date(self, mock_get):

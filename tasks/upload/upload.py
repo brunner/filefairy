@@ -46,15 +46,16 @@ class Upload(Registrable):
         return 'upload'
 
     def _run_internal(self, **kwargs):
-        date = self._get_date()
-        if date is not None and date != self.data['date']:
-            _logger.log(logging.INFO, 'File is up.')
-            chat_post_message('fairylab', 'File is up.')
+        # TODO: uncomment after finishing refactors.
+        # date = self._get_date()
+        # if date is not None and date != self.data['date']:
+        #     _logger.log(logging.INFO, 'File is up.')
+        #     chat_post_message('fairylab', 'File is up.')
 
-            self.data['date'] = date
-            self.write()
+        #     self.data['date'] = date
+        #     self.write()
 
-            return Response(notify=[Notify.UPLOAD_FINISH])
+        #     return Response(notify=[Notify.UPLOAD_FINISH])
 
         return Response()
 
