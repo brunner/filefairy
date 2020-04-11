@@ -283,7 +283,7 @@ class Filefairy(Messageable, Renderable):
         return {'sitelinks': sitelinks()}
 
 
-if __name__ == '__main__':
+def main():
     date = datetime_now()
     e = env()
     dashboard = Dashboard(date=date, e=e)
@@ -298,3 +298,7 @@ if __name__ == '__main__':
     filefairy = Filefairy(d=dashboard, e=e, r=reference)
     filefairy._setup(date=date)
     filefairy._start(2)
+
+
+if __name__ == '__main__':
+    main()
