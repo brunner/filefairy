@@ -215,9 +215,10 @@ class Filefairy(Messageable, Renderable):
 
         if self.data != self.original:
             self._render(date=date)
-            if 'git' in self.registered.keys():
-                notify = Notify.FILEFAIRY_DEPLOY
-                self._try('git', '_notify', notify=notify, date=date)
+            # TODO: uncomment after finishing refactors.
+            # if 'git' in self.registered.keys():
+            #     notify = Notify.FILEFAIRY_DEPLOY
+            #     self._try('git', '_notify', notify=notify, date=date)
             self.original = copy.deepcopy(self.data)
 
     def _setup(self, **kwargs):

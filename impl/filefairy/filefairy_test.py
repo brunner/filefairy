@@ -755,11 +755,11 @@ class FilefairyTest(Test):
 
         filefairy._run()
 
-        notify = Notify.FILEFAIRY_DEPLOY
+        # notify = Notify.FILEFAIRY_DEPLOY
         mock_now.assert_called_once_with()
         mock_render.assert_called_once_with(date=DATE_10260604)
-        mock_try.assert_called_once_with(
-            'git', '_notify', notify=notify, date=DATE_10260604)
+        # mock_try.assert_called_once_with(
+        #     'git', '_notify', notify=notify, date=DATE_10260604)
         mock_try_all.assert_called_once_with('_run', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
