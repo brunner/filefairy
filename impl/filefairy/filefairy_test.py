@@ -261,7 +261,7 @@ class FilefairyTest(Test):
             'dashboard': dashboard,
             'reference': reference,
         })
-        self.assertEqual(filefairy.sleep, 60)
+        self.assertEqual(filefairy.sleep, 2)
         self.assertFalse(len(filefairy.threads))
         self.assertIsNone(filefairy.ws)
         self.assertNotCalled(self.mock_log, self.mock_open,
@@ -378,7 +378,7 @@ class FilefairyTest(Test):
         filefairy.threads = [('task', thread_)]
         filefairy._background()
 
-        mock_sleep.assert_called_once_with(60)
+        mock_sleep.assert_called_once_with(2)
         mock_try.assert_called_once_with('task', 'foo')
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
@@ -800,11 +800,11 @@ class FilefairyTest(Test):
         mock_sleep.side_effect = functools.partial(set_keep_running, filefairy,
                                                    False)
 
-        filefairy._start()
+        filefairy._start(None)
 
         mock_connect.assert_called_once_with()
         mock_run.assert_called_once_with()
-        mock_sleep.assert_called_once_with(60)
+        mock_sleep.assert_called_once_with(2)
         mock_thread.assert_called_once_with(target=filefairy._background)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
@@ -825,10 +825,10 @@ class FilefairyTest(Test):
 
         filefairy.bg = BG
         filefairy.ws = FakeWebSocketApp(url='wss://...')
-        filefairy._start()
+        filefairy._start(None)
 
         mock_run.assert_called_once_with()
-        mock_sleep.assert_called_once_with(60)
+        mock_sleep.assert_called_once_with(2)
         self.assertNotCalled(mock_connect, mock_thread, self.mock_log,
                              self.mock_open, self.mock_handle.write)
 

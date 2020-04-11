@@ -65,7 +65,7 @@ class Filefairy(Messageable, Renderable):
         self.keep_running = True
         self.original = copy.deepcopy(self.data)
         self.registered = {'dashboard': d, 'reference': r}
-        self.sleep = 60
+        self.sleep = 2  # TODO: change back to 60 after finishing refactors.
         self.threads = []
         self.ws = None
 
@@ -231,8 +231,9 @@ class Filefairy(Messageable, Renderable):
             self._reload_internal(t, False, **kwargs)
         self._try_all('_setup', **kwargs)
 
-    def _start(self):
-        while self.keep_running:
+    def _start(self, duration):
+        count = 0
+        while self.keep_running and (duration is None or count < duration):
             if not self.bg:
                 self.bg = threading.Thread(target=self._background)
                 self.bg.daemon = True
@@ -245,6 +246,7 @@ class Filefairy(Messageable, Renderable):
 
             self._run()
             time.sleep(self.sleep)
+            count += 1
 
         if self.ws:
             self.ws.close()
@@ -294,4 +296,4 @@ if __name__ == '__main__':
 
     filefairy = Filefairy(d=dashboard, e=e, r=reference)
     filefairy._setup(date=date)
-    filefairy._start()
+    filefairy._start(2)
