@@ -132,7 +132,7 @@ class Event(IntEnum):
                 data = encoding.split(' ')
                 return (cls[data[0].upper()], data[1:])
             return (cls[encoding.upper()], [])
-        except Exception as e:
+        except Exception:
             _logger.log(logging.WARNING, 'Handled warning.', exc_info=True)
             return (None, [])
 

@@ -29,8 +29,8 @@ sys.path.append(re.sub(r'/api/registrable', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
 from api.renderable.renderable import Renderable  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 
 class Registrable(Messageable, Renderable):

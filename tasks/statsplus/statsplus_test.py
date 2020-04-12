@@ -13,17 +13,17 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.extend((_path, re.sub(r'/tasks/statsplus', '', _path)))
 
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.shadow.shadow import Shadow  # noqa
-from data.thread_.thread_ import Thread  # noqa
-from tasks.statsplus.statsplus import Statsplus  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import get_testdata  # noqa
+from tasks.statsplus.statsplus import Statsplus  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.shadow.shadow import Shadow  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 ENV = env()
 

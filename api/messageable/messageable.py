@@ -44,8 +44,8 @@ sys.path.append(re.sub(r'/api/messageable', '', _path))
 
 from api.nameable.nameable import Nameable  # noqa
 from common.re_.re_ import search  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 ARGS_PATTERN = r'^{}\.{}\((.*)\)$'
 TESTING_CHANNEL = 'G3SUFLMK4'

@@ -26,10 +26,10 @@ from common.test.test import Suite  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import get_testdata  # noqa
 from common.test.test import main  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.shadow.shadow import Shadow  # noqa
 from tasks.standings.standings import Standings  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.shadow.shadow import Shadow  # noqa
 
 ENV = env()
 

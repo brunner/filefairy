@@ -29,11 +29,11 @@ from common.subprocess_.subprocess_ import check_output  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import precoding_to_encoding_sub  # noqa
-from data.debug.debug import Debug  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.shadow.shadow import Shadow  # noqa
-from data.thread_.thread_ import Thread  # noqa
+from types_.debug.debug import Debug  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.shadow.shadow import Shadow  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')

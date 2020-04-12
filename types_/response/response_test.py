@@ -8,13 +8,13 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/response', '', _path))
+sys.path.append(re.sub(r'/types_/response', '', _path))
 
-from data.debug.debug import Debug  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.shadow.shadow import Shadow  # noqa
-from data.thread_.thread_ import Thread  # noqa
+from types_.debug.debug import Debug  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.shadow.shadow import Shadow  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 DEBUG = Debug(msg='foo')
 NOTIFY = Notify.BASE

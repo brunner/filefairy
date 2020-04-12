@@ -7,11 +7,11 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/response', '', _path))
-from data.debug.debug import Debug  # noqa
-from data.notify.notify import Notify  # noqa
-from data.shadow.shadow import Shadow  # noqa
-from data.thread_.thread_ import Thread  # noqa
+sys.path.append(re.sub(r'/types_/response', '', _path))
+from types_.debug.debug import Debug  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.shadow.shadow import Shadow  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 
 class Response(object):

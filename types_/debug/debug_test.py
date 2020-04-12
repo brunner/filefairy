@@ -8,9 +8,9 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/debug', '', _path))
+sys.path.append(re.sub(r'/types_/debug', '', _path))
 
-from data.debug.debug import Debug  # noqa
+from types_.debug.debug import Debug  # noqa
 
 
 class DebugTest(unittest.TestCase):

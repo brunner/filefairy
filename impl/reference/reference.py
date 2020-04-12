@@ -18,8 +18,8 @@ sys.path.append(re.sub(r'/impl/reference', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from common.re_.re_ import search  # noqa
 from common.service.service import call_service  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')

@@ -16,10 +16,10 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.service.service import call_service  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
-from data.notify.notify import Notify  # noqa
-from data.shadow.shadow import Shadow  # noqa
-from data.thread_.thread_ import Thread  # noqa
-from data.response.response import Response  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.shadow.shadow import Shadow  # noqa
+from types_.thread_.thread_ import Thread  # noqa
+from types_.response.response import Response  # noqa
 
 DOWNLOAD_DIR = re.sub(r'/tasks/leaguefile', '/resource/download', _path)
 DOMAIN_NAME = 'statsplus.net'

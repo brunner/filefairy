@@ -13,10 +13,10 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
-from data.debug.debug import Debug  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.thread_.thread_ import Thread  # noqa
+from types_.debug.debug import Debug  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 TESTING_CHANNEL = 'G3SUFLMK4'
 

@@ -26,7 +26,7 @@ from common.requests_.requests_ import get  # noqa
 from common.service.service import call_service  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
-from data.event.event import Event  # noqa
+from types_.event.event import Event  # noqa
 
 
 def _open(in_):

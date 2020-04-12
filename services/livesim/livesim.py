@@ -21,7 +21,7 @@ from common.events.events import get_seats  # noqa
 from common.json_.json_ import loads  # noqa
 from common.reference.reference import player_to_name_sub  # noqa
 from common.service.service import call_service  # noqa
-from data.event.event import Event  # noqa
+from types_.event.event import Event  # noqa
 
 EVENT_CHANGES = [
     Event.CHANGE_INNING,

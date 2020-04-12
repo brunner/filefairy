@@ -47,8 +47,8 @@ from common.re_.re_ import search  # noqa
 from common.secrets.secrets import secrets_sub  # noqa
 from common.slack.slack import chat_post_message  # noqa
 from common.slack.slack import files_upload  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 LINK = 'https://github.com/brunner/filefairy/blob/master/'
 

@@ -15,9 +15,9 @@ from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
 from impl.reference.reference import Reference  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 ENV = env()
 

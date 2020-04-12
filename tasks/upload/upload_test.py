@@ -12,14 +12,14 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.extend((_path, re.sub(r'/tasks/upload', '', _path)))
 
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from tasks.upload.upload import Upload  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
+from tasks.upload.upload import Upload  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 ENV = env()
 

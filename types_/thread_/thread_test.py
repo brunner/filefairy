@@ -8,9 +8,9 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/thread_', '', _path))
+sys.path.append(re.sub(r'/types_/thread_', '', _path))
 
-from data.thread_.thread_ import Thread  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 
 class ThreadTest(unittest.TestCase):

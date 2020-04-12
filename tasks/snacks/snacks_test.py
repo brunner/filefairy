@@ -11,15 +11,15 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.extend((_path, re.sub(r'/tasks/snacks', '', _path)))
 
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.thread_.thread_ import Thread  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.nltk_.nltk_ import get_cfd  # noqa
 from common.test.test import Test  # noqa
 from tasks.snacks.snacks import Snacks  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 ENV = env()
 

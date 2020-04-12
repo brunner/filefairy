@@ -11,14 +11,14 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/git', '', _path))
 
-from data.debug.debug import Debug  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from tasks.git.git import Git  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
+from tasks.git.git import Git  # noqa
+from types_.debug.debug import Debug  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 ENV = env()
 

@@ -18,9 +18,9 @@ from common.re_.re_ import search  # noqa
 from common.service.service import call_service  # noqa
 from common.slack.slack import chat_post_message  # noqa
 from common.slack.slack import reactions_add  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.thread_.thread_ import Thread  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.thread_.thread_ import Thread  # noqa
 
 NUM = 4
 MIN = 8

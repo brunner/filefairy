@@ -10,14 +10,14 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/event', '', _path))
+sys.path.append(re.sub(r'/types_/event', '', _path))
 
-from data.event.event import Event  # noqa
+from types_.event.event import Event  # noqa
 
 
 class EventTest(unittest.TestCase):
     def setUp(self):
-        patch_log = mock.patch('data.event.event._logger.log')
+        patch_log = mock.patch('types_.event.event._logger.log')
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 

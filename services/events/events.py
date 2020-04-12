@@ -9,7 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/services/statslab', '', _path))
 
-from data.event.event import Event  # noqa
+from types_.event.event import Event  # noqa
 
 EVENT_KWARGS = {
     'base': r'([fsthFST123]\w+)',

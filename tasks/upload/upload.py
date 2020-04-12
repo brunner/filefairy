@@ -19,8 +19,8 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.re_.re_ import search  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.slack.slack import chat_post_message  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 EXPORTS_URL = 'https://statsplus.net/oblootp/exports/'
 

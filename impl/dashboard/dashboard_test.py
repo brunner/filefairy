@@ -22,9 +22,9 @@ from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import main  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
 from impl.dashboard.dashboard import Dashboard  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 ENV = env()
 

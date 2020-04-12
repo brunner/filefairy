@@ -8,9 +8,9 @@ import sys
 import unittest
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/data/shadow', '', _path))
+sys.path.append(re.sub(r'/types_/shadow', '', _path))
 
-from data.shadow.shadow import Shadow  # noqa
+from types_.shadow.shadow import Shadow  # noqa
 
 
 class ShadowTest(unittest.TestCase):

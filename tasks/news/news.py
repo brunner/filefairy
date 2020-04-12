@@ -21,8 +21,8 @@ from common.re_.re_ import search  # noqa
 from common.reference.reference import player_to_link_sub  # noqa
 from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 EXTRACT_DIR = re.sub(r'/tasks/news', '/resource/extract', _path)
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')

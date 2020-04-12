@@ -27,9 +27,9 @@ from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import encoding_to_encodings  # noqa
 from common.teams.teams import encoding_to_lower  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
-from data.shadow.shadow import Shadow  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
+from types_.shadow.shadow import Shadow  # noqa
 
 GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
 

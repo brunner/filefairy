@@ -29,12 +29,12 @@ from common.os_.os_ import listdirs  # noqa
 from common.reference.reference import set_reference  # noqa
 from common.service.service import reload_services  # noqa
 from common.slack.slack import rtm_connect  # noqa
-from data.debug.debug import Debug  # noqa
-from data.notify.notify import Notify  # noqa
-from data.response.response import Response  # noqa
 from impl.dashboard.dashboard import Dashboard  # noqa
 from impl.dashboard.dashboard import LoggingHandler  # noqa
 from impl.reference.reference import Reference  # noqa
+from types_.debug.debug import Debug  # noqa
+from types_.notify.notify import Notify  # noqa
+from types_.response.response import Response  # noqa
 
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
