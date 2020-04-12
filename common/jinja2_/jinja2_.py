@@ -16,7 +16,7 @@ def env():
         The jinja2 Environment.
     """
     root = re.sub(r'/common/jinja2_', '', _path)
-    ldr = jinja2.FileSystemLoader(root + '/resource/templates')
+    ldr = jinja2.FileSystemLoader(root + '/resources/templates')
     ext = ['jinja2.ext.do']
 
     return jinja2.Environment(

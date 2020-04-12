@@ -31,7 +31,7 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 from types_.shadow.shadow import Shadow  # noqa
 
-GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
+GAMES_DIR = re.sub(r'/tasks/standings', '/resources/games', _path)
 
 LEAGUES = {
     'American League': [

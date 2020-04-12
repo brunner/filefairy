@@ -37,7 +37,7 @@ DATE_08300000 = datetime_datetime_pst(2024, 8, 30)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
-GAMES_DIR = re.sub(r'/tasks/standings', '/resource/games', _path)
+GAMES_DIR = re.sub(r'/tasks/standings', '/resources/games', _path)
 
 TESTDATA = get_testdata()
 

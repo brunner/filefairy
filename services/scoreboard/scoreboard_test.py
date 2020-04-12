@@ -30,7 +30,7 @@ from services.scoreboard.scoreboard import pending_dialog  # noqa
 DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 
-GAMES_DIR = re.sub(r'/services/scoreboard', '/resource/games', _path)
+GAMES_DIR = re.sub(r'/services/scoreboard', '/resources/games', _path)
 
 TESTDATA = get_testdata()
 

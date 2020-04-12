@@ -35,10 +35,10 @@ from types_.response.response import Response  # noqa
 from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
-EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resource/extract', _path)
+EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resources/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
-GAMES_DIR = re.sub(r'/tasks/statsplus', '/resource/games', _path)
+GAMES_DIR = re.sub(r'/tasks/statsplus', '/resources/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')

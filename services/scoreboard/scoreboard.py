@@ -33,7 +33,7 @@ from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
 from common.teams.teams import icon_absolute  # noqa
 
-GAMES_DIR = re.sub(r'/services/scoreboard', '/resource/games', _path)
+GAMES_DIR = re.sub(r'/services/scoreboard', '/resources/games', _path)
 
 STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')

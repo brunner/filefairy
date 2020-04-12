@@ -18,7 +18,7 @@ class Jinja2Test(unittest.TestCase):
         environment = env()
 
         root = re.sub(r'/common/jinja2_', '', _path)
-        templates = os.path.join(root, 'resource/templates')
+        templates = os.path.join(root, 'resources/templates')
         self.assertEqual(environment.loader.searchpath, [templates])
         self.assertEqual(environment.trim_blocks, True)
         self.assertEqual(environment.lstrip_blocks, True)

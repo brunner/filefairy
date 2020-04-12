@@ -27,7 +27,7 @@ ENV = env()
 
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
-EXTRACT_DIR = re.sub(r'/tasks/news', '/resource/extract', _path)
+EXTRACT_DIR = re.sub(r'/tasks/news', '/resources/extract', _path)
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 
 TESTDATA = get_testdata()

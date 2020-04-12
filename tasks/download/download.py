@@ -21,7 +21,7 @@ from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 from types_.response.response import Response  # noqa
 
-DOWNLOAD_DIR = re.sub(r'/tasks/leaguefile', '/resource/download', _path)
+DOWNLOAD_DIR = re.sub(r'/tasks/leaguefile', '/resources/download', _path)
 DOMAIN_NAME = 'statsplus.net'
 FILE_NAME = 'orange%20and%20blue%20league%20baseball.zip'
 FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)

@@ -24,11 +24,11 @@ DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
 DATE_10260000 = datetime_datetime_pst(1985, 10, 26)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
 
-DOWNLOAD_DIR = re.sub(r'/services/leaguefile', '/resource/download', _path)
+DOWNLOAD_DIR = re.sub(r'/services/leaguefile', '/resources/download', _path)
 DOWNLOAD_BOX_SCORES = os.path.join(DOWNLOAD_DIR, 'news/html/box_scores')
 DOWNLOAD_LEAGUES = os.path.join(DOWNLOAD_DIR, 'news/txt/leagues')
 
-EXTRACT_DIR = re.sub(r'/services/leaguefile', '/resource/extract', _path)
+EXTRACT_DIR = re.sub(r'/services/leaguefile', '/resources/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')

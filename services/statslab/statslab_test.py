@@ -28,11 +28,11 @@ DATE_03110000 = datetime_datetime_pst(2025, 3, 11)
 DATE_03130000 = datetime_datetime_pst(2025, 3, 13)
 DATE_03160000 = datetime_datetime_pst(2025, 3, 16)
 
-EXTRACT_DIR = re.sub(r'/services/statslab', '/resource/extract', _path)
+EXTRACT_DIR = re.sub(r'/services/statslab', '/resources/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 
-GAMES_DIR = re.sub(r'/services/statslab', '/resource/games', _path)
+GAMES_DIR = re.sub(r'/services/statslab', '/resources/games', _path)
 
 PLAYERS = [
     [

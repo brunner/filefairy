@@ -35,7 +35,7 @@ CONTAINING_DIR = re.sub(r'/filefairy/tasks/gameday', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
 
-GAMES_DIR = re.sub(r'/tasks/gameday', '/resource/games', _path)
+GAMES_DIR = re.sub(r'/tasks/gameday', '/resources/games', _path)
 
 
 class Gameday(Registrable):
