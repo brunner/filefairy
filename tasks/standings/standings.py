@@ -31,6 +31,7 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 from types_.shadow.shadow import Shadow  # noqa
 
+DATA_DIR = re.sub(r'/tasks/standings', '', _path) + '/resources/data/standings'
 GAMES_DIR = re.sub(r'/tasks/standings', '/resources/games', _path)
 
 LEAGUES = {
@@ -53,7 +54,7 @@ class Standings(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

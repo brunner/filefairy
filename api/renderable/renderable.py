@@ -13,7 +13,7 @@ Example:
 
         @staticmethod
         def _data():
-            return os.path.join(_path, 'data.json')
+            return os.path.join(DATA_DIR, 'data.json')
 
         @staticmethod
         def _href():

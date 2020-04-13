@@ -21,7 +21,7 @@ from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 from types_.response.response import Response  # noqa
 
-DOWNLOAD_DIR = re.sub(r'/tasks/leaguefile', '/resources/download', _path)
+DATA_DIR = re.sub(r'/tasks/download', '', _path) + '/resources/data/download'
 DOMAIN_NAME = 'statsplus.net'
 FILE_NAME = 'orange%20and%20blue%20league%20baseball.zip'
 FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
@@ -33,7 +33,7 @@ class Download(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

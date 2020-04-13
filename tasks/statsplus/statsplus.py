@@ -35,6 +35,7 @@ from types_.response.response import Response  # noqa
 from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
+DATA_DIR = re.sub(r'/tasks/statsplus', '', _path) + '/resources/data/statsplus'
 EXTRACT_DIR = re.sub(r'/tasks/statsplus', '/resources/extract', _path)
 EXTRACT_BOX_SCORES = os.path.join(EXTRACT_DIR, 'box_scores')
 EXTRACT_GAME_LOGS = os.path.join(EXTRACT_DIR, 'game_logs')
@@ -51,7 +52,7 @@ class Statsplus(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

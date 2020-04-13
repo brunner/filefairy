@@ -22,6 +22,7 @@ from common.slack.slack import chat_post_message  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
+DATA_DIR = re.sub(r'/tasks/upload', '', _path) + '/resources/data/upload'
 EXPORTS_URL = 'https://statsplus.net/oblootp/exports/'
 
 
@@ -31,7 +32,7 @@ class Upload(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

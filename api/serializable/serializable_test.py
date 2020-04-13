@@ -25,7 +25,7 @@ class FakeSerializable(Serializable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return 'data.json'
 
 
 class SerializableTest(unittest.TestCase):

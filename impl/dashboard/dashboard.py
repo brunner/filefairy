@@ -51,6 +51,7 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
 LINK = 'https://github.com/brunner/filefairy/blob/master/'
+DATA_DIR = re.sub(r'/impl/dashboard', '', _path) + '/resources/data/dashboard'
 
 
 class Dashboard(Registrable):
@@ -72,7 +73,7 @@ class Dashboard(Registrable):
         Attributes:
             logs: List of stored info and error logs.
         """
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

@@ -22,6 +22,7 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
+DATA_DIR = re.sub(r'/tasks/snacks', '', _path) + '/resources/data/snacks'
 NUM = 4
 MIN = 8
 MAX = 30
@@ -35,7 +36,7 @@ class Snacks(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

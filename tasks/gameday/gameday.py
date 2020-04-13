@@ -32,6 +32,7 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
 CONTAINING_DIR = re.sub(r'/filefairy/tasks/gameday', '', _path)
+DATA_DIR = re.sub(r'/tasks/gameday', '', _path) + '/resources/data/gameday'
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
 
@@ -44,7 +45,7 @@ class Gameday(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

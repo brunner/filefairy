@@ -36,6 +36,7 @@ from types_.debug.debug import Debug  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
+DATA_DIR = re.sub(r'/impl/filefairy', '', _path) + '/resources/data/filefairy'
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
 
@@ -71,12 +72,7 @@ class Filefairy(Messageable, Renderable):
 
     @staticmethod
     def _data():
-        """Store Filefairy information.
-
-        Attributes:
-            date: The date of most recent app behavior.
-        """
-        return os.path.join(_path, 'data.json')
+        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

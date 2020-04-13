@@ -31,7 +31,7 @@ class FakeRegistrable(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(_path, 'data.json')
+        return 'data.json'
 
     @staticmethod
     def _href():
