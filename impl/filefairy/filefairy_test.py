@@ -39,11 +39,8 @@ DATE_10250007 = datetime_datetime_pst(1985, 10, 25, 0, 7)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
 
+DATA_DIR = re.sub(r'/impl/filefairy', '', _path) + '/resources/data'
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
-
-
-def _data(date):
-    return {'date': encode_datetime(date)}
 
 
 def _module(name):
@@ -54,7 +51,7 @@ def _module(name):
 
 
 def set_date(filefairy, *args, **kwargs):
-    filefairy.data['date'] = kwargs['date']
+    filefairy.date = kwargs['date']
 
 
 def set_keep_running(filefairy, keep_running, *args, **kwargs):
@@ -67,7 +64,7 @@ class FakeExternalRegistrable(Registrable):
 
     @staticmethod
     def _data():
-        return re.sub(r'/impl/filefairy', '/tasks/snacks/data.json', _path)
+        return os.path.join(DATA_DIR, 'snacks/data.json')
 
     @staticmethod
     def _href():
@@ -106,7 +103,7 @@ class FakeInternalRegistrable(Registrable):
 
     @staticmethod
     def _data():
-        return re.sub(r'/impl/filefairy', '/tasks/snacks/data.json', _path)
+        return os.path.join(DATA_DIR, 'snacks/data.json')
 
     @staticmethod
     def _href():
@@ -206,17 +203,19 @@ class FilefairyTest(Test):
 
         return reference
 
-    def create_filefairy(self, data, dashboard, reference):
-        self.init_mocks(data)
-        filefairy = Filefairy(d=dashboard, e=ENV, r=reference)
+    def create_filefairy(self, date, dashboard, reference):
+        self.init_mocks({})
+        filefairy = Filefairy(date=date, d=dashboard, e=ENV, r=reference)
 
-        self.mock_open.assert_called_once_with(Filefairy._data(), 'r')
-        self.assertNotCalled(self.mock_log, self.mock_handle.write)
-        self.assertEqual(filefairy.data, data)
-        self.assertEqual(filefairy.original, data)
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
+        self.assertEqual(filefairy.data, {})
+        self.assertEqual(filefairy.date, date)
+        self.assertEqual(filefairy.day, date.day)
+        self.assertEqual(filefairy.original, date)
 
         self.reset_mocks()
-        self.init_mocks(data)
+        self.init_mocks({})
 
         return filefairy
 
@@ -251,11 +250,9 @@ class FilefairyTest(Test):
     def test_init(self):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         self.assertIsNone(filefairy.bg)
-        self.assertIsNone(filefairy.day)
         self.assertTrue(filefairy.keep_running)
         self.assertEqual(filefairy.registered, {
             'dashboard': dashboard,
@@ -274,8 +271,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         actual = filefairy._render_data(date=DATE_10260602)
         expected = [('index.html', '', 'home.html', index_html)]
         self.assertEqual(actual, expected)
@@ -286,8 +282,7 @@ class FilefairyTest(Test):
     def test_on_message(self):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         response = filefairy._on_message_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
@@ -298,8 +293,7 @@ class FilefairyTest(Test):
     def test_reboot(self, mock_execv):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.reboot(v=True)
 
         expected = ['python3'] + sys.argv
@@ -317,8 +311,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         actual = filefairy.reload(*('foo', ), date=DATE_10260604)
         self.assertEqual(actual, response)
 
@@ -327,8 +320,7 @@ class FilefairyTest(Test):
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
         self.assertNotCalled(self.mock_log, self.mock_open,
                              self.mock_handle.write)
-        self.assertEqual(filefairy.data['date'],
-                         encode_datetime(DATE_10260604))
+        self.assertEqual(filefairy.date, DATE_10260604)
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_reload_services')
@@ -339,8 +331,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         actual = filefairy.reload(*('foo', ), date=DATE_10260604)
         self.assertEqual(actual, response)
 
@@ -348,14 +339,12 @@ class FilefairyTest(Test):
         mock_services.assert_called_once_with()
         self.assertNotCalled(mock_try_all, self.mock_log, self.mock_open,
                              self.mock_handle.write)
-        self.assertEqual(filefairy.data['date'],
-                         encode_datetime(DATE_10260602))
+        self.assertEqual(filefairy.date, DATE_10260602)
 
     def test_shutdown(self):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.shutdown(v=True)
 
         self.mock_log.assert_called_once_with(logging.DEBUG,
@@ -368,8 +357,7 @@ class FilefairyTest(Test):
     def test_background(self, mock_sleep, mock_try):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         mock_sleep.side_effect = functools.partial(set_keep_running, filefairy,
                                                    False)
@@ -394,8 +382,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy._connect()
 
         message = '{"type":"message","channel":"ABC","text":"foo"}'
@@ -413,8 +400,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         module = _module('task')
         actual = filefairy._install('foo', module, 'Task', date=DATE_10260604)
@@ -432,8 +418,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         module = _module('task')
         actual = filefairy._install('foo', module, 'Task', date=DATE_10260604)
@@ -455,8 +440,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         message = '{"type":"message","channel":"ABC","text":"foo"}'
         filefairy._recv(message)
@@ -476,8 +460,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         actual = filefairy._reload_internal('task', True, date=DATE_10260604)
         expected = Response()
         self.assertEqual(actual, expected)
@@ -497,8 +480,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         actual = filefairy._reload_internal('task', True, date=DATE_10260604)
         expected = Response()
         self.assertEqual(actual, expected)
@@ -518,8 +500,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         actual = filefairy._reload_internal('task', True, date=DATE_10260604)
         msg = 'Reloaded task.'
         expected = Response(notify=[Notify.BASE], debug=[Debug(msg=msg)])
@@ -540,8 +521,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         actual = filefairy._reload_internal('task', False, date=DATE_10260604)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
@@ -558,8 +538,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         filefairy._reload_services()
 
@@ -572,8 +551,7 @@ class FilefairyTest(Test):
     def test_reload_internal__ok(self, mock_reload):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         filefairy._reload_services()
 
@@ -586,8 +564,7 @@ class FilefairyTest(Test):
     def test_response__empty(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -596,8 +573,7 @@ class FilefairyTest(Test):
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log,
                              self.mock_open, self.mock_handle.write)
-        self.assertEqual(filefairy.data['date'],
-                         encode_datetime(DATE_10260602))
+        self.assertEqual(filefairy.date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
 
@@ -606,8 +582,7 @@ class FilefairyTest(Test):
     def test_response__notify_base(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -616,8 +591,7 @@ class FilefairyTest(Test):
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log,
                              self.mock_open, self.mock_handle.write)
-        self.assertEqual(filefairy.data['date'],
-                         encode_datetime(DATE_10260604))
+        self.assertEqual(filefairy.date, DATE_10260604)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
 
@@ -626,8 +600,7 @@ class FilefairyTest(Test):
     def test_response__notify_other(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -638,8 +611,7 @@ class FilefairyTest(Test):
             '_notify', notify=Notify.OTHER, date=DATE_10260604)
         self.assertNotCalled(mock_try, self.mock_log, self.mock_open,
                              self.mock_handle.write)
-        self.assertEqual(filefairy.data['date'],
-                         encode_datetime(DATE_10260604))
+        self.assertEqual(filefairy.date, DATE_10260604)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
 
@@ -648,8 +620,7 @@ class FilefairyTest(Test):
     def test_response__shadow(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -661,8 +632,7 @@ class FilefairyTest(Test):
             'bar', '_shadow', shadow=shadow, date=DATE_10260604)
         self.assertNotCalled(mock_try_all, self.mock_log, self.mock_open,
                              self.mock_handle.write)
-        self.assertEqual(filefairy.data['date'],
-                         encode_datetime(DATE_10260602))
+        self.assertEqual(filefairy.date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
 
@@ -671,8 +641,7 @@ class FilefairyTest(Test):
     def test_response__thread(self, mock_try, mock_try_all):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -682,8 +651,7 @@ class FilefairyTest(Test):
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log,
                              self.mock_open, self.mock_handle.write)
-        self.assertEqual(filefairy.data['date'],
-                         encode_datetime(DATE_10260602))
+        self.assertEqual(filefairy.date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertCountEqual(filefairy.threads, [('foo', thread_)])
 
@@ -695,8 +663,7 @@ class FilefairyTest(Test):
         mock_now.return_value = DATE_10260604
 
         dashboard = self.create_dashboard(DATE_10250007)
-        filefairy = self.create_filefairy(
-            _data(DATE_10250007), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10250007, dashboard, reference)
         filefairy.day = 25
         filefairy.registered['git'] = self.create_external_registrable(
             DATE_10260602)
@@ -722,8 +689,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.day = 26
         filefairy.registered['git'] = self.create_external_registrable(
             DATE_10260602)
@@ -745,8 +711,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.day = 26
         filefairy.registered['git'] = self.create_external_registrable(
             DATE_10260602)
@@ -775,8 +740,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy._setup(date=DATE_10260604)
 
         mock_listdirs.assert_called_once_with(TASKS_DIR)
@@ -794,8 +758,7 @@ class FilefairyTest(Test):
                             mock_thread):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         mock_sleep.side_effect = functools.partial(set_keep_running, filefairy,
                                                    False)
@@ -817,8 +780,7 @@ class FilefairyTest(Test):
                             mock_thread):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         mock_sleep.side_effect = functools.partial(set_keep_running, filefairy,
                                                    False)
@@ -839,8 +801,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -862,8 +823,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -882,8 +842,7 @@ class FilefairyTest(Test):
     def test_try__uncallable(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -897,8 +856,7 @@ class FilefairyTest(Test):
     def test_try__unhappy(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         registrable = self.create_external_registrable(DATE_10260602)
         registrable.ok = False
@@ -914,8 +872,7 @@ class FilefairyTest(Test):
     def test_try__unregistered(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
@@ -926,8 +883,7 @@ class FilefairyTest(Test):
     def test_try_all(self, mock_try):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.registered['foo'] = self.create_external_registrable(
             DATE_10260602)
 
@@ -947,8 +903,7 @@ class FilefairyTest(Test):
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(
-            _data(DATE_10260602), dashboard, reference)
+        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
         actual = filefairy._index_html(date=DATE_10260602)
         expected = {'sitelinks': sitelinks}
@@ -966,6 +921,7 @@ if __name__ in ['__main__', 'impl.filefairy.filefairy_test']:
         'impl.filefairy',
         'impl/filefairy', {},
         __name__ == '__main__',
+        date=DATE_10260602,
         d=dashboard,
         e=ENV,
         r=reference)

@@ -36,7 +36,6 @@ from types_.debug.debug import Debug  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
-DATA_DIR = re.sub(r'/impl/filefairy', '', _path) + '/resources/data/filefairy'
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
 
@@ -48,23 +47,26 @@ class Filefairy(Messageable, Renderable):
 
         Attributes:
             bg: Reference to the app's background thread.
+            date: Date object describing the current datetime.
             day: Number describing the current day.
             keep_running: Coordinate shutdown of the various threads.
             lock: Synchronize some thread behavior.
-            original: Backup copy of app data, to determine when it changes.
+            original: Backup copy of date, to determine when it changes.
             registered: List of Registrable instances belonging to the app.
             sleep: Duration to wait between repetitive task calls.
             threads: List of queued Thread instances to run in the background.
             ws: Reference to the app's WebSocket object.
         """
+        date = kwargs.pop('date')
         d = kwargs.pop('d')
         r = kwargs.pop('r')
         super(Filefairy, self).__init__(**kwargs)
 
         self.bg = None
-        self.day = None
+        self.date = date
+        self.day = date.day
         self.keep_running = True
-        self.original = copy.deepcopy(self.data)
+        self.original = date
         self.registered = {'dashboard': d, 'reference': r}
         self.sleep = 2  # TODO: change back to 60 after finishing refactors.
         self.threads = []
@@ -72,7 +74,7 @@ class Filefairy(Messageable, Renderable):
 
     @staticmethod
     def _data():
-        return os.path.join(DATA_DIR, 'data.json')
+        return None
 
     @staticmethod
     def _href():
@@ -108,7 +110,7 @@ class Filefairy(Messageable, Renderable):
 
         if response.notify:
             self._try_all('_setup', **kwargs)
-            self.data['date'] = encode_datetime(kwargs['date'])
+            self.date = kwargs['date']
 
         return response
 
@@ -188,9 +190,8 @@ class Filefairy(Messageable, Renderable):
 
     def _response(self, t, response, **kwargs):
         if response.notify:
-            date = kwargs['date']
-            self.data['date'] = encode_datetime(date)
-            self.registered[t].date = date
+            self.date = kwargs['date']
+            self.registered[t].date = kwargs['date']
         for notify in response.notify:
             if notify != Notify.BASE:
                 self._try_all('_notify', **dict(kwargs, notify=notify))
@@ -209,19 +210,15 @@ class Filefairy(Messageable, Renderable):
             self._try_all('_notify', notify=notify, date=date)
             self.day = date.day
 
-        if self.data != self.original:
+        if self.date != self.original:
             self._render(date=date)
             # TODO: uncomment after finishing refactors.
             # if 'git' in self.registered.keys():
             #     notify = Notify.FILEFAIRY_DEPLOY
             #     self._try('git', '_notify', notify=notify, date=date)
-            self.original = copy.deepcopy(self.data)
+            self.original = self.date
 
     def _setup(self, **kwargs):
-        date = kwargs['date']
-        self.data['date'] = encode_datetime(date)
-        self.day = date.day
-
         self._reload_services()
 
         for t in listdirs(TASKS_DIR):
@@ -291,7 +288,7 @@ def main():
 
     set_reference(reference)
 
-    filefairy = Filefairy(d=dashboard, e=e, r=reference)
+    filefairy = Filefairy(date=date, d=dashboard, e=e, r=reference)
     filefairy._setup(date=date)
     filefairy._start(2)
 

@@ -36,9 +36,16 @@ class Serializable(Nameable):
         pass
 
     def read(self, *args, **kwargs):
+        if self._data() is None:
+            self.data = {}
+            return
+
         with open(self._data(), 'r') as f:
             self.data = json.loads(f.read())
 
     def write(self, *args, **kwargs):
+        if self._data() is None:
+            return
+
         with open(self._data(), 'w') as f:
             f.write(dumps(self.data) + '\n')
