@@ -30,30 +30,8 @@ CFD = get_cfd(2, ['The quick brown fox.', 'Jumps over the lazy dog.'])
 
 
 class SnacksTest(Test):
-    def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
-
-    def init_mocks(self, data):
-        mo = mock.mock_open(read_data=dumps(data))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
-
-    def reset_mocks(self):
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
-
     def create_snacks(self, cfds=None, users=None):
-        self.init_mocks({})
         snacks = Snacks(date=DATE_10260602, e=ENV)
-
-        self.mock_open.assert_called_once_with(Snacks._data(), 'r')
-        self.mock_handle.write.assert_not_called()
-
-        self.reset_mocks()
-        self.init_mocks({})
 
         if cfds:
             snacks.cfds = cfds
@@ -68,15 +46,11 @@ class SnacksTest(Test):
         expected = Response(thread_=[Thread(target='_refresh')])
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
     def test_notify__other(self):
         snacks = self.create_snacks()
         actual = snacks._notify_internal(notify=Notify.OTHER)
         expected = Response()
         self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -93,8 +67,7 @@ class SnacksTest(Test):
         self.assertEqual(response, Response())
 
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_call, mock_chat, mock_reactions, mock_topic,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_call, mock_chat, mock_reactions, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -114,8 +87,7 @@ class SnacksTest(Test):
         mock_call.assert_called_once_with('circus', 'choose', (['a', 'b'], ))
         mock_chat.assert_called_once_with('C123', 'Definitely a.')
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -136,8 +108,7 @@ class SnacksTest(Test):
                                           ('a', CFD, 4, 8, 30))
         mock_chat.assert_called_once_with('C123', 'A b c.')
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -160,8 +131,7 @@ class SnacksTest(Test):
         mock_chat.assert_called_once_with('C123',
                                           'I don\'t know anything about a.')
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -184,8 +154,7 @@ class SnacksTest(Test):
         mock_chat.assert_called_once_with('C123', 'A b c.')
         mock_topic.assert_called_once_with(CFD)
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -210,8 +179,7 @@ class SnacksTest(Test):
                                           '<@U123> doesn\'t know anything.')
         mock_topic.assert_called_once_with({})
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -233,8 +201,7 @@ class SnacksTest(Test):
                                           ('a', CFD, 4, 8, 30))
         mock_chat.assert_called_once_with('C123', 'A b c.')
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -257,8 +224,7 @@ class SnacksTest(Test):
         mock_chat.assert_called_once_with(
             'C123', '<@U123> doesn\'t know anything about a.')
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -276,8 +242,7 @@ class SnacksTest(Test):
 
         mock_chat.assert_called_once_with('C123', 'a')
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_call, mock_reactions, mock_topic,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_call, mock_reactions, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -298,8 +263,7 @@ class SnacksTest(Test):
         mock_call.assert_called_once_with('bread', 'snack_me', ())
         mock_reactions.assert_has_calls([mock.call(x, 'C123', '1') for x in s])
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_chat, mock_topic, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_chat, mock_topic)
 
     @mock.patch.object(Snacks, '_valid')
     @mock.patch('tasks.snacks.snacks.get_topic')
@@ -319,16 +283,13 @@ class SnacksTest(Test):
         mock_call.assert_called_once_with('circus', 'who', (['a', 'b'], ))
         mock_chat.assert_called_once_with('C123', 'Definitely a.')
         mock_valid.assert_called_once_with(obj)
-        self.assertNotCalled(mock_reactions, mock_topic, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_reactions, mock_topic)
 
     def test_setup(self):
         snacks = self.create_snacks()
         actual = snacks._setup_internal(date=DATE_10260602)
         expected = Response(thread_=[Thread(target='_refresh')])
         self.assertEqual(actual, expected)
-
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('tasks.snacks.snacks.get_users')
     @mock.patch('tasks.snacks.snacks.get_messages')
@@ -353,7 +314,6 @@ class SnacksTest(Test):
         ])
         mock_messages.assert_called_once_with()
         mock_users.assert_called_once_with()
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_valid__false(self):
         obj = {'channel': 'C123', 'text': 'foo', 'ts': '1'}

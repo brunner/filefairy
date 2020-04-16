@@ -37,30 +37,10 @@ class GitTest(Test):
         self.addCleanup(patch_check.stop)
         self.mock_check = patch_check.start()
 
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
-
-    def init_mocks(self, data):
-        mo = mock.mock_open(read_data=dumps(data))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
-
-    def reset_mocks(self):
-        self.mock_check.reset_mock()
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
-
     def create_git(self):
-        self.init_mocks({})
         git = Git(date=DATE_10260602, e=ENV)
 
-        self.mock_open.assert_called_once_with(Git._data(), 'r')
-        self.assertNotCalled(self.mock_check, self.mock_handle.write)
-
-        self.reset_mocks()
-        self.init_mocks({})
+        self.assertNotCalled(self.mock_check)
 
         return git
 
@@ -72,8 +52,7 @@ class GitTest(Test):
         self.assertEqual(response, Response())
 
         mock_acp.assert_called_once_with(notify=Notify.FILEFAIRY_DAY)
-        self.assertNotCalled(mock_chdir, self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_chdir, self.mock_check)
 
     @mock.patch('tasks.git.git.chdir')
     @mock.patch.object(Git, 'acp')
@@ -84,8 +63,7 @@ class GitTest(Test):
 
         mock_acp.assert_called_once_with(notify=Notify.FILEFAIRY_DEPLOY)
         mock_chdir.assert_called_once_with(FAIRYLAB_DIR)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch('tasks.git.git.chdir')
     @mock.patch.object(Git, 'acp')
@@ -94,8 +72,7 @@ class GitTest(Test):
         response = git._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_acp, mock_chdir, self.mock_check,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_acp, mock_chdir, self.mock_check)
 
     @mock.patch.object(Git, 'push')
     @mock.patch.object(Git, 'commit')
@@ -110,8 +87,7 @@ class GitTest(Test):
         self.assertEqual(response, expected)
 
         mock_add.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(mock_commit, mock_push, self.mock_check,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_commit, mock_push, self.mock_check)
 
     @mock.patch.object(Git, 'push')
     @mock.patch.object(Git, 'commit')
@@ -130,8 +106,7 @@ class GitTest(Test):
 
         mock_add.assert_called_once_with(date=DATE_10260602)
         mock_commit.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(mock_push, self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_push, self.mock_check)
 
     @mock.patch.object(Git, 'push')
     @mock.patch.object(Git, 'commit')
@@ -154,8 +129,7 @@ class GitTest(Test):
         mock_add.assert_called_once_with(date=DATE_10260602)
         mock_commit.assert_called_once_with(date=DATE_10260602)
         mock_push.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch.object(Git, 'push')
     @mock.patch.object(Git, 'commit')
@@ -178,8 +152,7 @@ class GitTest(Test):
         mock_add.assert_called_once_with(date=DATE_10260602)
         mock_commit.assert_called_once_with(date=DATE_10260602)
         mock_push.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch.object(Git, '_call')
     def test_add(self, mock_call):
@@ -192,8 +165,7 @@ class GitTest(Test):
 
         mock_call.assert_called_once_with(['git', 'add', '.'],
                                           date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch.object(Git, '_call')
     def test_commit(self, mock_call):
@@ -206,8 +178,7 @@ class GitTest(Test):
 
         mock_call.assert_called_once_with(
             ['git', 'commit', '-m', 'Automated push.'], date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch.object(Git, '_call')
     def test_pull(self, mock_call):
@@ -219,8 +190,7 @@ class GitTest(Test):
         self.assertEqual(actual, response)
 
         mock_call.assert_called_once_with(['git', 'pull'], date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch.object(Git, '_call')
     def test_push(self, mock_call):
@@ -232,8 +202,7 @@ class GitTest(Test):
         self.assertEqual(actual, response)
 
         mock_call.assert_called_once_with(['git', 'push'], date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch.object(Git, '_call')
     def test_reset(self, mock_call):
@@ -246,8 +215,7 @@ class GitTest(Test):
 
         mock_call.assert_called_once_with(['git', 'reset', '--hard'],
                                           date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     @mock.patch.object(Git, '_call')
     def test_status(self, mock_call):
@@ -260,8 +228,7 @@ class GitTest(Test):
 
         mock_call.assert_called_once_with(['git', 'status'],
                                           date=DATE_10260602)
-        self.assertNotCalled(self.mock_check, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_check)
 
     def test_call__false(self):
         ret = {'ok': False, 'stdout': 'stdout', 'stderr': ''}
@@ -274,7 +241,6 @@ class GitTest(Test):
         self.assertEqual(actual, expected)
 
         self.mock_check.assert_called_once_with(['cmd'])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     def test_call__true(self):
         ret = {'ok': True, 'stdout': 'stdout', 'stderr': ''}
@@ -288,7 +254,6 @@ class GitTest(Test):
         self.assertEqual(actual, expected)
 
         self.mock_check.assert_called_once_with(['cmd'])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
 
 if __name__ == '__main__':
