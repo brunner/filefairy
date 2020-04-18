@@ -43,8 +43,8 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import pre  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
-from common.io_.io_ import io_read  # noqa
-from common.io_.io_ import io_write  # noqa
+from common.io_.io_ import read  # noqa
+from common.io_.io_ import write  # noqa
 from common.re_.re_ import search  # noqa
 from common.secrets.secrets import secrets_sub  # noqa
 from common.slack.slack import chat_post_message  # noqa
@@ -66,7 +66,7 @@ class Dashboard(Registrable):
             warnings: List of handled warning logs and their count.
         """
         super(Dashboard, self).__init__(**kwargs)
-        self.data = io_read(self._name())
+        self.data = read(self._name())
         self.warnings = []
 
     @staticmethod
@@ -101,7 +101,7 @@ class Dashboard(Registrable):
         self.warnings = []
 
         if data != original:
-            io_write(self._name(), self.data)
+            write(self._name(), self.data)
             self._render(**dict(kwargs, log=False))
 
     def _emit(self, **kwargs):
@@ -136,7 +136,7 @@ class Dashboard(Registrable):
         self.data['logs'][date].append(record)
 
         self._render(date=d, log=False)
-        io_write(self._name(), self.data)
+        write(self._name(), self.data)
 
     def _warning(self, record, **kwargs):
         d = decode_datetime(record['date'])

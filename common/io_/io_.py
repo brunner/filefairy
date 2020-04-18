@@ -19,7 +19,7 @@ def _get_filename(name):
     return os.path.join(DATA_DIR, name, 'data.json')
 
 
-def io_read(name):
+def read(name):
     """Reads data from a specified file.
 
     Args:
@@ -32,7 +32,7 @@ def io_read(name):
         return json.loads(f.read())
 
 
-def io_write(name, data):
+def write(name, data):
     """Writes data to a specified file.
 
     Args:

@@ -16,8 +16,8 @@ from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.io_.io_ import io_read  # noqa
-from common.io_.io_ import io_write  # noqa
+from common.io_.io_ import read  # noqa
+from common.io_.io_ import write  # noqa
 from common.re_.re_ import search  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.slack.slack import chat_post_message  # noqa
@@ -31,7 +31,7 @@ EXPORTS_URL = 'https://statsplus.net/oblootp/exports/'
 class Upload(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.data = io_read(self._name())
+        self.data = read(self._name())
 
     @staticmethod
     def _href():
@@ -49,7 +49,7 @@ class Upload(Registrable):
         #     chat_post_message('fairylab', 'File is up.')
 
         #     self.data['date'] = date
-        #     io_write(self._name(), self.data)
+        #     write(self._name(), self.data)
 
         #     return Response(notify=[Notify.UPLOAD_FINISH])
 

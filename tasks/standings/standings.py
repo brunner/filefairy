@@ -16,8 +16,8 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.dict_.dict_ import merge  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import topper  # noqa
-from common.io_.io_ import io_read  # noqa
-from common.io_.io_ import io_write  # noqa
+from common.io_.io_ import read  # noqa
+from common.io_.io_ import write  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqa
 from common.record.record import add_records  # noqa
@@ -53,7 +53,7 @@ LEAGUES = {
 class Standings(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.data = io_read(self._name())
+        self.data = read(self._name())
 
     @staticmethod
     def _href():
@@ -95,7 +95,7 @@ class Standings(Registrable):
         for encoding in self.data['table']:
             self.data['table'][encoding] = '0-0'
 
-        io_write(self._name(), self.data)
+        write(self._name(), self.data)
         self._render(**kwargs)
 
     def _dialog_tables(self, data):
@@ -133,14 +133,14 @@ class Standings(Registrable):
                     if nw + nl > cw + cl:
                         self.data['table'][encoding] = next_record
 
-        io_write(self._name(), self.data)
+        write(self._name(), self.data)
         self._render(**kwargs)
 
     def _start(self, **kwargs):
         self.data['finished'] = False
         self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
-        io_write(self._name(), self.data)
+        write(self._name(), self.data)
 
     def _index_html(self, **kwargs):
         ret = {

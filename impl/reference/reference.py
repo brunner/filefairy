@@ -16,8 +16,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/reference', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
-from common.io_.io_ import io_read  # noqa
-from common.io_.io_ import io_write  # noqa
+from common.io_.io_ import read  # noqa
+from common.io_.io_ import write  # noqa
 from common.re_.re_ import search  # noqa
 from common.service.service import call_service  # noqa
 from types_.notify.notify import Notify  # noqa
@@ -31,7 +31,7 @@ STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 class Reference(Registrable):
     def __init__(self, **kwargs):
         super(Reference, self).__init__(**kwargs)
-        self.data = io_read(self._name())
+        self.data = read(self._name())
 
     @staticmethod
     def _href():
@@ -54,7 +54,7 @@ class Reference(Registrable):
         return self.data['players'][e].split(' ', 4)[index]
 
     def _parse(self, encodings):
-        write = False
+        changed = False
 
         for e in encodings:
             n = e.strip('P')
@@ -66,10 +66,10 @@ class Reference(Registrable):
                     self.data['players'].pop(e, None)
                 else:
                     self.data['players'][e] = data
-                write = True
+                changed = True
 
-        if write:
-            io_write(self._name(), self.data)
+        if changed:
+            write(self._name(), self.data)
 
     def _put(self, encodings):
         encodings = [e for e in encodings if e not in self.data['players']]
