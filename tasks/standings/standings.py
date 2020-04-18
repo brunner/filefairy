@@ -157,7 +157,11 @@ class Standings(Registrable):
         statsplus_scores = self.shadow.get('statsplus.scores', {})
         statsplus_table = self.shadow.get('statsplus.table', {})
 
-        data = call_service('scoreboard', 'line_scores', ())
+        nums = [
+            name[:-5] for name in os.listdir(GAMES_DIR)
+            if name.endswith('.json')
+        ]
+        data = call_service('scoreboard', 'line_scores', (nums, ))
         line = data['scores']
 
         pending = call_service(

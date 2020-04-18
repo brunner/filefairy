@@ -81,7 +81,6 @@ class ScoreboardTest(unittest.TestCase):
             self.assertEqual(actual, expected)
 
     @mock.patch('services.scoreboard.scoreboard.loads')
-    @mock.patch('services.scoreboard.scoreboard.os.listdir')
     @mock.patch('services.scoreboard.scoreboard.line_score_show_foot')
     @mock.patch('services.scoreboard.scoreboard.line_score_show_body')
     @mock.patch('services.scoreboard.scoreboard.line_score_hide_foot')
@@ -89,13 +88,12 @@ class ScoreboardTest(unittest.TestCase):
     @mock.patch('services.scoreboard.scoreboard.create_dialog')
     def test_line_scores__hidden_false(
             self, mock_create_dialog, mock_hide_body, mock_hide_foot,
-            mock_show_body, mock_show_foot, mock_listdir, mock_loads):
+            mock_show_body, mock_show_foot, mock_loads):
         mock_show_body.side_effect = [SHOW_BODY_2449, SHOW_BODY_2469]
         mock_show_foot.side_effect = [SHOW_FOOT_2449, SHOW_FOOT_2469]
-        mock_listdir.return_value = ['2449.json', '2469.json']
         mock_loads.side_effect = [GAME_2449, GAME_2469]
 
-        actual = line_scores()
+        actual = line_scores(['2449', '2469'])
         expected = {
             'dialogs': [],
             'scores': {
@@ -116,14 +114,12 @@ class ScoreboardTest(unittest.TestCase):
             mock.call(GAME_2449, hidden=False),
             mock.call(GAME_2469, hidden=False)
         ])
-        mock_listdir.assert_called_once_with(GAMES_DIR)
         mock_loads.assert_has_calls([
             mock.call(os.path.join(GAMES_DIR, '2449.json')),
             mock.call(os.path.join(GAMES_DIR, '2469.json'))
         ])
 
     @mock.patch('services.scoreboard.scoreboard.loads')
-    @mock.patch('services.scoreboard.scoreboard.os.listdir')
     @mock.patch('services.scoreboard.scoreboard.line_score_show_foot')
     @mock.patch('services.scoreboard.scoreboard.line_score_show_body')
     @mock.patch('services.scoreboard.scoreboard.line_score_hide_foot')
@@ -131,16 +127,15 @@ class ScoreboardTest(unittest.TestCase):
     @mock.patch('services.scoreboard.scoreboard.create_dialog')
     def test_line_scores__hidden_true(
             self, mock_create_dialog, mock_hide_body, mock_hide_foot,
-            mock_show_body, mock_show_foot, mock_listdir, mock_loads):
+            mock_show_body, mock_show_foot, mock_loads):
         mock_create_dialog.side_effect = [DIALOG_2449, DIALOG_2469]
         mock_hide_body.side_effect = [HIDE_BODY_2449, HIDE_BODY_2469]
         mock_hide_foot.side_effect = [HIDE_FOOT_2449, HIDE_FOOT_2469]
         mock_show_body.side_effect = [SHOW_BODY_2449, SHOW_BODY_2469]
         mock_show_foot.side_effect = [SHOW_FOOT_2449, SHOW_FOOT_2469]
-        mock_listdir.return_value = ['2449.json', '2469.json']
         mock_loads.side_effect = [GAME_2449, GAME_2469]
 
-        actual = line_scores(hidden=True)
+        actual = line_scores(['2449', '2469'], hidden=True)
         expected = {
             'dialogs': [DIALOG_2449, DIALOG_2469],
             'scores': {
@@ -165,7 +160,6 @@ class ScoreboardTest(unittest.TestCase):
             mock.call(GAME_2449, hidden=True),
             mock.call(GAME_2469, hidden=True)
         ])
-        mock_listdir.assert_called_once_with(GAMES_DIR)
         mock_loads.assert_has_calls([
             mock.call(os.path.join(GAMES_DIR, '2449.json')),
             mock.call(os.path.join(GAMES_DIR, '2469.json'))

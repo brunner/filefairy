@@ -301,9 +301,11 @@ class StandingsTest(Test):
 
     maxDiff = None
 
+    @mock.patch('tasks.standings.standings.os.listdir')
     @mock.patch.object(Standings, '_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
-    def test_index_html__finished_false(self, mock_call, mock_dialog):
+    def test_index_html__finished_false(
+            self, mock_call, mock_dialog, mock_listdir):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
         body = table(head=[[cell(content='Pending')]])
@@ -328,6 +330,8 @@ class StandingsTest(Test):
             [head, body],
             [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469],
         ]
+
+        mock_listdir.return_value = ['2449.json', '2469.json', '2998.json']
 
         encodings = encoding_keys()
         table_ = _table(encodings, {})
@@ -364,7 +368,8 @@ class StandingsTest(Test):
             for e in ENCODINGS
         }
         mock_call.assert_has_calls([
-            mock.call('scoreboard', 'line_scores', ()),
+            mock.call(
+                'scoreboard', 'line_scores', (['2449', '2469', '2998'], )),
             mock.call('scoreboard', 'pending_dialog', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, etable)),
@@ -396,9 +401,11 @@ class StandingsTest(Test):
         ])
         self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
+    @mock.patch('tasks.standings.standings.os.listdir')
     @mock.patch.object(Standings, '_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
-    def test_index_html__finished_true(self, mock_call, mock_dialog):
+    def test_index_html__finished_true(
+            self, mock_call, mock_dialog, mock_listdir):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
         body = table(head=[[cell(content='Final')]])
@@ -423,6 +430,8 @@ class StandingsTest(Test):
 
         ds = [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469]
         mock_dialog.side_effect = [tables_2998, ds, tables_2998, ds]
+
+        mock_listdir.return_value = ['2449.json', '2469.json', '2998.json']
 
         encodings = encoding_keys()
         table_ = _table(encodings, {})
@@ -455,7 +464,8 @@ class StandingsTest(Test):
         etable = {'T31': '1-0', 'T40': '0-2', 'T45': '0-1', 'T47': '2-0'}
         rtable = {e: (etable.get(e, '0-0'), e in etable) for e in ENCODINGS}
         mock_call.assert_has_calls([
-            mock.call('scoreboard', 'line_scores', ()),
+            mock.call(
+                'scoreboard', 'line_scores', (['2449', '2469', '2998'], )),
             mock.call('scoreboard', 'pending_dialog', ({}, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, table_)),

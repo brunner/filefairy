@@ -327,12 +327,13 @@ def line_score_show_foot(data, hidden=False):
     )
 
 
-def line_scores(hidden=False):
+def line_scores(nums, hidden=False):
     """Returns a dictionary of all line scores.
 
     If including hidden line scores, also return the necessary dialogs.
 
     Args:
+        nums: The list of game numbers to include.
         hidden: Whether to include hidden line scores.
 
     Returns:
@@ -340,8 +341,8 @@ def line_scores(hidden=False):
     """
     d = []
     s = {}
-    for name in os.listdir(GAMES_DIR):
-        data = loads(os.path.join(GAMES_DIR, name))
+    for num in nums:
+        data = loads(os.path.join(GAMES_DIR, num + '.json'))
         if hidden:
             d.append(create_dialog(_date(data['date']), data['num']))
 

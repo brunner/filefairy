@@ -102,7 +102,11 @@ class Gameday(Registrable):
             'dialogs': [],
         }
 
-        data = call_service('scoreboard', 'line_scores', (), hidden=True)
+        nums = [
+            name[:-5] for name in os.listdir(GAMES_DIR)
+            if name.endswith('.json')
+        ]
+        data = call_service('scoreboard', 'line_scores', (nums, ), hidden=True)
         line = data['scores']
 
         ret['dialogs'] += data['dialogs']
