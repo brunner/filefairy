@@ -89,8 +89,7 @@ class DashboardTest(Test):
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
+        patch_open = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 

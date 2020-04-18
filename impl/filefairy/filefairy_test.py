@@ -64,7 +64,7 @@ class FakeExternalRegistrable(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(DATA_DIR, 'snacks/data.json')
+        return None
 
     @staticmethod
     def _href():
@@ -103,7 +103,7 @@ class FakeInternalRegistrable(Registrable):
 
     @staticmethod
     def _data():
-        return os.path.join(DATA_DIR, 'snacks/data.json')
+        return None
 
     @staticmethod
     def _href():
@@ -162,8 +162,7 @@ class FilefairyTest(Test):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
+        patch_open = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
@@ -223,9 +222,8 @@ class FilefairyTest(Test):
         self.init_mocks({})
         registrable = FakeExternalRegistrable(date=date, e=ENV)
 
-        self.mock_open.assert_called_once_with(FakeExternalRegistrable._data(),
-                                               'r')
-        self.assertNotCalled(self.mock_log, self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
         self.assertEqual(registrable.data, {})
 
         self.reset_mocks()
@@ -237,9 +235,8 @@ class FilefairyTest(Test):
         self.init_mocks({})
         registrable = FakeInternalRegistrable(date=date, e=ENV)
 
-        self.mock_open.assert_called_once_with(FakeInternalRegistrable._data(),
-                                               'r')
-        self.assertNotCalled(self.mock_log, self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
         self.assertEqual(registrable.data, {})
 
         self.reset_mocks()
@@ -426,9 +423,8 @@ class FilefairyTest(Test):
         self.assertEqual(actual, expected)
 
         mock_getattr.assert_called_once_with(module, 'Task')
-        self.mock_open.assert_called_once_with(FakeExternalRegistrable._data(),
-                                               'r')
-        self.assertNotCalled(self.mock_log, self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_open,
+                             self.mock_handle.write)
         self.assertTrue(
             isinstance(filefairy.registered['foo'], FakeExternalRegistrable))
 

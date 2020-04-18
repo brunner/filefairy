@@ -16,6 +16,8 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/reference', '', _path))
 
 from api.registrable.registrable import Registrable  # noqa
+from common.io_.io_ import io_read  # noqa
+from common.io_.io_ import io_write  # noqa
 from common.re_.re_ import search  # noqa
 from common.service.service import call_service  # noqa
 from types_.notify.notify import Notify  # noqa
@@ -83,3 +85,9 @@ class Reference(Registrable):
     def _sub(self, repl, text):
         pattern = '|'.join([e + r'(?!\d)' for e in self.data['players']])
         return re.sub(pattern, repl, text)
+
+    def read(self, *args, **kwargs):
+        self.data = io_read(self._name().lower())
+
+    def write(self, *args, **kwargs):
+        io_write(self._name().lower(), self.data)

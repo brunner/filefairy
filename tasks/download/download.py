@@ -14,6 +14,8 @@ sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.io_.io_ import io_read  # noqa
+from common.io_.io_ import io_write  # noqa
 from common.service.service import call_service  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from types_.notify.notify import Notify  # noqa
@@ -102,3 +104,9 @@ class Download(Registrable):
 
         self.write()
         return response
+
+    def read(self, *args, **kwargs):
+        self.data = io_read(self._name().lower())
+
+    def write(self, *args, **kwargs):
+        io_write(self._name().lower(), self.data)

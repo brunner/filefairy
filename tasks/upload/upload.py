@@ -16,6 +16,8 @@ from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.io_.io_ import io_read  # noqa
+from common.io_.io_ import io_write  # noqa
 from common.re_.re_ import search  # noqa
 from common.requests_.requests_ import get  # noqa
 from common.slack.slack import chat_post_message  # noqa
@@ -59,6 +61,12 @@ class Upload(Registrable):
         #     return Response(notify=[Notify.UPLOAD_FINISH])
 
         return Response()
+
+    def read(self, *args, **kwargs):
+        self.data = io_read(self._name().lower())
+
+    def write(self, *args, **kwargs):
+        io_write(self._name().lower(), self.data)
 
     @staticmethod
     def _get_date():

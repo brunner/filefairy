@@ -21,6 +21,8 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import topper  # noqa
+from common.io_.io_ import io_read  # noqa
+from common.io_.io_ import io_write  # noqa
 from common.json_.json_ import loads  # noqa
 from common.os_.os_ import listdirs  # noqa
 from common.service.service import call_service  # noqa
@@ -159,6 +161,12 @@ class Gameday(Registrable):
         check_output(['rm', '-rf', GAMEDAY_DIR])
         check_output(['mkdir', GAMEDAY_DIR])
         pass
+
+    def read(self, *args, **kwargs):
+        self.data = io_read(self._name().lower())
+
+    def write(self, *args, **kwargs):
+        io_write(self._name().lower(), self.data)
 
 
 # from common.datetime_.datetime_ import datetime_now

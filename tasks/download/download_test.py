@@ -52,8 +52,7 @@ class DownloadTest(Test):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
+        patch_open = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
