@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Provides various entertainment when prompted in the #snacks channel."""
+"""Feeds the masses bread and circuses."""
 
 import os
 import re
@@ -40,10 +40,6 @@ class Snacks(Registrable):
     @staticmethod
     def _href():
         return ''
-
-    @staticmethod
-    def _info():
-        return 'Feeds the masses bread and circuses.'
 
     @staticmethod
     def _title():

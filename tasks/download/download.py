@@ -42,10 +42,6 @@ class Download(Registrable):
         return ''
 
     @staticmethod
-    def _info():
-        return 'Manages file download and extraction.'
-
-    @staticmethod
     def _title():
         return 'download'
 

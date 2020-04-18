@@ -41,10 +41,6 @@ class Upload(Registrable):
         return ''
 
     @staticmethod
-    def _info():
-        return 'Monitors league file upload status.'
-
-    @staticmethod
     def _title():
         return 'upload'
 

@@ -82,10 +82,6 @@ class Dashboard(Registrable):
         return '/fairylab/dashboard/'
 
     @staticmethod
-    def _info():
-        return 'Tails exceptions and log messages.'
-
-    @staticmethod
     def _title():
         return 'Dashboard'
 

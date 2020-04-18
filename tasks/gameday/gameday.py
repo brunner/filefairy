@@ -54,10 +54,6 @@ class Gameday(Registrable):
         return '/fairylab/gameday/'
 
     @staticmethod
-    def _info():
-        return 'Builds playable live sim pages.'
-
-    @staticmethod
     def _title():
         return 'Gameday'
 

@@ -63,10 +63,6 @@ class Standings(Registrable):
         return '/fairylab/standings/'
 
     @staticmethod
-    def _info():
-        return 'Tracks regular season and weekly tables.'
-
-    @staticmethod
     def _title():
         return 'Standings'
 

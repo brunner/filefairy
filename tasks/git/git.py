@@ -32,10 +32,6 @@ class Git(Registrable):
         return ''
 
     @staticmethod
-    def _info():
-        return 'Exposes remote commands to admins.'
-
-    @staticmethod
     def _title():
         return 'git'
 

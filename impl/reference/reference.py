@@ -41,10 +41,6 @@ class Reference(Registrable):
         return ''
 
     @staticmethod
-    def _info():
-        return 'Stores player identity information.'
-
-    @staticmethod
     def _title():
         return 'reference'
 

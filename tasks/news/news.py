@@ -44,10 +44,6 @@ class News(Registrable):
         return '/fairylab/news/'
 
     @staticmethod
-    def _info():
-        return 'Reports league injuries and transactions.'
-
-    @staticmethod
     def _title():
         return 'News'
 

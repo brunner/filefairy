@@ -71,10 +71,6 @@ class FakeExternalRegistrable(Registrable):
         return '/foo/'
 
     @staticmethod
-    def _info():
-        return 'Description of foo.'
-
-    @staticmethod
     def _title():
         return 'foo'
 
@@ -108,10 +104,6 @@ class FakeInternalRegistrable(Registrable):
     @staticmethod
     def _href():
         return ''
-
-    @staticmethod
-    def _info():
-        return 'Description of bar.'
 
     @staticmethod
     def _title():

@@ -38,10 +38,6 @@ class FakeRegistrable(Registrable):
         return '/fairylab/foo/'
 
     @staticmethod
-    def _info():
-        return 'Description of foo.'
-
-    @staticmethod
     def _title():
         return 'foo'
 

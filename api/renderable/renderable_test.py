@@ -109,10 +109,6 @@ class FakeRenderable(Renderable):
         return '/foo/'
 
     @staticmethod
-    def _info():
-        return 'Description.'
-
-    @staticmethod
     def _title():
         return 'foo'
 

@@ -84,10 +84,6 @@ class Filefairy(Messageable, Renderable):
     def _title():
         return 'Fairylab'
 
-    @staticmethod
-    def _info():
-        return 'Fairylab home.'
-
     def _render_data(self, **kwargs):
         _index_html = self._index_html(**kwargs)
         return [('index.html', '', 'home.html', _index_html)]

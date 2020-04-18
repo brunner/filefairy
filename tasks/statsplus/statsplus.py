@@ -61,10 +61,6 @@ class Statsplus(Registrable):
         return ''
 
     @staticmethod
-    def _info():
-        return 'Collects results from ongoing sims.'
-
-    @staticmethod
     def _title():
         return 'statsplus'
 

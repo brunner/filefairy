@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Extend the nameable API to describe a task's title and behavior.
+"""Extend the nameable API to describe a task's name.
 
 Example:
     class Task(Nameable):
         def __init__(self, **kwargs):
             super(Task, self).__init__(**kwargs)
-
-        @staticmethod
-        def _info(self):
-            return 'Description.'
 
         def _name(self):
             return 'Task'
@@ -31,10 +27,6 @@ class Nameable():
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @abstractstatic
-    def _info():
-        pass
 
     @abc.abstractmethod
     def _name(self):
