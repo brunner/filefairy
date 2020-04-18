@@ -55,9 +55,6 @@ class Messageable(Nameable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def _name(self):
-        return self.__class__.__name__
-
     def _on_message_internal(self, **kwargs):
         return Response()
 

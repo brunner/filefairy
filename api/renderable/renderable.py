@@ -45,7 +45,7 @@ _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/renderable', '', _path))
 
-from api.serializable.serializable import Serializable  # noqa
+from api.nameable.nameable import Nameable  # noqa
 from common.abc_.abc_ import abstractstatic  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import menu  # noqa
@@ -56,7 +56,7 @@ FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
 
 
-class Renderable(Serializable):
+class Renderable(Nameable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):

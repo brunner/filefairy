@@ -17,9 +17,6 @@ class FakeNameable(Nameable):
     def __init__(self, **kwargs):
         super(FakeNameable, self).__init__(**kwargs)
 
-    def _name(self):
-        return self.__class__.__name__
-
 
 class NameableTest(unittest.TestCase):
     def test_name(self):
