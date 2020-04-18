@@ -42,7 +42,6 @@ _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 
-from api.nameable.nameable import Nameable  # noqa
 from common.re_.re_ import search  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
@@ -51,7 +50,7 @@ ARGS_PATTERN = r'^{}\.{}\((.*)\)$'
 TESTING_CHANNEL = 'G3SUFLMK4'
 
 
-class Messageable(Nameable):
+class Messageable():
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -59,10 +58,11 @@ class Messageable(Nameable):
         return Response()
 
     def _on_message(self, **kwargs):
+        name = self.__class__.__name__
         obj = kwargs.get('obj', {})
         text = obj.get('text', '')
 
-        if obj.get('channel', '') == TESTING_CHANNEL and self._name() in text:
+        if obj.get('channel', '') == TESTING_CHANNEL and name in text:
             for method in dir(self):
                 if method not in text or method.startswith('_'):
                     continue
@@ -71,7 +71,7 @@ class Messageable(Nameable):
                 if not callable(item):
                     continue
 
-                args = search(ARGS_PATTERN.format(self._name(), method), text)
+                args = search(ARGS_PATTERN.format(name, method), text)
                 if args is not None:
                     args = [a.strip() for a in args.split(',') if a]
                     response = item(*args, **dict(kwargs, v=True))

@@ -58,7 +58,7 @@ class MessageableTest(unittest.TestCase):
     def test_on_message__no_arguments(self, mock_foo):
         messageable = self.create_messageable()
 
-        data = {'channel': TESTING_CHANNEL, 'text': 'fakemessageable.foo()'}
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
@@ -70,7 +70,7 @@ class MessageableTest(unittest.TestCase):
     def test_on_message__one_argument(self, mock_foo):
         messageable = self.create_messageable()
 
-        data = {'channel': TESTING_CHANNEL, 'text': 'fakemessageable.foo(a)'}
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo(a)'}
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
@@ -82,7 +82,7 @@ class MessageableTest(unittest.TestCase):
     def test_on_message__two_arguments(self, mock_foo):
         messageable = self.create_messageable()
 
-        data = {'channel': TESTING_CHANNEL, 'text': 'fakemessageable.foo(a,b)'}
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo(a,b)'}
         actual = messageable._on_message(obj=data)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
@@ -98,7 +98,7 @@ class MessageableTest(unittest.TestCase):
 
         messageable = self.create_messageable()
 
-        data = {'channel': TESTING_CHANNEL, 'text': 'fakemessageable.foo()'}
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
         expected = Response(
             notify=[Notify.BASE], debug=[debug], thread_=[thread_])
@@ -112,7 +112,7 @@ class MessageableTest(unittest.TestCase):
     def test_on_message__invalid_channel(self, mock_foo):
         messageable = self.create_messageable()
 
-        data = {'channel': 'INVALID', 'text': 'fakemessageable.foo()'}
+        data = {'channel': 'INVALID', 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
         expected = Response()
         self.assertEqual(actual, expected)
@@ -136,7 +136,7 @@ class MessageableTest(unittest.TestCase):
     def test_on_message__private_attr(self, mock_bar):
         messageable = self.create_messageable()
 
-        data = {'channel': TESTING_CHANNEL, 'text': 'fakemessageable._bar()'}
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable._bar()'}
         actual = messageable._on_message(obj=data)
         expected = Response()
         self.assertEqual(actual, expected)
@@ -147,7 +147,7 @@ class MessageableTest(unittest.TestCase):
     def test_on_message__uncallable_attr(self):
         messageable = self.create_messageable()
 
-        data = {'channel': TESTING_CHANNEL, 'text': 'fakemessageable.var()'}
+        data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.var()'}
         actual = messageable._on_message(obj=data)
         expected = Response()
         self.assertEqual(actual, expected)

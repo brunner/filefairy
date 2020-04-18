@@ -74,13 +74,12 @@ def channels_list():
     })
 
 
-def chat_post_message(channel, text, attachments=[]):
+def chat_post_message(channel, text):
     """Convenience wrapper around the Slack API chat.postMessage endpoint.
 
     Args:
         channel: Channel to send message to.
         text: Text of the message to send.
-        attachments: A JSON-based array of structured attachments.
 
     Returns:
         The endpoint response.
@@ -91,7 +90,7 @@ def chat_post_message(channel, text, attachments=[]):
             'channel': channel,
             'text': text,
             'as_user': 'true',
-            'attachments': attachments,
+            'attachments': [],
             'link_names': 'true'
         })
 

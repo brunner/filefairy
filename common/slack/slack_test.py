@@ -99,8 +99,7 @@ class SlackTest(unittest.TestCase):
     # def test_chat_post_message(self, mock_call):
     #     mock_call.return_value = {'ok': True}
 
-    #     attachments = [{'fallback': 'a', 'title': 'b', 'text': 'c'}]
-    #     actual = chat_post_message('channel', 'foo', attachments=attachments)
+    #     actual = chat_post_message('channel', 'foo')
     #     expected = {'ok': True}
     #     self.assertEqual(actual, expected)
 
@@ -110,7 +109,7 @@ class SlackTest(unittest.TestCase):
     #             'channel': 'channel',
     #             'text': 'foo',
     #             'as_user': 'true',
-    #             'attachments': attachments,
+    #             'attachments': [],
     #             'link_names': 'true',
     #         })
     #     self.mock_log.assert_not_called()

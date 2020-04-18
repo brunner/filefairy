@@ -17,7 +17,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/filefairy', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
-from api.nameable.nameable import Nameable  # noqa
 from api.registrable.registrable import Registrable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from common.datetime_.datetime_ import datetime_now  # noqa

@@ -3,7 +3,7 @@
 """Extend the renderable API to provide generated HTML from a class.
 
 This base class abstracts the transformation from template input data to one or
-more rendered templates. The rendered templates are deposited into a colocated
+more rendered templates. The rendered templates are deposited into a co-located
 ``fairylab`` repository, and are then deployed to live by a separate task.
 
 Example:
@@ -28,10 +28,6 @@ this is ``tmpl.html``) and dumped to the given location (``foo/index.html``).
 
 For golden tests, the rendered templates are dumped to a specified location
 within the ``filefairy`` (current) repository.
-
-The base class also has a helper function for generating attachment data for
-alerts posted to Slack. The attachment describes the link and behavior of the
-particular rendered template which is related to the alert.
 """
 
 import abc
@@ -45,18 +41,16 @@ _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/renderable', '', _path))
 
-from api.nameable.nameable import Nameable  # noqa
 from common.abc_.abc_ import abstractstatic  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import menu  # noqa
-from common.slack.slack import chat_post_message  # noqa
 
 CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
 
 
-class Renderable(Nameable):
+class Renderable():
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
@@ -72,6 +66,9 @@ class Renderable(Nameable):
     @abstractstatic
     def _title():
         pass
+
+    def _name(self):
+        return self.__class__.__name__.lower()
 
     def _render_data(self, **kwargs):
         return []
@@ -98,7 +95,7 @@ class Renderable(Nameable):
 
                 root = FILEFAIRY_DIR if test else FAIRYLAB_DIR
                 path = os.path.join(root, html)
-                self._mkdir_p(path.rsplit('/', 1)[0])
+                self._mkdirs(path.rsplit('/', 1)[0])
                 ts.dump(path)
             except Exception:
                 if log:
@@ -106,7 +103,7 @@ class Renderable(Nameable):
                         logging.WARNING, 'Handled warning.', exc_info=True)
 
     @staticmethod
-    def _mkdir_p(path):
+    def _mkdirs(path):
         try:
             os.makedirs(path)
         except OSError as exc:
