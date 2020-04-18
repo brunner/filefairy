@@ -96,8 +96,7 @@ def _table(keys, table_):
 
 class StandingsTest(Test):
     def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
+        patch_open = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 

@@ -16,6 +16,8 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.dict_.dict_ import merge  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import topper  # noqa
+from common.io_.io_ import io_read  # noqa
+from common.io_.io_ import io_write  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqa
 from common.record.record import add_records  # noqa
@@ -212,3 +214,9 @@ class Standings(Registrable):
             ret['recent'].append(r)
 
         return ret
+
+    def read(self, *args, **kwargs):
+        self.data = io_read(self._name().lower())
+
+    def write(self, *args, **kwargs):
+        io_write(self._name().lower(), self.data)
