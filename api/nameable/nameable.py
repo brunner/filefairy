@@ -18,4 +18,4 @@ class Nameable():
         super().__init__(**kwargs)
 
     def _name(self):
-        return self.__class__.__name__
+        return self.__class__.__name__.lower()

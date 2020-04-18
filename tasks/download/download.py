@@ -99,7 +99,7 @@ class Download(Registrable):
         return response
 
     def read(self, *args, **kwargs):
-        self.data = io_read(self._name().lower())
+        self.data = io_read(self._name())
 
     def write(self, *args, **kwargs):
-        io_write(self._name().lower(), self.data)
+        io_write(self._name(), self.data)

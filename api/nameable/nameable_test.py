@@ -23,7 +23,7 @@ class NameableTest(unittest.TestCase):
         nameable = FakeNameable()
 
         actual = nameable._name()
-        expected = 'FakeNameable'
+        expected = 'fakenameable'
         self.assertEqual(actual, expected)
 
 
