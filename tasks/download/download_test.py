@@ -70,8 +70,6 @@ class DownloadTest(Test):
         self.init_mocks(data)
         download = Download(date=DATE_10250007, e=ENV)
 
-        self.mock_open.assert_called_once_with(Download._data(), 'r')
-        self.assertNotCalled(self.mock_log, self.mock_handle.write)
         self.assertEqual(download.data, data)
 
         self.reset_mocks()
@@ -86,8 +84,7 @@ class DownloadTest(Test):
         shadow = Shadow(destination='statsplus', key='download.end', info=date)
         self.assertEqual(actual, [shadow])
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_handle.write)
 
     @mock.patch.object(Download, 'start')
     def test_notify__upload_finish(self, mock_start):
@@ -99,8 +96,7 @@ class DownloadTest(Test):
         self.assertEqual(actual, response)
 
         mock_start.assert_called_once_with(notify=Notify.UPLOAD_FINISH)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_handle.write)
 
     @mock.patch.object(Download, 'start')
     def test_notify__other(self, mock_start):
@@ -108,16 +104,14 @@ class DownloadTest(Test):
         actual = download._notify_internal(notify=Notify.OTHER)
         self.assertEqual(actual, Response())
 
-        self.assertNotCalled(mock_start, self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_start, self.mock_log, self.mock_handle.write)
 
     def test_setup(self):
         download = self.create_download(_data())
         response = download._setup_internal(date=DATE_10260604)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_handle.write)
 
     def test_start(self):
         download = self.create_download(_data(end=DATE_10260602))
@@ -126,8 +120,7 @@ class DownloadTest(Test):
             target='_download_start', kwargs={'date': DATE_10260604})
         self.assertEqual(response, Response(thread_=[thread_]))
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log, self.mock_handle.write)
 
     @mock.patch.object(Download, '_extract_file')
     @mock.patch('tasks.download.download.call_service')
@@ -145,8 +138,7 @@ class DownloadTest(Test):
                                           (FILE_URL, ))
         self.mock_log.assert_called_once_with(
             logging.WARNING, 'Download failed.', extra=extra)
-        self.assertNotCalled(mock_extract, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_extract, self.mock_handle.write)
 
     @mock.patch.object(Download, '_extract_file')
     @mock.patch('tasks.download.download.call_service')
@@ -164,7 +156,7 @@ class DownloadTest(Test):
         mock_extract.assert_called_once_with(date=now)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download finished.')
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(Download, '_download_file')
     @mock.patch('tasks.download.download.check_output')
@@ -182,8 +174,7 @@ class DownloadTest(Test):
                                            timeout=10)
         self.mock_log.assert_called_once_with(
             logging.WARNING, 'Download failed.', extra=extra)
-        self.assertNotCalled(mock_download, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_download, self.mock_handle.write)
 
     @mock.patch.object(Download, '_download_file')
     @mock.patch('tasks.download.download.check_output')
@@ -200,7 +191,7 @@ class DownloadTest(Test):
         mock_download.assert_called_once_with(date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download started.')
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(Download, '_shadow_data')
     @mock.patch('tasks.download.download.call_service')
@@ -215,7 +206,6 @@ class DownloadTest(Test):
         write = _data(end=DATE_08310000, start=DATE_08280000)
         mock_call.assert_called_once_with('leaguefile', 'extract_file',
                                           (DATE_08280000, ))
-        self.mock_open.assert_called_once_with(Download._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertNotCalled(mock_shadow, self.mock_log)
 
@@ -239,7 +229,6 @@ class DownloadTest(Test):
         mock_call.assert_called_once_with('leaguefile', 'extract_file',
                                           (DATE_08280000, ))
         mock_shadow.assert_called_once_with(date=DATE_10260604)
-        self.mock_open.assert_called_once_with(Download._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertNotCalled(self.mock_log)
 

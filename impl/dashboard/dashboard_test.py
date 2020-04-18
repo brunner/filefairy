@@ -110,9 +110,6 @@ class DashboardTest(Test):
         self.init_mocks(data)
         dashboard = Dashboard(date=DATE_10250007, e=ENV)
 
-        self.mock_open.assert_called_once_with(Dashboard._data(), 'r')
-        self.assertNotCalled(self.mock_chat, self.mock_handle.write,
-                             self.mock_upload)
         self.assertEqual(dashboard.data, data)
 
         self.reset_mocks()
@@ -182,7 +179,6 @@ class DashboardTest(Test):
 
         data = _data({new: [error]})
         mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
         self.assertNotCalled(self.mock_chat, self.mock_upload)
 
@@ -283,7 +279,6 @@ class DashboardTest(Test):
 
         data = _data({new: [error, record]})
         mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.mock_open.assert_called_once_with(Dashboard._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
         self.assertNotCalled(self.mock_chat, self.mock_upload)
 

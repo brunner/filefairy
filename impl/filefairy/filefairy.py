@@ -73,10 +73,6 @@ class Filefairy(Messageable, Renderable):
         self.ws = None
 
     @staticmethod
-    def _data():
-        return None
-
-    @staticmethod
     def _href():
         return '/fairylab/'
 

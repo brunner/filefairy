@@ -24,10 +24,6 @@ class Git(Registrable):
         super().__init__(**kwargs)
 
     @staticmethod
-    def _data():
-        return None
-
-    @staticmethod
     def _href():
         return ''
 

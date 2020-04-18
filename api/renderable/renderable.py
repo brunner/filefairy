@@ -12,10 +12,6 @@ Example:
             super(Task, self).__init__(**kwargs)
 
         @staticmethod
-        def _data():
-            return os.path.join(DATA_DIR, 'data.json')
-
-        @staticmethod
         def _href():
             return '/foo/'
 

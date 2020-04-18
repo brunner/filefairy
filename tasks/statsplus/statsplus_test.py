@@ -88,7 +88,6 @@ class StatsplusTest(Test):
         self.init_mocks(data)
         statsplus = Statsplus(date=DATE_10260602, e=ENV)
 
-        self.mock_open.assert_called_once_with(Statsplus._data(), 'r')
         self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
         self.assertEqual(statsplus.data, data)
@@ -107,7 +106,7 @@ class StatsplusTest(Test):
         shadow = statsplus._shadow_scores() + statsplus._shadow_table()
         self.assertEqual(actual, shadow)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     def test_shadow_scores(self):
@@ -130,7 +129,7 @@ class StatsplusTest(Test):
         ]
         self.assertEqual(actual, shadow)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     def test_shadow_table(self):
@@ -148,7 +147,7 @@ class StatsplusTest(Test):
         ]
         self.assertEqual(actual, shadow)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     def test_notify__download_finish(self):
@@ -157,7 +156,7 @@ class StatsplusTest(Test):
         expected = Response(thread_=[Thread(target='_parse_extracted_scores')])
         self.assertEqual(response, expected)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     def test_notify__other(self):
@@ -166,7 +165,7 @@ class StatsplusTest(Test):
         expected = Response()
         self.assertEqual(response, expected)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_valid')
@@ -186,8 +185,7 @@ class StatsplusTest(Test):
 
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_scores, mock_start, self.mock_chat,
-                             self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+                             self.mock_log, self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_valid')
     @mock.patch.object(Statsplus, '_start')
@@ -211,7 +209,7 @@ class StatsplusTest(Test):
             encode_datetime(DATE_08310000), text)
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_start, self.mock_chat, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_valid')
     @mock.patch.object(Statsplus, '_start')
@@ -233,7 +231,7 @@ class StatsplusTest(Test):
         mock_start.assert_called_once_with()
         mock_valid.assert_called_once_with(obj)
         self.assertNotCalled(mock_scores, self.mock_chat, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_on_message_internal')
     @mock.patch('tasks.statsplus.statsplus.time.time')
@@ -268,7 +266,7 @@ class StatsplusTest(Test):
             mock.call(obj=message2),
         ])
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     def test_extract(self):
@@ -279,7 +277,6 @@ class StatsplusTest(Test):
 
         write = _data()
         self.assertNotCalled(self.mock_chat, self.mock_log)
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(Statsplus, '_rm')
@@ -321,7 +318,6 @@ class StatsplusTest(Test):
                                                'Download complete.')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download complete.')
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch.object(Statsplus, '_rm')
@@ -362,7 +358,6 @@ class StatsplusTest(Test):
                                                'Download complete.')
         self.mock_log.assert_called_once_with(logging.INFO,
                                               'Download complete.')
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
         self.assertNotCalled(mock_rm)
 
@@ -379,7 +374,7 @@ class StatsplusTest(Test):
         self.assertEqual(actual, expected)
 
         mock_parse.assert_called_once_with('2449', date)
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_parse_score')
@@ -397,7 +392,6 @@ class StatsplusTest(Test):
         write = _data(table={'T40': '0-1', 'T47': '1-0'})
         mock_parse.assert_called_once_with('2449', date)
         self.assertNotCalled(self.mock_chat, self.mock_log)
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -413,7 +407,7 @@ class StatsplusTest(Test):
         mock_isfile.assert_called_once_with(
             os.path.join(GAMES_DIR, '2449.json'))
         self.assertNotCalled(mock_call, self.mock_chat, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
     @mock.patch('tasks.statsplus.statsplus.call_service')
@@ -432,7 +426,7 @@ class StatsplusTest(Test):
         mock_call.assert_called_once_with('statslab', 'parse_game',
                                           (box, log, out, date))
         mock_isfile.assert_called_once_with(out)
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -452,7 +446,7 @@ class StatsplusTest(Test):
         mock_call.assert_called_once_with('statslab', 'parse_game',
                                           (box, log, out, date))
         mock_isfile.assert_called_once_with(out)
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     @mock.patch('tasks.statsplus.statsplus.os.path.isfile')
@@ -472,7 +466,7 @@ class StatsplusTest(Test):
         mock_call.assert_called_once_with('statslab', 'parse_game',
                                           (box, log, out, date))
         mock_isfile.assert_called_once_with(out)
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     def test_save_scores(self):
@@ -489,7 +483,6 @@ class StatsplusTest(Test):
         scores = {date: {'2449': 'T47 6, T40 5'}}
         write = _data(scores=scores)
         self.assertNotCalled(self.mock_chat, self.mock_log)
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('tasks.statsplus.statsplus.check_output')
@@ -502,7 +495,7 @@ class StatsplusTest(Test):
         #     mock.call(['rm', '-rf', GAMES_DIR]),
         #     mock.call(['mkdir', GAMES_DIR]),
         # ])
-        # self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        # self.assertNotCalled(self.mock_chat, self.mock_log,
         #                      self.mock_handle.write)
 
     @mock.patch.object(Statsplus, '_rm')
@@ -517,7 +510,6 @@ class StatsplusTest(Test):
         mock_rm.assert_called_once_with()
         self.mock_chat.assert_called_once_with('fairylab', 'Sim in progress.')
         self.mock_log.assert_called_once_with(logging.INFO, 'Sim in progress.')
-        self.mock_open.assert_called_with(Statsplus._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_valid__false(self):
@@ -528,7 +520,7 @@ class StatsplusTest(Test):
         expected = False
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
     def test_valid__true(self):
@@ -539,7 +531,7 @@ class StatsplusTest(Test):
         expected = True
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
 

@@ -26,10 +26,6 @@ class FakeRenderable(Renderable):
         super(FakeRenderable, self).__init__(**kwargs)
 
     @staticmethod
-    def _data():
-        return 'data.json'
-
-    @staticmethod
     def _html():
         return 'index.html'
 

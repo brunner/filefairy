@@ -34,10 +34,6 @@ class Snacks(Registrable):
         self.users = []
 
     @staticmethod
-    def _data():
-        return None
-
-    @staticmethod
     def _href():
         return ''
 

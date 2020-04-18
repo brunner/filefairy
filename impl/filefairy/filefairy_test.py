@@ -63,10 +63,6 @@ class FakeExternalRegistrable(Registrable):
         super().__init__(**kwargs)
 
     @staticmethod
-    def _data():
-        return None
-
-    @staticmethod
     def _href():
         return '/foo/'
 
@@ -96,10 +92,6 @@ class FakeExternalRegistrable(Registrable):
 class FakeInternalRegistrable(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @staticmethod
-    def _data():
-        return None
 
     @staticmethod
     def _href():
@@ -154,85 +146,36 @@ class FilefairyTest(Test):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
-        patch_open = mock.patch('common.io_.io_.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
-
     def init_mocks(self, data):
-        mo = mock.mock_open(read_data=dumps(data))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
-
-    def reset_mocks(self):
-        self.mock_log.reset_mock()
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
+        pass
 
     def create_dashboard(self, date):
-        self.init_mocks({})
-        dashboard = Dashboard(date=date, e=ENV)
-
-        self.mock_open.assert_called_once_with(Dashboard._data(), 'r')
-        self.assertNotCalled(self.mock_log, self.mock_handle.write)
-        self.assertEqual(dashboard.data, {})
-
-        self.reset_mocks()
-        self.init_mocks({})
-
-        return dashboard
+        return Dashboard(date=date, e=ENV)
 
     def create_reference(self, date):
-        self.init_mocks({})
-        reference = Reference(date=date, e=ENV)
-
-        self.mock_open.assert_called_once_with(Reference._data(), 'r')
-        self.assertNotCalled(self.mock_log, self.mock_handle.write)
-        self.assertEqual(reference.data, {})
-
-        self.reset_mocks()
-        self.init_mocks({})
-
-        return reference
+        return Reference(date=date, e=ENV)
 
     def create_filefairy(self, date, dashboard, reference):
-        self.init_mocks({})
         filefairy = Filefairy(date=date, d=dashboard, e=ENV, r=reference)
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-        self.assertEqual(filefairy.data, {})
+        self.assertNotCalled(self.mock_log)
         self.assertEqual(filefairy.date, date)
         self.assertEqual(filefairy.day, date.day)
         self.assertEqual(filefairy.original, date)
 
-        self.reset_mocks()
-        self.init_mocks({})
-
         return filefairy
 
     def create_external_registrable(self, date):
-        self.init_mocks({})
         registrable = FakeExternalRegistrable(date=date, e=ENV)
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-        self.assertEqual(registrable.data, {})
-
-        self.reset_mocks()
-        self.init_mocks({})
+        self.assertNotCalled(self.mock_log)
 
         return registrable
 
     def create_internal_registrable(self, date):
-        self.init_mocks({})
         registrable = FakeInternalRegistrable(date=date, e=ENV)
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
-        self.assertEqual(registrable.data, {})
-
-        self.reset_mocks()
-        self.init_mocks({})
+        self.assertNotCalled(self.mock_log)
 
         return registrable
 
@@ -250,8 +193,7 @@ class FilefairyTest(Test):
         self.assertEqual(filefairy.sleep, 2)
         self.assertFalse(len(filefairy.threads))
         self.assertIsNone(filefairy.ws)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch.object(Filefairy, '_index_html')
     def test_render_data(self, mock_index):
@@ -265,8 +207,7 @@ class FilefairyTest(Test):
         expected = [('index.html', '', 'home.html', index_html)]
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     def test_on_message(self):
         dashboard = self.create_dashboard(DATE_10260602)
@@ -275,8 +216,7 @@ class FilefairyTest(Test):
         response = filefairy._on_message_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch('impl.filefairy.filefairy.os.execv')
     def test_reboot(self, mock_execv):
@@ -289,7 +229,6 @@ class FilefairyTest(Test):
         mock_execv.assert_called_once_with(sys.executable, expected)
         self.mock_log.assert_called_once_with(logging.DEBUG,
                                               'Rebooting filefairy.')
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_reload_services')
@@ -307,8 +246,7 @@ class FilefairyTest(Test):
         mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
         mock_services.assert_called_once_with()
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260604)
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -326,8 +264,7 @@ class FilefairyTest(Test):
 
         mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
         mock_services.assert_called_once_with()
-        self.assertNotCalled(mock_try_all, self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
 
     def test_shutdown(self):
@@ -338,7 +275,6 @@ class FilefairyTest(Test):
 
         self.mock_log.assert_called_once_with(logging.DEBUG,
                                               'Shutting down filefairy.')
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
         self.assertFalse(filefairy.keep_running)
 
     @mock.patch.object(Filefairy, '_try')
@@ -357,8 +293,7 @@ class FilefairyTest(Test):
 
         mock_sleep.assert_called_once_with(2)
         mock_try.assert_called_once_with('task', 'foo')
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
         self.assertEqual(filefairy.threads, [])
 
     @mock.patch('impl.filefairy.filefairy.websocket.WebSocketApp')
@@ -380,8 +315,7 @@ class FilefairyTest(Test):
         mock_recv.assert_called_once_with(message)
         mock_rtm.assert_called_once_with()
         mock_thread.assert_called_once_with(target=filefairy.ws.run_forever)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch('impl.filefairy.filefairy.getattr')
     def test_install__exception(self, mock_getattr):
@@ -398,7 +332,6 @@ class FilefairyTest(Test):
 
         mock_getattr.assert_called_once_with(module, 'Task')
         self.mock_log(logging.ERROR, 'Disabled foo.', exc_info=True)
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
         self.assertNotIn('foo', filefairy.registered)
 
     @mock.patch('impl.filefairy.filefairy.getattr')
@@ -415,8 +348,7 @@ class FilefairyTest(Test):
         self.assertEqual(actual, expected)
 
         mock_getattr.assert_called_once_with(module, 'Task')
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
         self.assertTrue(
             isinstance(filefairy.registered['foo'], FakeExternalRegistrable))
 
@@ -438,8 +370,7 @@ class FilefairyTest(Test):
         mock_on_message.assert_called_once_with(obj=obj, date=DATE_10260604)
         mock_try_all.assert_called_once_with(
             '_on_message', obj=obj, date=DATE_10260604)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
@@ -456,8 +387,7 @@ class FilefairyTest(Test):
         mock_import.assert_called_once_with('tasks.task.task')
         self.mock_log.assert_called_once_with(
             logging.ERROR, 'Disabled task.', exc_info=True)
-        self.assertNotCalled(mock_install, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_install)
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
@@ -476,8 +406,7 @@ class FilefairyTest(Test):
         mock_import.assert_called_once_with('tasks.task.task')
         mock_install.assert_called_once_with(
             'task', module, 'Task', date=DATE_10260604)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
@@ -498,7 +427,6 @@ class FilefairyTest(Test):
         mock_install.assert_called_once_with(
             'task', module, 'Task', date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO, msg)
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
@@ -517,8 +445,7 @@ class FilefairyTest(Test):
         mock_import.assert_called_once_with('tasks.task.task')
         mock_install.assert_called_once_with(
             'task', module, 'Task', date=DATE_10260604)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch('impl.filefairy.filefairy.reload_services')
     def test_reload_services__exception(self, mock_reload):
@@ -533,7 +460,6 @@ class FilefairyTest(Test):
         mock_reload.assert_called_once_with()
         self.mock_log.assert_called_once_with(
             logging.ERROR, 'Error reloading services.', exc_info=True)
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
 
     @mock.patch('impl.filefairy.filefairy.reload_services')
     def test_reload_internal__ok(self, mock_reload):
@@ -544,8 +470,7 @@ class FilefairyTest(Test):
         filefairy._reload_services()
 
         mock_reload.assert_called_once_with()
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_try')
@@ -559,8 +484,7 @@ class FilefairyTest(Test):
         response = Response()
         filefairy._response('foo', response, date=DATE_10260604)
 
-        self.assertNotCalled(mock_try, mock_try_all, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
@@ -577,8 +501,7 @@ class FilefairyTest(Test):
         response = Response(notify=[Notify.BASE])
         filefairy._response('foo', response, date=DATE_10260604)
 
-        self.assertNotCalled(mock_try, mock_try_all, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260604)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
@@ -597,8 +520,7 @@ class FilefairyTest(Test):
 
         mock_try_all.assert_called_once_with(
             '_notify', notify=Notify.OTHER, date=DATE_10260604)
-        self.assertNotCalled(mock_try, self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_try, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260604)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
@@ -618,8 +540,7 @@ class FilefairyTest(Test):
 
         mock_try.assert_called_once_with(
             'bar', '_shadow', shadow=shadow, date=DATE_10260604)
-        self.assertNotCalled(mock_try_all, self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
@@ -637,8 +558,7 @@ class FilefairyTest(Test):
         response = Response(thread_=[thread_])
         filefairy._response('foo', response, date=DATE_10260604)
 
-        self.assertNotCalled(mock_try, mock_try_all, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertCountEqual(filefairy.threads, [('foo', thread_)])
@@ -664,8 +584,7 @@ class FilefairyTest(Test):
             mock.call('_run', date=DATE_10260604),
             mock.call('_notify', notify=notify, date=DATE_10260604)
         ])
-        self.assertNotCalled(mock_render, mock_try, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_render, mock_try, self.mock_log)
         self.assertEqual(filefairy.day, 26)
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -686,8 +605,7 @@ class FilefairyTest(Test):
 
         mock_now.assert_called_once_with()
         mock_try_all.assert_called_once_with('_run', date=DATE_10260604)
-        self.assertNotCalled(mock_render, mock_try, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_render, mock_try, self.mock_log)
         self.assertEqual(filefairy.day, 26)
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -714,8 +632,7 @@ class FilefairyTest(Test):
         # mock_try.assert_called_once_with(
         #     'git', '_notify', notify=notify, date=DATE_10260604)
         mock_try_all.assert_called_once_with('_run', date=DATE_10260604)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
         self.assertEqual(filefairy.day, 26)
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -735,8 +652,7 @@ class FilefairyTest(Test):
         mock_reload.assert_called_once_with('task', False, date=DATE_10260604)
         mock_services.assert_called_once_with()
         mock_try_all.assert_called_once_with('_setup', date=DATE_10260604)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch('impl.filefairy.filefairy.threading.Thread')
     @mock.patch('impl.filefairy.filefairy.time.sleep')
@@ -757,8 +673,7 @@ class FilefairyTest(Test):
         mock_run.assert_called_once_with()
         mock_sleep.assert_called_once_with(2)
         mock_thread.assert_called_once_with(target=filefairy._background)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch('impl.filefairy.filefairy.threading.Thread')
     @mock.patch('impl.filefairy.filefairy.time.sleep')
@@ -779,8 +694,7 @@ class FilefairyTest(Test):
 
         mock_run.assert_called_once_with()
         mock_sleep.assert_called_once_with(2)
-        self.assertNotCalled(mock_connect, mock_thread, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_connect, mock_thread, self.mock_log)
 
     @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
@@ -798,8 +712,7 @@ class FilefairyTest(Test):
         mock_run.assert_called_once_with(date=DATE_10260604)
         self.mock_log.assert_called_once_with(
             logging.ERROR, 'Disabled foo.', exc_info=True)
-        self.assertNotCalled(mock_response, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_response)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
         self.assertEqual(filefairy.registered['foo'].ok, False)
 
@@ -820,8 +733,7 @@ class FilefairyTest(Test):
         mock_response.assert_called_once_with(
             'foo', response, date=DATE_10260604)
         mock_run.assert_called_once_with(date=DATE_10260604)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
         self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
         self.assertEqual(filefairy.registered['foo'].ok, True)
 
@@ -836,8 +748,7 @@ class FilefairyTest(Test):
 
         filefairy._try('foo', 'bar', date=DATE_10260604)
 
-        self.assertNotCalled(mock_response, mock_run, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
     @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
@@ -852,8 +763,7 @@ class FilefairyTest(Test):
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
-        self.assertNotCalled(mock_response, mock_run, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
     @mock.patch.object(FakeExternalRegistrable, '_run')
     @mock.patch.object(Filefairy, '_response')
@@ -864,8 +774,7 @@ class FilefairyTest(Test):
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
-        self.assertNotCalled(mock_response, mock_run, self.mock_log,
-                             self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
     @mock.patch.object(Filefairy, '_try')
     def test_try_all(self, mock_try):
@@ -881,8 +790,7 @@ class FilefairyTest(Test):
             mock.call('dashboard', '_run', date=DATE_10260604),
             mock.call('foo', '_run', date=DATE_10260604)
         ])
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
     @mock.patch('impl.filefairy.filefairy.sitelinks')
     def test_index_html(self, mock_sitelinks):
@@ -896,8 +804,7 @@ class FilefairyTest(Test):
         actual = filefairy._index_html(date=DATE_10260602)
         expected = {'sitelinks': sitelinks}
         self.assertEqual(actual, expected)
-        self.assertNotCalled(self.mock_log, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(self.mock_log)
 
 
 if __name__ in ['__main__', 'impl.filefairy.filefairy_test']:

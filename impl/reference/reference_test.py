@@ -59,8 +59,6 @@ class ReferenceTest(Test):
         self.init_mocks(data)
         reference = Reference(date=DATE_10260602, e=ENV)
 
-        self.mock_open.assert_called_once_with(Reference._data(), 'r')
-        self.assertNotCalled(self.mock_handle.write)
         self.assertEqual(reference.data, data)
 
         self.reset_mocks()
@@ -78,7 +76,7 @@ class ReferenceTest(Test):
         self.assertEqual(response, Response())
 
         mock_parse.assert_called_once_with(['P123', 'P456'])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(Reference, '_parse')
     def test_notify__other(self, mock_parse):
@@ -86,8 +84,7 @@ class ReferenceTest(Test):
         response = reference._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_parse, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_parse, self.mock_handle.write)
 
     def test_get_bats(self):
         reference = self.create_reference(_data(players=PLAYERS))
@@ -96,7 +93,7 @@ class ReferenceTest(Test):
             actual = reference._get(num, 2, 'R')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     def test_get_name(self):
         reference = self.create_reference(_data(players=PLAYERS))
@@ -106,7 +103,7 @@ class ReferenceTest(Test):
             actual = reference._get(num, 4, 'Jim Unknown')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     def test_get_number(self):
         reference = self.create_reference(_data(players=PLAYERS))
@@ -115,7 +112,7 @@ class ReferenceTest(Test):
             actual = reference._get(num, 1, '0')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     def test_get_team(self):
         reference = self.create_reference(_data(players=PLAYERS))
@@ -124,7 +121,7 @@ class ReferenceTest(Test):
             actual = reference._get(num, 0, 'T30')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     def test_get_throws(self):
         reference = self.create_reference(_data(players=PLAYERS))
@@ -133,7 +130,7 @@ class ReferenceTest(Test):
             actual = reference._get(num, 3, 'R')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch('impl.reference.reference.call_service')
     def test_parse__different(self, mock_call):
@@ -147,7 +144,6 @@ class ReferenceTest(Test):
         players = {'P123': 'T32 1 L R Jim Alfa'}
         write = _data(players=players)
         mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
-        self.mock_open.assert_called_once_with(Reference._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('impl.reference.reference.call_service')
@@ -161,7 +157,6 @@ class ReferenceTest(Test):
         link = _statsplus_player_page('123')
         write = _data()
         mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
-        self.mock_open.assert_called_once_with(Reference._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('impl.reference.reference.call_service')
@@ -174,7 +169,7 @@ class ReferenceTest(Test):
 
         link = _statsplus_player_page('123')
         mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(Reference, '_parse')
     def test_put(self, mock_parse):
@@ -182,7 +177,7 @@ class ReferenceTest(Test):
         reference._put(['P123', 'P789'])
 
         mock_parse.assert_called_once_with(['P789'])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     def test_sub(self):
         reference = self.create_reference(_data(players=PLAYERS))
@@ -194,7 +189,7 @@ class ReferenceTest(Test):
         expected = 'Jim Alfa (1-0, 0.00 ERA)'
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
 
 if __name__ == '__main__':

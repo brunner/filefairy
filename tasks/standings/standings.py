@@ -53,10 +53,7 @@ LEAGUES = {
 class Standings(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @staticmethod
-    def _data():
-        return os.path.join(DATA_DIR, 'data.json')
+        self.read()
 
     @staticmethod
     def _href():

@@ -7,7 +7,6 @@ for performing read and write operations on the file.
 """
 
 import abc
-import json
 import os
 import re
 import sys
@@ -26,26 +25,5 @@ class Serializable(Nameable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.read()
-
     def _name(self):
         return self.__class__.__name__
-
-    @abstractstatic
-    def _data():
-        pass
-
-    def read(self, *args, **kwargs):
-        if self._data() is None:
-            self.data = {}
-            return
-
-        with open(self._data(), 'r') as f:
-            self.data = json.loads(f.read())
-
-    def write(self, *args, **kwargs):
-        if self._data() is None:
-            return
-
-        with open(self._data(), 'w') as f:
-            f.write(dumps(self.data) + '\n')

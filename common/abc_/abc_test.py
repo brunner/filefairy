@@ -21,7 +21,7 @@ class Foo(object):
         super(Foo, self).__init__()
 
     @abstractstatic
-    def _data():
+    def _baz():
         pass
 
 
@@ -30,13 +30,13 @@ class Bar(Foo):
         super(Bar, self).__init__()
 
     @staticmethod
-    def _data():
+    def _baz():
         return 'Bar'
 
 
 class AbcTest(unittest.TestCase):
     def test_abstractstatic(self):
-        self.assertEqual(Bar._data(), 'Bar')
+        self.assertEqual(Bar._baz(), 'Bar')
 
 
 if __name__ == '__main__':

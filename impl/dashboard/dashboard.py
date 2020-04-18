@@ -66,16 +66,8 @@ class Dashboard(Registrable):
             warnings: List of handled warning logs and their count.
         """
         super(Dashboard, self).__init__(**kwargs)
+        self.read()
         self.warnings = []
-
-    @staticmethod
-    def _data():
-        """Store Dashboard information.
-
-        Attributes:
-            logs: List of stored info and error logs.
-        """
-        return os.path.join(DATA_DIR, 'data.json')
 
     @staticmethod
     def _href():

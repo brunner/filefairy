@@ -64,7 +64,6 @@ class UploadTest(Test):
         self.init_mocks(data)
         upload = Upload(date=DATE_10260602, e=ENV)
 
-        self.mock_open.assert_called_once_with(Upload._data(), 'r')
         self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
         self.assertEqual(upload.data, data)
@@ -88,7 +87,6 @@ class UploadTest(Test):
     #     mock_get_date.assert_called_once_with()
     #     self.mock_chat.assert_called_once_with('fairylab', 'File is up.')
     #     self.mock_log.assert_called_once_with(logging.INFO, 'File is up.')
-    #     self.mock_open.assert_called_once_with(Upload._data(), 'w')
     #     self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     # @mock.patch.object(Upload, '_get_date')
@@ -102,7 +100,7 @@ class UploadTest(Test):
     #     self.assertEqual(actual, expected)
 
     #     mock_get_date.assert_called_once_with()
-    #     self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+    #     self.assertNotCalled(self.mock_chat, self.mock_log,
     #                          self.mock_handle.write)
 
     @mock.patch('tasks.upload.upload.get')
@@ -115,7 +113,7 @@ class UploadTest(Test):
         expected = encode_datetime(DATE_10260604)
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_chat, self.mock_log, self.mock_open,
+        self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)
 
 

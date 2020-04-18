@@ -113,9 +113,6 @@ class StandingsTest(Test):
         self.init_mocks(data)
         standings = Standings(date=DATE_10260602, e=ENV)
 
-        self.mock_open.assert_called_once_with(Standings._data(), 'r')
-        self.mock_handle.write.assert_not_called()
-
         self.reset_mocks()
         self.init_mocks(data)
 
@@ -132,7 +129,7 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_index.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     def test_shadow_data(self):
         table_ = {'T40': '87-75', 'T47': '91-71'}
@@ -144,7 +141,7 @@ class StandingsTest(Test):
         ]
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
@@ -158,7 +155,7 @@ class StandingsTest(Test):
 
         mock_clear.assert_called_once_with(notify=Notify.DOWNLOAD_YEAR)
         self.assertNotCalled(mock_finish, mock_render, mock_start,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
@@ -172,7 +169,7 @@ class StandingsTest(Test):
 
         mock_finish.assert_called_once_with(notify=Notify.STATSPLUS_FINISH)
         self.assertNotCalled(mock_clear, mock_render, mock_start,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
@@ -186,7 +183,7 @@ class StandingsTest(Test):
 
         mock_render.assert_called_once_with(notify=Notify.STATSPLUS_PARSE)
         self.assertNotCalled(mock_clear, mock_finish, mock_start,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
@@ -200,7 +197,7 @@ class StandingsTest(Test):
 
         mock_start.assert_called_once_with(notify=Notify.STATSPLUS_START)
         self.assertNotCalled(mock_clear, mock_finish, mock_render,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
@@ -213,7 +210,7 @@ class StandingsTest(Test):
         self.assertEqual(response, Response())
 
         self.assertNotCalled(mock_clear, mock_finish, mock_render, mock_start,
-                             self.mock_open, self.mock_handle.write)
+                             self.mock_handle.write)
 
     @mock.patch.object(Standings, '_render')
     def test_shadow(self, mock_render):
@@ -222,7 +219,7 @@ class StandingsTest(Test):
         self.assertEqual(response, Response())
 
         mock_render.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(Standings, '_render')
     def test_clear(self, mock_render):
@@ -233,7 +230,6 @@ class StandingsTest(Test):
         table_ = {'T40': '0-0', 'T47': '0-0'}
         write = _data(table_=table_)
         mock_render.assert_called_once_with(date=DATE_10260602)
-        self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_dialog_tables(self):
@@ -257,7 +253,7 @@ class StandingsTest(Test):
         ]  # yapf: disable
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(Standings, '_render')
     @mock.patch('common.json_.json_.open', create=True)
@@ -278,7 +274,6 @@ class StandingsTest(Test):
         table_ = {'T40': '66-61', 'T47': '74-53'}
         write = _data(finished=True, table_=table_)
         mock_render.assert_called_once_with(date=DATE_10260602)
-        self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     def test_start(self):
@@ -295,7 +290,6 @@ class StandingsTest(Test):
         write = _data()
         self.assertFalse(standings.shadow['statsplus.scores'])
         self.assertFalse(standings.shadow['statsplus.table'])
-        self.mock_open.assert_called_with(Standings._data(), 'w')
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
     maxDiff = None
@@ -398,7 +392,7 @@ class StandingsTest(Test):
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
         ])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch('tasks.standings.standings.os.listdir')
     @mock.patch.object(Standings, '_dialog_tables')
@@ -493,7 +487,7 @@ class StandingsTest(Test):
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
         ])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
 
 if __name__ in ['__main__', 'tasks.standings.standings_test']:

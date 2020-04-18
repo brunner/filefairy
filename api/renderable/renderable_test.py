@@ -101,10 +101,6 @@ class FakeRenderable(Renderable):
         super(FakeRenderable, self).__init__(**kwargs)
 
     @staticmethod
-    def _data():
-        return 'data.json'
-
-    @staticmethod
     def _href():
         return '/foo/'
 
@@ -144,36 +140,10 @@ class RenderableTest(unittest.TestCase):
         patch_menu = mock.patch('api.renderable.renderable.menu')
         self.addCleanup(patch_menu.stop)
         self.mock_menu = patch_menu.start()
-
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
-
-    def init_mocks(self):
         self.mock_menu.return_value = MENU
-        mo = mock.mock_open(read_data=dumps({}))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
-
-    def reset_mocks(self):
-        self.mock_log.reset_mock()
-        self.mock_menu.reset_mock()
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
 
     def create_renderable(self, e):
-        self.init_mocks()
-        renderable = FakeRenderable(e=e)
-
-        self.mock_log.assert_not_called()
-        self.mock_menu.assert_not_called()
-        self.mock_open.assert_called_once_with(FakeRenderable._data(), 'r')
-        self.mock_handle.write.assert_not_called()
-        self.reset_mocks()
-        self.init_mocks()
-
-        return renderable
+        return FakeRenderable(e=e)
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.os.makedirs')
@@ -188,8 +158,6 @@ class RenderableTest(unittest.TestCase):
         mock_makedirs.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
         mock_stream.assert_has_calls(STREAM_CALLS)
         self.mock_log.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.assert_not_called()
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.os.makedirs')
@@ -204,8 +172,6 @@ class RenderableTest(unittest.TestCase):
         mock_makedirs.assert_has_calls(get_makedirs_calls(FILEFAIRY_DIR))
         mock_stream.assert_has_calls(STREAM_CALLS)
         self.mock_log.assert_not_called()
-        self.mock_open.assert_not_called()
-        self.mock_handle.assert_not_called()
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.os.makedirs')
@@ -228,8 +194,6 @@ class RenderableTest(unittest.TestCase):
         mock_makedirs.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
         mock_stream.assert_has_calls(STREAM_CALLS)
         self.mock_log.assert_has_calls(log_calls)
-        self.mock_open.assert_not_called()
-        self.mock_handle.assert_not_called()
 
 
 if __name__ == '__main__':

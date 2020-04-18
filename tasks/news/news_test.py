@@ -52,7 +52,6 @@ class NewsTest(Test):
         self.init_mocks({})
         news = News(date=DATE_10260602, e=ENV)
 
-        self.mock_open.assert_called_once_with(News._data(), 'r')
         self.mock_handle.write.assert_not_called()
         self.assertEqual(news.data, {})
 
@@ -72,7 +71,7 @@ class NewsTest(Test):
         self.assertEqual(actual, expected)
 
         mock_index.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(News, '_render')
     def test_notify__statsplus_finish(self, mock_render):
@@ -81,7 +80,7 @@ class NewsTest(Test):
         self.assertEqual(response, Response())
 
         mock_render.assert_called_once_with(notify=Notify.STATSPLUS_FINISH)
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch.object(News, '_render')
     def test_notify__other(self, mock_render):
@@ -89,8 +88,7 @@ class NewsTest(Test):
         response = news._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_render, self.mock_open,
-                             self.mock_handle.write)
+        self.assertNotCalled(mock_render, self.mock_handle.write)
 
     @mock.patch.object(News, '_tables')
     def test_index_html(self, mock_tables):
@@ -111,7 +109,7 @@ class NewsTest(Test):
             mock.call('news'),
             mock.call('transactions')
         ])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
     @mock.patch('tasks.news.news.loads')
     def test_tables(self, mock_loads):
@@ -132,7 +130,7 @@ class NewsTest(Test):
             mock.call(os.path.join(EXTRACT_LEAGUES, 'news.json')),
             mock.call(os.path.join(EXTRACT_LEAGUES, 'transactions.json')),
         ])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
+        self.assertNotCalled(self.mock_handle.write)
 
 
 if __name__ in ['__main__', 'tasks.news.news_test']:

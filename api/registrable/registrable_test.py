@@ -30,10 +30,6 @@ class FakeRegistrable(Registrable):
         super(FakeRegistrable, self).__init__(**kwargs)
 
     @staticmethod
-    def _data():
-        return 'data.json'
-
-    @staticmethod
     def _href():
         return '/fairylab/foo/'
 
@@ -64,31 +60,8 @@ class FakeRegistrable(Registrable):
 
 
 class RegistrableTest(unittest.TestCase):
-    def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
-
-    def init_mocks(self):
-        mo = mock.mock_open(read_data=dumps({}))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
-
-    def reset_mocks(self):
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
-
     def create_registrable(self):
-        self.init_mocks()
-        registrable = FakeRegistrable(date=DATE_10260602, e=ENV)
-
-        self.mock_open.assert_called_once_with(FakeRegistrable._data(), 'r')
-        self.mock_handle.write.assert_not_called()
-        self.reset_mocks()
-        self.init_mocks()
-
-        return registrable
+        return FakeRegistrable(date=DATE_10260602, e=ENV)
 
     def test_init(self):
         registrable = self.create_registrable()
