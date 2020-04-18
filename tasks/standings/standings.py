@@ -53,7 +53,7 @@ LEAGUES = {
 class Standings(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.read()
+        self.data = io_read(self._name())
 
     @staticmethod
     def _href():
@@ -95,7 +95,7 @@ class Standings(Registrable):
         for encoding in self.data['table']:
             self.data['table'][encoding] = '0-0'
 
-        self.write()
+        io_write(self._name(), self.data)
         self._render(**kwargs)
 
     def _dialog_tables(self, data):
@@ -133,14 +133,14 @@ class Standings(Registrable):
                     if nw + nl > cw + cl:
                         self.data['table'][encoding] = next_record
 
-        self.write()
+        io_write(self._name(), self.data)
         self._render(**kwargs)
 
     def _start(self, **kwargs):
         self.data['finished'] = False
         self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
-        self.write()
+        io_write(self._name(), self.data)
 
     def _index_html(self, **kwargs):
         ret = {
@@ -207,9 +207,3 @@ class Standings(Registrable):
             ret['recent'].append(r)
 
         return ret
-
-    def read(self, *args, **kwargs):
-        self.data = io_read(self._name())
-
-    def write(self, *args, **kwargs):
-        io_write(self._name(), self.data)

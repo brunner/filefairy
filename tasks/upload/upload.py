@@ -31,7 +31,7 @@ EXPORTS_URL = 'https://statsplus.net/oblootp/exports/'
 class Upload(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.read()
+        self.data = io_read(self._name())
 
     @staticmethod
     def _href():
@@ -49,17 +49,11 @@ class Upload(Registrable):
         #     chat_post_message('fairylab', 'File is up.')
 
         #     self.data['date'] = date
-        #     self.write()
+        #     io_write(self._name(), self.data)
 
         #     return Response(notify=[Notify.UPLOAD_FINISH])
 
         return Response()
-
-    def read(self, *args, **kwargs):
-        self.data = io_read(self._name())
-
-    def write(self, *args, **kwargs):
-        io_write(self._name(), self.data)
 
     @staticmethod
     def _get_date():

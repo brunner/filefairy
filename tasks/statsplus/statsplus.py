@@ -51,7 +51,7 @@ STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
 class Statsplus(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.read()
+        self.data = io_read(self._name())
 
     @staticmethod
     def _href():
@@ -132,7 +132,7 @@ class Statsplus(Registrable):
 
     def extract(self, *args, **kwargs):
         self.data['started'] = False
-        self.write()
+        io_write(self._name(), self.data)
 
         return Response(thread_=[Thread(target='_parse_extracted_scores')])
 
@@ -163,7 +163,7 @@ class Statsplus(Registrable):
         _logger.log(logging.INFO, 'Download complete.')
         chat_post_message('fairylab', 'Download complete.')
 
-        self.write()
+        io_write(self._name(), self.data)
         return Response(
             shadow=self._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
 
@@ -190,7 +190,7 @@ class Statsplus(Registrable):
                 return Response(thread_=[thread_])
 
             self.data['scores'][date_] = unvisited
-            self.write()
+            io_write(self._name(), self.data)
 
             return Response(
                 notify=[Notify.STATSPLUS_PARSE],
@@ -198,7 +198,7 @@ class Statsplus(Registrable):
                 thread_=[thread_])
 
         self.data['scores'].pop(date_, None)
-        self.write()
+        io_write(self._name(), self.data)
         return Response(
             notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_data())
 
@@ -235,7 +235,7 @@ class Statsplus(Registrable):
 
             self.data['scores'][date][num] = s
 
-        self.write()
+        io_write(self._name(), self.data)
         thread_ = Thread(target='_parse_saved_scores', args=(date, ))
         return Response(shadow=self._shadow_scores(), thread_=[thread_])
 
@@ -249,14 +249,8 @@ class Statsplus(Registrable):
         _logger.log(logging.INFO, 'Sim in progress.')
         chat_post_message('fairylab', 'Sim in progress.')
 
-        self.write()
-        return Response(notify=[Notify.STATSPLUS_START])
-
-    def read(self, *args, **kwargs):
-        self.data = io_read(self._name())
-
-    def write(self, *args, **kwargs):
         io_write(self._name(), self.data)
+        return Response(notify=[Notify.STATSPLUS_START])
 
     @staticmethod
     def _record(encoding, table_):

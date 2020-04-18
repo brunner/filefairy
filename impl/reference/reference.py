@@ -31,7 +31,7 @@ STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 class Reference(Registrable):
     def __init__(self, **kwargs):
         super(Reference, self).__init__(**kwargs)
-        self.read()
+        self.data = io_read(self._name())
 
     @staticmethod
     def _href():
@@ -69,7 +69,7 @@ class Reference(Registrable):
                 write = True
 
         if write:
-            self.write()
+            io_write(self._name(), self.data)
 
     def _put(self, encodings):
         encodings = [e for e in encodings if e not in self.data['players']]
@@ -78,9 +78,3 @@ class Reference(Registrable):
     def _sub(self, repl, text):
         pattern = '|'.join([e + r'(?!\d)' for e in self.data['players']])
         return re.sub(pattern, repl, text)
-
-    def read(self, *args, **kwargs):
-        self.data = io_read(self._name())
-
-    def write(self, *args, **kwargs):
-        io_write(self._name(), self.data)

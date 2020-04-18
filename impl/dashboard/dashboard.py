@@ -66,7 +66,7 @@ class Dashboard(Registrable):
             warnings: List of handled warning logs and their count.
         """
         super(Dashboard, self).__init__(**kwargs)
-        self.read()
+        self.data = io_read(self._name())
         self.warnings = []
 
     @staticmethod
@@ -101,7 +101,7 @@ class Dashboard(Registrable):
         self.warnings = []
 
         if data != original:
-            self.write()
+            io_write(self._name(), self.data)
             self._render(**dict(kwargs, log=False))
 
     def _emit(self, **kwargs):
@@ -136,7 +136,7 @@ class Dashboard(Registrable):
         self.data['logs'][date].append(record)
 
         self._render(date=d, log=False)
-        self.write()
+        io_write(self._name(), self.data)
 
     def _warning(self, record, **kwargs):
         d = decode_datetime(record['date'])
@@ -199,12 +199,6 @@ class Dashboard(Registrable):
                 ret['logs'].insert(0, t)
 
         return ret
-
-    def read(self, *args, **kwargs):
-        self.data = io_read(self._name())
-
-    def write(self, *args, **kwargs):
-        io_write(self._name(), self.data)
 
     @staticmethod
     def _alert(record, **kwargs):

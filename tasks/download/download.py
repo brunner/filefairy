@@ -32,7 +32,7 @@ FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 class Download(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.read()
+        self.data = io_read(self._name())
 
     @staticmethod
     def _href():
@@ -95,11 +95,5 @@ class Download(Registrable):
             response.append(notify=Notify.DOWNLOAD_YEAR)
             response.shadow = self._shadow_data(**kwargs)
 
-        self.write()
-        return response
-
-    def read(self, *args, **kwargs):
-        self.data = io_read(self._name())
-
-    def write(self, *args, **kwargs):
         io_write(self._name(), self.data)
+        return response
