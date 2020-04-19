@@ -29,17 +29,6 @@ class FakeRunnable(Runnable):
     def __init__(self, **kwargs):
         super(FakeRunnable, self).__init__(**kwargs)
 
-    @staticmethod
-    def _href():
-        return '/fairylab/foo/'
-
-    @staticmethod
-    def _title():
-        return 'foo'
-
-    def _on_message_internal(self, **kwargs):
-        return Response()
-
     def _notify_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
@@ -52,39 +41,13 @@ class FakeRunnable(Runnable):
     def _shadow_internal(self, **kwargs):
         return Response()
 
-    def _render_data(self, **kwargs):
-        return [('html/fairylab/foo/index.html', '', 'foo.html', {})]
-
     def _shadow_data(self, **kwargs):
         return [Shadow(destination='bar', key='foo.a', info='b')]
 
 
 class RunnableTest(unittest.TestCase):
-    def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
-
-    def init_mocks(self, data):
-        mo = mock.mock_open(read_data=dumps(data))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
-
-    def reset_mocks(self):
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
-
     def create_runnable(self):
-        self.init_mocks({})
-        runnable = FakeRunnable(date=DATE_10260602, e=ENV)
-
-        self.assertEqual(runnable.data, {})
-
-        self.reset_mocks()
-        self.init_mocks({})
-
-        return runnable
+        return FakeRunnable(date=DATE_10260602)
 
     def test_init(self):
         runnable = self.create_runnable()
@@ -122,8 +85,7 @@ class RunnableTest(unittest.TestCase):
         response = runnable._run()
         self.assertEqual(response, Response())
 
-    @mock.patch.object(FakeRunnable, '_render')
-    def test_setup(self, mock_render):
+    def test_setup(self):
         runnable = self.create_runnable()
 
         response = runnable._setup()
@@ -131,8 +93,6 @@ class RunnableTest(unittest.TestCase):
             response,
             Response(
                 shadow=[Shadow(destination='bar', key='foo.a', info='b')]))
-
-        mock_render.assert_called_once_with()
 
     def test_shadow(self):
         runnable = self.create_runnable()

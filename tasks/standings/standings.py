@@ -9,7 +9,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
+from api.messageable.messageable import Messageable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from api.serializable.serializable import Serializable  # noqa
 from common.datetime_.datetime_ import datetime_replace  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
@@ -48,9 +51,9 @@ LEAGUES = {
 }
 
 
-class Standings(Runnable):
+class Standings(Messageable, Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(Standings, self).__init__(**kwargs)
 
     @staticmethod
     def _href():

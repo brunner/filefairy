@@ -15,7 +15,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/reference', '', _path))
 
+from api.messageable.messageable import Messageable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from api.serializable.serializable import Serializable  # noqa
 from common.re_.re_ import search  # noqa
 from common.service.service import call_service  # noqa
 from types_.notify.notify import Notify  # noqa
@@ -26,7 +29,7 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 
 
-class Reference(Runnable):
+class Reference(Messageable, Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super(Reference, self).__init__(**kwargs)
 

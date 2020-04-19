@@ -13,7 +13,10 @@ _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/statsplus', '', _path))
 
+from api.messageable.messageable import Messageable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from api.serializable.serializable import Serializable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
@@ -46,9 +49,9 @@ STATSPLUS_BOX_SCORES = os.path.join(STATSPLUS_LINK, 'box_scores')
 STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
 
 
-class Statsplus(Runnable):
+class Statsplus(Messageable, Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(Statsplus, self).__init__(**kwargs)
 
     @staticmethod
     def _href():

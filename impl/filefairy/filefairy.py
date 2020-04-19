@@ -100,7 +100,7 @@ class Filefairy(Messageable, Renderable):
         response = self._reload_internal(t, True, **kwargs)
 
         if response.notify:
-            self._try_all('_setup', **kwargs)
+            self._setup_all(*args, **kwargs)
             self.date = kwargs['date']
 
         return response
@@ -209,12 +209,17 @@ class Filefairy(Messageable, Renderable):
             #     self._try('git', '_notify', notify=notify, date=date)
             self.original = self.date
 
-    def _setup(self, **kwargs):
+    def _setup(self, *args, **kwargs):
         self._reload_services()
 
         for t in listdirs(TASKS_DIR):
             self._reload_internal(t, False, **kwargs)
+
+        self._setup_all(*args, **kwargs)
+
+    def _setup_all(self, *args, **kwargs):
         self._try_all('_setup', **kwargs)
+        self._try_all('_render', **kwargs)
 
     def _start(self, duration):
         count = 0

@@ -8,7 +8,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/news', '', _path))
 
+from api.messageable.messageable import Messageable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from api.serializable.serializable import Serializable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
@@ -29,9 +32,9 @@ EXTRACT_DIR = re.sub(r'/tasks/news', '/resources/extract', _path)
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 
 
-class News(Runnable):
+class News(Messageable, Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(News, self).__init__(**kwargs)
 
     @staticmethod
     def _href():

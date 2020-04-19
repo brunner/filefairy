@@ -52,7 +52,7 @@ TESTING_CHANNEL = 'G3SUFLMK4'
 
 class Messageable():
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(Messageable, self).__init__(**kwargs)
 
     def _on_message_internal(self, **kwargs):
         return Response()

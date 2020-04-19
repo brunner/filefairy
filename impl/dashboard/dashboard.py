@@ -30,7 +30,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/dashboard', '', _path))
 
+from api.messageable.messageable import Messageable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from api.serializable.serializable import Serializable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import datetime_now  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
@@ -54,7 +57,7 @@ LINK = 'https://github.com/brunner/filefairy/blob/master/'
 DATA_DIR = re.sub(r'/impl/dashboard', '', _path) + '/resources/data/dashboard'
 
 
-class Dashboard(Runnable):
+class Dashboard(Messageable, Renderable, Runnable, Serializable):
     """Logging framework for all tasks and the main app."""
 
     def __init__(self, **kwargs):

@@ -9,7 +9,10 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/git', '', _path))
 
+from api.messageable.messageable import Messageable  # noqa
+from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from api.serializable.serializable import Serializable  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from types_.debug.debug import Debug  # noqa
@@ -19,9 +22,9 @@ from types_.response.response import Response  # noqa
 FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/git', '', _path) + '/fairylab/static'
 
 
-class Git(Runnable):
+class Git(Messageable, Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(Git, self).__init__(**kwargs)
 
     @staticmethod
     def _href():

@@ -19,6 +19,7 @@ from common.elements.elements import dialog  # noqa
 from common.elements.elements import topper  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
+from types_.response.response import Response  # noqa
 
 ENV = env()
 
@@ -152,7 +153,9 @@ class RenderableTest(unittest.TestCase):
         mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
-        renderable._render(date=THEN)
+        actual = renderable._render(date=THEN)
+        expected = Response()
+        self.assertEqual(actual, expected)
 
         mock_dump.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
         mock_makedirs.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
@@ -166,7 +169,9 @@ class RenderableTest(unittest.TestCase):
         mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
-        renderable._render(date=THEN, test=True)
+        actual = renderable._render(date=THEN, test=True)
+        expected = Response()
+        self.assertEqual(actual, expected)
 
         mock_dump.assert_has_calls(get_dump_calls(FILEFAIRY_DIR))
         mock_makedirs.assert_has_calls(get_makedirs_calls(FILEFAIRY_DIR))
@@ -181,7 +186,9 @@ class RenderableTest(unittest.TestCase):
         mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
-        renderable._render(date=THEN)
+        actual = renderable._render(date=THEN)
+        expected = Response()
+        self.assertEqual(actual, expected)
 
         log_calls = [
             mock.call(logging.WARNING, 'Handled warning.', exc_info=True),

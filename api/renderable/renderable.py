@@ -44,6 +44,7 @@ sys.path.append(re.sub(r'/api/renderable', '', _path))
 from common.abc_.abc_ import abstractstatic  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import menu  # noqa
+from types_.response.response import Response  # noqa
 
 CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
@@ -55,7 +56,7 @@ class Renderable():
 
     def __init__(self, **kwargs):
         e = kwargs.pop('e')
-        super().__init__(**kwargs)
+        super(Renderable, self).__init__(**kwargs)
 
         self.environment = e
 
@@ -77,7 +78,7 @@ class Renderable():
 
         data = self._render_data(**kwargs)
         if not data:
-            return
+            return Response()
 
         for html, subtitle, tmpl, context in data:
             try:
@@ -98,6 +99,8 @@ class Renderable():
                 if log:
                     _logger.log(
                         logging.WARNING, 'Handled warning.', exc_info=True)
+
+        return Response()
 
     @staticmethod
     def _mkdirs(path):

@@ -34,10 +34,10 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
 
-class Runnable(Messageable, Renderable, Serializable):
+class Runnable():
     def __init__(self, **kwargs):
         date = kwargs.pop('date')
-        super().__init__(**kwargs)
+        super(Runnable, self).__init__(**kwargs)
 
         self.date = date
         self.ok = True
@@ -100,7 +100,6 @@ class Runnable(Messageable, Renderable, Serializable):
     def _setup(self, **kwargs):
         response = self._setup_internal(**kwargs)
         response.shadow = self._shadow_data()
-        self._render(**kwargs)
         return response
 
     def _shadow(self, **kwargs):
