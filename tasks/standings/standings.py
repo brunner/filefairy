@@ -94,7 +94,7 @@ class Standings(Renderable, Runnable, Serializable):
         for encoding in self.data['table']:
             self.data['table'][encoding] = '0-0'
 
-        self.write()
+        self._write()
         self._render(**kwargs)
 
     def create_dialog_tables(self, data):
@@ -132,14 +132,14 @@ class Standings(Renderable, Runnable, Serializable):
                     if nw + nl > cw + cl:
                         self.data['table'][encoding] = next_record
 
-        self.write()
+        self._write()
         self._render(**kwargs)
 
     def handle_start(self, **kwargs):
         self.data['finished'] = False
         self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
-        self.write()
+        self._write()
 
     def get_standings_html(self, **kwargs):
         ret = {

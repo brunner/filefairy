@@ -115,7 +115,7 @@ class Statsplus(Messageable, Runnable, Serializable):
     @messageable
     def extract(self, *args, **kwargs):
         self.data['started'] = False
-        self.write()
+        self._write()
 
         return Response(thread_=[Thread(target='parse_extracted_scores')])
 
@@ -161,7 +161,7 @@ class Statsplus(Messageable, Runnable, Serializable):
         _logger.log(logging.INFO, 'Download complete.')
         chat_post_message('fairylab', 'Download complete.')
 
-        self.write()
+        self._write()
         return Response(
             shadow=self._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
 
@@ -188,7 +188,7 @@ class Statsplus(Messageable, Runnable, Serializable):
                 return Response(thread_=[thread_])
 
             self.data['scores'][date_] = unvisited
-            self.write()
+            self._write()
 
             return Response(
                 notify=[Notify.STATSPLUS_PARSE],
@@ -196,7 +196,7 @@ class Statsplus(Messageable, Runnable, Serializable):
                 thread_=[thread_])
 
         self.data['scores'].pop(date_, None)
-        self.write()
+        self._write()
         return Response(
             notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_data())
 
@@ -227,7 +227,7 @@ class Statsplus(Messageable, Runnable, Serializable):
 
             self.data['scores'][date][num] = s
 
-        self.write()
+        self._write()
         thread_ = Thread(target='parse_saved_scores', args=(date, ))
         return Response(shadow=self.get_shadow_scores(), thread_=[thread_])
 
@@ -241,7 +241,7 @@ class Statsplus(Messageable, Runnable, Serializable):
         _logger.log(logging.INFO, 'Sim in progress.')
         chat_post_message('fairylab', 'Sim in progress.')
 
-        self.write()
+        self._write()
         return Response(notify=[Notify.STATSPLUS_START])
 
     @staticmethod

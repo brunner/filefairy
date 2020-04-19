@@ -100,7 +100,7 @@ class Dashboard(Renderable, Runnable, Serializable):
         self.warnings = []
 
         if data != original:
-            self.write()
+            self._write()
             self._render(**dict(kwargs, log=False))
 
     def emit(self, **kwargs):
@@ -146,7 +146,7 @@ class Dashboard(Renderable, Runnable, Serializable):
         self.data['logs'][date].append(record)
 
         self._render(date=d, log=False)
-        self.write()
+        self._write()
 
     def emit_warning(self, record, **kwargs):
         d = decode_datetime(record['date'])
@@ -260,4 +260,4 @@ class LoggingHandler(logging.Handler):
     def emit(self, record):
         # TODO: uncomment after finishing refactors.
         # self.dashboard.emit(**vars(record))
-        print(vars(record))
+        print(record)

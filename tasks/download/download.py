@@ -88,5 +88,5 @@ class Download(Messageable, Runnable, Serializable):
             response.append(notify=Notify.DOWNLOAD_YEAR)
             response.shadow = self._shadow_data(**kwargs)
 
-        self.write()
+        self._write()
         return response

@@ -59,7 +59,7 @@ class Reference(Runnable, Serializable):
                 changed = True
 
         if changed:
-            self.write()
+            self._write()
 
     def put_players(self, encodings):
         encodings = [e for e in encodings if e not in self.data['players']]

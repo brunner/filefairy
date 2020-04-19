@@ -27,19 +27,16 @@ class Serializable():
     def __init__(self, **kwargs):
         super(Serializable, self).__init__(**kwargs)
 
-        self.data = self.read()
+        self.data = self._read()
 
     def _data(self):
         d = self.__class__.__name__.lower()
         return os.path.join(DATA_DIR, d, 'data.json')
 
-    def read(self, *args, **kwargs):
-        try:
-            with open(self._data(), 'r') as f:
-                return json.loads(f.read())
-        except FileNotFoundError:
-            return {}
+    def _read(self, *args, **kwargs):
+        with open(self._data(), 'r') as f:
+            return json.loads(f.read())
 
-    def write(self, *args, **kwargs):
+    def _write(self, *args, **kwargs):
         with open(self._data(), 'w') as f:
             f.write(dumps(self.data) + '\n')

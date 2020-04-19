@@ -39,7 +39,7 @@ class Upload(Runnable, Serializable):
         #     chat_post_message('fairylab', 'File is up.')
 
         #     self.data['date'] = date
-        #     self.write()
+        #     self._write()
 
         #     return Response(notify=[Notify.UPLOAD_FINISH])
 

@@ -60,7 +60,7 @@ class SerializableTest(unittest.TestCase):
         self.mock_handle = mo()
         self.mock_open.side_effect = [mo.return_value]
 
-        data = serializable.read()
+        data = serializable._read()
         self.assertEqual(new, data)
 
         self.mock_open.assert_called_once_with(_DATA, 'r')
@@ -73,7 +73,7 @@ class SerializableTest(unittest.TestCase):
         serializable.data['a'] = 2
         serializable.data['b'] = False
 
-        serializable.write()
+        serializable._write()
 
         new = {'a': 2, 'b': False}
         self.mock_open.assert_called_once_with(_DATA, 'w')
