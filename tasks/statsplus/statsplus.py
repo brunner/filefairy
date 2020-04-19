@@ -19,6 +19,7 @@ from api.serializable.serializable import Serializable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
+from common.io_.io_ import read_data  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
 from common.messageable.messageable import messageable  # noqa
@@ -35,7 +36,6 @@ from common.teams.teams import precoding_to_encoding_sub  # noqa
 from types_.debug.debug import Debug  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
 DATA_DIR = re.sub(r'/tasks/statsplus', '', _path) + '/resources/data/statsplus'
@@ -53,10 +53,14 @@ class Statsplus(Messageable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super(Statsplus, self).__init__(**kwargs)
 
-    def _shadow_data(self, **kwargs):
-        return self.get_shadow_scores() + self.get_shadow_table()
+        self.download_end = None
 
     def _notify_internal(self, **kwargs):
+        # TODO: Fix this, it should be DOWNLOAD_FINISH that triggers updating
+        # the download end value.
+        if kwargs['notify'] == Notify.DOWNLOAD_YEAR:
+            self.download_end = self.read_download_end()
+
         if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
             return Response(thread_=[Thread(target='parse_extracted_scores')])
 
@@ -75,8 +79,7 @@ class Statsplus(Messageable, Runnable, Serializable):
         d = datetime.datetime.strptime(s, '%m/%d/%Y')
         date = datetime_datetime_pst(d.year, d.month, d.day)
 
-        end = self.shadow.get('download.end')
-        if not end or date < decode_datetime(end):
+        if not self.download_end or date < self.download_end:
             return Response()
 
         date = encode_datetime(date)
@@ -85,6 +88,10 @@ class Statsplus(Messageable, Runnable, Serializable):
         elif search(r'MAJOR LEAGUE BASEBALL Final Scores', text):
             return self.save_scores(date, text)
 
+        return Response()
+
+    def _setup_internal(self, **kwargs):
+        self.download_end = self.read_download_end()
         return Response()
 
     @messageable
@@ -107,8 +114,6 @@ class Statsplus(Messageable, Runnable, Serializable):
                 response.append(notify=notify)
             for thread_ in inner.thread_:
                 response.append(thread_=thread_)
-            if inner.shadow:
-                response.set_shadow(self._shadow_data())
 
         return response
 
@@ -126,17 +131,6 @@ class Statsplus(Messageable, Runnable, Serializable):
     def get_next_record(self, data, encoding, win):
         cw, cl = self.get_record(encoding, self.data['table'])
         return encode_record(cw + 1, cl) if win else encode_record(cw, cl + 1)
-
-    def get_shadow_key(self, d, k):
-        return [Shadow(destination=d, key='statsplus.' + k, info=self.data[k])]
-
-    def get_shadow_scores(self):
-        gameday_scores = self.get_shadow_key('gameday', 'scores')
-        standings_scores = self.get_shadow_key('standings', 'scores')
-        return gameday_scores + standings_scores
-
-    def get_shadow_table(self):
-        return self.get_shadow_key('standings', 'table')
 
     def parse_extracted_scores(self, *args, **kwargs):
         self.data['scores'] = {}
@@ -163,8 +157,7 @@ class Statsplus(Messageable, Runnable, Serializable):
         chat_post_message('fairylab', 'Download complete.')
 
         self._write()
-        return Response(notify=[Notify.STATSPLUS_FINISH],
-                        shadow=self._shadow_data())
+        return Response(notify=[Notify.STATSPLUS_FINISH])
 
     def parse_saved_scores(self, date_, *args, **kwargs):
         if date_ not in self.data['scores']:
@@ -192,14 +185,11 @@ class Statsplus(Messageable, Runnable, Serializable):
             self.data['scores'][date_] = unvisited
             self._write()
 
-            return Response(notify=[Notify.STATSPLUS_PARSE],
-                            shadow=self._shadow_data(),
-                            thread_=[thread_])
+            return Response(notify=[Notify.STATSPLUS_PARSE], thread_=[thread_])
 
         self.data['scores'].pop(date_, None)
         self._write()
-        return Response(notify=[Notify.STATSPLUS_PARSE],
-                        shadow=self._shadow_data())
+        return Response(notify=[Notify.STATSPLUS_PARSE])
 
     def parse_score(self, num, date):
         out = os.path.join(GAMES_DIR, num + '.json')
@@ -230,9 +220,7 @@ class Statsplus(Messageable, Runnable, Serializable):
 
         self._write()
         thread_ = Thread(target='parse_saved_scores', args=(date, ))
-        return Response(notify=[Notify.STATSPLUS_SAVE],
-                        shadow=self.get_shadow_scores(),
-                        thread_=[thread_])
+        return Response(notify=[Notify.STATSPLUS_SAVE], thread_=[thread_])
 
     def start(self):
         self.data['scores'] = {}
@@ -263,3 +251,7 @@ class Statsplus(Messageable, Runnable, Serializable):
             return False
 
         return True
+
+    @staticmethod
+    def read_download_end():
+        return decode_datetime(read_data('download', 'end'))

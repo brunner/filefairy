@@ -32,7 +32,6 @@ from impl.reference.reference import Reference  # noqa
 from types_.debug.debug import Debug  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
 BG = threading.Thread()
@@ -75,9 +74,6 @@ class Faketask(Messageable, Renderable, Runnable, Serializable):
     def _render_data(self, **kwargs):
         return [('faketask/index.html', '', 'faketask.html', {})]
 
-    def _shadow_data(self, **kwargs):
-        return []
-
     def _on_message_internal(self, **kwargs):
         return Response(notify=[Notify.BASE])
 
@@ -117,8 +113,7 @@ class FilefairyTest(Test):
         self.addCleanup(log_patch.stop)
         self.log_ = log_patch.start()
 
-        open_patch = mock.patch('api.serializable.serializable.open',
-                                create=True)
+        open_patch = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 
@@ -348,27 +343,6 @@ class FilefairyTest(Test):
                                          notify=Notify.OTHER,
                                          date=DATE_10260604)
         self.assertNotCalled(try_, self.log_)
-
-    @mock.patch.object(Filefairy, 'try_all')
-    @mock.patch.object(Filefairy, 'try_')
-    def test_handle_response__shadow(self, try_, try_all_):
-        dashboard = self.create_dashboard(DATE_10260602)
-        reference = self.create_reference(DATE_10260602)
-        filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
-
-        shadow = Shadow(destination='bar', key='faketask.baz')
-        response = Response(shadow=[shadow])
-        filefairy.handle_response('faketask', response, date=DATE_10260604)
-        self.assertEqual(filefairy.date, DATE_10260602)
-        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260602)
-        self.assertFalse(len(filefairy.threads))
-
-        try_.assert_called_once_with('bar',
-                                     '_shadow',
-                                     shadow=shadow,
-                                     date=DATE_10260604)
-        self.assertNotCalled(try_all_, self.log_)
 
     @mock.patch.object(Filefairy, 'try_all')
     @mock.patch.object(Filefairy, 'try_')

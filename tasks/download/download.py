@@ -20,7 +20,6 @@ from common.messageable.messageable import messageable  # noqa
 from common.service.service import call_service  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from types_.notify.notify import Notify  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 from types_.response.response import Response  # noqa
 
@@ -33,13 +32,6 @@ FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 class Download(Messageable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super(Download, self).__init__(**kwargs)
-
-    def _shadow_data(self, **kwargs):
-        return [
-            Shadow(destination='statsplus',
-                   key='download.end',
-                   info=self.data['end'])
-        ]
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.UPLOAD_FINISH:
@@ -85,7 +77,6 @@ class Download(Messageable, Runnable, Serializable):
         self.data['start'] = encode_datetime(start)
         if start.year != end.year:
             response.append(notify=Notify.DOWNLOAD_YEAR)
-            response.shadow = self._shadow_data(**kwargs)
 
         self._write()
         return response

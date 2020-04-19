@@ -39,8 +39,7 @@ class UploadTest(Test):
         self.addCleanup(log_patch.stop)
         self.log_ = log_patch.start()
 
-        open_patch = mock.patch('api.serializable.serializable.open',
-                                create=True)
+        open_patch = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 

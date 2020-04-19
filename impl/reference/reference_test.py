@@ -33,8 +33,7 @@ def create_statsplus_player_page(num):
 
 class ReferenceTest(Test):
     def setUp(self):
-        open_patch = mock.patch('api.serializable.serializable.open',
-                                create=True)
+        open_patch = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 

@@ -148,9 +148,6 @@ class Filefairy(Messageable, Renderable):
         for notify in response.notify:
             if notify != Notify.BASE:
                 self.try_all('_notify', **dict(kwargs, notify=notify))
-        for shadow in response.shadow:
-            self.try_(shadow.destination, '_shadow',
-                      **dict(kwargs, shadow=shadow))
         for thread_ in response.thread_:
             self.threads.append((t, thread_))
 

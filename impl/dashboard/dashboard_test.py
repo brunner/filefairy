@@ -89,8 +89,7 @@ class DashboardTest(Test):
         self.addCleanup(files_upload_patch.stop)
         self.files_upload_ = files_upload_patch.start()
 
-        open_patch = mock.patch('api.serializable.serializable.open',
-                                create=True)
+        open_patch = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 

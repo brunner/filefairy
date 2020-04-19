@@ -37,7 +37,6 @@ class Runnable():
 
         self.date = date
         self.ok = True
-        self.shadow = {}
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -69,9 +68,6 @@ class Runnable():
     date = property(get_date, set_date)
     ok = property(get_ok, set_ok)
 
-    def _shadow_data(self, **kwargs):
-        return []
-
     def _notify_internal(self, **kwargs):
         return Response()
 
@@ -91,11 +87,4 @@ class Runnable():
         return self._run_internal(**kwargs)
 
     def _setup(self, **kwargs):
-        response = self._setup_internal(**kwargs)
-        response.shadow = self._shadow_data()
-        return response
-
-    def _shadow(self, **kwargs):
-        shadow = kwargs['shadow']
-        self.shadow[shadow.key] = shadow.info
-        return Response()
+        return self._setup_internal(**kwargs)

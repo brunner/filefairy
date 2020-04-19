@@ -18,6 +18,7 @@ from common.datetime_.datetime_ import suffix  # noqa
 from common.dict_.dict_ import merge  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import topper  # noqa
+from common.io_.io_ import read_data  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqa
 from common.record.record import add_records  # noqa
@@ -31,7 +32,6 @@ from common.teams.teams import encoding_to_lower  # noqa
 from common.teams.teams import icon_absolute  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 
 DATA_DIR = re.sub(r'/tasks/standings', '', _path) + '/resources/data/standings'
 GAMES_DIR = re.sub(r'/tasks/standings', '/resources/games', _path)
@@ -65,13 +65,6 @@ class Standings(Renderable, Runnable, Serializable):
     def _render_data(self, **kwargs):
         standings_html = self.get_standings_html(**kwargs)
         return [('standings/index.html', '', 'standings.html', standings_html)]
-
-    def _shadow_data(self, **kwargs):
-        return [
-            Shadow(destination='statsplus',
-                   key='standings.table',
-                   info=self.data['table'])
-        ]
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.DOWNLOAD_YEAR:
@@ -134,8 +127,6 @@ class Standings(Renderable, Runnable, Serializable):
 
     def handle_start(self, **kwargs):
         self.data['finished'] = False
-        self.shadow['statsplus.scores'] = {}
-        self.shadow['statsplus.table'] = {}
         self._write()
 
     def get_standings_html(self, **kwargs):
@@ -145,8 +136,9 @@ class Standings(Renderable, Runnable, Serializable):
             'recent': [],
         }
 
-        statsplus_scores = self.shadow.get('statsplus.scores', {})
-        statsplus_table = self.shadow.get('statsplus.table', {})
+        statsplus_data = read_data('statsplus')
+        statsplus_scores = statsplus_data['scores']
+        statsplus_table = statsplus_data['table']
 
         nums = [
             name[:-5] for name in os.listdir(GAMES_DIR)

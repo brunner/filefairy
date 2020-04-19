@@ -29,7 +29,6 @@ from common.test.test import main  # noqa
 from tasks.standings.standings import Standings  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 
 ENV = env()
 
@@ -96,8 +95,7 @@ def _table(keys, table_):
 
 class StandingsTest(Test):
     def setUp(self):
-        open_patch = mock.patch('api.serializable.serializable.open',
-                                create=True)
+        open_patch = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 
@@ -130,17 +128,6 @@ class StandingsTest(Test):
         self.assertEqual(actual, expected)
 
         get_standings_html_.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.open_handle_.write)
-
-    def test_shadow_data(self):
-        table_ = {'T40': '87-75', 'T47': '91-71'}
-        standings = self.create_standings(_data(table_=table_))
-        actual = standings._shadow_data(date=DATE_10260602)
-        expected = [
-            Shadow(destination='statsplus', key='standings.table', info=table_)
-        ]
-        self.assertEqual(actual, expected)
-
         self.assertNotCalled(self.open_handle_.write)
 
     @mock.patch.object(Standings, '_render')
@@ -284,20 +271,10 @@ class StandingsTest(Test):
     def test_handle_start(self):
         standings = self.create_standings(_data(finished=True))
 
-        date = encode_datetime(DATE_08310000)
-        statsplus_scores = {date: {'2998': 'T31 4, TLA 2'}}
-        statsplus_table = {'T40': '0-3', 'T47': '3-0'}
-        standings.shadow['statsplus.scores'] = statsplus_scores
-        standings.shadow['statsplus.table'] = statsplus_table
-
         standings.handle_start(date=DATE_10260602)
 
         write = _data()
-        self.assertFalse(standings.shadow['statsplus.scores'])
-        self.assertFalse(standings.shadow['statsplus.table'])
         self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
-
-    maxDiff = None
 
     @mock.patch('tasks.standings.standings.os.listdir')
     @mock.patch.object(Standings, 'create_dialog_tables')
@@ -342,10 +319,9 @@ class StandingsTest(Test):
         date = encode_datetime(DATE_08310000)
         score = 'T31 4, TLA 2'
         statsplus_scores = {date: {'2998': score}}
-        standings.shadow['statsplus.scores'] = statsplus_scores
-
         statsplus_table = {'T40': '0-2', 'T47': '2-0'}
-        standings.shadow['statsplus.table'] = statsplus_table
+        statsplus_data = {'scores': statsplus_scores, 'table': statsplus_table}
+        self.init_mocks(statsplus_data)
 
         actual = standings.get_standings_html(date=DATE_10260602)
         expected = {
@@ -449,7 +425,8 @@ class StandingsTest(Test):
             'T45': '0-1',
             'T47': '2-0'
         }
-        standings.shadow['statsplus.table'] = statsplus_table
+        statsplus_data = {'scores': {}, 'table': statsplus_table}
+        self.init_mocks(statsplus_data)
 
         actual = standings.get_standings_html(date=DATE_10260602)
         expected = {

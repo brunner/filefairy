@@ -8,7 +8,6 @@ file data.
 """
 
 import abc
-import json
 import os
 import re
 import sys
@@ -16,7 +15,8 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/serializable', '', _path))
 
-from common.json_.json_ import dumps  # noqa
+from common.io_.io_ import read_data  # noqa
+from common.io_.io_ import write_data  # noqa
 
 DATA_DIR = re.sub(r'/api/serializable', '', _path) + '/resources/data'
 
@@ -29,14 +29,11 @@ class Serializable():
 
         self.data = self._read()
 
-    def _data(self):
-        d = self.__class__.__name__.lower()
-        return os.path.join(DATA_DIR, d, 'data.json')
+    def _data_name(self):
+        return self.__class__.__name__.lower()
 
     def _read(self, *args, **kwargs):
-        with open(self._data(), 'r') as f:
-            return json.loads(f.read())
+        return read_data(self._data_name())
 
     def _write(self, *args, **kwargs):
-        with open(self._data(), 'w') as f:
-            f.write(dumps(self.data) + '\n')
+        write_data(self._data_name(), self.data)

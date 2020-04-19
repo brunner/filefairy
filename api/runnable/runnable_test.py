@@ -7,7 +7,6 @@ import os
 import re
 import sys
 import unittest
-import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/runnable', '', _path))
@@ -17,7 +16,6 @@ from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 
 ENV = env()
 
@@ -37,9 +35,6 @@ class FakeRunnable(Runnable):
 
     def _setup_internal(self, **kwargs):
         return Response()
-
-    def _shadow_data(self, **kwargs):
-        return [Shadow(destination='bar', key='foo.a', info='b')]
 
 
 class RunnableTest(unittest.TestCase):
@@ -86,18 +81,7 @@ class RunnableTest(unittest.TestCase):
         runnable = self.create_runnable()
 
         response = runnable._setup()
-        self.assertEqual(
-            response,
-            Response(
-                shadow=[Shadow(destination='bar', key='foo.a', info='b')]))
-
-    def test_shadow(self):
-        runnable = self.create_runnable()
-
-        shadow = Shadow(destination='bar', key='foo.a', info='b')
-        response = runnable._shadow(shadow=shadow)
         self.assertEqual(response, Response())
-        self.assertEqual(runnable.shadow, {'foo.a': 'b'})
 
 
 if __name__ == '__main__':

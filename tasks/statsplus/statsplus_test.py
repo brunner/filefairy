@@ -21,7 +21,6 @@ from common.test.test import get_testdata  # noqa
 from tasks.statsplus.statsplus import Statsplus  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
 DATE_08300000 = datetime_datetime_pst(2024, 8, 30)
@@ -54,8 +53,7 @@ class StatsplusTest(Test):
         self.addCleanup(log_patch.stop)
         self.log_ = log_patch.start()
 
-        open_patch = mock.patch('api.serializable.serializable.open',
-                                create=True)
+        open_patch = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 
@@ -81,19 +79,6 @@ class StatsplusTest(Test):
         self.init_mocks(data)
 
         return statsplus
-
-    def test_shadow_data(self):
-        date = encode_datetime(DATE_08310000)
-        scores = {date: {'2449': 'T47 6, T40 5'}}
-        table = {'T40': '0-1', 'T47': '1-0'}
-        data = {'scores': scores, 'started': False, 'table': table}
-        statsplus = self.create_statsplus(data)
-        actual = statsplus._shadow_data(date=DATE_10260602)
-        shadow = statsplus.get_shadow_scores() + statsplus.get_shadow_table()
-        self.assertEqual(actual, shadow)
-
-        self.assertNotCalled(self.chat_post_message_, self.log_,
-                             self.open_handle_.write)
 
     def test_notify__download_finish(self):
         data = {'scores': {}, 'started': True, 'table': {}}
@@ -126,7 +111,7 @@ class StatsplusTest(Test):
 
         data = {'scores': {}, 'started': False, 'table': {}}
         statsplus = self.create_statsplus(data)
-        statsplus.shadow['download.end'] = encode_datetime(DATE_08310000)
+        statsplus.download_end = DATE_08310000
 
         actual = statsplus._on_message_internal(obj=obj)
         self.assertEqual(actual, Response())
@@ -140,16 +125,17 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, 'is_valid_message')
     def test_on_message__save_scores(self, is_valid_message_, save_scores_,
                                      start_):
+        is_valid_message_.return_value = True
+
         response = Response(notify=[Notify.OTHER])
         save_scores_.return_value = response
-        is_valid_message_.return_value = True
 
         text = FINAL_SCORES + SCORES
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         data = {'scores': {}, 'started': True, 'table': {}}
         statsplus = self.create_statsplus(data)
-        statsplus.shadow['download.end'] = encode_datetime(DATE_08300000)
+        statsplus.download_end = DATE_08310000
 
         actual = statsplus._on_message_internal(obj=obj)
         self.assertEqual(actual, response)
@@ -164,16 +150,17 @@ class StatsplusTest(Test):
     @mock.patch.object(Statsplus, 'save_scores')
     @mock.patch.object(Statsplus, 'is_valid_message')
     def test_on_message__start(self, is_valid_message_, save_scores_, start_):
+        is_valid_message_.return_value = True
+
         response = Response(notify=[Notify.OTHER])
         start_.return_value = response
-        is_valid_message_.return_value = True
 
         text = '08/31/2024 Final Scores'
         obj = {'bot_id': 'B7KJ3362Y', 'channel': 'C7JSGHW8G', 'text': text}
 
         data = {'scores': {}, 'started': False, 'table': {}}
         statsplus = self.create_statsplus(data)
-        statsplus.shadow['download.end'] = encode_datetime(DATE_08300000)
+        statsplus.download_end = DATE_08310000
 
         actual = statsplus._on_message_internal(obj=obj)
         self.assertEqual(actual, response)
@@ -182,6 +169,19 @@ class StatsplusTest(Test):
         start_.assert_called_once_with()
         self.assertNotCalled(save_scores_, self.chat_post_message_, self.log_,
                              self.open_handle_.write)
+
+    @mock.patch.object(Statsplus, 'read_download_end')
+    def test_setup(self, read_download_end_):
+        read_download_end_.return_value = DATE_08310000
+
+        data = {'scores': {}, 'started': False, 'table': {}}
+        statsplus = self.create_statsplus(data)
+        self.assertEqual(statsplus.download_end, None)
+
+        actual = statsplus._setup_internal(date=DATE_10260602)
+        expected = Response()
+        self.assertEqual(actual, expected)
+        self.assertEqual(statsplus.download_end, DATE_08310000)
 
     @mock.patch('tasks.statsplus.statsplus.time.time')
     @mock.patch.object(Statsplus, '_on_message_internal')
@@ -200,12 +200,11 @@ class StatsplusTest(Test):
         thread_ = Thread(target='_parse_saved_scores', args=(date, ))
         _on_message_internal_.side_effect = [
             Response(notify=[Notify.STATSPLUS_START]),
-            Response(shadow=statsplus.get_shadow_scores(), thread_=[thread_]),
+            Response(thread_=[thread_]),
         ]
 
         actual = statsplus.backfill('2')
         expected = Response(notify=[Notify.STATSPLUS_START],
-                            shadow=statsplus._shadow_data(),
                             thread_=[thread_])
         self.assertEqual(actual, expected)
 
@@ -242,49 +241,6 @@ class StatsplusTest(Test):
         self.assertNotCalled(self.chat_post_message_, self.log_,
                              self.open_handle_.write)
 
-    def test_get_shadow_scores(self):
-        date = encode_datetime(DATE_08310000)
-        scores = {date: {'2449': 'T47 6, T40 5'}}
-        table = {'T40': '0-1', 'T47': '1-0'}
-        data = {'scores': scores, 'started': False, 'table': table}
-        statsplus = self.create_statsplus(data)
-        actual = statsplus.get_shadow_scores()
-        shadow = [
-            Shadow(
-                destination='gameday',
-                key='statsplus.scores',
-                info=scores,
-            ),
-            Shadow(
-                destination='standings',
-                key='statsplus.scores',
-                info=scores,
-            ),
-        ]
-        self.assertEqual(actual, shadow)
-
-        self.assertNotCalled(self.chat_post_message_, self.log_,
-                             self.open_handle_.write)
-
-    def test_get_shadow_table(self):
-        date = encode_datetime(DATE_08310000)
-        scores = {date: {'2449': 'T47 6, T40 5'}}
-        table = {'T40': '0-1', 'T47': '1-0'}
-        data = {'scores': scores, 'started': False, 'table': table}
-        statsplus = self.create_statsplus(data)
-        actual = statsplus.get_shadow_table()
-        shadow = [
-            Shadow(
-                destination='standings',
-                key='statsplus.table',
-                info=table,
-            )
-        ]
-        self.assertEqual(actual, shadow)
-
-        self.assertNotCalled(self.chat_post_message_, self.log_,
-                             self.open_handle_.write)
-
     @mock.patch.object(Statsplus, 'parse_score')
     @mock.patch('tasks.statsplus.statsplus.loads')
     @mock.patch('tasks.statsplus.statsplus.os.listdir')
@@ -303,8 +259,7 @@ class StatsplusTest(Test):
         data = {'scores': {}, 'started': False, 'table': {}}
         statsplus = self.create_statsplus(data)
         actual = statsplus.parse_extracted_scores()
-        expected = Response(shadow=statsplus._shadow_data(),
-                            notify=[Notify.STATSPLUS_FINISH])
+        expected = Response(notify=[Notify.STATSPLUS_FINISH])
         self.assertEqual(actual, expected)
 
         write = {
@@ -351,8 +306,7 @@ class StatsplusTest(Test):
         data = {'scores': {}, 'started': True, 'table': {}}
         statsplus = self.create_statsplus(data)
         actual = statsplus.parse_extracted_scores()
-        expected = Response(shadow=statsplus._shadow_data(),
-                            notify=[Notify.STATSPLUS_FINISH])
+        expected = Response(notify=[Notify.STATSPLUS_FINISH])
         self.assertEqual(actual, expected)
 
         write = {
@@ -407,8 +361,7 @@ class StatsplusTest(Test):
         data = {'scores': scores, 'started': False, 'table': {}}
         statsplus = self.create_statsplus(data)
         actual = statsplus.parse_saved_scores(date)
-        expected = Response(notify=[Notify.STATSPLUS_PARSE],
-                            shadow=statsplus._shadow_data())
+        expected = Response(notify=[Notify.STATSPLUS_PARSE])
         self.assertEqual(actual, expected)
 
         write = {
@@ -510,7 +463,6 @@ class StatsplusTest(Test):
         actual = statsplus.save_scores(date, text)
         expected = Response(
             notify=[Notify.STATSPLUS_SAVE],
-            shadow=statsplus.get_shadow_scores(),
             thread_=[Thread(target='parse_saved_scores', args=(date, ))])
         self.assertEqual(actual, expected)
 

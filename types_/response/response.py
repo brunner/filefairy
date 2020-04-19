@@ -10,24 +10,21 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/types_/response', '', _path))
 from types_.debug.debug import Debug  # noqa
 from types_.notify.notify import Notify  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
 
 class Response(object):
     """Describe a group of data types that a task might return to the app."""
-    def __init__(self, debug=None, notify=None, shadow=None, thread_=None):
+    def __init__(self, debug=None, notify=None, thread_=None):
         """Create a Response object.
 
         Args:
             debug: The optional Debug object(s) in the response.
             notify: The optional Notify object(s) in the response.
-            shadow: The optional Shadow object(s) in the response.
             thread_: The optional Thread object(s) in the response.
         """
         self.debug = debug
         self.notify = notify
-        self.shadow = shadow
         self.thread_ = thread_
 
     def __eq__(self, other):
@@ -61,18 +58,6 @@ class Response(object):
             raise ValueError(value)
 
     @staticmethod
-    def check_shadow_list(values):
-        if not isinstance(values, list):
-            raise TypeError(values)
-        for value in values:
-            Response.check_shadow_value(value)
-
-    @staticmethod
-    def check_shadow_value(value):
-        if not isinstance(value, Shadow):
-            raise ValueError(value)
-
-    @staticmethod
     def check_thread_list(values):
         if not isinstance(values, list):
             raise TypeError(values)
@@ -89,9 +74,6 @@ class Response(object):
 
     def get_notify(self):
         return self._notify
-
-    def get_shadow(self):
-        return self._shadow
 
     def get_thread(self):
         return self._thread_
@@ -110,13 +92,6 @@ class Response(object):
             self.check_notify_list(values)
             self._notify = values
 
-    def set_shadow(self, values):
-        if values is None:
-            self._shadow = []
-        else:
-            self.check_shadow_list(values)
-            self._shadow = values
-
     def set_thread(self, values):
         if values is None:
             self._thread_ = []
@@ -126,16 +101,14 @@ class Response(object):
 
     debug = property(get_debug, set_debug)
     notify = property(get_notify, set_notify)
-    shadow = property(get_shadow, set_shadow)
     thread_ = property(get_thread, set_thread)
 
-    def append(self, debug=None, notify=None, shadow=None, thread_=None):
+    def append(self, debug=None, notify=None, thread_=None):
         """Append additional data to a Response object.
 
         Args:
             debug: The optional Debug object to append.
             notify: The optional Notify object to append.
-            shadow: The optional Shadow object to append.
             thread_: The optional Thread object to append.
         """
         if debug:
@@ -145,10 +118,6 @@ class Response(object):
         if notify:
             self.check_notify_value(notify)
             self._notify.append(notify)
-
-        if shadow:
-            self.check_shadow_value(shadow)
-            self._shadow.append(shadow)
 
         if thread_:
             self.check_thread_value(thread_)

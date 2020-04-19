@@ -23,6 +23,7 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import topper  # noqa
+from common.io_.io_ import read_data  # noqa
 from common.json_.json_ import loads  # noqa
 from common.os_.os_ import listdirs  # noqa
 from common.service.service import call_service  # noqa
@@ -116,7 +117,7 @@ class Gameday(Renderable, Runnable, Serializable):
 
                 dates[date].append((start, body, foot))
 
-        statsplus_scores = self.shadow.get('statsplus.scores', {})
+        statsplus_scores = read_data('statsplus', 'scores')
         data = call_service(
             'scoreboard',
             'pending_carousel',

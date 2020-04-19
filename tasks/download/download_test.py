@@ -19,7 +19,6 @@ from common.test.test import Test  # noqa
 from tasks.download.download import Download  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
 
 DATE_01010000 = datetime_datetime_pst(2025, 1, 1)
@@ -49,8 +48,7 @@ class DownloadTest(Test):
         self.addCleanup(log_patch.stop)
         self.log_ = log_patch.start()
 
-        open_patch = mock.patch('api.serializable.serializable.open',
-                                create=True)
+        open_patch = mock.patch('common.io_.io_.open', create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 
@@ -74,15 +72,6 @@ class DownloadTest(Test):
 
         return download
 
-    def test_shadow_data(self):
-        download = self.create_download(_data(end=DATE_10260602))
-        actual = download._shadow_data(date=DATE_10260604)
-        date = encode_datetime(DATE_10260602)
-        shadow = Shadow(destination='statsplus', key='download.end', info=date)
-        self.assertEqual(actual, [shadow])
-
-        self.assertNotCalled(self.log_, self.open_handle_.write)
-
     @mock.patch.object(Download, 'start')
     def test_notify__upload_finish(self, mock_start):
         response = Response(thread_=[Thread(target='download_start')])
@@ -102,13 +91,6 @@ class DownloadTest(Test):
         self.assertEqual(actual, Response())
 
         self.assertNotCalled(mock_start, self.log_, self.open_handle_.write)
-
-    def test_setup(self):
-        download = self.create_download(_data())
-        response = download._setup_internal(date=DATE_10260604)
-        self.assertEqual(response, Response())
-
-        self.assertNotCalled(self.log_, self.open_handle_.write)
 
     def test_start(self):
         download = self.create_download(_data(end=DATE_10260602))
@@ -198,9 +180,8 @@ class DownloadTest(Test):
         self.log_.assert_called_once_with(logging.INFO, 'Download started.')
         self.assertNotCalled(self.open_handle_.write)
 
-    @mock.patch.object(Download, '_shadow_data')
     @mock.patch('tasks.download.download.call_service')
-    def test_extract_file__start(self, call_service_, _shadow_data_):
+    def test_extract_file__start(self, call_service_):
         call_service_.return_value = DATE_08310000
 
         read = _data(end=DATE_08280000)
@@ -212,27 +193,21 @@ class DownloadTest(Test):
         call_service_.assert_called_once_with('leaguefile', 'extract_file',
                                               (DATE_08280000, ))
         self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
-        self.assertNotCalled(_shadow_data_, self.log_)
 
-    @mock.patch.object(Download, '_shadow_data')
     @mock.patch('tasks.download.download.call_service')
-    def test_extract_file__year(self, call_service_, _shadow_data_):
-        shadow = Shadow(destination='statsplus', key='download.end', info='')
+    def test_extract_file__year(self, call_service_):
         call_service_.return_value = DATE_01010000
-        _shadow_data_.return_value = [shadow]
 
         read = _data(end=DATE_08280000)
         download = self.create_download(read)
         response = download.extract_file(date=DATE_10260604)
         self.assertEqual(
             response,
-            Response(notify=[Notify.DOWNLOAD_FINISH, Notify.DOWNLOAD_YEAR],
-                     shadow=[shadow]))
+            Response(notify=[Notify.DOWNLOAD_FINISH, Notify.DOWNLOAD_YEAR]))
 
         write = _data(end=DATE_01010000, start=DATE_08280000)
         call_service_.assert_called_once_with('leaguefile', 'extract_file',
                                               (DATE_08280000, ))
-        _shadow_data_.assert_called_once_with(date=DATE_10260604)
         self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
         self.assertNotCalled(self.log_)
 
