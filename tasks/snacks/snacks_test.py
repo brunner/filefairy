@@ -12,7 +12,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.extend((_path, re.sub(r'/tasks/snacks', '', _path)))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.nltk_.nltk_ import get_cfd  # noqa
 from common.test.test import Test  # noqa
@@ -20,8 +19,6 @@ from tasks.snacks.snacks import Snacks  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 from types_.thread_.thread_ import Thread  # noqa
-
-ENV = env()
 
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
@@ -31,7 +28,7 @@ CFD = get_cfd(2, ['The quick brown fox.', 'Jumps over the lazy dog.'])
 
 class SnacksTest(Test):
     def create_snacks(self, cfds=None, users=None):
-        snacks = Snacks(date=DATE_10260602, e=ENV)
+        snacks = Snacks(date=DATE_10260602)
 
         if cfds:
             snacks.cfds = cfds

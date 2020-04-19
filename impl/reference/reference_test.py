@@ -12,14 +12,11 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.extend((_path, re.sub(r'/impl/reference', '', _path)))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
-from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
 from impl.reference.reference import Reference  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
-
-ENV = env()
 
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
@@ -52,7 +49,7 @@ class ReferenceTest(Test):
 
     def create_reference(self, data, warnings=None):
         self.init_mocks(data)
-        reference = Reference(date=DATE_10260602, e=ENV)
+        reference = Reference(date=DATE_10260602)
 
         self.assertEqual(reference.data, data)
 

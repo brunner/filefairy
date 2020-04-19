@@ -9,10 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/snacks', '', _path))
 
-from api.messageable.messageable import Messageable  # noqa
-from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
-from api.serializable.serializable import Serializable  # noqa
 from common.nltk_.nltk_ import get_cfd  # noqa
 from common.nltk_.nltk_ import get_messages  # noqa
 from common.nltk_.nltk_ import get_topic  # noqa
@@ -30,19 +27,11 @@ MIN = 8
 MAX = 30
 
 
-class Snacks(Messageable, Renderable, Runnable, Serializable):
+class Snacks(Runnable):
     def __init__(self, **kwargs):
         super(Snacks, self).__init__(**kwargs)
         self.cfds = {}
         self.users = []
-
-    @staticmethod
-    def _href():
-        return ''
-
-    @staticmethod
-    def _title():
-        return 'snacks'
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.FILEFAIRY_DAY:

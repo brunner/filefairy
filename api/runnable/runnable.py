@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """Extend the runnable API to set up hooks for standard task interactions.
 
-This base class collects the functionality of several sub-APIs to describe the
-following interactions that the app expects to perform on a running task.
+This base class describes the following interactions that the app expects to
+perform on a running task.
 
     * Notify: Receive signals indicating global state from the app.
     * Run: Perform some repeating (about once per minute) functionality.
@@ -27,9 +27,6 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/runnable', '', _path))
 
-from api.messageable.messageable import Messageable  # noqa
-from api.renderable.renderable import Renderable  # noqa
-from api.serializable.serializable import Serializable  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 

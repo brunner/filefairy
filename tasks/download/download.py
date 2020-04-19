@@ -12,7 +12,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
-from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.serializable.serializable import Serializable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
@@ -30,17 +29,9 @@ FILE_NAME = 'orange%20and%20blue%20league%20baseball.zip'
 FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 
 
-class Download(Messageable, Renderable, Runnable, Serializable):
+class Download(Messageable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super(Download, self).__init__(**kwargs)
-
-    @staticmethod
-    def _href():
-        return ''
-
-    @staticmethod
-    def _title():
-        return 'download'
 
     def _shadow_data(self, **kwargs):
         return [

@@ -15,7 +15,6 @@ sys.path.extend((_path, re.sub(r'/tasks/statsplus', '', _path)))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
 from common.test.test import get_testdata  # noqa
@@ -24,8 +23,6 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
-
-ENV = env()
 
 DATE_08300000 = datetime_datetime_pst(2024, 8, 30)
 DATE_08310000 = datetime_datetime_pst(2024, 8, 31)
@@ -87,7 +84,7 @@ class StatsplusTest(Test):
 
     def create_statsplus(self, data):
         self.init_mocks(data)
-        statsplus = Statsplus(date=DATE_10260602, e=ENV)
+        statsplus = Statsplus(date=DATE_10260602)
 
         self.assertNotCalled(self.mock_chat, self.mock_log,
                              self.mock_handle.write)

@@ -26,7 +26,8 @@ class Serializable():
 
     def __init__(self, **kwargs):
         super(Serializable, self).__init__(**kwargs)
-        self.read()
+
+        self.data = self.read()
 
     def _data(self):
         d = self.__class__.__name__.lower()
@@ -35,9 +36,9 @@ class Serializable():
     def read(self, *args, **kwargs):
         try:
             with open(self._data(), 'r') as f:
-                self.data = json.loads(f.read())
+                return json.loads(f.read())
         except FileNotFoundError:
-            self.data = {}
+            return {}
 
     def write(self, *args, **kwargs):
         with open(self._data(), 'w') as f:

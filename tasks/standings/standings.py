@@ -9,7 +9,6 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
-from api.messageable.messageable import Messageable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.serializable.serializable import Serializable  # noqa
@@ -51,7 +50,7 @@ LEAGUES = {
 }
 
 
-class Standings(Messageable, Renderable, Runnable, Serializable):
+class Standings(Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super(Standings, self).__init__(**kwargs)
 

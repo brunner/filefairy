@@ -9,7 +9,6 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/gameday', '', _path))
 
-from api.messageable.messageable import Messageable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.serializable.serializable import Serializable  # noqa
@@ -42,7 +41,7 @@ GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
 GAMES_DIR = re.sub(r'/tasks/gameday', '/resources/games', _path)
 
 
-class Gameday(Messageable, Renderable, Runnable, Serializable):
+class Gameday(Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super(Gameday, self).__init__(**kwargs)
 

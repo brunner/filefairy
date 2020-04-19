@@ -8,7 +8,6 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/news', '', _path))
 
-from api.messageable.messageable import Messageable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.serializable.serializable import Serializable  # noqa
@@ -32,7 +31,7 @@ EXTRACT_DIR = re.sub(r'/tasks/news', '/resources/extract', _path)
 EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 
 
-class News(Messageable, Renderable, Runnable, Serializable):
+class News(Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super(News, self).__init__(**kwargs)
 

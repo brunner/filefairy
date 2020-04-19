@@ -12,8 +12,6 @@ _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/upload', '', _path))
 
-from api.messageable.messageable import Messageable  # noqa
-from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from api.serializable.serializable import Serializable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
@@ -29,17 +27,9 @@ DATA_DIR = re.sub(r'/tasks/upload', '', _path) + '/resources/data/upload'
 EXPORTS_URL = 'https://statsplus.net/oblootp/exports/'
 
 
-class Upload(Messageable, Renderable, Runnable, Serializable):
+class Upload(Runnable, Serializable):
     def __init__(self, **kwargs):
         super(Upload, self).__init__(**kwargs)
-
-    @staticmethod
-    def _href():
-        return ''
-
-    @staticmethod
-    def _title():
-        return 'upload'
 
     def _run_internal(self, **kwargs):
         # TODO: uncomment after finishing refactors.

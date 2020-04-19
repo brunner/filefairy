@@ -41,7 +41,7 @@ STATSPLUS_PLAYER = 'https://statsplus.net/oblootp/player/'
 
 class ReferenceTest(unittest.TestCase):
     def setUp(self):
-        reference = Reference(date=DATE_10260602, e=ENV)
+        reference = Reference(date=DATE_10260602)
         reference.data['players'] = PLAYERS
 
         set_reference(reference)

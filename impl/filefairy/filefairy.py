@@ -66,6 +66,7 @@ class Filefairy(Messageable, Renderable):
         self.day = date.day
         self.keep_running = True
         self.original = date
+        self.renderables = []
         self.runners = {'dashboard': d, 'reference': r}
         self.sleep = 2  # TODO: change back to 60 after finishing refactors.
         self.threads = []
@@ -105,6 +106,11 @@ class Filefairy(Messageable, Renderable):
 
         return response
 
+    def set_renderables(self, *args, **kwargs):
+        if len(args) != 1 or not isinstance(args[0], list):
+            return
+        self.renderables = args[0]
+
     def shutdown(self, *args, **kwargs):
         _logger.log(logging.DEBUG, 'Shutting down filefairy.')
         self.keep_running = False
@@ -135,7 +141,11 @@ class Filefairy(Messageable, Renderable):
         date = kwargs['date']
         try:
             runnable = getattr(module, clazz)
-            self.runners[t] = runnable(date=date, e=self.environment)
+            runargs = {'date': date}
+            if t in self.renderables:
+                runargs['e'] = self.environment
+
+            self.runners[t] = runnable(**runargs)
         except Exception:
             _logger.log(logging.ERROR, 'Disabled ' + t + '.', exc_info=True)
             return False
@@ -276,7 +286,7 @@ def main():
     date = datetime_now()
     e = env()
     dashboard = Dashboard(date=date, e=e)
-    reference = Reference(date=date, e=e)
+    reference = Reference(date=date)
 
     handler = LoggingHandler(dashboard)
     _logger.addHandler(handler)
@@ -285,6 +295,7 @@ def main():
     set_reference(reference)
 
     filefairy = Filefairy(date=date, d=dashboard, e=e, r=reference)
+    filefairy.set_renderables(['gameday', 'news', 'standings'])
     filefairy._setup(date=date)
     filefairy._start(2)
 

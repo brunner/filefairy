@@ -14,7 +14,6 @@ sys.path.extend((_path, re.sub(r'/tasks/download', '', _path)))
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.jinja2_.jinja2_ import env  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.test.test import Test  # noqa
 from tasks.download.download import Download  # noqa
@@ -22,8 +21,6 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 from types_.shadow.shadow import Shadow  # noqa
 from types_.thread_.thread_ import Thread  # noqa
-
-ENV = env()
 
 DATE_01010000 = datetime_datetime_pst(2025, 1, 1)
 DATE_08280000 = datetime_datetime_pst(2024, 8, 28)
@@ -69,7 +66,7 @@ class DownloadTest(Test):
 
     def create_download(self, data):
         self.init_mocks(data)
-        download = Download(date=DATE_10250007, e=ENV)
+        download = Download(date=DATE_10250007)
 
         self.assertEqual(download.data, data)
 

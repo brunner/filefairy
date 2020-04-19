@@ -60,20 +60,20 @@ def set_keep_running(filefairy, keep_running, *args, **kwargs):
     filefairy.keep_running = keep_running
 
 
-class FakeTask(Messageable, Renderable, Runnable, Serializable):
+class Faketask(Messageable, Renderable, Runnable, Serializable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     @staticmethod
     def _href():
-        return '/foo/'
+        return '/faketask/'
 
     @staticmethod
     def _title():
-        return 'foo'
+        return 'Fake Task'
 
     def _render_data(self, **kwargs):
-        return [('foo/index.html', '', 'foo.html', {})]
+        return [('faketask/index.html', '', 'faketask.html', {})]
 
     def _shadow_data(self, **kwargs):
         return []
@@ -133,11 +133,12 @@ class FilefairyTest(Test):
 
     def create_reference(self, date):
         self.init_mocks({})
-        return Reference(date=date, e=ENV)
+        return Reference(date=date)
 
     def create_filefairy(self, date, dashboard, reference):
         self.init_mocks({})
         filefairy = Filefairy(date=date, d=dashboard, e=ENV, r=reference)
+        filefairy.set_renderables(['faketask'])
 
         self.assertNotCalled(self.mock_log)
         self.assertEqual(filefairy.date, date)
@@ -147,7 +148,7 @@ class FilefairyTest(Test):
         return filefairy
 
     def create_task(self, date):
-        task = FakeTask(date=date, e=ENV)
+        task = Faketask(date=date, e=ENV)
 
         self.assertNotCalled(self.mock_log)
 
@@ -214,10 +215,11 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        actual = filefairy.reload(*('foo', ), date=DATE_10260604)
+        actual = filefairy.reload(*('faketask', ), date=DATE_10260604)
         self.assertEqual(actual, response)
 
-        mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
+        mock_reload.assert_called_once_with(
+            'faketask', True, date=DATE_10260604)
         mock_services.assert_called_once_with()
         mock_try_all.assert_has_calls([
             mock.call('_setup', date=DATE_10260604),
@@ -236,10 +238,11 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        actual = filefairy.reload(*('foo', ), date=DATE_10260604)
+        actual = filefairy.reload(*('faketask', ), date=DATE_10260604)
         self.assertEqual(actual, response)
 
-        mock_reload.assert_called_once_with('foo', True, date=DATE_10260604)
+        mock_reload.assert_called_once_with(
+            'faketask', True, date=DATE_10260604)
         mock_services.assert_called_once_with()
         self.assertNotCalled(mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
@@ -265,11 +268,11 @@ class FilefairyTest(Test):
                                                    False)
 
         thread_ = Thread(target='foo')
-        filefairy.threads = [('task', thread_)]
+        filefairy.threads = [('faketask', thread_)]
         filefairy._background()
 
         mock_sleep.assert_called_once_with(2)
-        mock_try.assert_called_once_with('task', 'foo')
+        mock_try.assert_called_once_with('faketask', 'foo')
         self.assertNotCalled(self.mock_log)
         self.assertEqual(filefairy.threads, [])
 
@@ -302,31 +305,33 @@ class FilefairyTest(Test):
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
-        module = _module('task')
-        actual = filefairy._install('foo', module, 'Task', date=DATE_10260604)
+        module = _module('faketask')
+        actual = filefairy._install(
+            'faketask', module, 'Faketask', date=DATE_10260604)
         expected = False
         self.assertEqual(actual, expected)
 
-        mock_getattr.assert_called_once_with(module, 'Task')
-        self.mock_log(logging.ERROR, 'Disabled foo.', exc_info=True)
-        self.assertNotIn('foo', filefairy.runners)
+        mock_getattr.assert_called_once_with(module, 'Faketask')
+        self.mock_log(logging.ERROR, 'Disabled faketask.', exc_info=True)
+        self.assertNotIn('faketask', filefairy.runners)
 
     @mock.patch('impl.filefairy.filefairy.getattr')
     def test_install__ok(self, mock_getattr):
-        mock_getattr.return_value = FakeTask
+        mock_getattr.return_value = Faketask
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
-        module = _module('task')
-        actual = filefairy._install('foo', module, 'Task', date=DATE_10260604)
+        module = _module('faketask')
+        actual = filefairy._install(
+            'faketask', module, 'Faketask', date=DATE_10260604)
         expected = True
         self.assertEqual(actual, expected)
 
-        mock_getattr.assert_called_once_with(module, 'Task')
+        mock_getattr.assert_called_once_with(module, 'Faketask')
         self.assertNotCalled(self.mock_log)
-        self.assertTrue(isinstance(filefairy.runners['foo'], FakeTask))
+        self.assertTrue(isinstance(filefairy.runners['faketask'], Faketask))
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_on_message')
@@ -356,71 +361,75 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        actual = filefairy._reload_internal('task', True, date=DATE_10260604)
+        actual = filefairy._reload_internal(
+            'faketask', True, date=DATE_10260604)
         expected = Response()
         self.assertEqual(actual, expected)
 
-        mock_import.assert_called_once_with('tasks.task.task')
+        mock_import.assert_called_once_with('tasks.faketask.faketask')
         self.mock_log.assert_called_once_with(
-            logging.ERROR, 'Disabled task.', exc_info=True)
+            logging.ERROR, 'Disabled faketask.', exc_info=True)
         self.assertNotCalled(mock_install)
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
     def test_reload_internal__ok_false(self, mock_import, mock_install):
-        module = _module('task')
+        module = _module('faketask')
         mock_import.return_value = module
         mock_install.return_value = False
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        actual = filefairy._reload_internal('task', True, date=DATE_10260604)
+        actual = filefairy._reload_internal(
+            'faketask', True, date=DATE_10260604)
         expected = Response()
         self.assertEqual(actual, expected)
 
-        mock_import.assert_called_once_with('tasks.task.task')
+        mock_import.assert_called_once_with('tasks.faketask.faketask')
         mock_install.assert_called_once_with(
-            'task', module, 'Task', date=DATE_10260604)
+            'faketask', module, 'Faketask', date=DATE_10260604)
         self.assertNotCalled(self.mock_log)
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
     def test_reload_internal__ok_log_true(self, mock_import, mock_install):
-        module = _module('task')
+        module = _module('faketask')
         mock_import.return_value = module
         mock_install.return_value = True
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        actual = filefairy._reload_internal('task', True, date=DATE_10260604)
-        msg = 'Reloaded task.'
+        actual = filefairy._reload_internal(
+            'faketask', True, date=DATE_10260604)
+        msg = 'Reloaded faketask.'
         expected = Response(notify=[Notify.BASE], debug=[Debug(msg=msg)])
         self.assertEqual(actual, expected)
 
-        mock_import.assert_called_once_with('tasks.task.task')
+        mock_import.assert_called_once_with('tasks.faketask.faketask')
         mock_install.assert_called_once_with(
-            'task', module, 'Task', date=DATE_10260604)
+            'faketask', module, 'Faketask', date=DATE_10260604)
         self.mock_log.assert_called_once_with(logging.INFO, msg)
 
     @mock.patch.object(Filefairy, '_install')
     @mock.patch('impl.filefairy.filefairy.importlib.import_module')
     def test_reload_internal__ok_log_false(self, mock_import, mock_install):
-        module = _module('task')
+        module = _module('faketask')
         mock_import.return_value = module
         mock_install.return_value = True
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        actual = filefairy._reload_internal('task', False, date=DATE_10260604)
+        actual = filefairy._reload_internal(
+            'faketask', False, date=DATE_10260604)
         expected = Response(notify=[Notify.BASE])
         self.assertEqual(actual, expected)
 
-        mock_import.assert_called_once_with('tasks.task.task')
+        mock_import.assert_called_once_with('tasks.faketask.faketask')
         mock_install.assert_called_once_with(
-            'task', module, 'Task', date=DATE_10260604)
+            'faketask', module, 'Faketask', date=DATE_10260604)
         self.assertNotCalled(self.mock_log)
 
     @mock.patch('impl.filefairy.filefairy.reload_services')
@@ -454,14 +463,14 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
         response = Response()
-        filefairy._response('foo', response, date=DATE_10260604)
+        filefairy._response('faketask', response, date=DATE_10260604)
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
-        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
+        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -470,14 +479,14 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
         response = Response(notify=[Notify.BASE])
-        filefairy._response('foo', response, date=DATE_10260604)
+        filefairy._response('faketask', response, date=DATE_10260604)
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260604)
-        self.assertEqual(filefairy.runners['foo'].date, DATE_10260604)
+        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -486,16 +495,16 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
         response = Response(notify=[Notify.OTHER])
-        filefairy._response('foo', response, date=DATE_10260604)
+        filefairy._response('faketask', response, date=DATE_10260604)
 
         mock_try_all.assert_called_once_with(
             '_notify', notify=Notify.OTHER, date=DATE_10260604)
         self.assertNotCalled(mock_try, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260604)
-        self.assertEqual(filefairy.runners['foo'].date, DATE_10260604)
+        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -504,17 +513,17 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
-        shadow = Shadow(destination='bar', key='foo.baz')
+        shadow = Shadow(destination='bar', key='faketask.baz')
         response = Response(shadow=[shadow])
-        filefairy._response('foo', response, date=DATE_10260604)
+        filefairy._response('faketask', response, date=DATE_10260604)
 
         mock_try.assert_called_once_with(
             'bar', '_shadow', shadow=shadow, date=DATE_10260604)
         self.assertNotCalled(mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
-        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
+        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -523,16 +532,16 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
-        thread_ = Thread(target='foo')
+        thread_ = Thread(target='faketask')
         response = Response(thread_=[thread_])
-        filefairy._response('foo', response, date=DATE_10260604)
+        filefairy._response('faketask', response, date=DATE_10260604)
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
-        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
-        self.assertCountEqual(filefairy.threads, [('foo', thread_)])
+        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260602)
+        self.assertCountEqual(filefairy.threads, [('faketask', thread_)])
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_try')
@@ -609,7 +618,7 @@ class FilefairyTest(Test):
     @mock.patch('impl.filefairy.filefairy.listdirs')
     def test_setup(self, mock_listdirs, mock_reload, mock_services,
                    mock_try_all):
-        mock_listdirs.return_value = ['task']
+        mock_listdirs.return_value = ['faketask']
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
@@ -617,7 +626,8 @@ class FilefairyTest(Test):
         filefairy._setup(date=DATE_10260604)
 
         mock_listdirs.assert_called_once_with(TASKS_DIR)
-        mock_reload.assert_called_once_with('task', False, date=DATE_10260604)
+        mock_reload.assert_called_once_with(
+            'faketask', False, date=DATE_10260604)
         mock_services.assert_called_once_with()
         mock_try_all.assert_has_calls([
             mock.call('_setup', date=DATE_10260604),
@@ -667,7 +677,7 @@ class FilefairyTest(Test):
         mock_sleep.assert_called_once_with(2)
         self.assertNotCalled(mock_connect, mock_thread, self.mock_log)
 
-    @mock.patch.object(FakeTask, '_run')
+    @mock.patch.object(Faketask, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__exception(self, mock_response, mock_run):
         mock_run.side_effect = Exception()
@@ -675,18 +685,18 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
-        filefairy._try('foo', '_run', date=DATE_10260604)
+        filefairy._try('faketask', '_run', date=DATE_10260604)
 
         mock_run.assert_called_once_with(date=DATE_10260604)
         self.mock_log.assert_called_once_with(
-            logging.ERROR, 'Disabled foo.', exc_info=True)
+            logging.ERROR, 'Disabled faketask.', exc_info=True)
         self.assertNotCalled(mock_response)
-        self.assertEqual(filefairy.runners['foo'].date, DATE_10260604)
-        self.assertEqual(filefairy.runners['foo'].ok, False)
+        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260604)
+        self.assertEqual(filefairy.runners['faketask'].ok, False)
 
-    @mock.patch.object(FakeTask, '_run')
+    @mock.patch.object(Faketask, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__response(self, mock_response, mock_run):
         response = Response(notify=[Notify.BASE])
@@ -695,30 +705,30 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
-        filefairy._try('foo', '_run', date=DATE_10260604)
+        filefairy._try('faketask', '_run', date=DATE_10260604)
 
         mock_response.assert_called_once_with(
-            'foo', response, date=DATE_10260604)
+            'faketask', response, date=DATE_10260604)
         mock_run.assert_called_once_with(date=DATE_10260604)
         self.assertNotCalled(self.mock_log)
-        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
-        self.assertEqual(filefairy.runners['foo'].ok, True)
+        self.assertEqual(filefairy.runners['faketask'].date, DATE_10260602)
+        self.assertEqual(filefairy.runners['faketask'].ok, True)
 
-    @mock.patch.object(FakeTask, '_run')
+    @mock.patch.object(Faketask, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__uncallable(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
-        filefairy._try('foo', 'bar', date=DATE_10260604)
+        filefairy._try('faketask', 'bar', date=DATE_10260604)
 
         self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
-    @mock.patch.object(FakeTask, '_run')
+    @mock.patch.object(Faketask, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__unhappy(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
@@ -727,20 +737,20 @@ class FilefairyTest(Test):
 
         task = self.create_task(DATE_10260602)
         task.ok = False
-        filefairy.runners['foo'] = task
+        filefairy.runners['faketask'] = task
 
-        filefairy._try('foo', '_run', date=DATE_10260604)
+        filefairy._try('faketask', '_run', date=DATE_10260604)
 
         self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
-    @mock.patch.object(FakeTask, '_run')
+    @mock.patch.object(Faketask, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__unregistered(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
-        filefairy._try('foo', '_run', date=DATE_10260604)
+        filefairy._try('faketask', '_run', date=DATE_10260604)
 
         self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
@@ -749,13 +759,13 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.runners['foo'] = self.create_task(DATE_10260602)
+        filefairy.runners['faketask'] = self.create_task(DATE_10260602)
 
         filefairy._try_all('_run', date=DATE_10260604)
 
         mock_try.assert_has_calls([
             mock.call('dashboard', '_run', date=DATE_10260604),
-            mock.call('foo', '_run', date=DATE_10260604)
+            mock.call('faketask', '_run', date=DATE_10260604)
         ])
         self.assertNotCalled(self.mock_log)
 
@@ -776,7 +786,7 @@ class FilefairyTest(Test):
 
 if __name__ in ['__main__', 'impl.filefairy.filefairy_test']:
     dashboard = Dashboard(date=DATE_10260602, e=ENV)
-    reference = Reference(date=DATE_10260602, e=ENV)
+    reference = Reference(date=DATE_10260602)
     main(
         FilefairyTest,
         Filefairy,
