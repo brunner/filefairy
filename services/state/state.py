@@ -80,8 +80,8 @@ class State(object):
             col(clazz=HLONGCLZ),
             col(clazz=HRIGHTCLZ)
         ]
-        right = '{} &nbsp; {}'.format(
-            self.to_outs_str(live), self.to_bases_str(live))
+        right = '{} &nbsp; {}'.format(self.to_outs_str(live),
+                                      self.to_bases_str(live))
         inning = self.to_inning_str(True)
         if live:
             inning = span(id_='livesimInning', text=inning)

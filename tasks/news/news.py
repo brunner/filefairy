@@ -65,12 +65,11 @@ class News(Renderable, Runnable, Serializable):
                 body.append(row(cells=[cell(content=self.get_content(t))]))
 
             tables.append(
-                table(
-                    clazz='border mb-3',
-                    hcols=[col(clazz='font-weight-bold text-dark')],
-                    bcols=[col(clazz='position-relative')],
-                    head=[row(cells=[cell(content=head)])],
-                    body=body))
+                table(clazz='border mb-3',
+                      hcols=[col(clazz='font-weight-bold text-dark')],
+                      bcols=[col(clazz='position-relative')],
+                      head=[row(cells=[cell(content=head)])],
+                      body=body))
 
         return tables
 

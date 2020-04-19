@@ -60,8 +60,10 @@ class TestTest(unittest.TestCase):
             mock.call(os.path.join(TESTDATA_DIR, 'foo.html'))
         ])
         mock_listdir.assert_called_once_with(TESTDATA_DIR)
-        mock_open.assert_called_once_with(
-            os.path.join(TESTDATA_DIR, 'foo.html'), 'r', encoding=ISO)
+        mock_open.assert_called_once_with(os.path.join(TESTDATA_DIR,
+                                                       'foo.html'),
+                                          'r',
+                                          encoding=ISO)
 
     @mock.patch('common.test.test.os.listdir')
     def test_main(self, mock_listdir):

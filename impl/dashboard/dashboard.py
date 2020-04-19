@@ -58,7 +58,6 @@ DATA_DIR = re.sub(r'/impl/dashboard', '', _path) + '/resources/data/dashboard'
 
 class Dashboard(Renderable, Runnable, Serializable):
     """Logging framework for all tasks and the main app."""
-
     def __init__(self, **kwargs):
         """Create a Dashboard object.
 

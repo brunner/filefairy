@@ -35,8 +35,9 @@ class OsTest(unittest.TestCase):
             self.assertEqual(os.getcwd(), '/')
 
         self.assertEqual(os.getcwd(), CWD)
-        self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        self.mock_log.assert_called_once_with(logging.WARNING,
+                                              'Handled warning.',
+                                              exc_info=True)
 
     @mock.patch('common.os_.os_.os')
     def test_chdir__inner(self, mock_os):
@@ -50,8 +51,9 @@ class OsTest(unittest.TestCase):
             raise Exception()
 
         self.assertEqual(os.getcwd(), CWD)
-        self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        self.mock_log.assert_called_once_with(logging.WARNING,
+                                              'Handled warning.',
+                                              exc_info=True)
 
     @mock.patch('common.os_.os_.os')
     def test_chdir__ok(self, mock_os):

@@ -31,8 +31,10 @@ class ResponseTest(unittest.TestCase):
         self.assertEqual(response.thread_, [])
 
     def test_init__filled(self):
-        response = Response(
-            debug=[DEBUG], notify=[NOTIFY], shadow=[SHADOW], thread_=[THREAD])
+        response = Response(debug=[DEBUG],
+                            notify=[NOTIFY],
+                            shadow=[SHADOW],
+                            thread_=[THREAD])
         self.assertEqual(response.debug, [DEBUG])
         self.assertEqual(response.notify, [NOTIFY])
         self.assertEqual(response.shadow, [SHADOW])
@@ -80,8 +82,10 @@ class ResponseTest(unittest.TestCase):
 
     def test_append__filled(self):
         response = Response()
-        response.append(
-            debug=DEBUG, notify=NOTIFY, shadow=SHADOW, thread_=THREAD)
+        response.append(debug=DEBUG,
+                        notify=NOTIFY,
+                        shadow=SHADOW,
+                        thread_=THREAD)
         self.assertEqual(response.debug, [DEBUG])
         self.assertEqual(response.notify, [NOTIFY])
         self.assertEqual(response.shadow, [SHADOW])

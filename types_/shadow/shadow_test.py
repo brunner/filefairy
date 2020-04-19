@@ -37,8 +37,9 @@ class ShadowTest(unittest.TestCase):
             Shadow(destination='bar', key=[1], info={'key': 'value'})
 
     def test_init__filled(self):
-        shadow = Shadow(
-            destination='bar', key='foo.baz', info={'key': 'value'})
+        shadow = Shadow(destination='bar',
+                        key='foo.baz',
+                        info={'key': 'value'})
         self.assertEqual(shadow.destination, 'bar')
         self.assertEqual(shadow.key, 'foo.baz')
         self.assertEqual(shadow.info, {'key': 'value'})

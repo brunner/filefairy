@@ -35,8 +35,8 @@ TESTDATA = get_testdata()
 
 class NewsTest(Test):
     def setUp(self):
-        open_patch = mock.patch(
-            'api.serializable.serializable.open', create=True)
+        open_patch = mock.patch('api.serializable.serializable.open',
+                                create=True)
         self.addCleanup(open_patch.stop)
         self.open_ = open_patch.start()
 

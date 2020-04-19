@@ -28,12 +28,9 @@ FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
 
 LDR = jinja2.DictLoader({
-    'foo.html':
-    '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
-    'sub.html':
-    '{{ title }}: Hello {{ m }}, {{ n }} -- {{ date }}',
-    'dyn.html':
-    '{{ title }}: Hello {{ z }} -- {{ date }}'
+    'foo.html': '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',
+    'sub.html': '{{ title }}: Hello {{ m }}, {{ n }} -- {{ date }}',
+    'dyn.html': '{{ title }}: Hello {{ z }} -- {{ date }}'
 })
 
 MENU = dialog(id_='menu', icon='<img>', tables=[topper('Site Links')])

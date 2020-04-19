@@ -33,8 +33,9 @@ class EventTest(unittest.TestCase):
         expected = (None, [])
         self.assertEqual(actual, expected)
 
-        self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        self.mock_log.assert_called_once_with(logging.WARNING,
+                                              'Handled warning.',
+                                              exc_info=True)
 
     def test_decode__member(self):
         actual = Event.decode('change_inning')

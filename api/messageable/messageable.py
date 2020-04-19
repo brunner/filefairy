@@ -80,8 +80,9 @@ class Messageable():
                         response = Response()
 
                     for debug in response.debug:
-                        _logger.log(
-                            logging.DEBUG, debug.msg, extra=debug.extra)
+                        _logger.log(logging.DEBUG,
+                                    debug.msg,
+                                    extra=debug.extra)
 
                     response.notify = [Notify.BASE]
                     return response

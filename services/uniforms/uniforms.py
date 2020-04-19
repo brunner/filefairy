@@ -353,14 +353,13 @@ NUMBER_RULES = [
     '-webkit-mask-image: url(\'{fairylab}/{{font}}/{{fill}}/{{num}}.png\')',
 ]
 NUMBER_RULES = [r.format(**NUMBER_KWARGS) for r in NUMBER_RULES]
-NUMBER_STYLE = ruleset(
-    selector='.number-base',
-    rules=[
-        'height: 18px',
-        'width: 14px',
-        '-webkit-mask-size: 14px 18px',
-        'top: 18px',
-    ])
+NUMBER_STYLE = ruleset(selector='.number-base',
+                       rules=[
+                           'height: 18px',
+                           'width: 14px',
+                           '-webkit-mask-size: 14px 18px',
+                           'top: 18px',
+                       ])
 
 
 def _font_offset(font):
@@ -494,8 +493,8 @@ def jersey_style(*jerseys):
         for s, offset in _font_offset(font):
             selector = '.' + '-'.join(['number', font, s])
             styles.append(
-                ruleset(
-                    selector=selector, rules=['left: {}px'.format(offset)]))
+                ruleset(selector=selector,
+                        rules=['left: {}px'.format(offset)]))
 
     styles.append(NUMBER_STYLE)
     return styles

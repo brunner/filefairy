@@ -22,12 +22,11 @@ def check_output(cmd, log=True, timeout=None):
     """
     output = {'ok': True, 'stdout': '', 'stderr': ''}
     try:
-        proc = subprocess.run(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout,
-            check=True)
+        proc = subprocess.run(cmd,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              timeout=timeout,
+                              check=True)
         if isinstance(proc, subprocess.CompletedProcess):
             output.update({'stdout': proc.stdout.decode('utf-8')})
             output.update({'stderr': proc.stderr.decode('utf-8')})

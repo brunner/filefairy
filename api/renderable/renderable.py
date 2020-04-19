@@ -97,8 +97,9 @@ class Renderable():
                 ts.dump(path)
             except Exception:
                 if log:
-                    _logger.log(
-                        logging.WARNING, 'Handled warning.', exc_info=True)
+                    _logger.log(logging.WARNING,
+                                'Handled warning.',
+                                exc_info=True)
 
         return Response()
 

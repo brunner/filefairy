@@ -36,10 +36,9 @@ class Download(Messageable, Runnable, Serializable):
 
     def _shadow_data(self, **kwargs):
         return [
-            Shadow(
-                destination='statsplus',
-                key='download.end',
-                info=self.data['end'])
+            Shadow(destination='statsplus',
+                   key='download.end',
+                   info=self.data['end'])
         ]
 
     def _notify_internal(self, **kwargs):

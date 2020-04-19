@@ -42,11 +42,10 @@ for encoding in encoding_keys():
 
     decoding = encoding_to_decoding(encoding)
     head = [row(cells=[cell(content=icon_absolute(encoding, decoding))])]
-    table_ = table(
-        clazz='border mt-3',
-        hcols=[col(clazz='position-relative', colspan=8)],
-        head=head,
-        body=body)
+    table_ = table(clazz='border mt-3',
+                   hcols=[col(clazz='position-relative', colspan=8)],
+                   head=head,
+                   body=body)
     _tables.append(table_)
 
 _styles = jersey_style(*_jerseys)
@@ -55,7 +54,4 @@ subtitle = ''
 
 tmpl = 'empty.html'
 
-context = {
-    'styles': _styles,
-    'tables': _tables
-}
+context = {'styles': _styles, 'tables': _tables}

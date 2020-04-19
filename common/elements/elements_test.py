@@ -136,24 +136,22 @@ class ElemementsTest(unittest.TestCase):
         actual = sitelinks()
         expected = [
             topper('Site Links'),
-            table(
-                clazz='border mb-3',
-                hcols=SITELINKS_HCOLS,
-                bcols=SITELINKS_BCOLS,
-                head=[row(cells=[cell(content='Tasks')])],
-                body=[
-                    row(cells=[cell(content=gameday)]),
-                    row(cells=[cell(content=news)]),
-                    row(cells=[cell(content=standings)]),
-                ]),
-            table(
-                clazz='border mb-3',
-                hcols=SITELINKS_HCOLS,
-                bcols=SITELINKS_BCOLS,
-                head=[row(cells=[cell(content='Other')])],
-                body=[
-                    row(cells=[cell(content=dashboard)]),
-                ])
+            table(clazz='border mb-3',
+                  hcols=SITELINKS_HCOLS,
+                  bcols=SITELINKS_BCOLS,
+                  head=[row(cells=[cell(content='Tasks')])],
+                  body=[
+                      row(cells=[cell(content=gameday)]),
+                      row(cells=[cell(content=news)]),
+                      row(cells=[cell(content=standings)]),
+                  ]),
+            table(clazz='border mb-3',
+                  hcols=SITELINKS_HCOLS,
+                  bcols=SITELINKS_BCOLS,
+                  head=[row(cells=[cell(content='Other')])],
+                  body=[
+                      row(cells=[cell(content=dashboard)]),
+                  ])
         ]
         self.assertEqual(actual, expected)
 
@@ -173,25 +171,23 @@ class ElemementsTest(unittest.TestCase):
         actual = sitelinks(home=True)
         expected = [
             topper('Site Links'),
-            table(
-                clazz='border mb-3',
-                hcols=SITELINKS_HCOLS,
-                bcols=SITELINKS_BCOLS,
-                head=[row(cells=[cell(content='Tasks')])],
-                body=[
-                    row(cells=[cell(content=gameday)]),
-                    row(cells=[cell(content=news)]),
-                    row(cells=[cell(content=standings)]),
-                ]),
-            table(
-                clazz='border mb-3',
-                hcols=SITELINKS_HCOLS,
-                bcols=SITELINKS_BCOLS,
-                head=[row(cells=[cell(content='Other')])],
-                body=[
-                    row(cells=[cell(content=dashboard)]),
-                    row(cells=[cell(content=home)]),
-                ])
+            table(clazz='border mb-3',
+                  hcols=SITELINKS_HCOLS,
+                  bcols=SITELINKS_BCOLS,
+                  head=[row(cells=[cell(content='Tasks')])],
+                  body=[
+                      row(cells=[cell(content=gameday)]),
+                      row(cells=[cell(content=news)]),
+                      row(cells=[cell(content=standings)]),
+                  ]),
+            table(clazz='border mb-3',
+                  hcols=SITELINKS_HCOLS,
+                  bcols=SITELINKS_BCOLS,
+                  head=[row(cells=[cell(content='Other')])],
+                  body=[
+                      row(cells=[cell(content=dashboard)]),
+                      row(cells=[cell(content=home)]),
+                  ])
         ]
         self.assertEqual(actual, expected)
 
@@ -201,16 +197,15 @@ class ElemementsTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_table__filled(self):
-        actual = table(
-            clazz=CLAZZ,
-            id_=ID_,
-            attributes={'data-key': 'value'},
-            hcols=COLS,
-            bcols=COLS,
-            fcols=COLS,
-            head=[ROW],
-            body=[ROW],
-            foot=[ROW])
+        actual = table(clazz=CLAZZ,
+                       id_=ID_,
+                       attributes={'data-key': 'value'},
+                       hcols=COLS,
+                       bcols=COLS,
+                       fcols=COLS,
+                       head=[ROW],
+                       body=[ROW],
+                       foot=[ROW])
         expected = {
             'clazz': CLAZZ,
             'id': ID_,

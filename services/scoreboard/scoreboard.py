@@ -50,11 +50,9 @@ def _add_line_score(s, data, body, foot):
 def _cell(text, attributes):
     text = span(classes=['align-middle', 'badge-icon-button'], text=text)
     attributes.update({'data-dismiss': 'modal'})
-    return cell(
-        content=span(
-            classes=['badge', 'badge-icon', 'badge-light'],
-            text=text,
-            attributes=attributes))
+    return cell(content=span(classes=['badge', 'badge-icon', 'badge-light'],
+                             text=text,
+                             attributes=attributes))
 
 
 def _date(date):
@@ -65,8 +63,8 @@ def _location_row(data):
     date = datetime_as_est(decode_datetime(data['date']))
     start = date.strftime('%I:%M %p').lstrip('0')
     ballpark = ' at ' + data['ballpark']
-    location = span(
-        classes=['small', 'text-secondary'], text=(start + ballpark))
+    location = span(classes=['small', 'text-secondary'],
+                    text=(start + ballpark))
     return row(cells=[cell(col=col(clazz='border-0 py-2'), content=location)])
 
 
@@ -86,18 +84,19 @@ def create_dialog(date, game):
     t = 'Pending Games Only' if game == '0' else 'Selected Game Only'
     tables = [
         topper('Reveal Final Scores'),
-        table(
-            clazz='border mb-3',
-            hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
-            bcols=[
-                col(clazz='w-50 badge-icon-wrapper pl-2'),
-                col(clazz='w-50 badge-icon-wrapper pr-2')
-            ],
-            head=[row(cells=[cell(content='Options')])],
-            body=[row(cells=[
-                _cell('All Games for Today', {'data-show-date': date}),
-                _cell(t, {'data-show-game': game})
-            ])])
+        table(clazz='border mb-3',
+              hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
+              bcols=[
+                  col(clazz='w-50 badge-icon-wrapper pl-2'),
+                  col(clazz='w-50 badge-icon-wrapper pr-2')
+              ],
+              head=[row(cells=[cell(content='Options')])],
+              body=[
+                  row(cells=[
+                      _cell('All Games for Today', {'data-show-date': date}),
+                      _cell(t, {'data-show-game': game})
+                  ])
+              ])
     ]
 
     return dialog(id_=id_, icon=icon, tables=tables)

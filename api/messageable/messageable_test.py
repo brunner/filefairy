@@ -102,13 +102,15 @@ class MessageableTest(unittest.TestCase):
 
         data = {'channel': TESTING_CHANNEL, 'text': 'FakeMessageable.foo()'}
         actual = messageable._on_message(obj=data)
-        expected = Response(
-            notify=[Notify.BASE], debug=[debug], thread_=[thread_])
+        expected = Response(notify=[Notify.BASE],
+                            debug=[debug],
+                            thread_=[thread_])
         self.assertEqual(actual, expected)
 
         mock_foo.assert_called_once_with(obj=data, v=True)
-        self.mock_log.assert_called_once_with(
-            logging.DEBUG, 'msg', extra={'a': 1})
+        self.mock_log.assert_called_once_with(logging.DEBUG,
+                                              'msg',
+                                              extra={'a': 1})
 
     @mock.patch.object(FakeMessageable, 'foo')
     def test_on_message__invalid_channel(self, mock_foo):

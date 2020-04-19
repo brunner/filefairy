@@ -106,12 +106,11 @@ def condensed_league(league, tables):
     bcols += [col(clazz=('w-20 badge-icon-wrapper pr-2'))]
 
     hc = 'font-weight-bold text-dark text-center'
-    return table(
-        clazz='table-fixed border mb-3',
-        hcols=[col(clazz=hc, colspan=colspan)],
-        bcols=bcols,
-        head=[row(cells=[cell(content=league)])],
-        body=body)
+    return table(clazz='table-fixed border mb-3',
+                 hcols=[col(clazz=hc, colspan=colspan)],
+                 bcols=bcols,
+                 head=[row(cells=[cell(content=league)])],
+                 body=body)
 
 
 def expanded_impl(league, tables):

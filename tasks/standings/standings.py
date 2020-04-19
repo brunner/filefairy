@@ -68,10 +68,9 @@ class Standings(Renderable, Runnable, Serializable):
 
     def _shadow_data(self, **kwargs):
         return [
-            Shadow(
-                destination='statsplus',
-                key='standings.table',
-                info=self.data['table'])
+            Shadow(destination='statsplus',
+                   key='standings.table',
+                   info=self.data['table'])
         ]
 
     def _notify_internal(self, **kwargs):

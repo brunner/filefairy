@@ -30,7 +30,8 @@ FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 
 class UploadTest(Test):
     def setUp(self):
-        chat_post_message_patch = mock.patch('tasks.upload.upload.chat_post_message')
+        chat_post_message_patch = mock.patch(
+            'tasks.upload.upload.chat_post_message')
         self.addCleanup(chat_post_message_patch.stop)
         self.chat_post_message_ = chat_post_message_patch.start()
 

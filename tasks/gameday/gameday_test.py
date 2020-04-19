@@ -26,11 +26,10 @@ class GamedayTest(Test):
 
 
 if __name__ in ['__main__', 'tasks.gameday.gameday_test']:
-    main(
-        GamedayTest,
-        Gameday,
-        'tasks.gameday',
-        'tasks/gameday', {},
-        __name__ == '__main__',
-        date=DATE_10260602,
-        e=ENV)
+    main(GamedayTest,
+         Gameday,
+         'tasks.gameday',
+         'tasks/gameday', {},
+         __name__ == '__main__',
+         date=DATE_10260602,
+         e=ENV)

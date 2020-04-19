@@ -65,10 +65,9 @@ class Tables(object):
 
     def get_live_tables(self):
         return self.live_head + [
-            table(
-                clazz='table-fixed border mb-3',
-                bcols=[col(), col(clazz='w-50p text-right')],
-                body=self.live_body),
+            table(clazz='table-fixed border mb-3',
+                  bcols=[col(), col(clazz='w-50p text-right')],
+                  body=self.live_body),
             table(clazz='border mb-3', body=self.live_foot),
         ]
 

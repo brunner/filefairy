@@ -25,8 +25,8 @@ class FakeSerializable(Serializable):
 
 class SerializableTest(unittest.TestCase):
     def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
+        patch_open = mock.patch('api.serializable.serializable.open',
+                                create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 

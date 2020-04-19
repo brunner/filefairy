@@ -7,7 +7,6 @@ import copy
 
 class Debug(object):
     """Describe a message to be logged."""
-
     def __init__(self, msg=None, extra=None):
         """Create a Debug object.
 

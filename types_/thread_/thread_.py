@@ -5,7 +5,6 @@
 
 class Thread(object):
     """Describe a function to be run in a thread in the app background."""
-
     def __init__(self, target=None, args=None, kwargs=None):
         """Create a Thread object.
 

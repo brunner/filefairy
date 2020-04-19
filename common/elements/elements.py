@@ -224,12 +224,11 @@ def sitelinks(home=False):
             body.append(row(cells=[cell(content=(icon + span_))]))
 
         tables.append(
-            table(
-                clazz='border mb-3',
-                hcols=SITELINKS_HCOLS,
-                bcols=SITELINKS_BCOLS,
-                head=[row(cells=[cell(content=head)])],
-                body=body))
+            table(clazz='border mb-3',
+                  hcols=SITELINKS_HCOLS,
+                  bcols=SITELINKS_BCOLS,
+                  head=[row(cells=[cell(content=head)])],
+                  body=body))
 
     return tables
 

@@ -157,57 +157,33 @@ class UniformsTest(unittest.TestCase):
         expected = [
             _jersey('whitesox-alt-blue-back', 'repo', 'tag'),
             _jersey('whitesox-alt-blue-front', 'repo', 'tag'),
-            ruleset(
-                selector='.whitesox-alt-blue-solid',
-                rules=['background-color: #09285a']),
+            ruleset(selector='.whitesox-alt-blue-solid',
+                    rules=['background-color: #09285a']),
             _jersey('reds-home-back', 'repo', 'tag'),
             _jersey('reds-home-front', 'repo', 'tag'),
-            ruleset(
-                selector='.reds-home-solid',
-                rules=['background-color: #ea164c']),
-            ruleset(
-                selector='.reds-home-border',
-                rules=['background-color: #000000']),
+            ruleset(selector='.reds-home-solid',
+                    rules=['background-color: #ea164c']),
+            ruleset(selector='.reds-home-border',
+                    rules=['background-color: #000000']),
         ] + _numbers('basic') + [
-            ruleset(
-                selector='.number-basic-mid',
-                rules=['left: 20px']),
-            ruleset(
-                selector='.number-basic-l1',
-                rules=['left: 16px']),
-            ruleset(
-                selector='.number-basic-l2',
-                rules=['left: 14px']),
-            ruleset(
-                selector='.number-basic-r1',
-                rules=['left: 25px']),
-            ruleset(
-                selector='.number-basic-r2',
-                rules=['left: 27px'])
+            ruleset(selector='.number-basic-mid', rules=['left: 20px']),
+            ruleset(selector='.number-basic-l1', rules=['left: 16px']),
+            ruleset(selector='.number-basic-l2', rules=['left: 14px']),
+            ruleset(selector='.number-basic-r1', rules=['left: 25px']),
+            ruleset(selector='.number-basic-r2', rules=['left: 27px'])
         ] + _numbers('reds') + [
-            ruleset(
-                selector='.number-reds-mid',
-                rules=['left: 20px']),
-            ruleset(
-                selector='.number-reds-l1',
-                rules=['left: 16px']),
-            ruleset(
-                selector='.number-reds-l2',
-                rules=['left: 14px']),
-            ruleset(
-                selector='.number-reds-r1',
-                rules=['left: 25px']),
-            ruleset(
-                selector='.number-reds-r2',
-                rules=['left: 27px']),
-            ruleset(
-                selector='.number-base',
-                rules=[
-                    'height: 18px',
-                    'width: 14px',
-                    '-webkit-mask-size: 14px 18px',
-                    'top: 18px',
-                ]),
+            ruleset(selector='.number-reds-mid', rules=['left: 20px']),
+            ruleset(selector='.number-reds-l1', rules=['left: 16px']),
+            ruleset(selector='.number-reds-l2', rules=['left: 14px']),
+            ruleset(selector='.number-reds-r1', rules=['left: 25px']),
+            ruleset(selector='.number-reds-r2', rules=['left: 27px']),
+            ruleset(selector='.number-base',
+                    rules=[
+                        'height: 18px',
+                        'width: 14px',
+                        '-webkit-mask-size: 14px 18px',
+                        'top: 18px',
+                    ]),
         ]
         self.assertEqual(actual, expected)
 

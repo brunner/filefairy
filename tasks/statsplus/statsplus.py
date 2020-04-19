@@ -156,14 +156,15 @@ class Statsplus(Messageable, Runnable, Serializable):
             for team, other in [('away', 'home'), ('home', 'away')]:
                 encoding = data[team + '_team']
                 win = int(data[team + '_runs']) > int(data[other + '_runs'])
-                self.data['table'][encoding] = self.get_next_record(data, encoding, win)
+                self.data['table'][encoding] = self.get_next_record(
+                    data, encoding, win)
 
         _logger.log(logging.INFO, 'Download complete.')
         chat_post_message('fairylab', 'Download complete.')
 
         self._write()
-        return Response(
-            shadow=self._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
+        return Response(shadow=self._shadow_data(),
+                        notify=[Notify.STATSPLUS_FINISH])
 
     def parse_saved_scores(self, date_, *args, **kwargs):
         if date_ not in self.data['scores']:
@@ -179,7 +180,8 @@ class Statsplus(Messageable, Runnable, Serializable):
             for team, other in [('away', 'home'), ('home', 'away')]:
                 encoding = data[team + '_team']
                 win = int(data[team + '_runs']) > int(data[other + '_runs'])
-                self.data['table'][encoding] = self.get_next_record(data, encoding, win)
+                self.data['table'][encoding] = self.get_next_record(
+                    data, encoding, win)
 
         if unvisited:
             thread_ = Thread(target='parse_saved_scores', args=(date_, ))
@@ -190,15 +192,14 @@ class Statsplus(Messageable, Runnable, Serializable):
             self.data['scores'][date_] = unvisited
             self._write()
 
-            return Response(
-                notify=[Notify.STATSPLUS_PARSE],
-                shadow=self._shadow_data(),
-                thread_=[thread_])
+            return Response(notify=[Notify.STATSPLUS_PARSE],
+                            shadow=self._shadow_data(),
+                            thread_=[thread_])
 
         self.data['scores'].pop(date_, None)
         self._write()
-        return Response(
-            notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_data())
+        return Response(notify=[Notify.STATSPLUS_PARSE],
+                        shadow=self._shadow_data())
 
     def parse_score(self, num, date):
         out = os.path.join(GAMES_DIR, num + '.json')

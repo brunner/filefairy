@@ -33,8 +33,9 @@ class RequestsTest(unittest.TestCase):
         actual = get('http://url')
         self.assertEqual(actual, '')
 
-        mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        mock_log.assert_called_once_with(logging.WARNING,
+                                         'Handled warning.',
+                                         exc_info=True)
         mock_get.assert_called_once_with('http://url', timeout=10)
 
     @mock.patch('common.requests_.requests_._logger.log')

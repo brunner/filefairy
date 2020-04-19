@@ -59,19 +59,20 @@ class DivisionTest(unittest.TestCase):
         bc = 'w-20 badge-icon-wrapper'
         hc = 'font-weight-bold text-dark text-center'
         actual = condensed_league('American League', tables)
-        expected = table(
-            clazz='table-fixed border mb-3',
-            hcols=[col(clazz=hc, colspan=3)],
-            bcols=[
-                col(clazz=(bc + ' pl-2')),
-                col(clazz=bc),
-                col(clazz=(bc + ' pr-2')),
-            ],
-            head=[row(cells=[cell(content='American League')])],
-            body=[
-                _condensed_row('T34', '2-0', 'T33', '1-1', 'T48', '0-2'),
-                _condensed_row('T38', '2-0', 'T35', '1-1', 'T40', '0-2'),
-            ])
+        expected = table(clazz='table-fixed border mb-3',
+                         hcols=[col(clazz=hc, colspan=3)],
+                         bcols=[
+                             col(clazz=(bc + ' pl-2')),
+                             col(clazz=bc),
+                             col(clazz=(bc + ' pr-2')),
+                         ],
+                         head=[row(cells=[cell(content='American League')])],
+                         body=[
+                             _condensed_row('T34', '2-0', 'T33', '1-1', 'T48',
+                                            '0-2'),
+                             _condensed_row('T38', '2-0', 'T35', '1-1', 'T40',
+                                            '0-2'),
+                         ])
         self.assertEqual(actual, expected)
 
     def test_expanded_impl__empty(self):

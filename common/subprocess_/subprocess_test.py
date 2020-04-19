@@ -26,19 +26,20 @@ class SubprocessTest(unittest.TestCase):
     def test_run__with_valid_input(self, mock_run):
         cmd = ['cmd', 'foo', 'bar']
         t = 10
-        mock_run.return_value = subprocess.CompletedProcess(
-            args=cmd, returncode=0, stdout=b'out', stderr=b'err')
+        mock_run.return_value = subprocess.CompletedProcess(args=cmd,
+                                                            returncode=0,
+                                                            stdout=b'out',
+                                                            stderr=b'err')
 
         actual = check_output(cmd, timeout=t)
         expected = {'ok': True, 'stdout': 'out', 'stderr': 'err'}
         self.assertEqual(actual, expected)
 
-        mock_run.assert_called_once_with(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=t,
-            check=True)
+        mock_run.assert_called_once_with(cmd,
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE,
+                                         timeout=t,
+                                         check=True)
         self.mock_log.assert_not_called()
 
     @mock.patch('common.subprocess_.subprocess_.subprocess.run')
@@ -52,14 +53,14 @@ class SubprocessTest(unittest.TestCase):
         expected = {'ok': False, 'stdout': e, 'stderr': e}
         self.assertEqual(actual, expected)
 
-        mock_run.assert_called_once_with(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=t,
-            check=True)
-        self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        mock_run.assert_called_once_with(cmd,
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE,
+                                         timeout=t,
+                                         check=True)
+        self.mock_log.assert_called_once_with(logging.WARNING,
+                                              'Handled warning.',
+                                              exc_info=True)
 
 
 if __name__ == '__main__':

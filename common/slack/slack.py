@@ -52,13 +52,14 @@ def channels_history(channel, latest, oldest):
     Returns:
         The endpoint response.
     """
-    return _call('channels.history', {
-        'token': FILEFAIRY,
-        'channel': channel,
-        'count': 1000,
-        'latest': latest,
-        'oldest': oldest,
-    })
+    return _call(
+        'channels.history', {
+            'token': FILEFAIRY,
+            'channel': channel,
+            'count': 1000,
+            'latest': latest,
+            'oldest': oldest,
+        })
 
 
 def channels_list():

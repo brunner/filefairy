@@ -16,7 +16,6 @@ from types_.thread_.thread_ import Thread  # noqa
 
 class Response(object):
     """Describe a group of data types that a task might return to the app."""
-
     def __init__(self, debug=None, notify=None, shadow=None, thread_=None):
         """Create a Response object.
 

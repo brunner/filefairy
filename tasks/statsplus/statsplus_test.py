@@ -289,8 +289,8 @@ class StatsplusTest(Test):
     @mock.patch('tasks.statsplus.statsplus.loads')
     @mock.patch('tasks.statsplus.statsplus.os.listdir')
     @mock.patch.object(Statsplus, 'cleanup')
-    def test_parse_extracted_scores__started_false(self, cleanup_, listdir_, loads_,
-                                                   parse_score_):
+    def test_parse_extracted_scores__started_false(self, cleanup_, listdir_,
+                                                   loads_, parse_score_):
         listdir_.side_effect = [
             ['game_box_2449.html', 'game_box_2469.html'],
             ['2449.json', '2469.json'],
@@ -337,8 +337,8 @@ class StatsplusTest(Test):
     @mock.patch('tasks.statsplus.statsplus.loads')
     @mock.patch('tasks.statsplus.statsplus.os.listdir')
     @mock.patch.object(Statsplus, 'cleanup')
-    def test_parse_extracted_scores__started_true(self, cleanup_, listdir_, loads_,
-                                                  parse_score_):
+    def test_parse_extracted_scores__started_true(self, cleanup_, listdir_,
+                                                  loads_, parse_score_):
         listdir_.side_effect = [
             ['game_box_2449.html', 'game_box_2469.html'],
             ['2449.json', '2469.json'],

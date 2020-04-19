@@ -19,5 +19,7 @@ def env():
     ldr = jinja2.FileSystemLoader(root + '/resources/templates')
     ext = ['jinja2.ext.do']
 
-    return jinja2.Environment(
-        loader=ldr, extensions=ext, trim_blocks=True, lstrip_blocks=True)
+    return jinja2.Environment(loader=ldr,
+                              extensions=ext,
+                              trim_blocks=True,
+                              lstrip_blocks=True)

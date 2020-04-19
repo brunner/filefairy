@@ -41,7 +41,6 @@ TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
 class Filefairy(Messageable, Renderable):
     """The main app implementation."""
-
     def __init__(self, **kwargs):
         """Create a Filefairy object.
 
@@ -204,8 +203,9 @@ class Filefairy(Messageable, Renderable):
         try:
             reload_services()
         except Exception:
-            _logger.log(
-                logging.ERROR, 'Error reloading services.', exc_info=True)
+            _logger.log(logging.ERROR,
+                        'Error reloading services.',
+                        exc_info=True)
 
     def run(self):
         date = datetime_now()

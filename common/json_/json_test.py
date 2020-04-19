@@ -39,8 +39,9 @@ class JsonTest(unittest.TestCase):
         expected = '{\n  "a": ""\n}'
         self.assertEqual(actual, expected)
 
-        self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        self.mock_log.assert_called_once_with(logging.WARNING,
+                                              'Handled warning.',
+                                              exc_info=True)
 
     @mock.patch('common.json_.json_.open', create=True)
     def test_loads__with_valid_input(self, mock_open):
@@ -70,8 +71,9 @@ class JsonTest(unittest.TestCase):
 
         mock_open.assert_called_once_with('foo.json')
         mock_handle.assert_not_called()
-        self.mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        self.mock_log.assert_called_once_with(logging.WARNING,
+                                              'Handled warning.',
+                                              exc_info=True)
 
 
 if __name__ == '__main__':

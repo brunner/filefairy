@@ -25,11 +25,13 @@ class UrllibTest(unittest.TestCase):
         actual = urlopen('http://url', data)
         self.assertEqual(actual, b'')
 
-        mock_log.assert_called_once_with(
-            logging.WARNING, 'Handled warning.', exc_info=True)
+        mock_log.assert_called_once_with(logging.WARNING,
+                                         'Handled warning.',
+                                         exc_info=True)
         encoded_data = parse.urlencode(data).encode('utf-8')
-        mock_urlopen.assert_called_once_with(
-            'http://url', data=encoded_data, timeout=10)
+        mock_urlopen.assert_called_once_with('http://url',
+                                             data=encoded_data,
+                                             timeout=10)
 
     @mock.patch('common.urllib_.urllib_.request.urlopen')
     @mock.patch('common.urllib_.urllib_._logger.log')
@@ -43,8 +45,9 @@ class UrllibTest(unittest.TestCase):
 
         mock_log.assert_not_called()
         encoded_data = parse.urlencode(data).encode('utf-8')
-        mock_urlopen.assert_called_once_with(
-            'http://url', data=encoded_data, timeout=10)
+        mock_urlopen.assert_called_once_with('http://url',
+                                             data=encoded_data,
+                                             timeout=10)
 
 
 if __name__ == '__main__':

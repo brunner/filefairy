@@ -7,7 +7,6 @@ import copy
 
 class Shadow(object):
     """Describe a piece of information that one task shares with another."""
-
     def __init__(self, destination=None, key=None, info=None):
         """Create a Shadow object.
 
