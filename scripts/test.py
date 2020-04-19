@@ -16,10 +16,7 @@ from tasks.git.git import Git  # noqa
 CONTAINING_DIR = re.sub(r'/filefairy/scripts', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
-NAMES = [
-    'index.html', 'dashboard', 'demo', 'gameday', 'news', 'recap',
-    'standings', 'statsplus'
-]
+NAMES = ['index.html', 'dashboard', 'demo', 'gameday', 'news', 'standings']
 REMOTE = 'brunnerj@brunnerj.com:/home/brunnerj/public_html/sandbox/fairylab/'
 
 check_output(['rm', '-rf', GAMEDAY_DIR])
@@ -33,7 +30,12 @@ with chdir(FAIRYLAB_DIR):
     if 'nothing to commit' in stdout:
         print('nothing to commit')
     else:
-        print('copying changes to sandbox')
-        for name in NAMES:
-            local = '/home/jbrunner/fairylab/static/' + name
-            check_output(['scp', '-r', local, REMOTE])
+        upload = input('copy changes to sandbox? ')
+        if upload == 'y':
+            for name in NAMES:
+                local = '/home/jbrunner/fairylab/static/' + name
+                check_output(['scp', '-r', local, REMOTE])
+
+        revert = input('revert fairylab changes? ')
+        if revert == 'y':
+            check_output(['git', 'checkout', '.'])
