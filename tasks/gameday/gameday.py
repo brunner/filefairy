@@ -80,14 +80,12 @@ class Gameday(Renderable, Runnable, Serializable):
             self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_PARSE:
             self._render(**kwargs)
+        if kwargs['notify'] == Notify.STATSPLUS_SAVE:
+            self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_START:
             self.cleanup()
             self.data['started'] = True
 
-        return Response()
-
-    def _shadow_internal(self, **kwargs):
-        self._render(**kwargs)
         return Response()
 
     def cleanup(self):

@@ -509,6 +509,7 @@ class StatsplusTest(Test):
         statsplus = self.create_statsplus(data)
         actual = statsplus.save_scores(date, text)
         expected = Response(
+            notify=[Notify.STATSPLUS_SAVE],
             shadow=statsplus.get_shadow_scores(),
             thread_=[Thread(target='parse_saved_scores', args=(date, ))])
         self.assertEqual(actual, expected)

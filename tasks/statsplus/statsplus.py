@@ -163,8 +163,8 @@ class Statsplus(Messageable, Runnable, Serializable):
         chat_post_message('fairylab', 'Download complete.')
 
         self._write()
-        return Response(shadow=self._shadow_data(),
-                        notify=[Notify.STATSPLUS_FINISH])
+        return Response(notify=[Notify.STATSPLUS_FINISH],
+                        shadow=self._shadow_data())
 
     def parse_saved_scores(self, date_, *args, **kwargs):
         if date_ not in self.data['scores']:
@@ -230,7 +230,9 @@ class Statsplus(Messageable, Runnable, Serializable):
 
         self._write()
         thread_ = Thread(target='parse_saved_scores', args=(date, ))
-        return Response(shadow=self.get_shadow_scores(), thread_=[thread_])
+        return Response(notify=[Notify.STATSPLUS_SAVE],
+                        shadow=self.get_shadow_scores(),
+                        thread_=[thread_])
 
     def start(self):
         self.data['scores'] = {}

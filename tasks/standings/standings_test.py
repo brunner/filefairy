@@ -189,6 +189,20 @@ class StandingsTest(Test):
     @mock.patch.object(Standings, 'handle_start')
     @mock.patch.object(Standings, 'handle_finish')
     @mock.patch.object(Standings, 'clear_standings')
+    def test_notify__statsplus_save(self, clear_standings_, handle_finish_,
+                                    handle_start_, _render_):
+        standings = self.create_standings(_data())
+        response = standings._notify_internal(notify=Notify.STATSPLUS_SAVE)
+        self.assertEqual(response, Response())
+
+        _render_.assert_called_once_with(notify=Notify.STATSPLUS_SAVE)
+        self.assertNotCalled(clear_standings_, handle_finish_, handle_start_,
+                             self.open_handle_.write)
+
+    @mock.patch.object(Standings, '_render')
+    @mock.patch.object(Standings, 'handle_start')
+    @mock.patch.object(Standings, 'handle_finish')
+    @mock.patch.object(Standings, 'clear_standings')
     def test_notify__statsplus_start(self, clear_standings_, handle_finish_,
                                      handle_start_, _render_):
         standings = self.create_standings(_data())
@@ -211,15 +225,6 @@ class StandingsTest(Test):
 
         self.assertNotCalled(clear_standings_, handle_finish_, handle_start_,
                              _render_, self.open_handle_.write)
-
-    @mock.patch.object(Standings, '_render')
-    def test_shadow(self, _render_):
-        standings = self.create_standings(_data())
-        response = standings._shadow_internal(date=DATE_10260602)
-        self.assertEqual(response, Response())
-
-        _render_.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.open_handle_.write)
 
     @mock.patch.object(Standings, '_render')
     def test_clear_standings(self, _render_):

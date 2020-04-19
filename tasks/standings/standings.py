@@ -80,13 +80,11 @@ class Standings(Renderable, Runnable, Serializable):
             self.handle_finish(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_PARSE:
             self._render(**kwargs)
+        if kwargs['notify'] == Notify.STATSPLUS_SAVE:
+            self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_START:
             self.handle_start(**kwargs)
 
-        return Response()
-
-    def _shadow_internal(self, **kwargs):
-        self._render(**kwargs)
         return Response()
 
     def clear_standings(self, **kwargs):

@@ -38,9 +38,6 @@ class FakeRunnable(Runnable):
     def _setup_internal(self, **kwargs):
         return Response()
 
-    def _shadow_internal(self, **kwargs):
-        return Response()
-
     def _shadow_data(self, **kwargs):
         return [Shadow(destination='bar', key='foo.a', info='b')]
 

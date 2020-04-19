@@ -39,11 +39,15 @@ class Notify(Enum):
     # statsplus messages have been parsed.
     STATSPLUS_PARSE = 8
 
+    # The statsplus task has determined that some scores from the latest
+    # statsplus messages have been saved.
+    STATSPLUS_SAVE = 9
+
     # The statsplus task has determined that a simulation has started.
-    STATSPLUS_START = 9
+    STATSPLUS_START = 10
 
     # The upload task has determined that the file upload has finished.
-    UPLOAD_FINISH = 10
+    UPLOAD_FINISH = 11
 
     # An arbitrary value for use in tests.
-    OTHER = 11
+    OTHER = 12

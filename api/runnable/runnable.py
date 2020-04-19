@@ -15,8 +15,7 @@ recent usage of the task, and ``ok``, used to represent whether the task is
 actively running or has experienced failure.
 
 Instances of runnable are required to return Response data from
-_notify_internal, _run_internal, and _setup_internal, and Shadow data from
-_shadow_internal.
+_notify_internal, _run_internal, and _setup_internal.
 """
 
 import datetime
@@ -82,9 +81,6 @@ class Runnable():
     def _setup_internal(self, **kwargs):
         return Response()
 
-    def _shadow_internal(self, **kwargs):
-        return Response()
-
     def _notify(self, **kwargs):
         response = self._notify_internal(**kwargs)
         if response.notify:
@@ -102,4 +98,4 @@ class Runnable():
     def _shadow(self, **kwargs):
         shadow = kwargs['shadow']
         self.shadow[shadow.key] = shadow.info
-        return self._shadow_internal(**kwargs)
+        return Response()
