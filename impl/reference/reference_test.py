@@ -27,25 +27,24 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 
 
-def _statsplus_player_page(num):
+def create_statsplus_player_page(num):
     return os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(num))
 
 
 class ReferenceTest(Test):
     def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
+        open_patch = mock.patch('api.serializable.serializable.open',
+                                create=True)
+        self.addCleanup(open_patch.stop)
+        self.open_ = open_patch.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
+        self.open_handle_ = mo()
+        self.open_.side_effect = [mo.return_value]
 
     def reset_mocks(self):
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
+        self.open_handle_.write.reset_mock()
 
     def create_reference(self, data, warnings=None):
         self.init_mocks(data)
@@ -61,139 +60,142 @@ class ReferenceTest(Test):
 
         return reference
 
-    @mock.patch.object(Reference, '_parse')
-    def test_notify__fairylab_day(self, mock_parse):
+    @mock.patch.object(Reference, 'parse_players')
+    def test_notify__fairylab_day(self, parse_players_):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
         response = reference._notify_internal(notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
-        mock_parse.assert_called_once_with(['P123', 'P456'])
-        self.assertNotCalled(self.mock_handle.write)
+        parse_players_.assert_called_once_with(['P123', 'P456'])
+        self.assertNotCalled(self.open_handle_.write)
 
-    @mock.patch.object(Reference, '_parse')
-    def test_notify__other(self, mock_parse):
+    @mock.patch.object(Reference, 'parse_players')
+    def test_notify__other(self, parse_players_):
         data = {'players': {}}
         reference = self.create_reference(data)
         response = reference._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_parse, self.mock_handle.write)
+        self.assertNotCalled(parse_players_, self.open_handle_.write)
 
-    def test_get_bats(self):
+    def test_get_attribute__bats(self):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
         inputs = [('P123', 'L'), ('P456', 'R'), ('P789', 'R')]
         for num, expected in inputs:
-            actual = reference._get(num, 2, 'R')
+            actual = reference.get_attribute(num, 2, 'R')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
-    def test_get_name(self):
+    def test_get_attribute__name(self):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
         inputs = [('P123', 'Jim Alfa'), ('P456', 'Jim Beta'),
                   ('P789', 'Jim Unknown')]
         for num, expected in inputs:
-            actual = reference._get(num, 4, 'Jim Unknown')
+            actual = reference.get_attribute(num, 4, 'Jim Unknown')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
-    def test_get_number(self):
+    def test_get_attribute__number(self):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
         inputs = [('P123', '1'), ('P456', '42'), ('P789', '0')]
         for num, expected in inputs:
-            actual = reference._get(num, 1, '0')
+            actual = reference.get_attribute(num, 1, '0')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
-    def test_get_team(self):
+    def test_get_attribute__team(self):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
         inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T30')]
         for num, expected in inputs:
-            actual = reference._get(num, 0, 'T30')
+            actual = reference.get_attribute(num, 0, 'T30')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
-    def test_get_throws(self):
+    def test_get_attribute__throws(self):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
         inputs = [('P123', 'R'), ('P456', 'L'), ('P789', 'R')]
         for num, expected in inputs:
-            actual = reference._get(num, 3, 'R')
+            actual = reference.get_attribute(num, 3, 'R')
             self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
     @mock.patch('impl.reference.reference.call_service')
-    def test_parse__different(self, mock_call):
-        mock_call.return_value = 'T32 1 L R Jim Alfa'
+    def test_parse_players__different(self, call_service_):
+        call_service_.return_value = 'T32 1 L R Jim Alfa'
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
         data = {'players': players}
         reference = self.create_reference(data)
-        reference._parse(['P123'])
+        reference.parse_players(['P123'])
 
-        link = _statsplus_player_page('123')
+        link = create_statsplus_player_page('123')
         players = {'P123': 'T32 1 L R Jim Alfa'}
         write = {'players': players}
-        mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        call_service_.assert_called_once_with('statslab', 'parse_player',
+                                              (link, ))
+        self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('impl.reference.reference.call_service')
-    def test_parse__none(self, mock_call):
-        mock_call.return_value = None
+    def test_parse_players__none(self, call_service_):
+        call_service_.return_value = None
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
         data = {'players': players}
         reference = self.create_reference(data)
-        reference._parse(['P123'])
+        reference.parse_players(['P123'])
 
-        link = _statsplus_player_page('123')
+        link = create_statsplus_player_page('123')
         write = {'players': {}}
-        mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        call_service_.assert_called_once_with('statslab', 'parse_player',
+                                              (link, ))
+        self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
 
     @mock.patch('impl.reference.reference.call_service')
-    def test_parse__same(self, mock_call):
-        mock_call.return_value = 'T31 1 L R Jim Alfa'
+    def test_parse_players__same(self, call_service_):
+        call_service_.return_value = 'T31 1 L R Jim Alfa'
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
         data = {'players': players}
         reference = self.create_reference(data)
-        reference._parse(['P123'])
+        reference.parse_players(['P123'])
 
-        link = _statsplus_player_page('123')
-        mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
-        self.assertNotCalled(self.mock_handle.write)
+        link = create_statsplus_player_page('123')
+        call_service_.assert_called_once_with('statslab', 'parse_player',
+                                              (link, ))
+        self.assertNotCalled(self.open_handle_.write)
 
-    @mock.patch.object(Reference, '_parse')
-    def test_put(self, mock_parse):
+    @mock.patch.object(Reference, 'parse_players')
+    def test_put_players(self, parse_players_):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
-        reference._put(['P123', 'P789'])
+        reference.put_players(['P123', 'P789'])
 
-        mock_parse.assert_called_once_with(['P789'])
-        self.assertNotCalled(self.mock_handle.write)
+        parse_players_.assert_called_once_with(['P789'])
+        self.assertNotCalled(self.open_handle_.write)
 
-    def test_sub(self):
+    def test_substitute(self):
         data = {'players': PLAYERS}
         reference = self.create_reference(data)
 
         def _repl(m):
-            return reference._get(m.group(0), 4, 'Jim Unknown')
+            return reference.get_attribute(m.group(0), 4, 'Jim Unknown')
 
-        actual = reference._sub(_repl, 'P123 (1-0, 0.00 ERA)')
+        actual = reference.substitute(_repl, 'P123 (1-0, 0.00 ERA)')
         expected = 'Jim Alfa (1-0, 0.00 ERA)'
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
 
 if __name__ == '__main__':

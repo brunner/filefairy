@@ -122,10 +122,10 @@ class ReferenceTest(unittest.TestCase):
             actual = player_to_throws(num)
             self.assertEqual(actual, expected)
 
-    @mock.patch.object(Reference, '_put')
-    def test_put_players(self, mock_put):
+    @mock.patch.object(Reference, 'put_players')
+    def test_put_players(self, put_players_):
         put_players(['P123', 'P456', 'P789'])
-        mock_put.assert_called_once_with(['P123', 'P456', 'P789'])
+        put_players_.assert_called_once_with(['P123', 'P456', 'P789'])
 
 
 if __name__ == '__main__':

@@ -96,19 +96,18 @@ def _table(keys, table_):
 
 class StandingsTest(Test):
     def setUp(self):
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
+        open_patch = mock.patch('api.serializable.serializable.open',
+                                create=True)
+        self.addCleanup(open_patch.stop)
+        self.open_ = open_patch.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
+        self.open_handle_ = mo()
+        self.open_.side_effect = [mo.return_value]
 
     def reset_mocks(self):
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
+        self.open_handle_.write.reset_mock()
 
     def create_standings(self, data):
         self.init_mocks(data)
@@ -119,121 +118,121 @@ class StandingsTest(Test):
 
         return standings
 
-    @mock.patch.object(Standings, '_index_html')
-    def test_render_data(self, mock_index):
-        index_html = {'dialogs': []}
-        mock_index.return_value = index_html
+    @mock.patch.object(Standings, 'get_standings_html')
+    def test_render_data(self, get_standings_html_):
+        standings_html = {'dialogs': []}
+        get_standings_html_.return_value = standings_html
 
         standings = self.create_standings(_data())
         actual = standings._render_data(date=DATE_10260602)
-        expected = [('standings/index.html', '', 'standings.html', index_html)]
+        expected = [('standings/index.html', '', 'standings.html',
+                     standings_html)]
         self.assertEqual(actual, expected)
 
-        mock_index.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_handle.write)
+        get_standings_html_.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.open_handle_.write)
 
     def test_shadow_data(self):
         table_ = {'T40': '87-75', 'T47': '91-71'}
         standings = self.create_standings(_data(table_=table_))
         actual = standings._shadow_data(date=DATE_10260602)
         expected = [
-            Shadow(
-                destination='statsplus', key='standings.table', info=table_)
+            Shadow(destination='statsplus', key='standings.table', info=table_)
         ]
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
-    @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
-    @mock.patch.object(Standings, '_finish')
-    @mock.patch.object(Standings, '_clear')
-    def test_notify__download_year(self, mock_clear, mock_finish, mock_render,
-                                   mock_start):
+    @mock.patch.object(Standings, 'handle_start')
+    @mock.patch.object(Standings, 'handle_finish')
+    @mock.patch.object(Standings, 'clear_standings')
+    def test_notify__download_year(self, clear_standings_, handle_finish_,
+                                   handle_start_, _render_):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.DOWNLOAD_YEAR)
         self.assertEqual(response, Response())
 
-        mock_clear.assert_called_once_with(notify=Notify.DOWNLOAD_YEAR)
-        self.assertNotCalled(mock_finish, mock_render, mock_start,
-                             self.mock_handle.write)
+        clear_standings_.assert_called_once_with(notify=Notify.DOWNLOAD_YEAR)
+        self.assertNotCalled(handle_finish_, handle_start_, _render_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
-    @mock.patch.object(Standings, '_finish')
-    @mock.patch.object(Standings, '_clear')
-    def test_notify__statsplus_finish(self, mock_clear, mock_finish,
-                                      mock_render, mock_start):
+    @mock.patch.object(Standings, 'handle_start')
+    @mock.patch.object(Standings, 'handle_finish')
+    @mock.patch.object(Standings, 'clear_standings')
+    def test_notify__statsplus_finish(self, clear_standings_, handle_finish_,
+                                      handle_start_, _render_):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.STATSPLUS_FINISH)
         self.assertEqual(response, Response())
 
-        mock_finish.assert_called_once_with(notify=Notify.STATSPLUS_FINISH)
-        self.assertNotCalled(mock_clear, mock_render, mock_start,
-                             self.mock_handle.write)
+        handle_finish_.assert_called_once_with(notify=Notify.STATSPLUS_FINISH)
+        self.assertNotCalled(clear_standings_, handle_start_, _render_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
-    @mock.patch.object(Standings, '_finish')
-    @mock.patch.object(Standings, '_clear')
-    def test_notify__statsplus_render(self, mock_clear, mock_finish,
-                                      mock_render, mock_start):
+    @mock.patch.object(Standings, 'handle_start')
+    @mock.patch.object(Standings, 'handle_finish')
+    @mock.patch.object(Standings, 'clear_standings')
+    def test_notify__statsplus_render(self, clear_standings_, handle_finish_,
+                                      handle_start_, _render_):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.STATSPLUS_PARSE)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(notify=Notify.STATSPLUS_PARSE)
-        self.assertNotCalled(mock_clear, mock_finish, mock_start,
-                             self.mock_handle.write)
+        _render_.assert_called_once_with(notify=Notify.STATSPLUS_PARSE)
+        self.assertNotCalled(clear_standings_, handle_finish_, handle_start_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
-    @mock.patch.object(Standings, '_finish')
-    @mock.patch.object(Standings, '_clear')
-    def test_notify__statsplus_start(self, mock_clear, mock_finish,
-                                     mock_render, mock_start):
+    @mock.patch.object(Standings, 'handle_start')
+    @mock.patch.object(Standings, 'handle_finish')
+    @mock.patch.object(Standings, 'clear_standings')
+    def test_notify__statsplus_start(self, clear_standings_, handle_finish_,
+                                     handle_start_, _render_):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.STATSPLUS_START)
         self.assertEqual(response, Response())
 
-        mock_start.assert_called_once_with(notify=Notify.STATSPLUS_START)
-        self.assertNotCalled(mock_clear, mock_finish, mock_render,
-                             self.mock_handle.write)
+        handle_start_.assert_called_once_with(notify=Notify.STATSPLUS_START)
+        self.assertNotCalled(clear_standings_, handle_finish_, _render_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Standings, '_start')
     @mock.patch.object(Standings, '_render')
-    @mock.patch.object(Standings, '_finish')
-    @mock.patch.object(Standings, '_clear')
-    def test_notify__other(self, mock_clear, mock_finish, mock_render,
-                           mock_start):
+    @mock.patch.object(Standings, 'handle_start')
+    @mock.patch.object(Standings, 'handle_finish')
+    @mock.patch.object(Standings, 'clear_standings')
+    def test_notify__other(self, clear_standings_, handle_finish_,
+                           handle_start_, _render_):
         standings = self.create_standings(_data())
         response = standings._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_clear, mock_finish, mock_render, mock_start,
-                             self.mock_handle.write)
+        self.assertNotCalled(clear_standings_, handle_finish_, handle_start_,
+                             _render_, self.open_handle_.write)
 
     @mock.patch.object(Standings, '_render')
-    def test_shadow(self, mock_render):
+    def test_shadow(self, _render_):
         standings = self.create_standings(_data())
         response = standings._shadow_internal(date=DATE_10260602)
         self.assertEqual(response, Response())
 
-        mock_render.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_handle.write)
+        _render_.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.open_handle_.write)
 
     @mock.patch.object(Standings, '_render')
-    def test_clear(self, mock_render):
+    def test_clear_standings(self, _render_):
         table_ = {'T40': '87-75', 'T47': '91-71'}
         standings = self.create_standings(_data(table_=table_))
-        standings._clear(date=DATE_10260602)
+        standings.clear_standings(date=DATE_10260602)
 
         table_ = {'T40': '0-0', 'T47': '0-0'}
         write = _data(table_=table_)
-        mock_render.assert_called_once_with(date=DATE_10260602)
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        _render_.assert_called_once_with(date=DATE_10260602)
+        self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_dialog_tables(self):
+    def test_create_dialog_tables(self):
         date_0830 = encode_datetime(DATE_08300000)
         date_0831 = encode_datetime(DATE_08310000)
         body = table(head=[[cell(content='Pending')]])
@@ -246,7 +245,7 @@ class StandingsTest(Test):
         head_0830 = topper('Friday, August 30th, 2024')
         head_0831 = topper('Saturday, August 31st, 2024')
         standings = self.create_standings(_data())
-        actual = standings._dialog_tables(data)
+        actual = standings.create_dialog_tables(data)
         expected = [
             head_0830, BODY_2449, FOOT_2449,
             head_0831, BODY_2469, FOOT_2469,
@@ -254,30 +253,30 @@ class StandingsTest(Test):
         ]  # yapf: disable
         self.assertEqual(actual, expected)
 
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
     @mock.patch.object(Standings, '_render')
     @mock.patch('common.json_.json_.open', create=True)
     @mock.patch('tasks.standings.standings.os.listdir')
-    def test_finish(self, mock_listdir, mock_open, mock_render):
-        mock_listdir.return_value = ['2449.json', '2469.json', '2476.json']
+    def test_handle_finish(self, listdir_, open_, _render_):
+        listdir_.return_value = ['2449.json', '2469.json', '2476.json']
         suite = Suite(
             RMock(GAMES_DIR, '2449.json', TESTDATA),
             RMock(GAMES_DIR, '2469.json', TESTDATA),
             RMock(GAMES_DIR, '2476.json', TESTDATA),
         )
-        mock_open.side_effect = suite.values()
+        open_.side_effect = suite.values()
 
         table_ = {'T40': '66-58', 'T47': '71-53'}
         standings = self.create_standings(_data(table_=table_))
-        standings._finish(date=DATE_10260602)
+        standings.handle_finish(date=DATE_10260602)
 
         table_ = {'T40': '66-61', 'T47': '74-53'}
         write = _data(finished=True, table_=table_)
-        mock_render.assert_called_once_with(date=DATE_10260602)
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        _render_.assert_called_once_with(date=DATE_10260602)
+        self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
 
-    def test_start(self):
+    def test_handle_start(self):
         standings = self.create_standings(_data(finished=True))
 
         date = encode_datetime(DATE_08310000)
@@ -286,20 +285,21 @@ class StandingsTest(Test):
         standings.shadow['statsplus.scores'] = statsplus_scores
         standings.shadow['statsplus.table'] = statsplus_table
 
-        standings._start(date=DATE_10260602)
+        standings.handle_start(date=DATE_10260602)
 
         write = _data()
         self.assertFalse(standings.shadow['statsplus.scores'])
         self.assertFalse(standings.shadow['statsplus.table'])
-        self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
+        self.open_handle_.write.assert_called_once_with(dumps(write) + '\n')
 
     maxDiff = None
 
     @mock.patch('tasks.standings.standings.os.listdir')
-    @mock.patch.object(Standings, '_dialog_tables')
+    @mock.patch.object(Standings, 'create_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
-    def test_index_html__finished_false(
-            self, mock_call, mock_dialog, mock_listdir):
+    def test_get_standings_html__finished_false(self, call_service_,
+                                                create_dialog_tables_,
+                                                listdir_):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
         body = table(head=[[cell(content='Pending')]])
@@ -307,8 +307,11 @@ class StandingsTest(Test):
 
         line = {'T40': [DATA_2449, DATA_2469], 'T47': [DATA_2449, DATA_2469]}
         pending = {'T31': [data_2998], 'T44': [data_2998], 'T45': [data_2998]}
-        mock_call.side_effect = [
-            {'dialogs': [], 'scores': line},
+        call_service_.side_effect = [
+            {
+                'dialogs': [],
+                'scores': line
+            },
             pending,
             [TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC],
             TABLE_AL,
@@ -317,7 +320,7 @@ class StandingsTest(Test):
         ]
 
         ds = [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469]
-        mock_dialog.side_effect = [
+        create_dialog_tables_.side_effect = [
             [head, body],
             [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469],
             [head, body],
@@ -325,7 +328,7 @@ class StandingsTest(Test):
             [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469],
         ]
 
-        mock_listdir.return_value = ['2449.json', '2469.json', '2998.json']
+        listdir_.return_value = ['2449.json', '2469.json', '2998.json']
 
         encodings = encoding_keys()
         table_ = _table(encodings, {})
@@ -339,7 +342,7 @@ class StandingsTest(Test):
         statsplus_table = {'T40': '0-2', 'T47': '2-0'}
         standings.shadow['statsplus.table'] = statsplus_table
 
-        actual = standings._index_html(date=DATE_10260602)
+        actual = standings.get_standings_html(date=DATE_10260602)
         expected = {
             'recent': [TABLE_AL, TABLE_NL],
             'expanded': [
@@ -361,9 +364,9 @@ class StandingsTest(Test):
             e: (etable.get(e, '0-0'), e in ['T31', 'T40', 'T44', 'T45', 'T47'])
             for e in ENCODINGS
         }
-        mock_call.assert_has_calls([
-            mock.call(
-                'scoreboard', 'line_scores', (['2449', '2469', '2998'], )),
+        call_service_.assert_has_calls([
+            mock.call('scoreboard', 'line_scores',
+                      (['2449', '2469', '2998'], )),
             mock.call('scoreboard', 'pending_dialog', (statsplus_scores, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, etable)),
@@ -386,20 +389,21 @@ class StandingsTest(Test):
                 ('West', _table(LEAGUE_NLW, rtable)),
             ])),
         ])
-        mock_dialog.assert_has_calls([
+        create_dialog_tables_.assert_has_calls([
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
             mock.call([data_2998]),
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
         ])
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
     @mock.patch('tasks.standings.standings.os.listdir')
-    @mock.patch.object(Standings, '_dialog_tables')
+    @mock.patch.object(Standings, 'create_dialog_tables')
     @mock.patch('tasks.standings.standings.call_service')
-    def test_index_html__finished_true(
-            self, mock_call, mock_dialog, mock_listdir):
+    def test_get_standings_html__finished_true(self, call_service_,
+                                               create_dialog_tables_,
+                                               listdir_):
         date = encode_datetime(DATE_08310000)
         head = table(body=[[cell(content='Saturday')]])
         body = table(head=[[cell(content='Final')]])
@@ -413,8 +417,11 @@ class StandingsTest(Test):
             'T45': [data_2998],
             'T47': [DATA_2449, DATA_2469]
         }
-        mock_call.side_effect = [
-            {'dialogs': [], 'scores': line},
+        call_service_.side_effect = [
+            {
+                'dialogs': [],
+                'scores': line
+            },
             {},
             [TABLE_ALE, TABLE_ALC, TABLE_ALW, TABLE_ALWC],
             TABLE_AL,
@@ -423,9 +430,9 @@ class StandingsTest(Test):
         ]
 
         ds = [HEAD_2449, BODY_2449, FOOT_2449, HEAD_2469, BODY_2469, FOOT_2469]
-        mock_dialog.side_effect = [tables_2998, ds, tables_2998, ds]
+        create_dialog_tables_.side_effect = [tables_2998, ds, tables_2998, ds]
 
-        mock_listdir.return_value = ['2449.json', '2469.json', '2998.json']
+        listdir_.return_value = ['2449.json', '2469.json', '2998.json']
 
         encodings = encoding_keys()
         table_ = _table(encodings, {})
@@ -439,7 +446,7 @@ class StandingsTest(Test):
         }
         standings.shadow['statsplus.table'] = statsplus_table
 
-        actual = standings._index_html(date=DATE_10260602)
+        actual = standings.get_standings_html(date=DATE_10260602)
         expected = {
             'recent': [TABLE_AL, TABLE_NL],
             'expanded': [
@@ -457,9 +464,9 @@ class StandingsTest(Test):
 
         etable = {'T31': '1-0', 'T40': '0-2', 'T45': '0-1', 'T47': '2-0'}
         rtable = {e: (etable.get(e, '0-0'), e in etable) for e in ENCODINGS}
-        mock_call.assert_has_calls([
-            mock.call(
-                'scoreboard', 'line_scores', (['2449', '2469', '2998'], )),
+        call_service_.assert_has_calls([
+            mock.call('scoreboard', 'line_scores',
+                      (['2449', '2469', '2998'], )),
             mock.call('scoreboard', 'pending_dialog', ({}, )),
             mock.call('division', 'expanded_league', ('American League', [
                 ('East', _table(LEAGUE_ALE, table_)),
@@ -482,21 +489,20 @@ class StandingsTest(Test):
                 ('West', _table(LEAGUE_NLW, rtable)),
             ])),
         ])
-        mock_dialog.assert_has_calls([
+        create_dialog_tables_.assert_has_calls([
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
             mock.call([data_2998]),
             mock.call([DATA_2449, DATA_2469]),
         ])
-        self.assertNotCalled(self.mock_handle.write)
+        self.assertNotCalled(self.open_handle_.write)
 
 
 if __name__ in ['__main__', 'tasks.standings.standings_test']:
-    main(
-        StandingsTest,
-        Standings,
-        'tasks.standings',
-        'tasks/standings', {},
-        __name__ == '__main__',
-        date=DATE_10260602,
-        e=ENV)
+    main(StandingsTest,
+         Standings,
+         'tasks.standings',
+         'tasks/standings', {},
+         __name__ == '__main__',
+         date=DATE_10260602,
+         e=ENV)

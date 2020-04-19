@@ -16,20 +16,20 @@ from common.elements.elements import anchor  # noqa
 SEPARATORS = [' de ', ' De ', ' La ', ' Montes ', ' van ', ' Vander ', ' ']
 
 
-def _get(num, index, default):
+def get_attribute(num, index, default):
     if _reference is None:
         return default
-    return _reference._get(num, index, default)
+    return _reference.get_attribute(num, index, default)
 
 
-def _repl(f, m):
+def repl(f, m):
     return f(m.group(0))
 
 
-def _sub(repl, text):
+def substitute(repl, text):
     if _reference is None:
         return text
-    return _reference._sub(repl, text)
+    return _reference.substitute(repl, text)
 
 
 def player_to_bats(e):
@@ -41,7 +41,7 @@ def player_to_bats(e):
     Returns:
         The player's batting handedness.
     """
-    return _get(e, 2, 'R')
+    return get_attribute(e, 2, 'R')
 
 
 def player_to_link(e):
@@ -54,7 +54,7 @@ def player_to_link(e):
         The player's link.
     """
     url = 'https://statsplus.net/oblootp/player/' + e.lstrip('P')
-    return anchor(url, _get(e, 4, 'Jim Unknown'))
+    return anchor(url, get_attribute(e, 4, 'Jim Unknown'))
 
 
 def player_to_link_sub(text):
@@ -66,7 +66,7 @@ def player_to_link_sub(text):
     Returns:
         The substituted text.
     """
-    return _sub(partial(_repl, player_to_link), text)
+    return substitute(partial(repl, player_to_link), text)
 
 
 def player_to_name(e):
@@ -78,7 +78,7 @@ def player_to_name(e):
     Returns:
         The player's full name.
     """
-    return _get(e, 4, 'Jim Unknown')
+    return get_attribute(e, 4, 'Jim Unknown')
 
 
 def player_to_name_sub(text):
@@ -90,7 +90,7 @@ def player_to_name_sub(text):
     Returns:
         The substituted text.
     """
-    return _sub(partial(_repl, player_to_name), text)
+    return substitute(partial(repl, player_to_name), text)
 
 
 def player_to_number(e):
@@ -102,7 +102,7 @@ def player_to_number(e):
     Returns:
         The player's jersey number.
     """
-    return _get(e, 1, '0')
+    return get_attribute(e, 1, '0')
 
 
 def player_to_shortname(e):
@@ -131,7 +131,7 @@ def player_to_shortname_sub(text):
     Returns:
         The substituted text.
     """
-    return _sub(partial(_repl, player_to_shortname), text)
+    return substitute(partial(repl, player_to_shortname), text)
 
 
 def player_to_starter(e):
@@ -157,7 +157,7 @@ def player_to_starter_sub(text):
     Returns:
         The substituted text.
     """
-    return _sub(partial(_repl, player_to_starter), text)
+    return substitute(partial(repl, player_to_starter), text)
 
 
 def player_to_team(e):
@@ -169,7 +169,7 @@ def player_to_team(e):
     Returns:
         The player's team.
     """
-    return _get(e, 0, 'T30')
+    return get_attribute(e, 0, 'T30')
 
 
 def player_to_throws(e):
@@ -181,12 +181,12 @@ def player_to_throws(e):
     Returns:
         The player's throwing handedness.
     """
-    return _get(e, 3, 'R')
+    return get_attribute(e, 3, 'R')
 
 
 def put_players(players):
     if _reference is not None:
-        _reference._put(players)
+        _reference.put_players(players)
 
 
 def set_reference(reference):

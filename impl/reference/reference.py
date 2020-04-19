@@ -35,15 +35,15 @@ class Reference(Runnable, Serializable):
         notify = kwargs['notify']
         if notify == Notify.FILEFAIRY_DAY:
             encodings = list(sorted(self.data['players'].keys()))
-            self._parse(encodings)
+            self.parse_players(encodings)
         return Response()
 
-    def _get(self, e, index, default):
+    def get_attribute(self, e, index, default):
         if e not in self.data['players']:
             return default
         return self.data['players'][e].split(' ', 4)[index]
 
-    def _parse(self, encodings):
+    def parse_players(self, encodings):
         changed = False
 
         for e in encodings:
@@ -61,10 +61,10 @@ class Reference(Runnable, Serializable):
         if changed:
             self.write()
 
-    def _put(self, encodings):
+    def put_players(self, encodings):
         encodings = [e for e in encodings if e not in self.data['players']]
-        self._parse(encodings)
+        self.parse_players(encodings)
 
-    def _sub(self, repl, text):
+    def substitute(self, repl, text):
         pattern = '|'.join([e + r'(?!\d)' for e in self.data['players']])
         return re.sub(pattern, repl, text)

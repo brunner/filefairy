@@ -21,6 +21,7 @@ from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
+from common.messageable.messageable import messageable  # noqa
 from common.re_.re_ import search  # noqae
 from common.record.record import decode_record  # noqa
 from common.record.record import encode_record  # noqa
@@ -53,28 +54,17 @@ class Statsplus(Messageable, Runnable, Serializable):
         super(Statsplus, self).__init__(**kwargs)
 
     def _shadow_data(self, **kwargs):
-        return self._shadow_scores() + self._shadow_table()
-
-    def _shadow_key(self, d, k):
-        return [Shadow(destination=d, key='statsplus.' + k, info=self.data[k])]
-
-    def _shadow_scores(self):
-        gameday_scores = self._shadow_key('gameday', 'scores')
-        standings_scores = self._shadow_key('standings', 'scores')
-        return gameday_scores + standings_scores
-
-    def _shadow_table(self):
-        return self._shadow_key('standings', 'table')
+        return self.get_shadow_scores() + self.get_shadow_table()
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.DOWNLOAD_FINISH:
-            return Response(thread_=[Thread(target='_parse_extracted_scores')])
+            return Response(thread_=[Thread(target='parse_extracted_scores')])
 
         return Response()
 
     def _on_message_internal(self, **kwargs):
         obj = kwargs['obj']
-        if not self._valid(obj):
+        if not self.is_valid_message(obj):
             return Response()
 
         text = obj['text']
@@ -91,12 +81,13 @@ class Statsplus(Messageable, Runnable, Serializable):
 
         date = encode_datetime(date)
         if not self.data['started'] and search(r'\d{4} Final Scores', text):
-            return self._start()
+            return self.start()
         elif search(r'MAJOR LEAGUE BASEBALL Final Scores', text):
-            return self._save_scores(date, text)
+            return self.save_scores(date, text)
 
         return Response()
 
+    @messageable
     def backfill(self, *args, **kwargs):
         if len(args) != 1:
             return Response()
@@ -121,35 +112,51 @@ class Statsplus(Messageable, Runnable, Serializable):
 
         return response
 
+    @messageable
     def extract(self, *args, **kwargs):
         self.data['started'] = False
         self.write()
 
-        return Response(thread_=[Thread(target='_parse_extracted_scores')])
+        return Response(thread_=[Thread(target='parse_extracted_scores')])
 
-    def _next(self, data, encoding, win):
-        cw, cl = self._record(encoding, self.data['table'])
+    def cleanup(self):
+        check_output(['rm', '-rf', GAMES_DIR])
+        check_output(['mkdir', GAMES_DIR])
+
+    def get_next_record(self, data, encoding, win):
+        cw, cl = self.get_record(encoding, self.data['table'])
         return encode_record(cw + 1, cl) if win else encode_record(cw, cl + 1)
 
-    def _parse_extracted_scores(self, *args, **kwargs):
+    def get_shadow_key(self, d, k):
+        return [Shadow(destination=d, key='statsplus.' + k, info=self.data[k])]
+
+    def get_shadow_scores(self):
+        gameday_scores = self.get_shadow_key('gameday', 'scores')
+        standings_scores = self.get_shadow_key('standings', 'scores')
+        return gameday_scores + standings_scores
+
+    def get_shadow_table(self):
+        return self.get_shadow_key('standings', 'table')
+
+    def parse_extracted_scores(self, *args, **kwargs):
         self.data['scores'] = {}
         self.data['table'] = {}
 
         if self.data['started']:
             self.data['started'] = False
         else:
-            self._rm()
+            self.cleanup()
 
         for name in os.listdir(EXTRACT_BOX_SCORES):
             num = search(r'\D+(\d+)\.html', name)
-            self._parse_score(num, None)
+            self.parse_score(num, None)
 
         for name in os.listdir(GAMES_DIR):
             data = loads(os.path.join(GAMES_DIR, name))
             for team, other in [('away', 'home'), ('home', 'away')]:
                 encoding = data[team + '_team']
                 win = int(data[team + '_runs']) > int(data[other + '_runs'])
-                self.data['table'][encoding] = self._next(data, encoding, win)
+                self.data['table'][encoding] = self.get_next_record(data, encoding, win)
 
         _logger.log(logging.INFO, 'Download complete.')
         chat_post_message('fairylab', 'Download complete.')
@@ -158,13 +165,13 @@ class Statsplus(Messageable, Runnable, Serializable):
         return Response(
             shadow=self._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
 
-    def _parse_saved_scores(self, date_, *args, **kwargs):
+    def parse_saved_scores(self, date_, *args, **kwargs):
         if date_ not in self.data['scores']:
             return Response()
 
         unvisited = {}
         for num, s in sorted(self.data['scores'][date_].items()):
-            data = self._parse_score(num, date_)
+            data = self.parse_score(num, date_)
             if data is None:
                 unvisited[num] = s
                 continue
@@ -172,10 +179,10 @@ class Statsplus(Messageable, Runnable, Serializable):
             for team, other in [('away', 'home'), ('home', 'away')]:
                 encoding = data[team + '_team']
                 win = int(data[team + '_runs']) > int(data[other + '_runs'])
-                self.data['table'][encoding] = self._next(data, encoding, win)
+                self.data['table'][encoding] = self.get_next_record(data, encoding, win)
 
         if unvisited:
-            thread_ = Thread(target='_parse_saved_scores', args=(date_, ))
+            thread_ = Thread(target='parse_saved_scores', args=(date_, ))
 
             if unvisited == self.data['scores'][date_]:
                 return Response(thread_=[thread_])
@@ -193,7 +200,7 @@ class Statsplus(Messageable, Runnable, Serializable):
         return Response(
             notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_data())
 
-    def _parse_score(self, num, date):
+    def parse_score(self, num, date):
         out = os.path.join(GAMES_DIR, num + '.json')
 
         # TODO: Remove date check after game log 404 error is fixed.
@@ -209,13 +216,7 @@ class Statsplus(Messageable, Runnable, Serializable):
 
         return call_service('statslab', 'parse_game', (box, log, out, date))
 
-    def _rm(self):
-        # TODO: Remove after the World Series.
-        # check_output(['rm', '-rf', GAMES_DIR])
-        # check_output(['mkdir', GAMES_DIR])
-        pass
-
-    def _save_scores(self, date, text):
+    def save_scores(self, date, text):
         self.data['scores'][date] = {}
 
         text = precoding_to_encoding_sub(text)
@@ -227,15 +228,15 @@ class Statsplus(Messageable, Runnable, Serializable):
             self.data['scores'][date][num] = s
 
         self.write()
-        thread_ = Thread(target='_parse_saved_scores', args=(date, ))
-        return Response(shadow=self._shadow_scores(), thread_=[thread_])
+        thread_ = Thread(target='parse_saved_scores', args=(date, ))
+        return Response(shadow=self.get_shadow_scores(), thread_=[thread_])
 
-    def _start(self):
+    def start(self):
         self.data['scores'] = {}
         self.data['started'] = True
         self.data['table'] = {}
 
-        self._rm()
+        self.cleanup()
 
         _logger.log(logging.INFO, 'Sim in progress.')
         chat_post_message('fairylab', 'Sim in progress.')
@@ -244,11 +245,11 @@ class Statsplus(Messageable, Runnable, Serializable):
         return Response(notify=[Notify.STATSPLUS_START])
 
     @staticmethod
-    def _record(encoding, table_):
+    def get_record(encoding, table_):
         return decode_record(table_.get(encoding, '0-0'))
 
     @staticmethod
-    def _valid(obj):
+    def is_valid_message(obj):
         if any(k not in obj for k in ['bot_id', 'channel', 'text']):
             return False
 

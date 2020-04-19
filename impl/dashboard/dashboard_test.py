@@ -41,7 +41,7 @@ STDOUT = 'stdout'
 STDERR = 'stderr'
 
 
-def _kwargs(pathname, lineno, levelname, msg, exc_info):
+def create_kwargs(pathname, lineno, levelname, msg, exc_info):
     return {
         'pathname': pathname,
         'lineno': lineno,
@@ -54,7 +54,7 @@ def _kwargs(pathname, lineno, levelname, msg, exc_info):
     }
 
 
-def _record(pathname, lineno, levelname, msg, exc, date):
+def create_record(pathname, lineno, levelname, msg, exc, date):
     return {
         'pathname': pathname,
         'lineno': lineno,
@@ -65,7 +65,7 @@ def _record(pathname, lineno, levelname, msg, exc, date):
     }
 
 
-def _warning(pathname, lineno, levelname, msg, exc, date, count):
+def create_warning(pathname, lineno, levelname, msg, exc, date, count):
     return {
         'pathname': pathname,
         'lineno': lineno,
@@ -79,27 +79,28 @@ def _warning(pathname, lineno, levelname, msg, exc, date, count):
 
 class DashboardTest(Test):
     def setUp(self):
-        patch_chat = mock.patch('impl.dashboard.dashboard.chat_post_message')
-        self.addCleanup(patch_chat.stop)
-        self.mock_chat = patch_chat.start()
+        chat_post_message_patch = mock.patch(
+            'impl.dashboard.dashboard.chat_post_message')
+        self.addCleanup(chat_post_message_patch.stop)
+        self.chat_post_message_ = chat_post_message_patch.start()
 
-        patch_open = mock.patch(
-            'api.serializable.serializable.open', create=True)
-        self.addCleanup(patch_open.stop)
-        self.mock_open = patch_open.start()
+        files_upload_patch = mock.patch(
+            'impl.dashboard.dashboard.files_upload')
+        self.addCleanup(files_upload_patch.stop)
+        self.files_upload_ = files_upload_patch.start()
 
-        patch_upload = mock.patch('impl.dashboard.dashboard.files_upload')
-        self.addCleanup(patch_upload.stop)
-        self.mock_upload = patch_upload.start()
+        open_patch = mock.patch('api.serializable.serializable.open',
+                                create=True)
+        self.addCleanup(open_patch.stop)
+        self.open_ = open_patch.start()
 
     def init_mocks(self, data):
         mo = mock.mock_open(read_data=dumps(data))
-        self.mock_handle = mo()
-        self.mock_open.side_effect = [mo.return_value]
+        self.open_handle_ = mo()
+        self.open_.side_effect = [mo.return_value]
 
     def reset_mocks(self):
-        self.mock_open.reset_mock()
-        self.mock_handle.write.reset_mock()
+        self.open_handle_.write.reset_mock()
 
     def create_dashboard(self, data, warnings=None):
         self.init_mocks(data)
@@ -120,334 +121,333 @@ class DashboardTest(Test):
         dashboard = self.create_dashboard(data)
 
         self.assertFalse(len(dashboard.warnings))
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Dashboard, '_index_html')
-    def test_render_data(self, mock_index):
-        index_html = {'exceptions': []}
-        mock_index.return_value = index_html
+    @mock.patch.object(Dashboard, 'get_dashboard_html')
+    def test_render_data(self, get_dashboard_html_):
+        dashboard_html = {'exceptions': []}
+        get_dashboard_html_.return_value = dashboard_html
 
         data = {'logs': {}}
         dashboard = self.create_dashboard(data)
         actual = dashboard._render_data(date=DATE_10260602)
-        expected = [('dashboard/index.html', '', 'dashboard.html', index_html)]
+        expected = [('dashboard/index.html', '', 'dashboard.html',
+                     dashboard_html)]
         self.assertEqual(actual, expected)
 
-        mock_index.assert_called_once_with(date=DATE_10260602)
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        get_dashboard_html_.assert_called_once_with(date=DATE_10260602)
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Dashboard, '_cleanup')
-    def test_notify__fairylab_day(self, mock_cleanup):
+    @mock.patch.object(Dashboard, 'cleanup')
+    def test_notify__fairylab_day(self, cleanup_):
         data = {'logs': {}}
         dashboard = self.create_dashboard(data)
-        response = dashboard._notify_internal(
-            date=DATE_10260602, notify=Notify.FILEFAIRY_DAY)
+        response = dashboard._notify_internal(date=DATE_10260602,
+                                              notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
-        mock_cleanup.assert_called_once_with(
-            date=DATE_10260602, notify=Notify.FILEFAIRY_DAY)
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        cleanup_.assert_called_once_with(date=DATE_10260602,
+                                         notify=Notify.FILEFAIRY_DAY)
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Dashboard, '_cleanup')
-    def test_notify__with_other(self, mock_cleanup):
+    @mock.patch.object(Dashboard, 'cleanup')
+    def test_notify__with_other(self, cleanup_):
         data = {'logs': {}}
         dashboard = self.create_dashboard(data)
-        response = dashboard._notify_internal(
-            date=DATE_10260602, notify=Notify.OTHER)
+        response = dashboard._notify_internal(date=DATE_10260602,
+                                              notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
-        self.assertNotCalled(mock_cleanup, self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(cleanup_, self.chat_post_message_,
+                             self.open_handle_.write, self.files_upload_)
 
     @mock.patch.object(Dashboard, '_render')
-    def test_cleanup(self, mock_render):
+    def test_cleanup(self, _render_):
         old_date = encode_datetime(DATE_10190000)
         new_date = encode_datetime(DATE_10260000)
-        error = _record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
-        info = _record(PATH, 456, 'INFO', 'bar', '', DATE_10250007)
-        warning = _warning(PATH, 789, 'WARNING', 'baz', '...', DATE_10260602,
-                           1)
+        error = create_record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
+        info = create_record(PATH, 456, 'INFO', 'bar', '', DATE_10250007)
+        warning = create_warning(PATH, 789, 'WARNING', 'baz', '...',
+                                 DATE_10260602, 1)
 
         old_data = {'logs': {old_date: [info], new_date: [error]}}
         dashboard = self.create_dashboard(old_data, [warning])
-        dashboard._cleanup(date=DATE_10260602)
+        dashboard.cleanup(date=DATE_10260602)
         self.assertEqual(dashboard.warnings, [])
 
         new_data = {'logs': {new_date: [error]}}
-        mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.mock_handle.write.assert_called_once_with(dumps(new_data) + '\n')
-        self.assertNotCalled(self.mock_chat, self.mock_upload)
+        _render_.assert_called_once_with(date=DATE_10260602, log=False)
+        self.open_handle_.write.assert_called_once_with(dumps(new_data) + '\n')
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_)
 
-    # @mock.patch.object(Dashboard, '_warning')
-    # @mock.patch('impl.dashboard.dashboard.datetime_now')
-    # @mock.patch.object(Dashboard, '_log')
-    # @mock.patch('impl.dashboard.dashboard.os.getcwd')
-    # @mock.patch.object(Dashboard, '_alert')
-    # def test_emit__debug(self, mock_alert, mock_cwd, mock_log, mock_now,
-    #                      mock_warning):
-    #     mock_cwd.return_value = '/home/pi/filefairy/'
-    #     mock_now.return_value = DATE_10260602
+    @mock.patch('impl.dashboard.dashboard.os.getcwd')
+    @mock.patch.object(Dashboard, 'emit_warning')
+    @mock.patch.object(Dashboard, 'emit_log')
+    @mock.patch.object(Dashboard, 'emit_alert')
+    @mock.patch('impl.dashboard.dashboard.datetime_now')
+    def test_emit__debug(self, datetime_now_, emit_alert_, emit_log_,
+                         emit_warning_, getcwd_):
+        datetime_now_.return_value = DATE_10260602
+        getcwd_.return_value = '/home/pi/filefairy/'
 
-    #     data = {'logs': {}}
-    #     kwargs = _kwargs('path/to/module.py', 55, 'DEBUG', 'foo', None)
-    #     dashboard = self.create_dashboard(data)
-    #     dashboard._emit(**kwargs)
+        data = {'logs': {}}
+        kwargs = create_kwargs('path/to/module.py', 55, 'DEBUG', 'foo', None)
+        dashboard = self.create_dashboard(data)
+        dashboard.emit(**kwargs)
 
-    #     path = '/home/pi/filefairy/path/to/module.py'
-    #     record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
-    #     mock_alert.assert_called_once_with(record, **kwargs)
-    #     self.assertNotCalled(mock_log, mock_warning, self.mock_chat,
-    #                          self.mock_open, self.mock_handle.write,
-    #                          self.mock_upload)
+        path = '/home/pi/filefairy/path/to/module.py'
+        record = create_record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
+        emit_alert_.assert_called_once_with(record, **kwargs)
+        self.assertNotCalled(emit_log_, emit_warning_, self.chat_post_message_,
+                             self.open_handle_.write, self.files_upload_)
 
-    # @mock.patch.object(Dashboard, '_warning')
-    # @mock.patch('impl.dashboard.dashboard.datetime_now')
-    # @mock.patch.object(Dashboard, '_log')
-    # @mock.patch('impl.dashboard.dashboard.os.getcwd')
-    # @mock.patch.object(Dashboard, '_alert')
-    # def test_emit__error(self, mock_alert, mock_cwd, mock_log, mock_now,
-    #                      mock_warning):
-    #     mock_cwd.return_value = '/home/pi/filefairy/'
-    #     mock_now.return_value = DATE_10260602
+    @mock.patch('impl.dashboard.dashboard.os.getcwd')
+    @mock.patch.object(Dashboard, 'emit_warning')
+    @mock.patch.object(Dashboard, 'emit_log')
+    @mock.patch.object(Dashboard, 'emit_alert')
+    @mock.patch('impl.dashboard.dashboard.datetime_now')
+    def test_emit__error(self, datetime_now_, emit_alert_, emit_log_,
+                         emit_warning_, getcwd_):
+        getcwd_.return_value = '/home/pi/filefairy/'
+        datetime_now_.return_value = DATE_10260602
 
-    #     data = {'logs': {}}
-    #     kwargs = _kwargs('path/to/module.py', 123, 'ERROR', 'foo', EXC)
-    #     dashboard = self.create_dashboard(data)
-    #     dashboard._emit(**kwargs)
+        data = {'logs': {}}
+        kwargs = create_kwargs('path/to/module.py', 123, 'ERROR', 'foo', EXC)
+        dashboard = self.create_dashboard(data)
+        dashboard.emit(**kwargs)
 
-    #     path = '/home/pi/filefairy/path/to/module.py'
-    #     record = _record(path, 123, 'ERROR', 'foo', 'Exception', DATE_10260602)
-    #     mock_alert.assert_called_once_with(record, **kwargs)
-    #     mock_log.assert_called_once_with(record)
-    #     self.assertNotCalled(mock_warning, self.mock_chat, self.mock_open,
-    #                          self.mock_handle.write, self.mock_upload)
+        path = '/home/pi/filefairy/path/to/module.py'
+        record = create_record(path, 123, 'ERROR', 'foo', 'Exception',
+                               DATE_10260602)
+        emit_alert_.assert_called_once_with(record, **kwargs)
+        emit_log_.assert_called_once_with(record)
+        self.assertNotCalled(emit_warning_, self.chat_post_message_,
+                             self.open_handle_.write, self.files_upload_)
 
-    # @mock.patch.object(Dashboard, '_warning')
-    # @mock.patch('impl.dashboard.dashboard.datetime_now')
-    # @mock.patch.object(Dashboard, '_log')
-    # @mock.patch('impl.dashboard.dashboard.os.getcwd')
-    # @mock.patch.object(Dashboard, '_alert')
-    # def test_emit__info(self, mock_alert, mock_cwd, mock_log, mock_now,
-    #                     mock_warning):
-    #     mock_cwd.return_value = '/home/pi/filefairy/'
-    #     mock_now.return_value = DATE_10260602
+    @mock.patch('impl.dashboard.dashboard.os.getcwd')
+    @mock.patch.object(Dashboard, 'emit_warning')
+    @mock.patch.object(Dashboard, 'emit_log')
+    @mock.patch.object(Dashboard, 'emit_alert')
+    @mock.patch('impl.dashboard.dashboard.datetime_now')
+    def test_emit__info(self, datetime_now_, emit_alert_, emit_log_,
+                        emit_warning_, getcwd_):
+        getcwd_.return_value = '/home/pi/filefairy/'
+        datetime_now_.return_value = DATE_10260602
 
-    #     data = {'logs': {}}
-    #     kwargs = _kwargs('path/to/module.py', 456, 'INFO', 'bar', None)
-    #     dashboard = self.create_dashboard(data)
-    #     dashboard._emit(**kwargs)
+        data = {'logs': {}}
+        kwargs = create_kwargs('path/to/module.py', 456, 'INFO', 'bar', None)
+        dashboard = self.create_dashboard(data)
+        dashboard.emit(**kwargs)
 
-    #     path = '/home/pi/filefairy/path/to/module.py'
-    #     record = _record(path, 456, 'INFO', 'bar', '', DATE_10260602)
-    #     mock_log.assert_called_once_with(record)
-    #     self.assertNotCalled(mock_alert, mock_warning, self.mock_chat,
-    #                          self.mock_open, self.mock_handle.write,
-    #                          self.mock_upload)
+        path = '/home/pi/filefairy/path/to/module.py'
+        record = create_record(path, 456, 'INFO', 'bar', '', DATE_10260602)
+        emit_log_.assert_called_once_with(record)
+        self.assertNotCalled(emit_alert_, emit_warning_,
+                             self.chat_post_message_, self.open_handle_.write,
+                             self.files_upload_)
 
-    # @mock.patch.object(Dashboard, '_warning')
-    # @mock.patch('impl.dashboard.dashboard.datetime_now')
-    # @mock.patch.object(Dashboard, '_log')
-    # @mock.patch('impl.dashboard.dashboard.os.getcwd')
-    # @mock.patch.object(Dashboard, '_alert')
-    # def test_emit__warning(self, mock_alert, mock_cwd, mock_log, mock_now,
-    #                        mock_warning):
-    #     mock_cwd.return_value = '/home/pi/filefairy/'
-    #     mock_now.return_value = DATE_10260602
+    @mock.patch('impl.dashboard.dashboard.os.getcwd')
+    @mock.patch.object(Dashboard, 'emit_warning')
+    @mock.patch.object(Dashboard, 'emit_log')
+    @mock.patch.object(Dashboard, 'emit_alert')
+    @mock.patch('impl.dashboard.dashboard.datetime_now')
+    def test_emit__warning(self, datetime_now_, emit_alert_, emit_log_,
+                           emit_warning_, getcwd_):
+        getcwd_.return_value = '/home/pi/filefairy/'
+        datetime_now_.return_value = DATE_10260602
 
-    #     data = {'logs': {}}
-    #     kwargs = _kwargs('path/to/module.py', 789, 'WARNING', 'baz', EXC)
-    #     dashboard = self.create_dashboard(data)
-    #     dashboard._emit(**kwargs)
+        data = {'logs': {}}
+        kwargs = create_kwargs('path/to/module.py', 789, 'WARNING', 'baz', EXC)
+        dashboard = self.create_dashboard(data)
+        dashboard.emit(**kwargs)
 
-    #     path = '/home/pi/filefairy/path/to/module.py'
-    #     record = _record(path, 789, 'WARNING', 'baz', 'Exception',
-    #                      DATE_10260602)
-    #     mock_warning.assert_called_once_with(record, **kwargs)
-    #     self.assertNotCalled(mock_alert, mock_log, self.mock_chat,
-    #                          self.mock_open, self.mock_handle.write,
-    #                          self.mock_upload)
+        path = '/home/pi/filefairy/path/to/module.py'
+        record = create_record(path, 789, 'WARNING', 'baz', 'Exception',
+                               DATE_10260602)
+        emit_warning_.assert_called_once_with(record, **kwargs)
+        self.assertNotCalled(emit_alert_, emit_log_, self.chat_post_message_,
+                             self.open_handle_.write, self.files_upload_)
+
+    def test_emit_alert(self):
+        path = '/home/pi/filefairy/path/to/module.py'
+        record = create_record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
+        kwargs = create_kwargs('path/to/module.py', 55, 'DEBUG', 'foo', None)
+
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
+        dashboard.emit_alert(record, **kwargs)
+
+        self.chat_post_message_.assert_called_once_with(
+            'testing', 'module.py#L55: foo')
+        self.files_upload_.assert_has_calls([
+            mock.call('stderr', 'module.stderr.txt', 'testing'),
+            mock.call('stdout', 'module.stdout.txt', 'testing'),
+        ])
+        self.assertNotCalled(self.open_handle_.write)
 
     @mock.patch.object(Dashboard, '_render')
-    def test_log__other(self, mock_render):
+    def test_emit_log__other(self, _render_):
         new = encode_datetime(DATE_10260000)
-        error = _record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
+        error = create_record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
 
         old_data = {'logs': {new: [error]}}
-        record = _record(PATH, 456, 'INFO', 'bar', '', DATE_10260602)
+        record = create_record(PATH, 456, 'INFO', 'bar', '', DATE_10260602)
         dashboard = self.create_dashboard(old_data)
-        dashboard._log(record)
+        dashboard.emit_log(record)
 
         new_data = {'logs': {new: [error, record]}}
-        mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.mock_handle.write.assert_called_once_with(dumps(new_data) + '\n')
-        self.assertNotCalled(self.mock_chat, self.mock_upload)
+        _render_.assert_called_once_with(date=DATE_10260602, log=False)
+        self.open_handle_.write.assert_called_once_with(dumps(new_data) + '\n')
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_)
 
-    @mock.patch.object(Dashboard, '_alert')
-    def test_warning__alert(self, mock_alert):
+    @mock.patch.object(Dashboard, 'emit_alert')
+    def test_emit_warning__alert(self, emit_alert_):
         data = {'logs': {}}
-        kwargs = _kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
-        record = _record(PATH, 789, 'W', 'baz', 'E', DATE_10260604)
-        warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 9)
+        kwargs = create_kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
+        record = create_record(PATH, 789, 'W', 'baz', 'E', DATE_10260604)
+        warning = create_warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 9)
         dashboard = self.create_dashboard(data, [warning])
-        dashboard._warning(record, **kwargs)
+        dashboard.emit_warning(record, **kwargs)
 
-        warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 10)
+        warning = create_warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 10)
         self.assertEqual(dashboard.warnings, [warning])
-        mock_alert.assert_called_once_with(record, **kwargs)
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        emit_alert_.assert_called_once_with(record, **kwargs)
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_,
+                             self.open_handle_.write)
 
-    @mock.patch.object(Dashboard, '_alert')
-    def test_warning__multiple(self, mock_alert):
+    @mock.patch.object(Dashboard, 'emit_alert')
+    def test_emit_warning__multiple(self, emit_alert_):
         data = {'logs': {}}
-        kwargs = _kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
-        record = _record(PATH, 789, 'W', 'baz', 'E', DATE_10260604)
-        warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 1)
+        kwargs = create_kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
+        record = create_record(PATH, 789, 'W', 'baz', 'E', DATE_10260604)
+        warning = create_warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 1)
         dashboard = self.create_dashboard(data, [warning])
-        dashboard._warning(record, **kwargs)
+        dashboard.emit_warning(record, **kwargs)
 
-        warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 2)
+        warning = create_warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 2)
         self.assertEqual(dashboard.warnings, [warning])
-        self.assertNotCalled(mock_alert, self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(emit_alert_, self.chat_post_message_,
+                             self.open_handle_.write, self.files_upload_)
 
-    @mock.patch.object(Dashboard, '_alert')
-    def test_warning__single(self, mock_alert):
+    @mock.patch.object(Dashboard, 'emit_alert')
+    def test_emit_warning__single(self, emit_alert_):
         data = {'logs': {}}
-        kwargs = _kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
-        record = _record(PATH, 789, 'W', 'baz', 'E', DATE_10260602)
+        kwargs = create_kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
+        record = create_record(PATH, 789, 'W', 'baz', 'E', DATE_10260602)
         dashboard = self.create_dashboard(data, [])
-        dashboard._warning(record, **kwargs)
+        dashboard.emit_warning(record, **kwargs)
 
-        warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 1)
+        warning = create_warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 1)
         self.assertEqual(dashboard.warnings, [warning])
-        self.assertNotCalled(mock_alert, self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(emit_alert_, self.chat_post_message_,
+                             self.open_handle_.write, self.files_upload_)
 
-    def test_index_html(self):
+    def test_get_dashboard_html(self):
         old = encode_datetime(DATE_10250000)
         new = encode_datetime(DATE_10260000)
         path = '/home/pi/filefairy/path/to/module.py'
-        error = _record(path, 123, 'ERROR', 'foo', '...', DATE_10260602)
-        info = _record(path, 456, 'INFO', 'bar', '', DATE_10250007)
+        error = create_record(path, 123, 'ERROR', 'foo', '...', DATE_10260602)
+        info = create_record(path, 456, 'INFO', 'bar', '', DATE_10250007)
 
         data = {'logs': {old: [info], new: [error]}}
         dashboard = self.create_dashboard(data)
 
         link = 'https://github.com/brunner/filefairy/blob/master/'
         logs = [
+            table(clazz='border mb-3',
+                  hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
+                  bcols=[
+                      col(clazz='w-150p'),
+                      col(),
+                      col(clazz='text-right w-75p')
+                  ],
+                  fcols=[col(colspan='3')],
+                  head=[
+                      row(cells=[cell(content='Saturday, October 26th, 1985')])
+                  ],
+                  body=[
+                      row(cells=[
+                          cell(content=anchor(link + 'path/to/module.py#L123',
+                                              'module.py#L123')),
+                          cell(content='foo'),
+                          cell(content='06:02')
+                      ])
+                  ],
+                  foot=[row(cells=[cell(content=pre('...'))])]),
             table(
                 clazz='border mb-3',
                 hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
                 bcols=[
-                    col(clazz='w-150p'), col(),
-                    col(clazz='text-right w-75p')
-                ],
-                fcols=[col(colspan='3')],
-                head=[
-                    row(cells=[cell(content='Saturday, October 26th, 1985')])
-                ],
-                body=[
-                    row(cells=[
-                        cell(
-                            content=anchor(link + 'path/to/module.py#L123',
-                                           'module.py#L123')),
-                        cell(content='foo'),
-                        cell(content='06:02')
-                    ])
-                ],
-                foot=[row(cells=[cell(content=pre('...'))])]),
-            table(
-                clazz='border mb-3',
-                hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
-                bcols=[
-                    col(clazz='w-150p'), col(),
+                    col(clazz='w-150p'),
+                    col(),
                     col(clazz='text-right w-75p')
                 ],
                 head=[row(cells=[cell(content='Friday, October 25th, 1985')])],
                 body=[
                     row(cells=[
-                        cell(
-                            content=anchor(link + 'path/to/module.py#L456',
-                                           'module.py#L456')),
+                        cell(content=anchor(link + 'path/to/module.py#L456',
+                                            'module.py#L456')),
                         cell(content='bar'),
                         cell(content='00:07')
                     ])
                 ])
         ]
-        actual = dashboard._index_html(date=DATE_10260602)
+        actual = dashboard.get_dashboard_html(date=DATE_10260602)
         expected = {'logs': logs}
         self.assertEqual(actual, expected)
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_,
+                             self.open_handle_.write)
 
-    def test_alert(self):
-        path = '/home/pi/filefairy/path/to/module.py'
-        record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
-        kwargs = _kwargs('path/to/module.py', 55, 'DEBUG', 'foo', None)
-
-        data = {'logs': {}}
-        dashboard = self.create_dashboard(data)
-        dashboard._alert(record, **kwargs)
-
-        self.mock_chat.assert_called_once_with('testing', 'module.py#L55: foo')
-        self.mock_upload.assert_has_calls([
-            mock.call('stderr', 'module.stderr.txt', 'testing'),
-            mock.call('stdout', 'module.stdout.txt', 'testing'),
-        ])
-        self.assertNotCalled(self.mock_open, self.mock_handle.write)
-
-    def test_record_link(self):
+    def test_get_record_link(self):
         link = 'https://github.com/brunner/filefairy/blob/master/'
         path = '/home/pi/filefairy/path/to/module.py'
-        record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
+        record = create_record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
 
         data = {'logs': {}}
         dashboard = self.create_dashboard(data)
-        actual = dashboard._record_link(record)
+        actual = dashboard.get_record_link(record)
         expected = link + 'path/to/module.py#L55'
         self.assertEqual(actual, expected)
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_,
+                             self.open_handle_.write)
 
-    def test_record_title(self):
+    def test_get_record_title(self):
         path = '/home/pi/filefairy/path/to/module.py'
-        record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
+        record = create_record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
 
         data = {'logs': {}}
         dashboard = self.create_dashboard(data)
-        actual = dashboard._record_title(record)
+        actual = dashboard.get_record_title(record)
         expected = 'module.py#L55'
         self.assertEqual(actual, expected)
-        self.assertNotCalled(self.mock_chat, self.mock_open,
-                             self.mock_handle.write, self.mock_upload)
+        self.assertNotCalled(self.chat_post_message_, self.files_upload_,
+                             self.open_handle_.write)
 
-    def test_sort(self):
+    def test_sort_records(self):
         path1 = '/home/pi/filefairy/path/to/a.py'
         path2 = '/home/pi/filefairy/path/to/b.py'
-        record1 = _record(path1, 55, 'DEBUG', 'foo', '', DATE_10260602)
-        record2 = _record(path1, 110, 'DEBUG', 'foo', '', DATE_10260604)
-        record3 = _record(path1, 110, 'DEBUG', 'foo', '', DATE_10260602)
-        record4 = _record(path2, 110, 'DEBUG', 'foo', '', DATE_10260604)
-        record5 = _record(path2, 55, 'DEBUG', 'foo', '', DATE_10260602)
+        record1 = create_record(path1, 55, 'DEBUG', 'foo', '', DATE_10260602)
+        record2 = create_record(path1, 110, 'DEBUG', 'foo', '', DATE_10260604)
+        record3 = create_record(path1, 110, 'DEBUG', 'foo', '', DATE_10260602)
+        record4 = create_record(path2, 110, 'DEBUG', 'foo', '', DATE_10260604)
+        record5 = create_record(path2, 55, 'DEBUG', 'foo', '', DATE_10260602)
         records = [record1, record2, record3, record4, record5]
 
         data = {'logs': {}}
         dashboard = self.create_dashboard(data)
-        actual = list(sorted(records, key=dashboard._sort))
+        actual = list(sorted(records, key=dashboard.sort_records))
         expected = [record1, record3, record5, record2, record4]
         self.assertEqual(actual, expected)
 
 
 if __name__ in ['__main__', 'impl.dashboard.dashboard_test']:
-    main(
-        DashboardTest,
-        Dashboard,
-        'impl.dashboard',
-        'impl/dashboard', {},
-        __name__ == '__main__',
-        date=DATE_10260602,
-        e=ENV)
+    main(DashboardTest,
+         Dashboard,
+         'impl.dashboard',
+         'impl/dashboard', {},
+         __name__ == '__main__',
+         date=DATE_10260602,
+         e=ENV)

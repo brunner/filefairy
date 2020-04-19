@@ -25,7 +25,7 @@ check_output(['mkdir', GAMEDAY_DIR])
 main()
 
 with chdir(FAIRYLAB_DIR):
-    stdout = Git._call(['git', 'status']).get_debug()[0].get_extra()['stdout']
+    stdout = Git.check(['git', 'status']).get_debug()[0].get_extra()['stdout']
 
     if 'nothing to commit' in stdout:
         print('nothing to commit')

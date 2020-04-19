@@ -44,7 +44,7 @@ class News(Renderable, Runnable, Serializable):
         return 'News'
 
     def _render_data(self, **kwargs):
-        _index_html = self._index_html(**kwargs)
+        _index_html = self.get_news_html(**kwargs)
         return [('news/index.html', '', 'news.html', _index_html)]
 
     def _notify_internal(self, **kwargs):
@@ -52,14 +52,7 @@ class News(Renderable, Runnable, Serializable):
             self._render(**kwargs)
         return Response()
 
-    def _index_html(self, **kwargs):
-        ret = {}
-        for name in ['injuries', 'news', 'transactions']:
-            ret[name] = self._tables(name)
-
-        return ret
-
-    def _tables(self, name):
+    def create_tables(self, name):
         data = loads(os.path.join(EXTRACT_LEAGUES, name + '.json'))
 
         tables = []
@@ -69,7 +62,7 @@ class News(Renderable, Runnable, Serializable):
             head = d.strftime('%A, %B %-d{S}, %Y').replace('{S}', suf)
             body = []
             for t in data[date]:
-                body.append(row(cells=[cell(content=self._transform(t))]))
+                body.append(row(cells=[cell(content=self.get_content(t))]))
 
             tables.append(
                 table(
@@ -81,8 +74,15 @@ class News(Renderable, Runnable, Serializable):
 
         return tables
 
+    def get_news_html(self, **kwargs):
+        ret = {}
+        for name in ['injuries', 'news', 'transactions']:
+            ret[name] = self.create_tables(name)
+
+        return ret
+
     @staticmethod
-    def _transform(text):
+    def get_content(text):
         encoding = search(r'(T\d+)\D', text)
         if encoding is None or match(r'(The ' + encoding + r' traded)', text):
             encoding = 'T30'
@@ -91,7 +91,7 @@ class News(Renderable, Runnable, Serializable):
         text = re.sub(r'was injured \.', 'was injured.', text)
         text = re.sub(r'of the ' + encoding + r' honored: Wins', 'wins', text)
         text = re.sub(r'original Organization ', '', text)
-        text = re.sub(r'The Diagnosis: (\w)', News._transform_diagnosis, text)
+        text = re.sub(r'The Diagnosis: (\w)', News.get_diagnosis_content, text)
         text = re.sub(r'Rule 5 draft pick(\w)', r'Rule 5 draft pick \1', text)
         text = re.sub(r'NO-HITTER', r'no-hitter', text)
 
@@ -101,5 +101,5 @@ class News(Renderable, Runnable, Serializable):
         return icon_absolute(encoding, text)
 
     @staticmethod
-    def _transform_diagnosis(m):
+    def get_diagnosis_content(m):
         return 'Diagnosis: ' + m.group(1).lower()

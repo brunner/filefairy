@@ -63,8 +63,8 @@ class Standings(Renderable, Runnable, Serializable):
         return 'Standings'
 
     def _render_data(self, **kwargs):
-        _index_html = self._index_html(**kwargs)
-        return [('standings/index.html', '', 'standings.html', _index_html)]
+        standings_html = self.get_standings_html(**kwargs)
+        return [('standings/index.html', '', 'standings.html', standings_html)]
 
     def _shadow_data(self, **kwargs):
         return [
@@ -76,13 +76,13 @@ class Standings(Renderable, Runnable, Serializable):
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.DOWNLOAD_YEAR:
-            self._clear(**kwargs)
+            self.clear_standings(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_FINISH:
-            self._finish(**kwargs)
+            self.handle_finish(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_PARSE:
             self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_START:
-            self._start(**kwargs)
+            self.handle_start(**kwargs)
 
         return Response()
 
@@ -90,14 +90,14 @@ class Standings(Renderable, Runnable, Serializable):
         self._render(**kwargs)
         return Response()
 
-    def _clear(self, **kwargs):
+    def clear_standings(self, **kwargs):
         for encoding in self.data['table']:
             self.data['table'][encoding] = '0-0'
 
         self.write()
         self._render(**kwargs)
 
-    def _dialog_tables(self, data):
+    def create_dialog_tables(self, data):
         curr = None
         tables = []
         for start, body, foot in sorted(data, key=lambda x: x[0]):
@@ -115,7 +115,7 @@ class Standings(Renderable, Runnable, Serializable):
 
         return tables
 
-    def _finish(self, **kwargs):
+    def handle_finish(self, **kwargs):
         self.data['finished'] = True
 
         for name in os.listdir(GAMES_DIR):
@@ -135,13 +135,13 @@ class Standings(Renderable, Runnable, Serializable):
         self.write()
         self._render(**kwargs)
 
-    def _start(self, **kwargs):
+    def handle_start(self, **kwargs):
         self.data['finished'] = False
         self.shadow['statsplus.scores'] = {}
         self.shadow['statsplus.table'] = {}
         self.write()
 
-    def _index_html(self, **kwargs):
+    def get_standings_html(self, **kwargs):
         ret = {
             'dialogs': [],
             'expanded': [],
@@ -169,7 +169,7 @@ class Standings(Renderable, Runnable, Serializable):
         for encoding in sorted(d):
             lower = encoding_to_lower(encoding)
             decoding = encoding_to_decoding(encoding)
-            tables = self._dialog_tables(d[encoding])
+            tables = self.create_dialog_tables(d[encoding])
             icon = icon_absolute(encoding, decoding)
             ret['dialogs'].append(dialog(lower, icon, tables))
 

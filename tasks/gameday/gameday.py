@@ -54,8 +54,8 @@ class Gameday(Renderable, Runnable, Serializable):
         return 'Gameday'
 
     def _render_data(self, **kwargs):
-        _index_html = self._index_html(**kwargs)
-        datas = [('gameday/index.html', '', 'gameday.html', _index_html)]
+        gameday_html = self.get_gameday_html(**kwargs)
+        datas = [('gameday/index.html', '', 'gameday.html', gameday_html)]
 
         nums = listdirs(GAMEDAY_DIR)
         for name in os.listdir(GAMES_DIR):
@@ -63,11 +63,11 @@ class Gameday(Renderable, Runnable, Serializable):
             if num in nums:
                 continue
 
-            _in = os.path.join(GAMES_DIR, name)
-            _livesim_html = call_service('livesim', 'get_html', (_in, ))
-            if _livesim_html:
+            in_ = os.path.join(GAMES_DIR, name)
+            livesim_html = call_service('livesim', 'get_html', (in_, ))
+            if livesim_html:
                 url = 'gameday/{}/index.html'.format(num)
-                datas.append((url, num, 'livesim.html', _livesim_html))
+                datas.append((url, num, 'livesim.html', livesim_html))
                 check_output(['mkdir', os.path.join(GAMEDAY_DIR, num)])
 
         return datas
@@ -75,13 +75,13 @@ class Gameday(Renderable, Runnable, Serializable):
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.STATSPLUS_FINISH:
             if not self.data['started']:
-                self._rm()
+                self.cleanup()
             self.data['started'] = False
             self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_PARSE:
             self._render(**kwargs)
         if kwargs['notify'] == Notify.STATSPLUS_START:
-            self._rm()
+            self.cleanup()
             self.data['started'] = True
 
         return Response()
@@ -90,7 +90,11 @@ class Gameday(Renderable, Runnable, Serializable):
         self._render(**kwargs)
         return Response()
 
-    def _index_html(self, **kwargs):
+    def cleanup(self):
+        check_output(['rm', '-rf', GAMEDAY_DIR])
+        check_output(['mkdir', GAMEDAY_DIR])
+
+    def get_gameday_html(self, **kwargs):
         ret = {
             'days': [],
             'dialogs': [],
@@ -149,11 +153,6 @@ class Gameday(Renderable, Runnable, Serializable):
 
         return ret
 
-    def _rm(self):
-        check_output(['rm', '-rf', GAMEDAY_DIR])
-        check_output(['mkdir', GAMEDAY_DIR])
-        pass
-
 
 # from common.datetime_.datetime_ import datetime_now
 # from common.jinja2_.jinja2_ import env
@@ -175,5 +174,5 @@ class Gameday(Renderable, Runnable, Serializable):
 # reload_service_for_test('uniforms')
 
 # gameday = Gameday(date=date, e=e)
-# gameday._rm()
+# gameday.cleanup()
 # gameday._render(date=date)

@@ -11,6 +11,7 @@ sys.path.append(re.sub(r'/tasks/git', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
 from api.runnable.runnable import Runnable  # noqa
+from common.messageable.messageable import messageable  # noqa
 from common.os_.os_ import chdir  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from types_.debug.debug import Debug  # noqa
@@ -33,6 +34,7 @@ class Git(Messageable, Runnable):
 
         return Response()
 
+    @messageable
     def acp(self, *args, **kwargs):
         response = Response(notify=[Notify.BASE])
 
@@ -56,26 +58,32 @@ class Git(Messageable, Runnable):
 
         return response
 
+    @messageable
     def add(self, *args, **kwargs):
-        return self._call(['git', 'add', '.'], **kwargs)
+        return self.check(['git', 'add', '.'], **kwargs)
 
+    @messageable
     def commit(self, *args, **kwargs):
-        return self._call(['git', 'commit', '-m', 'Automated push.'], **kwargs)
+        return self.check(['git', 'commit', '-m', 'Automated push.'], **kwargs)
 
+    @messageable
     def pull(self, *args, **kwargs):
-        return self._call(['git', 'pull'], **kwargs)
+        return self.check(['git', 'pull'], **kwargs)
 
+    @messageable
     def push(self, *args, **kwargs):
-        return self._call(['git', 'push'], **kwargs)
+        return self.check(['git', 'push'], **kwargs)
 
+    @messageable
     def reset(self, *args, **kwargs):
-        return self._call(['git', 'reset', '--hard'], **kwargs)
+        return self.check(['git', 'reset', '--hard'], **kwargs)
 
+    @messageable
     def status(self, *args, **kwargs):
-        return self._call(['git', 'status'], **kwargs)
+        return self.check(['git', 'status'], **kwargs)
 
     @staticmethod
-    def _call(cmd, **kwargs):
+    def check(cmd, **kwargs):
         response = Response()
         output = check_output(cmd)
 

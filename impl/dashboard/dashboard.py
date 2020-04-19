@@ -77,16 +77,16 @@ class Dashboard(Renderable, Runnable, Serializable):
         return 'Dashboard'
 
     def _render_data(self, **kwargs):
-        _index_html = self._index_html(**kwargs)
-        return [('dashboard/index.html', '', 'dashboard.html', _index_html)]
+        dashboard_html = self.get_dashboard_html(**kwargs)
+        return [('dashboard/index.html', '', 'dashboard.html', dashboard_html)]
 
     def _notify_internal(self, **kwargs):
         notify = kwargs['notify']
         if notify == Notify.FILEFAIRY_DAY:
-            self._cleanup(**kwargs)
+            self.cleanup(**kwargs)
         return Response()
 
-    def _cleanup(self, **kwargs):
+    def cleanup(self, **kwargs):
         data = self.data
         original = copy.deepcopy(data)
 
@@ -103,7 +103,7 @@ class Dashboard(Renderable, Runnable, Serializable):
             self.write()
             self._render(**dict(kwargs, log=False))
 
-    def _emit(self, **kwargs):
+    def emit(self, **kwargs):
         cwd = os.getcwd()
         record = {k: kwargs[k] for k in ['levelname', 'lineno', 'msg']}
         record['pathname'] = os.path.join(cwd, kwargs['pathname'])
@@ -119,13 +119,24 @@ class Dashboard(Renderable, Runnable, Serializable):
 
         levelname = record['levelname']
         if levelname in ['DEBUG', 'ERROR']:
-            self._alert(record, **kwargs)
+            self.emit_alert(record, **kwargs)
         if levelname in ['INFO', 'ERROR']:
-            self._log(record)
+            self.emit_log(record)
         if levelname == 'WARNING':
-            self._warning(record, **kwargs)
+            self.emit_warning(record, **kwargs)
 
-    def _log(self, record):
+    def emit_alert(self, record, **kwargs):
+        title = Dashboard.get_record_title(record)
+        chat_post_message('testing', title + ': ' + record['msg'])
+
+        for key in ['exc', 'stderr', 'stdout']:
+            value = record.get(key, kwargs.get(key, ''))
+            if value:
+                content = secrets_sub(value)
+                filename = kwargs.get('module', '') + '.' + key + '.txt'
+                files_upload(content, filename, 'testing')
+
+    def emit_log(self, record):
         d = decode_datetime(record['date'])
         rounded = datetime_datetime_pst(d.year, d.month, d.day)
 
@@ -137,7 +148,7 @@ class Dashboard(Renderable, Runnable, Serializable):
         self._render(date=d, log=False)
         self.write()
 
-    def _warning(self, record, **kwargs):
+    def emit_warning(self, record, **kwargs):
         d = decode_datetime(record['date'])
 
         for warning in list(self.warnings):
@@ -149,7 +160,7 @@ class Dashboard(Renderable, Runnable, Serializable):
                     warning['count'] += 1
                     warning['date'] = d
                     if warning['count'] == 10:
-                        self._alert(record, **kwargs)
+                        self.emit_alert(record, **kwargs)
                     break
         else:
             warning = copy.deepcopy(record)
@@ -157,7 +168,7 @@ class Dashboard(Renderable, Runnable, Serializable):
             warning['date'] = d
             self.warnings.append(warning)
 
-    def _index_html(self, **kwargs):
+    def get_dashboard_html(self, **kwargs):
         ret = {'logs': []}
 
         for date in sorted(self.data['logs']):
@@ -166,9 +177,9 @@ class Dashboard(Renderable, Runnable, Serializable):
 
             body = []
             logs = self.data['logs'][date]
-            for record in sorted(logs, key=self._sort):
-                link = self._record_link(record)
-                title = self._record_title(record)
+            for record in sorted(logs, key=self.sort_records):
+                link = self.get_record_link(record)
+                title = self.get_record_title(record)
 
                 date = record['date']
                 levelname = record['levelname']
@@ -184,62 +195,23 @@ class Dashboard(Renderable, Runnable, Serializable):
 
                 if levelname == 'ERROR':
                     if body:
-                        t = self._table(head_content, body, None)
+                        t = self.create_table(head_content, body, None)
                         ret['logs'].insert(0, t)
 
                     foot = [row(cells=[cell(content=pre(record['exc']))])]
-                    t = self._table(head_content, [row_], foot)
+                    t = self.create_table(head_content, [row_], foot)
                     ret['logs'].insert(0, t)
                 else:
                     body.insert(0, row_)
 
             if body:
-                t = self._table(head_content, body, None)
+                t = self.create_table(head_content, body, None)
                 ret['logs'].insert(0, t)
 
         return ret
 
     @staticmethod
-    def _alert(record, **kwargs):
-        title = Dashboard._record_title(record)
-        chat_post_message('testing', title + ': ' + record['msg'])
-
-        for key in ['exc', 'stderr', 'stdout']:
-            value = record.get(key, kwargs.get(key, ''))
-            if value:
-                content = secrets_sub(value)
-                filename = kwargs.get('module', '') + '.' + key + '.txt'
-                files_upload(content, filename, 'testing')
-
-    @staticmethod
-    def _record_line(record):
-        lineno = record['lineno']
-        return '#L' + str(lineno)
-
-    @staticmethod
-    def _record_link(record):
-        pathname = record['pathname']
-        if 'filefairy/' in pathname:
-            _, end = pathname.split('filefairy/', 1)
-        else:
-            end = pathname
-        return LINK + end + Dashboard._record_line(record)
-
-    @staticmethod
-    def _record_title(record):
-        pathname = record['pathname']
-        if '/' in pathname:
-            _, end = pathname.rsplit('/', 1)
-        else:
-            end = pathname
-        return end + Dashboard._record_line(record)
-
-    @staticmethod
-    def _sort(record):
-        return (record['date'], record['pathname'], record['lineno'])
-
-    @staticmethod
-    def _table(head_content, body, foot):
+    def create_table(head_content, body, foot):
         fcols = [col(colspan='3')] if foot else None
         return table(
             clazz='border mb-3',
@@ -252,6 +224,33 @@ class Dashboard(Renderable, Runnable, Serializable):
             body=body,
             foot=foot)
 
+    @staticmethod
+    def get_record_line(record):
+        lineno = record['lineno']
+        return '#L' + str(lineno)
+
+    @staticmethod
+    def get_record_link(record):
+        pathname = record['pathname']
+        if 'filefairy/' in pathname:
+            _, end = pathname.split('filefairy/', 1)
+        else:
+            end = pathname
+        return LINK + end + Dashboard.get_record_line(record)
+
+    @staticmethod
+    def get_record_title(record):
+        pathname = record['pathname']
+        if '/' in pathname:
+            _, end = pathname.rsplit('/', 1)
+        else:
+            end = pathname
+        return end + Dashboard.get_record_line(record)
+
+    @staticmethod
+    def sort_records(record):
+        return (record['date'], record['pathname'], record['lineno'])
+
 
 class LoggingHandler(logging.Handler):
     def __init__(self, dashboard):
@@ -260,5 +259,5 @@ class LoggingHandler(logging.Handler):
 
     def emit(self, record):
         # TODO: uncomment after finishing refactors.
-        # self.dashboard._emit(**vars(record))
-        print(record)
+        # self.dashboard.emit(**vars(record))
+        print(vars(record))

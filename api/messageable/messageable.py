@@ -30,7 +30,7 @@ _on_message_internal is invoked with **kwargs containing the message data.
 
 Tasks are required to return Response data from _on_message_internal.
 
-Functions named with a leading underscore cannot be invoked by messageable.
+Functions must be decorated with ``@messageable`` to be messageable.
 """
 
 import logging
@@ -68,7 +68,7 @@ class Messageable():
                     continue
 
                 item = getattr(self, method)
-                if not callable(item):
+                if not callable(item) or not getattr(item, '_messageable'):
                     continue
 
                 args = search(ARGS_PATTERN.format(name, method), text)

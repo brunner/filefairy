@@ -24,6 +24,7 @@ from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import sitelinks  # noqa
 from common.jinja2_.jinja2_ import env  # noqa
+from common.messageable.messageable import messageable  # noqa
 from common.os_.os_ import listdirs  # noqa
 from common.reference.reference import set_reference  # noqa
 from common.service.service import reload_services  # noqa
@@ -66,7 +67,7 @@ class Filefairy(Messageable, Renderable):
         self.day = date.day
         self.keep_running = True
         self.original = date
-        self.renderables = []
+        self.renderables_ = []
         self.runners = {'dashboard': d, 'reference': r}
         self.sleep = 2  # TODO: change back to 60 after finishing refactors.
         self.threads = []
@@ -81,53 +82,57 @@ class Filefairy(Messageable, Renderable):
         return 'Fairylab'
 
     def _render_data(self, **kwargs):
-        _index_html = self._index_html(**kwargs)
-        return [('index.html', '', 'home.html', _index_html)]
+        home_html = self.get_home_html(**kwargs)
+        return [('index.html', '', 'home.html', home_html)]
 
     def _on_message_internal(self, **kwargs):
         return Response()
 
+    @messageable
     def reboot(self, *args, **kwargs):
         _logger.log(logging.DEBUG, 'Rebooting filefairy.')
         os.execv(sys.executable, ['python3'] + sys.argv)
 
+    @messageable
     def reload(self, *args, **kwargs):
         if len(args) != 1:
             return Response()
 
-        self._reload_services()
+        self.reload_services()
 
         t = args[0]
-        response = self._reload_internal(t, True, **kwargs)
+        response = self.reload_internal(t, True, **kwargs)
 
         if response.notify:
-            self._setup_all(*args, **kwargs)
+            self.setup_all(*args, **kwargs)
             self.date = kwargs['date']
 
         return response
 
-    def set_renderables(self, *args, **kwargs):
+    @messageable
+    def renderables(self, *args, **kwargs):
         if len(args) != 1 or not isinstance(args[0], list):
             return
-        self.renderables = args[0]
+        self.renderables_ = args[0]
 
+    @messageable
     def shutdown(self, *args, **kwargs):
         _logger.log(logging.DEBUG, 'Shutting down filefairy.')
         self.keep_running = False
 
-    def _background(self):
+    def background(self):
         while self.keep_running:
             original = list(self.threads)
             self.threads = []
 
             for t, thread_ in original:
-                self._try(t, thread_.target, *thread_.args, **thread_.kwargs)
+                self.try_(t, thread_.target, *thread_.args, **thread_.kwargs)
 
             time.sleep(self.sleep)
 
-    def _connect(self):
+    def connect(self):
         def _recv(ws, message):
-            self._recv(message)
+            self.recv(message)
 
         obj = rtm_connect()
         if obj['ok'] and 'url' in obj:
@@ -137,12 +142,25 @@ class Filefairy(Messageable, Renderable):
             t.daemon = True
             t.start()
 
-    def _install(self, t, module, clazz, **kwargs):
+    def handle_response(self, t, response, **kwargs):
+        if response.notify:
+            self.date = kwargs['date']
+            self.runners[t].date = kwargs['date']
+        for notify in response.notify:
+            if notify != Notify.BASE:
+                self.try_all('_notify', **dict(kwargs, notify=notify))
+        for shadow in response.shadow:
+            self.try_(shadow.destination, '_shadow',
+                      **dict(kwargs, shadow=shadow))
+        for thread_ in response.thread_:
+            self.threads.append((t, thread_))
+
+    def install(self, t, module, clazz, **kwargs):
         date = kwargs['date']
         try:
             runnable = getattr(module, clazz)
             runargs = {'date': date}
-            if t in self.renderables:
+            if t in self.renderables_:
                 runargs['e'] = self.environment
 
             self.runners[t] = runnable(**runargs)
@@ -152,14 +170,14 @@ class Filefairy(Messageable, Renderable):
 
         return True
 
-    def _recv(self, message):
+    def recv(self, message):
         date = datetime_now()
         obj = json.loads(message)
 
         self._on_message(obj=obj, date=date)
-        self._try_all('_on_message', obj=obj, date=date)
+        self.try_all('_on_message', obj=obj, date=date)
 
-    def _reload_internal(self, t, log, **kwargs):
+    def reload_internal(self, t, log, **kwargs):
         response = Response()
 
         clazz = t.capitalize()
@@ -171,7 +189,7 @@ class Filefairy(Messageable, Renderable):
         msg = '{} {}.'.format('{}', t)
         try:
             module = importlib.import_module(package)
-            if self._install(t, module, clazz, **kwargs):
+            if self.install(t, module, clazz, **kwargs):
                 response.append(notify=Notify.BASE)
                 if log:
                     m = msg.format('Reloaded')
@@ -182,33 +200,20 @@ class Filefairy(Messageable, Renderable):
 
         return response
 
-    def _reload_services(self):
+    def reload_services(self):
         try:
             reload_services()
         except Exception:
             _logger.log(
                 logging.ERROR, 'Error reloading services.', exc_info=True)
 
-    def _response(self, t, response, **kwargs):
-        if response.notify:
-            self.date = kwargs['date']
-            self.runners[t].date = kwargs['date']
-        for notify in response.notify:
-            if notify != Notify.BASE:
-                self._try_all('_notify', **dict(kwargs, notify=notify))
-        for shadow in response.shadow:
-            self._try(shadow.destination, '_shadow',
-                      **dict(kwargs, shadow=shadow))
-        for thread_ in response.thread_:
-            self.threads.append((t, thread_))
-
-    def _run(self):
+    def run(self):
         date = datetime_now()
-        self._try_all('_run', date=date)
+        self.try_all('_run', date=date)
 
         if self.day != date.day:
             notify = Notify.FILEFAIRY_DAY
-            self._try_all('_notify', notify=notify, date=date)
+            self.try_all('_notify', notify=notify, date=date)
             self.day = date.day
 
         if self.date != self.original:
@@ -216,42 +221,42 @@ class Filefairy(Messageable, Renderable):
             # TODO: uncomment after finishing refactors.
             # if 'git' in self.runners.keys():
             #     notify = Notify.FILEFAIRY_DEPLOY
-            #     self._try('git', '_notify', notify=notify, date=date)
+            #     self.try_('git', '_notify', notify=notify, date=date)
             self.original = self.date
 
-    def _setup(self, *args, **kwargs):
-        self._reload_services()
+    def setup(self, *args, **kwargs):
+        self.reload_services()
 
         for t in listdirs(TASKS_DIR):
-            self._reload_internal(t, False, **kwargs)
+            self.reload_internal(t, False, **kwargs)
 
-        self._setup_all(*args, **kwargs)
+        self.setup_all(*args, **kwargs)
 
-    def _setup_all(self, *args, **kwargs):
-        self._try_all('_setup', **kwargs)
-        self._try_all('_render', **kwargs)
+    def setup_all(self, *args, **kwargs):
+        self.try_all('_setup', **kwargs)
+        self.try_all('_render', **kwargs)
 
-    def _start(self, duration):
+    def start(self, duration):
         count = 0
         while self.keep_running and (duration is None or count < duration):
             if not self.bg:
-                self.bg = threading.Thread(target=self._background)
+                self.bg = threading.Thread(target=self.background)
                 self.bg.daemon = True
                 self.bg.start()
 
             if not self.ws or not self.ws.sock:
                 if self.ws:
                     self.ws.close()
-                self._connect()
+                self.connect()
 
-            self._run()
+            self.run()
             time.sleep(self.sleep)
             count += 1
 
         if self.ws:
             self.ws.close()
 
-    def _try(self, t, method, *args, **kwargs):
+    def try_(self, t, method, *args, **kwargs):
         if t not in self.runners:
             return
 
@@ -267,18 +272,18 @@ class Filefairy(Messageable, Renderable):
         kwargs['date'] = date
         try:
             response = item(*args, **kwargs)
-            self._response(t, response, **kwargs)
+            self.handle_response(t, response, **kwargs)
         except Exception:
             _logger.log(logging.ERROR, 'Disabled ' + t + '.', exc_info=True)
             self.runners[t].date = date
             self.runners[t].ok = False
 
-    def _try_all(self, method, *args, **kwargs):
+    def try_all(self, method, *args, **kwargs):
         tasks = sorted(self.runners.keys())
         for t in tasks:
-            self._try(t, method, *args, **kwargs)
+            self.try_(t, method, *args, **kwargs)
 
-    def _index_html(self, **kwargs):
+    def get_home_html(self, **kwargs):
         return {'sitelinks': sitelinks()}
 
 
@@ -295,9 +300,9 @@ def main():
     set_reference(reference)
 
     filefairy = Filefairy(date=date, d=dashboard, e=e, r=reference)
-    filefairy.set_renderables(['gameday', 'news', 'standings'])
-    filefairy._setup(date=date)
-    filefairy._start(2)
+    filefairy.renderables(['gameday', 'news', 'standings'])
+    filefairy.setup(date=date)
+    filefairy.start(2)
 
 
 if __name__ == '__main__':

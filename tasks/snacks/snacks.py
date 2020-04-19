@@ -9,6 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/snacks', '', _path))
 
+from api.messageable.messageable import Messageable  # noqa
 from api.runnable.runnable import Runnable  # noqa
 from common.nltk_.nltk_ import get_cfd  # noqa
 from common.nltk_.nltk_ import get_messages  # noqa
@@ -27,7 +28,7 @@ MIN = 8
 MAX = 30
 
 
-class Snacks(Runnable):
+class Snacks(Messageable, Runnable):
     def __init__(self, **kwargs):
         super(Snacks, self).__init__(**kwargs)
         self.cfds = {}
@@ -35,13 +36,13 @@ class Snacks(Runnable):
 
     def _notify_internal(self, **kwargs):
         if kwargs['notify'] == Notify.FILEFAIRY_DAY:
-            return Response(thread_=[Thread(target='_refresh')])
+            return Response(thread_=[Thread(target='refresh')])
 
         return Response()
 
     def _on_message_internal(self, **kwargs):
         obj = kwargs['obj']
-        if not self._valid(obj):
+        if not self.is_valid_message(obj):
             return Response()
 
         channel = obj['channel']
@@ -98,9 +99,9 @@ class Snacks(Runnable):
         return Response()
 
     def _setup_internal(self, **kwargs):
-        return Response(thread_=[Thread(target='_refresh')])
+        return Response(thread_=[Thread(target='refresh')])
 
-    def _refresh(self, *args, **kwargs):
+    def refresh(self, *args, **kwargs):
         messages = get_messages()
         users = get_users()
         if not messages or not users:
@@ -117,7 +118,7 @@ class Snacks(Runnable):
         return Response()
 
     @staticmethod
-    def _valid(obj):
+    def is_valid_message(obj):
         if any(k not in obj for k in ['channel', 'text', 'ts']):
             return False
 

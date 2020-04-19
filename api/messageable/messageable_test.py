@@ -13,6 +13,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/api/messageable', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
+from common.messageable.messageable import messageable  # noqa
 from types_.debug.debug import Debug  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
@@ -30,10 +31,11 @@ class FakeMessageable(Messageable):
     def _on_message_internal(self, **kwargs):
         return Response()
 
+    @messageable
     def foo(self, *args, **kwargs):
         pass
 
-    def _bar(self):
+    def bar(self):
         pass
 
 
@@ -132,7 +134,7 @@ class MessageableTest(unittest.TestCase):
         mock_foo.assert_not_called()
         self.mock_log.assert_not_called()
 
-    @mock.patch.object(FakeMessageable, '_bar')
+    @mock.patch.object(FakeMessageable, 'bar')
     def test_on_message__private_attr(self, mock_bar):
         messageable = self.create_messageable()
 

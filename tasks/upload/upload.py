@@ -33,7 +33,7 @@ class Upload(Runnable, Serializable):
 
     def _run_internal(self, **kwargs):
         # TODO: uncomment after finishing refactors.
-        # date = self._get_date()
+        # date = self.get_file_date()
         # if date is not None and date != self.data['date']:
         #     _logger.log(logging.INFO, 'File is up.')
         #     chat_post_message('fairylab', 'File is up.')
@@ -46,7 +46,7 @@ class Upload(Runnable, Serializable):
         return Response()
 
     @staticmethod
-    def _get_date():
+    def get_file_date():
         text = re.sub('[.,]', '', get(EXPORTS_URL))
         match = search(r'(?s)League File: (\w+ \d+ \d+ [\d:]+ \w+) C', text)
         if match:
