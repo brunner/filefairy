@@ -15,7 +15,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/reference', '', _path))
 
-from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from common.re_.re_ import search  # noqa
 from common.service.service import call_service  # noqa
 from types_.notify.notify import Notify  # noqa
@@ -26,7 +26,7 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 
 
-class Reference(Registrable):
+class Reference(Runnable):
     def __init__(self, **kwargs):
         super(Reference, self).__init__(**kwargs)
 

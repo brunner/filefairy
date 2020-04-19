@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Extend the registrable API to set up hooks for standard task interactions.
+"""Extend the runnable API to set up hooks for standard task interactions.
 
 This base class collects the functionality of several sub-APIs to describe the
 following interactions that the app expects to perform on a running task.
@@ -14,7 +14,7 @@ The base class also has properties for ``date``, used to timestamp the most
 recent usage of the task, and ``ok``, used to represent whether the task is
 actively running or has experienced failure.
 
-Instances of registrable are required to return Response data from
+Instances of runnable are required to return Response data from
 _notify_internal, _run_internal, and _setup_internal, and Shadow data from
 _shadow_internal.
 """
@@ -25,7 +25,7 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/api/registrable', '', _path))
+sys.path.append(re.sub(r'/api/runnable', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
 from api.renderable.renderable import Renderable  # noqa
@@ -34,7 +34,7 @@ from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
 
-class Registrable(Messageable, Renderable, Serializable):
+class Runnable(Messageable, Renderable, Serializable):
     def __init__(self, **kwargs):
         date = kwargs.pop('date')
         super().__init__(**kwargs)

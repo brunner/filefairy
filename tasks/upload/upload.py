@@ -12,7 +12,7 @@ _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/upload', '', _path))
 
-from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from common.datetime_.datetime_ import datetime_as_pst  # noqa
 from common.datetime_.datetime_ import datetime_datetime_cst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
@@ -26,7 +26,7 @@ DATA_DIR = re.sub(r'/tasks/upload', '', _path) + '/resources/data/upload'
 EXPORTS_URL = 'https://statsplus.net/oblootp/exports/'
 
 
-class Upload(Registrable):
+class Upload(Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

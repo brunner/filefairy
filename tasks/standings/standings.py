@@ -9,7 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/standings', '', _path))
 
-from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from common.datetime_.datetime_ import datetime_replace  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
@@ -48,7 +48,7 @@ LEAGUES = {
 }
 
 
-class Standings(Registrable):
+class Standings(Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

@@ -9,7 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/snacks', '', _path))
 
-from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from common.nltk_.nltk_ import get_cfd  # noqa
 from common.nltk_.nltk_ import get_messages  # noqa
 from common.nltk_.nltk_ import get_topic  # noqa
@@ -27,7 +27,7 @@ MIN = 8
 MAX = 30
 
 
-class Snacks(Registrable):
+class Snacks(Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cfds = {}

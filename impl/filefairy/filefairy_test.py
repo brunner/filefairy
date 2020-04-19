@@ -15,7 +15,7 @@ import unittest.mock as mock
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.extend((_path, re.sub(r'/impl/filefairy', '', _path)))
 
-from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.elements.elements import topper  # noqa
@@ -57,7 +57,7 @@ def set_keep_running(filefairy, keep_running, *args, **kwargs):
     filefairy.keep_running = keep_running
 
 
-class FakeExternalRegistrable(Registrable):
+class FakeExternalRunnable(Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -88,7 +88,7 @@ class FakeExternalRegistrable(Registrable):
         pass
 
 
-class FakeInternalRegistrable(Registrable):
+class FakeInternalRunnable(Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -174,19 +174,19 @@ class FilefairyTest(Test):
 
         return filefairy
 
-    def create_external_registrable(self, date):
-        registrable = FakeExternalRegistrable(date=date, e=ENV)
+    def create_external_runnable(self, date):
+        runnable = FakeExternalRunnable(date=date, e=ENV)
 
         self.assertNotCalled(self.mock_log)
 
-        return registrable
+        return runnable
 
-    def create_internal_registrable(self, date):
-        registrable = FakeInternalRegistrable(date=date, e=ENV)
+    def create_internal_runnable(self, date):
+        runnable = FakeInternalRunnable(date=date, e=ENV)
 
         self.assertNotCalled(self.mock_log)
 
-        return registrable
+        return runnable
 
     def test_init(self):
         dashboard = self.create_dashboard(DATE_10260602)
@@ -195,7 +195,7 @@ class FilefairyTest(Test):
 
         self.assertIsNone(filefairy.bg)
         self.assertTrue(filefairy.keep_running)
-        self.assertEqual(filefairy.registered, {
+        self.assertEqual(filefairy.runners, {
             'dashboard': dashboard,
             'reference': reference,
         })
@@ -341,11 +341,11 @@ class FilefairyTest(Test):
 
         mock_getattr.assert_called_once_with(module, 'Task')
         self.mock_log(logging.ERROR, 'Disabled foo.', exc_info=True)
-        self.assertNotIn('foo', filefairy.registered)
+        self.assertNotIn('foo', filefairy.runners)
 
     @mock.patch('impl.filefairy.filefairy.getattr')
     def test_install__ok(self, mock_getattr):
-        mock_getattr.return_value = FakeExternalRegistrable
+        mock_getattr.return_value = FakeExternalRunnable
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
@@ -359,7 +359,7 @@ class FilefairyTest(Test):
         mock_getattr.assert_called_once_with(module, 'Task')
         self.assertNotCalled(self.mock_log)
         self.assertTrue(
-            isinstance(filefairy.registered['foo'], FakeExternalRegistrable))
+            isinstance(filefairy.runners['foo'], FakeExternalRunnable))
 
     @mock.patch.object(Filefairy, '_try_all')
     @mock.patch.object(Filefairy, '_on_message')
@@ -487,15 +487,14 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         response = Response()
         filefairy._response('foo', response, date=DATE_10260604)
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
-        self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
+        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -504,15 +503,14 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         response = Response(notify=[Notify.BASE])
         filefairy._response('foo', response, date=DATE_10260604)
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260604)
-        self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
+        self.assertEqual(filefairy.runners['foo'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -521,8 +519,7 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         response = Response(notify=[Notify.OTHER])
         filefairy._response('foo', response, date=DATE_10260604)
@@ -531,7 +528,7 @@ class FilefairyTest(Test):
             '_notify', notify=Notify.OTHER, date=DATE_10260604)
         self.assertNotCalled(mock_try, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260604)
-        self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
+        self.assertEqual(filefairy.runners['foo'].date, DATE_10260604)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -540,8 +537,7 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         shadow = Shadow(destination='bar', key='foo.baz')
         response = Response(shadow=[shadow])
@@ -551,7 +547,7 @@ class FilefairyTest(Test):
             'bar', '_shadow', shadow=shadow, date=DATE_10260604)
         self.assertNotCalled(mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
-        self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
+        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
         self.assertFalse(len(filefairy.threads))
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -560,8 +556,7 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         thread_ = Thread(target='foo')
         response = Response(thread_=[thread_])
@@ -569,7 +564,7 @@ class FilefairyTest(Test):
 
         self.assertNotCalled(mock_try, mock_try_all, self.mock_log)
         self.assertEqual(filefairy.date, DATE_10260602)
-        self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
+        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
         self.assertCountEqual(filefairy.threads, [('foo', thread_)])
 
     @mock.patch.object(Filefairy, '_try_all')
@@ -582,8 +577,7 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10250007)
         filefairy = self.create_filefairy(DATE_10250007, dashboard, reference)
         filefairy.day = 25
-        filefairy.registered['git'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['git'] = self.create_external_runnable(DATE_10260602)
 
         filefairy._run()
 
@@ -607,8 +601,7 @@ class FilefairyTest(Test):
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.day = 26
-        filefairy.registered['git'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['git'] = self.create_external_runnable(DATE_10260602)
 
         filefairy._run()
 
@@ -628,8 +621,7 @@ class FilefairyTest(Test):
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
         filefairy.day = 26
-        filefairy.registered['git'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['git'] = self.create_external_runnable(DATE_10260602)
 
         mock_try_all.side_effect = functools.partial(set_date, filefairy)
 
@@ -705,7 +697,7 @@ class FilefairyTest(Test):
         mock_sleep.assert_called_once_with(2)
         self.assertNotCalled(mock_connect, mock_thread, self.mock_log)
 
-    @mock.patch.object(FakeExternalRegistrable, '_run')
+    @mock.patch.object(FakeExternalRunnable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__exception(self, mock_response, mock_run):
         mock_run.side_effect = Exception()
@@ -713,8 +705,7 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
@@ -722,10 +713,10 @@ class FilefairyTest(Test):
         self.mock_log.assert_called_once_with(
             logging.ERROR, 'Disabled foo.', exc_info=True)
         self.assertNotCalled(mock_response)
-        self.assertEqual(filefairy.registered['foo'].date, DATE_10260604)
-        self.assertEqual(filefairy.registered['foo'].ok, False)
+        self.assertEqual(filefairy.runners['foo'].date, DATE_10260604)
+        self.assertEqual(filefairy.runners['foo'].ok, False)
 
-    @mock.patch.object(FakeExternalRegistrable, '_run')
+    @mock.patch.object(FakeExternalRunnable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__response(self, mock_response, mock_run):
         response = Response(notify=[Notify.BASE])
@@ -734,8 +725,7 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
@@ -743,40 +733,39 @@ class FilefairyTest(Test):
             'foo', response, date=DATE_10260604)
         mock_run.assert_called_once_with(date=DATE_10260604)
         self.assertNotCalled(self.mock_log)
-        self.assertEqual(filefairy.registered['foo'].date, DATE_10260602)
-        self.assertEqual(filefairy.registered['foo'].ok, True)
+        self.assertEqual(filefairy.runners['foo'].date, DATE_10260602)
+        self.assertEqual(filefairy.runners['foo'].ok, True)
 
-    @mock.patch.object(FakeExternalRegistrable, '_run')
+    @mock.patch.object(FakeExternalRunnable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__uncallable(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         filefairy._try('foo', 'bar', date=DATE_10260604)
 
         self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
-    @mock.patch.object(FakeExternalRegistrable, '_run')
+    @mock.patch.object(FakeExternalRunnable, '_run')
     @mock.patch.object(Filefairy, '_response')
     def test_try__unhappy(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
 
-        registrable = self.create_external_registrable(DATE_10260602)
-        registrable.ok = False
-        filefairy.registered['foo'] = registrable
+        runnable = self.create_external_runnable(DATE_10260602)
+        runnable.ok = False
+        filefairy.runners['foo'] = runnable
 
         filefairy._try('foo', '_run', date=DATE_10260604)
 
         self.assertNotCalled(mock_response, mock_run, self.mock_log)
 
-    @mock.patch.object(FakeExternalRegistrable, '_run')
+    @mock.patch.object(FakeExternalRunnable, '_run')
     @mock.patch.object(Filefairy, '_response')
-    def test_try__unregistered(self, mock_response, mock_run):
+    def test_try__unrunners(self, mock_response, mock_run):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
@@ -790,8 +779,7 @@ class FilefairyTest(Test):
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
         filefairy = self.create_filefairy(DATE_10260602, dashboard, reference)
-        filefairy.registered['foo'] = self.create_external_registrable(
-            DATE_10260602)
+        filefairy.runners['foo'] = self.create_external_runnable(DATE_10260602)
 
         filefairy._try_all('_run', date=DATE_10260604)
 

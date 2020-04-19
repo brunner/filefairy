@@ -17,7 +17,7 @@ _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/impl/filefairy', '', _path))
 
 from api.messageable.messageable import Messageable  # noqa
-from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from api.renderable.renderable import Renderable  # noqa
 from common.datetime_.datetime_ import datetime_now  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
@@ -51,7 +51,7 @@ class Filefairy(Messageable, Renderable):
             keep_running: Coordinate shutdown of the various threads.
             lock: Synchronize some thread behavior.
             original: Backup copy of date, to determine when it changes.
-            registered: List of Registrable instances belonging to the app.
+            runners: List of Runnable instances belonging to the app.
             sleep: Duration to wait between repetitive task calls.
             threads: List of queued Thread instances to run in the background.
             ws: Reference to the app's WebSocket object.
@@ -66,7 +66,7 @@ class Filefairy(Messageable, Renderable):
         self.day = date.day
         self.keep_running = True
         self.original = date
-        self.registered = {'dashboard': d, 'reference': r}
+        self.runners = {'dashboard': d, 'reference': r}
         self.sleep = 2  # TODO: change back to 60 after finishing refactors.
         self.threads = []
         self.ws = None
@@ -134,8 +134,8 @@ class Filefairy(Messageable, Renderable):
     def _install(self, t, module, clazz, **kwargs):
         date = kwargs['date']
         try:
-            registrable = getattr(module, clazz)
-            self.registered[t] = registrable(date=date, e=self.environment)
+            runnable = getattr(module, clazz)
+            self.runners[t] = runnable(date=date, e=self.environment)
         except Exception:
             _logger.log(logging.ERROR, 'Disabled ' + t + '.', exc_info=True)
             return False
@@ -182,7 +182,7 @@ class Filefairy(Messageable, Renderable):
     def _response(self, t, response, **kwargs):
         if response.notify:
             self.date = kwargs['date']
-            self.registered[t].date = kwargs['date']
+            self.runners[t].date = kwargs['date']
         for notify in response.notify:
             if notify != Notify.BASE:
                 self._try_all('_notify', **dict(kwargs, notify=notify))
@@ -204,7 +204,7 @@ class Filefairy(Messageable, Renderable):
         if self.date != self.original:
             self._render(date=date)
             # TODO: uncomment after finishing refactors.
-            # if 'git' in self.registered.keys():
+            # if 'git' in self.runners.keys():
             #     notify = Notify.FILEFAIRY_DEPLOY
             #     self._try('git', '_notify', notify=notify, date=date)
             self.original = self.date
@@ -237,10 +237,10 @@ class Filefairy(Messageable, Renderable):
             self.ws.close()
 
     def _try(self, t, method, *args, **kwargs):
-        if t not in self.registered:
+        if t not in self.runners:
             return
 
-        instance = self.registered[t]
+        instance = self.runners[t]
         if not instance.ok:
             return
 
@@ -255,11 +255,11 @@ class Filefairy(Messageable, Renderable):
             self._response(t, response, **kwargs)
         except Exception:
             _logger.log(logging.ERROR, 'Disabled ' + t + '.', exc_info=True)
-            self.registered[t].date = date
-            self.registered[t].ok = False
+            self.runners[t].date = date
+            self.runners[t].ok = False
 
     def _try_all(self, method, *args, **kwargs):
-        tasks = sorted(self.registered.keys())
+        tasks = sorted(self.runners.keys())
         for t in tasks:
             self._try(t, method, *args, **kwargs)
 

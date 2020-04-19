@@ -11,7 +11,7 @@ _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 
-from api.registrable.registrable import Registrable  # noqa
+from api.runnable.runnable import Runnable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
 from common.service.service import call_service  # noqa
@@ -27,7 +27,7 @@ FILE_NAME = 'orange%20and%20blue%20league%20baseball.zip'
 FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 
 
-class Download(Registrable):
+class Download(Runnable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
