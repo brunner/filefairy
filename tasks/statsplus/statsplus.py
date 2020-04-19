@@ -17,8 +17,6 @@ from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.io_.io_ import read  # noqa
-from common.io_.io_ import write  # noqa
 from common.json_.json_ import dumps  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import search  # noqae
@@ -51,7 +49,6 @@ STATSPLUS_GAME_LOGS = os.path.join(STATSPLUS_LINK, 'game_logs')
 class Statsplus(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.data = read(self._name())
 
     @staticmethod
     def _href():
@@ -132,7 +129,7 @@ class Statsplus(Registrable):
 
     def extract(self, *args, **kwargs):
         self.data['started'] = False
-        write(self._name(), self.data)
+        self.write()
 
         return Response(thread_=[Thread(target='_parse_extracted_scores')])
 
@@ -163,7 +160,7 @@ class Statsplus(Registrable):
         _logger.log(logging.INFO, 'Download complete.')
         chat_post_message('fairylab', 'Download complete.')
 
-        write(self._name(), self.data)
+        self.write()
         return Response(
             shadow=self._shadow_data(), notify=[Notify.STATSPLUS_FINISH])
 
@@ -190,7 +187,7 @@ class Statsplus(Registrable):
                 return Response(thread_=[thread_])
 
             self.data['scores'][date_] = unvisited
-            write(self._name(), self.data)
+            self.write()
 
             return Response(
                 notify=[Notify.STATSPLUS_PARSE],
@@ -198,7 +195,7 @@ class Statsplus(Registrable):
                 thread_=[thread_])
 
         self.data['scores'].pop(date_, None)
-        write(self._name(), self.data)
+        self.write()
         return Response(
             notify=[Notify.STATSPLUS_PARSE], shadow=self._shadow_data())
 
@@ -235,7 +232,7 @@ class Statsplus(Registrable):
 
             self.data['scores'][date][num] = s
 
-        write(self._name(), self.data)
+        self.write()
         thread_ = Thread(target='_parse_saved_scores', args=(date, ))
         return Response(shadow=self._shadow_scores(), thread_=[thread_])
 
@@ -249,7 +246,7 @@ class Statsplus(Registrable):
         _logger.log(logging.INFO, 'Sim in progress.')
         chat_post_message('fairylab', 'Sim in progress.')
 
-        write(self._name(), self.data)
+        self.write()
         return Response(notify=[Notify.STATSPLUS_START])
 
     @staticmethod

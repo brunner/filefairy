@@ -21,7 +21,6 @@ from common.elements.elements import cell  # noqa
 from common.elements.elements import col  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import topper  # noqa
-from common.io_.io_ import read  # noqa
 from common.json_.json_ import loads  # noqa
 from common.os_.os_ import listdirs  # noqa
 from common.service.service import call_service  # noqa
@@ -43,7 +42,6 @@ GAMES_DIR = re.sub(r'/tasks/gameday', '/resources/games', _path)
 class Gameday(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.data = read(self._name())
 
     @staticmethod
     def _href():

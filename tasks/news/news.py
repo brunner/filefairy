@@ -15,7 +15,6 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.datetime_.datetime_ import suffix  # noqa
-from common.io_.io_ import read  # noqa
 from common.json_.json_ import loads  # noqa
 from common.re_.re_ import match  # noqa
 from common.re_.re_ import search  # noqa
@@ -33,7 +32,6 @@ EXTRACT_LEAGUES = os.path.join(EXTRACT_DIR, 'leagues')
 class News(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.data = read(self._name())
 
     @staticmethod
     def _href():

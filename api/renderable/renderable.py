@@ -67,9 +67,6 @@ class Renderable():
     def _title():
         pass
 
-    def _name(self):
-        return self.__class__.__name__.lower()
-
     def _render_data(self, **kwargs):
         return []
 

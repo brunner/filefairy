@@ -39,7 +39,6 @@ DATE_10250007 = datetime_datetime_pst(1985, 10, 25, 0, 7)
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 DATE_10260604 = datetime_datetime_pst(1985, 10, 26, 6, 4)
 
-DATA_DIR = re.sub(r'/impl/filefairy', '', _path) + '/resources/data'
 TASKS_DIR = re.sub(r'/impl/filefairy', '/tasks', _path)
 
 
@@ -146,16 +145,26 @@ class FilefairyTest(Test):
         self.addCleanup(patch_log.stop)
         self.mock_log = patch_log.start()
 
+        patch_open = mock.patch(
+            'api.serializable.serializable.open', create=True)
+        self.addCleanup(patch_open.stop)
+        self.mock_open = patch_open.start()
+
     def init_mocks(self, data):
-        pass
+        mo = mock.mock_open(read_data=dumps(data))
+        self.mock_handle = mo()
+        self.mock_open.side_effect = [mo.return_value]
 
     def create_dashboard(self, date):
+        self.init_mocks({})
         return Dashboard(date=date, e=ENV)
 
     def create_reference(self, date):
+        self.init_mocks({})
         return Reference(date=date, e=ENV)
 
     def create_filefairy(self, date, dashboard, reference):
+        self.init_mocks({})
         filefairy = Filefairy(date=date, d=dashboard, e=ENV, r=reference)
 
         self.assertNotCalled(self.mock_log)

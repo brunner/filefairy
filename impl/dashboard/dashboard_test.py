@@ -41,12 +41,6 @@ STDOUT = 'stdout'
 STDERR = 'stderr'
 
 
-def _data(logs=None):
-    if logs is None:
-        logs = {}
-    return {'logs': logs}
-
-
 def _kwargs(pathname, lineno, levelname, msg, exc_info):
     return {
         'pathname': pathname,
@@ -89,7 +83,8 @@ class DashboardTest(Test):
         self.addCleanup(patch_chat.stop)
         self.mock_chat = patch_chat.start()
 
-        patch_open = mock.patch('common.io_.io_.open', create=True)
+        patch_open = mock.patch(
+            'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
@@ -121,7 +116,8 @@ class DashboardTest(Test):
         return dashboard
 
     def test_init(self):
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
 
         self.assertFalse(len(dashboard.warnings))
         self.assertNotCalled(self.mock_chat, self.mock_open,
@@ -132,7 +128,8 @@ class DashboardTest(Test):
         index_html = {'exceptions': []}
         mock_index.return_value = index_html
 
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
         actual = dashboard._render_data(date=DATE_10260602)
         expected = [('dashboard/index.html', '', 'dashboard.html', index_html)]
         self.assertEqual(actual, expected)
@@ -143,7 +140,8 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_cleanup')
     def test_notify__fairylab_day(self, mock_cleanup):
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
         response = dashboard._notify_internal(
             date=DATE_10260602, notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
@@ -155,7 +153,8 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_cleanup')
     def test_notify__with_other(self, mock_cleanup):
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
         response = dashboard._notify_internal(
             date=DATE_10260602, notify=Notify.OTHER)
         self.assertEqual(response, Response())
@@ -165,21 +164,21 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_render')
     def test_cleanup(self, mock_render):
-        old = encode_datetime(DATE_10190000)
-        new = encode_datetime(DATE_10260000)
+        old_date = encode_datetime(DATE_10190000)
+        new_date = encode_datetime(DATE_10260000)
         error = _record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
         info = _record(PATH, 456, 'INFO', 'bar', '', DATE_10250007)
         warning = _warning(PATH, 789, 'WARNING', 'baz', '...', DATE_10260602,
                            1)
 
-        data = _data({old: [info], new: [error]})
-        dashboard = self.create_dashboard(data, [warning])
+        old_data = {'logs': {old_date: [info], new_date: [error]}}
+        dashboard = self.create_dashboard(old_data, [warning])
         dashboard._cleanup(date=DATE_10260602)
         self.assertEqual(dashboard.warnings, [])
 
-        data = _data({new: [error]})
+        new_data = {'logs': {new_date: [error]}}
         mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
+        self.mock_handle.write.assert_called_once_with(dumps(new_data) + '\n')
         self.assertNotCalled(self.mock_chat, self.mock_upload)
 
     # @mock.patch.object(Dashboard, '_warning')
@@ -192,8 +191,9 @@ class DashboardTest(Test):
     #     mock_cwd.return_value = '/home/pi/filefairy/'
     #     mock_now.return_value = DATE_10260602
 
+    #     data = {'logs': {}}
     #     kwargs = _kwargs('path/to/module.py', 55, 'DEBUG', 'foo', None)
-    #     dashboard = self.create_dashboard(_data())
+    #     dashboard = self.create_dashboard(data)
     #     dashboard._emit(**kwargs)
 
     #     path = '/home/pi/filefairy/path/to/module.py'
@@ -213,8 +213,9 @@ class DashboardTest(Test):
     #     mock_cwd.return_value = '/home/pi/filefairy/'
     #     mock_now.return_value = DATE_10260602
 
+    #     data = {'logs': {}}
     #     kwargs = _kwargs('path/to/module.py', 123, 'ERROR', 'foo', EXC)
-    #     dashboard = self.create_dashboard(_data())
+    #     dashboard = self.create_dashboard(data)
     #     dashboard._emit(**kwargs)
 
     #     path = '/home/pi/filefairy/path/to/module.py'
@@ -234,8 +235,9 @@ class DashboardTest(Test):
     #     mock_cwd.return_value = '/home/pi/filefairy/'
     #     mock_now.return_value = DATE_10260602
 
+    #     data = {'logs': {}}
     #     kwargs = _kwargs('path/to/module.py', 456, 'INFO', 'bar', None)
-    #     dashboard = self.create_dashboard(_data())
+    #     dashboard = self.create_dashboard(data)
     #     dashboard._emit(**kwargs)
 
     #     path = '/home/pi/filefairy/path/to/module.py'
@@ -255,8 +257,9 @@ class DashboardTest(Test):
     #     mock_cwd.return_value = '/home/pi/filefairy/'
     #     mock_now.return_value = DATE_10260602
 
+    #     data = {'logs': {}}
     #     kwargs = _kwargs('path/to/module.py', 789, 'WARNING', 'baz', EXC)
-    #     dashboard = self.create_dashboard(_data())
+    #     dashboard = self.create_dashboard(data)
     #     dashboard._emit(**kwargs)
 
     #     path = '/home/pi/filefairy/path/to/module.py'
@@ -272,22 +275,23 @@ class DashboardTest(Test):
         new = encode_datetime(DATE_10260000)
         error = _record(PATH, 123, 'ERROR', 'foo', '...', DATE_10260602)
 
-        data = _data({new: [error]})
+        old_data = {'logs': {new: [error]}}
         record = _record(PATH, 456, 'INFO', 'bar', '', DATE_10260602)
-        dashboard = self.create_dashboard(data)
+        dashboard = self.create_dashboard(old_data)
         dashboard._log(record)
 
-        data = _data({new: [error, record]})
+        new_data = {'logs': {new: [error, record]}}
         mock_render.assert_called_once_with(date=DATE_10260602, log=False)
-        self.mock_handle.write.assert_called_once_with(dumps(data) + '\n')
+        self.mock_handle.write.assert_called_once_with(dumps(new_data) + '\n')
         self.assertNotCalled(self.mock_chat, self.mock_upload)
 
     @mock.patch.object(Dashboard, '_alert')
     def test_warning__alert(self, mock_alert):
+        data = {'logs': {}}
         kwargs = _kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
         record = _record(PATH, 789, 'W', 'baz', 'E', DATE_10260604)
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 9)
-        dashboard = self.create_dashboard(_data(), [warning])
+        dashboard = self.create_dashboard(data, [warning])
         dashboard._warning(record, **kwargs)
 
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 10)
@@ -298,10 +302,11 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_alert')
     def test_warning__multiple(self, mock_alert):
+        data = {'logs': {}}
         kwargs = _kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
         record = _record(PATH, 789, 'W', 'baz', 'E', DATE_10260604)
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 1)
-        dashboard = self.create_dashboard(_data(), [warning])
+        dashboard = self.create_dashboard(data, [warning])
         dashboard._warning(record, **kwargs)
 
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260604, 2)
@@ -311,9 +316,10 @@ class DashboardTest(Test):
 
     @mock.patch.object(Dashboard, '_alert')
     def test_warning__single(self, mock_alert):
+        data = {'logs': {}}
         kwargs = _kwargs('path/to/module.py', 789, 'W', 'baz', EXC)
         record = _record(PATH, 789, 'W', 'baz', 'E', DATE_10260602)
-        dashboard = self.create_dashboard(_data(), [])
+        dashboard = self.create_dashboard(data, [])
         dashboard._warning(record, **kwargs)
 
         warning = _warning(PATH, 789, 'W', 'baz', 'E', DATE_10260602, 1)
@@ -328,7 +334,7 @@ class DashboardTest(Test):
         error = _record(path, 123, 'ERROR', 'foo', '...', DATE_10260602)
         info = _record(path, 456, 'INFO', 'bar', '', DATE_10250007)
 
-        data = _data({old: [info], new: [error]})
+        data = {'logs': {old: [info], new: [error]}}
         dashboard = self.create_dashboard(data)
 
         link = 'https://github.com/brunner/filefairy/blob/master/'
@@ -383,7 +389,8 @@ class DashboardTest(Test):
         record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
         kwargs = _kwargs('path/to/module.py', 55, 'DEBUG', 'foo', None)
 
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
         dashboard._alert(record, **kwargs)
 
         self.mock_chat.assert_called_once_with('testing', 'module.py#L55: foo')
@@ -398,7 +405,8 @@ class DashboardTest(Test):
         path = '/home/pi/filefairy/path/to/module.py'
         record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
 
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
         actual = dashboard._record_link(record)
         expected = link + 'path/to/module.py#L55'
         self.assertEqual(actual, expected)
@@ -409,7 +417,8 @@ class DashboardTest(Test):
         path = '/home/pi/filefairy/path/to/module.py'
         record = _record(path, 55, 'DEBUG', 'foo', '', DATE_10260602)
 
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
         actual = dashboard._record_title(record)
         expected = 'module.py#L55'
         self.assertEqual(actual, expected)
@@ -426,7 +435,8 @@ class DashboardTest(Test):
         record5 = _record(path2, 55, 'DEBUG', 'foo', '', DATE_10260602)
         records = [record1, record2, record3, record4, record5]
 
-        dashboard = self.create_dashboard(_data())
+        data = {'logs': {}}
+        dashboard = self.create_dashboard(data)
         actual = list(sorted(records, key=dashboard._sort))
         expected = [record1, record3, record5, record2, record4]
         self.assertEqual(actual, expected)

@@ -14,8 +14,6 @@ sys.path.append(re.sub(r'/tasks/leaguefile', '', _path))
 from api.registrable.registrable import Registrable  # noqa
 from common.datetime_.datetime_ import decode_datetime  # noqa
 from common.datetime_.datetime_ import encode_datetime  # noqa
-from common.io_.io_ import read  # noqa
-from common.io_.io_ import write  # noqa
 from common.service.service import call_service  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from types_.notify.notify import Notify  # noqa
@@ -32,7 +30,6 @@ FILE_URL = 'https://{}/oblootp/files/{}'.format(DOMAIN_NAME, FILE_NAME)
 class Download(Registrable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.data = read(self._name())
 
     @staticmethod
     def _href():
@@ -95,5 +92,5 @@ class Download(Registrable):
             response.append(notify=Notify.DOWNLOAD_YEAR)
             response.shadow = self._shadow_data(**kwargs)
 
-        write(self._name(), self.data)
+        self.write()
         return response

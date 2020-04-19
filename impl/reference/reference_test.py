@@ -30,19 +30,14 @@ STATSPLUS_LINK = 'https://statsplus.net/oblootp/reports/news/html'
 STATSPLUS_PLAYERS = os.path.join(STATSPLUS_LINK, 'players')
 
 
-def _data(players=None):
-    if players is None:
-        players = {}
-    return {'players': players}
-
-
 def _statsplus_player_page(num):
     return os.path.join(STATSPLUS_PLAYERS, 'player_{}.html'.format(num))
 
 
 class ReferenceTest(Test):
     def setUp(self):
-        patch_open = mock.patch('common.io_.io_.open', create=True)
+        patch_open = mock.patch(
+            'api.serializable.serializable.open', create=True)
         self.addCleanup(patch_open.stop)
         self.mock_open = patch_open.start()
 
@@ -71,7 +66,8 @@ class ReferenceTest(Test):
 
     @mock.patch.object(Reference, '_parse')
     def test_notify__fairylab_day(self, mock_parse):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
         response = reference._notify_internal(notify=Notify.FILEFAIRY_DAY)
         self.assertEqual(response, Response())
 
@@ -80,14 +76,16 @@ class ReferenceTest(Test):
 
     @mock.patch.object(Reference, '_parse')
     def test_notify__other(self, mock_parse):
-        reference = self.create_reference(_data())
+        data = {'players': {}}
+        reference = self.create_reference(data)
         response = reference._notify_internal(notify=Notify.OTHER)
         self.assertEqual(response, Response())
 
         self.assertNotCalled(mock_parse, self.mock_handle.write)
 
     def test_get_bats(self):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
         inputs = [('P123', 'L'), ('P456', 'R'), ('P789', 'R')]
         for num, expected in inputs:
             actual = reference._get(num, 2, 'R')
@@ -96,7 +94,8 @@ class ReferenceTest(Test):
         self.assertNotCalled(self.mock_handle.write)
 
     def test_get_name(self):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
         inputs = [('P123', 'Jim Alfa'), ('P456', 'Jim Beta'),
                   ('P789', 'Jim Unknown')]
         for num, expected in inputs:
@@ -106,7 +105,8 @@ class ReferenceTest(Test):
         self.assertNotCalled(self.mock_handle.write)
 
     def test_get_number(self):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
         inputs = [('P123', '1'), ('P456', '42'), ('P789', '0')]
         for num, expected in inputs:
             actual = reference._get(num, 1, '0')
@@ -115,7 +115,8 @@ class ReferenceTest(Test):
         self.assertNotCalled(self.mock_handle.write)
 
     def test_get_team(self):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
         inputs = [('P123', 'T31'), ('P456', 'T32'), ('P789', 'T30')]
         for num, expected in inputs:
             actual = reference._get(num, 0, 'T30')
@@ -124,7 +125,8 @@ class ReferenceTest(Test):
         self.assertNotCalled(self.mock_handle.write)
 
     def test_get_throws(self):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
         inputs = [('P123', 'R'), ('P456', 'L'), ('P789', 'R')]
         for num, expected in inputs:
             actual = reference._get(num, 3, 'R')
@@ -137,12 +139,13 @@ class ReferenceTest(Test):
         mock_call.return_value = 'T32 1 L R Jim Alfa'
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
-        reference = self.create_reference(_data(players=players))
+        data = {'players': players}
+        reference = self.create_reference(data)
         reference._parse(['P123'])
 
         link = _statsplus_player_page('123')
         players = {'P123': 'T32 1 L R Jim Alfa'}
-        write = _data(players=players)
+        write = {'players': players}
         mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -151,11 +154,12 @@ class ReferenceTest(Test):
         mock_call.return_value = None
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
-        reference = self.create_reference(_data(players=players))
+        data = {'players': players}
+        reference = self.create_reference(data)
         reference._parse(['P123'])
 
         link = _statsplus_player_page('123')
-        write = _data()
+        write = {'players': {}}
         mock_call.assert_called_once_with('statslab', 'parse_player', (link, ))
         self.mock_handle.write.assert_called_once_with(dumps(write) + '\n')
 
@@ -164,7 +168,8 @@ class ReferenceTest(Test):
         mock_call.return_value = 'T31 1 L R Jim Alfa'
 
         players = {'P123': 'T31 1 L R Jim Alfa'}
-        reference = self.create_reference(_data(players=players))
+        data = {'players': players}
+        reference = self.create_reference(data)
         reference._parse(['P123'])
 
         link = _statsplus_player_page('123')
@@ -173,14 +178,16 @@ class ReferenceTest(Test):
 
     @mock.patch.object(Reference, '_parse')
     def test_put(self, mock_parse):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
         reference._put(['P123', 'P789'])
 
         mock_parse.assert_called_once_with(['P789'])
         self.assertNotCalled(self.mock_handle.write)
 
     def test_sub(self):
-        reference = self.create_reference(_data(players=PLAYERS))
+        data = {'players': PLAYERS}
+        reference = self.create_reference(data)
 
         def _repl(m):
             return reference._get(m.group(0), 4, 'Jim Unknown')

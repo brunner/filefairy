@@ -60,8 +60,31 @@ class FakeRegistrable(Registrable):
 
 
 class RegistrableTest(unittest.TestCase):
+    def setUp(self):
+        patch_open = mock.patch(
+            'api.serializable.serializable.open', create=True)
+        self.addCleanup(patch_open.stop)
+        self.mock_open = patch_open.start()
+
+    def init_mocks(self, data):
+        mo = mock.mock_open(read_data=dumps(data))
+        self.mock_handle = mo()
+        self.mock_open.side_effect = [mo.return_value]
+
+    def reset_mocks(self):
+        self.mock_open.reset_mock()
+        self.mock_handle.write.reset_mock()
+
     def create_registrable(self):
-        return FakeRegistrable(date=DATE_10260602, e=ENV)
+        self.init_mocks({})
+        registrable = FakeRegistrable(date=DATE_10260602, e=ENV)
+
+        self.assertEqual(registrable.data, {})
+
+        self.reset_mocks()
+        self.init_mocks({})
+
+        return registrable
 
     def test_init(self):
         registrable = self.create_registrable()
