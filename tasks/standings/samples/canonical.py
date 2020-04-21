@@ -33,13 +33,6 @@ def _table(keys, table_):
     return {k: table_.get(k, '0-0') for k in keys}
 
 
-EXPANDED_COLS = [
-    col(clazz='position-relative text-truncate'),
-    col(clazz='text-right w-55p'),
-    col(clazz='text-right w-55p'),
-    col(clazz='text-right w-75p')
-]
-
 ENCODINGS = encoding_keys()
 
 DIALOG_TEAMS = ['T31', 'T40', 'T44', 'T45', 'T47', 'T48', 'T55']

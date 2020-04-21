@@ -20,7 +20,13 @@ from services.uniforms.uniforms import encoding_to_colors  # noqa
 from services.uniforms.uniforms import jersey_absolute  # noqa
 from services.uniforms.uniforms import jersey_style  # noqa
 
-BCOLS = [col(clazz='w-75p')] + ([col(clazz='w-70p')] * 3) + [col()]
+BCOLS = [
+    col(clazz='css-style-w-75px'),
+    col(clazz='css-style-w-70px'),
+    col(clazz='css-style-w-70px'),
+    col(clazz='css-style-w-70px'),
+    col(),
+]
 CONTENT = ('<div class="position-relative css-style-h-58px css-style-jersey">'
            '{}</div>')
 

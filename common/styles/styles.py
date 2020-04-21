@@ -340,7 +340,7 @@ def _find_base_style(pattern, context):
     return ret
 
 
-GENERATED_PATTERN = r'css-style-([a-z]+)-([0-9]+)([a-z]*)[\s"]'
+GENERATED_PATTERN = r'css-style-([a-z]+)-([0-9]+)([a-z]+)'
 
 
 def _find_generated_style(found, generated, context):
@@ -356,7 +356,7 @@ def _find_generated_style(found, generated, context):
                         r = ruleset(selector, [
                             '{}: {}{}'.format(_get_attr(attr), val, unit)])
                         found.add(selector)
-                        generated.append(r)
+                        generated.append((attr, unit, int(val), r))
                 context[key] = re.sub(r'css-style-', '', value)
             _find_generated_style(found, generated, value)
 
@@ -391,6 +391,6 @@ def get_styles(context):
     generated = []
     _find_generated_style(found, generated, context)
 
-    styles += sorted(generated, key=lambda r: r['selector'])
+    styles += [g[3] for g in sorted(generated)]
     styles += extra_styles
     return styles

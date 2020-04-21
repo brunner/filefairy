@@ -40,8 +40,8 @@ _info_msg = 'File is up.'
 _logs = [
     table(clazz='border mb-3',
           hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
-          bcols=[col(clazz='w-150p'), None,
-                 col(clazz='text-right w-75p')],
+          bcols=[col(clazz='css-style-w-150px'), None,
+                 col(clazz='text-right css-style-w-75px')],
           fcols=[col(colspan='3')],
           head=[row(cells=[cell(content='Saturday, October 26th, 1985')])],
           body=[
@@ -54,8 +54,8 @@ _logs = [
           foot=[row(cells=[cell(content=pre(_exc))])]),
     table(clazz='border mb-3',
           hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
-          bcols=[col(clazz='w-150p'), None,
-                 col(clazz='text-right w-75p')],
+          bcols=[col(clazz='css-style-w-150px'), None,
+                 col(clazz='text-right css-style-w-75px')],
           fcols=[col(colspan='3')],
           head=[row(cells=[cell(content='Saturday, October 26th, 1985')])],
           body=[

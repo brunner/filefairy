@@ -23,7 +23,7 @@ from common.teams.teams import encoding_to_abbreviation_sub  # noqa
 from common.teams.teams import encoding_to_decoding_sub  # noqa
 from common.teams.teams import encoding_to_hometown_sub  # noqa
 
-HLEFTCLZ = 'font-weight-bold text-dark text-dark w-95p'
+HLEFTCLZ = 'font-weight-bold text-dark text-dark css-style-w-95px'
 HMIDCLZ = 'font-weight-bold text-dark text-truncate text-center '
 HMEDCLZ = HMIDCLZ + 'td-md-show'
 HLONGCLZ = HMIDCLZ + 'td-md-none'

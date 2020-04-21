@@ -206,20 +206,22 @@ def line_score_show_body(data, hidden=False):
     final = 'Final' + ('' if num == 9 else ' ({})'.format(num))
 
     hcols = [col(clazz='font-weight-bold text-danger pr-3')]
-    hcols += [col(clazz='td-lg-none w-24p px-1 text-center')] * 5
-    hcols += [col(clazz='td-md-none w-24p px-1 text-center')] * 4
-    hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * 8
-    hcols += [col(clazz='td-sm-none w-28p pl-1 pr-2 text-center')]
-    hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 2
+    hcols += [col(clazz='td-lg-none css-style-w-24px px-1 text-center')] * 5
+    hcols += [col(clazz='td-md-none css-style-w-24px px-1 text-center')] * 4
+    hcols += [col(clazz='td-sm-none css-style-w-24px px-1 text-center')] * 8
+    hcols += [col(clazz='td-sm-none css-style-w-28px pl-1 pr-2 text-center')]
+    hcols += [col(clazz='font-weight-bold css-style-w-24px px-1 text-center')]
+    hcols += [col(clazz='font-weight-bold css-style-w-24px px-1 text-center')]
     hcols += [col(clazz='font-weight-bold css-style-w-32px pl-1 text-center')]
 
     bc = 'text-center text-secondary'
     bcols = [col(clazz='position-relative pr-3')]
-    bcols += [col(clazz=(bc + ' td-lg-none w-24p px-1'))] * 5
-    bcols += [col(clazz=(bc + ' td-md-none w-24p px-1'))] * 4
-    bcols += [col(clazz=(bc + ' td-sm-none w-24p px-1'))] * 8
-    bcols += [col(clazz=(bc + ' td-sm-none w-28p pl-1 pr-2'))]
-    bcols += [col(clazz='w-24p px-1 text-center')] * 2
+    bcols += [col(clazz=(bc + ' td-lg-none css-style-w-24px px-1'))] * 5
+    bcols += [col(clazz=(bc + ' td-md-none css-style-w-24px px-1'))] * 4
+    bcols += [col(clazz=(bc + ' td-sm-none css-style-w-24px px-1'))] * 8
+    bcols += [col(clazz=(bc + ' td-sm-none css-style-w-28px pl-1 pr-2'))]
+    bcols += [col(clazz='css-style-w-24px px-1 text-center')]
+    bcols += [col(clazz='css-style-w-24px px-1 text-center')]
     bcols += [col(clazz='css-style-w-32px pl-1 text-center')]
 
     head_cells = [cell(content=final)]

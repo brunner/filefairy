@@ -198,10 +198,10 @@ def expanded_league(league, tables):
         hc = 'font-weight-bold text-dark '
         clazzes = [
             'position-relative text-truncate',
-            'text-right w-40p',
-            'text-right w-40p',
-            'text-right w-50p',
-            'text-right w-54p',
+            'text-right css-style-w-40px',
+            'text-right css-style-w-40px',
+            'text-right css-style-w-50px',
+            'text-right css-style-w-54px',
         ]
 
         ret.append(

@@ -359,9 +359,9 @@ class DashboardTest(Test):
             table(clazz='border mb-3',
                   hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
                   bcols=[
-                      col(clazz='w-150p'),
+                      col(clazz='css-style-w-150px'),
                       col(),
-                      col(clazz='text-right w-75p')
+                      col(clazz='text-right css-style-w-75px')
                   ],
                   fcols=[col(colspan='3')],
                   head=[
@@ -380,9 +380,9 @@ class DashboardTest(Test):
                 clazz='border mb-3',
                 hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
                 bcols=[
-                    col(clazz='w-150p'),
+                    col(clazz='css-style-w-150px'),
                     col(),
-                    col(clazz='text-right w-75p')
+                    col(clazz='text-right css-style-w-75px')
                 ],
                 head=[row(cells=[cell(content='Friday, October 25th, 1985')])],
                 body=[

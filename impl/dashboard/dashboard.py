@@ -215,9 +215,9 @@ class Dashboard(Renderable, Runnable, Serializable):
         return table(
             clazz='border mb-3',
             hcols=[col(clazz='font-weight-bold text-dark', colspan='3')],
-            bcols=[col(clazz='w-150p'),
+            bcols=[col(clazz='css-style-w-150px'),
                    col(),
-                   col(clazz='text-right w-75p')],
+                   col(clazz='text-right css-style-w-75px')],
             fcols=fcols,
             head=[row(cells=[cell(content=head_content)])],
             body=body,

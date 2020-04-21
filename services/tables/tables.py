@@ -53,7 +53,7 @@ class Tables(object):
         self.old_tables.append(roster.create_old_pitcher_table())
         self.old_tables.append(roster.create_old_batter_table())
 
-        bcols = [col(), col(clazz='w-50p text-right')]
+        bcols = [col(), col(clazz='css-style-w-50px text-right')]
         self.old_table = table(clazz='border mb-3', bcols=bcols, body=[])
         self.old_tables.append(self.old_table)
 
@@ -66,7 +66,7 @@ class Tables(object):
     def get_live_tables(self):
         return self.live_head + [
             table(clazz='table-fixed border mb-3',
-                  bcols=[col(), col(clazz='w-50p text-right')],
+                  bcols=[col(), col(clazz='css-style-w-50px text-right')],
                   body=self.live_body),
             table(clazz='border mb-3', body=self.live_foot),
         ]
