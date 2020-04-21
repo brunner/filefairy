@@ -193,7 +193,7 @@ def icon_badge(encoding, text, active):
     img = icon_img(ICON_LINK.format(lower), '16', ic, '')
     span_ = span(classes=sc, text=text.replace('-', ' - '))
 
-    bc = ['badge', 'badge-icon', 'badge-light']
+    bc = ['badge', 'badge-icon', 'badge-light', 'css-style-badge']
     return span(classes=bc, attributes=ba, text=(img + span_))
 
 

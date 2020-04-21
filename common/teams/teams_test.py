@@ -215,7 +215,8 @@ class TeamsTest(unittest.TestCase):
 
     def test_icon_badge__active_false(self):
         actual = icon_badge('T35', '0-0', False)
-        badge = ('<span class="badge badge-icon badge-light">{}</span>')
+        badge = ('<span class="badge badge-icon badge-light css-style-badge">'
+                 '{}</span>')
         src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
                'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
@@ -227,8 +228,8 @@ class TeamsTest(unittest.TestCase):
 
     def test_icon_badge__active_question(self):
         actual = icon_badge('T35', '0-0', True)
-        badge = ('<span class="badge badge-icon badge-light" data-target="#whi'
-                 'tesox" data-toggle="modal">{}</span>')
+        badge = ('<span class="badge badge-icon badge-light css-style-badge" d'
+                 'ata-target="#whitesox" data-toggle="modal">{}</span>')
         src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
                'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
@@ -239,8 +240,8 @@ class TeamsTest(unittest.TestCase):
 
     def test_icon_badge__active_true(self):
         actual = icon_badge('T35', '1-0', True)
-        badge = ('<span class="badge badge-icon badge-light" data-target="#whi'
-                 'tesox" data-toggle="modal">{}</span>')
+        badge = ('<span class="badge badge-icon badge-light css-style-badge" d'
+                 'ata-target="#whitesox" data-toggle="modal">{}</span>')
         src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
                'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
