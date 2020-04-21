@@ -84,7 +84,7 @@ def create_dialog(date, game):
     t = 'Pending Games Only' if game == '0' else 'Selected Game Only'
     tables = [
         topper('Reveal Final Scores'),
-        table(clazz='border mb-3',
+        table(clazz='border mb-3 css-style-badge-team',
               hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
               bcols=[
                   col(clazz='w-50 badge-team-wrapper pl-2'),

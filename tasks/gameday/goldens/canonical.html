@@ -166,7 +166,7 @@ span.absolute-icon {
 .small.table td:last-child {
   padding-right: .75rem;
 }
-.small.table td.badge-icon-wrapper {
+.small.table td.badge-team-wrapper {
   padding: .5rem .25rem;
 }
 .small.topper {
@@ -204,6 +204,68 @@ span.absolute-icon {
 
 .text-underline {
   text-decoration: underline;
+}
+.badge-team {
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  font-weight: 400!important;
+  font-size: 100%;
+  padding: .25rem .5rem;
+  white-space: normal;
+  width: 100%;
+}
+.badge-team[data-dismiss="modal"]:hover,
+.badge-team[data-toggle="modal"]:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+.badge-team-button {
+  display: block;
+  padding: 3px 0 2px;
+}
+.badge-team-image,
+.badge-team-text {
+  display: block;
+}
+.badge-team-image {
+  margin: 1px auto 0;
+}
+.badge-team-grey {
+  -webkit-filter: grayscale(1) opacity(0.5);
+  filter: grayscale(1) opacity(0.5);
+}
+.badge-team-text {
+  color: #212529;
+  padding: 0;
+  padding-top: .25rem;
+}
+@media (min-width: 576px) {
+  .badge-team-image,
+  .badge-team-text {
+    display: inline-block;
+  }
+  .badge-team-text {
+    padding: 2px 0 2px .5rem;
+  }
+}
+@media (min-width: 768px) {
+  .badge-team-image,
+  .badge-team-text {
+    display: block;
+  }
+  .badge-team-text {
+    padding: 0;
+    padding-top: .25rem;
+  }
+}
+@media (min-width: 992px) {
+  .badge-team-image,
+  .badge-team-text {
+    display: inline-block;
+  }
+  .badge-team-text {
+    padding: 2px 0 2px .5rem;
+  }
 }
 .rt-10p {
   right: 10px;
@@ -936,7 +998,7 @@ span.absolute-icon {
 <!-- $(common.table) -->
 
 <!-- ^(common.table) -->
-<table class="small table border mb-3">
+<table class="small table border mb-3 css-style-badge-team">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
@@ -1002,7 +1064,7 @@ span.absolute-icon {
 <!-- $(common.table) -->
 
 <!-- ^(common.table) -->
-<table class="small table border mb-3">
+<table class="small table border mb-3 css-style-badge-team">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
@@ -1068,7 +1130,7 @@ span.absolute-icon {
 <!-- $(common.table) -->
 
 <!-- ^(common.table) -->
-<table class="small table border mb-3">
+<table class="small table border mb-3 css-style-badge-team">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
@@ -1134,7 +1196,7 @@ span.absolute-icon {
 <!-- $(common.table) -->
 
 <!-- ^(common.table) -->
-<table class="small table border mb-3">
+<table class="small table border mb-3 css-style-badge-team">
 
 <!-- ^(common.table.head) -->
 <thead class="thead-light">
@@ -1280,12 +1342,12 @@ function toggle() {
     $(this).removeAttr('data-date');
     $(this).removeAttr('data-game');
 }
-$('.badge-icon[data-show-date]').click(function() {
+$('.badge-team[data-show-date]').click(function() {
     num = $(this).data('show-date');
     els = 'table[data-date=' + num + ']';
     $(els).each(toggle);
 });
-$('.badge-icon[data-show-game]').click(function() {
+$('.badge-team[data-show-game]').click(function() {
     num = $(this).data('show-game');
     els = 'table[data-game=' + num + ']';
     $(els).each(toggle);
