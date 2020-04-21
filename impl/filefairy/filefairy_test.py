@@ -610,11 +610,12 @@ class FilefairyTest(Test):
         self.assertNotCalled(self.log_)
 
     @mock.patch.object(Filefairy, 'try_all')
+    @mock.patch.object(Filefairy, '_render')
     @mock.patch.object(Filefairy, 'reload_services')
     @mock.patch.object(Filefairy, 'reload_internal')
     @mock.patch('impl.filefairy.filefairy.listdirs')
     def test_setup(self, listdirs_, reload_internal_, reload_services_,
-                   try_all_):
+                   _render_, try_all_):
         listdirs_.return_value = ['faketask']
 
         dashboard = self.create_dashboard(DATE_10260602)
@@ -627,6 +628,7 @@ class FilefairyTest(Test):
                                                  False,
                                                  date=DATE_10260604)
         reload_services_.assert_called_once_with()
+        _render_.assert_called_once_with(date=DATE_10260604)
         try_all_.assert_has_calls([
             mock.call('_setup', date=DATE_10260604),
             mock.call('_render', date=DATE_10260604)

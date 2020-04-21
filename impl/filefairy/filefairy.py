@@ -228,6 +228,7 @@ class Filefairy(Messageable, Renderable):
             self.reload_internal(t, False, **kwargs)
 
         self.setup_all(*args, **kwargs)
+        self._render(**kwargs)
 
     def setup_all(self, *args, **kwargs):
         self.try_all('_setup', **kwargs)
