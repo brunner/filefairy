@@ -211,7 +211,7 @@ def line_score_show_body(data, hidden=False):
     hcols += [col(clazz='td-sm-none w-24p px-1 text-center')] * 8
     hcols += [col(clazz='td-sm-none w-28p pl-1 pr-2 text-center')]
     hcols += [col(clazz='font-weight-bold w-24p px-1 text-center')] * 2
-    hcols += [col(clazz='font-weight-bold w-32p pl-1 text-center')]
+    hcols += [col(clazz='font-weight-bold css-style-w-32px pl-1 text-center')]
 
     bc = 'text-center text-secondary'
     bcols = [col(clazz='position-relative pr-3')]
@@ -220,7 +220,7 @@ def line_score_show_body(data, hidden=False):
     bcols += [col(clazz=(bc + ' td-sm-none w-24p px-1'))] * 8
     bcols += [col(clazz=(bc + ' td-sm-none w-28p pl-1 pr-2'))]
     bcols += [col(clazz='w-24p px-1 text-center')] * 2
-    bcols += [col(clazz='w-32p pl-1 text-center')]
+    bcols += [col(clazz='css-style-w-32px pl-1 text-center')]
 
     head_cells = [cell(content=final)]
     head_cells += [cell() for _ in range(18 - max_num)]

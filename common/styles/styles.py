@@ -350,11 +350,11 @@ def _find_generated_style(found, generated, context):
         items = context.items() if is_dict else enumerate(context)
         for key, value in items:
             if isinstance(value, str):
-                for attr, value, unit in findall(GENERATED_PATTERN, value):
-                    selector = attr + '-' + value + unit
+                for attr, val, unit in findall(GENERATED_PATTERN, value):
+                    selector = attr + '-' + val + unit
                     if selector not in found:
                         r = ruleset(selector, [
-                            '{}: {}{}'.format(_get_attr(attr), value, unit)])
+                            '{}: {}{}'.format(_get_attr(attr), val, unit)])
                         found.add(selector)
                         generated.append(r)
                 context[key] = re.sub(r'css-style-', '', value)
