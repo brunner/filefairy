@@ -174,7 +174,8 @@ class Roster(object):
                    text=s)
         inner = img + spn
 
-        div = '<div class="position-relative h-58p css-style-jersey">{}</div>'
+        div = ('<div class="position-relative css-style-h-58px css-style-jerse'
+               'y">{}</div>')
         return div.format(inner)
 
     def create_bolded_row(self, title, text):

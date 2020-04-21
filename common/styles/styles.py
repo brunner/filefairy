@@ -362,6 +362,8 @@ def _find_generated_style(found, generated, context):
 
 
 def _get_attr(attr):
+    if attr == 'h':
+        return 'height'
     if attr == 'w':
         return 'width'
 
