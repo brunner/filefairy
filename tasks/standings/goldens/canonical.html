@@ -66,6 +66,15 @@ span.absolute-icon {
   background-color: #e9ecef;
   cursor: pointer;
 }
+.alert-danger {
+  border: 1px solid #721c24;
+}
+.alert-primary {
+  border: 1px solid #004085;
+}
+.alert-success {
+  border: 1px solid #155724;
+}
 .head {
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
@@ -137,6 +146,11 @@ span.absolute-icon {
   white-space: normal;
   width: 100%;
 }
+.badge-icon[data-dismiss="modal"]:hover,
+.badge-icon[data-toggle="modal"]:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
 .badge-icon-button {
   display: block;
   padding: 3px 0 2px;
@@ -148,19 +162,14 @@ span.absolute-icon {
 .badge-icon-image {
   margin: 1px auto 0;
 }
+.badge-icon-grey {
+  -webkit-filter: grayscale(1) opacity(0.5);
+  filter: grayscale(1) opacity(0.5);
+}
 .badge-icon-text {
   color: #212529;
   padding: 0;
   padding-top: .25rem;
-}
-.badge-icon[data-dismiss="modal"]:hover,
-.badge-icon[data-toggle="modal"]:hover {
-  background-color: #e9ecef;
-  border-color: #dee2e6;
-}
-.grayscale {
-  -webkit-filter: grayscale(1) opacity(0.5);
-  filter: grayscale(1) opacity(0.5);
 }
 @media (min-width: 576px) {
   .badge-icon-image,
@@ -236,15 +245,6 @@ span.absolute-icon {
   text-align: center;
   width: 24px;
   vertical-align: top;
-}
-.alert-danger {
-  border: 1px solid #721c24;
-}
-.alert-primary {
-  border: 1px solid #004085;
-}
-.alert-success {
-  border: 1px solid #155724;
 }
 .profile-text {
   min-height: 72px;
@@ -511,23 +511,23 @@ span.absolute-icon {
 <tbody>
 <tr>
 <td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light" data-target="#yankees" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">1 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 </tr>
 <tr>
 <td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light" data-target="#twins" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">3 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 <td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light" data-target="#tigers" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 3</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 <td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light" data-target="#angels" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 1</span></span></td>
 </tr>
 </tbody>
@@ -556,23 +556,23 @@ span.absolute-icon {
 <!-- ^(common.table.body) -->
 <tbody>
 <tr>
-<td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 </tr>
 <tr>
-<td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 </tr>
 <tr>
 <td scope="row" class="w-20 badge-icon-wrapper pl-2"><span class="badge badge-icon badge-light" data-target="#diamondbacks" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">1 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
-<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="badge-icon-image grayscale"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light"><img src="https://brunnerj.com/fairylab/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="badge-icon-image badge-icon-grey"><span class="badge-icon-text align-middle text-secondary">0 - 0</span></span></td>
 <td class="w-20 badge-icon-wrapper"><span class="badge badge-icon badge-light" data-target="#dodgers" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 1</span></span></td>
 <td class="w-20 badge-icon-wrapper pr-2"><span class="badge badge-icon badge-light" data-target="#giants" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="badge-icon-image"><span class="badge-icon-text align-middle">0 - 1</span></span></td>
 </tr>

@@ -45,6 +45,15 @@ span.absolute-icon {
   background-color: #e9ecef;
   cursor: pointer;
 }
+.alert-danger {
+  border: 1px solid #721c24;
+}
+.alert-primary {
+  border: 1px solid #004085;
+}
+.alert-success {
+  border: 1px solid #155724;
+}
 .head {
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
@@ -119,6 +128,11 @@ span.absolute-icon {
   white-space: normal;
   width: 100%;
 }
+.badge-icon[data-dismiss="modal"]:hover,
+.badge-icon[data-toggle="modal"]:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
 .badge-icon-button {
   display: block;
   padding: 3px 0 2px;
@@ -130,19 +144,14 @@ span.absolute-icon {
 .badge-icon-image {
   margin: 1px auto 0;
 }
+.badge-icon-grey {
+  -webkit-filter: grayscale(1) opacity(0.5);
+  filter: grayscale(1) opacity(0.5);
+}
 .badge-icon-text {
   color: #212529;
   padding: 0;
   padding-top: .25rem;
-}
-.badge-icon[data-dismiss="modal"]:hover,
-.badge-icon[data-toggle="modal"]:hover {
-  background-color: #e9ecef;
-  border-color: #dee2e6;
-}
-.grayscale {
-  -webkit-filter: grayscale(1) opacity(0.5);
-  filter: grayscale(1) opacity(0.5);
 }
 @media (min-width: 576px) {
   .badge-icon-image,
@@ -218,15 +227,6 @@ span.absolute-icon {
   text-align: center;
   width: 24px;
   vertical-align: top;
-}
-.alert-danger {
-  border: 1px solid #721c24;
-}
-.alert-primary {
-  border: 1px solid #004085;
-}
-.alert-success {
-  border: 1px solid #155724;
 }
 .profile-text {
   min-height: 72px;

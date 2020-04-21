@@ -187,7 +187,7 @@ def icon_badge(encoding, text, active):
             text = '?-?'
     else:
         ba = None
-        ic.append('grayscale')
+        ic.append('badge-icon-grey')
         sc.append('text-secondary')
 
     img = icon_img(ICON_LINK.format(lower), '16', ic, '')

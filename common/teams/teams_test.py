@@ -219,7 +219,7 @@ class TeamsTest(unittest.TestCase):
         src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
                'con.png')
         img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
-               'con-image grayscale">').format(src)
+               'con-image badge-icon-grey">').format(src)
         span = ('<span class="badge-icon-text align-middle text-secondary">0 -'
                 ' 0</span>')
         expected = badge.format(img + span)
