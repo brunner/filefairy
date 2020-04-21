@@ -342,7 +342,8 @@ JERSEY_KWARGS = {
 }
 JERSEY_RULES = [
     'background-image: url(\'{fairylab}/{{lower}}/{{asset}}.png\')',
-    'background-image: url(\'{gist}/{{repo}}/raw/{{tag}}/{{asset}}.svg\'), {grad}',
+    'background-image: url(\'{gist}/{{repo}}/raw/{{tag}}/{{asset}}.svg\'), ' +
+    '{grad}',
 ]
 JERSEY_RULES = [r.format(**JERSEY_KWARGS) for r in JERSEY_RULES]
 
@@ -353,13 +354,12 @@ NUMBER_RULES = [
     '-webkit-mask-image: url(\'{fairylab}/{{font}}/{{fill}}/{{num}}.png\')',
 ]
 NUMBER_RULES = [r.format(**NUMBER_KWARGS) for r in NUMBER_RULES]
-NUMBER_STYLE = ruleset(selector='.number-base',
-                       rules=[
-                           'height: 18px',
-                           'width: 14px',
-                           '-webkit-mask-size: 14px 18px',
-                           'top: 18px',
-                       ])
+NUMBER_STYLE = ruleset('.number-base', [
+    'height: 18px',
+    'width: 14px',
+    '-webkit-mask-size: 14px 18px',
+    'top: 18px',
+])
 
 
 def _font_offset(font):
@@ -427,7 +427,7 @@ def jersey_absolute(encoding, colors, num, side, classes):
             nc += '{}-{}-{{0}}'.format(lower, name)
 
             jersey.append(DIV_TAG.format(nc.format('solid')))
-            if border is not 'none':
+            if border != 'none':
                 jersey.append(DIV_TAG.format(nc.format('border')))
 
     return '\n'.join(jersey)
@@ -471,16 +471,16 @@ def jersey_style(*jerseys):
             asset = '-'.join([lower, name, side])
             kwargs = {'asset': asset, 'lower': lower, 'repo': repo, 'tag': tag}
             rules = [r.format(**kwargs) for r in JERSEY_RULES]
-            styles.append(ruleset(selector=('.' + asset), rules=rules))
+            styles.append(ruleset('.' + asset, rules))
 
         asset = '-'.join([lower, name, 'solid'])
         rules = ['background-color: ' + solid]
-        styles.append(ruleset(selector='.' + asset, rules=rules))
+        styles.append(ruleset('.' + asset, rules))
 
-        if border is not 'none':
+        if border != 'none':
             asset = '-'.join([lower, name, 'border'])
             rules = ['background-color: ' + border]
-            styles.append(ruleset(selector='.' + asset, rules=rules))
+            styles.append(ruleset('.' + asset, rules))
 
     for font in sorted(fonts):
         for i in range(10):
@@ -488,13 +488,11 @@ def jersey_style(*jerseys):
                 selector = '.' + '-'.join(['number', font, fill, str(i)])
                 kwargs = {'fill': fill, 'font': font, 'num': i}
                 rules = [r.format(**kwargs) for r in NUMBER_RULES]
-                styles.append(ruleset(selector=selector, rules=rules))
+                styles.append(ruleset(selector, rules))
 
         for s, offset in _font_offset(font):
             selector = '.' + '-'.join(['number', font, s])
-            styles.append(
-                ruleset(selector=selector,
-                        rules=['left: {}px'.format(offset)]))
+            styles.append(ruleset(selector, ['left: {}px'.format(offset)]))
 
     styles.append(NUMBER_STYLE)
     return styles

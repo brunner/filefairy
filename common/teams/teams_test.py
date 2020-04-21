@@ -10,7 +10,6 @@ import unittest
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/teams', '', _path))
 
-from common.elements.elements import ruleset  # noqa
 from common.teams.teams import decoding_to_encoding  # noqa
 from common.teams.teams import decoding_to_encoding_sub  # noqa
 from common.teams.teams import encoding_keys  # noqa

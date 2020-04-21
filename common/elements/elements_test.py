@@ -107,13 +107,8 @@ class ElemementsTest(unittest.TestCase):
         expected = '<pre>content</pre>'
         self.assertEqual(actual, expected)
 
-    def test_ruleset__default(self):
-        actual = ruleset()
-        expected = {}
-        self.assertEqual(actual, expected)
-
-    def test_ruleset__filled(self):
-        actual = ruleset(selector='.class', rules=['font-size: 16px'])
+    def test_ruleset(self):
+        actual = ruleset('.class', ['font-size: 16px'])
         expected = {'selector': '.class', 'rules': ['font-size: 16px']}
         self.assertEqual(actual, expected)
 

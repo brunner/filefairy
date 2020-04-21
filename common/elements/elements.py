@@ -174,7 +174,7 @@ def row(cells=None, attributes=None, clazz=''):
     return obj
 
 
-def ruleset(selector='', rules=None):
+def ruleset(selector, rules):
     """Builds a CSS ruleset element.
 
     Args:
@@ -184,12 +184,7 @@ def ruleset(selector='', rules=None):
     Returns:
         The ruleset element.
     """
-    obj = {}
-    if selector:
-        obj['selector'] = selector
-    if rules:
-        obj['rules'] = rules
-    return obj
+    return {'selector': selector, 'rules': rules}
 
 
 SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
