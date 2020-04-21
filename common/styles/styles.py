@@ -351,7 +351,7 @@ def _find_generated_style(found, generated, context):
         for key, value in items:
             if isinstance(value, str):
                 for attr, val, unit in findall(GENERATED_PATTERN, value):
-                    selector = attr + '-' + val + unit
+                    selector = '.' + attr + '-' + val + unit
                     if selector not in found:
                         r = ruleset(selector, [
                             '{}: {}{}'.format(_get_attr(attr), val, unit)])
