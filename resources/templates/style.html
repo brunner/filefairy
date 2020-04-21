@@ -30,9 +30,6 @@ span.absolute-icon {
   padding: 3px;
   top: 12px;
 }
-{%- endmacro -%}
-
-{% macro class_rulesets() -%}
 .absolute-icon {
   position: absolute;
   top: 13px;
@@ -48,175 +45,10 @@ span.absolute-icon {
   background-color: #e9ecef;
   cursor: pointer;
 }
-.alert, .dropdown-toggle, .form-control {
-  padding: .75rem;
-}
-.alert .oi {
-  line-height: 24px;
-  padding-right: .75rem;
-}
-.alert-danger {
-  border: 1px solid #721c24;
-}
-.alert-primary {
-  border: 1px solid #004085;
-}
-.alert-success {
-  border: 1px solid #155724;
-}
-.anchor {
-  padding-top: 0px;
-  margin-top: 0px;
-  transition: padding-top .35s ease, margin-top .35s ease;
-}
-.badge-icon {
-  border: 1px solid #dee2e6;
-  cursor: pointer;
-  font-weight: 400!important;
-  font-size: 100%;
-  padding: .25rem .5rem;
-  white-space: normal;
-  width: 100%;
-}
-.badge-icon[data-dismiss="modal"]:hover,
-.badge-icon[data-toggle="modal"]:hover {
-  background-color: #e9ecef;
-  border-color: #dee2e6;
-}
-.ballpark {
-  height: 256px;
-  overflow: hidden;
-  position: relative;
-}
-.ballpark-inner {
-  height: 256px;
-  left: 0;
-  margin: 0 auto;
-  position: absolute;
-  right: 0;
-  width: 256px;
-  z-index: 100;
-}
-.before-score {
-  padding-right: .75rem;
-}
-.carousel-fade .carousel-item {
-  opacity: 0;
-  transition-duration: .6s;
-  transition-property: opacity;
-}
-.carousel-fade .carousel-item.active,
-.carousel-fade .carousel-item-next.carousel-item-left,
-.carousel-fade .carousel-item-prev.carousel-item-right {
-  opacity: 1;
-}
-.carousel-fade .active.carousel-item-left,
-.carousel-fade .active.carousel-item-right {
-  opacity: 0;
-}
-.carousel-fade .carousel-item-next,
-.carousel-fade .carousel-item-prev,
-.carousel-fade .carousel-item.active,
-.carousel-fade .active.carousel-item-left,
-.carousel-fade .active.carousel-item-prev {
-  transform: translateX(0);
-  transform: translate3d(0, 0, 0);
-}
-.dropdown-toggle {
- color: #6c767c;
-}
-.flex-grow {
-  flex-grow: 1;
-}
-.grayscale {
-  -webkit-filter: grayscale(1) opacity(0.5);
-  filter: grayscale(1) opacity(0.5);
-}
 .head {
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
   padding: .75rem;
-}
-.h-58p {
-  height: 58px;
-}
-.h-72p {
-  height: 72px;
-}
-.modal {
-  overflow-y: auto;
-}
-.modal-header {
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #dee2e6;
-}
-.modal-open {
-  overflow: auto;
-  padding-right: 0px !important;
-}
-.mr-8p {
-  margin-right: 8px;
-}
-.nav-pills {
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-.navbar {
-  padding: 0;
-}
-.nav-pills .nav-item {
-  margin: 0 .25rem;
-  min-width: 32px;
-  text-align: center;
-}
-.nav-pills .nav-link {
-  padding: .25rem 0;
-}
-.nav-pills .nav-link:not(.active) {
-  border: 1px solid #dee2e6;
-}
-.page-item.active .page-link {
-  background-color: #e9ecef;
-  border-color: #dee2e6;
-}
-.page-link {
-  background-color: #f8f9fa;
-  line-height: 1;
-  padding: .25rem .75rem;
-}
-.page-link-inner {
-  color: #212529;
-  display: inline-block;
-  padding: 0;
-  padding-top: 1px;
-}
-.pagination {
-  margin: 0;
-  position: absolute;
-  right: 0;
-  top: 4px;
-}
-.pitch {
-  border-radius: 16px;
-  height: 16px;
-  line-height: 16px;
-  margin-left: 15px;
-  margin-right: 26px;
-  padding: 0 .4em;
-  text-align: center;
-  width: 24px;
-  vertical-align: top;
-}
-.profile-text {
-  min-height: 72px;
-  padding-left: 65px;
-}
-.rt-10p {
-  right: 10px;
-  top: 10px;
-}
-.right-8p {
-  right: 8px;
 }
 .table {
   margin-bottom: 0;
@@ -246,6 +78,160 @@ span.absolute-icon {
 .table.collapse.show {
   display: table;
 }
+.td-sm-none,
+.td-md-none,
+.td-lg-none {
+  display: none;
+}
+.td-md-show {
+  display: table-cell;
+}
+@media (min-width: 576px) {
+  .td-sm-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 768px) {
+  .td-md-none {
+    display: table-cell;
+  }
+  .td-md-show {
+    display: none
+  }
+}
+@media (min-width: 992px) {
+  .td-lg-none {
+    display: table-cell;
+  }
+}
+.text-underline {
+  text-decoration: underline;
+}
+{%- endmacro -%}
+
+{% macro class_rulesets() -%}
+.badge-icon {
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  font-weight: 400!important;
+  font-size: 100%;
+  padding: .25rem .5rem;
+  white-space: normal;
+  width: 100%;
+}
+.badge-icon-button {
+  display: block;
+  padding: 3px 0 2px;
+}
+.badge-icon-image,
+.badge-icon-text {
+  display: block;
+}
+.badge-icon-image {
+  margin: 1px auto 0;
+}
+.badge-icon-text {
+  color: #212529;
+  padding: 0;
+  padding-top: .25rem;
+}
+.badge-icon[data-dismiss="modal"]:hover,
+.badge-icon[data-toggle="modal"]:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+.grayscale {
+  -webkit-filter: grayscale(1) opacity(0.5);
+  filter: grayscale(1) opacity(0.5);
+}
+@media (min-width: 576px) {
+  .badge-icon-image,
+  .badge-icon-text {
+    display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
+  }
+}
+@media (min-width: 768px) {
+  .badge-icon-image,
+  .badge-icon-text {
+    display: block;
+  }
+  .badge-icon-text {
+    padding: 0;
+    padding-top: .25rem;
+  }
+}
+@media (min-width: 992px) {
+  .badge-icon-image,
+  .badge-icon-text {
+    display: inline-block;
+  }
+  .badge-icon-text {
+    padding: 2px 0 2px .5rem;
+  }
+}
+
+.ballpark {
+  height: 256px;
+  overflow: hidden;
+  position: relative;
+}
+.ballpark-inner {
+  height: 256px;
+  left: 0;
+  margin: 0 auto;
+  position: absolute;
+  right: 0;
+  width: 256px;
+  z-index: 100;
+}
+.jersey-base {
+  background-size: 62px 66px;
+  border: 1px solid #eeeff0;
+  height: 68px;
+  margin: -5px -1px -5px -5px;
+  width: 64px;
+}
+.jersey-ballpark {
+  background-position: -122px -36px;
+  background-size: 500px 512px;
+  height: 256px;
+  margin: 0;
+  opacity: 0.3;
+  width: 256px;
+}
+.jersey-left {
+  right: 50%;
+}
+.jersey-right {
+  left: 50%;
+}
+.pitch {
+  border-radius: 16px;
+  height: 16px;
+  line-height: 16px;
+  margin-left: 15px;
+  margin-right: 26px;
+  padding: 0 .4em;
+  text-align: center;
+  width: 24px;
+  vertical-align: top;
+}
+.alert-danger {
+  border: 1px solid #721c24;
+}
+.alert-primary {
+  border: 1px solid #004085;
+}
+.alert-success {
+  border: 1px solid #155724;
+}
+.profile-text {
+  min-height: 72px;
+  padding-left: 65px;
+}
 .tag {
   background-color: #ffffff;
   line-height: 16px;
@@ -256,11 +242,141 @@ span.absolute-icon {
   border-color: #1b1e21!important;
   color: #1b1e21;
 }
-.text-underline {
-  text-decoration: underline;
+@media (min-width: 768px) {
+  .jersey-ballpark {
+    background-size: 750px 768px;
+    height: 256px;
+    width: 388px;
+  }
+  .jersey-left {
+    background-position: -165px -118px;
+  }
+  .jersey-right {
+    background-position: -199px -118px;
+  }
+}
+@media (min-width: 992px) {
+  .jersey-ballpark {
+    background-size: 1000px 1024px;
+    height: 256px;
+    width: 512px;
+  }
+  .jersey-left {
+    background-position: -220px -244px;
+  }
+  .jersey-right {
+    background-position: -268px -244px;
+  }
+}
+@media (min-width: 1200px) {
+  .jersey-ballpark {
+    background-size: 1000px 1024px;
+    height: 256px;
+    width: 556px;
+  }
+  .jersey-left {
+    background-position: -220px -244px;
+  }
+  .jersey-right {
+    background-position: -224px -244px;
+  }
+}
+
+.carousel-fade .carousel-item {
+  opacity: 0;
+  transition-duration: .6s;
+  transition-property: opacity;
+}
+.carousel-fade .carousel-item.active,
+.carousel-fade .carousel-item-next.carousel-item-left,
+.carousel-fade .carousel-item-prev.carousel-item-right {
+  opacity: 1;
+}
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-right {
+  opacity: 0;
+}
+.carousel-fade .carousel-item-next,
+.carousel-fade .carousel-item-prev,
+.carousel-fade .carousel-item.active,
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-prev {
+  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+}
+
+.modal {
+  overflow-y: auto;
+}
+.modal-header {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #dee2e6;
+}
+.modal-open {
+  overflow: auto;
+  padding-right: 0px !important;
+}
+@media (min-width: 576px) {
+  body.modal-open header {
+    margin-right: 0!important;
+    padding-right: 0!important;
+  }
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 650px; 
+  }
+}
+@media (min-width: 992px) {
+  .modal-dialog {
+    max-width: 800px; 
+  }
+}
+
+.pagination {
+  margin: 0;
+  position: absolute;
+  right: 0;
+  top: 4px;
+}
+.page-item.active .page-link {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+.page-link {
+  background-color: #f8f9fa;
+  line-height: 1;
+  padding: .25rem .75rem;
+}
+.page-link-inner {
+  color: #212529;
+  display: inline-block;
+  padding: 0;
+  padding-top: 1px;
+}
+
+.rt-10p {
+  right: 10px;
+  top: 10px;
+}
+.right-8p {
+  right: 8px;
 }
 .top-0 {
   top: 0;
+}
+
+.h-58p {
+  height: 58px;
+}
+.h-72p {
+  height: 72px;
+}
+.mr-8p {
+  margin-right: 8px;
+}
+.pr-75r {
+  padding-right: .75rem;
 }
 .w-10 {
   width: 10%;
@@ -309,181 +425,5 @@ span.absolute-icon {
 }
 .w-150p {
   width: 150px;
-}
-.badge-icon-button {
-  display: block;
-  padding: 3px 0 2px;
-}
-.badge-icon-image,
-.badge-icon-text {
-  display: block;
-}
-.badge-icon-image {
-  margin: 1px auto 0;
-}
-.badge-icon-text {
-  color: #212529;
-  padding: 0;
-  padding-top: .25rem;
-}
-.td-sm-none,
-.td-md-none,
-.td-lg-none {
-  display: none;
-}
-.td-md-show {
-  display: table-cell;
-}
-.jersey-base {
-  background-size: 62px 66px;
-  border: 1px solid #eeeff0;
-  height: 68px;
-  margin: -5px -1px -5px -5px;
-  width: 64px;
-}
-.jersey-ballpark {
-  background-position: -122px -36px;
-  background-size: 500px 512px;
-  height: 256px;
-  margin: 0;
-  opacity: 0.3;
-  width: 256px;
-}
-.jersey-left {
-  right: 50%;
-}
-.jersey-right {
-  left: 50%;
-}
-.count {
-  line-height: 8px;
-}
-.dot {
-  background-color: #ffffff;
-  border-radius: 8px;
-  height: 8px;
-  margin: 2px 2px 2px 0;
-  width: 8px;
-  display: inline-block;
-}
-.dot.ball.active {
-  border-color: #155724!important;
-  background-color: #d4edda;
-}
-.dot.strike.active {
-  border-color: #721c24!important;
-  background-color: #f8d7da;
-}
-.tag {
-  background-color: #ffffff;
-  line-height: 16px;
-}
-.tag-danger {
-  background-color: #f8d7da;
-  border-color: #721c24!important;
-  color: #721c24;
-}
-.tag-primary {
-  background-color: #cce5ff;
-  border-color: #004085!important;
-  color: #004085;
-}
-.tag-secondary {
-  background-color: #e2e3e5;
-  border-color: #383d41!important;
-  color: #383d41;
-}
-.tag-success {
-  background-color: #d4edda;
-  border-color: #155724!important;
-  color: #155724;
-}
-{%- endmacro -%}
-
-{% macro media_rulesets() -%}
-@media (min-width: 576px) {
-  body.modal-open header {
-    margin-right: 0!important;
-    padding-right: 0!important;
-  }
-  .badge-icon-image,
-  .badge-icon-text {
-    display: inline-block;
-  }
-  .badge-icon-text {
-    padding: 2px 0 2px .5rem;
-  }
-  .td-sm-none {
-    display: table-cell;
-  }
-}
-@media (min-width: 768px) {
-  .badge-icon-image,
-  .badge-icon-text {
-    display: block;
-  }
-  .badge-icon-text {
-    padding: 0;
-    padding-top: .25rem;
-  }
-  .modal-dialog {
-    max-width: 650px; 
-  }
-  .td-md-none {
-    display: table-cell;
-  }
-  .td-md-show {
-    display: none
-  }
-  .jersey-ballpark {
-    background-size: 750px 768px;
-    height: 256px;
-    width: 388px;
-  }
-  .jersey-left {
-    background-position: -165px -118px;
-  }
-  .jersey-right {
-    background-position: -199px -118px;
-  }
-}
-@media (min-width: 992px) {
-  .badge-icon-image,
-  .badge-icon-text {
-    display: inline-block;
-  }
-  .badge-icon-text {
-    padding: 2px 0 2px .5rem;
-  }
-  .modal-dialog {
-    max-width: 800px; 
-  }
-  .td-lg-none {
-    display: table-cell;
-  }
-  .jersey-ballpark {
-    background-size: 1000px 1024px;
-    height: 256px;
-    width: 512px;
-  }
-  .jersey-left {
-    background-position: -220px -244px;
-  }
-  .jersey-right {
-    background-position: -268px -244px;
-  }
-}
-@media (min-width: 1200px) {
-  .jersey-ballpark {
-    background-size: 1000px 1024px;
-    height: 256px;
-    width: 556px;
-  }
-  .jersey-left {
-    background-position: -220px -244px;
-  }
-  .jersey-right {
-    background-position: -224px -244px;
-  }
 }
 {%- endmacro -%}

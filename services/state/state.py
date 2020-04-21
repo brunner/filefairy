@@ -169,7 +169,7 @@ class State(object):
 
         if self.score:
             ac = ['badge', 'border', 'tag', 'tag-light']
-            before = span(classes=['before-score'], text=content)
+            before = span(classes=['pr-75r'], text=content)
             after = span(classes=ac, text=self.to_score_short_str())
             old_content = before + after
             self.score = False
