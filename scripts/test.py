@@ -16,8 +16,8 @@ from tasks.git.git import Git  # noqa
 CONTAINING_DIR = re.sub(r'/filefairy/scripts', '', _path)
 FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
 GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
-NAMES = ['index.html', 'dashboard', 'demo', 'gameday', 'news', 'standings']
-REMOTE = 'brunnerj@brunnerj.com:/home/brunnerj/public_html/sandbox/fairylab/'
+NAMES = ['index.html', 'dashboard', 'gameday', 'news', 'sandbox', 'standings']
+REMOTE = 'brunnerj@brunnerj.com:/home/brunnerj/public_html/fairylab/'
 
 check_output(['rm', '-rf', GAMEDAY_DIR])
 check_output(['mkdir', GAMEDAY_DIR])
