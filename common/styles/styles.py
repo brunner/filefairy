@@ -11,6 +11,8 @@ sys.path.append(re.sub(r'/common/styles', '', _path))
 
 from common.elements.elements import media  # noqa
 from common.elements.elements import ruleset  # noqa
+from common.re_.re_ import findall  # noqa
+from common.re_.re_ import search  # noqa
 
 BASE_STYLES = {
     'badge-pitch': [
@@ -321,5 +323,72 @@ BASE_STYLES = {
 }
 
 
-def base_styles():
-    return BASE_STYLES
+def _find_base_style(pattern, context):
+    ret = False
+
+    is_dict = isinstance(context, dict)
+    is_list = isinstance(context, list)
+    if is_dict or is_list:
+        items = context.items() if is_dict else enumerate(context)
+        for key, value in items:
+            if isinstance(value, str) and search(pattern, value):
+                context[key] = _rewrite_context(pattern, value)
+                ret = True
+            if _find_base_style(pattern, value):
+                ret = True
+
+    return ret
+
+
+GENERATED_PATTERN = r'css-style-([a-z]+)-([0-9]+)([a-z]*)[\s"]'
+
+
+def _find_generated_style(found, generated, context):
+    is_dict = isinstance(context, dict)
+    is_list = isinstance(context, list)
+    if is_dict or is_list:
+        items = context.items() if is_dict else enumerate(context)
+        for key, value in items:
+            if isinstance(value, str):
+                for attr, value, unit in findall(GENERATED_PATTERN, value):
+                    selector = attr + '-' + value + unit
+                    if selector not in found:
+                        r = ruleset(selector, [
+                            '{}: {}{}'.format(_get_attr(attr), value, unit)])
+                        found.add(selector)
+                        generated.append(r)
+                context[key] = re.sub(r'css-style-', '', value)
+            _find_generated_style(found, generated, value)
+
+
+def _get_attr(attr):
+    if attr == 'w':
+        return 'width'
+
+    return 'unknown'
+
+
+def _rewrite_context(pattern, value):
+    value = re.sub(r'"' + pattern + r'\s?', r'"', value)
+    value = re.sub(r'^' + pattern + r'\s?', r'', value)
+    value = re.sub(r'\s?' + pattern + r'"', r'"', value)
+    value = re.sub(r'\s?' + pattern + r'$', r'', value)
+    return re.sub(pattern + r' ', r'', value)
+
+
+def get_styles(context):
+    extra_styles = context.pop('styles', [])
+
+    styles = []
+    for name in BASE_STYLES:
+        pattern = r'css-style-' + name
+        if _find_base_style(pattern, context):
+            styles += BASE_STYLES[name]
+
+    found = set()
+    generated = []
+    _find_generated_style(found, generated, context)
+
+    styles += sorted(generated, key=lambda r: r['selector'])
+    styles += extra_styles
+    return styles

@@ -44,8 +44,7 @@ sys.path.append(re.sub(r'/api/renderable', '', _path))
 from common.abc_.abc_ import abstractstatic  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
 from common.elements.elements import menu  # noqa
-from common.re_.re_ import search  # noqa
-from common.styles.styles import base_styles  # noqa
+from common.styles.styles import get_styles  # noqa
 from types_.response.response import Response  # noqa
 
 CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
@@ -90,7 +89,7 @@ class Renderable():
                 subtitle = ' » ' + subtitle if subtitle else ''
                 title = self._title() + subtitle
 
-                styles = self._get_styles(context)
+                styles = get_styles(context)
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(
                     dict(context,
@@ -119,42 +118,6 @@ class Renderable():
         return '/fairylab/' + html
 
     @staticmethod
-    def _get_css_style(pattern, context):
-        ret = False
-        if isinstance(context, dict):
-            for key in context:
-                value = context[key]
-                if isinstance(value, str):
-                    if search(pattern, value):
-                        context[key] = Renderable._remove_class(pattern, value)
-                        ret = True
-                if Renderable._get_css_style(pattern, value):
-                    ret = True
-        if isinstance(context, list):
-            for i, value in enumerate(context):
-                if isinstance(value, str):
-                    if search(pattern, value):
-                        context[i] = Renderable._remove_class(pattern, value)
-                        ret = True
-                if Renderable._get_css_style(pattern, value):
-                    ret = True
-        return ret
-
-    @staticmethod
-    def _get_styles(context):
-        base_styles_ = base_styles()
-        extra_styles = context.pop('styles', [])
-
-        styles = []
-        for name in base_styles_:
-            pattern = r'css-style-' + name
-            if Renderable._get_css_style(pattern, context):
-                styles += base_styles_[name]
-
-        styles += extra_styles
-        return styles
-
-    @staticmethod
     def _mkdirs(path):
         try:
             os.makedirs(path)
@@ -163,9 +126,3 @@ class Renderable():
                 pass
             else:
                 raise
-
-    @staticmethod
-    def _remove_class(pattern, value):
-        value = re.sub(r'"' + pattern + r'\s?', r'"', value)
-        value = re.sub(r'\s?' + pattern + r'"', r'"', value)
-        return re.sub(pattern + r' ', r'', value)

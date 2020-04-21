@@ -154,11 +154,11 @@ class RenderableTest(unittest.TestCase):
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.menu')
     @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch('api.renderable.renderable.get_styles')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('api.renderable.renderable.base_styles')
-    def test_render__live(self, base_styles_, dump_, makedirs_, menu_, stream_):
-        base_styles_.return_value = {}
+    def test_render__live(self, dump_, get_styles_, makedirs_, menu_, stream_):
         menu_.return_value = MENU
+        get_styles_.return_value = []
         stream_.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
@@ -175,11 +175,11 @@ class RenderableTest(unittest.TestCase):
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.menu')
     @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch('api.renderable.renderable.get_styles')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('api.renderable.renderable.base_styles')
-    def test_render__test(self, base_styles_, dump_, makedirs_, menu_, stream_):
-        base_styles_.return_value = {}
+    def test_render__test(self, dump_, get_styles_, makedirs_, menu_, stream_):
         menu_.return_value = MENU
+        get_styles_.return_value = []
         stream_.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
@@ -196,11 +196,12 @@ class RenderableTest(unittest.TestCase):
     @mock.patch.object(jinja2.environment.Template, 'stream')
     @mock.patch('api.renderable.renderable.menu')
     @mock.patch('api.renderable.renderable.os.makedirs')
+    @mock.patch('api.renderable.renderable.get_styles')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    @mock.patch('api.renderable.renderable.base_styles')
-    def test_render__exception(self, base_styles_, dump_, makedirs_, menu_, stream_):
-        base_styles_.return_value = {}
+    def test_render__exception(self, dump_, get_styles_, makedirs_, menu_,
+                               stream_):
         dump_.side_effect = Exception()
+        get_styles_.return_value = []
         menu_.return_value = MENU
         stream_.return_value = jinja2.environment.TemplateStream(iter([]))
 
