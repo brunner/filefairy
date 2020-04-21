@@ -24,6 +24,12 @@ def check_status():
     return Git.check(['git', 'status']).get_debug()[0].get_extra()['stdout']
 
 
+def upload_to_fairylab():
+    for name in NAMES:
+        local = '/home/jbrunner/fairylab/static/' + name
+        check_output(['scp', '-r', local, REMOTE])
+
+
 check_output(['rm', '-rf', GAMEDAY_DIR])
 check_output(['mkdir', GAMEDAY_DIR])
 
@@ -42,12 +48,10 @@ with chdir(FAIRYLAB_DIR):
     if 'nothing to commit' in stdout:
         print('nothing to commit')
     else:
-        upload = input('copy changes to sandbox? ')
-        if upload == 'y':
-            for name in NAMES:
-                local = '/home/jbrunner/fairylab/static/' + name
-                check_output(['scp', '-r', local, REMOTE])
-
         revert = input('revert fairylab changes? ')
         if revert == 'y':
             check_output(['git', 'checkout', '.'])
+
+    upload = input('upload latest to fairylab? ')
+    if upload == 'y':
+        upload_to_fairylab()
