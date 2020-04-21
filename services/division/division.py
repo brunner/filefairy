@@ -201,7 +201,7 @@ def expanded_league(league, tables):
             'text-right w-40p',
             'text-right w-40p',
             'text-right w-50p',
-            'text-right w-50p',
+            'text-right w-54p',
         ]
 
         ret.append(

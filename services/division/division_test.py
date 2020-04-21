@@ -281,7 +281,7 @@ class DivisionTest(unittest.TestCase):
             'text-right w-40p',
             'text-right w-40p',
             'text-right w-50p',
-            'text-right w-50p',
+            'text-right w-54p',
         ]
         hcols = [col(clazz=(hc + c)) for c in clazzes]
         bcols = [col(clazz=c) for c in clazzes]
