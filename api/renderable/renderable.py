@@ -80,11 +80,11 @@ class Renderable():
         if not data:
             return Response()
 
-        current = self._href()
-        m = None if current == '/fairylab/' else menu(current)
-
         for html, subtitle, tmpl, context in data:
             try:
+                current = self._href() if test else self._get_current(html)
+                m = None if current == '/fairylab/' else menu(current)
+
                 subtitle = ' » ' + subtitle if subtitle else ''
                 title = self._title() + subtitle
 
@@ -102,6 +102,13 @@ class Renderable():
                                 exc_info=True)
 
         return Response()
+
+    @staticmethod
+    def _get_current(html):
+        if html.endswith('index.html'):
+            return '/fairylab/' + html[:-10]
+
+        return '/fairylab/' + html
 
     @staticmethod
     def _mkdirs(path):

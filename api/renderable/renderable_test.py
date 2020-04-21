@@ -34,6 +34,14 @@ LDR = jinja2.DictLoader({
 })
 
 MENU = dialog(id_='menu', icon='<img>', tables=[topper('Site Links')])
+MENU_LIVE_CALLS = [
+    mock.call('/fairylab/foo/'),
+    mock.call('/fairylab/foo/sub/'),
+    mock.call('/fairylab/foo/dyn/dyn_0.html'),
+    mock.call('/fairylab/foo/dyn/dyn_1.html'),
+    mock.call('/fairylab/foo/dyn/dyn_2.html'),
+]
+MENU_TEST_CALLS = [mock.call('/foo/')] * 5
 
 THEN = datetime_datetime_pst(1985, 10, 26, 0, 2, 30)
 THEN_DISPLAYED = '00:02:30 PDT (1985-10-26)'
@@ -70,7 +78,7 @@ STREAM_CALLS = [
         'menu': MENU,
         'title': 'foo » dyn2',
         'z': True
-    })
+    }),
 ]
 
 
@@ -153,7 +161,7 @@ class RenderableTest(unittest.TestCase):
 
         dump_.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
         makedirs_.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
-        menu_.assert_called_once_with('/foo/')
+        menu_.assert_has_calls(MENU_LIVE_CALLS)
         stream_.assert_has_calls(STREAM_CALLS)
         self.log_.assert_not_called()
 
@@ -172,7 +180,7 @@ class RenderableTest(unittest.TestCase):
 
         dump_.assert_has_calls(get_dump_calls(FILEFAIRY_DIR))
         makedirs_.assert_has_calls(get_makedirs_calls(FILEFAIRY_DIR))
-        menu_.assert_called_once_with('/foo/')
+        menu_.assert_has_calls(MENU_TEST_CALLS)
         stream_.assert_has_calls(STREAM_CALLS)
         self.log_.assert_not_called()
 
@@ -199,7 +207,7 @@ class RenderableTest(unittest.TestCase):
         ]
         dump_.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
         makedirs_.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
-        menu_.assert_called_once_with('/foo/')
+        menu_.assert_has_calls(MENU_LIVE_CALLS)
         stream_.assert_has_calls(STREAM_CALLS)
         self.log_.assert_has_calls(log_calls)
 
