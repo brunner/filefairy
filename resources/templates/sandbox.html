@@ -3,13 +3,15 @@
 
 {% block content %}
 
-<!-- ^(game.container) -->
+<!-- ^(empty.container) -->
 <div class="container">
 
-<!-- ^(game.row) -->
+{{ common.topper('Team Uniforms') }}
+
+<!-- ^(empty.row) -->
 <div class="row">
 
-<!-- ^(game.column) -->
+<!-- ^(empty.column) -->
 <div class="col-12">
 
 {% for table in tables %}
@@ -17,12 +19,12 @@
 
 {% endfor %}
 </div>
-<!-- ^(game.column) -->
+<!-- ^(empty.column) -->
 
 </div>
-<!-- ^(game.row) -->
+<!-- ^(empty.row) -->
 
 </div>
-<!-- $(game.container) -->
+<!-- $(empty.container) -->
 
 {% endblock %}

@@ -13,7 +13,6 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import menu  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
-from common.elements.elements import topper  # noqa
 from common.teams.teams import encoding_keys  # noqa
 from common.teams.teams import encoding_to_decoding  # noqa
 from common.teams.teams import icon_absolute  # noqa
@@ -32,7 +31,7 @@ def numbers():
 
 
 _jerseys = []
-_tables = [topper('Team Uniforms')]
+_tables = []
 
 _keys = encoding_keys()
 _keys_length = len(_keys)
@@ -68,6 +67,6 @@ _styles = jersey_style(*_jerseys)
 
 subtitle = ''
 
-tmpl = 'empty.html'
+tmpl = 'sandbox.html'
 
 context = {'styles': _styles, 'tables': _tables}
