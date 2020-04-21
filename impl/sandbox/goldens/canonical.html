@@ -41,14 +41,19 @@ a.disabled{
   pointer-events: none;
   cursor: default;
 }
-.absolute-icon {
-  position: absolute;
-  top: 13px;
+button.close {
+  height: 16px;
+  line-height: 16px;
+  width: 16px;
 }
 span.absolute-icon {
   border-radius: .25rem;
   padding: 3px;
   top: 12px;
+}
+.absolute-icon {
+  position: absolute;
+  top: 13px;
 }
 .absolute-icon.left {
   left: 10px;
@@ -112,11 +117,6 @@ span.absolute-icon {
 }
 .before-score {
   padding-right: .75rem;
-}
-button.close {
-  height: 16px;
-  line-height: 16px;
-  width: 16px;
 }
 .carousel-fade .carousel-item {
   opacity: 0;
@@ -372,7 +372,50 @@ button.close {
 }
 .jersey-right {
   left: 50%;
-}s
+}
+.count {
+  line-height: 8px;
+}
+.dot {
+  background-color: #ffffff;
+  border-radius: 8px;
+  height: 8px;
+  margin: 2px 2px 2px 0;
+  width: 8px;
+  display: inline-block;
+}
+.dot.ball.active {
+  border-color: #155724!important;
+  background-color: #d4edda;
+}
+.dot.strike.active {
+  border-color: #721c24!important;
+  background-color: #f8d7da;
+}
+.tag {
+  background-color: #ffffff;
+  line-height: 16px;
+}
+.tag-danger {
+  background-color: #f8d7da;
+  border-color: #721c24!important;
+  color: #721c24;
+}
+.tag-primary {
+  background-color: #cce5ff;
+  border-color: #004085!important;
+  color: #004085;
+}
+.tag-secondary {
+  background-color: #e2e3e5;
+  border-color: #383d41!important;
+  color: #383d41;
+}
+.tag-success {
+  background-color: #d4edda;
+  border-color: #155724!important;
+  color: #155724;
+}
 @media (min-width: 576px) {
   body.modal-open header {
     margin-right: 0!important;
@@ -457,49 +500,6 @@ button.close {
   .jersey-right {
     background-position: -224px -244px;
   }
-}
-.count {
-  line-height: 8px;
-}
-.dot {
-  background-color: #ffffff;
-  border-radius: 8px;
-  height: 8px;
-  margin: 2px 2px 2px 0;
-  width: 8px;
-  display: inline-block;
-}
-.dot.ball.active {
-  border-color: #155724!important;
-  background-color: #d4edda;
-}
-.dot.strike.active {
-  border-color: #721c24!important;
-  background-color: #f8d7da;
-}
-.tag {
-  background-color: #ffffff;
-  line-height: 16px;
-}
-.tag-danger {
-  background-color: #f8d7da;
-  border-color: #721c24!important;
-  color: #721c24;
-}
-.tag-primary {
-  background-color: #cce5ff;
-  border-color: #004085!important;
-  color: #004085;
-}
-.tag-secondary {
-  background-color: #e2e3e5;
-  border-color: #383d41!important;
-  color: #383d41;
-}
-.tag-success {
-  background-color: #d4edda;
-  border-color: #155724!important;
-  color: #155724;
 }
 .diamondbacks-home-back {
   background-image: url('https://brunnerj.com/fairylab/images/teams/diamondbacks/diamondbacks-home-back.png');

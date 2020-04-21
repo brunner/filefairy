@@ -21,7 +21,9 @@
 <title>Fairylab{% if menu %} · {{ title }}{% endif %}</title>
 
 <style>
-{{ style.base() }}
+{{ style.tag_rulesets() }}
+{{ style.class_rulesets() }}
+{{ style.media_rulesets() }}
 {% for ruleset in styles %}
 {{ common.ruleset(ruleset) }}
 {% endfor %}
