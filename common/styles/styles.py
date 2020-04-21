@@ -160,6 +160,22 @@ BASE_STYLES = {
                 ),
             ],
         ),
+    ],
+    'ballpark': [
+        ruleset('.ballpark', [
+            'height: 256px',
+            'overflow: hidden',
+            'position: relative',
+        ]),
+        ruleset('.ballpark-inner', [
+            'height: 256px',
+            'left: 0',
+            'margin: 0 auto',
+            'position: absolute',
+            'right: 0',
+            'width: 256px',
+            'z-index: 100',
+        ]),
     ]
 }
 

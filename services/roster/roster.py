@@ -27,7 +27,7 @@ from common.reference.reference import player_to_throws  # noqa
 from common.service.service import call_service  # noqa
 from common.teams.teams import encoding_to_lower  # noqa
 
-BALLPARK = """<div class="ballpark">
+BALLPARK = """<div class="ballpark css-style-ballpark">
 <svg class="ballpark-inner"
      xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
