@@ -299,6 +299,24 @@ BASE_STYLES = {
                 'padding-left: 65px',
             ],
         ),
+    ],
+    'score-tag': [
+        ruleset(
+            '.tag',
+            [
+                'background-color: #ffffff',
+                'line-height: 16px',
+                'padding: 0 .75em',
+                'vertical-align: top',
+            ],
+        ),
+        ruleset(
+            '.tag-light',
+            [
+                'border-color: #1b1e21!important',
+                'color: #1b1e21',
+            ],
+        ),
     ]
 }
 

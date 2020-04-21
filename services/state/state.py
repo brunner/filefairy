@@ -169,7 +169,10 @@ class State(object):
             content += ' <b>{}</b>'.format(self.to_outs_str(False))
 
         if self.score:
-            ac = ['badge', 'border', 'tag', 'tag-light']
+            ac = [
+                'badge', 'border', 'score-tag', 'score-tag-light',
+                'css-style-score-tag'
+            ]
             before = span(classes=['pr-75r'], text=content)
             after = span(classes=ac, text=self.to_score_short_str())
             old_content = before + after
