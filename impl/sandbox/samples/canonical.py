@@ -21,7 +21,7 @@ from services.uniforms.uniforms import jersey_absolute  # noqa
 from services.uniforms.uniforms import jersey_style  # noqa
 
 BCOLS = [col(clazz='w-75p')] + ([col(clazz='w-70p')] * 3) + [col()]
-CONTENT = '<div class="position-relative h-58p">{}</div>'
+CONTENT = '<div class="position-relative h-58p css-style-jersey">{}</div>'
 
 
 def numbers():

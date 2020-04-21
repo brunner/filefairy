@@ -162,20 +162,143 @@ BASE_STYLES = {
         ),
     ],
     'ballpark': [
-        ruleset('.ballpark', [
-            'height: 256px',
-            'overflow: hidden',
-            'position: relative',
-        ]),
-        ruleset('.ballpark-inner', [
-            'height: 256px',
-            'left: 0',
-            'margin: 0 auto',
-            'position: absolute',
-            'right: 0',
-            'width: 256px',
-            'z-index: 100',
-        ]),
+        ruleset(
+            '.ballpark',
+            [
+                'height: 256px',
+                'overflow: hidden',
+                'position: relative',
+            ],
+        ),
+        ruleset(
+            '.ballpark-inner',
+            [
+                'height: 256px',
+                'left: 0',
+                'margin: 0 auto',
+                'position: absolute',
+                'right: 0',
+                'width: 256px',
+                'z-index: 100',
+            ],
+        ),
+    ],
+    'jersey': [
+        ruleset(
+            '.jersey-base',
+            [
+                'background-size: 62px 66px',
+                'border: 1px solid #eeeff0',
+                'height: 68px',
+                'margin: -5px -1px -5px -5px',
+                'width: 64px',
+            ],
+        ),
+        ruleset(
+            '.jersey-ballpark',
+            [
+                'background-position: -122px -36px',
+                'background-size: 500px 512px',
+                'height: 256px',
+                'margin: 0',
+                'opacity: 0.3',
+                'width: 256px',
+            ],
+        ),
+        ruleset(
+            '.jersey-left',
+            [
+                'right: 50%',
+            ],
+        ),
+        ruleset(
+            '.jersey-right',
+            [
+                'left: 50%',
+            ],
+        ),
+        media(
+            '768px',
+            [
+                ruleset(
+                    '.jersey-ballpark',
+                    [
+                        'background-size: 750px 768px',
+                        'height: 256px',
+                        'width: 388px',
+                    ],
+                ),
+                ruleset(
+                    '.jersey-left',
+                    [
+                        'background-position: -165px -118px',
+                    ],
+                ),
+                ruleset(
+                    '.jersey-right',
+                    [
+                        'background-position: -199px -118px',
+                    ],
+                ),
+            ],
+        ),
+        media(
+            '992px',
+            [
+                ruleset(
+                    '.jersey-ballpark',
+                    [
+                        'background-size: 1000px 1024px',
+                        'height: 256px',
+                        'width: 512px',
+                    ],
+                ),
+                ruleset(
+                    '.jersey-left',
+                    [
+                        'background-position: -220px -244px',
+                    ],
+                ),
+                ruleset(
+                    '.jersey-right',
+                    [
+                        'background-position: -268px -244px',
+                    ],
+                ),
+            ],
+        ),
+        media(
+            '1200px',
+            [
+                ruleset(
+                    '.jersey-ballpark',
+                    [
+                        'background-size: 1000px 1024px',
+                        'height: 256px',
+                        'width: 556px',
+                    ],
+                ),
+                ruleset(
+                    '.jersey-left',
+                    [
+                        'background-position: -220px -244px',
+                    ],
+                ),
+                ruleset(
+                    '.jersey-right',
+                    [
+                        'background-position: -224px -244px',
+                    ],
+                ),
+            ],
+        ),
+        ruleset(
+            '.jersey-profile-text',
+            [
+                'min-height: 72px',
+                'padding-left: 65px',
+            ],
+        ),
     ]
 }
 

@@ -170,9 +170,12 @@ class Roster(object):
     def create_jersey_content(self, team, num, side, s):
         args = (team, self.colors[team], num, side)
         img = call_service('uniforms', 'jersey_absolute', args, [])
-        spn = span(classes=['profile-text', 'align-middle', 'd-block'], text=s)
+        spn = span(classes=['jersey-profile-text', 'align-middle', 'd-block'],
+                   text=s)
         inner = img + spn
-        return '<div class="position-relative h-58p">{}</div>'.format(inner)
+
+        div = '<div class="position-relative h-58p css-style-jersey">{}</div>'
+        return div.format(inner)
 
     def create_bolded_row(self, title, text):
         content = player_to_name_sub('<b>{}</b><br>{}'.format(title, text))
