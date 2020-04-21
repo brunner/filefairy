@@ -87,8 +87,8 @@ def create_dialog(date, game):
         table(clazz='border mb-3 css-style-badge-team',
               hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
               bcols=[
-                  col(clazz='w-50 badge-team-wrapper pl-2'),
-                  col(clazz='w-50 badge-team-wrapper pr-2')
+                  col(clazz='css-style-w-50pct badge-team-wrapper pl-2'),
+                  col(clazz='css-style-w-50pct badge-team-wrapper pr-2')
               ],
               head=[row(cells=[cell(content='Options')])],
               body=[

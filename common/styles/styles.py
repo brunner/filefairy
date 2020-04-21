@@ -353,8 +353,9 @@ def _find_generated_style(found, generated, context):
                 for attr, val, unit in findall(GENERATED_PATTERN, value):
                     selector = '.' + attr + '-' + val + unit
                     if selector not in found:
-                        r = ruleset(selector, [
-                            '{}: {}{}'.format(_get_attr(attr), val, unit)])
+                        rule = '{}: {}{}'.format(_get_attr(attr), val,
+                                                 _get_unit(unit))
+                        r = ruleset(selector, [rule])
                         found.add(selector)
                         generated.append((attr, unit, int(val), r))
                 context[key] = re.sub(r'css-style-', '', value)
@@ -368,6 +369,13 @@ def _get_attr(attr):
         return 'width'
 
     return 'unknown'
+
+
+def _get_unit(unit):
+    if unit == 'pct':
+        return '%'
+
+    return unit
 
 
 def _rewrite_context(pattern, value):

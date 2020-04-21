@@ -101,9 +101,10 @@ def condensed_league(league, tables):
 
         body.append(row(cells=body_cells))
 
-    bcols = [col(clazz=('w-20 badge-team-wrapper pl-2'))]
-    bcols += [col(clazz=('w-20 badge-team-wrapper'))] * (colspan - 2)
-    bcols += [col(clazz=('w-20 badge-team-wrapper pr-2'))]
+    remaining = colspan - 2
+    bcols = [col(clazz=('css-style-w-20pct badge-team-wrapper pl-2'))]
+    bcols += [col(clazz=('css-style-w-20pct badge-team-wrapper'))] * remaining
+    bcols += [col(clazz=('css-style-w-20pct badge-team-wrapper pr-2'))]
 
     hc = 'font-weight-bold text-dark text-center'
     return table(clazz='table-fixed border mb-3',
