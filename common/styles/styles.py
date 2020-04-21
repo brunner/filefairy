@@ -353,7 +353,8 @@ def _find_generated_style(found, generated, context):
                 for attr, val, unit in findall(GENERATED_PATTERN, value):
                     selector = '.' + attr + '-' + val + unit
                     if selector not in found:
-                        rule = '{}: {}{}'.format(_get_attr(attr), val,
+                        rule = '{}: {}{}'.format(_get_attr(attr),
+                                                 _get_val(val),
                                                  _get_unit(unit))
                         r = ruleset(selector, [rule])
                         found.add(selector)
@@ -365,6 +366,8 @@ def _find_generated_style(found, generated, context):
 def _get_attr(attr):
     if attr == 'h':
         return 'height'
+    if attr == 'pr':
+        return 'padding-right'
     if attr == 'w':
         return 'width'
 
@@ -376,6 +379,13 @@ def _get_unit(unit):
         return '%'
 
     return unit
+
+
+def _get_val(val):
+    if val.startswith('0'):
+        return '.' + val[1:]
+
+    return val
 
 
 def _rewrite_context(pattern, value):
