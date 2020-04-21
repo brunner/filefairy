@@ -33,11 +33,19 @@
 {%- endmacro -%}
 
 {% macro ruleset(data) -%}
+{%- if data.is_media -%}
+@media (min-width: {{ data.min }}) {
+{% for ruleset_data in data.rulesets %}
+  {{ ruleset(ruleset_data) | indent(2) }}
+{% endfor %}
+}
+{%- else -%}
 {{ data.selector }} {
 {% for r in data.rules %}
   {{ r }};
 {% endfor %}
 }
+{%- endif -%}
 {%- endmacro -%}
 
 {% macro table(data) -%}

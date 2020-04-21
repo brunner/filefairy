@@ -9,6 +9,7 @@ import sys
 _path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(re.sub(r'/common/styles', '', _path))
 
+from common.elements.elements import media  # noqa
 from common.elements.elements import ruleset  # noqa
 
 BASE_STYLES = {
@@ -65,6 +66,58 @@ BASE_STYLES = {
                 'color: #212529',
                 'padding: 0',
                 'padding-top: .25rem',
+            ],
+        ),
+        media(
+            '576px',
+            [
+                ruleset(
+                    '.badge-icon-image,\n.badge-icon-text',
+                    [
+                        'display: inline-block',
+                    ],
+                ),
+                ruleset(
+                    '.badge-icon-text',
+                    [
+                        'padding: 2px 0 2px .5rem',
+                    ],
+                ),
+            ],
+        ),
+        media(
+            '768px',
+            [
+                ruleset(
+                    '.badge-icon-image,\n.badge-icon-text',
+                    [
+                        'display: block',
+                    ],
+                ),
+                ruleset(
+                    '.badge-icon-text',
+                    [
+                        'padding: 0',
+                        'padding-top: .25rem',
+                    ],
+                ),
+            ],
+        ),
+        media(
+            '992px',
+            [
+                ruleset(
+                    '.badge-icon-image,\n.badge-icon-text',
+                    [
+                        'display: inline-block',
+                    ],
+                ),
+                ruleset(
+                    '.badge-icon-text',
+                    [
+                        'padding: 2px 0 2px .5rem',
+                    ],
+                ),
             ],
         ),
     ]

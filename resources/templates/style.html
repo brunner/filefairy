@@ -118,35 +118,7 @@ span.absolute-icon {
 }
 {%- endmacro -%}
 
-{% macro class_rulesets() -%}
-@media (min-width: 576px) {
-  .badge-icon-image,
-  .badge-icon-text {
-    display: inline-block;
-  }
-  .badge-icon-text {
-    padding: 2px 0 2px .5rem;
-  }
-}
-@media (min-width: 768px) {
-  .badge-icon-image,
-  .badge-icon-text {
-    display: block;
-  }
-  .badge-icon-text {
-    padding: 0;
-    padding-top: .25rem;
-  }
-}
-@media (min-width: 992px) {
-  .badge-icon-image,
-  .badge-icon-text {
-    display: inline-block;
-  }
-  .badge-icon-text {
-    padding: 2px 0 2px .5rem;
-  }
-}
+{% macro class_rulesets() %}
 
 .ballpark {
   height: 256px;

@@ -127,6 +127,19 @@ def icon_span(name='', attributes=None, classes=None):
     return span(classes=classes, attributes=attributes)
 
 
+def media(min, rulesets):
+    """Builds a CSS media element.
+
+    Args:
+        min: The min width.
+        rulesets. The list of rulesets.
+
+    Returns:
+        The ruleset element.
+    """
+    return {'is_media': True, 'min': min, 'rulesets': rulesets}
+
+
 def menu(current):
     """Builds a menu dialog.
 
@@ -184,7 +197,7 @@ def ruleset(selector, rules):
     Returns:
         The ruleset element.
     """
-    return {'selector': selector, 'rules': rules}
+    return {'is_media': False, 'selector': selector, 'rules': rules}
 
 
 SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]

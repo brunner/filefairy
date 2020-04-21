@@ -17,6 +17,7 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import dialog  # noqa
 from common.elements.elements import icon_img  # noqa
 from common.elements.elements import icon_span  # noqa
+from common.elements.elements import media  # noqa
 from common.elements.elements import menu  # noqa
 from common.elements.elements import pre  # noqa
 from common.elements.elements import row  # noqa
@@ -89,6 +90,11 @@ class ElemementsTest(unittest.TestCase):
         ])
         self.assertEqual(actual, expected)
 
+    def test_media(self):
+        actual = media('576px', [])
+        expected = {'is_media': True, 'min': '576px', 'rulesets': []}
+        self.assertEqual(actual, expected)
+
     @mock.patch('common.elements.elements.sitelinks')
     def test_menu(self, mock_sitelinks):
         mock_sitelinks.return_value = [TABLE]
@@ -109,7 +115,7 @@ class ElemementsTest(unittest.TestCase):
 
     def test_ruleset(self):
         actual = ruleset('.class', ['font-size: 16px'])
-        expected = {'selector': '.class', 'rules': ['font-size: 16px']}
+        expected = {'is_media': False, 'selector': '.class', 'rules': ['font-size: 16px']}
         self.assertEqual(actual, expected)
 
     def test_span(self):
