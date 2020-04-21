@@ -93,13 +93,14 @@ class ElemementsTest(unittest.TestCase):
     def test_menu(self, mock_sitelinks):
         mock_sitelinks.return_value = [TABLE]
 
-        actual = menu()
+        current = '/fairylab/sandbox/'
+        actual = menu(current)
         img = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'], '')
         span_ = span(classes=['d-block', 'px-4'], text='Fairylab')
         expected = dialog(id_='menu', icon=(img + span_), tables=[TABLE])
         self.assertEqual(actual, expected)
 
-        mock_sitelinks.assert_called_once_with(home=True)
+        mock_sitelinks.assert_called_once_with(current)
 
     def test_pre(self):
         actual = pre('content')
@@ -121,7 +122,7 @@ class ElemementsTest(unittest.TestCase):
         expected = '<span class="foo bar">text</span>'
         self.assertEqual(actual, expected)
 
-    def test_sitelinks__home_false(self):
+    def test_sitelinks__current_home(self):
         def _content(name, href, text):
             icon = icon_span(name=name, classes=['left', 'text-secondary'])
             text = span(classes=['d-block pl-4'], text=anchor(href, text))
@@ -132,8 +133,9 @@ class ElemementsTest(unittest.TestCase):
         standings = _content('spreadsheet', '/fairylab/standings/',
                              'Standings')
         dashboard = _content('dashboard', '/fairylab/dashboard/', 'Dashboard')
+        sandbox = _content('lightbulb', '/fairylab/sandbox/', 'Sandbox')
 
-        actual = sitelinks()
+        actual = sitelinks('/fairylab/')
         expected = [
             topper('Site Links'),
             table(clazz='border mb-3',
@@ -151,11 +153,12 @@ class ElemementsTest(unittest.TestCase):
                   head=[row(cells=[cell(content='Other')])],
                   body=[
                       row(cells=[cell(content=dashboard)]),
+                      row(cells=[cell(content=sandbox)]),
                   ])
         ]
         self.assertEqual(actual, expected)
 
-    def test_sitelinks__home_true(self):
+    def test_sitelinks__current_standings(self):
         def _content(name, href, text):
             icon = icon_span(name=name, classes=['left', 'text-secondary'])
             text = span(classes=['d-block pl-4'], text=anchor(href, text))
@@ -163,12 +166,11 @@ class ElemementsTest(unittest.TestCase):
 
         gameday = _content('timer', '/fairylab/gameday/', 'Gameday')
         news = _content('people', '/fairylab/news/', 'News')
-        standings = _content('spreadsheet', '/fairylab/standings/',
-                             'Standings')
         dashboard = _content('dashboard', '/fairylab/dashboard/', 'Dashboard')
         home = _content('home', '/fairylab/', 'Home')
+        sandbox = _content('lightbulb', '/fairylab/sandbox/', 'Sandbox')
 
-        actual = sitelinks(home=True)
+        actual = sitelinks('/fairylab/standings/')
         expected = [
             topper('Site Links'),
             table(clazz='border mb-3',
@@ -178,7 +180,6 @@ class ElemementsTest(unittest.TestCase):
                   body=[
                       row(cells=[cell(content=gameday)]),
                       row(cells=[cell(content=news)]),
-                      row(cells=[cell(content=standings)]),
                   ]),
             table(clazz='border mb-3',
                   hcols=SITELINKS_HCOLS,
@@ -187,6 +188,7 @@ class ElemementsTest(unittest.TestCase):
                   body=[
                       row(cells=[cell(content=dashboard)]),
                       row(cells=[cell(content=home)]),
+                      row(cells=[cell(content=sandbox)]),
                   ])
         ]
         self.assertEqual(actual, expected)

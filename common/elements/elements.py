@@ -57,21 +57,6 @@ def col(clazz='', colspan=''):
     return obj
 
 
-SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
-SITELINKS_BCOLS = [col(clazz='position-relative')]
-SITELINKS_TABLES = [
-    ('Tasks', [
-        ('timer', '/fairylab/gameday/', 'Gameday'),
-        ('people', '/fairylab/news/', 'News'),
-        ('spreadsheet', '/fairylab/standings/', 'Standings'),
-    ]),
-    ('Other', [
-        ('dashboard', '/fairylab/dashboard/', 'Dashboard'),
-        ('home', '/fairylab/', 'Home'),
-    ]),
-]
-
-
 def anchor(url, content):
     """Builds an anchor element.
 
@@ -142,15 +127,18 @@ def icon_span(name='', attributes=None, classes=None):
     return span(classes=classes, attributes=attributes)
 
 
-def menu():
+def menu(current):
     """Builds a menu dialog.
+
+    Args:
+        current: The current page's href link.
 
     Returns:
         The menu dialog.
     """
     img = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'], '')
     span_ = span(classes=['d-block', 'px-4'], text='Fairylab')
-    return dialog(id_='menu', icon=(img + span_), tables=sitelinks(home=True))
+    return dialog(id_='menu', icon=(img + span_), tables=sitelinks(current))
 
 
 def pre(content):
@@ -204,11 +192,27 @@ def ruleset(selector='', rules=None):
     return obj
 
 
-def sitelinks(home=False):
+SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
+SITELINKS_BCOLS = [col(clazz='position-relative')]
+SITELINKS_TABLES = [
+    ('Tasks', [
+        ('timer', '/fairylab/gameday/', 'Gameday'),
+        ('people', '/fairylab/news/', 'News'),
+        ('spreadsheet', '/fairylab/standings/', 'Standings'),
+    ]),
+    ('Other', [
+        ('dashboard', '/fairylab/dashboard/', 'Dashboard'),
+        ('home', '/fairylab/', 'Home'),
+        ('lightbulb', '/fairylab/sandbox/', 'Sandbox'),
+    ]),
+]
+
+
+def sitelinks(current):
     """Builds a list of sitelinks tables.
 
     Args:
-        home: Whether or not to include a Home link in the sitelinks.
+        current: The current page's href link.
 
     Returns:
         The list of sitelinks tables.
@@ -217,7 +221,7 @@ def sitelinks(home=False):
     for head, rows in SITELINKS_TABLES:
         body = []
         for name, href, text in rows:
-            if name == 'home' and not home:
+            if href == current:
                 continue
             icon = icon_span(name=name, classes=['left', 'text-secondary'])
             span_ = span(classes=['d-block pl-4'], text=anchor(href, text))

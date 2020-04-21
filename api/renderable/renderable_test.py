@@ -131,56 +131,59 @@ class FakeRenderable(Renderable):
 
 class RenderableTest(unittest.TestCase):
     def setUp(self):
-        patch_log = mock.patch('api.renderable.renderable._logger.log')
-        self.addCleanup(patch_log.stop)
-        self.mock_log = patch_log.start()
-
-        patch_menu = mock.patch('api.renderable.renderable.menu')
-        self.addCleanup(patch_menu.stop)
-        self.mock_menu = patch_menu.start()
-        self.mock_menu.return_value = MENU
+        log_patch = mock.patch('api.renderable.renderable._logger.log')
+        self.addCleanup(log_patch.stop)
+        self.log_ = log_patch.start()
 
     def create_renderable(self, e):
         return FakeRenderable(e=e)
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
+    @mock.patch('api.renderable.renderable.menu')
     @mock.patch('api.renderable.renderable.os.makedirs')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__live(self, mock_dump, mock_makedirs, mock_stream):
-        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
+    def test_render__live(self, dump_, makedirs_, menu_, stream_):
+        menu_.return_value = MENU
+        stream_.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
         actual = renderable._render(date=THEN)
         expected = Response()
         self.assertEqual(actual, expected)
 
-        mock_dump.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
-        mock_makedirs.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
-        mock_stream.assert_has_calls(STREAM_CALLS)
-        self.mock_log.assert_not_called()
+        dump_.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
+        makedirs_.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
+        menu_.assert_called_once_with('/foo/')
+        stream_.assert_has_calls(STREAM_CALLS)
+        self.log_.assert_not_called()
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
+    @mock.patch('api.renderable.renderable.menu')
     @mock.patch('api.renderable.renderable.os.makedirs')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__test(self, mock_dump, mock_makedirs, mock_stream):
-        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
+    def test_render__test(self, dump_, makedirs_, menu_, stream_):
+        menu_.return_value = MENU
+        stream_.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
         actual = renderable._render(date=THEN, test=True)
         expected = Response()
         self.assertEqual(actual, expected)
 
-        mock_dump.assert_has_calls(get_dump_calls(FILEFAIRY_DIR))
-        mock_makedirs.assert_has_calls(get_makedirs_calls(FILEFAIRY_DIR))
-        mock_stream.assert_has_calls(STREAM_CALLS)
-        self.mock_log.assert_not_called()
+        dump_.assert_has_calls(get_dump_calls(FILEFAIRY_DIR))
+        makedirs_.assert_has_calls(get_makedirs_calls(FILEFAIRY_DIR))
+        menu_.assert_called_once_with('/foo/')
+        stream_.assert_has_calls(STREAM_CALLS)
+        self.log_.assert_not_called()
 
     @mock.patch.object(jinja2.environment.Template, 'stream')
+    @mock.patch('api.renderable.renderable.menu')
     @mock.patch('api.renderable.renderable.os.makedirs')
     @mock.patch.object(jinja2.environment.TemplateStream, 'dump')
-    def test_render__exception(self, mock_dump, mock_makedirs, mock_stream):
-        mock_dump.side_effect = Exception()
-        mock_stream.return_value = jinja2.environment.TemplateStream(iter([]))
+    def test_render__exception(self, dump_, makedirs_, menu_, stream_):
+        dump_.side_effect = Exception()
+        menu_.return_value = MENU
+        stream_.return_value = jinja2.environment.TemplateStream(iter([]))
 
         renderable = self.create_renderable(jinja2.Environment(loader=LDR))
         actual = renderable._render(date=THEN)
@@ -194,10 +197,11 @@ class RenderableTest(unittest.TestCase):
             mock.call(logging.WARNING, 'Handled warning.', exc_info=True),
             mock.call(logging.WARNING, 'Handled warning.', exc_info=True)
         ]
-        mock_dump.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
-        mock_makedirs.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
-        mock_stream.assert_has_calls(STREAM_CALLS)
-        self.mock_log.assert_has_calls(log_calls)
+        dump_.assert_has_calls(get_dump_calls(FAIRYLAB_DIR))
+        makedirs_.assert_has_calls(get_makedirs_calls(FAIRYLAB_DIR))
+        menu_.assert_called_once_with('/foo/')
+        stream_.assert_has_calls(STREAM_CALLS)
+        self.log_.assert_has_calls(log_calls)
 
 
 if __name__ == '__main__':

@@ -80,13 +80,13 @@ class Renderable():
         if not data:
             return Response()
 
+        current = self._href()
+        m = None if current == '/fairylab/' else menu(current)
+
         for html, subtitle, tmpl, context in data:
             try:
-                title = self._title()
-                m = None if title == 'Fairylab' else menu()
-
                 subtitle = ' » ' + subtitle if subtitle else ''
-                title = title + subtitle
+                title = self._title() + subtitle
 
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(dict(context, menu=m, title=title, date=date))

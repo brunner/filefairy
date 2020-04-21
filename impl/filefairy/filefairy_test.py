@@ -768,9 +768,9 @@ class FilefairyTest(Test):
         self.assertNotCalled(self.log_)
 
     @mock.patch('impl.filefairy.filefairy.sitelinks')
-    def test_get_home_html(self, mock_sitelinks):
+    def test_get_home_html(self, sitelinks_):
         sitelinks = [topper('Site Links')]
-        mock_sitelinks.return_value = sitelinks
+        sitelinks_.return_value = sitelinks
 
         dashboard = self.create_dashboard(DATE_10260602)
         reference = self.create_reference(DATE_10260602)
@@ -779,6 +779,8 @@ class FilefairyTest(Test):
         actual = filefairy.get_home_html(date=DATE_10260602)
         expected = {'sitelinks': sitelinks}
         self.assertEqual(actual, expected)
+
+        sitelinks_.assert_called_once_with(Filefairy._href())
         self.assertNotCalled(self.log_)
 
 

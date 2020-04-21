@@ -281,7 +281,7 @@ class Filefairy(Messageable, Renderable):
             self.try_(t, method, *args, **kwargs)
 
     def get_home_html(self, **kwargs):
-        return {'sitelinks': sitelinks()}
+        return {'sitelinks': sitelinks(self._href())}
 
 
 def main():

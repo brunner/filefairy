@@ -16,5 +16,5 @@ subtitle = ''
 tmpl = 'home.html'
 
 context = {
-    'sitelinks': sitelinks(),
+    'sitelinks': sitelinks('/fairylab/'),
 }
