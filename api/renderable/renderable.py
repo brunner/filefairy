@@ -90,15 +90,12 @@ class Renderable():
                 subtitle = ' » ' + subtitle if subtitle else ''
                 title = self._title() + subtitle
 
-                extra_styles = context.pop('styles', [])
                 styles = self._get_styles(context)
-
                 tmpl = self.environment.get_template(tmpl)
                 ts = tmpl.stream(
                     dict(context,
                          menu=m,
                          styles=styles,
-                         extra_styles=extra_styles,
                          title=title,
                          date=date))
 
@@ -146,6 +143,7 @@ class Renderable():
     @staticmethod
     def _get_styles(context):
         base_styles_ = base_styles()
+        extra_styles = context.pop('styles', [])
 
         styles = []
         for name in base_styles_:
@@ -153,6 +151,7 @@ class Renderable():
             if Renderable._get_css_style(pattern, context):
                 styles += base_styles_[name]
 
+        styles += extra_styles
         return styles
 
     @staticmethod

@@ -50,7 +50,6 @@ STREAM_CALLS = [
         'date': THEN_DISPLAYED,
         'menu': MENU,
         'styles': [],
-        'extra_styles': [],
         'title': 'foo',
         'a': 1,
         'b': True,
@@ -60,7 +59,6 @@ STREAM_CALLS = [
         'date': THEN_DISPLAYED,
         'menu': MENU,
         'styles': [],
-        'extra_styles': [],
         'title': 'foo » sub',
         'm': 2,
         'n': 'bar'
@@ -69,7 +67,6 @@ STREAM_CALLS = [
         'date': THEN_DISPLAYED,
         'menu': MENU,
         'styles': [],
-        'extra_styles': [],
         'title': 'foo » dyn0',
         'z': True
     }),
@@ -77,7 +74,6 @@ STREAM_CALLS = [
         'date': THEN_DISPLAYED,
         'menu': MENU,
         'styles': [],
-        'extra_styles': [],
         'title': 'foo » dyn1',
         'z': False
     }),
@@ -85,7 +81,6 @@ STREAM_CALLS = [
         'date': THEN_DISPLAYED,
         'menu': MENU,
         'styles': [],
-        'extra_styles': [],
         'title': 'foo » dyn2',
         'z': True
     }),
