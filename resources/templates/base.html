@@ -23,10 +23,10 @@
 <style>
 {{ style.tag_rulesets() }}
 {{ style.class_rulesets() }}
-{{ style.media_rulesets() }}
 {% for ruleset in styles %}
 {{ common.ruleset(ruleset) }}
 {% endfor %}
+{{ style.media_rulesets() }}
 </style>
 </head>
 

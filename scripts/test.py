@@ -19,13 +19,25 @@ GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
 NAMES = ['index.html', 'dashboard', 'gameday', 'news', 'sandbox', 'standings']
 REMOTE = 'brunnerj@brunnerj.com:/home/brunnerj/public_html/fairylab/'
 
+
+def check_status():
+    return Git.check(['git', 'status']).get_debug()[0].get_extra()['stdout']
+
+
 check_output(['rm', '-rf', GAMEDAY_DIR])
 check_output(['mkdir', GAMEDAY_DIR])
 
 main()
 
+stdout = check_status()
+if 'impl/sandbox/goldens/canonical.html' in stdout:
+    check_output([
+        'cp', 'impl/sandbox/goldens/canonical.html',
+        '/home/jbrunner/fairylab/static/sandbox/index.html'
+    ])
+
 with chdir(FAIRYLAB_DIR):
-    stdout = Git.check(['git', 'status']).get_debug()[0].get_extra()['stdout']
+    stdout = check_status()
 
     if 'nothing to commit' in stdout:
         print('nothing to commit')
