@@ -274,10 +274,7 @@ def line_score_show_foot(data, hidden=False):
     """
     lines = []
 
-    box = 'game_box_{}.html'.format(data['num'])
-    url = os.path.join(STATSPLUS_BOX_SCORES, box)
-    head = anchor(url, 'Box Score')
-
+    head = anchor('/fairylab/gameday/' + data['num'] + '/', 'Watch Live')
     if data['recap']:
         span_ = span(classes=['text-underline'], text=data['recap'])
         head += ' &nbsp;|&nbsp; ' + span_
