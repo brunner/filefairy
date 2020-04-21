@@ -13,6 +13,46 @@ from common.elements.elements import media  # noqa
 from common.elements.elements import ruleset  # noqa
 
 BASE_STYLES = {
+    'badge-pitch': [
+        ruleset(
+            '.badge-pitch',
+            [
+                'border-radius: 16px',
+                'height: 16px',
+                'line-height: 16px',
+                'margin-left: 15px',
+                'margin-right: 26px',
+                'padding: 0 .4em',
+                'text-align: center',
+                'width: 24px',
+                'vertical-align: top',
+            ],
+        ),
+        ruleset(
+            '.badge-pitch-danger',
+            [
+                'color: #721c24',
+                'background-color: #f8d7da',
+                'border: 1px solid #721c24',
+            ],
+        ),
+        ruleset(
+            '.badge-pitch-primary',
+            [
+                'color: #004085',
+                'background-color: #cce5ff',
+                'border: 1px solid #004085',
+            ],
+        ),
+        ruleset(
+            '.badge-pitch-success',
+            [
+                'color: #155724',
+                'background-color: #d4edda',
+                'border: 1px solid #155724',
+            ],
+        ),
+    ],
     'badge-team': [
         ruleset(
             '.badge-team',

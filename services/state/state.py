@@ -98,7 +98,8 @@ class State(object):
     def create_pitch_row(self, text, tables):
         clazz = self._get_pitch_clazz(text)
         primary = clazz == 'primary'
-        pill = '<div class="badge badge-pitch badge-pitch-{}">{}</div>'
+        pill = ('<div class="badge badge-pitch badge-pitch-{} css-style-badge-'
+                'pitch">{}</div>')
         left = cell(content=(pill.format(clazz, self.pitch) + text))
         count = '{} - {}'.format(self.balls, self.strikes)
         if primary:
