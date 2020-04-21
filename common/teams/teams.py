@@ -175,11 +175,11 @@ def icon_absolute(encoding, text):
     return img + span_
 
 
-def icon_badge(encoding, text, active):
+def team_badge(encoding, text, active):
     lower = encoding_to_lower(encoding)
 
-    ic = ['badge-icon-image']
-    sc = ['badge-icon-text', 'align-middle']
+    ic = ['badge-team-image']
+    sc = ['badge-team-text', 'align-middle']
 
     if active:
         ba = {'data-toggle': 'modal', 'data-target': '#' + lower}
@@ -187,13 +187,13 @@ def icon_badge(encoding, text, active):
             text = '?-?'
     else:
         ba = None
-        ic.append('badge-icon-grey')
+        ic.append('badge-team-grey')
         sc.append('text-secondary')
 
     img = icon_img(ICON_LINK.format(lower), '16', ic, '')
     span_ = span(classes=sc, text=text.replace('-', ' - '))
 
-    bc = ['badge', 'badge-icon', 'badge-light', 'css-style-badge']
+    bc = ['badge', 'badge-team', 'badge-light', 'css-style-badge-team']
     return span(classes=bc, attributes=ba, text=(img + span_))
 
 

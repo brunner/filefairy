@@ -16,8 +16,8 @@ from common.elements.elements import table  # noqa
 from common.record.record import decode_record  # noqa
 from common.teams.teams import encoding_to_hometown  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
-from common.teams.teams import icon_badge  # noqa
 from common.teams.teams import icon_absolute  # noqa
+from common.teams.teams import team_badge  # noqa
 
 
 def _diff(record1, record2):
@@ -97,13 +97,13 @@ def condensed_league(league, tables):
         records = {k: table_[k][0] for k in table_}
         for team in _sort(records):
             record, active = table_[team]
-            body_cells.append(cell(content=icon_badge(team, record, active)))
+            body_cells.append(cell(content=team_badge(team, record, active)))
 
         body.append(row(cells=body_cells))
 
-    bcols = [col(clazz=('w-20 badge-icon-wrapper pl-2'))]
-    bcols += [col(clazz=('w-20 badge-icon-wrapper'))] * (colspan - 2)
-    bcols += [col(clazz=('w-20 badge-icon-wrapper pr-2'))]
+    bcols = [col(clazz=('w-20 badge-team-wrapper pl-2'))]
+    bcols += [col(clazz=('w-20 badge-team-wrapper'))] * (colspan - 2)
+    bcols += [col(clazz=('w-20 badge-team-wrapper pr-2'))]
 
     hc = 'font-weight-bold text-dark text-center'
     return table(clazz='table-fixed border mb-3',

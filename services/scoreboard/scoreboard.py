@@ -48,9 +48,9 @@ def _add_line_score(s, data, body, foot):
 
 
 def _cell(text, attributes):
-    text = span(classes=['align-middle', 'badge-icon-button'], text=text)
+    text = span(classes=['align-middle', 'badge-team-button'], text=text)
     attributes.update({'data-dismiss': 'modal'})
-    return cell(content=span(classes=['badge', 'badge-icon', 'badge-light'],
+    return cell(content=span(classes=['badge', 'badge-team', 'badge-light'],
                              text=text,
                              attributes=attributes))
 
@@ -87,8 +87,8 @@ def create_dialog(date, game):
         table(clazz='border mb-3',
               hcols=[col(clazz='font-weight-bold text-dark', colspan="2")],
               bcols=[
-                  col(clazz='w-50 badge-icon-wrapper pl-2'),
-                  col(clazz='w-50 badge-icon-wrapper pr-2')
+                  col(clazz='w-50 badge-team-wrapper pl-2'),
+                  col(clazz='w-50 badge-team-wrapper pr-2')
               ],
               head=[row(cells=[cell(content='Options')])],
               body=[

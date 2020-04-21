@@ -16,7 +16,7 @@ from common.elements.elements import col  # noqa
 from common.elements.elements import row  # noqa
 from common.elements.elements import table  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from common.teams.teams import icon_badge  # noqa
+from common.teams.teams import team_badge  # noqa
 from services.division.division import condensed_league  # noqa
 from services.division.division import expanded_impl  # noqa
 from services.division.division import expanded_league  # noqa
@@ -31,7 +31,7 @@ def _condensed_row(*args):
     i = iter(args)
     cells = []
     for encoding in i:
-        cells.append(cell(content=icon_badge(encoding, next(i), True)))
+        cells.append(cell(content=team_badge(encoding, next(i), True)))
     return row(cells=cells)
 
 
@@ -56,7 +56,7 @@ class DivisionTest(unittest.TestCase):
         c = {'T35': ('1-1', True), 'T38': ('2-0', True), 'T40': ('0-2', True)}
         tables = [('East', e), ('Central', c)]
 
-        bc = 'w-20 badge-icon-wrapper'
+        bc = 'w-20 badge-team-wrapper'
         hc = 'font-weight-bold text-dark text-center'
         actual = condensed_league('American League', tables)
         expected = table(clazz='table-fixed border mb-3',

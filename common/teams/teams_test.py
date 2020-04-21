@@ -23,9 +23,9 @@ from common.teams.teams import encoding_to_hometown_sub  # noqa
 from common.teams.teams import encoding_to_nickname  # noqa
 from common.teams.teams import encoding_to_teamid  # noqa
 from common.teams.teams import icon_absolute  # noqa
-from common.teams.teams import icon_badge  # noqa
 from common.teams.teams import precoding_to_encoding  # noqa
 from common.teams.teams import precoding_to_encoding_sub  # noqa
+from common.teams.teams import team_badge  # noqa
 
 DECODING_KEYS = [
     'Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles',
@@ -213,43 +213,6 @@ class TeamsTest(unittest.TestCase):
         expected = img + span
         self.assertEqual(actual, expected)
 
-    def test_icon_badge__active_false(self):
-        actual = icon_badge('T35', '0-0', False)
-        badge = ('<span class="badge badge-icon badge-light css-style-badge">'
-                 '{}</span>')
-        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
-               'con.png')
-        img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
-               'con-image badge-icon-grey">').format(src)
-        span = ('<span class="badge-icon-text align-middle text-secondary">0 -'
-                ' 0</span>')
-        expected = badge.format(img + span)
-        self.assertEqual(actual, expected)
-
-    def test_icon_badge__active_question(self):
-        actual = icon_badge('T35', '0-0', True)
-        badge = ('<span class="badge badge-icon badge-light css-style-badge" d'
-                 'ata-target="#whitesox" data-toggle="modal">{}</span>')
-        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
-               'con.png')
-        img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
-               'con-image">').format(src)
-        span = '<span class="badge-icon-text align-middle">? - ?</span>'
-        expected = badge.format(img + span)
-        self.assertEqual(actual, expected)
-
-    def test_icon_badge__active_true(self):
-        actual = icon_badge('T35', '1-0', True)
-        badge = ('<span class="badge badge-icon badge-light css-style-badge" d'
-                 'ata-target="#whitesox" data-toggle="modal">{}</span>')
-        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
-               'con.png')
-        img = ('<img src="{}" width="16" height="16" border="0" class="badge-i'
-               'con-image">').format(src)
-        span = '<span class="badge-icon-text align-middle">1 - 0</span>'
-        expected = badge.format(img + span)
-        self.assertEqual(actual, expected)
-
     def test_precoding_to_encoding(self):
         encodings = [
             'T31', 'T32', 'T33', 'T34', 'T37', 'T38', 'T39', 'T40', 'T41',
@@ -268,6 +231,43 @@ class TeamsTest(unittest.TestCase):
         ]
         actual = precoding_to_encoding_sub(', '.join(PRECODING_KEYS))
         expected = ', '.join(encodings)
+        self.assertEqual(actual, expected)
+
+    def test_team_badge__active_false(self):
+        actual = team_badge('T35', '0-0', False)
+        badge = ('<span class="badge badge-team badge-light css-style-badge-te'
+                 'am">{}</span>')
+        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
+               'con.png')
+        img = ('<img src="{}" width="16" height="16" border="0" class="badge-t'
+               'eam-image badge-team-grey">').format(src)
+        span = ('<span class="badge-team-text align-middle text-secondary">0 -'
+                ' 0</span>')
+        expected = badge.format(img + span)
+        self.assertEqual(actual, expected)
+
+    def test_team_badge__active_question(self):
+        actual = team_badge('T35', '0-0', True)
+        badge = ('<span class="badge badge-team badge-light css-style-badge-te'
+                 'am" data-target="#whitesox" data-toggle="modal">{}</span>')
+        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
+               'con.png')
+        img = ('<img src="{}" width="16" height="16" border="0" class="badge-t'
+               'eam-image">').format(src)
+        span = '<span class="badge-team-text align-middle">? - ?</span>'
+        expected = badge.format(img + span)
+        self.assertEqual(actual, expected)
+
+    def test_team_badge__active_true(self):
+        actual = team_badge('T35', '1-0', True)
+        badge = ('<span class="badge badge-team badge-light css-style-badge-te'
+                 'am" data-target="#whitesox" data-toggle="modal">{}</span>')
+        src = ('https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-i'
+               'con.png')
+        img = ('<img src="{}" width="16" height="16" border="0" class="badge-t'
+               'eam-image">').format(src)
+        span = '<span class="badge-team-text align-middle">1 - 0</span>'
+        expected = badge.format(img + span)
         self.assertEqual(actual, expected)
 
 

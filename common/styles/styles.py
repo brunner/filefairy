@@ -13,9 +13,9 @@ from common.elements.elements import media  # noqa
 from common.elements.elements import ruleset  # noqa
 
 BASE_STYLES = {
-    'badge': [
+    'badge-team': [
         ruleset(
-            '.badge-icon',
+            '.badge-team',
             [
                 'border: 1px solid #dee2e6',
                 'cursor: pointer',
@@ -27,41 +27,41 @@ BASE_STYLES = {
             ],
         ),
         ruleset(
-            '.badge-icon[data-dismiss="modal"]:hover,\n' +
-            '.badge-icon[data-toggle="modal"]:hover',
+            '.badge-team[data-dismiss="modal"]:hover,\n' +
+            '.badge-team[data-toggle="modal"]:hover',
             [
                 'background-color: #e9ecef',
                 'border-color: #dee2e6',
             ],
         ),
         ruleset(
-            '.badge-icon-button',
+            '.badge-team-button',
             [
                 'display: block',
                 'padding: 3px 0 2px',
             ],
         ),
         ruleset(
-            '.badge-icon-image,\n.badge-icon-text',
+            '.badge-team-image,\n.badge-team-text',
             [
                 'display: block',
             ],
         ),
         ruleset(
-            '.badge-icon-image',
+            '.badge-team-image',
             [
                 'margin: 1px auto 0',
             ],
         ),
         ruleset(
-            '.badge-icon-grey',
+            '.badge-team-grey',
             [
                 '-webkit-filter: grayscale(1) opacity(0.5)',
                 'filter: grayscale(1) opacity(0.5)',
             ],
         ),
         ruleset(
-            '.badge-icon-text',
+            '.badge-team-text',
             [
                 'color: #212529',
                 'padding: 0',
@@ -72,13 +72,13 @@ BASE_STYLES = {
             '576px',
             [
                 ruleset(
-                    '.badge-icon-image,\n.badge-icon-text',
+                    '.badge-team-image,\n.badge-team-text',
                     [
                         'display: inline-block',
                     ],
                 ),
                 ruleset(
-                    '.badge-icon-text',
+                    '.badge-team-text',
                     [
                         'padding: 2px 0 2px .5rem',
                     ],
@@ -89,13 +89,13 @@ BASE_STYLES = {
             '768px',
             [
                 ruleset(
-                    '.badge-icon-image,\n.badge-icon-text',
+                    '.badge-team-image,\n.badge-team-text',
                     [
                         'display: block',
                     ],
                 ),
                 ruleset(
-                    '.badge-icon-text',
+                    '.badge-team-text',
                     [
                         'padding: 0',
                         'padding-top: .25rem',
@@ -107,13 +107,13 @@ BASE_STYLES = {
             '992px',
             [
                 ruleset(
-                    '.badge-icon-image,\n.badge-icon-text',
+                    '.badge-team-image,\n.badge-team-text',
                     [
                         'display: inline-block',
                     ],
                 ),
                 ruleset(
-                    '.badge-icon-text',
+                    '.badge-team-text',
                     [
                         'padding: 2px 0 2px .5rem',
                     ],
