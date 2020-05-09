@@ -35,7 +35,7 @@ ID_ = 'id'
 ROW = row(cells=[CELL])
 TABLE = table(body=[ROW])
 
-FAVICON_LINK = 'https://brunnerj.com/fairylab/favicon-32x32.png'
+FAIRYLAB_ICON = 'https://brunnerj.com/fairylab/images/icon.png'
 
 SITELINKS_HCOLS = [col(clazz='font-weight-bold text-dark')]
 SITELINKS_BCOLS = [col(clazz='position-relative')]
@@ -78,9 +78,9 @@ class ElemementsTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_icon_img(self):
-        actual = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'], '')
+        actual = icon_img(FAIRYLAB_ICON, '16', ['absolute-icon', 'left'], '')
         expected = ('<img src="{}" width="16" height="16" border="0" class="ab'
-                    'solute-icon left">').format(FAVICON_LINK)
+                    'solute-icon left">').format(FAIRYLAB_ICON)
         self.assertEqual(actual, expected)
 
     def test_icon_span(self):
@@ -101,7 +101,7 @@ class ElemementsTest(unittest.TestCase):
 
         current = '/fairylab/sandbox/'
         actual = menu(current)
-        img = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'], '')
+        img = icon_img(FAIRYLAB_ICON, '16', ['absolute-icon', 'left'], '')
         span_ = span(classes=['d-block', 'px-4'], text='Fairylab')
         expected = dialog(id_='menu', icon=(img + span_), tables=[TABLE])
         self.assertEqual(actual, expected)

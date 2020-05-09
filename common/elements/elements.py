@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Common (non-reloadable) util methods for rendering templates."""
 
-FAVICON_LINK = 'https://brunnerj.com/fairylab/favicon-32x32.png'
+FAIRYLAB_ICON = 'https://brunnerj.com/fairylab/images/icon.png'
 
 
 def _attr(attributes):
@@ -149,7 +149,7 @@ def menu(current):
     Returns:
         The menu dialog.
     """
-    img = icon_img(FAVICON_LINK, '16', ['absolute-icon', 'left'], '')
+    img = icon_img(FAIRYLAB_ICON, '16', ['absolute-icon', 'left'], '')
     span_ = span(classes=['d-block', 'px-4'], text='Fairylab')
     return dialog(id_='menu', icon=(img + span_), tables=sitelinks(current))
 
