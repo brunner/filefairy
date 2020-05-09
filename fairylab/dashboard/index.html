@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
+<title>Fairylab · Dashboard</title>
+
+<style>
+html {
+  min-height: 100%;
+  overflow-y: scroll;
+  position: relative;
+}
+header {
+  background-color: #f5f5f5;
+  width: 100%;
+}
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+a.disabled{
+  pointer-events: none;
+  cursor: default;
+}
+button.close {
+  height: 16px;
+  line-height: 16px;
+  width: 16px;
+}
+span.absolute-icon {
+  border-radius: .25rem;
+  padding: 3px;
+  top: 12px;
+}
+.absolute-icon {
+  position: absolute;
+  top: 13px;
+}
+.absolute-icon.left {
+  left: 10px;
+}
+.absolute-icon.right {
+  left: auto;
+  right: 10px;
+}
+.absolute-icon.hover:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+.carousel-fade .carousel-item {
+  opacity: 0;
+  transition-duration: .6s;
+  transition-property: opacity;
+}
+.carousel-fade .carousel-item.active,
+.carousel-fade .carousel-item-next.carousel-item-left,
+.carousel-fade .carousel-item-prev.carousel-item-right {
+  opacity: 1;
+}
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-right {
+  opacity: 0;
+}
+.carousel-fade .carousel-item-next,
+.carousel-fade .carousel-item-prev,
+.carousel-fade .carousel-item.active,
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-prev {
+  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+}
+.head {
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  padding: .75rem;
+}
+.modal {
+  overflow-y: auto;
+}
+.modal-header {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #dee2e6;
+}
+.modal-open {
+  overflow: auto;
+  padding-right: 0px !important;
+}
+@media (min-width: 576px) {
+  body.modal-open header {
+    margin-right: 0!important;
+    padding-right: 0!important;
+  }
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 650px; 
+  }
+}
+@media (min-width: 992px) {
+  .modal-dialog {
+    max-width: 800px; 
+  }
+}
+.pagination {
+  margin: 0;
+  position: absolute;
+  right: 0;
+  top: 4px;
+}
+.page-item.active .page-link {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+.page-link {
+  background-color: #f8f9fa;
+  line-height: 1;
+  padding: .25rem .75rem;
+}
+.page-link-inner {
+  color: #212529;
+  display: inline-block;
+  padding: 0;
+  padding-top: 1px;
+}
+.table {
+  margin-bottom: 0;
+  word-break: break-word;
+}
+.table .thead-light td {
+  background-color: #f5f5f5;
+}
+.table-fixed {
+  table-layout: fixed;
+}
+.small.table td {
+  padding: .75rem .5rem;
+}
+.small.table td:first-child {
+  padding-left: .75rem;
+}
+.small.table td:last-child {
+  padding-right: .75rem;
+}
+.small.table td.badge-team-wrapper {
+  padding: .5rem .25rem;
+}
+.small.topper {
+  font-size: 90%;
+}
+.table.collapse.show {
+  display: table;
+}
+.td-sm-none,
+.td-md-none,
+.td-lg-none {
+  display: none;
+}
+.td-md-show {
+  display: table-cell;
+}
+@media (min-width: 576px) {
+  .td-sm-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 768px) {
+  .td-md-none {
+    display: table-cell;
+  }
+  .td-md-show {
+    display: none
+  }
+}
+@media (min-width: 992px) {
+  .td-lg-none {
+    display: table-cell;
+  }
+}
+.text-underline {
+  text-decoration: underline;
+}
+.w-75px {
+  width: 75px;
+}
+.w-150px {
+  width: 150px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ^(base.header) -->
+<header class="border-bottom sticky-top">
+<div class="container">
+<div class="head position-relative small text-secondary">
+<img src="https://brunnerj.com/fairylab/images/icon.png"
+     width="16" height="16" border="0" class="absolute-icon left">
+<div class="px-4">Dashboard</div>
+<span class="oi oi-menu absolute-icon hover right"
+      data-toggle="modal" data-target="#menu"></span></div>
+</div>
+</header>
+<!-- $(base.header) -->
+
+<!-- ^(base.main) -->
+<main role="main" class="pt-3">
+
+<!-- ^(dashboard.logs) -->
+<div class="container">
+
+<!-- ^(common.topper) -->
+<div class="row">
+<div class="col-12">
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Log Records</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
+</div>
+</div>
+<!-- $(common.topper) -->
+
+<!-- ^(dashboard.row) -->
+<div class="row">
+
+<!-- ^(dashboard.column) -->
+<div class="col-12">
+
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark" colspan="3">Wednesday, May 1st, 2019</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="w-150px"><a href="https://github.com/brunner/filefairy/blob/master/tasks/statsplus/statsplus.py#L167">statsplus.py#L167</a></td>
+<td>Download complete.</td>
+<td class="text-right w-75px">00:18</td>
+</tr>
+<tr>
+<td scope="row" class="w-150px"><a href="https://github.com/brunner/filefairy/blob/master/tasks/download/download.py#L71">download.py#L71</a></td>
+<td>Download finished.</td>
+<td class="text-right w-75px">00:17</td>
+</tr>
+<tr>
+<td scope="row" class="w-150px"><a href="https://github.com/brunner/filefairy/blob/master/tasks/download/download.py#L84">download.py#L84</a></td>
+<td>Download started.</td>
+<td class="text-right w-75px">00:14</td>
+</tr>
+<tr>
+<td scope="row" class="w-150px"><a href="https://github.com/brunner/filefairy/blob/master/tasks/upload/upload.py#L51">upload.py#L51</a></td>
+<td>File is up.</td>
+<td class="text-right w-75px">00:14</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(dashboard.column) -->
+
+</div>
+<!-- $(dashboard.row) -->
+
+</div>
+<!-- $(dashboard.logs) -->
+
+<!-- ^(common.dialog) -->
+<div class="modal fade" id="menu" tabindex="-1" role="dialog"
+     aria-labelledby="menu-label" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+
+<!-- ^(common.dialog.header) -->
+<div class="modal-header d-block py-0">
+<div class="head position-relative small text-secondary">
+<img src="https://brunnerj.com/fairylab/images/icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block px-4">Fairylab</span>
+<button type="button" class="close absolute-icon right m-0 p-0"
+        data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+</div>
+<!-- $(common.dialog.header) -->
+
+<!-- ^(common.dialog.body) -->
+<div class="modal-body pb-0">
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Site Links</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Tasks</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-timer absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/gameday/">Gameday</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-people absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/news/">News</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-spreadsheet absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/standings/">Standings</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Other</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-home absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/">Home</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-lightbulb absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/sandbox/">Sandbox</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(common.dialog.body) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.dialog) --></main>
+<!-- $(base.main) -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

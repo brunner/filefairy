@@ -1,0 +1,2771 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
+<title>Fairylab · Standings</title>
+
+<style>
+html {
+  min-height: 100%;
+  overflow-y: scroll;
+  position: relative;
+}
+header {
+  background-color: #f5f5f5;
+  width: 100%;
+}
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+a.disabled{
+  pointer-events: none;
+  cursor: default;
+}
+button.close {
+  height: 16px;
+  line-height: 16px;
+  width: 16px;
+}
+span.absolute-icon {
+  border-radius: .25rem;
+  padding: 3px;
+  top: 12px;
+}
+.absolute-icon {
+  position: absolute;
+  top: 13px;
+}
+.absolute-icon.left {
+  left: 10px;
+}
+.absolute-icon.right {
+  left: auto;
+  right: 10px;
+}
+.absolute-icon.hover:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+.carousel-fade .carousel-item {
+  opacity: 0;
+  transition-duration: .6s;
+  transition-property: opacity;
+}
+.carousel-fade .carousel-item.active,
+.carousel-fade .carousel-item-next.carousel-item-left,
+.carousel-fade .carousel-item-prev.carousel-item-right {
+  opacity: 1;
+}
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-right {
+  opacity: 0;
+}
+.carousel-fade .carousel-item-next,
+.carousel-fade .carousel-item-prev,
+.carousel-fade .carousel-item.active,
+.carousel-fade .active.carousel-item-left,
+.carousel-fade .active.carousel-item-prev {
+  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+}
+.head {
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  padding: .75rem;
+}
+.modal {
+  overflow-y: auto;
+}
+.modal-header {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #dee2e6;
+}
+.modal-open {
+  overflow: auto;
+  padding-right: 0px !important;
+}
+@media (min-width: 576px) {
+  body.modal-open header {
+    margin-right: 0!important;
+    padding-right: 0!important;
+  }
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 650px; 
+  }
+}
+@media (min-width: 992px) {
+  .modal-dialog {
+    max-width: 800px; 
+  }
+}
+.pagination {
+  margin: 0;
+  position: absolute;
+  right: 0;
+  top: 4px;
+}
+.page-item.active .page-link {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+.page-link {
+  background-color: #f8f9fa;
+  line-height: 1;
+  padding: .25rem .75rem;
+}
+.page-link-inner {
+  color: #212529;
+  display: inline-block;
+  padding: 0;
+  padding-top: 1px;
+}
+.table {
+  margin-bottom: 0;
+  word-break: break-word;
+}
+.table .thead-light td {
+  background-color: #f5f5f5;
+}
+.table-fixed {
+  table-layout: fixed;
+}
+.small.table td {
+  padding: .75rem .5rem;
+}
+.small.table td:first-child {
+  padding-left: .75rem;
+}
+.small.table td:last-child {
+  padding-right: .75rem;
+}
+.small.table td.badge-team-wrapper {
+  padding: .5rem .25rem;
+}
+.small.topper {
+  font-size: 90%;
+}
+.table.collapse.show {
+  display: table;
+}
+.td-sm-none,
+.td-md-none,
+.td-lg-none {
+  display: none;
+}
+.td-md-show {
+  display: table-cell;
+}
+@media (min-width: 576px) {
+  .td-sm-none {
+    display: table-cell;
+  }
+}
+@media (min-width: 768px) {
+  .td-md-none {
+    display: table-cell;
+  }
+  .td-md-show {
+    display: none
+  }
+}
+@media (min-width: 992px) {
+  .td-lg-none {
+    display: table-cell;
+  }
+}
+.text-underline {
+  text-decoration: underline;
+}
+.badge-team {
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  font-weight: 400!important;
+  font-size: 100%;
+  padding: .25rem .5rem;
+  white-space: normal;
+  width: 100%;
+}
+.badge-team[data-dismiss="modal"]:hover,
+.badge-team[data-toggle="modal"]:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+.badge-team-button {
+  display: block;
+  padding: 3px 0 2px;
+}
+.badge-team-image,
+.badge-team-text {
+  display: block;
+}
+.badge-team-image {
+  margin: 1px auto 0;
+}
+.badge-team-grey {
+  -webkit-filter: grayscale(1) opacity(0.5);
+  filter: grayscale(1) opacity(0.5);
+}
+.badge-team-text {
+  color: #212529;
+  padding: 0;
+  padding-top: .25rem;
+}
+@media (min-width: 576px) {
+  .badge-team-image,
+  .badge-team-text {
+    display: inline-block;
+  }
+  .badge-team-text {
+    padding: 2px 0 2px .5rem;
+  }
+}
+@media (min-width: 768px) {
+  .badge-team-image,
+  .badge-team-text {
+    display: block;
+  }
+  .badge-team-text {
+    padding: 0;
+    padding-top: .25rem;
+  }
+}
+@media (min-width: 992px) {
+  .badge-team-image,
+  .badge-team-text {
+    display: inline-block;
+  }
+  .badge-team-text {
+    padding: 2px 0 2px .5rem;
+  }
+}
+.w-20pct {
+  width: 20%;
+}
+.w-24px {
+  width: 24px;
+}
+.w-28px {
+  width: 28px;
+}
+.w-32px {
+  width: 32px;
+}
+.w-40px {
+  width: 40px;
+}
+.w-50px {
+  width: 50px;
+}
+.w-54px {
+  width: 54px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ^(base.header) -->
+<header class="border-bottom sticky-top">
+<div class="container">
+<div class="head position-relative small text-secondary">
+<img src="https://brunnerj.com/fairylab/images/icon.png"
+     width="16" height="16" border="0" class="absolute-icon left">
+<div class="px-4">Standings</div>
+<span class="oi oi-menu absolute-icon hover right"
+      data-toggle="modal" data-target="#menu"></span></div>
+</div>
+</header>
+<!-- $(base.header) -->
+
+<!-- ^(base.main) -->
+<main role="main" class="pt-3">
+
+<!-- ^(standings.recent) -->
+<div class="container">
+
+<!-- ^(common.topper) -->
+<div class="row">
+<div class="col-12">
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Recent Scores</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
+</div>
+</div>
+<!-- $(common.topper) -->
+
+<!-- ^(standings.row) -->
+<div class="row">
+
+<!-- ^(standings.column) -->
+<div class="col-md-6">
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark text-center" colspan="5">American League</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="w-20pct badge-team-wrapper pl-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper pr-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+</tr>
+<tr>
+<td scope="row" class="w-20pct badge-team-wrapper pl-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper pr-2"><span class="badge badge-team badge-light" data-target="#twins" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="badge-team-image"><span class="badge-team-text align-middle">3 - 4</span></span></td>
+</tr>
+<tr>
+<td scope="row" class="w-20pct badge-team-wrapper pl-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper pr-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(standings.column) -->
+
+<!-- ^(standings.column) -->
+<div class="col-md-6">
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark text-center" colspan="5">National League</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="w-20pct badge-team-wrapper pl-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper pr-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+</tr>
+<tr>
+<td scope="row" class="w-20pct badge-team-wrapper pl-2"><span class="badge badge-team badge-light" data-target="#reds" data-toggle="modal"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="badge-team-image"><span class="badge-team-text align-middle">4 - 3</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper pr-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+</tr>
+<tr>
+<td scope="row" class="w-20pct badge-team-wrapper pl-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+<td class="w-20pct badge-team-wrapper pr-2"><span class="badge badge-team badge-light"><img src="https://brunnerj.com/fairylab/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="badge-team-image badge-team-grey"><span class="badge-team-text align-middle text-secondary">0 - 0</span></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(standings.column) -->
+
+</div>
+<!-- $(standings.row) -->
+
+</div>
+<!-- $(standings.recent) -->
+
+<!-- ^(standings.expanded) -->
+<div class="container">
+
+<!-- ^(common.topper) -->
+<div class="row">
+<div class="col-12">
+
+<!-- ^(common.topper.table) -->
+<table class="small table topper">
+
+<!-- ^(common.topper.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Expanded Standings</td>
+</tr>
+</tbody>
+<!-- $(common.topper.body) -->
+
+</table>
+<!-- $(common.topper.table) -->
+
+</div>
+</div>
+<!-- $(common.topper) -->
+
+<!-- ^(standings.row) -->
+<div class="row">
+
+<!-- ^(standings.column) -->
+<div class="col-md-6">
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">AL East</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/redsox/redsox-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Boston</span></td>
+<td class="text-right w-40px">107</td>
+<td class="text-right w-40px">55</td>
+<td class="text-right w-50px">.660</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Baltimore</span></td>
+<td class="text-right w-40px">80</td>
+<td class="text-right w-40px">82</td>
+<td class="text-right w-50px">.494</td>
+<td class="text-right w-54px">27.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/yankees/yankees-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">New York</span></td>
+<td class="text-right w-40px">75</td>
+<td class="text-right w-40px">87</td>
+<td class="text-right w-50px">.463</td>
+<td class="text-right w-54px">32.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/rays/rays-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Tampa Bay</span></td>
+<td class="text-right w-40px">75</td>
+<td class="text-right w-40px">87</td>
+<td class="text-right w-50px">.463</td>
+<td class="text-right w-54px">32.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/bluejays/bluejays-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Toronto</span></td>
+<td class="text-right w-40px">66</td>
+<td class="text-right w-40px">96</td>
+<td class="text-right w-50px">.407</td>
+<td class="text-right w-54px">41.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">AL Central</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-right w-40px">92</td>
+<td class="text-right w-40px">70</td>
+<td class="text-right w-50px">.568</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Detroit</span></td>
+<td class="text-right w-40px">87</td>
+<td class="text-right w-40px">75</td>
+<td class="text-right w-50px">.537</td>
+<td class="text-right w-54px">5.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cleveland</span></td>
+<td class="text-right w-40px">79</td>
+<td class="text-right w-40px">83</td>
+<td class="text-right w-50px">.488</td>
+<td class="text-right w-54px">13.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/royals/royals-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Kansas City</span></td>
+<td class="text-right w-40px">77</td>
+<td class="text-right w-40px">85</td>
+<td class="text-right w-50px">.475</td>
+<td class="text-right w-54px">15.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/whitesox/whitesox-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Chicago</span></td>
+<td class="text-right w-40px">70</td>
+<td class="text-right w-40px">92</td>
+<td class="text-right w-50px">.432</td>
+<td class="text-right w-54px">22.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">AL West</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/mariners/mariners-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Seattle</span></td>
+<td class="text-right w-40px">101</td>
+<td class="text-right w-40px">61</td>
+<td class="text-right w-50px">.623</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Texas</span></td>
+<td class="text-right w-40px">81</td>
+<td class="text-right w-40px">81</td>
+<td class="text-right w-50px">.500</td>
+<td class="text-right w-54px">20.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Los Angeles</span></td>
+<td class="text-right w-40px">79</td>
+<td class="text-right w-40px">83</td>
+<td class="text-right w-50px">.488</td>
+<td class="text-right w-54px">22.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/astros/astros-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Houston</span></td>
+<td class="text-right w-40px">71</td>
+<td class="text-right w-40px">91</td>
+<td class="text-right w-50px">.438</td>
+<td class="text-right w-54px">30.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/athletics/athletics-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Oakland</span></td>
+<td class="text-right w-40px">71</td>
+<td class="text-right w-40px">91</td>
+<td class="text-right w-50px">.438</td>
+<td class="text-right w-54px">30.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">AL Wild Card</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/tigers/tigers-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Detroit</span></td>
+<td class="text-right w-40px">87</td>
+<td class="text-right w-40px">75</td>
+<td class="text-right w-50px">.537</td>
+<td class="text-right w-54px">+6.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/rangers/rangers-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Texas</span></td>
+<td class="text-right w-40px">81</td>
+<td class="text-right w-40px">81</td>
+<td class="text-right w-50px">.500</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/orioles/orioles-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Baltimore</span></td>
+<td class="text-right w-40px">80</td>
+<td class="text-right w-40px">82</td>
+<td class="text-right w-50px">.494</td>
+<td class="text-right w-54px">1.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/indians/indians-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cleveland</span></td>
+<td class="text-right w-40px">79</td>
+<td class="text-right w-40px">83</td>
+<td class="text-right w-50px">.488</td>
+<td class="text-right w-54px">2.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/angels/angels-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Los Angeles</span></td>
+<td class="text-right w-40px">79</td>
+<td class="text-right w-40px">83</td>
+<td class="text-right w-50px">.488</td>
+<td class="text-right w-54px">2.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(standings.column) -->
+
+<!-- ^(standings.column) -->
+<div class="col-md-6">
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">NL East</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/mets/mets-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">New York</span></td>
+<td class="text-right w-40px">87</td>
+<td class="text-right w-40px">75</td>
+<td class="text-right w-50px">.537</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Philadelphia</span></td>
+<td class="text-right w-40px">82</td>
+<td class="text-right w-40px">80</td>
+<td class="text-right w-50px">.506</td>
+<td class="text-right w-54px">5.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Atlanta</span></td>
+<td class="text-right w-40px">79</td>
+<td class="text-right w-40px">83</td>
+<td class="text-right w-50px">.488</td>
+<td class="text-right w-54px">8.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/nationals/nationals-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Washington</span></td>
+<td class="text-right w-40px">66</td>
+<td class="text-right w-40px">96</td>
+<td class="text-right w-50px">.407</td>
+<td class="text-right w-54px">21.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/marlins/marlins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Miami</span></td>
+<td class="text-right w-40px">53</td>
+<td class="text-right w-40px">109</td>
+<td class="text-right w-50px">.327</td>
+<td class="text-right w-54px">34.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">NL Central</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-right w-40px">114</td>
+<td class="text-right w-40px">48</td>
+<td class="text-right w-50px">.704</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Chicago</span></td>
+<td class="text-right w-40px">91</td>
+<td class="text-right w-40px">71</td>
+<td class="text-right w-50px">.562</td>
+<td class="text-right w-54px">23.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/brewers/brewers-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Milwaukee</span></td>
+<td class="text-right w-40px">79</td>
+<td class="text-right w-40px">83</td>
+<td class="text-right w-50px">.488</td>
+<td class="text-right w-54px">35.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/pirates/pirates-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Pittsburgh</span></td>
+<td class="text-right w-40px">68</td>
+<td class="text-right w-40px">94</td>
+<td class="text-right w-50px">.420</td>
+<td class="text-right w-54px">46.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/cardinals/cardinals-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">St. Louis</span></td>
+<td class="text-right w-40px">52</td>
+<td class="text-right w-40px">110</td>
+<td class="text-right w-50px">.321</td>
+<td class="text-right w-54px">62.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">NL West</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/rockies/rockies-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Colorado</span></td>
+<td class="text-right w-40px">107</td>
+<td class="text-right w-40px">55</td>
+<td class="text-right w-50px">.660</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">San Diego</span></td>
+<td class="text-right w-40px">104</td>
+<td class="text-right w-40px">58</td>
+<td class="text-right w-50px">.642</td>
+<td class="text-right w-54px">3.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Los Angeles</span></td>
+<td class="text-right w-40px">92</td>
+<td class="text-right w-40px">70</td>
+<td class="text-right w-50px">.568</td>
+<td class="text-right w-54px">15.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/giants/giants-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">San Francisco</span></td>
+<td class="text-right w-40px">75</td>
+<td class="text-right w-40px">87</td>
+<td class="text-right w-50px">.463</td>
+<td class="text-right w-54px">32.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/diamondbacks/diamondbacks-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Arizona</span></td>
+<td class="text-right w-40px">70</td>
+<td class="text-right w-40px">92</td>
+<td class="text-right w-50px">.432</td>
+<td class="text-right w-54px">37.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table table-fixed border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark position-relative text-truncate">NL Wild Card</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">W</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-40px">L</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-50px">%</td>
+<td scope="col" class="font-weight-bold text-dark text-right w-54px">GB</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/padres/padres-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">San Diego</span></td>
+<td class="text-right w-40px">104</td>
+<td class="text-right w-40px">58</td>
+<td class="text-right w-50px">.642</td>
+<td class="text-right w-54px">+12.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/dodgers/dodgers-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Los Angeles</span></td>
+<td class="text-right w-40px">92</td>
+<td class="text-right w-40px">70</td>
+<td class="text-right w-50px">.568</td>
+<td class="text-right w-54px">-</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/cubs/cubs-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Chicago</span></td>
+<td class="text-right w-40px">91</td>
+<td class="text-right w-40px">71</td>
+<td class="text-right w-50px">.562</td>
+<td class="text-right w-54px">1.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/phillies/phillies-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Philadelphia</span></td>
+<td class="text-right w-40px">82</td>
+<td class="text-right w-40px">80</td>
+<td class="text-right w-50px">.506</td>
+<td class="text-right w-54px">10.0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative text-truncate"><img src="https://brunnerj.com/fairylab/images/teams/braves/braves-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Atlanta</span></td>
+<td class="text-right w-40px">79</td>
+<td class="text-right w-40px">83</td>
+<td class="text-right w-50px">.488</td>
+<td class="text-right w-54px">13.0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(standings.column) -->
+</div>
+<!-- $(standings.row) -->
+
+</div>
+<!-- $(standings.expanded) -->
+
+ <!-- ^(standings.dialogs) -->  
+ 
+<!-- ^(common.dialog) -->
+<div class="modal fade" id="reds" tabindex="-1" role="dialog"
+     aria-labelledby="reds-label" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+
+<!-- ^(common.dialog.header) -->
+<div class="modal-header d-block py-0">
+<div class="head position-relative small text-secondary">
+<img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati Reds</span>
+<button type="button" class="close absolute-icon right m-0 p-0"
+        data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+</div>
+<!-- $(common.dialog.header) -->
+
+<!-- ^(common.dialog.body) -->
+<div class="modal-body pb-0">
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Wednesday, October 29th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1029" data-game="25231">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">4</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="font-weight-bold w-24px px-1 text-center">8</td>
+<td class="font-weight-bold w-24px px-1 text-center">14</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">0</td>
+<td class="w-24px px-1 text-center">4</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1029" data-game="25231">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25231/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">DeLoach Handcuffs Twins, Reds Seize 1-0 Advantage in R4</span><br><span class="font-weight-bold text-secondary">W: </span>Z. DeLoach (1-1)&nbsp; <span class="font-weight-bold text-secondary">L: </span>J. Fernandez (2-1)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>H. Davis (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Thursday, October 30th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1030" data-game="25237">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">4</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="font-weight-bold w-24px px-1 text-center">5</td>
+<td class="font-weight-bold w-24px px-1 text-center">11</td>
+<td class="font-weight-bold w-32px pl-1 text-center">1</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">1</td>
+<td class="w-24px px-1 text-center">7</td>
+<td class="w-32px pl-1 text-center">1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1030" data-game="25237">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25237/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Richards Handcuffs Twins, Reds Seize 2-0 Advantage in R4</span><br><span class="font-weight-bold text-secondary">W: </span>K. Richards (3-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>L. Murraas (1-1)&nbsp; <span class="font-weight-bold text-secondary">S: </span>T. Rosenthal (4)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>A. Scott (5)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Saturday, November 1st, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1101" data-game="25269">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final (10)</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">9</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">10</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">4</td>
+<td class="font-weight-bold w-24px px-1 text-center">5</td>
+<td class="font-weight-bold w-24px px-1 text-center">7</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">1</td>
+<td class="w-24px px-1 text-center">2</td>
+<td class="w-32px pl-1 text-center">1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1101" data-game="25269">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Great American Ball Park</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25269/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Home Loss Shrinks Reds' Series Lead to 2-1</span><br><span class="font-weight-bold text-secondary">W: </span>D. Rodriguez (1-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>T. Rosenthal (1-2)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">MIN: </span>J. Brown (7), A. Rizzo (3)&nbsp; <span class="text-secondary">CIN: </span>J. Martínez (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Sunday, November 2nd, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1102" data-game="25270">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">3</td>
+<td class="font-weight-bold w-24px px-1 text-center">7</td>
+<td class="font-weight-bold w-24px px-1 text-center">8</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">5</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">5</td>
+<td class="w-24px px-1 text-center">8</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1102" data-game="25270">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Great American Ball Park</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25270/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Minnesota Win Evens Series at 2</span><br><span class="font-weight-bold text-secondary">W: </span>D. Rodriguez (2-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>T. Rosenthal (1-3)&nbsp; <span class="font-weight-bold text-secondary">S: </span>J. Esparza (1)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">MIN: </span>J. Salazar (3), J. Brown (8), D. Cameron (2), J. Joseph (3)&nbsp; <span class="text-secondary">CIN: </span>J. Martínez (5)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Monday, November 3rd, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1103" data-game="25271">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">3</td>
+<td class="w-24px px-1 text-center">9</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">4</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">X</td>
+<td class="font-weight-bold w-24px px-1 text-center">9</td>
+<td class="font-weight-bold w-24px px-1 text-center">10</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1103" data-game="25271">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Great American Ball Park</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25271/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Pivotal Game 5 Goes to Host Reds, 9-3</span><br><span class="font-weight-bold text-secondary">W: </span>Z. DeLoach (2-1)&nbsp; <span class="font-weight-bold text-secondary">L: </span>S. Henderson (0-1)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>A. Scott 2 (7), E. Sánchez (4), J. Nieto (6), J. Martínez (6)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Wednesday, November 5th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1105" data-game="25272">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">3</td>
+<td class="w-24px px-1 text-center">5</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">X</td>
+<td class="font-weight-bold w-24px px-1 text-center">4</td>
+<td class="font-weight-bold w-24px px-1 text-center">9</td>
+<td class="font-weight-bold w-32px pl-1 text-center">3</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1105" data-game="25272">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25272/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Reds Hammered by Bodrato, Drop Game 6 to Twins</span><br><span class="font-weight-bold text-secondary">W: </span>K. Parnaby (1-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>K. Richards (3-1)&nbsp; <span class="font-weight-bold text-secondary">S: </span>D. Rodriguez (6)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>E. Sánchez (5)&nbsp; <span class="text-secondary">MIN: </span>A. Bodrato (2), J. Salazar (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Thursday, November 6th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1106" data-game="25273">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">1</td>
+<td class="font-weight-bold w-24px px-1 text-center">7</td>
+<td class="font-weight-bold w-24px px-1 text-center">13</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">4</td>
+<td class="w-24px px-1 text-center">9</td>
+<td class="w-32px pl-1 text-center">1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1106" data-game="25273">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25273/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Reds Crowned Champions</span><br><span class="font-weight-bold text-secondary">W: </span>A. Espinoza (3-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>J. Esparza (0-1)&nbsp; <span class="font-weight-bold text-secondary">S: </span>T. Rosenthal (5)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>J. Nieto (7), J. Martínez (7)&nbsp; <span class="text-secondary">MIN: </span>L. Féliz 2 (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(common.dialog.body) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.dialog) --> 
+
+ 
+<!-- ^(common.dialog) -->
+<div class="modal fade" id="twins" tabindex="-1" role="dialog"
+     aria-labelledby="twins-label" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+
+<!-- ^(common.dialog.header) -->
+<div class="modal-header d-block py-0">
+<div class="head position-relative small text-secondary">
+<img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota Twins</span>
+<button type="button" class="close absolute-icon right m-0 p-0"
+        data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+</div>
+<!-- $(common.dialog.header) -->
+
+<!-- ^(common.dialog.body) -->
+<div class="modal-body pb-0">
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Wednesday, October 29th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1029" data-game="25231">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">4</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="font-weight-bold w-24px px-1 text-center">8</td>
+<td class="font-weight-bold w-24px px-1 text-center">14</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">0</td>
+<td class="w-24px px-1 text-center">4</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1029" data-game="25231">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25231/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">DeLoach Handcuffs Twins, Reds Seize 1-0 Advantage in R4</span><br><span class="font-weight-bold text-secondary">W: </span>Z. DeLoach (1-1)&nbsp; <span class="font-weight-bold text-secondary">L: </span>J. Fernandez (2-1)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>H. Davis (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Thursday, October 30th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1030" data-game="25237">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">4</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="font-weight-bold w-24px px-1 text-center">5</td>
+<td class="font-weight-bold w-24px px-1 text-center">11</td>
+<td class="font-weight-bold w-32px pl-1 text-center">1</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">1</td>
+<td class="w-24px px-1 text-center">7</td>
+<td class="w-32px pl-1 text-center">1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1030" data-game="25237">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25237/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Richards Handcuffs Twins, Reds Seize 2-0 Advantage in R4</span><br><span class="font-weight-bold text-secondary">W: </span>K. Richards (3-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>L. Murraas (1-1)&nbsp; <span class="font-weight-bold text-secondary">S: </span>T. Rosenthal (4)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>A. Scott (5)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Saturday, November 1st, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1101" data-game="25269">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final (10)</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">9</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">10</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">4</td>
+<td class="font-weight-bold w-24px px-1 text-center">5</td>
+<td class="font-weight-bold w-24px px-1 text-center">7</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">1</td>
+<td class="w-24px px-1 text-center">2</td>
+<td class="w-32px pl-1 text-center">1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1101" data-game="25269">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Great American Ball Park</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25269/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Home Loss Shrinks Reds' Series Lead to 2-1</span><br><span class="font-weight-bold text-secondary">W: </span>D. Rodriguez (1-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>T. Rosenthal (1-2)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">MIN: </span>J. Brown (7), A. Rizzo (3)&nbsp; <span class="text-secondary">CIN: </span>J. Martínez (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Sunday, November 2nd, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1102" data-game="25270">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">3</td>
+<td class="font-weight-bold w-24px px-1 text-center">7</td>
+<td class="font-weight-bold w-24px px-1 text-center">8</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">5</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">5</td>
+<td class="w-24px px-1 text-center">8</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1102" data-game="25270">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Great American Ball Park</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25270/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Minnesota Win Evens Series at 2</span><br><span class="font-weight-bold text-secondary">W: </span>D. Rodriguez (2-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>T. Rosenthal (1-3)&nbsp; <span class="font-weight-bold text-secondary">S: </span>J. Esparza (1)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">MIN: </span>J. Salazar (3), J. Brown (8), D. Cameron (2), J. Joseph (3)&nbsp; <span class="text-secondary">CIN: </span>J. Martínez (5)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Monday, November 3rd, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1103" data-game="25271">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">3</td>
+<td class="w-24px px-1 text-center">9</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">4</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">X</td>
+<td class="font-weight-bold w-24px px-1 text-center">9</td>
+<td class="font-weight-bold w-24px px-1 text-center">10</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1103" data-game="25271">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Great American Ball Park</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25271/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Pivotal Game 5 Goes to Host Reds, 9-3</span><br><span class="font-weight-bold text-secondary">W: </span>Z. DeLoach (2-1)&nbsp; <span class="font-weight-bold text-secondary">L: </span>S. Henderson (0-1)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>A. Scott 2 (7), E. Sánchez (4), J. Nieto (6), J. Martínez (6)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Wednesday, November 5th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1105" data-game="25272">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">3</td>
+<td class="w-24px px-1 text-center">5</td>
+<td class="w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">X</td>
+<td class="font-weight-bold w-24px px-1 text-center">4</td>
+<td class="font-weight-bold w-24px px-1 text-center">9</td>
+<td class="font-weight-bold w-32px pl-1 text-center">3</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1105" data-game="25272">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25272/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Reds Hammered by Bodrato, Drop Game 6 to Twins</span><br><span class="font-weight-bold text-secondary">W: </span>K. Parnaby (1-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>K. Richards (3-1)&nbsp; <span class="font-weight-bold text-secondary">S: </span>D. Rodriguez (6)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>E. Sánchez (5)&nbsp; <span class="text-secondary">MIN: </span>A. Bodrato (2), J. Salazar (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Thursday, November 6th, 2025</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border" data-date="1106" data-game="25273">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-danger pr-3">Final</td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-lg-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-md-none w-24px px-1 text-center"></td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">1</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">2</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">3</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">4</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">5</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">6</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">7</td>
+<td scope="col" class="td-sm-none w-24px px-1 text-center">8</td>
+<td scope="col" class="td-sm-none w-28px pl-1 pr-2 text-center">9</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">R</td>
+<td scope="col" class="font-weight-bold w-24px px-1 text-center">H</td>
+<td scope="col" class="font-weight-bold w-32px pl-1 text-center">E</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="font-weight-bold position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/reds/reds-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Cincinnati</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">3</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">1</td>
+<td class="font-weight-bold w-24px px-1 text-center">7</td>
+<td class="font-weight-bold w-24px px-1 text-center">13</td>
+<td class="font-weight-bold w-32px pl-1 text-center">0</td>
+</tr>
+<tr>
+<td scope="row" class="position-relative pr-3"><img src="https://brunnerj.com/fairylab/images/teams/twins/twins-icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block pl-4">Minnesota</span></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-lg-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-md-none w-24px px-1"></td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">2</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">1</td>
+<td class="text-center text-secondary td-sm-none w-24px px-1">0</td>
+<td class="text-center text-secondary td-sm-none w-28px pl-1 pr-2">0</td>
+<td class="w-24px px-1 text-center">4</td>
+<td class="w-24px px-1 text-center">9</td>
+<td class="w-32px pl-1 text-center">1</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border border-top-0 mb-3" data-date="1106" data-game="25273">
+
+<!-- ^(common.table.foot) -->
+<tfoot class="thead-light">
+<tr>
+<td scope="col" class="border-0 py-2"><span class="small text-secondary">8:05 PM at Target Field</span></td>
+</tr>
+<tr>
+<td scope="col"><a href="/fairylab/gameday/25273/">Watch Live</a> &nbsp;|&nbsp; <span class="text-underline">Reds Crowned Champions</span><br><span class="font-weight-bold text-secondary">W: </span>A. Espinoza (3-0)&nbsp; <span class="font-weight-bold text-secondary">L: </span>J. Esparza (0-1)&nbsp; <span class="font-weight-bold text-secondary">S: </span>T. Rosenthal (5)<br><span class="font-weight-bold text-secondary">HR: </span><span class="text-secondary">CIN: </span>J. Nieto (7), J. Martínez (7)&nbsp; <span class="text-secondary">MIN: </span>L. Féliz 2 (4)</td>
+</tr>
+</tfoot>
+<!-- $(common.table.foot) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(common.dialog.body) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.dialog) --> 
+
+   
+<!-- $(standings.dialogs) -->   
+
+<!-- ^(common.dialog) -->
+<div class="modal fade" id="menu" tabindex="-1" role="dialog"
+     aria-labelledby="menu-label" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+
+<!-- ^(common.dialog.header) -->
+<div class="modal-header d-block py-0">
+<div class="head position-relative small text-secondary">
+<img src="https://brunnerj.com/fairylab/images/icon.png" width="16" height="16" border="0" class="absolute-icon left"><span class="d-block px-4">Fairylab</span>
+<button type="button" class="close absolute-icon right m-0 p-0"
+        data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+</div>
+<!-- $(common.dialog.header) -->
+
+<!-- ^(common.dialog.body) -->
+<div class="modal-body pb-0">
+<!-- ^(common.table) -->
+<table class="small table topper">
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="border-0 font-weight-bold px-0 text-secondary">Site Links</td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Tasks</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-timer absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/gameday/">Gameday</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-people absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/news/">News</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+<!-- ^(common.table) -->
+<table class="small table border mb-3">
+
+<!-- ^(common.table.head) -->
+<thead class="thead-light">
+<tr>
+<td scope="col" class="font-weight-bold text-dark">Other</td>
+</tr>
+</thead>
+<!-- $(common.table.head) -->
+
+<!-- ^(common.table.body) -->
+<tbody>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-dashboard absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/dashboard/">Dashboard</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-home absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/">Home</a></span></td>
+</tr>
+<tr>
+<td scope="row" class="position-relative"><span class="oi oi-lightbulb absolute-icon left text-secondary"></span><span class="d-block pl-4"><a href="/fairylab/sandbox/">Sandbox</a></span></td>
+</tr>
+</tbody>
+<!-- $(common.table.body) -->
+
+</table>
+<!-- $(common.table) -->
+
+</div>
+<!-- $(common.dialog.body) -->
+
+</div>
+</div>
+</div>
+<!-- $(common.dialog) --></main>
+<!-- $(base.main) -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

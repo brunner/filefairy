@@ -9,7 +9,8 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/tasks/git', '', _path))
+_root = re.sub(r'/tasks/git', '', _path)
+sys.path.append(_root)
 
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
 from common.json_.json_ import dumps  # noqa
@@ -21,7 +22,7 @@ from types_.response.response import Response  # noqa
 
 DATE_10260602 = datetime_datetime_pst(1985, 10, 26, 6, 2, 30)
 
-FAIRYLAB_DIR = re.sub(r'/filefairy/tasks/git', '', _path) + '/fairylab/static'
+FAIRYLAB_DIR = _root + '/fairylab'
 
 ADD_MSG = 'Call completed: \'git add .\'.'
 COMMIT_MSG = 'Call completed: \'git commit -m "Automated push."\'.'

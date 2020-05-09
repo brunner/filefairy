@@ -11,7 +11,8 @@ import unittest
 import unittest.mock as mock
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/api/renderable', '', _path))
+_root = re.sub(r'/api/renderable', '', _path)
+sys.path.append(_root)
 
 from api.renderable.renderable import Renderable  # noqa
 from common.datetime_.datetime_ import datetime_datetime_pst  # noqa
@@ -23,9 +24,8 @@ from types_.response.response import Response  # noqa
 
 ENV = env()
 
-CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
-FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
-FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
+FAIRYLAB_DIR = _root + '/fairylab'
+FILEFAIRY_DIR = _root
 
 LDR = jinja2.DictLoader({
     'foo.html': '{{ title }}: Hello {{ a }}, {{ b }} -- {{ date }}',

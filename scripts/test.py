@@ -6,15 +6,15 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/scripts', '', _path))
+_root = re.sub(r'/scripts', '', _path)
+sys.path.append(_root)
 
 from common.os_.os_ import chdir  # noqa
 from common.subprocess_.subprocess_ import check_output  # noqa
 from impl.filefairy.filefairy import main  # noqa
 from tasks.git.git import Git  # noqa
 
-CONTAINING_DIR = re.sub(r'/filefairy/scripts', '', _path)
-FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
+FAIRYLAB_DIR = _root + '/fairylab'
 GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
 NAMES = ['index.html', 'dashboard', 'gameday', 'news', 'sandbox', 'standings']
 REMOTE = 'brunnerj@brunnerj.com:/home/brunnerj/public_html/fairylab/'
@@ -26,7 +26,7 @@ def check_status():
 
 def upload_to_fairylab():
     for name in NAMES:
-        local = '/home/jbrunner/fairylab/static/' + name
+        local = '/home/jbrunner/filefairy/fairylab/' + name
         check_output(['scp', '-r', local, REMOTE])
 
 
@@ -39,19 +39,16 @@ stdout = check_status()
 if 'impl/sandbox/goldens/canonical.html' in stdout:
     check_output([
         'cp', 'impl/sandbox/goldens/canonical.html',
-        '/home/jbrunner/fairylab/static/sandbox/index.html'
+        '/home/jbrunner/filefairy/fairylab/sandbox/index.html'
     ])
 
-with chdir(FAIRYLAB_DIR):
-    stdout = check_status()
+if 'fairylab/' not in stdout:
+    print('nothing changed')
+else:
+    revert = input('revert fairylab? ')
+    if revert == 'y':
+        check_output(['git', 'checkout', 'fairylab'])
 
-    if 'nothing to commit' in stdout:
-        print('nothing to commit')
-    else:
-        revert = input('revert fairylab changes? ')
-        if revert == 'y':
-            check_output(['git', 'checkout', '.'])
-
-    upload = input('upload latest to fairylab? ')
-    if upload == 'y':
-        upload_to_fairylab()
+upload = input('upload latest to fairylab? ')
+if upload == 'y':
+    upload_to_fairylab()

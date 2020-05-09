@@ -7,7 +7,8 @@ import re
 import sys
 
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/tasks/gameday', '', _path))
+_root = re.sub(r'/tasks/gameday', '', _path)
+sys.path.append(_root)
 
 from api.renderable.renderable import Renderable  # noqa
 from api.runnable.runnable import Runnable  # noqa
@@ -34,9 +35,8 @@ from common.teams.teams import icon_absolute  # noqa
 from types_.notify.notify import Notify  # noqa
 from types_.response.response import Response  # noqa
 
-CONTAINING_DIR = re.sub(r'/filefairy/tasks/gameday', '', _path)
-DATA_DIR = re.sub(r'/tasks/gameday', '', _path) + '/resources/data/gameday'
-FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
+DATA_DIR = _root + '/resources/data/gameday'
+FAIRYLAB_DIR = _root + '/fairylab'
 GAMEDAY_DIR = os.path.join(FAIRYLAB_DIR, 'gameday')
 
 GAMES_DIR = re.sub(r'/tasks/gameday', '/resources/games', _path)

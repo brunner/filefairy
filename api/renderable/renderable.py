@@ -39,7 +39,8 @@ import sys
 
 _logger = logging.getLogger('filefairy')
 _path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(re.sub(r'/api/renderable', '', _path))
+_root = re.sub(r'/api/renderable', '', _path)
+sys.path.append(_root)
 
 from common.abc_.abc_ import abstractstatic  # noqa
 from common.datetime_.datetime_ import timestamp  # noqa
@@ -47,9 +48,8 @@ from common.elements.elements import menu  # noqa
 from common.styles.styles import get_styles  # noqa
 from types_.response.response import Response  # noqa
 
-CONTAINING_DIR = re.sub(r'/filefairy/api/renderable', '', _path)
-FAIRYLAB_DIR = CONTAINING_DIR + '/fairylab/static'
-FILEFAIRY_DIR = CONTAINING_DIR + '/filefairy'
+FAIRYLAB_DIR = _root + '/fairylab'
+FILEFAIRY_DIR = _root
 
 
 class Renderable():
